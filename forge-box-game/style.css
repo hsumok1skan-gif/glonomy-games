@@ -1,0 +1,612 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-deep: #0a0806;
+  --bg-card: #16120e;
+  --bg-panel: #1f1812;
+  --border: #3d2e22;
+  --text: #e8dcc8;
+  --text-dim: #9a8b78;
+  --gold: #f0c040;
+  --gold-dim: #a08030;
+  --ember: #e85d2a;
+  --danger: #e04040;
+  --legend: #ffd700;
+  --doom: #9b4dcc;
+  --bless: #6ab86a;
+  --radius: 12px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(155, 77, 204, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 20%, rgba(196, 92, 38, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.9) 0%, transparent 50%);
+  color: var(--text);
+  min-height: 100dvh;
+  line-height: 1.45;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.85rem 1rem 2rem;
+}
+
+@media (min-width: 721px) {
+  body {
+    display: flex;
+    justify-content: center;
+    padding: 1.25rem 1rem;
+  }
+
+  .app {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 1.25rem 1.5rem;
+    width: 100%;
+    max-height: calc(100dvh - 2.5rem);
+    overflow-y: auto;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 0.65rem;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.tagline {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.left-panel,
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .main-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .left-panel,
+  .right-panel {
+    display: contents;
+  }
+
+  .panel-order-1 { order: 1; }
+  .panel-order-2 { order: 2; }
+  .panel-order-3 { order: 3; }
+  .panel-order-4 { order: 4; }
+  .panel-order-5 { order: 5; }
+  .panel-order-6 { order: 6; }
+  .panel-order-7 { order: 7; }
+  .panel-order-8 { order: 8; }
+}
+
+.status-bar {
+  padding: 0.65rem 0.85rem;
+  background: var(--bg-panel);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.status-bar.doom-danger {
+  border-color: var(--danger);
+  box-shadow: 0 0 10px rgba(224, 64, 64, 0.18);
+}
+
+.gold-display { margin-bottom: 0.55rem; }
+
+.gold-display .value {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.gold-display .value.gold-rare { color: #ffc850; }
+.gold-display .value.gold-epic { color: #ff9a40; font-size: 1.2rem; }
+.gold-display .value.gold-legend {
+  color: var(--legend);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
+}
+
+.label {
+  font-size: 0.64rem;
+  color: var(--text-dim);
+}
+
+.doom-text {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--doom);
+  margin-bottom: 0.25rem;
+}
+
+.status-bar.doom-danger .doom-text { color: var(--danger); }
+
+.doom-bar-wrap {
+  height: 6px;
+  background: #0a0806;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.doom-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4a2868, var(--doom));
+  transition: width 0.3s ease, background 0.3s;
+}
+
+.status-bar.doom-danger .doom-bar {
+  background: linear-gradient(90deg, #8a2020, var(--danger));
+}
+
+
+/* ── 상자 (보조) ── */
+
+.chest-card {
+  padding: 0.65rem 0.75rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-left: 2px solid #5a4080;
+  border-radius: var(--radius);
+  font-size: 0.72rem;
+}
+
+.chest-card.max-level { border-left-color: #6a5080; }
+
+.chest-card-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #b8a0d8;
+  margin-bottom: 0.4rem;
+}
+
+.chest-card-body {
+  color: var(--text-dim);
+  line-height: 1.45;
+  margin-bottom: 0.5rem;
+}
+
+.chest-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.08rem 0;
+}
+
+.chest-info-row .val {
+  color: var(--text);
+  font-weight: 600;
+  text-align: right;
+}
+
+
+.btn-box {
+  width: 100%;
+  padding: 0.7rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: linear-gradient(180deg, #3a3028, #252018);
+  color: var(--text);
+  transition: filter 0.2s, transform 0.1s;
+}
+
+.btn-box:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-box:active:not(:disabled) { transform: scale(0.98); }
+
+.btn-chest-upgrade {
+  width: 100%;
+  padding: 0.38rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid #4a3860;
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(30, 24, 40, 0.8);
+  color: #a898c8;
+  transition: filter 0.2s;
+}
+
+.btn-chest-upgrade:hover:not(:disabled) {
+  background: rgba(50, 40, 68, 0.9);
+  color: #d0c0e8;
+}
+
+.btn-chest-upgrade:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── 장비 카드 (메인) ── */
+
+.weapon-card {
+  text-align: center;
+  padding: 0.65rem 0.75rem 0.75rem;
+  background: var(--bg-panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.weapon-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.weapon-card .store-weapon-btn,
+.weapon-card .sell-weapon-btn {
+  flex: 1;
+  min-height: 36px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: rgba(10, 8, 6, 0.9);
+  color: var(--text);
+}
+
+.weapon-card .sell-weapon-btn {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+}
+
+.weapon-card .store-weapon-btn:hover:not(:disabled) {
+  border-color: #6a5040;
+  filter: brightness(1.08);
+}
+
+.weapon-card .sell-weapon-btn:hover:not(:disabled) {
+  background: rgba(240, 192, 64, 0.08);
+}
+
+.weapon-card .store-weapon-btn:disabled,
+.weapon-card .sell-weapon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .weapon-card .store-weapon-btn,
+  .weapon-card .sell-weapon-btn {
+    min-height: 40px;
+    font-size: 15px;
+    padding: 9px 14px;
+  }
+}
+
+.weapon-main-info {
+  margin-bottom: 0.5rem;
+}
+
+.weapon-icon {
+  font-size: 1.35rem;
+  opacity: 0.3;
+  line-height: 1;
+}
+
+.weapon-name {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 0.15rem;
+}
+
+.weapon-level {
+  font-size: 2.75rem;
+  font-weight: 900;
+  line-height: 1.05;
+  margin: 0.1rem 0;
+}
+
+.weapon-stats {
+  text-align: left;
+  font-size: 0.78rem;
+  padding: 0.55rem 0.65rem;
+  background: #0a0806;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.weapon-stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.18rem 0;
+  color: var(--text-dim);
+}
+
+.weapon-stat-row .val {
+  color: var(--text);
+  font-weight: 600;
+  text-align: right;
+}
+
+.weapon-stat-row.highlight .val { color: var(--gold); }
+.weapon-stat-row.missing .val { color: var(--danger); }
+.weapon-stat-row.done { justify-content: center; color: var(--legend); font-weight: 700; }
+
+.weapon-card.tier-mid .weapon-level { color: var(--ember); }
+
+.weapon-card.tier-danger {
+  border-color: var(--danger);
+  box-shadow: 0 0 18px rgba(224, 64, 64, 0.2);
+}
+
+.weapon-card.tier-danger .weapon-level {
+  color: var(--danger);
+  animation: pulse-danger 2s ease-in-out infinite;
+}
+
+.weapon-card.tier-legend {
+  border-color: var(--legend);
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.25);
+  background: linear-gradient(180deg, #2a2410 0%, var(--bg-panel) 48%);
+}
+
+.weapon-card.tier-legend .weapon-level {
+  color: var(--legend);
+  animation: pulse-legend 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-danger { 50% { opacity: 0.88; } }
+@keyframes pulse-legend { 50% { text-shadow: 0 0 16px rgba(255, 215, 0, 0.65); } }
+
+.completion-banner {
+  margin-top: 0.3rem;
+  padding: 0.38rem 0.6rem;
+  background: linear-gradient(90deg, #3d3200, #5a4800);
+  border: 1px solid var(--legend);
+  border-radius: 8px;
+  color: var(--legend);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.completion-banner.hidden { display: none; }
+
+
+/* ── 장비 강화 메인 버튼 ── */
+
+.btn-upgrade-main {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: linear-gradient(180deg, var(--ember), #903818);
+  color: #fff;
+  border: 2px solid #ff8040;
+  box-shadow: 0 6px 20px rgba(232, 93, 42, 0.35);
+  transition: transform 0.1s, filter 0.2s, opacity 0.2s;
+}
+
+.btn-upgrade-main:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-upgrade-main:active:not(:disabled) { transform: scale(0.98); }
+.btn-upgrade-main:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── 보물 / 보관 ── */
+
+.section-title {
+  font-size: 0.74rem;
+  color: var(--text-dim);
+  margin-bottom: 0.38rem;
+  font-weight: 600;
+}
+
+.treasure-inventory,
+.storage-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.treasure-slot,
+.storage-slot {
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #120e0c;
+  padding: 0.2rem;
+  font-family: inherit;
+  font-size: 0.52rem;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.08rem;
+  line-height: 1.12;
+  text-align: center;
+}
+
+.treasure-slot.empty {
+  opacity: 0.4;
+  background: #120e0c;
+  color: var(--text-dim);
+}
+
+.treasure-slot.empty .slot-label {
+  font-size: 0.48rem;
+}
+
+.treasure-slot.filled {
+  background: var(--bg-panel);
+  color: var(--text);
+  cursor: pointer;
+  border-color: #5a4838;
+}
+
+.treasure-slot.filled:hover,
+.treasure-slot.filled.is-active {
+  border-color: var(--gold-dim);
+  background: #2a2218;
+}
+
+.treasure-slot .slot-label {
+  font-weight: 600;
+  font-size: 0.52rem;
+  line-height: 1.2;
+}
+
+.storage-slot.filled {
+  background: var(--bg-panel);
+  color: var(--text);
+  cursor: pointer;
+  border-style: solid;
+}
+
+.storage-slot.filled:hover { border-color: var(--gold-dim); }
+
+.storage-slot .storage-label {
+  font-weight: 700;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.storage-slot.filled .storage-label {
+  color: var(--ember);
+}
+
+.treasure-detail {
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.68rem;
+}
+
+.treasure-detail.hidden { display: none; }
+
+.treasure-detail .detail-name {
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 0.18rem;
+}
+
+.treasure-detail .detail-desc {
+  color: var(--text-dim);
+  line-height: 1.35;
+  margin-bottom: 0.35rem;
+}
+
+.treasure-detail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.btn-detail {
+  padding: 0.38rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+.btn-detail.btn-use { border-color: #5a4080; color: #d0c0f0; }
+.btn-detail.btn-sell-t { border-color: var(--gold-dim); color: var(--gold); }
+.btn-detail:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── 로그 ── */
+
+.log-list {
+  list-style: none;
+  background: #0a0806;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+@media (min-width: 721px) {
+  .log-list { max-height: 280px; }
+}
+
+.log-entry {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.66rem;
+  border-bottom: 1px solid rgba(61, 46, 34, 0.45);
+  color: var(--text-dim);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.log-entry:first-child {
+  color: var(--text);
+  background: rgba(196, 92, 38, 0.06);
+}
+
+.log-entry.log-bad { color: #c08080; }
+.log-entry.log-good { color: #90c090; }
+.log-entry.log-legend { color: var(--legend); }
+.log-entry.log-bless { color: #a8d8a8; }
+.log-entry.log-doom { color: #c090e0; }
+
+@media (max-width: 360px) {
+  .weapon-level { font-size: 2.35rem; }
+  .btn-upgrade-main { font-size: 0.95rem; padding: 0.9rem; }
+}

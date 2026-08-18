@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>+25까지만 하고 끕니다</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header panel-order-1">
+      <h1 class="title">+25까지만 하고 끕니다</h1>
+      <p class="tagline">상자를 열고, 장비를 강화하세요.</p>
+    </header>
+
+    <div class="main-layout">
+      <aside class="left-panel">
+        <section class="status-bar panel-order-2" id="status-bar">
+          <div class="gold-display">
+            <span class="label">골드</span>
+            <span id="gold-amount" class="value">1,000G</span>
+          </div>
+          <div class="doom-display">
+            <span id="doom-text" class="doom-text">파멸 0/100</span>
+            <div class="doom-bar-wrap">
+              <div id="doom-bar" class="doom-bar"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="chest-card panel-order-5" id="chest-card">
+          <h2 id="chest-title" class="chest-card-title">운명의 상자 Lv.1</h2>
+          <div id="chest-card-body" class="chest-card-body"></div>
+          <button type="button" id="openBoxBtn" class="btn btn-box">상자 열기</button>
+          <button type="button" id="upgradeChestBtn" class="btn-chest-upgrade">상자 강화</button>
+        </section>
+
+        <section class="log-section panel-order-8">
+          <h2 class="section-title">로그</h2>
+          <ul id="log-list" class="log-list"></ul>
+        </section>
+      </aside>
+
+      <main class="right-panel">
+        <section class="weapon-card weapon-panel panel-order-3" id="weapon-panel">
+          <div class="weapon-card-header">
+            <button type="button" id="store-weapon-btn" class="store-weapon-btn">보관</button>
+            <button type="button" id="sell-weapon-btn" class="sell-weapon-btn">판매</button>
+          </div>
+
+          <div class="weapon-main-info">
+            <div class="weapon-icon" aria-hidden="true">⚔</div>
+            <div class="weapon-name" id="weapon-type">검</div>
+            <div class="weapon-level" id="enhance-level">+0</div>
+            <div id="completion-banner" class="completion-banner hidden">전설 완성</div>
+          </div>
+
+          <div id="weapon-stats" class="weapon-stats"></div>
+        </section>
+
+        <button type="button" id="upgradeBtn" class="btn btn-upgrade-main panel-order-4">장비 강화</button>
+
+        <section class="treasure-section panel-order-6">
+          <h2 class="section-title">보물</h2>
+          <div id="treasure-inventory" class="treasure-inventory" role="list"></div>
+          <div id="treasure-detail" class="treasure-detail hidden">
+            <div id="treasure-detail-content"></div>
+            <div class="treasure-detail-actions">
+              <button type="button" id="btn-use-treasure" class="btn-detail btn-use">사용</button>
+              <button type="button" id="btn-sell-treasure" class="btn-detail btn-sell-t">판매</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="storage-section panel-order-7">
+          <h2 class="section-title">보관</h2>
+          <div id="storage-grid" class="storage-grid" role="list"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>모홍장님, 저는 대학생인데요</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+</head>
+<body>
+  <main class="game-wrap">
+
+    <section id="startScreen" class="screen start-screen">
+      <div class="badge">청춘 방어 미니게임</div>
+      <h1>모홍장님,<br />저는 대학생인데요</h1>
+
+      <p class="description">
+        모홍장의 3사 입교 포획은 피하고,<br />새내기의 청춘 이벤트는 놓치지 마세요.
+      </p>
+
+      <div class="rule-box">
+        <p><span class="boss-dot"></span> 노란 멘트 = 모홍장 포획 멘트</p>
+        <p><span class="lover-dot"></span> 핑크 멘트 = 썸과 새내기 라이프</p>
+        <p><span class="coin-dot"></span> 코인 = 청춘 방어 아이템 구매용</p>
+      </div>
+
+      <div class="stage-preview">
+        <p>🏫 스테이지 1 · 캠퍼스 입성</p>
+        <p>🎒 스테이지 2 · 대학생활 적응</p>
+        <p>🌸 스테이지 3 · 청춘 방어전</p>
+        <p>🌙 무한모드 · 끝나지 않는 입교설명회</p>
+      </div>
+
+      <button id="startButton">게임 시작</button>
+      <p class="notice">※ 모홍장에게 잡히면 입교지원서가 제출됩니다.</p>
+
+      <div class="creator-credit">Instagram · @Hong_sumok</div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen hidden">
+      <div class="stage-title">
+        <span id="stageName">스테이지 1 · 캠퍼스 입성</span>
+      </div>
+
+      <div class="hud">
+        <div><span id="timeLabel">남은 시간</span> <span id="stageTimeText">30</span>초</div>
+        <div>코인 🪙 <span id="coinText">0</span></div>
+        <div>하트 <span id="heartText">❤️❤️❤️</span></div>
+      </div>
+
+      <div class="sub-hud">
+        <span><img src="assets/item-ignore.png" class="hud-item-icon" alt="" /> 저 대학생인데요 <strong id="ignoreText">0</strong></span>
+        <span><img src="assets/item-autoreply.png" class="hud-item-icon" alt="" /> 생각해볼게요 <strong id="autoReplyText">0</strong></span>
+        <span><img src="assets/item-coffee.png" class="hud-item-icon" alt="" /> 에너지드링크 <strong id="coffeeText">0</strong></span>
+      </div>
+
+      <div id="statusText" class="status-text">모홍장 멘트는 피하고, 청춘 이벤트는 받으세요.</div>
+
+      <div class="play-layout">
+        <aside class="mini-map">
+          <div class="map-label top">🌸<br> 청춘</div>
+          <div class="map-line">
+            <div class="map-stop stop-3">🌸</div>
+            <div class="map-stop stop-2">🎒</div>
+            <div class="map-stop stop-1">🏫</div>
+            <div id="mapMarker" class="map-marker">●</div>
+          </div>
+          <div class="map-label bottom">입학</div>
+        </aside>
+
+        <div id="gameArea" class="game-area">
+          <div id="player" class="player"></div>
+        </div>
+      </div>
+
+      <div class="control-guide">
+        조작 : ← → 방향키/버튼
+      </div>
+
+      <div class="mobile-controls" aria-label="mobile controls">
+        <button id="mobileLeftButton" class="joy-btn" type="button">◀</button>
+        <button id="mobileRightButton" class="joy-btn" type="button">▶</button>
+      </div>
+
+      <div class="creator-credit">Instagram · @Hong_sumok</div>
+    </section>
+
+    <section id="vendingScreen" class="screen vending-screen hidden">
+      <div class="badge vending-badge">자판기 도착</div>
+      <h2 id="vendingTitle">스테이지 클리어!</h2>
+      <p id="vendingMessage" class="vending-message">잠깐 숨을 고르고 다음 구간을 준비하세요.</p>
+
+      <div class="wallet-box">
+        보유 멘탈코인: <strong><span id="vendingCoinText">0</span>개</strong>
+      </div>
+
+      <div class="inventory-box">
+        <div>보유 아이템</div>
+        <p>
+          <span class="inventory-name">
+            <img src="assets/item-ignore.png" class="inventory-item-icon" alt="" />
+            저 대학생인데요
+          </span>
+          <strong id="ownedIgnoreText">0</strong>
+          <span>개</span>
+        </p>
+        <p>
+          <span class="inventory-name">
+            <img src="assets/item-autoreply.png" class="inventory-item-icon" alt="" />
+            생각해볼게요
+          </span>
+          <strong id="ownedAutoReplyText">0</strong>
+          <span>개</span>
+        </p>
+        <p>
+          <span class="inventory-name">
+            <img src="assets/item-coffee.png" class="inventory-item-icon" alt="" />
+            에너지드링크
+          </span>
+          <strong id="ownedCoffeeText">0</strong>
+          <span>개</span>
+        </p>
+      </div>
+
+      <div class="shop-grid">
+        <button class="shop-card" id="buyIgnoreButton">
+          <span class="shop-icon">
+            <img src="assets/item-ignore.png" class="shop-item-img" alt="" />
+          </span>
+          <strong>저 대학생인데요</strong>
+          <small>3코인 · 모홍장 멘트 1회 방어</small>
+        </button>
+
+        <button class="shop-card" id="buyAutoReplyButton">
+          <span class="shop-icon">
+            <img src="assets/item-autoreply.png" class="shop-item-img" alt="" />
+          </span>
+          <strong>생각해볼게요</strong>
+          <small>3코인 · 청춘 멘트 놓침 1회 방어</small>
+        </button>
+
+        <button class="shop-card" id="buyCoffeeButton">
+          <span class="shop-icon">
+            <img src="assets/item-coffee.png" class="shop-item-img" alt="" />
+          </span>
+          <strong>에너지드링크</strong>
+          <small>2코인 · 이동속도 증가</small>
+        </button>
+      </div>
+
+      <p id="shopStatusText" class="shop-status">필요한 아이템을 구매하세요.</p>
+      <button id="nextStageButton">다음 스테이지 시작</button>
+
+      <div class="creator-credit">Instagram · @Hong_sumok</div>
+    </section>
+
+    <section id="gameOverScreen" class="screen game-over-screen hidden">
+      <div id="endingBadge" class="badge danger">입교지원서 제출</div>
+      <h2 id="endingTitle">모홍장에게 잡혔습니다.</h2>
+      <p id="endingMessage" class="ending-message">모홍장의 설명회는 설명회가 아니었습니다.<br />포획 작전이었습니다.</p>
+
+      <p class="result">
+        도달 단계: <strong><span id="finalStageText">1</span></strong>
+      </p>
+
+      <p class="title-result">
+        칭호: <strong id="rankTitle">입교설명회 첫 희생자</strong>
+      </p>
+
+      <div id="resultCard" class="result-card" style="display:none;">
+        <div id="cardBadgeText" class="card-badge">입교지원서 제출 😵</div>
+        <div class="card-game-title">모홍장님, 저는 대학생인데요</div>
+        <div id="cardTitle" class="card-rank-title">입교설명회 첫 희생자</div>
+        <div id="cardStage" class="card-stage">1스테이지 도달</div>
+        <div class="card-stats">
+          <span id="cardStat1">모홍장 멘트 0회 피격</span>
+          <span id="cardStat2">청춘 이벤트 0개 수락</span>
+          <span id="cardStat3">멘탈코인 0개 획득</span>
+        </div>
+        <div class="card-footer">Instagram · @Hong_sumok</div>
+      </div>
+
+      <button id="infiniteStartButton" class="infinite-btn hidden">무한모드 도전 🌙</button>
+      <button id="saveCardButton" class="save-btn">결과 이미지 저장 📸</button>
+      <button id="restartButton">처음부터 다시하기</button>
+
+      <div class="creator-credit">insta : @Hong_sumok</div>
+    </section>
+
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

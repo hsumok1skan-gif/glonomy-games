@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GLONOMY Games</title>
+  <meta name="description" content="설치 없이 바로 플레이하는 병맛 웹게임 모음, GLONOMY Games" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #070a12;
+      --panel: #111827;
+      --panel-2: #151f32;
+      --text: #f8fafc;
+      --muted: #a7b0c0;
+      --line: rgba(255, 255, 255, 0.11);
+      --accent: #38bdf8;
+      --accent-2: #facc15;
+      --danger: #fb7185;
+      --green: #4ade80;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      --radius: 26px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(56, 189, 248, 0.18), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(250, 204, 21, 0.13), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(251, 113, 133, 0.10), transparent 34%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 30px 20px 64px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 72px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: 21px;
+      letter-spacing: -0.04em;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: #ffffff;
+      font-size: 19px;
+      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.32);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .nav-pill {
+      padding: 10px 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      text-decoration: none;
+    }
+
+    .nav-pill:hover {
+      color: var(--text);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 58px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      margin-bottom: 22px;
+      border-radius: 999px;
+      color: #bae6fd;
+      background: rgba(56, 189, 248, 0.13);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 18px rgba(74, 222, 128, 0.9);
+    }
+
+    h1 {
+      margin: 0 0 24px;
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 0.95;
+      letter-spacing: -0.08em;
+    }
+
+    .highlight {
+      color: var(--accent-2);
+    }
+
+    .desc {
+      margin: 0;
+      max-width: 640px;
+      color: #d5dbea;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.75;
+      word-break: keep-all;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .primary-btn {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .secondary-btn {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hero-card {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+        rgba(17, 24, 39, 0.86);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero-card-title {
+      margin: 0 0 14px;
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .quick-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .quick-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .quick-item strong {
+      font-size: 15px;
+    }
+
+    .quick-item span {
+      color: var(--accent-2);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 0 20px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.06em;
+    }
+
+    .section-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      position: relative;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: 30px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 34%),
+        linear-gradient(180deg, #151f32, #0f172a);
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(250, 204, 21, 0.55);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+    }
+
+    .tag {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 18px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(250, 204, 21, 0.14);
+      color: #fde68a;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 34px;
+      line-height: 1.12;
+      letter-spacing: -0.06em;
+      word-break: keep-all;
+    }
+
+    .card p {
+      margin: 0;
+      max-width: 440px;
+      color: #cbd5e1;
+      line-height: 1.7;
+      font-size: 16px;
+      font-weight: 600;
+      word-break: keep-all;
+    }
+
+    .play-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .play {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 17px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .note {
+      margin-top: 30px;
+      padding: 24px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.055);
+      color: #cbd5e1;
+      line-height: 1.75;
+      font-size: 15px;
+      font-weight: 600;
+      word-break: keep-all;
+    }
+
+    .note strong {
+      color: #ffffff;
+    }
+
+    footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .instagram-float {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 50;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 17px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #0f172a;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+
+    .instagram-float:hover {
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        padding: 24px 16px 42px;
+      }
+
+      .nav {
+        margin-bottom: 48px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: clamp(46px, 14vw, 68px);
+      }
+
+      .desc {
+        font-size: 17px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: 280px;
+        padding: 24px;
+      }
+
+      .card h3 {
+        font-size: 29px;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      footer {
+        flex-direction: column;
+        padding-bottom: 70px;
+      }
+
+      .instagram-float {
+        right: 16px;
+        bottom: 16px;
+        padding: 12px 15px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="brand">
+        <div class="logo">G</div>
+        <span>GLONOMY Games</span>
+      </div>
+
+      <nav class="nav-links" aria-label="페이지 내 메뉴">
+        <a class="nav-pill" href="#games">게임 목록</a>
+        <a class="nav-pill" href="#about">소개</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">
+          <span class="dot"></span>
+          설치 없이 바로 플레이
+        </div>
+
+        <h1>
+          이상하게<br />
+          계속 하게 되는<br />
+          <span class="highlight">웹게임</span>
+        </h1>
+
+        <p class="desc">
+          GLONOMY Games는 짧고 가볍지만, 이상하게 한 판 더 하게 되는
+          병맛 미니게임을 모아두는 공간입니다.
+        </p>
+
+        <div class="hero-actions">
+          <a class="primary-btn" href="#games">게임 바로가기</a>
+          <a class="secondary-btn" href="https://www.instagram.com/your_instagram_id" target="_blank" rel="noopener noreferrer">
+            인스타그램 보기
+          </a>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="사이트 요약">
+        <p class="hero-card-title">오늘 바로 플레이 가능</p>
+        <p>
+          회원가입도, 설치도, 결제도 필요 없습니다.
+          브라우저에서 바로 실행되는 HTML 기반 웹게임입니다.
+        </p>
+
+        <div class="quick-list">
+          <div class="quick-item">
+            <strong>공개 게임</strong>
+            <span>2개</span>
+          </div>
+          <div class="quick-item">
+            <strong>플레이 방식</strong>
+            <span>무료 웹게임</span>
+          </div>
+          <div class="quick-item">
+            <strong>실행 환경</strong>
+            <span>PC · 모바일</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="games">
+      <div class="section-head">
+        <div>
+          <h2>게임 목록</h2>
+          <p>가볍게 한 판. 그런데 생각보다 오래 하게 됩니다.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <a class="card" href="./boss-kakao-dodge/index.html">
+          <div>
+            <span class="tag">카톡에서 살아남기</span>
+            <h3>잘못 읽으면 야근이다.</h3>
+            <p>
+              상사와 여자친구의 카톡 속에서 살아남는 회피 게임.<br>
+              하나는 야근이고, 하나는 밤새 사과입니다
+            </p>
+          </div>
+
+          <div class="play-row">
+            <span class="play">플레이하기 →</span>
+            <span class="meta">HTML · JS</span>
+          </div>
+        </a>
+
+        <a class="card" href="./mohongjangdm/index.html">
+          <div>
+            <span class="tag">MOHONGJANG DM</span>
+            <h3>모홍장님,<br />저는 대학생인데요</h3>
+            <p>
+              평온한 대학생활을 위협하는 3사 입교 권유를 피해보세요.<br>
+              끝까지 버티면 캠퍼스 라이프를 지킬 수 있을지도 모릅니다.
+            </p>
+          </div>
+
+          <div class="play-row">
+            <span class="play">플레이하기 →</span>
+            <span class="meta">HTML · JS</span>
+          </div>
+        </a>
+
+        <a class="card" href="./kbs-vocab-quiz/index.html">
+          <div>
+            <span class="tag">KBS 한국어 어휘</span>
+            <h3>
+              이 단어,<br>
+              정말 아시나요?
+            </h3>
+            <p>
+              고유어와 한자어를 무작위 객관식으로 풀어보세요.<br>
+              매번 문제와 보기 순서가 달라집니다.
+            </p>
+          </div>
+
+          <div class="play-row">
+            <span class="play">문제 풀기 →</span>
+            <span class="meta">랜덤 객관식</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section id="about" class="note">
+      <strong>GLONOMY Games</strong>는 가벼운 웹게임을 빠르게 만들고,
+      배포하고, 반응을 확인하기 위한 실험 공간입니다.
+      현재는 Cloudflare Pages 기반의 정적 웹사이트로 운영되며,
+      이후 게임 추가, 광고 배너, 인스타그램 링크 페이지, Make 자동화와의 연결까지 확장할 수 있습니다.
+    </section>
+
+    <footer>
+      <span>© GLONOMY Games</span>
+      <span>Built with HTML, CSS, JavaScript and Cloudflare Pages.</span>
+    </footer>
+  </div>
+
+  <a
+    class="instagram-float"
+    href="https://www.instagram.com/hong_sumok"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="GLONOMY Instagram"
+  >
+    ◎ Instagram
+  </a>
+</body>
+</html>
