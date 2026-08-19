@@ -30,6 +30,15 @@
     return result;
   }
 
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
   function changeScreen(screenName) {
     startScreen.classList.toggle(
       "hidden",
@@ -168,6 +177,8 @@
       const choiceText =
         button.lastElementChild.textContent;
 
+      button.disabled = true;
+
       if (choiceText === question.definition) {
         button.classList.add("correct");
       } else if (button === selectedButton) {
@@ -184,15 +195,28 @@
       `explanation ${isCorrect ? "correct" : "wrong"}`;
 
     explanation.innerHTML = `
-      <strong>
-        ${isCorrect ? "정답입니다." : "정답을 확인하세요."}
+      <strong class="answer-status">
+        ${isCorrect ? "정답입니다!" : "오답입니다."}
       </strong>
 
-      <p>
-        <b>${question.term}</b>
-        —
-        ${question.definition}
-      </p>
+      ${isCorrect ? "" : `
+        <p class="correct-answer">
+          정답: ${escapeHtml(question.definition)}
+        </p>
+      `}
+
+      <div class="learning-note">
+        <p class="learning-label">의미</p>
+        <p class="learning-content">
+          <b>${escapeHtml(question.term)}</b>
+          — ${escapeHtml(question.definition)}
+        </p>
+
+        <p class="learning-label">예문</p>
+        <p class="example-sentence">
+          ${escapeHtml(question.example || "예문이 준비되지 않았습니다.")}
+        </p>
+      </div>
     `;
 
     $("nextButton").textContent =

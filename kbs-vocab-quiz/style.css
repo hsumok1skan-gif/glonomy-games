@@ -207,6 +207,10 @@ h1 {
   border-color: var(--blue);
 }
 
+.choice-button:disabled {
+  cursor: default;
+}
+
 .choice-number {
   display: grid;
   flex: 0 0 30px;
@@ -245,6 +249,47 @@ h1 {
 .explanation.wrong {
   background: rgba(251, 113, 133, 0.12);
   color: #fecdd3;
+}
+
+.answer-status {
+  display: block;
+  font-size: 20px;
+}
+
+.correct-answer {
+  margin: 9px 0 0;
+  font-weight: 800;
+}
+
+.learning-note {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(7, 10, 18, 0.38);
+  color: var(--text);
+}
+
+.learning-label {
+  margin: 0 0 5px;
+  color: var(--yellow);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.learning-content,
+.example-sentence {
+  margin: 0;
+  color: var(--text);
+}
+
+.example-sentence {
+  margin-bottom: 0;
+}
+
+.learning-content + .learning-label {
+  margin-top: 14px;
 }
 
 .next-button {
