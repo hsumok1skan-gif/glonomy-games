@@ -34,6 +34,10 @@
     return shuffle([{ text: answer.definition, correct: true }, ...wrong]);
   }
 
+  function termLabel(item) {
+    return item.origin ? `${item.term}(${item.origin})` : item.term;
+  }
+
   function renderSetup() {
     app.innerHTML = `
       <main class="app-shell">
@@ -69,8 +73,9 @@
       return `<button class="answer-option ${status}" data-answer="${index}" ${answered ? "disabled" : ""}><span class="answer-number">${index + 1}</span><span>${escapeHtml(option.text)}</span>${answered && option.correct ? '<span class="answer-symbol">✓</span>' : chosen && !option.correct ? '<span class="answer-symbol">×</span>' : ""}</button>`;
     }).join("");
     const other = current.otherMeanings.length ? `<details class="other-meanings"><summary>사전에 실린 다른 뜻 ${current.otherMeanings.length}개 보기</summary><ol>${current.otherMeanings.map((meaning) => `<li>${escapeHtml(meaning)}</li>`).join("")}</ol></details>` : "";
-    const explanation = answered ? `<div class="explanation-card ${selectedCorrect ? "success" : "failure"}"><h2>${selectedCorrect ? "정답입니다!" : "오답입니다."}</h2>${selectedCorrect ? "" : `<p class="correct-answer">정답: ${escapeHtml(current.definition)}</p>`}<div class="meaning-box"><div class="explanation-section"><span>의미</span><p><strong>${escapeHtml(current.term)}</strong> — ${escapeHtml(current.definition)}</p></div><div class="explanation-section"><span>예문</span><p>${escapeHtml(current.example)}</p><small>${escapeHtml(current.exampleSource)}</small></div>${other}</div></div>` : "";
-    app.innerHTML = `<main class="app-shell quiz-background"><header class="quiz-header"><button class="text-button" id="exit-button">← 나가기</button><span class="header-title">KBS 어휘 퀴즈</span><span class="category-pill">${state.category}</span></header><div class="progress-meta"><span>${state.index + 1} / ${state.questions.length}</span><span>정답 ${state.score}</span></div><div class="progress-track"><span style="width:${((state.index + 1) / state.questions.length) * 100}%"></span></div><section class="question-card"><p class="question-label">QUESTION ${String(state.index + 1).padStart(2,"0")}</p><h1>‘${escapeHtml(current.term)}’의 뜻으로<br class="desktop-only"> 가장 알맞은 것은?</h1><div class="answer-list">${answers}</div>${explanation}</section>${answered ? `<div class="next-row"><button class="primary-button next-button" id="next-button">${state.index + 1 === state.questions.length ? "결과 보기" : "다음 문제"} <span>→</span></button></div>` : ""}</main>`;
+    const label = termLabel(current);
+    const explanation = answered ? `<div class="explanation-card ${selectedCorrect ? "success" : "failure"}"><h2>${selectedCorrect ? "정답입니다!" : "오답입니다."}</h2>${selectedCorrect ? "" : `<p class="correct-answer">정답: ${escapeHtml(current.definition)}</p>`}<div class="meaning-box"><div class="explanation-section"><span>의미</span><p><strong>${escapeHtml(label)}</strong> — ${escapeHtml(current.definition)}</p></div><div class="explanation-section"><span>예문</span><p>${escapeHtml(current.example)}</p><small>${escapeHtml(current.exampleSource)}</small></div>${other}</div></div>` : "";
+    app.innerHTML = `<main class="app-shell quiz-background"><header class="quiz-header"><button class="text-button" id="exit-button">← 나가기</button><span class="header-title">KBS 어휘 퀴즈</span><span class="category-pill">${state.category}</span></header><div class="progress-meta"><span>${state.index + 1} / ${state.questions.length}</span><span>정답 ${state.score}</span></div><div class="progress-track"><span style="width:${((state.index + 1) / state.questions.length) * 100}%"></span></div><section class="question-card"><p class="question-label">QUESTION ${String(state.index + 1).padStart(2,"0")}</p><h1>‘${escapeHtml(label)}’의 뜻으로<br class="desktop-only"> 가장 알맞은 것은?</h1><div class="answer-list">${answers}</div>${explanation}</section>${answered ? `<div class="next-row"><button class="primary-button next-button" id="next-button">${state.index + 1 === state.questions.length ? "결과 보기" : "다음 문제"} <span>→</span></button></div>` : ""}</main>`;
     document.getElementById("exit-button").addEventListener("click", () => { state.stage = "setup"; renderSetup(); });
     document.querySelectorAll("[data-answer]").forEach((button) => button.addEventListener("click", () => chooseAnswer(Number(button.dataset.answer))));
     const next = document.getElementById("next-button"); if (next) next.addEventListener("click", nextQuestion);
