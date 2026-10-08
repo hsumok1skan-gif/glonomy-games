@@ -1,15 +1,173 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="description" content="고유어와 한자어 764개를 무작위 객관식으로 학습하는 한국어 어휘 퀴즈" />
-    <title>KBS 어휘 랜덤 퀴즈</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script src="questions.js"></script>
-    <script src="game.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="KBS 어휘">
+
+  <title>KBS 어휘 수첩</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!--APP-START-->
+  <div class="app">
+
+    <header class="topbar">
+      <a href="../index.html" class="home-link" id="homeLink">← GLONOMY Games</a>
+      <span class="brand">KBS 어휘 수첩</span>
+      <span id="totalCount" class="total-count"></span>
+    </header>
+
+    <main class="container">
+
+      <!-- ① 문제 풀기 -->
+      <section id="startScreen" class="view">
+        <p class="eyebrow">KBS 한국어능력시험 · 어휘·어법</p>
+        <h1>오늘 몇 개<br>외우고 갈까요?</h1>
+
+        <div class="today" id="todayStats"></div>
+
+        <div class="panel setting-box">
+          <div class="setting-group">
+            <div class="setting-head">
+              <strong>출제 범위</strong>
+              <button type="button" class="link-button" id="allCategories">전체 선택</button>
+            </div>
+            <div class="chip-group" id="categoryButtons"></div>
+          </div>
+
+          <div class="setting-group">
+            <strong>문항 수</strong>
+            <div class="seg" id="countButtons">
+              <button type="button" data-value="10">10</button>
+              <button type="button" data-value="20" class="selected">20</button>
+              <button type="button" data-value="50">50</button>
+              <button type="button" data-value="100">100</button>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <strong>문제 유형</strong>
+            <div class="seg" id="modeButtons">
+              <button type="button" data-value="mix" class="selected">섞어서</button>
+              <button type="button" data-value="def">뜻 맞히기</button>
+              <button type="button" data-value="term">단어 맞히기</button>
+              <button type="button" data-value="blank">빈칸</button>
+            </div>
+          </div>
+
+          <label class="toggle" for="weakFirst">
+            <input type="checkbox" id="weakFirst">
+            <span>틀렸던 문제 먼저 내기</span>
+          </label>
+
+          <button id="startButton" class="primary-button" type="button">문제 풀기 시작</button>
+        </div>
+      </section>
+
+      <!-- 문제 화면 -->
+      <section id="quizScreen" class="view hidden">
+        <div class="quiz-top">
+          <button type="button" class="icon-button" id="quitButton" aria-label="그만 풀기">✕</button>
+          <div class="progress"><div id="progressBar"></div></div>
+          <strong class="quiz-count"><span id="currentNumber"></span>/<span id="questionCount"></span></strong>
+        </div>
+
+        <article class="panel question-box">
+          <p class="question-meta">
+            <span id="questionCategory" class="tag"></span>
+            <span id="questionType" class="question-type"></span>
+          </p>
+          <h2 id="questionText"></h2>
+          <div id="questionPassage" class="passage hidden"></div>
+          <div id="choiceList" class="choice-list"></div>
+          <div id="explanation" class="explanation hidden"></div>
+        </article>
+
+        <button id="nextButton" class="primary-button next-button hidden" type="button">다음 문제</button>
+      </section>
+
+      <!-- 결과 화면 -->
+      <section id="resultScreen" class="view hidden">
+        <article class="panel result-box">
+          <p class="eyebrow">학습 결과</p>
+          <div class="score"><span id="scoreNumber">0</span><small>점</small></div>
+          <h2 id="resultTitle"></h2>
+          <p id="resultDescription" class="muted"></p>
+          <div class="result-buttons">
+            <button id="wrongRetryButton" class="ghost-button" type="button">틀린 것만 다시</button>
+            <button id="restartButton" class="primary-button" type="button">새 문제 풀기</button>
+          </div>
+          <button id="homeButton" class="link-button" type="button">처음 화면으로</button>
+        </article>
+        <div id="resultList" class="result-list"></div>
+      </section>
+
+      <!-- ② 암기 카드 -->
+      <section id="cardScreen" class="view hidden">
+        <p class="eyebrow">암기 카드 · 범위를 고르지 않으면 전체에서 나와요</p>
+        <div class="chip-group compact" id="cardCategoryButtons"></div>
+
+        <div class="card-stage">
+          <button type="button" class="flashcard" id="flashcard" aria-live="polite">
+            <span class="card-cat" id="cardCat"></span>
+            <span class="card-front" id="cardFront"></span>
+            <span class="card-back hidden" id="cardBack"></span>
+            <span class="card-hint" id="cardHint">눌러서 뜻 보기</span>
+          </button>
+        </div>
+
+        <div class="card-actions">
+          <button type="button" class="ghost-button danger" id="cardUnknown">몰라요</button>
+          <button type="button" class="primary-button" id="cardKnown">알아요</button>
+        </div>
+        <label class="toggle" for="cardReverse">
+          <input type="checkbox" id="cardReverse">
+          <span>뜻 먼저 보고 단어 맞히기</span>
+        </label>
+      </section>
+
+      <!-- ③ 오답노트 -->
+      <section id="wrongScreen" class="view hidden">
+        <p class="eyebrow">오답노트</p>
+        <h1 class="small-h1">틀린 것만 모았어요</h1>
+        <p class="muted" id="wrongSummary"></p>
+        <div class="row-buttons">
+          <button type="button" class="primary-button" id="wrongQuizButton">오답 문제 풀기</button>
+          <button type="button" class="ghost-button" id="wrongClearButton">비우기</button>
+        </div>
+        <div id="wrongList" class="entry-list"></div>
+      </section>
+
+      <!-- ④ 사전 -->
+      <section id="dictScreen" class="view hidden">
+        <p class="eyebrow">찾아보기</p>
+        <input type="search" id="searchInput" class="search" placeholder="단어나 뜻으로 검색 (예: 바투, 곤혹, 우물 안)" autocomplete="off">
+        <div class="chip-group compact" id="dictCategoryButtons"></div>
+        <p class="muted" id="searchSummary"></p>
+        <div id="searchList" class="entry-list"></div>
+      </section>
+
+    </main>
+
+    <nav class="tabbar" id="tabbar">
+      <button type="button" data-tab="quiz" class="active"><span class="tab-ico">문</span>문제</button>
+      <button type="button" data-tab="card"><span class="tab-ico">카</span>카드</button>
+      <button type="button" data-tab="wrong"><span class="tab-ico">오</span>오답<b id="wrongBadge" class="badge hidden"></b></button>
+      <button type="button" data-tab="dict"><span class="tab-ico">사</span>사전</button>
+    </nav>
+  </div>
+  <!--APP-END-->
+
+  <script src="./questions.js"></script>
+  <script src="./game.js"></script>
+</body>
 </html>

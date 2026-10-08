@@ -1,1 +1,20918 @@
-window.VOCAB_DATA=[{"id":1,"category":"고유어","term":"가탈","definition":"일이 순조롭게 나아가는 것을 방해하는 조건.","example":"처음 하는 일이라 여기저기서 가탈이 많이 생긴다.","exampleSource":"표준국어대사전 용례","otherMeanings":["이리저리 트집을 잡아 까다롭게 구는 일.","‘가탈거리다’의 어근."]},{"id":2,"category":"고유어","term":"고샅","definition":"시골 마을의 좁은 골목길. 또는 골목 사이.","example":"마을 고샅으로 접어드는 길.","exampleSource":"표준국어대사전 용례","otherMeanings":["좁은 골짜기의 사이.","‘사타구니’를 비유적으로 이르는 말.","→ 고삿."]},{"id":3,"category":"고유어","term":"골치","definition":"‘머리01’ 또는 ‘머릿골02’을 속되게 이르는 말.","example":"골치가 쑤시다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":4,"category":"고유어","term":"괄괄하다","definition":"목소리 따위가 굵고 거세다.","example":"괄괄한 목소리.","exampleSource":"표준국어대사전 용례","otherMeanings":["성질이 세고 급하다.","풀 따위가 세다."]},{"id":5,"category":"고유어","term":"괴괴하다","definition":"쓸쓸한 느낌이 들 정도로 아주 고요하다.","example":"괴괴한 정적.","exampleSource":"표준국어대사전 용례","otherMeanings":["[怪怪, 하다] 정상적이지 않고 별나며 괴상하다."]},{"id":6,"category":"고유어","term":"깜냥","definition":"스스로 일을 헤아림. 또는 헤아릴 수 있는 능력.","example":"그는 자기의 깜냥을 잘 알고 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":7,"category":"고유어","term":"내처","definition":"어떤 일 끝에 더 나아가.","example":"가는 김에 내처 집까지 바래다주었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["줄곧 한결같이.","[乃妻] 그 사람의 아내.","[內處] 안방에 거처함. 또는 그 안방."]},{"id":8,"category":"고유어","term":"노량","definition":"어정어정 놀면서 느릿느릿.","example":"그는 급할 것도 없다는 듯 노량으로 걸어갔다.","exampleSource":"제공 자료 예문","otherMeanings":["[露梁] 경상남도 남해도와 하동 사이에 있는 나루터. 이순신 장군을 기리는 충렬사가 있다.","[露量] 이슬이 내린 양."]},{"id":9,"category":"고유어","term":"되바라지다","definition":"어린 나이에 어수룩한 데가 없고 얄밉도록 지나치게 똑똑하다.","example":"아직 삼십도 안 됐을 텐데? 젊은 놈이 어지간히 되바라졌군.","exampleSource":"표준국어대사전 용례","otherMeanings":["그릇이 운두가 낮고 위가 벌어져 쉽사리 바닥이 드러나 보이다.","튀어져 나오고 벌어져서 아늑한 맛이 없다.","사람됨이 남을 너그럽게 감싸 주지 아니하고 적대적으로 대하다.","차림이 얌전하지 않아 남의 눈에 잘 띄다."]},{"id":10,"category":"고유어","term":"바투","definition":"시간이나 길이가 아주 짧게.","example":"머리를 바투 깎다.","exampleSource":"표준국어대사전 용례","otherMeanings":["두 대상이나 물체의 사이가 썩 가깝게.","[Batu] 킵차크한국의 시조(1207~1255). 아버지인 주치(Juchi)의 영지를 물려받아, 1241년에 리그니츠(Liegnitz)의 싸움에서 폴란드ㆍ독일 연합군을 격파하였다. 볼가강 하류의 사라이를 수도로 정하고 킵차크한국을 세웠다."]},{"id":11,"category":"고유어","term":"부아","definition":"노엽거나 분한 마음.","example":"부아가 나다.","exampleSource":"표준국어대사전 용례","otherMeanings":["가슴안의 양쪽에 있는, 원뿔을 반 자른 것과 비슷한 모양의 호흡을 하는 기관.","허파나 목줄띠에 붙은 고기.","[副芽] 잎겨드랑이에 생기는 여러 잎눈 가운데 가장 먼저 생긴 것 이외의 잎눈. 정상적인 잎눈의 위 또는 아래나 좌우 양옆에 보통 한 개가 나지만, 때로는 여러 개가 생기기도 한다.","[副衙] 감영(監營)이 있는 곳의 군아(郡衙)."]},{"id":12,"category":"고유어","term":"을씨년스럽다","definition":"보기에 날씨나 분위기 따위가 몹시 스산하고 쓸쓸한 데가 있다.","example":"새벽 가을바람은 한층 을씨년스럽다.","exampleSource":"표준국어대사전 용례","otherMeanings":["보기에 살림이 매우 가난한 데가 있다."]},{"id":13,"category":"고유어","term":"재겹다","definition":"몹시 지겹다.","example":"아내는 남편의 입에서 얼음이 깨물리는 소리가 참으로 재겹게 들리었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":14,"category":"고유어","term":"주눅","definition":"기운을 제대로 펴지 못하고 움츠러드는 태도나 성질.","example":"주눅이 들다.","exampleSource":"표준국어대사전 용례","otherMeanings":["부끄러움이 없이 언죽번죽한 태도나 성질."]},{"id":15,"category":"고유어","term":"곰실곰실","definition":"작은 벌레 따위가 한데 어우러져 조금씩 자꾸 굼뜨게 움직이는 모양.","example":"벌레가 곰실곰실 움직인다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":16,"category":"고유어","term":"데면데면","definition":"사람을 대하는 태도가 친밀감이 없이 예사로운 모양.","example":"그는 누구를 만나도 데면데면 대한다.","exampleSource":"표준국어대사전 용례","otherMeanings":["성질이 꼼꼼하지 않아 행동이 신중하거나 조심스럽지 않은 모양."]},{"id":17,"category":"고유어","term":"엉기정기","definition":"질서 없이 여기저기 벌여 놓은 모양.","example":"그는 책상 위에 책들을 엉기정기 벌여 놓고 나가 버렸다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":18,"category":"고유어","term":"추렴","definition":"모임이나 놀이 또는 잔치 따위의 비용으로 여럿이 각각 얼마씩의 돈을 내어 거둠.","example":"추렴을 내다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":19,"category":"고유어","term":"해사하다","definition":"얼굴이 희고 곱다랗다.","example":"해사한 얼굴.","exampleSource":"표준국어대사전 용례","otherMeanings":["표정, 웃음소리 따위가 맑고 깨끗하다.","옷차림, 자태 따위가 말끔하고 깨끗하다.","[解事, 하다] 사물을 밝게 알다.","[解絲, 하다] 감겨 있거나 매여 있거나 얽혀 있는 실을 풀다."]},{"id":20,"category":"고유어","term":"해포","definition":"한 해가 조금 넘는 동안.","example":"이 탑의 둘레를 돌고 또 돈 지가 단 며칠이 안 되건만 주민에게는 해포가 넘는 것 같았다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[蟹脯] 농게의 살을 뽑아서 말린 포."]},{"id":21,"category":"고유어","term":"드문드문","definition":"공간적으로 배지 않고 사이가 드문 모양.","example":"드문드문 서 있는 나무.","exampleSource":"표준국어대사전 용례","otherMeanings":["시간적으로 잦지 않고 드문 모양."]},{"id":22,"category":"고유어","term":"티적티적","definition":"남의 흠이나 트집을 잡으면서 자꾸 비위를 거스르는 모양.","example":"그는 사소한 흠을 티적티적 들추어 사람을 불편하게 했다.","exampleSource":"제공 자료 예문","otherMeanings":[]},{"id":23,"category":"고유어","term":"포슬포슬","definition":"덩이진 가루 따위가 물기가 적어 엉기지 못하고 바스러지기 쉬운 모양. ‘보슬보슬01’보다 거센 느낌을 준다.","example":"잘 익은 감자가 포슬포슬 부서졌다.","exampleSource":"제공 자료 예문","otherMeanings":[]},{"id":24,"category":"고유어","term":"할금할금","definition":"곁눈으로 살그머니 계속 할겨 보는 모양.","example":"강아지가 할금할금 내 눈치를 살핀다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":25,"category":"고유어","term":"흐슬부슬","definition":"차진 기가 없고 부스러져 헤어질 듯한 모양.","example":"마른 흙벽에서 모래가 흐슬부슬 흘러내렸다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":26,"category":"고유어","term":"헤실헤실","definition":"사람이 맺고 끊는 것이 확실하지 않아 싱겁고 실속이 없는 모양.","example":"그는 곤란한 질문에도 헤실헤실 웃기만 했다.","exampleSource":"제공 자료 예문","otherMeanings":["어떤 물체가 단단하지 못하여 부스러지거나 헤지기 쉬운 모양.","싱겁고 어설프게 웃는 모양."]},{"id":27,"category":"고유어","term":"조롱조롱","definition":"아이가 많이 딸려 있는 모양.","example":"그는 아이 다섯을 조롱조롱 데리고 나타났다.","exampleSource":"표준국어대사전 용례","otherMeanings":["작은 열매 따위가 많이 매달려 있는 모양."]},{"id":28,"category":"고유어","term":"갈치잠","definition":"비좁은 방에서 여럿이 모로 끼어 자는 잠.","example":"좁은 방 한 칸에 열두 명이 자려니 어쩔 수 없이 모두 갈치잠을 잘 도리밖에 없었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":29,"category":"고유어","term":"결딴","definition":"어떤 일이나 물건 따위가 아주 망가져서 도무지 손을 쓸 수 없게 된 상태.","example":"폭우로 밭이 완전히 결딴이 났다.","exampleSource":"제공 자료 예문","otherMeanings":["살림이 망하여 거덜 난 상태."]},{"id":30,"category":"고유어","term":"섬벅섬벅","definition":"크고 연한 물건이 잘 드는 칼에 쉽게 자꾸 베어지는 소리. 또는 그 모양.","example":"무를 섬벅섬벅 썰다.","exampleSource":"표준국어대사전 용례","otherMeanings":["→ 슴벅슴벅."]},{"id":31,"category":"고유어","term":"노루잠","definition":"깊이 들지 못하고 자꾸 놀라 깨는 잠.","example":"잠을 자도 설핏설핏 노루잠 자던 이가 사발밥을 남김없이 비우고 오랜만에 잠도 달게 자는 것이었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":32,"category":"고유어","term":"야물다","definition":"과실이나 곡식 따위가 알이 들어 단단하게 잘 익다.","example":"초가을의 따가운 햇살에 오곡이 잘 야문다.","exampleSource":"표준국어대사전 용례","otherMeanings":["일 처리나 언행이 옹골차고 야무지다.","사람됨이나 씀씀이 따위가 퍽 옹골차고 헤프지 않다."]},{"id":33,"category":"고유어","term":"야무지다","definition":"사람의 성질이나 행동, 생김새 따위가 빈틈이 없이 꽤 단단하고 굳세다.","example":"고 녀석 참 야무지게 생겼군.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":34,"category":"고유어","term":"실팍하다","definition":"사람이나 물건 따위가 보기에 매우 실하다.","example":"그는 실팍한 몸집인데도 쌀 한 가마를 제대로 못 옮겼다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":35,"category":"고유어","term":"발끈","definition":"사소한 일에 걸핏하면 왈칵 성을 내는 모양.","example":"약을 발끈 올리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["뒤집어엎을 듯이 시끄러운 모양.","사람이 앉거나 누워 있다가 갑자기 오뚝 일어나는 모양.","물체 따위가 갑자기 솟아오르거나 가려져 있다가 나타나는 모양."]},{"id":36,"category":"고유어","term":"졸이다","definition":"찌개, 국, 한약 따위의 물을 증발시켜 분량을 적어지게 하다. ‘졸다02「1」’의 사동사.","example":"찌개를 졸이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["속을 태우다시피 초조해하다."]},{"id":37,"category":"고유어","term":"조리다","definition":"양념을 한 고기나 생선, 채소 따위를 국물에 넣고 바짝 끓여서 양념이 배어들게 하다.","example":"생선을 조리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["식물의 열매나 뿌리, 줄기 따위를 꿀이나 설탕물 따위에 넣고 계속 끓여서 단맛이 배어들게 하다."]},{"id":38,"category":"고유어","term":"알차다","definition":"속이 꽉 차 있거나 내용이 아주 실속이 있다.","example":"알찬 내용.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":39,"category":"고유어","term":"옹골차다","definition":"매우 옹골지다.","example":"씨가 옹골차게 영글다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":40,"category":"고유어","term":"욱하다","definition":"앞뒤를 헤아림 없이 격한 마음이 불끈 일어나다.","example":"욱하고 치밀어 오르는 감정.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":41,"category":"고유어","term":"쭈뼛하다","definition":"무섭거나 놀라서 머리카락이 꼿꼿하게 일어서는 듯한 느낌이 들다. ‘주뼛하다[Ⅰ][2]「1」’보다 센 느낌을 준다.","example":"고함 소리에 머리끝이 쭈뼛했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["물건의 끝이 차차 가늘어지면서 삐죽하게 솟다. 또는 그렇게 되게 하다. ‘주뼛하다[Ⅰ][1]’보다 센 느낌을 준다.","어줍거나 부끄러워서 머뭇거리거나 주저하다. ‘주뼛하다[Ⅰ][2]「2」’보다 센 느낌을 준다.","입술 끝을 비죽 내밀다. ‘주뼛하다[Ⅰ][3]’보다 센 느낌을 준다.","물건의 끝이 차차 가늘어지면서 삐죽삐죽하게 솟아 있는 상태이다. ‘주뼛하다[Ⅱ]’보다 센 느낌을 준다."]},{"id":42,"category":"고유어","term":"울컥하다","definition":"격한 감정이 갑자기 일어나다. ‘울걱하다「1」’보다 거센 느낌을 준다.","example":"무슨 일로든지 한번 울컥하기만 하면 당장 칼을 휘둘러 버리고 싶은 충동에 정신을 못 차리는 것이었는데….","exampleSource":"표준국어대사전 용례","otherMeanings":["먹은 것을 갑자기 게우는 소리가 나다. 또는 그런 소리를 내다. ‘울걱하다「2」’보다 거센 느낌을 준다."]},{"id":43,"category":"고유어","term":"사뭇","definition":"마음에 사무치도록 매우.","example":"그녀의 마음에는 사뭇 슬픔이 밀려왔다.","exampleSource":"표준국어대사전 용례","otherMeanings":["거리낌 없이 마구.","내내 끝까지.","아주 딴판으로."]},{"id":44,"category":"고유어","term":"머쓱하다","definition":"무안을 당하거나 흥이 꺾여 어색하고 열없다.","example":"그는 자신의 마음을 들킨 것이 머쓱해서 웃고 말았다.","exampleSource":"표준국어대사전 용례","otherMeanings":["어울리지 않게 키가 크다."]},{"id":45,"category":"고유어","term":"낫잡다","definition":"금액, 나이, 수량, 수효 따위를 계산할 때에, 조금 넉넉하게 치다.","example":"손님이 더 올지 모르니 음식을 낫잡아 준비해라.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":46,"category":"고유어","term":"다그치다","definition":"일이나 행동 따위를 빨리 끝내려고 몰아치다.","example":"일손을 다그치다.","exampleSource":"표준국어대사전 용례","otherMeanings":["지친 몸을 다시 추스르다.","일이나 행동 따위를 요구하며 몰아붙이다."]},{"id":47,"category":"고유어","term":"되뇌다","definition":"같은 말을 되풀이하여 말하다.","example":"그는 같은 말을 버릇처럼 늘 되뇐다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":48,"category":"고유어","term":"둘레둘레","definition":"사방을 이리저리 살피는 모양.","example":"이 집 저 집 둘레둘레 돌아다닌다.","exampleSource":"표준국어대사전 용례","otherMeanings":["여러 사람이나 물건이 주위에 둥그렇게 둘러 있는 모양."]},{"id":49,"category":"고유어","term":"몰리다","definition":"여럿이 한곳으로 모여들다.","example":"입구로만 몰리는 청중들.","exampleSource":"표준국어대사전 용례","otherMeanings":["원하지 않는 처지나 방향으로 떠밀리다. ‘몰다[1]’의 피동사.","무엇으로 인정되거나 닦아세워져 그렇게 다루어지다. ‘몰다[3]’의 피동사.","무엇이 한꺼번에 많이 밀리다.","무엇이 모자라 곤란을 당하다."]},{"id":50,"category":"고유어","term":"뭉텅뭉텅","definition":"잇따라 제법 크게 잘리거나 끊어지는 모양. ‘뭉떵뭉떵01’보다 거센 느낌을 준다.","example":"소리 지를 겨를도 없이 그놈은 내 머리채를 날이 시퍼런 군도로 뭉텅뭉텅 베는 것이었어요.","exampleSource":"표준국어대사전 용례","otherMeanings":["‘뭉텅뭉텅하다’의 어근."]},{"id":51,"category":"고유어","term":"박작거리다","definition":"많은 사람이 좁은 곳에 모여 매우 어수선하게 자꾸 움직이다.","example":"시장에 사람들이 박작거린다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":52,"category":"고유어","term":"벼르다","definition":"어떤 일을 이루려고 마음속으로 준비를 단단히 하고 기회를 엿보다.","example":"결전을 벼르다.","exampleSource":"표준국어대사전 용례","otherMeanings":["일정한 비례에 맞추어서 여러 몫으로 나누다."]},{"id":53,"category":"고유어","term":"본치","definition":"남의 눈에 띄는 태도나 겉모양.","example":"그 여인은 맛깔 있어 보이는 점심상을 본치도 좋게 들여왔다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":54,"category":"고유어","term":"사부작거리다","definition":"별로 힘들이지 않고 계속 가볍게 행동하다.","example":"공원에서 아이들이 사부작거리는 모습이 귀엽다.","exampleSource":"제공 자료 예문","otherMeanings":[]},{"id":55,"category":"고유어","term":"새록새록","definition":"어떤 생각이나 느낌이 거듭하여 새롭게 생기는 모양.","example":"아프고 쓰라렸던 지난 일이 새록새록 떠올랐다.","exampleSource":"표준국어대사전 용례","otherMeanings":["새로운 물건이나 일이 잇따라 생기는 모양.","잠든 어린아이가 숨 쉴 때 나는 소리."]},{"id":56,"category":"고유어","term":"설레설레","definition":"큰 동작으로 몸의 한 부분을 거볍게 잇따라 가로흔드는 모양.","example":"할아버지는 무엇인가 몹시 답답하시다는 듯 고개를 설레설레 흔드시다가 담배를 꺼내 무셨다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":57,"category":"고유어","term":"쏠리다","definition":"물체가 기울어져 한쪽으로 몰리다.","example":"버스가 급정거하자 사람들이 와락 앞으로 쏠려 넘어졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":["마음이나 눈길이 어떤 대상에 끌려서 한쪽으로 기울어지다."]},{"id":58,"category":"고유어","term":"쓰렁쓰렁","definition":"남이 모르게 비밀리 행동하는 모양.","example":"그는 남의 눈을 피해 쓰렁쓰렁 일을 꾸몄다.","exampleSource":"교정 예문","otherMeanings":["일을 건성으로 하는 모양.","사귀는 정이 버성기어 서로의 사이가 소원한 모양."]},{"id":59,"category":"고유어","term":"조곤조곤","definition":"성질이나 태도가 조금 은근하고 끈덕진 모양.","example":"조곤조곤 설명하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":60,"category":"고유어","term":"종종걸음","definition":"발을 가까이 자주 떼며 급히 걷는 걸음.","example":"완자무늬 철문 사이로 낯익은 늙은 가정부가 비탈진 정원 길을 종종걸음으로 내려오는 게 보였다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":61,"category":"고유어","term":"지피다","definition":"아궁이나 화덕 따위에 땔나무를 넣어 불을 붙이다.","example":"군불을 지피다.","exampleSource":"표준국어대사전 용례","otherMeanings":["사람에게 신이 내려서 모든 것을 알아맞히는 신통하고 묘한 힘이 생기다.","한데 엉기어 붙다."]},{"id":62,"category":"고유어","term":"쪼개다","definition":"시간이나 돈 따위를 아끼다.","example":"내일 갈 수 있게 시간을 좀 쪼개 볼게.","exampleSource":"표준국어대사전 용례","otherMeanings":["둘 이상으로 나누다.","(속되게) 소리 없이 입을 벌리고 웃다."]},{"id":63,"category":"고유어","term":"찌릿찌릿","definition":"뼈마디나 몸의 일부가 매우 또는 자꾸 저린 느낌.","example":"벌을 받느라 무릎을 꿇고 오래 앉아 있었더니 다리가 찌릿찌릿 저리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["가슴이나 마음이 매우 저린 느낌."]},{"id":64,"category":"고유어","term":"톺다","definition":"가파른 곳을 오르려고 매우 힘들여 더듬다.","example":"논틀밭틀길도 없는 데를 걸어 본 것은 물론, 눈이 반길이나 쌓인 태산준령을 톺아 넘어갔기 때문에, 실제의 거리로는 천수백 리를 걸었던 것이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["틈이 있는 곳마다 모조리 더듬어 뒤지면서 찾다.","삼 따위를 삼을 때, 짼 삼의 끝을 가늘고 부드럽게 하려고 톱으로 눌러 긁어 훑다."]},{"id":65,"category":"고유어","term":"해찰하다","definition":"일에는 마음을 두지 아니하고 쓸데없이 다른 짓을 하다.","example":"아이들이란 자칫 한눈팔고 해찰하기 일쑤라서 가끔 주의를 환기할 필요가 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["마음에 썩 내키지 아니하여 물건을 부질없이 이것저것 집적거려 해치다."]},{"id":66,"category":"고유어","term":"휘둥그레지다","definition":"놀라거나 두려워서 눈이 크고 둥그렇게 되다.","example":"사고가 났다는 말에 사람들은 휘둥그레져 사건의 경위를 묻는다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":67,"category":"고유어","term":"기리다","definition":"뛰어난 업적이나 바람직한 정신, 위대한 사람 따위를 칭찬하고 기억하다.","example":"선열의 뜻을 기리다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":68,"category":"고유어","term":"드레","definition":"인격적으로 점잖은 무게.","example":"어린 사람이 퍽 드레가 있어 보인다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":69,"category":"고유어","term":"살갑다","definition":"마음씨가 부드럽고 상냥하다.","example":"형이라고 해도 살가운 정을 느끼기보다는 믿음직스러우면서도 어려웠다.","exampleSource":"표준국어대사전 용례","otherMeanings":["집이나 세간 따위가 겉으로 보기보다는 속이 너르다.","닿는 느낌 같은 것이 가볍고 부드럽다.","물건 따위에 정이 들다."]},{"id":70,"category":"고유어","term":"가납사니","definition":"쓸데없는 말을 지껄이기 좋아하는 수다스러운 사람.","example":"가납사니 같은 도시 사람들은 제멋대로 그럴싸한 소문을 퍼뜨리며….","exampleSource":"표준국어대사전 용례","otherMeanings":["말다툼을 잘하는 사람."]},{"id":71,"category":"고유어","term":"가드락가드락","definition":"조금 거만스럽게 잘난 체하며 버릇없이 자꾸 구는 모양.","example":"그 사람은 자기 집이 부자라고 하도 가드락가드락 친구를 대하여 모두가 그를 꺼린다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":72,"category":"고유어","term":"가살","definition":"말씨나 행동이 가량맞고 야살스러움. 또는 그런 짓.","example":"가살을 떨다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":73,"category":"고유어","term":"객쩍다","definition":"행동이나 말, 생각이 쓸데없고 싱겁다.","example":"객쩍은 공상.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":74,"category":"고유어","term":"안차다","definition":"겁이 없고 야무지다.","example":"그 애는 어른이 뭐라 해도 워낙 안차서 기도 안 죽는다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":75,"category":"고유어","term":"토실토실","definition":"보기 좋을 정도로 살이 통통하게 찐 모양.","example":"사 온 돼지가 토실토실 살이 오르면서….","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":76,"category":"고유어","term":"훈훈하다","definition":"날씨나 온도가 견디기 좋을 만큼 덥다.","example":"훈훈한 공기.","exampleSource":"표준국어대사전 용례","otherMeanings":["[薰薰, 하다] 마음을 부드럽게 녹여 주는 따스함이 있다.","[薰薰, 하다] 냄새가 서려 있다.","[醺醺, 하다] 술 취한 기운이 얼근하다."]},{"id":77,"category":"고유어","term":"거북하다","definition":"몸이 찌뿌드드하고 괴로워 움직임이 자연스럽지 못하거나 자유롭지 못하다.","example":"나는 속이 거북해서 점심을 걸렀다.","exampleSource":"표준국어대사전 용례","otherMeanings":["마음이 어색하고 겸연쩍어 편하지 않다."]},{"id":78,"category":"고유어","term":"구나방","definition":"말이나 행동이 모질고 거칠고 사나운 사람을 이르는 말.","example":"그는 말씨가 거친 구나방으로 소문이 났다.","exampleSource":"제공 자료 예문","otherMeanings":[]},{"id":79,"category":"고유어","term":"깔짝깔짝","definition":"자꾸 작은 물건이나 일을 가지고 만지작거리기만 하고 좀처럼 진전을 이루지 못하는 모양.","example":"밥을 깔짝깔짝 먹다.","exampleSource":"표준국어대사전 용례","otherMeanings":["매우 얇고 빳빳한 물체의 바닥이 앞뒤로 되풀이하여 가볍게 자꾸 뒤집히는 소리.","자꾸 갉아서 뜯거나 계속 진집을 내는 모양."]},{"id":80,"category":"고유어","term":"말랑말랑하다","definition":"사람의 몸이나 기질이 야무지지 못하고 맺힌 데가 없어 약하다.","example":"아들이 아니라 한 말랑말랑한 젊은이로 뵈는 눈총을 하고, 거의 강제로 술을 먹이는데 무척이나 재미있어했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["매우 또는 여기저기가 야들야들하게 보드랍고 무르다."]},{"id":81,"category":"고유어","term":"몽니","definition":"받고자 하는 대우를 받지 못할 때 내는 심술.","example":"몽니를 부리다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":82,"category":"고유어","term":"무녀리","definition":"말이나 행동이 좀 모자란 듯이 보이는 사람을 비유적으로 이르는 말.","example":"영두만 한 무녀리가 없는 줄 알았는데 의곤이에 대면 영두는 오히려 씨억씨억하고 실팍한 터수였다.","exampleSource":"표준국어대사전 용례","otherMeanings":["한 태에 낳은 여러 마리 새끼 가운데 가장 먼저 나온 새끼."]},{"id":83,"category":"고유어","term":"무쪽같다","definition":"하는 행동이 변변치 못함을 이르는 말.","example":"할머니는 살뜰하게 살림을 꾸리시는 분인데, 무쪽같은 나는 어떻게 살림을 해야 할지 몰라 공연히 허둥대기만 한다.","exampleSource":"표준국어대사전 용례","otherMeanings":["사람의 생김새가 몹시 못난 것을 두고 속되게 이르는 말. 흔히 여자의 경우를 두고 이른다."]},{"id":84,"category":"고유어","term":"발만스럽다","definition":"두려워하거나 삼가는 태도가 없이 꽤 버릇없다.","example":"요즘에는 어머니에게도 마구 바락바락 들이덤비는 게 그 행실이 꽤 발만스럽습니다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":85,"category":"고유어","term":"본데없다","definition":"보고 배운 것이 없다. 또는 행동이 예의범절에 어긋나는 데가 있다.","example":"어디서 배운 버릇이냐. 본데없는 놈 같으니라고.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":86,"category":"고유어","term":"볼썽사납다","definition":"어떤 사람이나 사물의 모습이 보기에 역겹다.","example":"그의 얼굴은 며칠 씻지 않은 사람처럼 볼썽사나웠다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":87,"category":"고유어","term":"사박스럽다","definition":"성질이 보기에 독살스럽고 야멸친 데가 있다.","example":"아내는 남편을 사박스럽게 몰아붙였다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":88,"category":"고유어","term":"새살스럽다","definition":"성질이 차분하지 못하고 가벼워 말이나 행동이 실없고 부산한 데가 있다.","example":"새살스러운 행동.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":89,"category":"고유어","term":"생게망게하다","definition":"하는 행동이나 말이 갑작스럽고 터무니없다.","example":"최가는 서럽게 울기 시작했다. 건성으로 울고 있던 상제는 서리병아리 같은 상놈 하나가 산신 제물에 메뚜기 뛰어들 듯하더니 읍곡(泣哭)을 하자, 생게망게해서 맥을 놓고 바라보았다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":90,"category":"고유어","term":"솔다","definition":"시끄러운 소리나 귀찮은 말을 자꾸 들어서 귀가 아프다.","example":"그 말은 귀가 솔도록 들었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["물기가 있던 것이나 상처 따위가 말라서 굳어지다.","흐르는 물이 세차게 굽이쳐 용솟음치다.","땅에 습기가 많아서 푸성귀 따위가 물러서 썩다.","공간이 좁다.","긁으면 아프고 그냥 두자니 가렵다."]},{"id":91,"category":"고유어","term":"알찐대다","definition":"남의 비위를 맞추려고 가까이 붙어서 계속 아첨하다.","example":"재환이는 태남이와 동갑내기였다. 그러나 유난히 잔망해 태남이 어깨 밑에서 알찐댔고 성품이 소심해서 태남이가 시키는 일이라면 입의 혀처럼 순종했다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":92,"category":"고유어","term":"야멸차다","definition":"자기만 생각하고 남의 사정을 돌볼 마음이 거의 없다.","example":"채련이만 하더라도 그렇게 야멸차게 하는 법이 어디 있나요. 우리는 마당에 내버려 두고….","exampleSource":"표준국어대사전 용례","otherMeanings":["태도가 차고 야무지다."]},{"id":93,"category":"고유어","term":"얍삽하다","definition":"(속되게) 사람이 얕은꾀를 쓰면서 자신의 이익만을 챙기려는 태도가 있다.","example":"얍삽하게 빠져나오다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":94,"category":"고유어","term":"어깃장","definition":"짐짓 어기대는 행동.","example":"사람이란 늙으면 대개의 경우 어깃장도 놓고 이기적으로 된다고들 한다.","exampleSource":"표준국어대사전 용례","otherMeanings":["널문을 짤 때 널쪽을 맞추어서 띳장을 대고 못을 박은 뒤, 그 문짝이 일그러지지 아니하게 대각선으로 붙인 띳장."]},{"id":95,"category":"고유어","term":"옴짝달싹","definition":"몸을 아주 조금 움직이는 모양.","example":"옴짝달싹 못 하게 묶다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":96,"category":"고유어","term":"우렁잇속","definition":"품은 생각을 모두 털어놓지 아니하는 의뭉스러운 속마음을 비유적으로 이르는 말.","example":"그 녀석의 속마음은 우렁잇속 같아서 뭐가 뭔지 알 수가 없다.","exampleSource":"표준국어대사전 용례","otherMeanings":["내용이 복잡하여 헤아리기 어려운 일을 비유적으로 이르는 말."]},{"id":97,"category":"고유어","term":"의뭉하다","definition":"겉으로는 어리석은 것처럼 보이면서 속으로는 엉큼하다.","example":"의뭉한 속셈을 드러내다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":98,"category":"고유어","term":"이물스럽다","definition":"성질이 음험하여 속을 헤아리기에 어려움이 있다.","example":"이물스러운 노파.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":99,"category":"고유어","term":"입방아","definition":"어떤 사실을 화제로 삼아 이러쿵저러쿵 쓸데없이 입을 놀리는 일.","example":"입방아에 오르내리다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":100,"category":"고유어","term":"자글자글","definition":"적은 양의 액체나 기름 따위가 걸쭉하게 잦아들면서 자꾸 끓는 소리. 또는 그 모양.","example":"찌개가 자글자글 끓고 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["걱정스럽거나 조바심이 나거나 못마땅하여 마음을 졸이는 모양.","어린아이가 아파서 열이 자꾸 나며 몸이 달아오르는 모양.","햇볕이 지질 듯이 내리쪼이는 모양.","물체가 쪼그라들어 잔주름이 많은 모양."]},{"id":101,"category":"고유어","term":"콩팔칠팔하다","definition":"갈피를 잡을 수 없도록 마구 지껄이다.","example":"그는 흥분해서 콩팔칠팔하며 말을 늘어놓았다.","exampleSource":"제공 자료 예문","otherMeanings":["하찮은 일을 가지고 시비조로 캐묻고 따지다."]},{"id":102,"category":"고유어","term":"트레바리","definition":"이유 없이 남의 말에 반대하기를 좋아함. 또는 그런 성격을 지닌 사람.","example":"그는 무슨 말이든 반대부터 하는 트레바리였다.","exampleSource":"제공 자료 예문","otherMeanings":[]},{"id":103,"category":"고유어","term":"허투루","definition":"아무렇게나 되는대로.","example":"허투루 말하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":104,"category":"고유어","term":"헤살","definition":"일을 짓궂게 훼방함. 또는 그런 짓.","example":"헤살을 놓다.","exampleSource":"표준국어대사전 용례","otherMeanings":["물 따위를 젓거나 하여 흩뜨림. 또는 그런 짓."]},{"id":105,"category":"고유어","term":"황망히","definition":"마음이 몹시 급하여 당황하고 허둥지둥하는 면이 있게.","example":"황망히 걸음을 재촉하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":106,"category":"고유어","term":"후리다","definition":"남의 것을 갑자기 빼앗거나 슬쩍 가지다.","example":"그 지주는 남의 재물을 후려 먹었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["휘몰아 채거나 쫓다.","휘둘러서 깎거나 베다.","휘둘러서 때리거나 치다.","매력으로 남을 유혹하여 정신을 매우 흐리게 하다.","그럴듯한 말로 속여 넘기다.","→ 훌치다01."]},{"id":107,"category":"고유어","term":"후줄근하다","definition":"옷이나 종이 따위가 약간 젖거나 풀기가 빠져 아주 보기 흉하게 축 늘어져 있다.","example":"옷이 비에 젖어 후줄근하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["몹시 지치고 고단하여 몸이 축 늘어질 정도로 아주 힘이 없다."]},{"id":108,"category":"고유어","term":"옥실옥실","definition":"아기자기한 재미 따위가 많은 모양.","example":"작은 소품들이 옥실옥실 놓인 방에는 아기자기한 재미가 있었다.","exampleSource":"교정 예문","otherMeanings":["‘옥시글옥시글’의 준말."]},{"id":109,"category":"고유어","term":"을러대다","definition":"위협적인 언동으로 을러서 남을 억누르다.","example":"그 여자가 너무 앙칼지고 영악해서 공갈을 치거나 을러대도 아무 소용이 없었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":110,"category":"고유어","term":"조잘조잘","definition":"조금 낮은 목소리로 빠르게 말을 계속하는 모양.","example":"이 아이는 엄마에게 수업 시간에 있었던 일을 조잘조잘 이야기했다.","exampleSource":"제공 자료 예문","otherMeanings":["참새 따위의 작은 새가 잇따라 지저귀는 모양.","작은 끄나풀 같은 것이 어지럽게 달린 모양."]},{"id":111,"category":"고유어","term":"고깝다","definition":"섭섭하고 야속하여 마음이 언짢다.","example":"나를 모르는 체하는 것이 고까운 생각이 들었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":112,"category":"고유어","term":"곧다","definition":"마음이나 뜻이 흔들림 없이 바르다.","example":"대쪽같이 곧은 절개.","exampleSource":"표준국어대사전 용례","otherMeanings":["굽거나 비뚤어지지 아니하고 똑바르다."]},{"id":113,"category":"고유어","term":"도탑다","definition":"서로의 관계에 사랑이나 인정이 많고 깊다.","example":"우정이 도탑다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":114,"category":"고유어","term":"못내","definition":"자꾸 마음에 두거나 잊지 못하는 모양.","example":"못내 그리워하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["이루 다 말할 수 없이."]},{"id":115,"category":"고유어","term":"삽삽하다","definition":"태도나 마음 씀씀이가 마음에 들게 부드럽고 사근사근하다.","example":"청년의 삽삽한 태도에 마음이 누그러졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[颯颯, 하다] 바람이 몸으로 느끼기에 쌀쌀하다.","[澁澁, 하다] 매끄럽지 아니하고 껄껄하다.","[澁澁, 하다] 말이나 글이 분명하지 못하여 이해하기 어렵다.","[澁澁, 하다] 맛이 매우 떫다."]},{"id":116,"category":"고유어","term":"똘기","definition":"채 익지 않은 과일.","example":"배가 고픈 아이는 산에 있는 똘기까지 따 먹었다.","exampleSource":"교정 예문","otherMeanings":[]},{"id":117,"category":"고유어","term":"딸각딸각","definition":"‘딸가닥딸가닥’의 준말.","example":"부엌에서 설거지를 하는지 딸각딸각 소리가 난다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":118,"category":"고유어","term":"서름하다","definition":"남과 가깝지 못하고 사이가 조금 서먹하다.","example":"그 여학생과는 서름한 사이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["사물 따위에 익숙하지 못하고 서툴다."]},{"id":119,"category":"고유어","term":"애처롭다","definition":"가엾고 불쌍하여 마음이 슬프다.","example":"애처롭게 울다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":120,"category":"고유어","term":"저미다","definition":"마음을 몹시 아프게 하다.","example":"애간장을 저미다.","exampleSource":"표준국어대사전 용례","otherMeanings":["여러 개의 작은 조각으로 얇게 베어 내다.","칼로 도려내듯이 쓰리고 아프게 하다."]},{"id":121,"category":"고유어","term":"짠하다","definition":"안타깝게 뉘우쳐져 마음이 조금 언짢고 아프다.","example":"마음이 짠하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":122,"category":"고유어","term":"송아리","definition":"꽃이나 열매 따위가 잘게 모여 달려 있는 덩어리.","example":"포도 송아리.","exampleSource":"표준국어대사전 용례","otherMeanings":["꽃이나 열매 따위가 잘게 모여 달려 있는 덩어리를 세는 단위."]},{"id":123,"category":"고유어","term":"아람","definition":"밤이나 상수리 따위가 충분히 익어 저절로 떨어질 정도가 된 상태. 또는 그런 열매.","example":"흔들지도 않는 밤나무 가지에서 남은 밤송이가 저 혼자 아람이 벌어져 떨어져 내렸다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":124,"category":"고유어","term":"이울다","definition":"꽃이나 잎이 시들다.","example":"꽃이 이울다.","exampleSource":"표준국어대사전 용례","otherMeanings":["점점 쇠약하여지다.","해나 달의 빛이 약해지거나 스러지다."]},{"id":125,"category":"고유어","term":"마구리하다","definition":"기다란 물건 끝을 막다.","example":"주석으로 지팡이를 마구리하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":126,"category":"고유어","term":"스러지다","definition":"형체나 현상 따위가 차차 희미해지면서 없어지다.","example":"죽음은 한 조각 구름이 스러지는 것이라고 여기고 있더라.","exampleSource":"표준국어대사전 용례","otherMeanings":["불기운이 약해져서 꺼지다."]},{"id":127,"category":"고유어","term":"맵짜다","definition":"음식의 맛이 맵고 짜다.","example":"새댁이 만든 음식은 모두 맵짰다.","exampleSource":"표준국어대사전 용례","otherMeanings":["바람 따위가 매섭게 사납다.","성미가 사납고 독하다.","성질 따위가 야무지고 옹골차다."]},{"id":128,"category":"고유어","term":"삼삼하다","definition":"음식 맛이 조금 싱거운 듯하면서 맛이 있다.","example":"국물이 삼삼하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["잊히지 않고 눈앞에 보이는 듯 또렷하다.","사물이나 사람의 생김새나 됨됨이가 마음이 끌리게 그럴듯하다.","[森森, 하다] 나무가 빽빽이 우거져 무성하다."]},{"id":129,"category":"고유어","term":"아귀아귀","definition":"음식을 욕심껏 입 안에 넣고 마구 씹어 먹는 모양.","example":"그는 밥을 아귀아귀 먹어 대며 내심 화를 삭이고 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":130,"category":"고유어","term":"안치다","definition":"밥, 떡, 찌개 따위를 만들기 위하여 그 재료를 솥이나 냄비 따위에 넣고 불 위에 올리다.","example":"시루에 떡을 안치다.","exampleSource":"표준국어대사전 용례","otherMeanings":["어려운 일이 앞에 밀리다.","앞으로 와 닥치다."]},{"id":131,"category":"고유어","term":"잦히다","definition":"밥물이 끓으면 불의 세기를 잠깐 줄였다가 다시 조금 세게 해서 물이 잦아지게 하다.","example":"밥물을 잦히다.","exampleSource":"표준국어대사전 용례","otherMeanings":["뒤로 기울이다. ‘잦다02’의 사동사.","물건의 안쪽이나 아래쪽이 겉으로 드러나게 하다."]},{"id":132,"category":"고유어","term":"차지다","definition":"반죽이나 밥, 떡 따위가 끈기가 많다.","example":"차진 흙.","exampleSource":"표준국어대사전 용례","otherMeanings":["성질이 야무지고 까다로우며 빈틈이 없다."]},{"id":133,"category":"고유어","term":"곰비임비","definition":"물건이 거듭 쌓이거나 일이 계속 일어남을 나타내는 말.","example":"경사스러운 일이 곰비임비 일어난다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":134,"category":"고유어","term":"마름질","definition":"옷감이나 재목 따위를 치수에 맞도록 재거나 자르는 일.","example":"옷감을 펼쳐 놓고 마름질을 시작하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":135,"category":"고유어","term":"매조지다","definition":"일의 끝을 단단히 단속하여 마무리하다.","example":"지붕 이을 이엉도 엮으며 저희 딴엔 끼닛값을 하느라고 시늉껏 했습니다만 처소의 동무님들과는 일 매조지는 솜씨가 비견될 바 아니었지요.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":136,"category":"고유어","term":"모꼬지","definition":"놀이나 잔치 또는 그 밖의 일로 여러 사람이 모이는 일.","example":"혼인날에도 다른 제자보다 오히려 더 일찍이 와서 모든 일을 총찰하였고 모꼬지 자리에서도 가장 기쁜 듯이 술을 마시고 춤을 추고 즐기었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":137,"category":"고유어","term":"무릎맞춤","definition":"두 사람의 말이 서로 어긋날 때, 제삼자를 앞에 두고 전에 한 말을 되풀이하여 옳고 그름을 따짐.","example":"이 일은 무릎맞춤을 해 보아야 진상이 밝혀지겠다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":138,"category":"고유어","term":"허발","definition":"몹시 굶주려 있거나 궁하여 체면 없이 함부로 먹거나 덤빔.","example":"배고픈 김에 허발을 하고 음식을 걷어 먹었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[虛發] 총이나 활을 쏘아서 맞히지 못함.","[虛發] 목적을 이루지 못하는 공연한 짓이나 걸음을 함."]},{"id":139,"category":"고유어","term":"영금","definition":"따끔하게 당하는 곤욕.","example":"영금을 보다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[靈, 금] → 영검02.","[靈禽] 영묘한 힘이 있어 상서로움을 가져온다고 전하여지는 새. 흔히 ‘봉황’을 이른다."]},{"id":140,"category":"고유어","term":"종요롭다","definition":"없어서는 안 될 정도로 매우 긴요하다.","example":"이번 기술 제휴는 우리 회사를 키우는 데 종요로운 일이므로 모두가 성심으로 이 일에 임해 주기 바랍니다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":141,"category":"고유어","term":"댓바람","definition":"일이나 때를 당하여 서슴지 않고 당장.","example":"소식을 듣자마자 댓바람으로 달려나갔다.","exampleSource":"표준국어대사전 용례","otherMeanings":["일이나 때를 당하여 단 한 번.","아주 이른 시간."]},{"id":142,"category":"고유어","term":"긋다","definition":"비가 잠시 그치다.","example":"비가 긋는 것도 잠깐, 곧이어 빗줄기가 다시 쏟아지기 시작했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["어떤 일정한 부분을 강조하거나 나타내기 위하여 금이나 줄을 그리다.","성냥이나 끝이 뾰족한 물건을 평면에 댄 채로 어느 방향으로 약간 힘을 주어 움직이다.","물건값이나 밥값, 술값 따위를 바로 내지 않고 외상으로 처리하다.","일의 경계나 한계 따위를 분명하게 짓다.","시험 채점에서 빗금을 표시하여 답이 틀림을 나타내다.","손이나 손가락으로 허공에 어떤 것을 그리는 동작을 하다.","명단에서 이름을 빼거나 문장이나 글의 일부분을 삭제하다.","활 따위를 쏘다.","비를 잠시 피하여 그치기를 기다리다."]},{"id":143,"category":"고유어","term":"그저","definition":"변함없이 이제까지.","example":"비가 그저 내리고 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["다른 일은 하지 않고 그냥.","별로 신기할 것 없이.","어쨌든지 무조건.","특별한 목적이나 이유 없이.","아닌 게 아니라 과연. 남을 책망하거나 비난하는 뜻으로 쓴다."]},{"id":144,"category":"고유어","term":"해거름","definition":"해가 서쪽으로 넘어가는 일. 또는 그런 때.","example":"해거름에 가겠다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":145,"category":"고유어","term":"해거리","definition":"한 해를 거름. 또는 그런 간격.","example":"이 대회는 해거리로 열린다.","exampleSource":"표준국어대사전 용례","otherMeanings":["한 해를 걸러서 열매가 많이 열림. 또는 그런 현상. 한 해에 열매가 많이 열리면 나무가 약해져서 그다음 해에는 열매가 거의 열리지 않는다."]},{"id":146,"category":"고유어","term":"후미지다","definition":"물가나 산길이 휘어서 굽어 들어간 곳이 매우 깊다.","example":"후미진 골짜기.","exampleSource":"표준국어대사전 용례","otherMeanings":["아주 구석지고 으슥하다."]},{"id":147,"category":"고유어","term":"빗밑","definition":"비가 그치어 날이 개는 속도.","example":"빗밑이 가볍다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":148,"category":"고유어","term":"스산하다","definition":"몹시 어수선하고 쓸쓸하다.","example":"가랑비가 뿌리고 산바람도 불어와 스산하였다.","exampleSource":"표준국어대사전 용례","otherMeanings":["날씨가 흐리고 으스스하다.","마음이 가라앉지 아니하고 뒤숭숭하다."]},{"id":149,"category":"고유어","term":"여우비","definition":"볕이 나 있는 날 잠깐 오다가 그치는 비.","example":"여우비가 온 끝이라 개울가의 풀들이나 물빛이 더욱 뚜렷하였다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":150,"category":"고유어","term":"미처","definition":"아직 거기까지 미치도록.","example":"그가 오기 전에 미처 일을 끝내지 못했다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":151,"category":"고유어","term":"얼추","definition":"어떤 기준에 거의 가깝게.","example":"도착할 시간이 얼추 다 되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["어지간한 정도로 대충."]},{"id":152,"category":"고유어","term":"이루","definition":"여간하여서는 도저히.","example":"이루 다 헤아릴 수 없다.","exampleSource":"표준국어대사전 용례","otherMeanings":["있는 대로 다.","[二壘] 야구에서, 일루와 삼루 사이에 있는 둘째 베이스.","[二壘] 야구에서, 이루를 지키는 선수.","[離婁] 중국 고대의 전설상의 인물. 백 보 떨어진 곳의 털끝을 볼 수 있을 만큼 시력이 뛰어났다고 한다.","[離淚] 이별할 때 슬퍼서 흘리는 눈물.","[離壘] 야구에서, 주자가 베이스에서 떨어지는 일."]},{"id":153,"category":"고유어","term":"가닥가닥","definition":"여러 군데서 갈려 나온 낱낱의 줄.","example":"베개 밑으로 흘러내리고 있는 그 섬세한 머리칼의 가닥가닥은 멜로디를 닮았고 합쳐져선 소리 없는 심포니를 이루고 있는 것이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["여러 가닥으로 갈라진 모양.","물기나 풀기가 있는 물체의 거죽이 거의 말라서 빳빳한 상태."]},{"id":154,"category":"고유어","term":"갈팡질팡","definition":"갈피를 잡지 못하고 이리저리 헤매는 모양.","example":"사병(士兵)들이 요란한 총성에 놀라 갈팡질팡 어둠 속을 뛰고 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":155,"category":"고유어","term":"갉작갉작","definition":"날카롭고 뾰족한 끝으로 자꾸 바닥이나 거죽을 문지르는 모양.","example":"눈가를 새끼손가락으로 갉작갉작 긁는다.","exampleSource":"표준국어대사전 용례","otherMeanings":["되는대로 자꾸 글이나 그림 따위를 쓰거나 그리는 모양."]},{"id":156,"category":"고유어","term":"짜장","definition":"과연 정말로.","example":"그는 짜장 사실인 것처럼 이야기를 한다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":157,"category":"고유어","term":"차라리","definition":"여러 가지 사실을 말할 때에, 저리하는 것보다 이리하는 것이 나음을 이르는 말. 대비되는 두 가지 사실이 모두 마땅치 않을 때 상대적으로 나음을 나타낸다.","example":"차라리 자결할망정 항복하지는 않겠다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":158,"category":"고유어","term":"차마","definition":"부끄럽거나 안타까워서 감히.","example":"차마 거절할 수 없다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":159,"category":"고유어","term":"터울","definition":"한 어머니로부터 먼저 태어난 아이와 그다음에 태어난 아이와의 나이 차이. 또는 먼저 아이를 낳은 때로부터 다음 아이를 낳은 때까지의 사이.","example":"터울이 지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["‘터울거리다’의 어근."]},{"id":160,"category":"고유어","term":"감실감실","definition":"사람이나 물체, 빛 따위가 먼 곳에서 자꾸 아렴풋이 움직이는 모양.","example":"줄 끊긴 방패연은 바람에 날려 저 멀리 감실감실 사라져 갔다.","exampleSource":"표준국어대사전 용례","otherMeanings":["군데군데 약간 가무스름한 모양."]},{"id":161,"category":"고유어","term":"고분고분","definition":"말이나 행동이 공손하고 부드러운 모양.","example":"그 아이는 시키는 대로 고분고분 말을 잘 듣는다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":162,"category":"고유어","term":"미적미적","definition":"무거운 것을 조금씩 앞으로 자꾸 내미는 모양.","example":"농부가 달구지를 미적미적 밀고 간다.","exampleSource":"표준국어대사전 용례","otherMeanings":["해야 할 일이나 날짜 따위를 미루어 자꾸 시간을 끄는 모양.","자꾸 꾸물대거나 망설이는 모양."]},{"id":163,"category":"고유어","term":"부슬부슬","definition":"눈이나 비가 조용히 성기게 내리는 모양.","example":"봄비가 부슬부슬 내리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["덩이진 가루 따위가 물기가 적어 잘 엉기지 못하고 부스러지기 쉬운 모양."]},{"id":164,"category":"고유어","term":"성큼성큼","definition":"다리를 잇따라 높이 들어 크게 떼어 놓는 모양.","example":"대령이 한 손을 가볍게 흔들더니 성큼성큼 대문으로 다가간다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":165,"category":"고유어","term":"아롱다롱","definition":"여러 가지 빛깔의 작은 점이나 줄 따위가 고르지 아니하고 촘촘하게 무늬를 이룬 모양.","example":"살구, 복숭아, 매화, 진달래, 개나리, 장미, 모란, 모두 아롱다롱 울긋불긋 곱고 다채로워….","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":166,"category":"고유어","term":"어슷비슷","definition":"큰 차이가 없이 서로 비슷비슷한 모양.","example":"그들은 형제도 아닌데 얼굴이 어슷비슷 닮았다.","exampleSource":"표준국어대사전 용례","otherMeanings":["이리저리 쏠리어 가지런하지 아니한 모양."]},{"id":167,"category":"고유어","term":"어슷어슷","definition":"여럿이 다 한쪽으로 조금 비뚤어진 모양.","example":"어슷어슷 누빈 옷.","exampleSource":"표준국어대사전 용례","otherMeanings":["힘없이 천천히 거니는 모양."]},{"id":168,"category":"고유어","term":"얼키설키","definition":"가는 것이 이리저리 뒤섞이어 얽힌 모양. ‘얼기설기「1」’보다 거센 느낌을 준다.","example":"얼키설키 얽힌 밧줄.","exampleSource":"표준국어대사전 용례","otherMeanings":["엉성하고 조잡한 모양. ‘얼기설기「2」’보다 거센 느낌을 준다.","관계나 일, 감정 따위가 복잡하게 얽힌 모양. ‘얼기설기「3」’보다 거센 느낌을 준다."]},{"id":169,"category":"고유어","term":"이따금","definition":"얼마쯤씩 있다가 가끔.","example":"이따금 영태가 내게 물었던 말들이 얼핏얼핏 되살아나곤 했다.","exampleSource":"교정 예문","otherMeanings":[]},{"id":170,"category":"고유어","term":"주저리주저리","definition":"너저분한 물건이 어지럽게 많이 매달려 있는 모양.","example":"주저리주저리 달리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["너저분하게 이것저것 끊임없이 이야기하는 모양."]},{"id":171,"category":"고유어","term":"가늠","definition":"목표나 기준에 맞고 안 맞음을 헤아려 봄. 또는 헤아려 보는 목표나 기준.","example":"매사가 다 그렇듯이 떡 반죽도 가늠을 알맞게 해야 송편을 빚기가 좋다.","exampleSource":"표준국어대사전 용례","otherMeanings":["사물을 어림잡아 헤아림."]},{"id":172,"category":"고유어","term":"가리다","definition":"자기 일을 알아서 스스로 처리하다.","example":"그는 자기 앞도 못 가리는 처지라 결혼은 꿈도 못 꾼다.","exampleSource":"표준국어대사전 용례","otherMeanings":["보이거나 통하지 못하도록 막히다.","보이거나 통하지 못하도록 막다.","여럿 가운데서 하나를 구별하여 고르다.","낯선 사람을 대하기 싫어하다.","잘잘못이나 좋은 것과 나쁜 것 따위를 따져서 분간하다.","똥오줌을 눌 곳에 누다.","치러야 할 셈을 따져서 갚아 주다.","음식을 골라서 먹다.","머리를 대강 빗다.","곡식이나 장작 따위의 단을 차곡차곡 쌓아 올려 더미를 짓다."]},{"id":173,"category":"고유어","term":"가리사니","definition":"사물을 분간하여 판단할 수 있는 실마리.","example":"가리사니가 서다.","exampleSource":"표준국어대사전 용례","otherMeanings":["사물을 판단할 만한 지각(知覺)."]},{"id":174,"category":"고유어","term":"갈마들다","definition":"서로 번갈아들다.","example":"낮과 밤이 갈마들다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":175,"category":"고유어","term":"갈피","definition":"일이나 사물의 갈래가 구별되는 어름.","example":"갈피를 못 잡다.","exampleSource":"표준국어대사전 용례","otherMeanings":["겹치거나 포갠 물건의 하나하나의 사이. 또는 그 틈.","[葛皮] 칡덩굴을 벗긴 껍질."]},{"id":176,"category":"고유어","term":"한들한들","definition":"가볍게 자꾸 이리저리 흔들리거나 흔들리게 하는 모양.","example":"간간이 부는 가는 바람에도 나무 끝은 한들한들 흔들린다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":177,"category":"고유어","term":"허둥지둥","definition":"정신을 차릴 수 없을 만큼 갈팡질팡하며 다급하게 서두르는 모양.","example":"허둥지둥 달아나다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":178,"category":"고유어","term":"휘뚜루마뚜루","definition":"이것저것 가리지 아니하고 닥치는 대로 마구 해치우는 모양.","example":"무계획적으로 휘뚜루마뚜루 돌아다니고 싶다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":179,"category":"고유어","term":"감돌다","definition":"어떤 기체나 기운이 가득 차서 떠돌다.","example":"계곡에 전운(戰雲)이 감돌다.","exampleSource":"표준국어대사전 용례","otherMeanings":["어떤 둘레를 여러 번 빙빙 돌다.","생각 따위가 눈앞이나 마음속에서 사라지지 않고 자꾸 아른거리다.","길이나 물굽이 따위가 모퉁이를 따라 돌다."]},{"id":180,"category":"고유어","term":"감투","definition":"벼슬이나 직위를 속되게 이르는 말.","example":"감투가 떨어지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["예전에, 머리에 쓰던 의관(衣冠)의 하나. 말총, 가죽, 헝겊 따위로 탕건과 비슷하나 턱이 없이 밋밋하게 만들었다.","‘탕건’을 속되게 이르는 말.","승려나 늙은이들이 추위를 막기 위하여 쓰는 모자의 하나. 담(毯)으로 둥글게 만들되 양옆으로 접어 올렸다가 펴서 내리면 뺨까지 가리게 된 것으로, 중국에서 전래하였다.","난간이나 대문의 기둥, 도리 따위의 꼭대기에 갓 모양으로 만들어 씌운 것.","[敢鬪] 과감히 싸움."]},{"id":181,"category":"고유어","term":"개평","definition":"노름이나 내기 따위에서 남이 가지게 된 몫에서 조금 얻어 가지는 공것.","example":"개평을 얻다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[開平] 제곱근을 계산하여 그 답을 구하는 것.","[槪評] 개략적으로 대충대충 하는 비평."]},{"id":182,"category":"고유어","term":"견주다","definition":"둘 이상의 사물을 질(質)이나 양(量) 따위에서 어떠한 차이가 있는지 알기 위하여 서로 대어 보다.","example":"나는 그와 실력을 견주기에는 부족함이 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":183,"category":"고유어","term":"고명딸","definition":"아들 많은 집의 외딸.","example":"그 집 막내는 고명딸로 태어나 오빠들 틈에서 귀염을 독차지하며 자랐다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":184,"category":"고유어","term":"꼭뒤","definition":"뒤통수의 한가운데.","example":"여인들은 머리를…꼭뒤에서 서너 번 틀어 쪽을 찌고 비녀를 꽂고, 늙으나 젊으나 꽃을 꽂았다.","exampleSource":"표준국어대사전 용례","otherMeanings":["활의 도고지가 붙은 뒤."]},{"id":185,"category":"고유어","term":"단출하다","definition":"식구나 구성원이 많지 않아서 홀가분하다.","example":"살림이 단출하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["일이나 차림차림이 간편하다."]},{"id":186,"category":"고유어","term":"버름하다","definition":"물건의 틈이 꼭 맞지 않고 조금 벌어져 있다.","example":"버름한 문틀.","exampleSource":"표준국어대사전 용례","otherMeanings":["마음이 서로 맞지 않아 사이가 뜨다."]},{"id":187,"category":"고유어","term":"빌미","definition":"재앙이나 탈 따위가 생기는 원인.","example":"빌미가 되다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":188,"category":"고유어","term":"사그라들다","definition":"삭아서 없어져 가다.","example":"장충은 제 노여움이 사그라들기를 기다리는지 몇 번이나 숨을 모았다가 다시 목소리를 평온하게 하여 길산을 다그쳤다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":189,"category":"고유어","term":"사리다","definition":"국수, 새끼, 실 따위를 동그랗게 포개어 감다.","example":"새끼를 사리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["뱀 따위가 몸을 똬리처럼 동그랗게 감다.","짐승이 겁을 먹고 꼬리를 다리 사이에 구부려 끼다.","박아서 나온 못을 꼬부려 붙이다.","어떤 일에 적극적으로 나서지 않고 살살 피하며 몸을 아끼다.","정신을 바짝 가다듬다."]},{"id":190,"category":"고유어","term":"사위다","definition":"불이 사그라져서 재가 되다.","example":"숯불이 사위다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":191,"category":"고유어","term":"숫제","definition":"처음부터 차라리. 또는 아예 전적으로.","example":"하다가 말 것이라면 숫제 안 하는 것이 낫다.","exampleSource":"표준국어대사전 용례","otherMeanings":["순박하고 진실하게."]},{"id":192,"category":"고유어","term":"실마리","definition":"일이나 사건을 풀어 나갈 수 있는 첫머리.","example":"해결의 실마리가 보이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["감겨 있거나 헝클어진 실의 첫머리."]},{"id":193,"category":"고유어","term":"아련하다","definition":"똑똑히 분간하기 힘들게 아렴풋하다.","example":"그때 그 시절의 추억이 아련하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":194,"category":"고유어","term":"여의다","definition":"부모나 사랑하는 사람이 죽어서 이별하다.","example":"그는 일찍이 부모를 여의고 고아로 자랐다.","exampleSource":"표준국어대사전 용례","otherMeanings":["딸을 시집보내다.","멀리 떠나보내다."]},{"id":195,"category":"고유어","term":"우리다","definition":"어떤 물건을 액체에 담가 맛이나 빛깔 따위의 성질이 액체 속으로 빠져나오게 하다.","example":"어머니는 멸치를 우려 국물을 만드셨다.","exampleSource":"표준국어대사전 용례","otherMeanings":["더운 볕이 들다.","달빛이나 햇빛 따위가 희미하게 비치다.","꾀거나 위협하거나 하여 물품 따위를 취하다.","→ 후리다."]},{"id":196,"category":"고유어","term":"우수리","definition":"물건값을 제하고 거슬러 받는 잔돈.","example":"우수리는 받지 않을 테니 물건이나 좋은 것으로 주세요.","exampleSource":"표준국어대사전 용례","otherMeanings":["일정한 수나 수량에 차고 남는 수나 수량."]},{"id":197,"category":"고유어","term":"이드거니","definition":"충분한 분량으로 만족스러운 모양.","example":"바쁜 일정 때문에 부족했던 저녁 식사를 모처럼 이드거니 먹었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":198,"category":"고유어","term":"추리다","definition":"섞여 있는 것에서 여럿을 뽑아내거나 골라내다.","example":"버려진 것 중에서 쓸 만한 것을 추렸다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":199,"category":"고유어","term":"털다","definition":"자기가 가지고 있는 것을 남김없이 내다.","example":"사재를 털다.","exampleSource":"표준국어대사전 용례","otherMeanings":["달려 있는 것, 붙어 있는 것 따위가 떨어지게 흔들거나 치거나 하다.","남이 가진 재물을 몽땅 빼앗거나 그것이 보관된 장소를 모조리 뒤지어 훔치다.","일, 감정, 병 따위를 완전히 극복하거나 말끔히 정리하다."]},{"id":200,"category":"고유어","term":"허섭스레기","definition":"좋은 것이 빠지고 난 뒤에 남은 허름한 물건.","example":"이삿짐을 싸고 남은 허섭스레기.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":201,"category":"고유어","term":"홀몸","definition":"배우자나 형제가 없는 사람.","example":"사고로 아내를 잃고 홀몸이 되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":202,"category":"고유어","term":"화수분","definition":"재물이 계속 나오는 보물단지. 그 안에 온갖 물건을 담아 두면 끝없이 새끼를 쳐 그 내용물이 줄어들지 않는다는 설화상의 단지를 이른다.","example":"은 덩이는 한번 돈으로 바꾸면 그만이지만 땅은 해마다 돈을 낳을 테니까. 그야말로 화수분이지.","exampleSource":"표준국어대사전 용례","otherMeanings":["전영택이 지은 단편 소설. 화수분 일가의 가난과 고통, 그리고 그로 인한 비극을 통하여 당시 우리 민족의 고통스러운 상황과 고통 속에서도 사라질 수 없는 따뜻한 인간애를 보여 주는 소설이다."]},{"id":203,"category":"고유어","term":"회목","definition":"손목이나 발목의 잘록한 부분.","example":"회목을 잡다.","exampleSource":"표준국어대사전 용례","otherMeanings":["강이나 길 따위에서 꺾이어 방향이 바뀌는 곳.","[檜木] 측백나뭇과의 상록 교목. 높이는 30~40미터이며, 암수한그루로 4월에 단성화가 피고 열매는 갈색의 구과(毬果)로 10월에 익는다. 목재는 질이 좋아 용도가 다양하다. 일본 특산종으로 우리나라 남부 지방에서 인공 조림으로 재배한다."]},{"id":204,"category":"고유어","term":"가녘","definition":"둘레나 끝에 해당되는 부분.","example":"겨울 안개가 바다 가녘에까지 자욱하게 끼어 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":205,"category":"고유어","term":"득달같이","definition":"잠시도 늦추지 아니하게.","example":"득달같이 달려가다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":206,"category":"고유어","term":"싹수","definition":"어떤 일이나 사람이 앞으로 잘될 것 같은 낌새나 징조.","example":"싹수가 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":207,"category":"고유어","term":"지레","definition":"어떤 일이 일어나기 전 또는 어떤 기회나 때가 무르익기 전에 미리.","example":"지레 겁을 먹다.","exampleSource":"표준국어대사전 용례","otherMeanings":["‘지렛대「1」’의 준말."]},{"id":208,"category":"고유어","term":"지지재재하다","definition":"이러니저러니 하고 자꾸 지껄이다.","example":"더 이상 지지재재할 것도 없이 두 놈이 제 딴엔 악에 받친 고함을 내지르며 몽둥이를 휘두르고 달려들었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":209,"category":"고유어","term":"짬짜미","definition":"남모르게 자기들끼리만 짜고 하는 약속이나 수작.","example":"아내의 밤늦게 돌아오는 그 일에 분명 노파의 짬짜미가 있으리라.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":210,"category":"고유어","term":"나비잠","definition":"갓난아이가 두 팔을 머리 위로 벌리고 자는 잠.","example":"팔을 어깨 위로 쳐들고 나비잠을 자던 갓난아기가 얼굴을 심하게 구기며 울기 시작했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[나비, 簪] 날개를 편 나비 모양으로 만든 비녀. 새색시가 예장(禮裝)할 때에 머리에 덧꽂는다."]},{"id":211,"category":"고유어","term":"새우잠","definition":"새우처럼 등을 구부리고 자는 잠. 주로 모로 누워 불편하게 자는 잠을 의미한다.","example":"방바닥이 차서 웅크리고 새우잠을 잤다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":212,"category":"고유어","term":"말미","definition":"일정한 직업이나 일 따위에 매인 사람이 다른 일로 말미암아 얻는 겨를.","example":"말미가 나다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[末尾] 어떤 사물의 맨 끄트머리."]},{"id":213,"category":"고유어","term":"상글상글","definition":"눈과 입을 귀엽게 움직이며 소리 없이 정답게 자꾸 웃는 모양.","example":"손님들의 시중을 드는 것은 자그맣고 바지런한 주인아주머니였는데 철의 기억에는 언제나 상글상글 웃고 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":214,"category":"고유어","term":"섬뜩하다","definition":"갑자기 소름이 끼치도록 무섭고 끔찍하다.","example":"등골이 섬뜩하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":215,"category":"고유어","term":"멀거니","definition":"정신없이 물끄러미 보고 있는 모양.","example":"혼자 멀거니 앉아 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":216,"category":"고유어","term":"손사래","definition":"어떤 말이나 사실을 부인하거나 남에게 조용히 하라고 할 때 손을 펴서 휘젓는 일.","example":"그는 그런 부탁은 들어줄 수 없다며 손사래를 쳤다.","exampleSource":"교정 예문","otherMeanings":[]},{"id":217,"category":"고유어","term":"어련히","definition":"따로 걱정하지 아니하여도 잘될 것이 명백하거나 뚜렷하게. 대상을 긍정적으로 칭찬하는 뜻으로 쓰나, 때로 반어적으로 쓰여 비아냥거리는 뜻을 나타내기도 한다.","example":"아들놈 그만큼 키웠으면 이제 밥벌이야 어련히 알아서 안 할까.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":218,"category":"고유어","term":"곰살궂다","definition":"태도나 성질이 부드럽고 친절하다.","example":"곰살궂게 굴다.","exampleSource":"표준국어대사전 용례","otherMeanings":["꼼꼼하고 자세하다."]},{"id":219,"category":"고유어","term":"수더분하다","definition":"성질이 까다롭지 아니하여 순하고 무던하다.","example":"수더분해 보이다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":220,"category":"고유어","term":"까라지다","definition":"기운이 빠져 축 늘어지다.","example":"날이 흐려서인지 몸이 까라진다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":221,"category":"고유어","term":"꼼바르다","definition":"마음이 좁고 지나치게 인색하다.","example":"꼼바르기로 유명한 그가 한턱낼 리가 없다.","exampleSource":"교정 예문","otherMeanings":[]},{"id":222,"category":"고유어","term":"나부대다","definition":"얌전히 있지 못하고 철없이 촐랑거리다.","example":"그들은 무거운 짐들을 지고 종일 나부댄 탓인지 몹시 피곤했다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":223,"category":"고유어","term":"느물스럽다","definition":"말이나 행동이 능글맞은 데가 있다.","example":"느물스럽게 말하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":224,"category":"고유어","term":"떼꾼하다","definition":"눈이 쑥 들어가고 생기가 없다.","example":"떼꾼한 눈.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":225,"category":"고유어","term":"부산하다","definition":"급하게 서두르거나 시끄럽게 떠들어 어수선하다.","example":"교실 안은 많은 아이들로 매우 부산하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":226,"category":"고유어","term":"부추기다","definition":"감정이나 상황 따위가 더 심해지도록 영향을 미치다.","example":"경쟁심을 부추기다.","exampleSource":"표준국어대사전 용례","otherMeanings":["남을 이리저리 들쑤셔서 어떤 일을 하게 만들다."]},{"id":227,"category":"고유어","term":"얼뜨다","definition":"다부지지 못하여 어수룩하고 얼빠진 데가 있다.","example":"얼뜬 사람.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":228,"category":"고유어","term":"우세스럽다","definition":"남에게 놀림과 비웃음을 받을 듯하다.","example":"그런 말씀 마시오. 벌어먹고 사는 일이 우세스러울 것 조금도 없습니다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":229,"category":"고유어","term":"추저분하다","definition":"더럽고 지저분하다.","example":"모자를 쓸 때 들여다본 거울 속에 머리털이 텁수룩한 게 몹시도 추저분한 얼굴을 발견한 나는, 우선 이발소로 발길을 향하였다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":230,"category":"고유어","term":"치근덕거리다","definition":"성가실 정도로 끈덕지게 자꾸 귀찮게 굴다. ‘지근덕거리다’보다 거센 느낌을 준다.","example":"싫다는데도 자꾸만 치근덕거리는 그가 마치 한 마리 징그러운 벌레처럼 느껴졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":231,"category":"고유어","term":"두런두런","definition":"여럿이 나지막한 목소리로 서로 조용히 이야기하는 소리. 또는 그 모양.","example":"인부들은 이곳저곳에 모닥불을 중심으로 모여 앉아 두런두런 얘기를 주고받았다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":232,"category":"고유어","term":"볼멘소리","definition":"서운하거나 성이 나서 퉁명스럽게 하는 말투.","example":"인배의 입에서는 저도 모르게 볼멘소리가 흘러나왔다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":233,"category":"고유어","term":"맞갖다","definition":"마음이나 입맛에 꼭 맞다.","example":"마음에 맞갖지 않은 일자리라서 거절하였다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":234,"category":"고유어","term":"푸지다","definition":"매우 많아서 넉넉하다.","example":"푸지게 먹다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":235,"category":"고유어","term":"한소끔","definition":"한 번 끓어오르는 모양.","example":"밥이 한소끔 끓다.","exampleSource":"표준국어대사전 용례","otherMeanings":["일정한 정도로 한 차례 진행되는 모양."]},{"id":236,"category":"고유어","term":"비설거지","definition":"비가 오려고 하거나 올 때, 비에 맞으면 안 되는 물건을 치우거나 덮는 일.","example":"무시래기와 고구마 넝쿨을 툇마루에 올려놓는 것 외에는 달리 비설거지를 할 만한 게 없었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":237,"category":"고유어","term":"노상","definition":"언제나 변함없이 한 모양으로 줄곧.","example":"그는 노상 웃고 다닌다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[老相] 늙은 재상.","[勞傷] 갖은 고초로 마음에 상처를 입음.","[路上] 길의 바닥 표면.","[路上] 길거리나 길의 위.","[路床] 표층과 노반(路盤)을 통하여 확대된 면적에 분포하는 하중을 안전하게 지지하는 아랫부분.","[魯桑] 뽕나뭇과의 낙엽 교목. 높이는 5~7미터이며, 잎은 각 마디에서 한 개씩 어긋나고 심장 모양이다. 가지는 다른 뽕나무보다 굵고 각 마디에서 꺾어지면서 반대쪽으로 구부러진다. 5월에 수상(穗狀) 화서로 꽃이 피고 열매는 6~7월에 검게 익는다. 관상용으로도 재배하며 잎은 누에의 먹이로 쓴다.","[露霜] 이슬과 서리를 아울러 이르는 말."]},{"id":238,"category":"고유어","term":"자못","definition":"생각보다 매우.","example":"여러분에 대한 기대가 자못 큽니다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":239,"category":"고유어","term":"좀체","definition":"여간하여서는.","example":"일자리가 좀체 구해지지 않는가 봐요.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":240,"category":"고유어","term":"알싸하다","definition":"매운맛이나 독한 냄새 따위로 코 속이나 혀끝이 알알하다.","example":"고추가 매워 혀끝이 알싸하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[]},{"id":241,"category":"고유어","term":"함함하다","definition":"털이 보드랍고 반지르르하다.","example":"털이 함함한 강아지.","exampleSource":"표준국어대사전 용례","otherMeanings":["소담하고 탐스럽다.","[顑頷, 하다] 몹시 굶주려 부황이 나서 누르퉁퉁하다."]},{"id":242,"category":"고유어","term":"호젓하다","definition":"매우 홀가분하여 쓸쓸하고 외롭다.","example":"호젓한 시간.","exampleSource":"표준국어대사전 용례","otherMeanings":["후미져서 무서움을 느낄 만큼 고요하다."]},{"id":243,"category":"한자어","term":"간발","definition":"아주 잠시 또는 아주 적음을 이르는 말.","example":"벌써 그의 가슴으로 간발의 틈을 노린 칼끝이 닿고 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[簡拔] 여러 사람 가운데 골라 뽑음."],"origin":"間髮"},{"id":244,"category":"한자어","term":"개재","definition":"어떤 것들 사이에 끼여 있음.","example":"사적 감정의 개재가 이 일의 변수이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[開齋] 단식재와 금육재 기간이 지남."],"origin":"介在"},{"id":245,"category":"한자어","term":"개정","definition":"주로 문서의 내용 따위를 고쳐 바르게 함.","example":"헌법 개정.","exampleSource":"표준국어대사전 용례","otherMeanings":["[介淨] ‘개정하다01’의 어근.","[改定] 이미 정하였던 것을 고쳐 다시 정함.","[改訂] 글자나 글의 틀린 곳을 고쳐 바로잡음.","[開廷] 법정을 열어 재판을 시작하는 일. 재판은 법정에서 하는 것이 원칙이지만 필요할 때 법원장의 권한으로 법원 외의 장소에서 행할 수 있다.","[開定] 선정(禪定)의 상태에서 나옴.","[開政] 정무를 보기 시작함.","[開政] 벼슬아치들의 인사에 관한 정사를 시작함."],"origin":"改正"},{"id":246,"category":"한자어","term":"결부","definition":"일정한 사물이나 현상을 서로 연관시킴.","example":"그 두 문제는 매우 밀접히 결부되어 있다.","exampleSource":"제공 자료 예문","otherMeanings":["[結負] ‘결복01「2」’의 원말.","[結簿] 조선 시대에, 논밭의 결(結)에 따라 토지세를 거두어들일 때 쓰던 장부."],"origin":"結付"},{"id":247,"category":"한자어","term":"결재","definition":"결정할 권한이 있는 상관이 부하가 제출한 안건을 검토하여 허가하거나 승인함.","example":"결재 서류.","exampleSource":"표준국어대사전 용례","otherMeanings":["[潔齋] 주색을 금하고 언행을 조심하여 몸과 마음을 깨끗이 함."],"origin":"決裁"},{"id":248,"category":"한자어","term":"계제","definition":"어떤 일을 할 수 있게 된 형편이나 기회.","example":"변명할 계제가 없었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[計除] 셈을 따져서 제할 것을 제함.","[階除] 걸어서 층 사이를 오르내릴 수 있도록 턱이 지게 만들어 놓은 설비.","[階梯] 사다리라는 뜻으로, 일이 되어 가는 순서나 절차를 비유적으로 이르는 말.","[階梯] 기계 체조에 사용하는, 옆으로 비스듬히 세운 사다리."],"origin":"階梯"},{"id":249,"category":"한자어","term":"곤혹","definition":"곤란한 일을 당하여 어찌할 바를 모름.","example":"예기치 못한 질문에 곤혹을 느끼다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"困惑"},{"id":250,"category":"한자어","term":"공표","definition":"여러 사람에게 널리 드러내어 알림.","example":"학회는 결정적 증거가 나오기 전까지 새 학설의 공표를 미루기로 결정하였다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[空表] 기계의 구조가 단순한, 구식 회중시계의 하나.","[空票] 값을 치르지 않고 거저 얻은 입장권이나 차표.","[空票] 추첨 따위에서 아무런 배당이 없는 표.","[空標] 동그랗게 그려서 옳거나 맞음을 나타내는 ‘○’의 이름."],"origin":"公表"},{"id":251,"category":"한자어","term":"관건","definition":"어떤 사물이나 문제 해결의 가장 중요한 부분.","example":"문제 해결의 관건을 쥐다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[綸巾] 비단으로 만든 두건.","[關鍵] 문빗장과 자물쇠를 아울러 이르는 말."],"origin":"關鍵"},{"id":252,"category":"한자어","term":"면목","definition":"남을 대할 만한 체면.","example":"면목을 세우다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[面目] 얼굴의 생김새.","[面目] 사람이나 사물의 겉모습."],"origin":"面目"},{"id":253,"category":"한자어","term":"모략","definition":"사실을 왜곡하거나 속임수를 써 남을 해롭게 함. 또는 그런 일.","example":"모략에 빠지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[謀略] 계책이나 책략."],"origin":"謀略"},{"id":254,"category":"한자어","term":"백미","definition":"흰 눈썹이라는 뜻으로, 여럿 가운데에서 가장 뛰어난 사람이나 훌륭한 물건을 비유적으로 이르는 말. 중국 촉한(蜀漢) 때 마씨(馬氏) 다섯 형제가 모두 재주가 있었는데 그중에서도 눈썹 속에 흰 털이 난 마량(馬良)이 가장 뛰어났다는 데서 유래한다.","example":"백미로 꼽다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[白米] 희게 쓿은 멥쌀.","[白薇] 박주가릿과의 여러해살이풀. 높이는 50~80cm이고 곧게 서며 가지를 치지 않는데 전체에 털이 많다. 잎은 마주나고 끝이 뾰족한 긴 타원형 또는 달걀 모양이다. 초여름에 자주색 꽃이 산형(繖形) 화서로 피고 열매는 골돌과(蓇葖果)이다. 잎과 뿌리는 약재로 쓴다. 산과 들에 저절로 나는데 한국, 일본 등지에 분포한다.","[白薇] 백미꽃의 뿌리를 한방에서 이르는 말. 성질이 차서 열을 내리고 피를 시원하게 하여 골증열이나 산후 발열에 쓴다.","[百味] 온갖 맛있는 음식물.","[百媚] 사람의 마음을 홀리는 온갖 아름다운 태도."],"origin":"白眉"},{"id":255,"category":"한자어","term":"보전","definition":"온전하게 보호하여 유지함.","example":"생태계 보전.","exampleSource":"표준국어대사전 용례","otherMeanings":["[甫田] 큰 밭.","[甫田] ≪시경≫의 편명(篇名).","[補塡] 부족한 부분을 보태어 채움.","[補箋] 어떤 서류에 간단한 의견을 적어서 덧붙이는 쪽지.","[補箋] 유가 증권이나 증서에 배서(背書)와 보증이 많아 여백이 없는 경우에 덧붙이는 종이.","[寶典] 귀중한 법전(法典).","[寶典] 귀중한 책.","[寶殿] 부처를 모셔 두는 건물."],"origin":"保全"},{"id":256,"category":"한자어","term":"비견","definition":"앞서거나 뒤서지 않고 어깨를 나란히 한다는 뜻으로, 낫고 못할 것이 없이 정도가 서로 비슷하게 함을 이르는 말.","example":"그는 톨스토이에 비견할 만한 소설가이다.","exampleSource":"교정 예문","otherMeanings":["[鄙見] 자신의 의견을 겸손하게 이르는 말."],"origin":"比肩"},{"id":257,"category":"한자어","term":"산실","definition":"어떤 일을 꾸미거나 이루어 내는 곳. 또는 그런 바탕.","example":"우리 연구부를 기술 개발의 산실로 키우겠다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[産室] 해산하는 방.","[散失] 흩어져 잃어버림."],"origin":"産室"},{"id":258,"category":"한자어","term":"서광","definition":"좋은 일이 일어날 조짐.","example":"암울한 역사는 가고 이제 서광의 시대가 열릴 것이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[西光] 서방 정토의 부처의 빛. 항상 광명이 비친다.","[胥匡] 틀린 점을 서로 고쳐 줌.","[書狂] 어떤 부문의 학문을 연구하기 위해서가 아니라 단순히 취미로 책을 사들이는 버릇이 있는 사람.","[瑞光] 상서로운 빛.","[曙光] 새벽에 동이 틀 무렵의 빛.","[曙光] 기대하는 일에 대하여 나타난 희망의 징조를 비유적으로 이르는 말.","[曙光] 1919년에 창간된 종합 월간지. 오천석ㆍ오상순ㆍ이병도ㆍ장덕수 등이 집필한 것으로, 당시 일어났던 신문예 운동에 기여하였다."],"origin":"瑞光"},{"id":259,"category":"한자어","term":"슬하","definition":"무릎의 아래라는 뜻으로, 어버이나 조부모의 보살핌 아래. 주로 부모의 보호를 받는 테두리 안을 이른다.","example":"슬하에 자녀는 몇이나 두었소?","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"膝下"},{"id":260,"category":"한자어","term":"아성","definition":"아주 중요한 근거지를 비유적으로 이르는 말.","example":"아성이 무너지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[牙城] 아기(牙旗)를 세운 성이라는 뜻으로, 주장(主將)이 거처하는 성을 이르던 말.","[牙聲] 훈민정음에서 ‘ㄱ’, ‘ㄲ’, ‘ㆁ’, ‘ㅋ’을 이르는 말.","[亞聖] 유학에서 공자 다음가는 성인(聖人)이라고 하여 ‘맹자01’를 이르는 말.","[兒聲] 어린아이의 소리.","[兒聲] 유치한 말을 비유적으로 이르는 말."],"origin":"牙城"},{"id":261,"category":"한자어","term":"염치","definition":"체면을 차릴 줄 알며 부끄러움을 아는 마음.","example":"예의와 염치에 어긋나다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"廉恥"},{"id":262,"category":"한자어","term":"유례","definition":"이전부터 있었던 사례.","example":"역사상 유례가 없는 이변.","exampleSource":"표준국어대사전 용례","otherMeanings":["[流例] 널리 전하여 오는 예.","[謬例] 잘못된 예.","[類例] 같거나 비슷한 예."],"origin":"類例"},{"id":263,"category":"한자어","term":"자청","definition":"어떤 일에 나서기를 스스로 청함.","example":"그는 그 일을 맡겠다고 자청을 하고 나섰다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[刺靑] 바늘로 찔러서 먹물 따위를 들인 글씨나 그림, 무늬. 또는 그렇게 한 물체.","[刺靑] 얼굴이나 팔뚝의 살을 따고 홈을 내어 먹물로 죄명을 찍어 넣던 벌."],"origin":"自請"},{"id":264,"category":"한자어","term":"장족","definition":"사물의 발전이나 진행이 매우 빠름.","example":"장족의 발전.","exampleSource":"표준국어대사전 용례","otherMeanings":["[杖足] 몽둥이로 발을 치던 형벌.","[長足] 기다랗게 생긴 다리.","[獐足] 과녁에 박힌 화살을 뽑는 도구. 노루발처럼 끝이 갈라지게 쇠붙이로 만들었다."],"origin":"長足"},{"id":265,"category":"한자어","term":"진수","definition":"사물이나 현상의 가장 중요하고 본질적인 부분.","example":"사상의 진수.","exampleSource":"표준국어대사전 용례","otherMeanings":["[辰宿] 모든 별자리의 별들.","[珍秀] ‘진수하다01’의 어근.","[珍羞] 진귀하고 맛이 좋은 음식.","[珍獸] 세상에 드문 진기한 짐승.","[眞水] 다른 것이 섞이지 아니한 순수한 물.","[眞修] 천태종에서, 초지(初地) 이상의 보살이 행하는 관법(觀法) 수행. 수행하려는 별다른 생각 없이 스스로 이치를 깨달아 행하는 수행이다.","[眞數] 로그 logₐ x에서 양수 x를 이르는 말.","[陳壽] 중국 서진(西晉)의 역사가(233~297). 자는 승조(承祚). 삼국 시대에 촉나라를 섬기었으나, 후에 진(晉)나라에 봉사하였다. 중국 정사(正史)의 하나인 ≪삼국지≫를 편찬하였다.","[軫宿] 이십팔수의 스물여덟째 별자리.","[進水] 새로 만든 배를 조선대에서 처음으로 물에 띄움.","[進修] 덕과 학문을 닦음.","[進修] 이전보다 나아지고 좋아짐.","[塵數] 먼지의 수라는 뜻으로, 많은 수를 이르는 말.","[盡數] 수량의 전부.","[螓首] 저녁매미의 이마라는 뜻으로, 아름다운 용모를 이르는 말.","[鎭守] 군대를 주둔하여 군사적으로 중요한 곳을 지킴.","[鎭戍] 변경(邊境)을 지킴."],"origin":"眞髓"},{"id":266,"category":"한자어","term":"가관","definition":"경치 따위가 꽤 볼만함.","example":"내장산의 단풍은 참으로 가관이지.","exampleSource":"표준국어대사전 용례","otherMeanings":["[加冠] 성년식인 관례를 치르며 갓을 처음 쓰는 일.","[可觀] 꼴이 볼만하다는 뜻으로, 남의 언행이나 어떤 상태를 비웃는 뜻으로 이르는 말.","[假官] 조선 시대에, 관제 운용에서 정원 외에 추가로 임용하거나, 중요 관직에 결원이 생겼을 경우 타관이 겸임하던 임시 관직.","[假官] 조선 시대에, 승정원에 속한 정칠품 벼슬. 주서(注書)가 사고를 당할 때에 그 일을 대신 맡아보게 하기 위하여 정원(定員) 이외로 두었다.","[假觀] 삼관(三觀)의 하나. 우주의 모든 존재는 공(空)한 것으로서 실제로 있는 것이 아니므로, 모양을 분명히 갖춘 것도 실체가 없는 임시적인 존재라는 것이다.","[笳管] 속이 빈 대에 구멍을 뚫고 불어서 소리를 내는 악기를 통틀어 이르는 말.","[歌管] 노래와 악기를 아울러 이르는 말."],"origin":"可觀"},{"id":267,"category":"한자어","term":"각서","definition":"약속을 지키겠다는 내용을 적은 문서.","example":"각서를 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[角黍] 웃기떡의 하나. 찹쌀가루에 대추를 이겨 섞고 꿀에 반죽하여 깨소나 팥소를 넣어 송편처럼 만든 다음, 기름에 지진다.","[覺書] 조약에 덧붙여 해석하거나 보충할 것을 정하고, 예외 조건을 붙이거나 자기 나라의 의견, 희망 따위를 진술하는 외교 문서. 조약보다는 강제성이 약하여 비교적 가벼운 의미로 사용된다."],"origin":"覺書"},{"id":268,"category":"한자어","term":"각축","definition":"서로 이기려고 다투며 덤벼듦.","example":"외세의 각축.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"角逐"},{"id":269,"category":"한자어","term":"간과하다","definition":"큰 관심 없이 대강 보아 넘기다.","example":"나는 그가 따라 주는 술을 마시면서도 그 사실을 결코 간과하지 않았다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"看過"},{"id":270,"category":"한자어","term":"회자","definition":"회와 구운 고기라는 뜻으로, 칭찬을 받으며 사람의 입에 자주 오르내림을 이르는 말.","example":"그 노래는 오늘날까지 많은 사람 사이에 널리 회자되고 있다.","exampleSource":"교정 예문","otherMeanings":["[回刺] 승문원에 새로 들어온 사람이 허름한 차림을 하고 밤에 선배들을 찾아다니며 동료로 인정받던 일.","[會子] 중국 당나라 말기부터 금융업자들이 일정한 지역에서 통용하던 약속 어음. 송나라 때에는 정부에서 관자(官子)로서 발행하였다.","[劊子] 군영(軍營)에서 사형을 집행하던 사람."],"origin":"膾炙"},{"id":271,"category":"한자어","term":"감퇴","definition":"기운이나 세력 따위가 줄어 쇠퇴함.","example":"식욕 감퇴.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"減退"},{"id":272,"category":"한자어","term":"강변","definition":"이치에 닿지 아니한 것을 끝까지 굽히지 않고 주장하거나 변명함.","example":"광신의 열정과 독선의 강변으로만 무장된 서로 다른 이념의 만남은 이 땅을 소란스러운 심리적 폭력의 경쟁 터로 만들었다가 마침내는 유혈의 대결로 끝장을 보고 말았다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[江邊] 강의 가장자리에 잇닿아 있는 땅. 또는 그 부근.","[剛辯] ‘강변하다01’의 어근."],"origin":"強辯"},{"id":273,"category":"한자어","term":"개관","definition":"전체를 대강 살펴봄. 또는 그런 것.","example":"국문학사의 개관.","exampleSource":"표준국어대사전 용례","otherMeanings":["[改棺] 무덤을 옮길 때 관을 새로 마련함.","[開棺] 시체가 들어 있는 관의 뚜껑을 엶.","[開管] 양쪽 끝이 뚫리고 속이 빈 관. 한쪽 끝에 진동하는 음차(音叉)를 가까이 대거나 공기를 불어 넣으면 내부의 공기 기둥의 진동으로 소리가 난다.","[開館] 도서관, 영화관, 박물관, 회관 따위의 기관이 설비를 차려 놓고 처음으로 문을 엶. 또는 그렇게 함.","[開館] 도서관, 영화관, 박물관, 회관 따위가 그날의 일을 시작하기 위하여 문을 엶. 또는 그렇게 함.","[開關] 관문(關門), 성문(城門), 세관(稅關) 따위를 엶.","[蓋棺] 시체를 관에 넣고 뚜껑을 덮음.","[漑灌] 농사를 짓는 데에 필요한 물을 논밭에 댐.","[槪觀] 윤곽, 명암, 색채, 구도 따위의 대체의 모양."],"origin":"槪觀"},{"id":274,"category":"한자어","term":"객기","definition":"객쩍게 부리는 혈기(血氣)나 용기.","example":"객기가 나다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"客氣"},{"id":275,"category":"한자어","term":"거치","definition":"공채(公債), 사채(社債) 따위의 상환 또는 지급을 일정 기간 하지 않는 일.","example":"3년 거치 5년 상환 조건으로 돈을 융자하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[据置] 그대로 둠.","[鋸齒] 톱 따위의 가장자리에 있는 뾰족뾰족한 이.","[鋸齒] 식물의 잎이나 꽃잎 가장자리에 있는, 톱니처럼 깔쭉깔쭉하게 베어져 들어간 자국.","[擧痔] 항문 주위에 군살이 생겨서 아픈 치질."],"origin":"据置"},{"id":276,"category":"한자어","term":"건재","definition":"힘이나 능력이 줄어들지 않고 여전히 그대로 있음.","example":"건재를 과시하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[建材] ‘건축 용재’를 줄여 이르는 말.","[乾才] 맡은 일을 감당하며 처리하는 재주.","[乾材] 조제하지 않은 그대로의 약재."],"origin":"健在"},{"id":277,"category":"한자어","term":"검수","definition":"물건의 규격, 수량, 품질 따위를 검사한 후 물건을 받음.","example":"검수 기간.","exampleSource":"표준국어대사전 용례","otherMeanings":["[劍樹] 가지, 잎, 꽃, 과실이 모두 칼로 되어 있다는 지옥의 나무.","[劍樹] 불경, 불효, 무자비한 죄를 지은 사람이 떨어지는 지옥. 시뻘겋게 단 뜨거운 쇠 알의 열매가 달리고 잎이 칼로 된 나무 숲속에서 온몸이 찔리는 고통을 받는다.","[黔首] 검은 두건을 쓴 머리라는 뜻으로, 일반 백성을 비유적으로 이르는 말. 고대 중국에서 평민들이 머리에 검은 두건을 쓴 데서 비롯된 말이다.","[檢水] 수질이 좋은지 나쁜지를 검사하는 일.","[檢修] 점검하여 수리함.","[檢數] 물건의 개수를 헤아려 검사하는 일."],"origin":"檢收"},{"id":278,"category":"한자어","term":"경륜","definition":"일정한 포부를 가지고 일을 조직적으로 계획함. 또는 그 계획이나 포부.","example":"경륜이 있는 사람.","exampleSource":"표준국어대사전 용례","otherMeanings":["[徑輪] 지름과 둘레를 아울러 이르는 말.","[徑輪] 토지의 지름과 둘레. 또는 토지의 면적.","[經綸] 세상을 다스림. 또는 그런 능력.","[競輪] 일정한 거리를 자전거를 타고 달려 빠르기를 겨루는 경기.","[競輪] 가장 빨리 달릴 것이라고 예상하는 자전거에 돈을 걸어 내기를 하는 오락."],"origin":"經綸"},{"id":279,"category":"한자어","term":"경색","definition":"소통되지 못하고 막힘.","example":"정국 경색을 풀다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[哽塞] 지나치게 소리를 내어 울어 목이 막힘.","[梗塞] 혈액 속에 떠다니는 혈전(血栓) 따위의 물질이 혈관을 막는 일. 이로 인하여 혈액 순환이 잘되지 않아 영양 공급이 중단되며 그 부위의 세포 조직이 죽게 된다.","[景色] 산이나 들, 강, 바다 따위의 자연이나 지역의 모습.","[景色] 정경이나 광경."],"origin":"梗塞"},{"id":280,"category":"한자어","term":"경시","definition":"대수롭지 않게 보거나 업신여김.","example":"인명(人命) 경시 현상.","exampleSource":"표준국어대사전 용례","otherMeanings":["[更始] 고쳐 다시 시작함.","[庚時] 이십사시(二十四時)의 열여덟째 시. 오후 네 시 반부터 다섯 시 반까지이다.","[京試] 조선 시대에, 3년마다 서울에서 치러 생원과 진사를 뽑던 소과(小科)의 첫 시험.","[勁矢] 강한 화살.","[卿寺] 조선 시대에, 구경(九卿)이 있던 중앙 관아.","[經始] 집을 짓기 시작함.","[經始] 경영에 착수함.","[警視] 대한 제국 때에, 경시청과 각 도(道)의 관찰부에 속한 경찰 고등관(高等官). 이전의 경무관(警務官)을 고친 것이다.","[警視] 일제 강점기에 둔, 지금의 총경(總警)에 해당하는 경찰관의 계급."],"origin":"輕視"},{"id":281,"category":"한자어","term":"경주","definition":"힘이나 정신을 한곳에만 기울임.","example":"좋은 결과를 거둘 수 있도록 그 일에 최선의 노력이 경주되어야 한다.","exampleSource":"제공 자료 예문","otherMeanings":["[勁酒] 독한 술.","[傾注] 물 따위를 기울여 붓거나 쏟음.","[傾注] 강물이 쏜살같이 바다로 흘러 들어감.","[傾注] 비가 퍼붓듯 쏟아지는 것을 비유적으로 이르는 말.","[輕舟] 가볍고 빠른 작은 배.","[慶州] 경상북도의 동남부에 있는 시. 신라 천 년의 고도(古都)로 명승고적이 많아 관광 명소이다. 제삼차 산업과 농업이 주요 산업이며 특산물로 유기, 죽세공품 따위가 있다. 불국사, 석굴암, 분황사와 그 밖에도 많은 명승지가 있다. 1995년 행정 구역 개편 때 경주군을 통합하여 도농 복합 형태의 시를 이루었다. 면적은 1,324.08㎢.","[慶州] 중국 요나라 때의 주. 현재 네이멍구 자치구인 바린쭤치(巴林左旗)의 서북부에 있었다. 불탑인 백탑(白塔)과 영경릉의 벽화는, 현존하는 뛰어난 요나라 건축ㆍ회화 작품이다.","[瓊州] → 충저우.","[競舟] 정해진 거리에서 보트를 저어 스피드를 겨루는 경기. 혼자서 젓는 싱글 스컬에서 8명이 젓는 에이트까지 9종목이 있는데, 올림픽에서 남자는 2,000미터, 여자는 1,000미터 코스에서 실시한다.","[競走] 사람, 동물, 차량 따위가 일정한 거리를 달려 빠르기를 겨루는 일. 또는 그런 경기."],"origin":"傾注"},{"id":282,"category":"한자어","term":"경질","definition":"어떤 직위에 있는 사람을 다른 사람으로 바꿈.","example":"임원 경질.","exampleSource":"표준국어대사전 용례","otherMeanings":["[勁疾] ‘경질하다02’의 어근.","[硬質] 단단하고 굳은 성질.","[經帙] 고려 시대에, 경권(經卷)을 말아 두는 데 쓰던 물건. 가느다란 참대 조각을 짜서 직사각형의 대자리처럼 만들고 그 한쪽에 삼각형의 비단을 붙여 줄을 단 것으로, 현재 전라남도 순천시 송광면 송광사에 있다."],"origin":"更迭更佚"},{"id":283,"category":"한자어","term":"계류","definition":"일정한 곳을 벗어나지 못하도록 배를 말뚝에 매는 일.","example":"선박 혼잡 등에 의한 장기간의 계류가 아닌 한, 비용은 그다지 큰 문제가 되지 않는다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[溪流, /, 谿流] 산골짜기에 흐르는 시냇물.","[稽留] 객지에 가서 머물러 있음.","[繫留] 일정한 곳을 벗어나지 못하도록 밧줄 같은 것으로 붙잡아 매어 놓음.","[繫留] 어떤 사건이 해결되지 않고 걸려 있음.","[繫留] 한 화음으로부터 다른 화음으로 옮길 때, 그 가운데 어느 한 성음 또는 몇 개의 성음이 다른 화음으로 늦게 들어가서 안어울림음을 이루는 일."],"origin":"繫留"},{"id":284,"category":"한자어","term":"고견","definition":"뛰어난 의견이나 생각.","example":"그 사람의 정치적 판단은 당시의 고견이었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[高見] 남의 의견을 높여 이르는 말.","[顧見] 돌이켜 봄.","[顧見] 마음을 기울여 돌보아 줌."],"origin":"高見"},{"id":285,"category":"한자어","term":"고적","definition":"북과 피리를 아울러 이르는 말.","example":"고적을 울리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[古跡, /, 古蹟] 옛 문화를 보여 주는 건물이나 터.","[考績] 고려ㆍ조선 시대에, 관리의 근무 성적을 평가하여 결정하던 일. 승진과 좌천, 포상과 처벌에 반영하였다.","[孤寂] 외롭고 쓸쓸함.","[故敵] 옛날의 적.","[高適] 고려 시대의 문신(?~?). 삼별초의 난이 평정되자 유총관(留摠官)에 임명되어 탐라 백성을 다스렸다.","[高適] 중국 당나라의 시인(707?~765). 자는 달부(達夫). 벼슬은 감찰어사ㆍ절도사를 지냈으며, 잠참과 더불어 변경(邊境)의 풍물을 읊었다.","[高積] 높이 쌓임."],"origin":"鼓笛"},{"id":286,"category":"한자어","term":"고증","definition":"예전에 있던 사물들의 시대, 가치, 내용 따위를 옛 문헌이나 물건에 기초하여 증거를 세워 이론적으로 밝힘.","example":"왕궁이 철저한 문헌의 고증을 통해 복원되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"考證"},{"id":287,"category":"한자어","term":"고착","definition":"어떤 상황이나 현상이 굳어져 변하지 않음.","example":"분단의 고착을 막고 통일을 앞당기려는 노력이 필요하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[固着] 물건 같은 것이 굳게 들러붙어 있음.","[固着] 특정한 대상이나 생각에 집착하여 벗어나지 못함. 또는 그런 상태. 이전의 발달 단계에서 적절했던 대상이나 생각이, 발달이 진행되어 다른 생각이나 행동이 요구되는데도 그 이전의 상태에 머무르는 일이다.","[固着] 정신 분석학에서, 성욕이 발달하지 못하여 어린애 때의 사랑의 대상에서 떠나지 못함. 또는 그런 상태."],"origin":"固着"},{"id":288,"category":"한자어","term":"고찰","definition":"어떤 것을 깊이 생각하고 연구함.","example":"한국 문학에 대한 새로운 고찰.","exampleSource":"표준국어대사전 용례","otherMeanings":["[古刹] 역사가 오래된 옛 절.","[高札] 입찰액 가운데서 가장 높은 가격.","[高札] 상대편의 편지를 높여 이르는 말.","[高札] 예전에, 널리 알리는 글을 써서 붙이던 널빤지.","[高察] 남의 고찰(考察)을 높여 이르는 말."],"origin":"考察"},{"id":289,"category":"한자어","term":"곡진하다","definition":"매우 정성스럽다.","example":"곡진한 사랑.","exampleSource":"표준국어대사전 용례","otherMeanings":["[曲盡, 하다] 매우 자세하고 간곡하다."],"origin":"曲盡"},{"id":290,"category":"한자어","term":"공방","definition":"서로 공격하고 방어함.","example":"공방을 벌이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[工房] 조선 시대에, 승정원에 속한 육방(六房) 가운데 공예ㆍ건축ㆍ토목 공사 따위에 관한 일을 맡아보던 부서.","[工房] 조선 시대에, 각 지방 관아에 속한 육방(六房) 가운데 공예ㆍ건축ㆍ토목ㆍ공사 따위에 관한 일을 맡아보던 부서.","[工房] 조선 시대에, 각 지방 관아의 공방(工房)에 속하여 공전(工典)에 관한 일을 맡아보던 구실아치.","[工房] 공예품 따위를 만드는 곳.","[公方] ‘공방하다01’의 어근.","[孔方] ‘엽전’을 달리 이르는 말. 엽전의 가운데 네모난 구멍이 있으므로 이렇게 이른다.","[空房] 사람이 들지 않거나 거처하지 않는 방.","[空房] 오랫동안 남편 없이 아내 혼자서 거처하는 방.","[貢房] 조선 후기에, 지방 백성을 대신하여 나라에 공물을 바치고 나중에 그 비용과 이자를 합하여 값을 받던 곳."],"origin":"攻防"},{"id":291,"category":"한자어","term":"공상","definition":"현실적이지 못하거나 실현될 가망이 없는 것을 막연히 그리어 봄. 또는 그런 생각.","example":"공상에 빠지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[工商] 공업과 상업을 아울러 이르는 말.","[工商] 물건을 만들거나 파는 일에 종사하는 사람.","[公相] 삼공(三公)과 재상(宰相)을 아울러 이르는 말.","[公相] 최고의 벼슬.","[公傷] 공무(公務)로 인하여 입은 상처.","[功狀] 구체적인 공적(功績).","[共相] 여러 가지 사물에 공통되는 모양.","[供上] 물건 따위를 상급 관청이나 궁중, 또는 임금에게 바치던 일.","[空床] 팔걸이와 등받이가 없는 의자.","[空相] 만물의 실체가 없는 모양.","[貢上] 나라에 특산물을 바치던 일."],"origin":"空想"},{"id":292,"category":"한자어","term":"공활하다","definition":"텅 비고 매우 넓다.","example":"공활한 가을 하늘.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"空豁"},{"id":293,"category":"한자어","term":"교착","definition":"어떤 상태가 굳어 조금도 변동이나 진전이 없이 머묾.","example":"교착 국면.","exampleSource":"표준국어대사전 용례","otherMeanings":["[交着] 서로 붙음.","[交錯] 이리저리 엇갈려 뒤섞임.","[膠着] 아주 단단히 달라붙음."],"origin":"膠着"},{"id":294,"category":"한자어","term":"구금","definition":"피고인 또는 피의자를 구치소나 교도소 따위에 가두어 신체의 자유를 구속하는 강제 처분. 형이 확정되지 않은 사람에 대하여 집행하며, 형이 확정되면 구금 일수를 계산하여 형을 집행한 것과 동일하게 취급한다.","example":"그는 지금 그리 명예스럽지도 못한 일로 구금이 되어 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[九禁] 아홉 겹의 금문(禁門)이라는 뜻으로, 대궐을 이르는 말.","[口金] 전구의 소켓에 있는, 금속으로 이루어진 부분.","[口琴] 아시아나 태평양의 여러 섬에서 사용하는 원시적인 소형 악기의 하나. 대나무 가운데를 가늘게 쪼개어 리드를 끼워 입에 물고 연주하는데, 쇠로 만든 것도 있다.","[口噤] 입을 꼭 다물고 벌리지 못하는 중풍 증상."],"origin":"拘禁"},{"id":295,"category":"한자어","term":"구분","definition":"일정한 기준에 따라 전체를 몇 개로 갈라 나눔.","example":"구분을 짓다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[口分] 사람마다 똑같이 나누어 줌.","[口分] 관아에서 식구의 수효에 따라 내어 주던 양식.","[丘墳] 송장이나 유골을 땅에 묻어 놓은 곳. 흙으로 둥글게 쌓아 올리기도 하고 돌로 평평하게 만들기도 하는데, 대개 묘석을 세워 누구의 것인지 표시한다.","[丘墳] 땅이 비탈지고 조금 높은 곳.","[狗糞] 개의 똥.","[俱焚] 한꺼번에 불에 탐."],"origin":"區分"},{"id":296,"category":"한자어","term":"구비","definition":"있어야 할 것을 빠짐없이 다 갖춤.","example":"구비 서류.","exampleSource":"표준국어대사전 용례","otherMeanings":["[口碑] 비석에 새긴 것처럼 오래도록 전해 내려온 말이라는 뜻으로, 예전부터 말로 전하여 내려온 것을 이르는 말. 주로 서민들 사이에서 전해 내려온 것을 이른다.","[廏肥] 외양간에서 쳐낸 두엄.","[糗糒] 먼 길을 가는 데 지니고 다니기 쉽게 만든 양식.","[糗糒] 흉년이 들어 곤궁한 사람들을 구호할 때에, 죽을 쑤어 주지 않고 대신 주던 곡식.","[糗糒] 중국에 가는 사신이 가지고 가던 양식.","[鼽鼻] 코가 막히거나 맑은 콧물이 자꾸 흐르는 콧병. 급성 코염에 속한다."],"origin":"具備"},{"id":297,"category":"한자어","term":"구제","definition":"자연적인 재해나 사회적인 피해를 당하여 어려운 처지에 있는 사람을 도와줌.","example":"구제 기관.","exampleSource":"표준국어대사전 용례","otherMeanings":["[舅弟] 외사촌 형제.","[舊制] 이전의 제도.","[舊製] 옛적에 만듦. 또는 그런 물건.","[舊題] 새로 붙인 제목 이전에 원래 쓰던 제목.","[驅除] 해충 따위를 몰아내어 없앰."],"origin":"救濟"},{"id":298,"category":"한자어","term":"구조","definition":"부분이나 요소가 어떤 전체를 짜 이룸. 또는 그렇게 이루어진 얼개.","example":"가옥 구조.","exampleSource":"표준국어대사전 용례","otherMeanings":["[九條] 베 아홉 폭을 가로 꿰매어 만든 가사. 주로 외출할 때나 법회 때에 입는다.","[久阻] 소식이 오랫동안 막힘.","[口調] 말의 가락.","[狗蚤] 벼룩과의 곤충. 사람벼룩과 비슷한데 길이는 1.7~3.4mm이다. 벼룩보다 크나 뛰는 힘은 약하다. 주로 개의 몸에 붙어 기생한다.","[救助] 재난 따위를 당하여 어려운 처지에 빠진 사람을 구하여 줌.","[舅祖] 아버지의 외숙부.","[鉤爪] 갈고리 모양으로 생긴 새의 발톱.","[鉤爪] 끝이 뾰족하고 꼬부라진 물건. 흔히 쇠로 만들어 물건을 걸고 끌어당기는 데 쓴다.","[構造] 일정한 설계에 따라 여러 가지 재료를 얽어서 만든 물건. 건물, 다리, 축대, 터널 따위가 있다.","[構造] 탁상, 섬유상 따위와 같은 광물의 형태.","[構造] 집합과 거기에서 정하여진 연산이나 집합과 거기에서 정해진 관계 등 집합과 그것이 가지고 있는 집합론적 대상으로써 얽어진 것.","[構造] 구조주의에서, 어떤 일을 성립시키는 것 사이의 상호 기능적 연관."],"origin":"構造"},{"id":299,"category":"한자어","term":"국한되다","definition":"범위가 일정한 부분에 한정되다.","example":"오염 문제는 이제는 도시에만 국한된 것이 아니다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"局限"},{"id":300,"category":"한자어","term":"궤변","definition":"상대편을 이론으로 이기기 위하여 상대편의 사고(思考)를 혼란시키거나 감정을 격앙시켜 거짓을 참인 것처럼 꾸며 대는 논법.","example":"궤변을 늘어놓다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"詭辯"},{"id":301,"category":"한자어","term":"기거","definition":"일정한 곳에서 먹고 자고 하는 따위의 일상적인 생활을 함. 또는 그 생활.","example":"기거 양식.","exampleSource":"표준국어대사전 용례","otherMeanings":["[起去] 일어나서 떠남.","[起居] 앉아 있다가 손님을 영접하려고 일어섬.","[起居] 몸을 뜻대로 움직이며 생활함.","[寄居] 남에게 덧붙어서 사는 일.","[基據] 터전을 닦음. 또는 그 터전.","[箕踞] 두 다리를 뻗고 앉음."],"origin":"起居"},{"id":302,"category":"한자어","term":"기고하다","definition":"신문, 잡지 따위에 싣기 위하여 원고를 써서 보내다.","example":"그는 여러 유명한 과학 잡지에 논문을 기고한 경력이 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[奇古, 하다] 기이하고 예스럽다.","[氣高, 하다] 맑게 갠 하늘이 높고 푸르다.","[氣高, 하다] 못마땅한 것을 참지 못하고 성을 내거나 왈칵 행동하는 성미가 매우 강하다.","[起稿, 하다] 원고를 쓰기 시작하다."],"origin":"寄稿"},{"id":303,"category":"한자어","term":"기량","definition":"기술상의 재주.","example":"기량을 연마하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[氣量] 기체의 양.","[氣量] 기상과 도량을 아울러 이르는 말.","[器量] 사람의 재능과 도량을 아울러 이르는 말."],"origin":"技倆伎倆"},{"id":304,"category":"한자어","term":"기부","definition":"자선 사업이나 공공사업을 돕기 위하여 돈이나 물건 따위를 대가 없이 내놓음.","example":"구두쇠가 장학금 기부를 약속하다니 믿을 수 없는 일이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[肌膚] 사람이나 동물의 몸을 싸고 있는 살이나 살가죽.","[妓夫] 기생이나 몸 파는 여자들의 영업을 돌보아 주면서 얻어먹고 지내는 사내.","[起仆] 일어섰다 넘어졌다 함.","[記付] 사무를 인계할 때에 중기(重記)에 기록함.","[記府] 예전에, 문서를 보관하던 곳.","[記簿] 물건의 출납이나 돈의 수지(收支) 계산을 적어 두는 책.","[寄付] 물건을 줌.","[寄付] 의지하거나 부탁함.","[基部] 기초가 되는 부분.","[欺負] 속이고 배반함.","[箕否] 기자(箕子)의 후손으로 알려진 사람. 조선후(朝鮮侯)라고 이르다가 뒤에 왕이라고 하였다고 전하여진다.","[畿府] 조선 시대에, 경기도 감영을 예스럽게 이르던 말.","[機婦] 베를 짜는 여자."],"origin":"寄附"},{"id":305,"category":"한자어","term":"기술","definition":"대상이나 과정의 내용과 특징을 있는 그대로 열거하거나 기록하여 서술함. 또는 그런 기록.","example":"기술 내용.","exampleSource":"표준국어대사전 용례","otherMeanings":["[技術] 과학 이론을 실제로 적용하여 사물을 인간 생활에 유용하도록 가공하는 수단.","[技術] 사물을 잘 다룰 수 있는 방법이나 능력.","[奇術] 기묘한 솜씨나 재주.","[奇術] 교묘한 눈속임으로 재미있게 부리는 재주.","[旣述] 이미 앞서 기술함."],"origin":"記述"},{"id":306,"category":"한자어","term":"난관","definition":"일을 하여 나가면서 부딪치는 어려운 고비.","example":"난관에 봉착하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[卵管] 배란된 난자를 자궁 쪽으로 내려보내는 한 쌍의 관. 길이는 약 10cm, 지름은 0.7cm이며 안쪽으로 자궁벽을 뚫고 자궁안으로 열려져 있다.","[難關] 지나기가 어려운 곳."],"origin":"難關"},{"id":307,"category":"한자어","term":"납량","definition":"여름철에 더위를 피하여 서늘한 기운을 느낌.","example":"납량 특집극.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"納涼"},{"id":308,"category":"한자어","term":"낭보","definition":"기쁜 기별이나 소식.","example":"세계 선수권 대회에서 우리나라 농구 팀이 우승했다는 낭보가 전해졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"朗報"},{"id":309,"category":"한자어","term":"냉소","definition":"쌀쌀한 태도로 비웃음. 또는 그런 웃음.","example":"냉소를 머금다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"冷笑"},{"id":310,"category":"한자어","term":"논고","definition":"자기의 주장이나 믿는 바를 논술하여 알림.","example":"논고를 펼치다.","exampleSource":"표준국어대사전 용례","otherMeanings":["→ 논꼬.","[論告] 형사 재판에서, 증거 조사를 마치고 검사가 피고의 범죄 사실과, 그에 대한 법률 적용에 관한 의견을 진술하는 일.","[論考, /, 論攷] 여러 문헌을 고증하여 논술함. 흔히 책 이름이나 논문 제목에 쓴다."],"origin":"論告"},{"id":311,"category":"한자어","term":"누락","definition":"기입되어야 할 것이 기록에서 빠짐. 또는 그렇게 되게 함.","example":"명부에 누락이 생기다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"漏落"},{"id":312,"category":"한자어","term":"누적","definition":"포개어 여러 번 쌓음. 또는 포개져 여러 번 쌓임.","example":"누적된 피로 때문에 하루 종일 몸이 무거웠다.","exampleSource":"교정 예문","otherMeanings":["[漏籍] 병적, 학적 따위의 기록에서 빠뜨림."],"origin":"累積"},{"id":313,"category":"한자어","term":"덕분","definition":"베풀어 준 은혜나 도움.","example":"선생님 덕분에 대학 생활을 무사히 마칠 수 있었습니다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"德分"},{"id":314,"category":"한자어","term":"도저하다","definition":"학식이나 생각, 기술 따위가 아주 깊다.","example":"학문이 도저하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[到底, 하다] 행동이나 몸가짐이 빗나가지 않고 곧아서 훌륭하다."],"origin":"到底"},{"id":315,"category":"한자어","term":"도태되다","definition":"여럿 중에서 불필요하거나 부적당한 것이 줄어 없어지다.","example":"우리는 치열한 경쟁 사회에서 도태되지 않도록 열심히 살아야 한다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[淘汰, 되다, /, 陶汰, 되다] 물건 따위가 물속에서 일어져 좋은 것만 골라지고 불필요한 것이 가려져서 버려지다."],"origin":"淘汰陶汰"},{"id":316,"category":"한자어","term":"독창","definition":"다른 것을 모방함이 없이 새로운 것을 처음으로 만들어 내거나 생각해 냄.","example":"오늘의 거문고는 신라 때 백결 선생이 처음부터 여섯 현으로 만든 독창의 악기라고 하니까.","exampleSource":"표준국어대사전 용례","otherMeanings":["[禿瘡] 머리에 생기는 피부병의 하나. 군데군데 둥글고 붉은 반점이 생기고 나중에는 머리털이 빠진다.","[毒瘡] 독기가 있는 악성 종기나 큰 부스럼.","[獨唱] 성악에서, 혼자서 노래를 부름. 또는 그 노래.","[獨窓] 문짝이 한쪽만 달린 창."],"origin":"獨創"},{"id":317,"category":"한자어","term":"돌연","definition":"예기치 못한 사이에 급히.","example":"그때 나는 예상 못했던 일과 돌연 마주치게 되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["반듯하게 만든 문틀이나 미닫이 울거미의 둘레.","[突燃] 강렬한 빛과 열을 내면서 급속히 타오름."],"origin":"突然"},{"id":318,"category":"한자어","term":"돌출","definition":"예기치 못하게 갑자기 쑥 나오거나 불거짐.","example":"돌출 발언.","exampleSource":"표준국어대사전 용례","otherMeanings":["[突出] 쑥 내밀거나 불거져 있음."],"origin":"突出"},{"id":319,"category":"한자어","term":"두서","definition":"일의 차례나 갈피.","example":"두서가 잡히다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[頭書] 책이나 논문 따위의 첫머리에 내용이나 목적 따위를 간략하게 적은 글.","[頭書] 본문(本文)에 앞서 모든 요소를 포함하여 쓴 부분.","[蠹書] 좀이 슨 책.","[蠹書] 책을 볕에 쬠."],"origin":"頭緖"},{"id":320,"category":"한자어","term":"두찬","definition":"전거나 출처가 확실하지 못한 저술.","example":"출처가 불분명한 두찬을 근거로 삼아서는 안 된다.","exampleSource":"제공 자료 예문","otherMeanings":["[杜撰] 틀린 곳이 많은 작품."],"origin":"杜撰"},{"id":321,"category":"한자어","term":"만끽하다","definition":"마음껏 먹고 마시다.","example":"별미를 만끽하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[滿喫, 하다] 욕망을 마음껏 충족하다."],"origin":"滿喫"},{"id":322,"category":"한자어","term":"만반","definition":"마련할 수 있는 모든 것.","example":"적국의 침입에 대비해 만반의 준비를 하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[滿盤] ‘만반하다’의 어근."],"origin":"萬般"},{"id":323,"category":"한자어","term":"망라","definition":"물고기나 새를 잡는 그물이라는 뜻으로, 널리 받아들여 모두 포함함을 이르는 말.","example":"각계각층의 지도자들이 망라되다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"網羅"},{"id":324,"category":"한자어","term":"몰각","definition":"아주 없애 버림.","example":"옛날 생활의 흔적들이 모두 몰각되고 말았다.","exampleSource":"교정 예문","otherMeanings":["[沒却] 무시해 버림.","[沒刻] 밤이 깊은 때.","[沒覺] 깨달아 인식하지 못함."],"origin":"沒却"},{"id":325,"category":"한자어","term":"미수","definition":"목적한 바를 시도하였으나 이루지 못함.","example":"암살 기도가 미수로 그치다.","exampleSource":"표준국어대사전 용례","otherMeanings":["설탕물이나 꿀물에 미숫가루를 탄 여름철 음료.","[未收] 돈이나 물건 따위를 아직 다 거두어들이지 못함.","[未收] 부기에서, 영업 주목적 이외의 임시적 거래에서 발생하는 금전 채권. 토지 판매 대금의 미수 부분, 유가 증권의 외상 매출금 따위가 이에 해당한다.","[未遂] 범죄를 실행하려다가 그 목적을 달성하지 못한 일. 행위자의 의사에 의한 중지 미수, 외부의 방해에 의한 장애 미수, 불능 미수가 있다.","[米壽] 여든여덟 살을 달리 이르는 말.","[尾宿] 꼬리별이라는 뜻으로, ‘혜성01「1」’을 달리 이르는 말.","[尾宿] 이십팔수의 여섯째 별자리의 별들. 주성(主星)은 전갈자리의 뮤성(μ星)이다.","[眉叟] ‘이인로’의 자.","[眉叟] ‘허목’의 호.","[眉壽] 눈썹이 세도록 오래 삶. 축수(祝壽)할 때에 쓰는 말이다.","[美秀] ‘미수하다04’의 어근.","[美鬚] 아름다운 수염.","[微睡] 잠시 동안의 가벼운 잠."],"origin":"未遂"},{"id":326,"category":"한자어","term":"박약","definition":"의지나 체력 따위가 굳세지 못하고 여림.","example":"그런 양면성과 이중 구조를 가진 자신의 의식이 싫었다. 그건 사상 무장의 나약이나 혁명 의지의 박약이나 실천 용기의 빈약으로 찍힐 요소였다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[薄弱] 불충분하거나 모자란 데가 있음.","[薄弱] 지능 따위가 정상적이지 못한 상태임.","[薄弱] 얇고도 약함.","[薄藥] 성질과 맛이 순하고 반응이 느린 약."],"origin":"薄弱"},{"id":327,"category":"한자어","term":"박장대소","definition":"손뼉을 치며 크게 웃음.","example":"사회자의 재치 있는 말에 방청석에서 박장대소가 터졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"拍掌大笑"},{"id":328,"category":"한자어","term":"반려","definition":"주로 윗사람이나 상급 기관에 제출한 문서를 처리하지 않고 되돌려줌.","example":"사표 반려.","exampleSource":"표준국어대사전 용례","otherMeanings":["[反戾, /, 叛戾] 배반하여 돌아섬.","[反戾, /, 叛戾] 도리에 어긋남.","[伴侶] 짝이 되는 동무."],"origin":"返戾"},{"id":329,"category":"한자어","term":"발발","definition":"전쟁이나 큰 사건 따위가 갑자기 일어남.","example":"6ㆍ25 전쟁 발발.","exampleSource":"표준국어대사전 용례","otherMeanings":["추위, 두려움, 흥분 따위로 몸이나 몸의 일부분을 가늘게 자꾸 떠는 모양.","무엇을 아주 아끼거나 중요하게 생각하여 노심초사하는 모양.","몸을 바닥 가까이 대고 작은 동작으로 기는 모양.","자신을 낮추어 비굴하게 행동하는 모양을 비유적으로 이르는 말.","바쁘게 여기저기 돌아다니는 모양.","종이나 헝겊 따위가 몹시 삭아서 쉽게 째지는 모양.","‘발발하다01’의 어근.","[勃勃] ‘발발하다02’의 어근."],"origin":"勃發"},{"id":330,"category":"한자어","term":"발인","definition":"장례를 지내러 가기 위하여 상여 따위가 집에서 떠남. 또는 그런 절차.","example":"발인을 서두르다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[發軔] 수레가 떠나간다는 뜻으로, 어떤 일이 시작함을 비유적으로 이르는 말."],"origin":"發靷"},{"id":331,"category":"한자어","term":"발현","definition":"속에 있거나 숨은 것이 밖으로 나타나거나 그렇게 나타나게 함. 또는 그런 결과.","example":"자의식의 발현.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"發現發顯"},{"id":332,"category":"한자어","term":"배열","definition":"일정한 차례나 간격에 따라 벌여 놓음.","example":"배열 순서.","exampleSource":"표준국어대사전 용례","otherMeanings":["[背熱] 등에서 몹시 열이 나는 증상.","[配列, /, 排列] 동일한 성격의 데이터를 관리하기 쉽도록 하나로 묶는 일."],"origin":"配列排列"},{"id":333,"category":"한자어","term":"배임","definition":"주어진 임무를 저버림. 주로 공무원 또는 회사원이 자기의 이익을 위하여 임무를 수행하지 않고 국가나 회사에 재산상의 손해를 주는 경우를 이른다.","example":"배임 행위.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"背任"},{"id":334,"category":"한자어","term":"배치되다","definition":"서로 반대로 되어 어그러지거나 어긋나게 되다.","example":"법규에 배치되다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[配置, 되다] 사람이나 물자 따위가 일정한 자리에 알맞게 나뉘어 놓이다.","[排置, 되다] 일정한 차례나 간격에 따라 벌여져 놓이다."],"origin":"背馳"},{"id":335,"category":"한자어","term":"배포","definition":"신문이나 책자 따위를 널리 나누어 줌.","example":"신문 배포.","exampleSource":"표준국어대사전 용례","otherMeanings":["[排布, /, 排鋪] 머리를 써서 일을 조리 있게 계획함. 또는 그런 속마음.","[排布, /, 排鋪] 일정한 차례나 간격에 따라 벌여 놓음.","[排布, /, 排鋪] 살림을 꾸리거나 차림.","[焙脯] 육포의 하나. 쇠고기나 돼지고기를 얇고 넓적하게 저며 간을 친 것을, 화롯불 따위에 배롱(焙籠) 같은 것을 씌운 뒤 그 위에다 놓고 말린다.","[褙布] 가죽신이나 함지박 따위를 질기고 단단하게 하려고 풀칠을 하여 여러 겹으로 붙인 헝겊이나 종이."],"origin":"配布"},{"id":336,"category":"한자어","term":"변질","definition":"성질이 달라지거나 물질의 질이 변함. 또는 그런 성질이나 물질.","example":"식료품의 변질을 막기 위해서는 냉동 보관이 필요하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"變質"},{"id":337,"category":"한자어","term":"봉정","definition":"문서나 문집 따위를 삼가 받들어 올림.","example":"화갑 기념 논문집 봉정.","exampleSource":"표준국어대사전 용례","otherMeanings":["[峯頂] 산봉우리의 맨 꼭대기.","[蓬征] 정처 없이 떠돌아다님."],"origin":"奉呈捧呈"},{"id":338,"category":"한자어","term":"부담","definition":"어떠한 의무나 책임을 짐.","example":"부담이 없다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[負擔] 옷이나 책 따위의 물건을 담아서 말에 실어 운반하는 작은 농짝.","[負擔] 법률 행위의 부관(附款)의 하나. 주된 의사 표시에 덧붙여서 그 상대편에게 이에 따르는 특별한 의무를 지우는 의사 표시이다.","[腐談] 케케묵은 말. 또는 쓸모없는 이야기."],"origin":"負擔"},{"id":339,"category":"한자어","term":"부여","definition":"사람에게 권리ㆍ명예ㆍ임무 따위를 지니도록 해 주거나, 사물이나 일에 가치ㆍ의의 따위를 붙여 줌.","example":"임무 부여.","exampleSource":"표준국어대사전 용례","otherMeanings":["[夫餘, /, 扶餘] 기원전 1세기 무렵에 부여족이 북만주 일대에 세운 나라. 농경 생활을 주로 했고, 중국으로부터 철기 문화를 받아들이고 은력을 사용하는 등 진보된 제도와 조직을 갖추었으나, 3세기 말에 선비족의 침입으로 크게 쇠퇴한 후, 그 영토가 대부분 고구려에 편입되었다.","[扶餘] 통일 신라 경덕왕 때 ‘남부여’를 고친 이름.","[扶餘] 충청남도 부여군에 있는 읍. 백제의 성왕 때부터 의자왕 때까지 도읍지였다. 군청 소재지이다. 면적은 58.86㎢.","[賦與] 나누어 줌."],"origin":"附與"},{"id":340,"category":"한자어","term":"부연","definition":"이해하기 쉽도록 설명을 덧붙여 자세히 말함.","example":"부연 설명.","exampleSource":"표준국어대사전 용례","otherMeanings":["[附椽, /, 婦椽] 처마 서까래의 끝에 덧얹는 네모지고 짧은 서까래. 처마 끝을 위로 들어 올려 모양이 나게 한다.","[浮煙] 연기가 뜨거나 연기를 띄움. 또는 그 연기.","[浮煙] 안개가 뽀얗게 낌.","[富衍] ‘부연하다02’의 어근.","[敷衍, /, 敷演] 늘려서 널리 폄."],"origin":"敷衍敷演"},{"id":341,"category":"한자어","term":"부재","definition":"그곳에 있지 아니함.","example":"치안 부재.","exampleSource":"표준국어대사전 용례","otherMeanings":["[不才] 재주가 모자라거나 없음.","[不才] 자신의 재주를 겸손하게 이르는 말.","[附載] 어떤 글이나 시 따위를 주가 되는 글에 첨가하여 실음.","[部材] 구조물의 뼈대를 이루는 데 중요한 요소가 되는 여러 가지 재료.","[覆載] 하늘이 만물을 덮고 땅이 만물을 받쳐 실었다는 뜻으로, 하늘과 땅을 이르는 말."],"origin":"不在"},{"id":342,"category":"한자어","term":"부족","definition":"필요한 양이나 기준에 미치지 못해 충분하지 아니함.","example":"시간 부족.","exampleSource":"표준국어대사전 용례","otherMeanings":["[夫族] 남편의 친족.","[附族] 혈연관계가 없거나 분명하지 아니하면서도 일가처럼 지내는 사람들.","[副族] 원소 주기율표에서, 원소의 성질을 여덟 족으로 나누었을 때 각 족(族)의 베타 부분에 속하는 아족(亞族). 제1족부터 제8족까지 같은 족에 속하는 원소들은 성질의 차이에 따라 A, B의 두 부분으로 나누어져 있다. 현재는 18족으로 나누어 생각하여 이러한 개념이 없어졌다.","[部族] 같은 조상ㆍ언어ㆍ종교 등을 가진, 원시 사회나 미개 사회의 구성 단위가 되는 지역적 생활 공동체.","[部族] 성(姓)과 본(本)이 같은 겨레붙이."],"origin":"不足"},{"id":343,"category":"한자어","term":"부흥","definition":"쇠퇴하였던 것이 다시 일어남. 또는 그렇게 되게 함.","example":"민족 부흥에 앞장서다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"復興"},{"id":344,"category":"한자어","term":"비치","definition":"마련하여 갖추어 둠.","example":"비치 도서.","exampleSource":"표준국어대사전 용례","otherMeanings":["[鼻痔] 콧구멍 속에 군살이 생겨 차츰 커지는 병. 군살의 크기에 따라 다르지만 대체로 코가 막히고 콧물이 많이 나오며 냄새를 잘 맡지 못하고 머리가 아프다."],"origin":"備置"},{"id":345,"category":"한자어","term":"비호","definition":"편들어서 감싸 주고 보호함.","example":"그와 같은 엄청난 사건은 권력의 비호를 받지 않고서는 일어날 수 없다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[飛虎] 나는 듯이 빠르게 달리는 범.","[悲號] 슬퍼하면서 울부짖음."],"origin":"庇護"},{"id":346,"category":"한자어","term":"빈사","definition":"거의 죽게 됨. 또는 그런 상태.","example":"구조대는 빈사 상태의 등산객을 병원으로 옮겼다.","exampleSource":"교정 예문","otherMeanings":["[貧士] 살림이 구차한 선비.","[賓師] 예전에, 제후에게 빈객(賓客)의 대우를 받던 학자.","[賓辭] 명제에서, 주사(主辭)에 결합되어 그것을 규정하는 개념. 예를 들어, ‘개는 동물이다.’, ‘하늘은 높다.’에서 ‘동물’, ‘높다’가 이에 해당한다."],"origin":"瀕死"},{"id":347,"category":"한자어","term":"빙자하다","definition":"남의 힘을 빌려서 의지하다.","example":"최술은 장인을 빙자하여 어서 술이나 들고 푹 취해 버려야만 마음이 편해질 것 같았다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[憑藉, 하다] 말막음을 위하여 핑계로 내세우다."],"origin":"憑藉"},{"id":348,"category":"한자어","term":"사단","definition":"사건의 단서. 또는 일의 실마리.","example":"지섭으로서는 문화제의 성격과 관련하여 행사의 주제나 종류 따위를 윤곽 지어 놓는 일과 그 사단을 구하는 작업이 우선 중요했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[四端] 사람의 본성에서 우러나오는 네 가지 마음. ≪맹자≫에서 유래한 것으로, 인(仁)에서 우러나오는 측은지심, 의(義)에서 우러나오는 수오지심, 예(禮)에서 우러나오는 사양지심, 지(智)에서 우러나오는 시비지심을 이른다.","[寺檀] 절과 시주하는 신도.","[私斷] 개인의 판단.","[事端] → 사달01.","[社團] 특정한 목적을 위하여 두 사람 이상이 결합하여 설립한 단체. 개인을 초월한 독립 단일체로서 법인의 자격을 부여받을 수 있다.","[社團] 법률에 의하여 법률적인 권리와 의무의 주체로 인정을 받은 법인.","[社壇] 임금이 백성을 위하여 토신(土神)인 사(社)와 곡신(穀神)인 직(稷)에게 제사 지내던 제단. 현재 사직 공원으로 남아 있는 서울 사직단은 조선 시대에 태조가 종묘와 함께 지은 것이다. 사적 제121호.","[社壇] 토신(土神)에 제사를 지내는 제단.","[師團] 군대 편성 단위의 하나. 군단(軍團)의 아래, 연대(聯隊) 또는 여단(旅團)의 위이다. 여러 병과(兵科)가 모여 있으며 이를 지휘하는 사령부가 있어 어느 정도 독립적인 작전을 수행할 수 있다.","[師檀] 사승(師僧)과 단도(檀徒)를 아울러 이르는 말.","[紗緞] 사(紗)와 비단을 아울러 이르는 말.","[斜斷] 비스듬히 자름.","[斜斷] 그물코의 마디 한 다리만을 끊어 삼각 그물감을 만드는 일.","[詞壇] 문인(文人)들의 사회.","[←Satan] 적대자라는 뜻으로, 하나님과 대립하여 존재하는 악(惡)을 인격화하여 이르는 말."],"origin":"事端"},{"id":349,"category":"한자어","term":"사사하다","definition":"스승으로 섬기다. 또는 스승으로 삼고 가르침을 받다.","example":"그는 전처만을 외경했을 뿐만 아니라 전처만을 사사했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[些些, 하다] 하잘것없이 작거나 적다.","[使事, 하다] 어떤 일을 시키다.","[斜射, 하다] 햇빛이나 그림자 따위가 비스듬히 비치다.","[斜射, 하다] 대각선 쪽에 있는 목표를 향하여 비스듬히 사격을 하다.","[奢肆, 하다] 사치스럽고 방자하다.","[賜死, 하다] 죽일 죄인을 대우하여 임금이 독약을 내려 스스로 죽게 하다.","[謝辭, 하다] 고마운 뜻을 나타내는 말을 하다.","[謝辭, 하다] 사죄하는 말을 하다.","[謝辭, 하다] 예를 갖추어 사양하다. 또는 그런 뜻을 나타내는 말을 하다.","[辭謝, 하다] 사절(辭絕)하여 물리치다."],"origin":"師事"},{"id":350,"category":"한자어","term":"사장","definition":"사물 따위를 필요한 곳에 활용하지 않고 썩혀 둠.","example":"경기가 악화되면서 많은 연구가 사장되었다.","exampleSource":"제공 자료 예문","otherMeanings":["달구지 틀 사이에 대어 까는 널빤지. 짐 싣는 바닥이 된다.","[士長] 궁중에서, 내시를 감독하는 사람을 이르던 말.","[司長] 대한 제국 때에, 궁내부와 각 부(部)에 속한 각 사(司)의 으뜸 벼슬.","[四杖] 부(缶)를 치는 채. 대를 아홉 조각으로 쪼개어 만든다.","[四葬] 네 가지 장례 방식. 수장(水葬), 화장(火葬), 토장(土葬), 임장(林葬)을 이른다.","[四葬] 고대 중국의 네 가지 장례 방식. 수장(水葬), 화장(火葬), 토장(土葬), 조장(鳥葬)을 이른다.","[四障] 불도 수행의 네 가지 장애. 혹장(惑障), 악장(惡障), 보장(報障), 견장(見障)을 이른다.","[四障] 부처가 되지 못하는 사람의 원인이 되는 네 가지 장애. 인과응보를 믿지 않는 천제장(闡提障), 자기의 실체적 존재를 고집하는 외도장(外道障), 이 세상의 고통을 두려워하여 열반에 나아가기만을 원하는 성문장(聲聞障), 자기 혼자만의 깨달음에 안주하고 자비심이 없는 연각장(緣覺障)을 이른다.","[四藏] 불교의 네 가지 성전. 경장(經藏), 율장(律藏), 논장(論藏)에 주장(呪藏)이나 잡장(雜藏)을 넣은 네 가지를 이른다.","[寺長] 남사당놀이에서, 각 놀이 분야의 우두머리.","[寺長] 사당패에서, 각 종목의 으뜸가는 사람.","[寺長] 사당(寺黨)의 남편.","[沙場, /, 砂場] 강가나 바닷가에 있는 넓고 큰 모래벌판.","[私匠] 관부에 예속되지 않은 장인(匠人).","[私莊] 개인이 사사로이 소유한 별장.","[私莊] 많은 전답을 소작 준 곳에 지은 지주의 별택(別宅).","[私藏] 개인이 사사로이 간직함. 또는 그런 물건.","[事障] 열반을 해치는 번뇌.","[社長] 회사의 책임자. 회사 업무의 최고 집행자로서 회사 대표의 권한을 지닌다.","[社長] 조선 시대에, 사창(社倉)의 곡식을 나누어 주고 거두어들이는 일을 맡아보던 사람.","[社長] 조선 시대에, 지방 행정 구역의 하나인 사(社)의 우두머리.","[社章] 결사(結社)할 때 서로 약속하여 정한 기념장.","[社葬] 회사가 주재하여 지내는 장례.","[査丈] 혼인한 두 집안의 부모들 사이에서 그 집안의 위 항렬이 되는 상대편을 이르는 말.","[射場] 활을 쏘기 위한 일정한 설비를 갖추어 놓은 곳.","[師丈] 스승이 되는 어른.","[師匠] 학문이나 기예에 능하여 남의 스승이 될 만한 사람. 또는 학문이나 기예를 가르치는 사람.","[師長] 스승과 나이 많은 어른.","[紗帳] 얇고 가벼운 비단으로 만든 휘장.","[赦狀] 형벌을 용서한다는 편지.","[赦狀] 대사(大赦)나 특사(特赦)를 명하는 편지.","[詞狀] 소송을 제기하기 위하여 제일심 법원에 제출하는 서류. 이에는 법정 기재 사항인 당사자, 법정 대리인, 청구의 취지, 청구의 원인을 적어야 한다.","[詞章, /, 辭章] 시가와 문장을 아울러 이르는 말.","[詞章, /, 辭章] 문장을 꾸미는 말.","[詞場] 문인(文人)들의 사회.","[寫場] 사진을 찍는 시설을 갖추어 놓은 곳.","[寫場] 일정한 시설을 갖추고 사진 찍는 일을 영업으로 하는 집.","[謝狀] 사례하는 편지.","[謝狀] 사과하는 편지.","[謝章] 임금의 은혜에 감사하는 뜻을 표하여 올리던 글.","[辭狀] 직책에서 사임하겠다는 뜻을 적어 내는 문서."],"origin":"死藏"},{"id":351,"category":"한자어","term":"사지","definition":"사람의 두 팔과 두 다리를 통틀어 이르는 말.","example":"사지를 뻗다.","exampleSource":"표준국어대사전 용례","otherMeanings":["배의 두 멍에 끝에 세우는 짧은 나무.","→ 서지05.","[司紙] 조선 시대에, 조지서(造紙署)에서 종이 만드는 일을 맡아보던 종육품 벼슬. 성종 때 없앴다.","[四至] 사유지나 경작지 따위의 동서남북의 경계.","[四知] 두 사람만의 비밀이라도 어느 때고 반드시 남이 알게 됨을 이르는 말. 중국 후한(後漢)의 양진(楊震)이 형주 자사(荊州刺史)로 부임했을 때, 왕밀(王密)이 밤중에 찾아와서 당신과 나밖에는 아무도 알 사람이 없다 하며 금(金) 열 근을 바쳤을 때, 하늘이 알고 땅이 알고 내가 알고 자네가 안다 하며 받지 않았다는 데서 유래한다. ≪후한서≫의 에 나오는 말이다.","[四肢] 척추동물의 몸에서 뻗어 나온 두 쌍의 다리 부분. 보통 전지(前肢)와 후지(後肢)로 나눈다.","[四指] 칠조 중 네 번째 가락. 평조와 계면조에서, 남려(南呂)를 으뜸음으로 한다.","[四智] 불과(佛果)에 이르러 모든 부처가 갖추는 네 가지 지혜. 대원경지, 평등성지, 묘관찰지, 성소작지이다.","[寺址] 절을 세울 터. 또는 절이 있었던 터.","[死地] 죽을 곳. 또는 죽어야 할 장소.","[死地] 죽을 지경의 매우 위험하고 위태한 곳.","[沙地, /, 砂地] 모래흙으로 이루어진 땅.","[沙紙, /, 砂紙] 금강사(金剛沙)나 유리 가루, 규석(硅石) 따위의 보드라운 가루를 발라 붙인 천이나 종이. 쇠붙이의 녹을 닦거나 물체의 거죽을 반들반들하게 문지르는 데에 쓴다.","[邪智] 간사한 지혜.","[私地] 개인이 소유한 땅.","[私智] 개인의 작은 지혜.","[私智] 공정하지 못한 개인의 사사로운 지혜.","[事知] ‘사지하다’의 어근.","[社誌] ‘사내보’와 ‘사외보’를 통틀어 이르는 말.","[舍知] 신라 때에 둔, 십칠 관등 가운데 열셋째 등급. 사두품 이상이 오를 수 있었다.","[舍知] 신라 때에, 집사성(執事省)ㆍ조부(調府)ㆍ경성주작전ㆍ창부(倉府)ㆍ예부(禮部) 따위의 관아에 속한 벼슬. 위계는 대사부터 사지까지이다.","[絲紙] 제사나 잔치 때에 누름적이나 산적을 꽂은 꼬챙이 끝에 감아 늘어뜨린 좁고 가늘게 오린 종이. 제사에는 흰 종이, 잔치에는 오색(五色) 종이를 쓴다.","[楂枝] 뗏목이 될 만한 큰 나뭇가지."],"origin":"四肢"},{"id":352,"category":"한자어","term":"산화하다","definition":"어떤 대상이나 목적을 위하여 목숨을 바치다.","example":"동료를 구하기 위해 수류탄을 들고 산화하는 무명용사들.","exampleSource":"표준국어대사전 용례","otherMeanings":["[散花, 하다, /, 散華, 하다] 꽃을 뿌리며 부처를 공양하다.","[酸化, 하다] 어떤 원자, 분자, 이온 따위가 전자를 잃다.","[酸化, 하다] 물질 중에 있는 어떤 원자의 산화수가 증가하다.","[酸化, 하다] 어떤 물질이 산소와 결합하거나 수소를 잃다."],"origin":"散花散華"},{"id":353,"category":"한자어","term":"상기되다","definition":"흥분이나 부끄러움으로 얼굴이 붉어지다.","example":"그녀는 황급히 오느라고 얼굴이 빨갛게 상기되어 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[想起, 되다] 지난 일이 돌이켜져 생각나다."],"origin":"上氣"},{"id":354,"category":"한자어","term":"상념","definition":"마음속에 품고 있는 여러 가지 생각.","example":"그는 의자에 앉아 한동안 상념에 잠겨 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"想念"},{"id":355,"category":"한자어","term":"상당","definition":"일정한 액수나 수치 따위에 해당함.","example":"상당 기간.","exampleSource":"표준국어대사전 용례","otherMeanings":["[上堂] 선종의 장로나 주지가 법당의 강단에 올라가 설법함. 또는 그런 일.","[上堂] 신라 때의 십칠 관등 가운데 11관위인 나마(奈麻)에서 6관위인 아찬까지의 관직.","[上堂] 하회 별신굿에서, 본놀이를 시작하기 전에 제주(祭主)와 무당, 광대들이 모여 음식을 차려 놓고 서낭대와 성줏대를 세워 신이 내리기를 비는 굿.","[上黨] ‘창즈’의 옛 이름."],"origin":"相當"},{"id":356,"category":"한자어","term":"상도","definition":"상업 활동에서 지켜야 할 도덕. 특히 상업자들 사이에서 지켜야 할 도의를 이른다.","example":"오히려 관에 뇌물을 쓰고 왜놈과 결탁하면서까지 상도를 어기고 돈벌기에만 급급한 잠상(潛商) 거상들에 대한 원한이 더 깊었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[上途] 여행길에 오름.","[上都] 고려 시대에, 사경 가운데에서 각각 신라와 고구려의 중심지였던 동경과 서경을 이르던 말.","[上都] 중국 원나라 때 도읍의 하나. 1256년에 쿠빌라이가 즉위한 곳으로, 원래 카이펑(開平)으로 명명하였다가 나중에 이 이름으로 고쳤다.","[相到] 서로에게 다다름.","[常度] 정상적인 법도.","[常道] 항상 변하지 않는 떳떳한 도리.","[常道] 항상 지켜야 할 도리.","[傷悼] 마음이 아프도록 몹시 슬퍼함.","[想到] 생각이 어떤 곳에 미침.","[霜刀] 서릿발같이 푸르고 날카롭게 서슬이 선 칼."],"origin":"商道"},{"id":357,"category":"한자어","term":"상수","definition":"남보다 뛰어난 수나 솜씨. 또는 그런 수나 솜씨를 가진 사람.","example":"바둑에서는 상수가 백을 잡고 두도록 되어 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[上水] 음료수나 사용수 따위로 쓰기 위하여 수도관을 통하여 보내는 맑은 물.","[上水] 먹는 물이나 공업, 방화(防火) 따위에 쓰는 물을 관을 통하여 보내 주는 설비.","[上壽] 나이가 보통 사람보다 썩 많음. 또는 그 나이.","[上壽] 100세의 나이. 또는 그 나이가 된 노인. 장수한 것을 상ㆍ중ㆍ하로 나누었을 때 가장 많은 나이를 이른다.","[上壽] 환갑잔치 따위에서, 주인공에게 장수를 비는 뜻으로 술잔을 올림.","[上數] 가장 좋은 꾀.","[向秀] 중국 진(晉)나라의 문인(230?~280). 죽림칠현의 한 사람으로, 곽상(郭象)과 함께 초기 도가서인 ≪장자(莊子)≫에 신도가 경향의 주석을 단 ≪장자주(莊子洼)≫를 썼다.","[相須] 한약 배합 방법의 하나. 성질이 비슷한 두 가지 이상의 약을 같이 써서 약의 효능을 서로 높이게 한다.","[常修] 삼수(三修)의 하나. 부처의 몸이 상주불멸임을 알고, 모든 것은 무상하다고 하는 데에 집착하는 성문(聲聞)의 잘못을 깨뜨리는 일을 이른다.","[常羞] 늘 먹음. 또는 그런 음식.","[常數] 자연으로 정하여진 운명.","[常數] 정하여진 수량.","[常數] 물질의 물리적ㆍ화학적 성질을 표시하는 수치. 일정한 상태에 있는 물질의 성질에 관하여 일정량을 보이는 수를 이른다. 원소의 원자량이나 물질의 비열(比熱)과 같이 각 물질에 고유한 상수와 만유인력 상수나 아보가드로 상수와 같이 물질의 종류에 관계없이 기본적인 법칙에 나타나는 보편적인 상수가 있다.","[常數] 변하지 아니하는 일정한 값을 가진 수나 양.","[常隨] 늘 일정한 임무를 띠고 따라다님.","[喪需] 초상 치르는 데에 드는 비용.","[喪需] 초상 치르는 데 드는 물건.","[賞首] 가장 뛰어나서 상을 받는 사람.","[霜鬚] 서리처럼 흰 수염."],"origin":"上手"},{"id":358,"category":"한자어","term":"상주하다","definition":"늘 일정하게 살다.","example":"그 섬에 상주하는 사람은 100명 정도밖에 안 된다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[上奏, 하다] 임금에게 말씀을 아뢰다.","[常駐, 하다] 군대 따위가 언제나 머무르다."],"origin":"常住"},{"id":359,"category":"한자어","term":"상치","definition":"일이나 뜻이 서로 어긋남.","example":"상대방과 의견이 상치되면 다소 여유를 갖고 대화에 임해야 한다.","exampleSource":"제공 자료 예문","otherMeanings":["→ 상추01.","[上, 치] 같은 부류의 사람이나 사물 가운데서 신분이나 품질이 가장 높은 사람이나 물건.","[上齒] 윗잇몸에 난 이.","[尙齒] 노인을 존경함.","[相値] 두 가지 일이 공교롭게 마주침.","[常置] 늘 설치하여 두거나 비치하여 둠."],"origin":"相馳"},{"id":360,"category":"한자어","term":"상환","definition":"갚거나 돌려줌.","example":"원리금 상환.","exampleSource":"표준국어대사전 용례","otherMeanings":["[相換] 서로 맞바꿈.","[償還] 실질적으로 남이 부담하여야 할 출연(出捐)을 자기가 했을 경우에 그 사람에게 자기의 부담을 보상하게 하는 일."],"origin":"償還"},{"id":361,"category":"한자어","term":"생면하다","definition":"처음으로 대하다.","example":"그 아이를 생면하고 난 후 6년 동안에 들려오는 그 아이에 대한 소문은 온통 정떨어지는 것들뿐이었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[生面, 하다] 생색을 내다."],"origin":"生面"},{"id":362,"category":"한자어","term":"선수","definition":"남이 하기 전에 앞질러 하는 행동.","example":"선수를 빼앗기다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[先手] 먼저 손찌검을 함. 또는 그 손찌검.","[先手] 바둑이나 장기 따위에서, 먼저 놓거나 두는 일. 또는 상대편이 어떤 수를 쓰기 전에 먼저 중요한 자리에 두는 것.","[先守] 운동 경기에서, 먼저 수비하는 일.","[船首] 배의 앞부분.","[善手] 솜씨가 남보다 뛰어난 사람.","[選手] 운동 경기나 기술 따위에서, 기량이 뛰어나 많은 사람 가운데에서 대표로 뽑힌 사람. 또는 스포츠를 직업으로 하는 사람.","[選手] 어떤 일을 능숙하게 하거나 버릇으로 자주 하는 사람을 비유적으로 이르는 말.","[選授] 인재를 골라 벼슬자리를 줌."],"origin":"先手"},{"id":363,"category":"한자어","term":"소거하다","definition":"글자나 그림 따위를 지워 없애다.","example":"벽에 있는 낙서를 소거하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[消去, 하다] 둘 이상의 미지수를 가진 방정식에서 특정한 미지수를 없애다.","[消去, 하다] 조건 반사에 강화가 더 이상 주어지지 아니할 때 그 반응이 나타나지 아니하게 하다.","[消去, 하다] 데이터를 처리하는 기구 전체나 일부를 초기 상태로 되돌리다.","[掃去, 하다] 부정적인 것을 모조리 없애다."],"origin":"消去"},{"id":364,"category":"한자어","term":"소관","definition":"맡아 관리하는 바. 또는 그 범위.","example":"소관 사무.","exampleSource":"표준국어대사전 용례","otherMeanings":["[小官] 지위가 낮은 관리.","[小官] 관리가 자기를 낮추어 이르는 일인칭 대명사.","[小管] 작은 관(管).","[所關] 관계되는 바.","[所觀] 보이는 것.","[素官] 낮은 벼슬."],"origin":"所管"},{"id":365,"category":"한자어","term":"소정","definition":"정해진 바.","example":"소정 기간.","exampleSource":"표준국어대사전 용례","otherMeanings":["[小正] 문장의 첫머리 이외에 쓰는 알파벳의 인쇄 활자.","[小亭] 작은 정자.","[小政] ‘유월 도목’을 달리 이르는 말. 12월의 도목정사보다 규모가 작은 데서 유래한다.","[小釘] 작은 못.","[小艇] 작은 배.","[素定] 본래부터 작정함.","[素情] 본래부터의 감정.","[疏情] 따돌리고 멀리하는 마음."],"origin":"所定"},{"id":366,"category":"한자어","term":"소지","definition":"물건을 지니고 있는 일. 또는 그런 물건.","example":"이 공원에 경로 우대증 소지 노인은 무료입장이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[小志] 작은 뜻.","[小枝] 작은 나뭇가지.","[小知, /, 小智] 작은 지혜.","[小指] 다섯 손가락 가운데 다섯째 손가락. 가장 가늘다.","[小指] 다섯 발가락 가운데 다섯째 발가락. 가장 작고 가늘다.","[小誌] 조그마한 잡지.","[小誌] 자기가 관여하고 있는 잡지를 남에게 낮추어 이르는 말.","[沼地] 늪이 많은 땅.","[沼池] 늪과 못을 아울러 이르는 말.","[所志] 예전에, 청원이 있을 때에 관아에 내던 서면.","[所持] 민법에서, 사회 통념으로 보아 물건이 사실적으로 지배되어 있다고 보이는 객관적 상태를 이르는 말.","[所持] 형법에서, 목적물을 사실적인 지배하에 둔 상태를 이르는 말.","[素地] 본래의 바탕.","[素地] 문제가 되거나 부정적인 일 따위를 생기게 하는 원인. 또는 그렇게 될 가능성.","[素志] 평소에 늘 지니고 있는 생각.","[掃地] 땅을 쓺.","[掃地] 마당 쓰는 일을 맡은 사람.","[燒紙] 부정(不淨)을 없애고 신에게 소원을 빌기 위하여 흰 종이를 태워 공중으로 올리는 일. 또는 그런 종이."],"origin":"所持"},{"id":367,"category":"한자어","term":"소진하다","definition":"점점 줄어들어 다 없어지다. 또는 다 써서 없애다.","example":"자식들로 하여금 부단히 그 울타리에 머리를 처박고 뛰쳐나가기를 시도하게 하던 그 힘이 소진해 버렸다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[疏陳, 하다] 조리 있게 진술하다.","[訴陳, 하다] 소송의 뜻을 진술하다. 원고와 피고가 진술하는 일을 이른다.","[燒盡, 하다] 다 타서 없어지다."],"origin":"消盡"},{"id":368,"category":"한자어","term":"소청","definition":"남에게 청하거나 바라는 일.","example":"부디 소녀의 소청을 들어주십시오.","exampleSource":"표준국어대사전 용례","otherMeanings":["[掃淸] 더럽거나 어지러운 것을 쓸고 닦아서 깨끗하게 함.","[掃淸] 휩쓸어 죄다 없애 버림.","[疏請] 임금에게 상소하여 청함.","[疏廳] 조선 시대에, 유생들이 모여서 건의ㆍ상소를 하던 집.","[訴請] 하소연하여 청함.","[訴請] 공무원법에서, 징계 처분이나 휴직ㆍ면직ㆍ직위 해제 따위의 불이익 처분을 받은 사람이 그 처분에 따르지 아니하고 취소나 변경 따위를 청구하는 일.","[訴請] 귀속 재산 처리에 관하여 이해관계인이 이의 신청을 하는 일.","[訴請] 예전에, 지방 자치법에서 지방 자치 단체의 조례(條例) 또는 그 장(長)의 명령이나 처분이 헌법 또는 법률을 위반하였을 때에, 주민 100인 이상이 서명을 하여 그의 취소 따위를 청구하던 일."],"origin":"所請"},{"id":369,"category":"한자어","term":"소환","definition":"법원이 피고인, 증인, 변호인, 대리인 따위의 소송 관계인에게 소환장을 발부하여, 공판 기일이나 그 밖의 일정한 일시에 법원 또는 법원이 지정한 장소에 나올 것을 명령하는 일.","example":"소환에 불응하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[小宦] 나이가 젊고 지위가 낮은 환관.","[召還] 국제법에서, 본국에서 외국에 파견한 외교 사절이나 영사를 불러들이는 일.","[召還] 헌법에서, 국가나 지방 자치 단체의 공직에 있는 사람을 임기가 끝나기 전에 국민의 투표로 파면하는 일. 또는 그런 제도."],"origin":"召喚"},{"id":370,"category":"한자어","term":"송영","definition":"가는 사람을 보내고 오는 사람을 맞음.","example":"열차가 정거장에 들어올 때에 송영 나온 군중은 깃발을 두르며 만세를 부르고….","exampleSource":"표준국어대사전 용례","otherMeanings":["[送迎] 묵은해를 보내고 새해를 맞음.","[頌榮] 예배의 시작과 마지막에 들어가는 기도 형식의 송가.","[誦詠] 시가를 외워 읊조림."],"origin":"送迎"},{"id":371,"category":"한자어","term":"송치","definition":"수사 기관에서 검찰청으로, 또는 한 검찰청에서 다른 검찰청으로 피의자와 서류를 넘겨 보내는 일.","example":"열흘이 되자 우리는 송치가 되어서 법원 파출소로 이첩되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["암소 배 속에 든 새끼.","[送致] 서류나 물건 따위를 보내어 정해진 곳에 이르게 함."],"origin":"送致"},{"id":372,"category":"한자어","term":"수임","definition":"위임 계약에 의하여 상대편의 법률 행위나 사무 처리를 맡음.","example":"변호사 수임 계약서.","exampleSource":"표준국어대사전 용례","otherMeanings":["[水荏] 꿀풀과의 한해살이풀. 줄기는 높이가 60~90cm이고 모가 지며, 잎은 마주나고 넓은 달걀 모양이다. 여름에 흰색의 잔꽃이 줄기 끝에 총상(總狀) 화서로 피고 꽃이 진 뒤에 네 개의 잔씨가 들어 있는 수과(瘦果)를 맺는다. 잎은 독특한 냄새가 있어 반찬으로 쓰고, 씨는 기름을 짜서 식용하는데 고소한 냄새가 난다. 동남아시아가 원산지로 한국, 중국, 인도 등지에 분포한다.","[受任] 임무나 위임을 받음.","[授任] 임무나 위임을 줌.","[授任] 위임 계약에 의하여 위임 사무를 처리할 권리를 줌."],"origin":"受任"},{"id":373,"category":"한자어","term":"수작","definition":"남의 말이나 행동, 계획을 낮잡아 이르는 말.","example":"엉뚱한 수작.","exampleSource":"표준국어대사전 용례","otherMeanings":["[手作] 손으로 만듦. 또는 그런 일.","[秀作] 우수한 작품.","[授爵] 작위를 줌.","[授爵] 헌관이 헌작할 때 집사관이 그 오른편에서 술이 담긴 작(爵)을 건네주던 일.","[酬酌] 술잔을 서로 주고받음.","[酬酌] 서로 말을 주고받음. 또는 그 말."],"origin":"酬酌"},{"id":374,"category":"한자어","term":"수주","definition":"주문을 받음. 주로 물건을 생산하는 업자가 제품의 주문을 받는 것을 이르는 말이다.","example":"수주가 줄다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[手珠] 여러 개의 나무로 만든 구슬을 끈에 꿰어서 고리 모양으로 만든 물건. 주로 나이 든 사람들이 손에 들고 빙빙 돌려 손의 뻣뻣한 증상을 부드럽게 푸는 데 쓴다.","[水主] 신라 때에, 고관가전과 월지악전에 속한 벼슬.","[水柱] 솟구쳐 뻗치거나 내리쏟아지는 굵은 물줄기.","[水紬] 품질이 좋은 비단의 하나.","[守株] 한 가지 일에만 얽매여 발전을 모르는 어리석은 사람을 비유적으로 이르는 말. 중국 송나라의 한 농부가 우연히 나무 그루터기에 토끼가 부딪쳐 죽은 것을 잡은 후, 또 그와 같이 토끼를 잡을까 하여 일도 하지 않고 그루터기만 지키고 있었다는 데서 유래한다. ≪한비자≫의 에 나오는 말이다.","[隋珠] 중국 수나라의 국보였던 구슬. 수후(隋侯)가 뱀을 살려 준 뒤 뱀으로부터 받은 보주(寶珠)로, 화씨지벽(和氏之璧)과 함께 천하의 귀중한 보배로 불린다.","[壽酒] 오래 살기를 기원하고 축하하는 술.","[數珠] 염불할 때에, 손으로 돌려 개수를 세거나 손목 또는 목에 거는 법구(法具).","[樹州] ‘변영로’의 호."],"origin":"受注"},{"id":375,"category":"한자어","term":"수지","definition":"수입과 지출을 아울러 이르는 말.","example":"수지 균형을 맞추다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[수, 紙] → 휴지02.","[手指] 손끝의 다섯 개로 갈라진 부분. 또는 그것 하나하나.","[手指] 궁중에서, ‘손01’을 이르던 말.","[守志] 지조를 지킴.","[收支] 거래 관계에서 얻는 이익.","[受支] 십이 연기의 하나. 외계와의 접촉에서 느끼는, 괴로움과 즐거움에 대한 느낌 작용을 이른다.","[受持] 경전이나 계율을 받아 항상 잊지 않고 머리에 새겨 가짐.","[殊智] 뛰어난 슬기.","[須知] 자신이 소속된 일에 대하여 모름지기 알아야 함.","[樹枝] 나무의 줄기에서 뻗어 나는 가지.","[樹脂] 소나무나 전나무 따위의 나무에서 분비하는 점도가 높은 액체. 또는 그것이 공기에 닿아 산화하여 굳어진 것.","[樹脂] 천연수지와 합성수지를 통틀어 이르는 말.","[獸脂] 짐승에서 짜낸 기름."],"origin":"收支"},{"id":376,"category":"한자어","term":"수탁","definition":"다른 사람의 의뢰나 부탁을 받음. 또는 그런 일.","example":"이 연구소는 중소기업의 수탁을 받아 연구 개발 사업을 수행한다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[手拓] 탁본을 뜸. 또는 그 탁본.","[受託] 남의 물건 따위를 맡음."],"origin":"受託"},{"id":377,"category":"한자어","term":"시금석","definition":"가치, 능력, 역량 따위를 알아볼 수 있는 기준이 되는 기회나 사물을 비유적으로 이르는 말.","example":"이번 총선은 민주주의의 발전 정도를 한 단계 높이거나 떨어뜨릴 수 있는 중요한 시금석이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[試金石] 귀금속의 순도를 판정하는 데 쓰는 검은색의 현무암이나 규질의 암석. 금이나 은 조각을 이 돌의 표면에 문질러 나타난 흔적의 빛깔과 표본의 금 빛깔을 비교하여 순도를 시험한다."],"origin":"試金石"},{"id":378,"category":"한자어","term":"시여","definition":"남에게 물건을 거저 줌.","example":"그동안 남모르게 해 오던 불우 이웃에 대한 그의 시여 행위가 알려지면서 모범 시민 표창을 받게 되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[詩餘] 중국 송나라 때 유행한 한시의 격식. 당나라 때 서역에서 들어온 것으로, 일정한 평측(平仄)으로 장단구를 만들고, 각 구에 알맞은 글자를 채워 넣어 짓는 시이다. 이백의 , 이 그 시초이다.","‘여24’의 높임말. 어미 ‘-시-’와 호격 조사 ‘여’가 결합한 말이다."],"origin":"施與"},{"id":379,"category":"한자어","term":"식언","definition":"한번 입 밖에 낸 말을 도로 입 속에 넣는다는 뜻으로, 약속한 말대로 지키지 아니함을 이르는 말.","example":"식언을 일삼다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[飾言] 말을 거짓으로 꾸밈. 또는 거짓으로 꾸며서 하는 말."],"origin":"食言"},{"id":380,"category":"한자어","term":"신병","definition":"보호나 구금의 대상이 되는 본인의 몸.","example":"신병 처리.","exampleSource":"표준국어대사전 용례","otherMeanings":["[身病] 몸에 생긴 병.","[神兵] 신이 보낸 군사라는 뜻으로, 신출귀몰하여 적이 도저히 맞싸울 수 없는 강한 군사를 비유적으로 이르는 말.","[神病] 장차 무당이나 박수가 될 사람이 걸리는 병. 이 병은 의약으로는 낫지 않으며 무당이 되어야만 낫는다고 한다.","[腎病] 오장(五臟)의 하나인 신(腎)에 생기는 병증. 머리가 어지럽고 귀울림이 있으며 정신이 맑지 못하고 다리와 무릎이 약하여지며 허리가 시큰거리고 유정(遺精)이 있는 따위가 주된 증상이다.","[新兵] 새로 입대한 병사.","[新病] 새로 생긴 병. 원래 있던 오래된 병에 상대하여 이르는 말이다."],"origin":"身柄"},{"id":381,"category":"한자어","term":"신산하다","definition":"(비유적으로) 세상살이가 힘들고 고생스럽다.","example":"그는 문득 작년에 상처한 것을 생각하고 주부 없는 신산한 살림에 지쳐 조만간 장가를 가야 될 것을 생각하였다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[辛酸, 하다] 맛이 맵고 시다."],"origin":"辛酸"},{"id":382,"category":"한자어","term":"실각","definition":"발을 헛디딤.","example":"그는 계단에서 실각하여 부상을 입었다.","exampleSource":"제공 자료 예문","otherMeanings":["[실, 刻] 실처럼 가늘게 파서 새기는 일. 또는 그런 새김.","[失脚] 세력을 잃고 지위에서 물러남."],"origin":"失脚"},{"id":383,"category":"한자어","term":"심금","definition":"마음속 깊이 품은 생각.","example":"그에게는 심금을 털어놓을 만한 친구가 없다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[心琴] 외부의 자극에 따라 미묘하게 움직이는 마음을 비유적으로 이르는 말."],"origin":"心襟"},{"id":384,"category":"한자어","term":"아량","definition":"너그럽고 속이 깊은 마음씨.","example":"그는 넓은 아량으로 동료의 실수를 용서했다.","exampleSource":"교정 예문","otherMeanings":[],"origin":"雅量"},{"id":385,"category":"한자어","term":"애도","definition":"사람의 죽음을 슬퍼함.","example":"애도 기간.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"哀悼"},{"id":386,"category":"한자어","term":"어안","definition":"물고기의 눈.","example":"이 물고기는 몸집에 비해 어안이 유난히 크다.","exampleSource":"교정 예문","otherMeanings":["어이없어 말을 못 하고 있는 혀 안.","[魚眼] 물이 끓어오를 때 생기는 물고기의 눈만 한 거품을 이르는 말."],"origin":"魚眼"},{"id":387,"category":"한자어","term":"언변","definition":"말을 잘하는 재주나 솜씨.","example":"유창한 언변.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"言辯"},{"id":388,"category":"한자어","term":"영고","definition":"번성함과 쇠퇴함.","example":"그것은 한 가정의 우울에만 그칠 문제가 아닐 것이오, 국가의 영고에까지 관하는 문제가 될 것이 자명하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[迎鼓] 부여국에서 추수가 끝난 12월에 행하던 제천 의식. 모든 백성이 모여 하늘에 제사를 지내고 추수를 감사하며 날마다 춤과 노래와 술을 즐기었으며, 이 행사 중에는 처벌과 투옥을 금하고 죄수들을 놓아주기도 하였다.","[鈴鼓] ‘탬버린’이 처음 들어왔을 때 이르던 말.","[靈告] 신령의 계시.","[靈鼓] 아악에서 쓰는 북의 하나. 한쪽으로만 가죽을 대고 누런 칠을 한 북 여덟 개를 한 묶음으로 틀에 매달아 놓은 것으로, 지신(地神)에게 제사 지낼 때 헌가악(軒架樂)에 치며, 주악(奏樂)할 때 진고와 함께 친다."],"origin":"榮枯"},{"id":389,"category":"한자어","term":"오찬","definition":"손님을 초대하여 함께 먹는 점심 식사.","example":"오찬 간담회.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"午餐"},{"id":390,"category":"한자어","term":"우골탑","definition":"가난한 농가에서 소를 팔아 마련한 학생의 등록금으로 세운 건물이라는 뜻으로, ‘대학01’을 속되게 이르는 말.","example":"한때 대학은 상아탑 대신에 우골탑으로 불렸다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"牛骨塔"},{"id":391,"category":"한자어","term":"우수","definition":"근심과 걱정을 아울러 이르는 말.","example":"우수가 서린 낯빛.","exampleSource":"표준국어대사전 용례","otherMeanings":["일정한 수효 외에 더 받는 물건.","물건값을 제하고 거슬러 받는 잔돈.","[牛首] 소의 목.","[牛宿] 이십팔수의 아홉째 수(宿). 이 수의 좌표 기준이 되는 수거성(宿距星)은 현대 천문학의 이름으로는 다비흐에 해당한다.","[牛髓] 소의 골.","[右手] 오른쪽에 있는 손.","[迂叟] 세상일에 어두운 늙은이.","[迂叟] 세상일을 잘 모르는 늙은이라는 뜻으로, 노인이 자기를 낮추어 이르는 일인칭 대명사.","[雨水] 비가 와서 고이거나 모인 물.","[雨水] 이십사절기의 하나. 입춘(立春)과 경칩(驚蟄) 사이에 들며, 양력 2월 18일경이 된다. 태양의 황경(黃經)이 330도인 때에 해당한다.","[偶數] 2로 나누어서 나머지가 0이 되는 수. 2, 4, 6, 8, 10 따위의 수를 이른다.","[憂囚] 시름에 잠겨 헤어나지 못함. 또는 그런 사람.","[優秀] 여럿 가운데 뛰어남.","[優殊] ‘우수하다03’의 어근.","[優數] ‘우수하다04’의 어근."],"origin":"憂愁"},{"id":392,"category":"한자어","term":"우활하다","definition":"사리에 어둡고 세상 물정을 잘 모르다.","example":"그의 생각은 현실과 동떨어져 우활했다.","exampleSource":"제공 자료 예문","otherMeanings":["[迂闊, 하다] 곧바르지 아니하고 에돌아서 실제와는 거리가 멀다.","[迂闊, 하다] 주의가 부족하다."],"origin":"迂闊"},{"id":393,"category":"한자어","term":"위생","definition":"건강에 유익하도록 조건을 갖추거나 대책을 세우는 일.","example":"위생 검사.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"衛生"},{"id":394,"category":"한자어","term":"유기","definition":"내다 버림.","example":"관 내에 장치(藏置)한 물건을 손괴, 유기, 은닉, 또는 영득한 자는 7년 이하의 징역에 처한다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[幼期] 어린 시기.","[有期] 언제까지라고 정한 기한이 있음.","[有機] 생명을 가지며, 생활 기능이나 생활력을 갖추고 있음.","[有機] 생물체처럼 전체를 구성하고 있는 각 부분이 서로 밀접하게 관련을 가지고 있음.","[乳氣] 어린애 같은 모양. 또는 그런 기분.","[幽奇] ‘유기하다01’의 어근.","[柳器] 키버들의 가지나 대오리 따위로 엮어서 상자같이 만든 물건. 주로 옷을 넣어 두는 데 쓴다.","[留記] 고구려의 역사책. 고구려가 한자를 사용한 이후에 남긴 역사 기록으로, 영양왕 11년(600)에 이문진이 이를 요약하여 ≪신집(新集)≫ 다섯 권을 만들었다는 내용이 ≪삼국사기≫에 담겨 있을 뿐, 오늘날은 전하지 않는다.","[遊技] 당구ㆍ바둑 따위의, 오락으로 하는 운동이나 경기.","[遺記] 죽은 뒤에 남은 기록.","[遺棄] 어떤 사람이 종래의 보호를 거부하여, 그를 보호받지 못하는 상태에 두는 일.","[鍮器] 놋쇠로 만든 그릇."],"origin":"遺棄"},{"id":395,"category":"한자어","term":"유수","definition":"손꼽을 만큼 두드러지거나 훌륭함.","example":"국내 유수의 대기업.","exampleSource":"표준국어대사전 용례","otherMeanings":["[幼樹] 나서 한두 해쯤 자란 나무.","[有數] 정하여진 운수나 순서가 있음.","[乳首] → 젖꼭지.","[乳嗽] 갓난아이가 난 지 100일 안에 기침을 하는 병증. 숨이 차고 가래가 많으며 잠을 잘 자지 못한다.","[幽囚] 잡아 가둠.","[幽愁] 남모를 깊은 근심.","[幽邃] ‘유수하다03’의 어근.","[柳宿] 이십팔수의 스물넷째 별자리.","[流水] 흐르는 물.","[留守] 고려 시대에, 동경(東京)ㆍ서경(西京)ㆍ남경(南京)에 두어 그곳을 다스리게 하던 외관(外官) 벼슬.","[留守] 조선 시대에, 수도 이외의 요긴한 곳을 맡아 다스리던 정이품의 외관(外官) 벼슬. 개성ㆍ강화ㆍ광주ㆍ수원ㆍ춘천 등지에 두었다.","[留數] 주어진 점을 제외한 근방의 폐곡선에 따르는 1가 정칙 함수의 적분을 2πi로 나눈 값.","[遊手] 일정한 직업 없이 놀고 있음. 또는 그런 사람.","[劉秀] 중국 후한의 제1대 황제인 ‘광무제’의 본명."],"origin":"有數"},{"id":396,"category":"한자어","term":"유예","definition":"일을 결행하는 데 날짜나 시간을 미룸. 또는 그런 기간.","example":"이자의 유예.","exampleSource":"표준국어대사전 용례","otherMeanings":["[猶豫] 망설여 일을 결행하지 아니함.","[猶豫] 소송 행위를 하거나 소송 행위의 효력을 발생시키기 위하여 일정한 기간을 둠. 또는 그런 기간.","[遊藝] 육예(六藝)를 배움.","[遺裔] 선조나 어버이가 죽고 뒤에 남은 자손."],"origin":"猶豫"},{"id":397,"category":"한자어","term":"윤색","definition":"사실을 과장하거나 미화함을 비유적으로 이르는 말.","example":"번역극을 다루다 보면 우리 실정에 맞는 내용의 윤색도 필요하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[淪塞] 가라앉아 막힘.","[淪塞] 낙오되어 불행하게 됨.","[潤色] 윤이 나도록 매만져 곱게 함."],"origin":"潤色"},{"id":398,"category":"한자어","term":"융성","definition":"기운차게 일어나거나 대단히 번성함.","example":"역사학의 융성.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"隆盛"},{"id":399,"category":"한자어","term":"응대","definition":"부름이나 물음 또는 요구 따위에 응하여 상대함.","example":"응대가 시큰둥하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[應待] 손님을 맞아들여 접대함."],"origin":"應對"},{"id":400,"category":"한자어","term":"인수","definition":"물건이나 권리를 건네받음.","example":"물품 인수.","exampleSource":"표준국어대사전 용례","otherMeanings":["[人首] 사람의 머리.","[人壽] 사람의 수명.","[人數] 사람의 수효.","[仁壽] 어진 덕이 있고 수명이 긺.","[仁獸] 성인이 이 세상에 나올 징조로 나타난다고 하는 상상 속의 짐승. 몸은 사슴 같고 꼬리는 소 같고, 발굽과 갈기는 말과 같으며 빛깔은 오색이라고 한다.","[引水] 물을 끌어다 댐.","[引受] 환어음의 지급인이 어음 금액을 지급할 의무를 진다는 내용을 어음에 적고 서명함.","[印綬] 병권(兵權)을 가진 무관이 발병부(發兵符) 주머니를 매어 차던, 길고 넓적한 녹비 끈.","[因數] 정수 또는 정식을 몇 개의 곱의 꼴로 하였을 때에, 그것의 각 구성 요소를 이르는 말.","[忍受] 치욕을 참고 받음."],"origin":"引受"},{"id":401,"category":"한자어","term":"인지하다","definition":"어떤 사실을 인정하여 알다.","example":"신호를 인지하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[仁智, 하다] 어질고 슬기롭다."],"origin":"認知"},{"id":402,"category":"한자어","term":"일별하다","definition":"한 번 흘낏 보다.","example":"우리는 그의 곁을 지날 때 땅바닥에 펼쳐 놓은 조그만 손수건 위에서 그의 전 소유물을 일별할 수 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[一別, 하다] 한 번 헤어지다."],"origin":"一瞥"},{"id":403,"category":"한자어","term":"임대","definition":"돈을 받고 자기의 물건을 남에게 빌려줌.","example":"임대 아파트.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"賃貸"},{"id":404,"category":"한자어","term":"임종","definition":"죽음을 맞이함.","example":"할머니는 편안하게 임종을 하셨다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[林鍾] 동양 음악에서, 십이율의 여덟째 음. 육려의 하나로 방위는 미(未), 절후는 음력 6월에 해당한다.","[臨終] 부모가 돌아가실 때 그 곁에 지키고 있음."],"origin":"臨終"},{"id":405,"category":"한자어","term":"임차","definition":"돈을 내고 남의 물건을 빌려 씀.","example":"은행 돈을 빌려 사무실을 임차하였다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"賃借"},{"id":406,"category":"한자어","term":"입선","definition":"출품한 작품이 심사에 합격하여 뽑힘.","example":"그러나 그보다도 더 반가운 것은 전람회 입선 작품이 신문에 발표된 것이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[入船] 배가 항구에 들어오거나 들어감.","[入線] 전차나 열차 따위가 역에서 승객을 태우기 위하여 지정된 선로(線路)에 들어옴.","[入禪] 좌선을 하거나 불경을 읽으러 선원에 들어가는 일.","[入禪] 선정(禪定)에 들어가는 일."],"origin":"入選"},{"id":407,"category":"한자어","term":"입찰","definition":"상품의 매매나 도급 계약을 체결할 때 여러 희망자들에게 각자의 낙찰 희망 가격을 서면으로 제출하게 하는 일.","example":"입찰 공고.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"入札"},{"id":408,"category":"한자어","term":"자작","definition":"자기 스스로 술을 따라 마심.","example":"자작으로 잔을 비우다.","exampleSource":"표준국어대사전 용례","otherMeanings":["‘자작거리다’의 어근.","‘자작하다01’의 어근.","자작나뭇과의 낙엽 활엽 교목. 높이는 20~30미터이며, 나무껍질은 흰색이며 종이처럼 벗겨진다. 잎은 어긋나고 삼각형의 달걀 모양이다. 4~5월에 단성화가 수상(穗狀) 화서로 피고 열매는 작은 견과(堅果)로 10월에 익는다. 나무껍질은 약용ㆍ유피용(鞣皮用)으로 쓰고 목재는 기구(器具)에 쓰며 산기슭의 풍치림의 조성에도 적당하다. 한국 북부와 일본, 중국, 시베리아 동부 등지에 분포한다.","[子爵] 다섯 등급으로 나눈 귀족의 작위(爵位) 가운데 넷째. 백작(伯爵)의 아래, 남작(男爵)의 위이다.","[子爵] 고려 공민왕 때에 둔, 오등작의 넷째 작위.","[自作] 자기 스스로 만들거나 지음. 또는 그렇게 만든 것.","[自作] 자기 땅에 자기가 직접 농사를 지음.","[赭斫] 산이 발갛게 드러나도록 나무를 남김없이 벰."],"origin":"自酌"},{"id":409,"category":"한자어","term":"작고","definition":"고인이 되었다는 뜻으로, 사람의 죽음을 높여 이르는 말.","example":"원로 작가의 작고 소식에 문단이 슬픔에 잠겼다.","exampleSource":"제공 자료 예문","otherMeanings":["[作苦] 힘들여 수고하고 애씀."],"origin":"作故"},{"id":410,"category":"한자어","term":"작렬하다","definition":"포탄 따위가 터져서 쫙 퍼지다.","example":"작렬하는 포성.","exampleSource":"표준국어대사전 용례","otherMeanings":["[炸裂, 하다] (비유적으로) 박수 소리나 운동 경기에서의 공격 따위가 포탄이 터지듯 극렬하게 터져 나오다."],"origin":"炸裂"},{"id":411,"category":"한자어","term":"잡기","definition":"잡다한 놀이의 기술이나 재주.","example":"그는 잡기에 능하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["유도에서, 맞붙어 연습을 할 때 기술을 거는 쪽의 사람.","[雜伎] 중국 고대와 중세에 행하여진 각종 예능을 통틀어 이르는 말. 곡예, 기술(奇術), 가면, 무용, 인형 놀이 따위가 있다.","[雜妓] 각종 예능을 가진 기생.","[雜技] 잡스러운 여러 가지 노름.","[雜歧] 잡다한 기술을 다루던 벼슬. 또는 그 벼슬에 있던 벼슬아치. 천문관, 금루관, 화원, 산원, 율원, 의관, 역관 따위의 기술관을 이른다.","[雜記] 여러 가지 일을 질서 없이 기록함. 또는 그런 기록.","[雜記] 자질구레한 일을 기록함. 또는 그런 기록.","[雜器] 여러 가지 자질구레한 기명(器皿).","[雜器] 신령에게 공물을 바칠 때에 쓰는, 작은 나무 접시."],"origin":"雜技"},{"id":412,"category":"한자어","term":"장계","definition":"왕명을 받고 지방에 나가 있는 신하가 자기 관하(管下)의 중요한 일을 왕에게 보고하던 일. 또는 그런 문서.","example":"책을 만들어서 장계와 함께 올리오니, 비옵건대, 중앙과 지방에 반포하여 영구히 성법(成法)으로 삼게 하소서.","exampleSource":"표준국어대사전 용례","otherMeanings":["[長計] 어떤 일이 오래 계속되도록 꾀하는 계책."],"origin":"狀啓"},{"id":413,"category":"한자어","term":"장고","definition":"오랫동안 깊이 생각함.","example":"바둑은 아직도 포석 단계였고, 그들은 장고에 장고를 거듭했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[杖鼓, /, 長鼓] ‘장구01’의 원말.","[長股] 개구릿과의 하나. 몸의 길이는 5~9cm이며 대개 녹색을 띤 갈색에 어두운 갈색이나 검은 무늬가 있다. 머리는 세모지고 등 쪽에는 주름과 혹 같은 돌기가 많으며 배는 희거나 누런색이다. 한국, 몽골, 중국, 일본 등지에 분포한다.","[掌固] 고려 시대에, 동궁에 속하여 창고를 지키고 진설(陳設)을 맡아 하던 구실아치.","[掌故] 전부터 해 내려오던 전례(前例)가 관습으로 굳어진 것.","[掌故] 전례(典例)를 맡은 벼슬아치."],"origin":"長考"},{"id":414,"category":"한자어","term":"장악","definition":"손안에 잡아 쥔다는 뜻으로, 무엇을 마음대로 할 수 있게 됨을 이르는 말.","example":"정권 장악.","exampleSource":"표준국어대사전 용례","otherMeanings":["[帳幄] 한데에서 볕 또는 비바람을 피할 수 있도록 둘러치는 막."],"origin":"掌握"},{"id":415,"category":"한자어","term":"주지","definition":"여러 사람이 두루 앎.","example":"주지의 사실.","exampleSource":"표준국어대사전 용례","otherMeanings":["별신굿에서, 나쁜 짐승이나 귀신을 물리치려고 씌우는 사자탈.","[主旨] 주장이 되는 요지나 근본이 되는 중요한 뜻.","[主旨] 하느님의 뜻.","[主枝] 원줄기에 붙어 있는 굵은 가지.","[主知] 감성이나 의지보다 이성, 지성, 합리성 따위를 중히 여기는 일.","[住地] 실질적인 생활의 근거가 되는 장소. 법인인 경우에는 주된 사무소나 본점을 이른다.","[住持] 세상에 머물러 교법(敎法)을 보존하고 유지함.","[住持] 절을 주관하는 승려.","[周池] 성(城) 둘레에 도랑처럼 파서 물이 괴게 한 곳.","[周紙] 가로로 길게 이어 돌돌 둥글게 만 종이. 편지나 그 밖의 글을 쓸 때 쓴다.","[注紙] 주서(注書)나 승지(承旨)가 임금 앞에서 임금의 명령을 받아 적는 데에 쓰던 종이.","[酒漬] 약을 술에 담가 서서히 스며들도록 하는 일."],"origin":"周知"},{"id":416,"category":"한자어","term":"준거","definition":"사물의 정도나 성격 따위를 알기 위한 근거나 기준.","example":"판단의 준거가 명확하지 않다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[峻拒] 엄정한 태도로 거절함.","[遵據] 전례나 명령 따위에 의거하여 따름.","[蹲踞] 주저앉음."],"origin":"準據"},{"id":417,"category":"한자어","term":"준공","definition":"공사를 다 마침.","example":"스포츠 센터를 착공 2년 만에 준공하였다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"竣工"},{"id":418,"category":"한자어","term":"중용","definition":"중요한 자리에 임용함.","example":"요직에 중용되다.","exampleSource":"제공 자료 예문","otherMeanings":["[中庸] 지나치거나 모자라지 아니하고 한쪽으로 치우치지도 아니한, 떳떳하며 변함이 없는 상태나 정도.","[中庸] 재능이 보통임. 또는 그런 사람.","[中庸] 동양 철학의 기본 개념으로 사서의 하나인 ≪중용≫에서 말하는 도덕론. 지나치거나 모자람이 없이 도리에 맞는 것이 ‘중(中)’이며, 평상적이고 불변적인 것이 ‘용(庸)’이다.","[中庸] 아리스토텔레스의 덕론(德論)의 중심 개념. 이성으로 욕망을 통제하고, 지견(智見)에 의하여 과대와 과소가 아닌 올바른 중간을 정하는 것을 이른다.","[中庸] 유학 경전인 사서(四書)의 하나. 공자의 손자인 자사(子思)가 지은 것으로 중용의 덕과 인간의 본성인 성(性)에 대하여 설명하였다. 본디 ≪예기≫ 가운데 한 편이었으나, 유송(劉宋)의 대응(戴顒)이 빼내어 별책으로 하였고, 정자(程子)가 사서에 편입하였으며, 주자(朱子)가 장구(章句)를 만들어 성행하게 되었다. 1권."],"origin":"重用"},{"id":419,"category":"한자어","term":"증편","definition":"정기적인 교통편의 횟수를 늘림.","example":"증편 운행.","exampleSource":"표준국어대사전 용례","otherMeanings":["[蒸, 편, /, 烝, 편] 여름에 먹는 떡의 하나. 멥쌀가루를, 막걸리를 조금 탄 뜨거운 물로 묽게 반죽하여 더운 방에서 부풀려 밤, 대추, 잣 따위의 고명을 얹고 틀에 넣어 찐다."],"origin":"增便"},{"id":420,"category":"한자어","term":"진단","definition":"의사가 환자의 병 상태를 판단하는 일.","example":"의사의 진단을 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[眞檀] 자단, 백단 따위의 향나무를 통틀어 이르는 말.","[震旦] 해가 뜨는 곳이라는 뜻으로, ‘발해01’를 달리 이르는 말.","[震檀] ‘우리나라’를 예스럽게 이르는 말. ‘震’은 중국의 동쪽을 뜻하고, ‘檀’은 우리나라의 시조인 단군을 뜻하는 말이다."],"origin":"診斷"},{"id":421,"category":"한자어","term":"진척","definition":"일이 목적한 방향대로 진행되어 감.","example":"진척 과정.","exampleSource":"표준국어대사전 용례","otherMeanings":["[津尺] 고려ㆍ조선 시대에, 나룻배의 사공 노릇을 하던 천민.","[進陟] 벼슬이 높아짐."],"origin":"進陟"},{"id":422,"category":"한자어","term":"질곡","definition":"몹시 속박하여 자유를 가질 수 없는 고통의 상태를 비유적으로 이르는 말.","example":"질곡의 세월.","exampleSource":"표준국어대사전 용례","otherMeanings":["[桎梏] 옛 형구인 차꼬와 수갑을 아울러 이르는 말."],"origin":"桎梏"},{"id":423,"category":"한자어","term":"질책","definition":"꾸짖어 나무람.","example":"질책을 당하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[帙冊] 여러 권으로 한 벌을 이루는 책.","[質責] 꾸짖어 바로잡음."],"origin":"叱責"},{"id":424,"category":"한자어","term":"차제","definition":"때마침 주어진 기회.","example":"미뤘던 문제는 차제에 꼭 짚고 넘어가자.","exampleSource":"표준국어대사전 용례","otherMeanings":["[차, 劑] 여러 가지 식물성 생약을 혼합하여 말려서 만든 약제. 끓는 물에 넣어 우려내거나 달여서 먹는다.","[次第] 순서 있게 구분하여 벌여 나가는 관계. 또는 그 구분에 따라 각각에게 돌아오는 기회.","[車制] 수레에 관한 제도라는 뜻으로, 운수(運輸)에 관련된 제도를 이르는 말.","[差除] 벼슬에 임명하던 일.","[差祭] 나라의 제사를 지내는 제관(祭官)으로 임명하던 일."],"origin":"此際"},{"id":425,"category":"한자어","term":"차출","definition":"어떤 일을 시키기 위하여 인원을 선발하여 냄.","example":"인원 차출.","exampleSource":"표준국어대사전 용례","otherMeanings":["[差出] 예전에, 관원으로 임명하기 위하여 인재를 뽑던 일."],"origin":"差出"},{"id":426,"category":"한자어","term":"착상","definition":"어떤 일이나 창작의 실마리가 되는 생각이나 구상 따위를 잡음. 또는 그 생각이나 구상.","example":"착상을 얻다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[着床] 포유류의 수정란이 자궁벽에 접착하여 모체의 영양을 흡수할 수 있는 상태가 됨. 또는 그런 현상."],"origin":"着想"},{"id":427,"category":"한자어","term":"착수","definition":"어떤 일에 손을 댐. 또는 어떤 일을 시작함.","example":"작업 착수.","exampleSource":"표준국어대사전 용례","otherMeanings":["[捉囚] 죄인을 잡아서 가둠.","[窄袖] 좁은 소매.","[着手] 형법에서, 범죄 실행의 개시를 이르는 말. 이것에 의하여 범죄의 법률적 구성 요건이 일부분 실현된다. 살인범이 사람을 죽이려고 칼을 드는 행위 따위를 이른다.","[着手] 바둑에서, 바둑돌을 바둑판에 번갈아 한 수씩 두는 일.","[着水] 수면에 닿음.","[着水] 수상 비행기 따위가 물 위에 내림."],"origin":"着手"},{"id":428,"category":"한자어","term":"착오","definition":"착각을 하여 잘못함. 또는 그런 잘못.","example":"착오가 생기다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[錯迕] 물건이나 생각 따위가 뒤섞임.","[錯誤] 부주의에서 생기는 추리의 오류.","[錯誤] 사람의 인식과 객관적 사실이 일치하지 않고 어긋나는 일."],"origin":"錯誤"},{"id":429,"category":"한자어","term":"착종","definition":"이것저것이 뒤섞여 엉클어짐.","example":"이사하느라고 그의 방에는 많은 책이 착종되어 있다.","exampleSource":"제공 자료 예문","otherMeanings":["[錯綜] 이것저것을 섞어 모음."],"origin":"錯綜"},{"id":430,"category":"한자어","term":"찬동","definition":"어떤 행동이나 견해 따위가 옳거나 좋다고 판단하여 그에 뜻을 같이함.","example":"찬동을 얻다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"贊同"},{"id":431,"category":"한자어","term":"창달","definition":"거침없이 쑥쑥 뻗어 나감. 또는 그렇게 되게 함.","example":"민족 문화의 창달.","exampleSource":"표준국어대사전 용례","otherMeanings":["[暢達] 의견, 주장, 견해 따위를 거리낌이나 막힘이 없이 자유롭게 표현하고 전달함."],"origin":"暢達"},{"id":432,"category":"한자어","term":"채근","definition":"어떤 일의 내용, 원인, 근원 따위를 캐어 알아냄.","example":"지금까지 채근을 해 본 바로 그는 이 사건과 무관하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[採根] 식물의 뿌리를 캐냄.","[採根] 어떻게 행동하기를 따지어 독촉함.","[採根] 남에게 받을 것을 달라고 독촉함.","[菜根] 먹을 수 있는 채소의 뿌리.","[菜根] 맛없고 거칠고 보잘것없는 음식을 비유적으로 이르는 말."],"origin":"採根"},{"id":433,"category":"한자어","term":"책동","definition":"좋지 아니한 일을 몰래 꾸미어 시행함.","example":"암투와 음모와 책동을 자행하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[策動] 남을 부추기어 일정한 방향으로 행동하게 함."],"origin":"策動"},{"id":434,"category":"한자어","term":"척결","definition":"나쁜 부분이나 요소들을 깨끗이 없애 버림.","example":"비리의 척결.","exampleSource":"표준국어대사전 용례","otherMeanings":["[剔抉] 살을 도려내고 뼈를 발라냄."],"origin":"剔抉"},{"id":435,"category":"한자어","term":"천착","definition":"어떤 원인이나 내용 따위를 따지고 파고들어 알려고 하거나 연구함.","example":"세밀한 관찰과 천착을 거듭하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[舛錯] ‘천착하다01’의 어근.","[穿鑿] 구멍을 뚫음.","[穿鑿] 억지로 이치에 닿지 아니한 말을 함."],"origin":"穿鑿"},{"id":436,"category":"한자어","term":"철석","definition":"매우 굳고 단단한 것을 비유적으로 이르는 말.","example":"두 사람은 철석같은 약속을 맺었다.","exampleSource":"제공 자료 예문","otherMeanings":["[鐵石] 쇠와 돌을 아울러 이르는 말."],"origin":"鐵石"},{"id":437,"category":"한자어","term":"첨삭","definition":"시문(詩文)이나 답안 따위의 내용 일부를 보태거나 삭제하여 고침.","example":"첨삭 지도.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"添削"},{"id":438,"category":"한자어","term":"체계","definition":"일정한 원리에 따라서 낱낱의 부분이 짜임새 있게 조직되어 통일된 전체.","example":"명령 체계.","exampleSource":"표준국어대사전 용례","otherMeanings":["[逮繫] 붙잡아서 옥에 가둠.","[遞計] 예전에, 장에서 비싼 이자로 돈을 꾸어 주고 장날마다 본전의 일부와 이자를 받아들이던 일."],"origin":"體系"},{"id":439,"category":"한자어","term":"체류","definition":"객지에 가서 머물러 있음.","example":"체류 일정.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"滯留"},{"id":440,"category":"한자어","term":"체불","definition":"마땅히 지급하여야 할 것을 지급하지 못하고 미룸.","example":"체불 노임.","exampleSource":"표준국어대사전 용례","otherMeanings":["[滯佛] 프랑스에 체류함."],"origin":"滯拂"},{"id":441,"category":"한자어","term":"초봉","definition":"처음으로 받는 봉급.","example":"요즈음 대기업의 대졸자 초봉이 얼마인지 알기나 해?","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"初俸"},{"id":442,"category":"한자어","term":"촉탁되다","definition":"일이 부탁이 되어 맡겨지다.","example":"그는 자기에게 억지로 촉탁된 일도 기꺼이 하는 것을 보면 참 무던한 사람이야.","exampleSource":"표준국어대사전 용례","otherMeanings":["[囑託, 되다] 대등한 지위에 있는 관청 사이에서 필요한 사무가 다른 관청에 위임되다.","[囑託, 되다] 특정인에 의해 특정한 국가 사무가 수행되고, 이에 대하여 국가로부터 그 사람에게 반대급부가 제공되다. 국가와 개인 사이의 계약이다."],"origin":"囑託"},{"id":443,"category":"한자어","term":"추대","definition":"윗사람으로 떠받듦.","example":"추대를 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[推貸] 돈을 돌려서 꾸어 주거나 꾸어 씀.","[錐臺] ‘원뿔대’의 전 용어."],"origin":"推戴"},{"id":444,"category":"한자어","term":"추모","definition":"죽은 사람을 그리며 생각함.","example":"추모 행렬.","exampleSource":"표준국어대사전 용례","otherMeanings":["[秋麰] 가을에 씨를 뿌려 이듬해 초여름에 거두는 보리.","[酋矛] 자루가 짧은 창.","[追募] 추가로 모집함. 또는 그런 모집.","[醜貌] 보기 흉한 용모. 또는 못생긴 용모."],"origin":"追慕"},{"id":445,"category":"한자어","term":"추인","definition":"지나간 사실을 소급하여 추후에 인정함.","example":"교도들이 저절로 이렇게 모여 버리자 하는 수 없이 집회를 추인을 한 셈이었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[追認] 일단 행하여진 불완전한 법률 행위를 뒤에 보충하여 완전하게 하는 일방적 의사 표시. 민법에서는 취소할 수 있는 행위의 추인, 무권 대리 행위의 추인, 무효 행위의 추인의 세 가지 경우에만 인정한다.","[推認] 미루어 인정함.","[篘人] 예전에, 무사들의 교습에 쓰기 위하여 꼴로 사람 모양을 만든 것. 이것을 대상으로 창이나 칼을 쓰는 연습을 하였다.","[麤人] 대승의 수행인에 비하여 거칠고 모자라는 사람이라는 뜻으로, 소승의 수행인을 이르는 말."],"origin":"追認"},{"id":446,"category":"한자어","term":"추징","definition":"형법상 몰수하여야 할 물건을 몰수할 수 없을 때에 몰수할 수 없는 부분에 해당하는 값의 금전을 징수하는 일.","example":"탈루 세금 추징.","exampleSource":"표준국어대사전 용례","otherMeanings":["[追徵] 부족한 것을 뒤에 추가하여 징수함."],"origin":"追徵"},{"id":447,"category":"한자어","term":"추출","definition":"전체 속에서 어떤 물건, 생각, 요소 따위를 뽑아냄.","example":"이 글에서는 주된 생각이나 의견을 추출하기가 어렵다.","exampleSource":"제공 자료 예문","otherMeanings":["[抽出] 모집단(母集團)에서 표본을 뽑아내는 일.","[抽出] 고체 또는 액체의 혼합물에 용매(溶媒)를 가하여 혼합물 속의 어떤 물질을 용매에 녹여 뽑아내는 일."],"origin":"抽出"},{"id":448,"category":"한자어","term":"추풍선","definition":"가을철의 부채라는 뜻으로, 철이 지나서 쓸모없이 된 물건을 비유적으로 이르는 말.","example":"유행이 지나자 그 물건은 추풍선 신세가 되었다.","exampleSource":"제공 자료 예문","otherMeanings":["[秋風扇] 이성의 사랑을 잃은 사람을 비유적으로 이르는 말."],"origin":"秋風扇"},{"id":449,"category":"한자어","term":"축수","definition":"오래 살기를 빎.","example":"산신령께 어머님의 축수를 기원하나이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[祝手] 두 손바닥을 마주 대고 빎.","[逐水] 몸 안에 모여 있거나 차 있는 물을 빼내는 일. 또는 그런 방법.","[軸受] 회전 운동이나 직선 운동을 하는 굴대를 받치는 기구.","[縮首] 무섭고 두려워서 고개를 움츠림.","[縮綬] 장구 부속품의 하나. 가죽으로 깔때기처럼 만들어 장구의 좌우 마구리에 얼기설기 얽은 줄의 두 가닥을 끼워서 한쪽으로 밀면 줄이 팽팽해지고, 다른 한쪽으로 밀면 줄이 늘어지게 되어 장구의 소리를 조절한다."],"origin":"祝壽"},{"id":450,"category":"한자어","term":"축출","definition":"쫓아내거나 몰아냄.","example":"강제 축출.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"逐出"},{"id":451,"category":"한자어","term":"출시","definition":"상품이 시중에 나옴. 또는 상품을 시중에 내보냄.","example":"우리 회사는 새 제품 출시를 앞두고 있다.","exampleSource":"교정 예문","otherMeanings":[],"origin":"出市"},{"id":452,"category":"한자어","term":"치성","definition":"있는 정성을 다함. 또는 그 정성.","example":"병자를 치성으로 간호하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[致誠] 신이나 부처에게 지성으로 빎. 또는 그런 일.","[稚省] 신라 때에, 예궁전과 어룡성에 둔 벼슬.","[雉城] 성 위에 낮게 쌓은 담. 여기에 몸을 숨기고 적을 감시하거나 공격하거나 한다.","[齒聲] 혀끝과 윗니 또는 윗잇몸이 닿아서 나는 소리. 현대 국어에서 ‘ㅅ’, ‘ㅆ’, ‘ㄴ’, ‘ㄹ’ 따위를 이른다.","[熾盛] 불길같이 성하게 일어남."],"origin":"致誠"},{"id":453,"category":"한자어","term":"친소","definition":"친함과 친하지 아니함.","example":"그 결과 김 씨는 이 결원을, 자기와의 친소 관계를 따져 그의 독단으로 선발할 수 있는 권한이 주어졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"親疏"},{"id":454,"category":"한자어","term":"칩거","definition":"나가서 활동하지 아니하고 집 안에만 틀어박혀 있음.","example":"칩거 생활을 하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"蟄居"},{"id":455,"category":"한자어","term":"쾌거","definition":"통쾌하고 장한 행위.","example":"쾌거를 이루다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"快擧"},{"id":456,"category":"한자어","term":"탁견","definition":"두드러진 의견이나 견해.","example":"그는 환경 문제에 대해 탁견을 가지고 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"卓見"},{"id":457,"category":"한자어","term":"통달하다","definition":"말이나 문서로써 기별하여 알리다.","example":"이 법령에 관한 경고를 각 지주에게 통달한 줄 아는데 당신은 아직 그 통고문을 못 보셨습니까?","exampleSource":"표준국어대사전 용례","otherMeanings":["[洞達, 하다] 사물의 이치나 지식, 기술 따위를 훤히 알거나 아주 능란하게 하다.","[通達, 하다] 사물의 이치나 지식, 기술 따위를 훤히 알거나 아주 능란하게 하다."],"origin":"通達"},{"id":458,"category":"한자어","term":"통변","definition":"말이 통하지 아니하는 사람 사이에서 뜻이 통하도록 말을 옮겨 줌. 또는 그런 일을 하는 사람.","example":"심유경은 왜말을 잘할 줄 알면서도 일부러 심가왕에게 통변을 시켜 따져 본다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"通辯"},{"id":459,"category":"한자어","term":"특기","definition":"특별히 다루어 기록함. 또는 그런 기록.","example":"특기 사항.","exampleSource":"표준국어대사전 용례","otherMeanings":["[特技] 남이 가지지 못한 특별한 기술이나 기능."],"origin":"特記"},{"id":460,"category":"한자어","term":"팽배","definition":"어떤 기세나 사조 따위가 매우 거세게 일어남.","example":"기대 심리의 팽배.","exampleSource":"표준국어대사전 용례","otherMeanings":["[彭排] 조선 시대 호분위에 속한, 방패를 무기로 쓰던 병종(兵種). 달리기와 힘쓰기를 시험하여 뽑았으며 정원은 5,000명이었다.","[澎湃, /, 彭湃] 큰 물결이 맞부딪쳐 솟구침."],"origin":"澎湃彭湃"},{"id":461,"category":"한자어","term":"포복절도","definition":"배를 그러안고 넘어질 정도로 몹시 웃음.","example":"그의 유머에 모두가 포복절도하였다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"抱腹絕倒"},{"id":462,"category":"한자어","term":"폭등","definition":"물건의 값이나 주가 따위가 갑자기 큰 폭으로 오름.","example":"유가 폭등.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"暴騰"},{"id":463,"category":"한자어","term":"풍운","definition":"바람과 구름을 아울러 이르는 말.","example":"풍운의 조화를 부릴 줄 아는 신선의 경지에 이르다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[風雲] 용이 바람과 구름을 타고 하늘로 오르는 것처럼 영웅호걸들이 세상에 두각을 나타내는 좋은 기운.","[風雲] 사회적ㆍ정치적으로 세상이 크게 변하려는 기운을 비유적으로 이르는 말.","[風雲] 구름무늬의 하나.","[風韻] 풍류와 운치를 아울러 이르는 말.","[風韻] 바람이 부는 소리."],"origin":"風雲"},{"id":464,"category":"한자어","term":"풍조","definition":"시대에 따라 변하는 세태.","example":"과소비 풍조.","exampleSource":"표준국어대사전 용례","otherMeanings":["[風鳥] 참새목 풍조과의 새를 통틀어 이르는 말. 부리와 꽁지가 길며, 수컷은 몸의 빛깔이 화려하고 여러 가지 동작으로 구애의 춤을 춘다. 40여 종이 뉴기니에 분포한다.","[風潮] 바람과 조수(潮水)를 아울러 이르는 말. 또는 바람에 따라 흐르는 조수.","[風調] 바람이 순조롭게 붊.","[風調] 시가 따위의 가락.","[風操] 높은 지조."],"origin":"風潮"},{"id":465,"category":"한자어","term":"피력하다","definition":"생각하는 것을 털어놓고 말하다.","example":"자신의 견해를 피력하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"披瀝"},{"id":466,"category":"한자어","term":"피폐하다","definition":"지치고 쇠약하여지다.","example":"형의 피폐한 모습이 순간적으로 나를 두렵게 했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[疲斃, 하다] 기운이 지쳐 죽다."],"origin":"疲弊"},{"id":467,"category":"한자어","term":"함양","definition":"능력이나 품성 따위를 길러 쌓거나 갖춤.","example":"인격 함양.","exampleSource":"표준국어대사전 용례","otherMeanings":["[咸陽] 경상남도 함양군 가운데에 있는 읍. 창호지가 유명하다. 군청 소재지이다. 면적은 69.35㎢.","[咸陽] → 셴양.","[涵養] 포화대에 물을 보급함. 또는 그런 여러 과정.","[檻羊] 우리 안에 갇힌 양이라는 뜻으로, 자유롭지 못한 처지에 있는 사람을 비유적으로 이르는 말."],"origin":"涵養"},{"id":468,"category":"한자어","term":"항간","definition":"일반 사람들 사이.","example":"항간의 속설.","exampleSource":"표준국어대사전 용례","otherMeanings":["[항, 間] → 행간02.","[巷間] 시골 마을의 사회.","[巷間] 마을과 마을의 사이."],"origin":"巷間"},{"id":469,"category":"한자어","term":"항진","definition":"기세나 기능 따위가 높아짐.","example":"환자는 심장 기능이 항진되어 정밀 검사를 받았다.","exampleSource":"제공 자료 예문","otherMeanings":["[亢進] 위세 좋게 뽐내고 나아감.","[亢進] 병세 따위가 심하여짐.","[降盡] 천도교에서, 세상의 모든 잡귀를 굴복하게 함. 또는 그런 일.","[航進] 비행기나 선박 따위가 앞으로 나아감.","[港津] 배가 안전하게 드나들도록 강가나 바닷가에 부두 따위를 설비한 곳. 보통 기능에 따라 상항ㆍ군항ㆍ어항ㆍ공업항, 위치에 따라 해항ㆍ연안항ㆍ호항, 법제상으로 개항ㆍ자유항ㆍ중계항 따위로 나눈다."],"origin":"亢進"},{"id":470,"category":"한자어","term":"해촉","definition":"위촉했던 직책이나 자리에서 물러나게 함.","example":"규정을 어겼다는 이유로 해촉 통보를 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"解囑"},{"id":471,"category":"한자어","term":"해후","definition":"오랫동안 헤어졌다가 뜻밖에 다시 만남.","example":"감격적인 해후.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"邂逅"},{"id":472,"category":"한자어","term":"행간","definition":"쓰거나 인쇄한 글의 줄과 줄 사이. 또는 행과 행 사이.","example":"행간이 넓다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[行姦] 간음을 행함.","[行間] 글에 직접적으로 나타나 있지 아니하나 그 글을 통하여 나타내려고 하는 숨은 뜻을 비유적으로 이르는 말."],"origin":"行間"},{"id":473,"category":"한자어","term":"환담","definition":"정답고 즐겁게 서로 이야기함. 또는 그런 이야기.","example":"환담을 나누다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[幻談] 괴상한 이야기."],"origin":"歡談"},{"id":474,"category":"한자어","term":"환희","definition":"매우 기뻐함. 또는 큰 기쁨.","example":"환희의 함성.","exampleSource":"표준국어대사전 용례","otherMeanings":["[幻戲] 꿈 같은 장난.","[歡喜] 몸의 즐거움과 마음의 기쁨을 통틀어 이르는 말. 자기의 뜻에 알맞은 경계를 만났을 때의 기쁨, 죽어 극락왕생하는 것에 대한 기쁨, 불법(佛法)을 듣고 믿음을 얻어 느끼는 기쁨 따위를 이른다."],"origin":"歡喜"},{"id":475,"category":"한자어","term":"횡사","definition":"뜻밖의 재앙으로 죽음.","example":"비명에 횡사를 당하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[橫射] 총포를 좌우로 휘둘러 사격함.","[橫斜] 가로 비낌. 또는 모로 기울어짐.","[橫絲] 피륙이나 그물을 짤 때, 가로 방향으로 놓인 실.","[橫肆] ‘횡사하다04’의 어근.","[黌舍] 공부를 하거나 글을 배우는 집."],"origin":"橫死"},{"id":476,"category":"한자어","term":"효험","definition":"일의 좋은 보람. 또는 어떤 작용의 결과.","example":"효험을 보다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"效驗"},{"id":477,"category":"한자어","term":"흔연하다","definition":"기쁘거나 반가워 기분이 좋다.","example":"반가운 소식을 접하니 기쁘고 흔연하기 짝이 없습니다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"欣然"},{"id":478,"category":"한자어","term":"흠모","definition":"기쁜 마음으로 공경하며 사모함.","example":"흠모의 대상.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"欽慕"},{"id":479,"category":"한자어","term":"개선","definition":"잘못된 것이나 부족한 것, 나쁜 것 따위를 고쳐 더 좋게 만듦.","example":"입시 제도 개선.","exampleSource":"표준국어대사전 용례","otherMeanings":["[改選] 의원이나 임원 등이 사퇴하거나 그 임기가 다 되었을 때 새로 선출함.","[疥癬] 옴진드기가 기생하여 일으키는 전염 피부병. 손가락이나 발가락의 사이, 겨드랑이 따위의 연한 살에서부터 짓무르기 시작하여 온몸으로 퍼진다. 몹시 가렵고 헐기도 한다.","[凱旋] 싸움에서 이기고 돌아옴.","[開船] 배가 떠남."],"origin":"改善"},{"id":480,"category":"한자어","term":"개발","definition":"산업이나 경제 따위를 발전하게 함.","example":"산업 개발.","exampleSource":"표준국어대사전 용례","otherMeanings":["[開發] 토지나 천연자원 따위를 유용하게 만듦.","[開發] 지식이나 재능 따위를 발달하게 함.","[開發] 새로운 물건을 만들거나 새로운 생각을 내어놓음."],"origin":"開發"},{"id":481,"category":"한자어","term":"계발","definition":"슬기나 재능, 사상 따위를 일깨워 줌.","example":"상상력 계발.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"啓發"},{"id":482,"category":"한자어","term":"수정","definition":"바로잡아 고침.","example":"궤도의 수정.","exampleSource":"표준국어대사전 용례","otherMeanings":["[手錠] → 수갑01.","[水亭] 물가나 물 가운데에 지은 정자.","[水晶] 무색투명한 석영의 하나. 육방주상(六方柱狀)의 결정체이며, 주성분은 이산화 규소이다. 불순물의 혼합 정도에 따라 자색ㆍ흑색ㆍ황색ㆍ홍색 따위의 빛을 띠며, 도장ㆍ장식품ㆍ광학 기계 따위에 쓴다.","[水程] 배를 타고 물로 다니는 길.","[水精] 물의 정령(精靈). 또는 물속에 사는 요정.","[水精] ‘달05’을 달리 이르는 말.","[水精] ‘수정03’을 달리 이르는 말.","[守貞] 동정을 지키는 일.","[受精] 암수의 생식 세포가 하나로 합쳐져 접합자가 됨. 또는 그런 현상. 동물은 정자와 난자가 합쳐져 수정란을 이루고, 종자식물에서는 암술의 씨방 안의 난핵과 수술의 정핵이 결합하여 수정란을 만든다.","[修訂] 글이나 글자의 잘못된 점을 고침.","[修整] 고치어 정돈함.","[修整] 복제(複製)할 때에 복제를 선명하게 하기 위하여 원도(原圖)에 에어브러시를 써서 수정하는 일.","[修整] 사진술에서, 인화(印畫)를 선명하게 하거나 또는 수식할 목적으로 음화(陰畫)에 수정 바니시를 칠하여 연필로 화상(畫像)을 수정하는 일.","[授精] 정자를 난자에 결합시키는 일.","[綏定] 나라를 안정시킴.","[綏靖] 나라와 백성을 편안하게 함.","[輸情] 자기 나라의 내부 형편을 적국에 알려 줌.","[輸情] 죄인이 범죄 사실을 낱낱이 실토함."],"origin":"修正"},{"id":483,"category":"한자어","term":"경신","definition":"기록경기 따위에서, 종전의 기록을 깨뜨림.","example":"마라톤 세계 기록 경신.","exampleSource":"표준국어대사전 용례","otherMeanings":["[更新] 이미 있던 것을 고쳐 새롭게 함.","[更新] 어떤 분야의 종전 최고치나 최저치를 깨뜨림.","[庚申] 육십갑자의 쉰일곱째.","[京信] 서울에서 온 편지.","[京信] 서울 소식.","[敬信] 공경하며 믿음.","[敬神] 신을 공경함.","[敬愼] 공경하고 삼감.","[輕信] 깊이 생각하지 않고 쉽게 믿음."],"origin":"更新"},{"id":484,"category":"한자어","term":"독존","definition":"홀로 존재함.","example":"어떤 존재도 다른 것과 관계없이 홀로 독존할 수는 없다.","exampleSource":"교정 예문","otherMeanings":["[獨尊] 혼자만 높고 귀함."],"origin":"獨存"},{"id":485,"category":"한자어","term":"사사하다","definition":"고마운 뜻을 나타내는 말을 하다.","example":"그는 도움을 준 이들에게 정중히 사사하였다.","exampleSource":"제공 자료 예문","otherMeanings":["[些些, 하다] 하잘것없이 작거나 적다.","[使事, 하다] 어떤 일을 시키다.","[師事, 하다] 스승으로 섬기다. 또는 스승으로 삼고 가르침을 받다.","[斜射, 하다] 햇빛이나 그림자 따위가 비스듬히 비치다.","[斜射, 하다] 대각선 쪽에 있는 목표를 향하여 비스듬히 사격을 하다.","[奢肆, 하다] 사치스럽고 방자하다.","[賜死, 하다] 죽일 죄인을 대우하여 임금이 독약을 내려 스스로 죽게 하다.","[謝辭, 하다] 사죄하는 말을 하다.","[謝辭, 하다] 예를 갖추어 사양하다. 또는 그런 뜻을 나타내는 말을 하다.","[辭謝, 하다] 사절(辭絕)하여 물리치다."],"origin":"謝辭"},{"id":486,"category":"한자어","term":"사여하다","definition":"나라나 관청에서 금품을 내려 주다.","example":"왕은 공을 세운 신하에게 토지를 사여하였다.","exampleSource":"제공 자료 예문","otherMeanings":["[私與, 하다] 개인적으로 주다. 또는 사사로이 몰래 주다."],"origin":"賜與"},{"id":487,"category":"한자어","term":"지정","definition":"가리키어 확실하게 정함.","example":"지정 좌석에 앉으시오.","exampleSource":"표준국어대사전 용례","otherMeanings":["‘지정거리다’의 어근.","[支定] 풍년이나 흉년에 관계없이 해마다 일정한 금액으로 정하여진 소작료.","[地丁] 국화과의 여러해살이풀. 원줄기는 없고 이른 봄에 뿌리에서 깃 모양으로 깊이 갈라진 잎이 배게 난다. 높이 30cm 정도의 꽃줄기 끝에 누런 꽃이 4~5월에 두상(頭狀) 화서로 피는데 밤에는 오므라든다. 씨는 수과(瘦果)로 흰 갓털이 있어 바람에 날려 멀리 퍼진다. 잎은 식용하고 꽃 피기 전의 뿌리와 줄기는 한방에서 땀을 내게 하거나 강장(強壯)하는 약으로 쓴다. 한국, 중국 등지에 분포한다.","[地釘] 집터 따위의 바닥을 단단히 하려고 박는 통나무 토막이나 콘크리트 기둥.","[地精] 두릅나뭇과의 여러해살이풀. 높이는 60cm 정도이며, 잎은 줄기 끝에 서너 개씩 돌려나고 장상 복엽이다. 봄에 녹황색의 꽃이 피고 열매는 타원형으로 붉게 익는다. 뿌리는 희고 비대한 다육질인데 강장제로 귀중히 여겨진다. 깊은 산에 야생하거나 밭에서 기르는데 한국의 강원ㆍ경기ㆍ평남ㆍ평북ㆍ함남, 중국 등지에 분포한다.","[池亭] 못가에 있는 정자.","[至正] ‘지정하다01’의 어근.","[至正] 중국 원나라 순제 때의 연호(1341~1370).","[至情] 지극히 두터운 정분.","[至情] 진심에서 우러나오는 참된 정.","[至情] 아주 가까운 친척.","[至精] ‘지정하다02’의 어근.","[知情] 남의 사정을 앎.","[知情] 지성과 감정을 아울러 이르는 말.","[持正] 바른 도리를 취하고 지킴.","[指定] 관공서, 학교, 회사, 개인 등이 어떤 것에 특정한 자격을 줌."],"origin":"指定"},{"id":488,"category":"한자어","term":"실존","definition":"실제로 존재함. 또는 그런 존재.","example":"신의 실존에 대해 많은 논란이 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[實存] 사물의 본질이 아닌, 그 사물이 존재하는 그 자체. 스콜라 철학에서는 가능적 존재인 본질에 대하여 현실적 존재를 뜻한다.","[實存] 실존 철학에서, 개별자로서 자기의 존재를 자각적으로 물으면서 존재하는 인간의 주체적인 상태."],"origin":"實存"},{"id":489,"category":"한자어","term":"안광","definition":"사물을 보는 힘.","example":"안광이 날카롭다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[眼光] 눈의 정기.","[眼眶] 눈알의 언저리."],"origin":"眼光"},{"id":490,"category":"한자어","term":"조신","definition":"몸가짐을 조심함.","example":"이제 너도 곧 지아비가 될 것이니 조신을 잘하여라.","exampleSource":"표준국어대사전 용례","otherMeanings":["[早晨] 이른 새벽.","[曺伸] 조선 성종 때의 문인(?~?). 자는 숙분(叔奮). 호는 적암(適庵). 문장과 어학에 능하여 사역원정(司譯院正)으로 발탁되었고, ≪이륜행실도≫를 편찬하였다. 저서에 ≪적암시집≫, ≪소문쇄록(謏聞瑣錄)≫ 따위가 있다.","[祖神] 신으로 모시는 조상.","[租神] 토속 신앙에서, 도조(賭租)를 맡은 귀신.","[朝臣] 조정에서 벼슬살이를 하고 있는 신하.","[潮信] 밀물과 썰물이 드나드는 시각.","[調信] ≪삼국유사≫ 조신몽 설화에 나오는 신라의 승려. 꿈속에서 아름다운 여인과 40여 년간을 함께 돌아다니며 살았는데, 헐벗고 굶주려 끝내 아이를 죽게 하는 따위의 비참한 지경을 당하고, 그 여인과 헤어질 때 꿈에서 깨어나 인생의 고락이 헛됨을 깨닫고 정토사(淨土寺)를 지었다고 전한다.","[竈神] 부엌을 맡는다는 신. 늘 부엌에 있으면서 모든 길흉을 판단한다고 한다."],"origin":"操身"},{"id":491,"category":"한자어","term":"지체","definition":"때를 늦추거나 질질 끎.","example":"잠시도 지체 말고 바로 집으로 돌아가시오.","exampleSource":"표준국어대사전 용례","otherMeanings":["어떤 집안이나 개인이 사회에서 차지하고 있는 신분이나 지위.","[地體] 지각으로 둘러싸인 지구의 몸체.","[肢體] 팔다리와 몸을 통틀어 이르는 말.","[遲滯] 의무 이행을 정당한 이유 없이 지연하는 일."],"origin":"遲滯"},{"id":492,"category":"한자어","term":"육안","definition":"안경이나 망원경, 현미경 따위를 이용하지 아니하고 직접 보는 눈.","example":"태양의 흑점은 육안으로는 볼 수 없다.","exampleSource":"교정 예문","otherMeanings":["[肉眼] 식견 없이 단순히 표면적인 현상만을 보는 것.","[肉眼] 오안의 하나. 사람의 육신에 갖추어진 눈이다. 단지 눈에 보이는 것만을 볼 수 있다."],"origin":"肉眼"},{"id":493,"category":"한자어","term":"참석","definition":"모임이나 회의 따위의 자리에 참여함.","example":"참석 인원.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"參席"},{"id":494,"category":"한자어","term":"혼선","definition":"전신ㆍ전화ㆍ무선 통신 따위에서, 선이 서로 닿거나 전파가 뒤섞여 통신이 엉클어지는 일.","example":"전화에 갑자기 혼선이 생겨 통화를 중단했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[婚扇] 혼례식 때에 신부의 얼굴을 가리는 데 쓰는 둥근 부채.","[混線] 말이나 일 따위를 서로 다르게 파악하여 혼란이 생김.","[混線] 줄이 갈피를 잡을 수 없게 뒤섞임. 또는 그 줄."],"origin":"混線"},{"id":495,"category":"한자어","term":"고수","definition":"차지한 물건이나 형세 따위를 굳게 지킴.","example":"강경 노선 고수.","exampleSource":"표준국어대사전 용례","otherMeanings":["산형과의 한해살이풀. 높이는 30~60cm이며, 잎은 어긋나고 잘게 갈라진 우상 복엽이다. 6~7월에 작고 흰 꽃이 복산형 화서로 가지 끝에 피고 열매는 둥글다. 잎과 줄기는 동부 유럽이 원산지로 절에서 많이 재배한다.","[叩首] 머리를 조아리어 존경의 뜻을 나타냄.","[孤愁] 홀로 시름에 잠김. 또는 그런 시름.","[枯樹] 말라서 죽어 버린 나무.","[苦受] 삼수(三受)의 하나. 외계와의 접촉으로 몸과 마음에 생기는 괴로운 느낌을 이른다.","[苦修] 고통을 참고 수행함.","[苦愁] 근심과 걱정으로 괴로워함.","[高手] 바둑이나 장기 따위에서 수가 높음. 또는 그런 사람.","[高手] 어떤 분야나 집단에서 기술이나 능력이 매우 뛰어난 사람.","[高愁] 깊고 큰 시름.","[高壽] 늙은이로서 썩 많은 나이. 또는 그런 나이가 된 사람.","[高壽] 백제 고이왕 때의 대신(?~?). 고이왕 27년(260)에 관제가 마련되자 그 이듬해 위사좌평(衛士佐平)에 임명되어 숙위 병사(宿衛兵事)를 관장하였다.","[鼓手] 북이나 장구 따위를 치는 사람.","[賈竪] 상인을 낮잡아 이르는 말.","[瞽瞍] 눈먼 노인.","[瞽瞍] 중국 순임금 아버지의 다른 이름. 어리석고 사리에 어두웠기 때문에 붙여진 이름이라 한다."],"origin":"固守"},{"id":496,"category":"한자어","term":"공사","definition":"토목이나 건축 따위의 일.","example":"사옥 신축 공사.","exampleSource":"표준국어대사전 용례","otherMeanings":["무당이 사람의 편에서 신에게 사정을 전하는 일.","[工事] 형사들의 은어로, ‘고문04’을 이르는 말.","[工師] 악기를 연주하거나 수공업에 종사하는 사람의 우두머리.","[公私] 공공의 일과 사사로운 일을 아울러 이르는 말.","[公私] 정부와 민간을 아울러 이르는 말.","[公私] 사회와 개인을 아울러 이르는 말.","[公事] 국가나 공공 단체의 일.","[公事] 조선 시대에, 소송을 속되게 이르던 말.","[公使] 국가를 대표하여 파견되는 외교 사절. 외교부 장관의 감독과 훈령을 받아 조약국에 상주하는 외교 사절로, 대사에 버금가는 계급이다.","[公社] 국가적 사업을 수행하기 위하여 설립된 공공 기업체의 하나. 정부가 전액 출자하는 공법인으로서, 정부의 감독을 받으며 공과금이 면제된다. 한국 수자원 공사, 한국 토지 주택 공사, 한국 관광 공사 따위가 있다.","[公舍] 관청에서 관리에게 빌려주어 살도록 지은 집.","[供司] 절에서 밥 짓는 일을 주로 하는 사람.","[供辭] 조선 시대에, 죄인이 범죄 사실을 진술하던 일. 또는 그 진술.","[空士] ‘공군 사관 학교’를 줄여 이르는 말.","[空事] 보람을 얻지 못하고 쓸데없이 한 노력.","[貢士] 고려 시대에, 향시에 급제하여 국자감시에 응시할 자격이 있는 사람에 대한 칭호. 상공(上貢), 향공(鄕貢), 빈공(賓貢)의 삼공(三貢)이 있었다.","[貢士] 고대 중국에서, 지방의 제후가 천자(天子)에게 유능한 인물을 천거하던 일. 또는 그렇게 천거된 사람.","[貢使] 공물(貢物)을 바치는 일을 맡아보던 사신(使臣)."],"origin":"工事"},{"id":497,"category":"한자어","term":"관용","definition":"정부 기관이나 국립 공공 기관에서 사용함.","example":"관용 설비.","exampleSource":"표준국어대사전 용례","otherMeanings":["[慣用] 습관적으로 늘 씀. 또는 그렇게 쓰는 것.","[慣用] 오랫동안 써서 굳어진 대로 늘 씀. 또는 그렇게 쓰는 것.","[寬容] 남의 잘못 따위를 너그럽게 받아들이거나 용서함. 또는 그런 용서."],"origin":"官用"},{"id":498,"category":"한자어","term":"기수","definition":"행사 때 대열의 앞에 서서 기를 드는 일을 맡은 사람.","example":"우리 선수단이 기수를 앞세우고 입장하였다.","exampleSource":"표준국어대사전 용례","otherMeanings":["궁중에서, ‘이불01’을 이르던 말.","[技手] ‘기원01’의 전 용어.","[汽水] 바닷물과 민물이 섞여 염분이 적은 물. 강어귀에 있는 바닷물을 이른다.","[忌數] 마음에 꺼려 싫어하는 숫자. 동양에서의 4나 서양에서의 13 따위를 이른다.","[其數] 그 수.","[奇數] 2로 나누어서 나머지 1이 남는 수. 1, 3, 5, 7, 9 따위의 수를 이른다.","[奇樹] 기이하게 생긴 나무.","[奇獸] 기이한 짐승.","[氣嗽] 기침이 나고 가래가 목구멍에 걸려서 침을 뱉거나 삼키기가 거북하고 가슴이 답답한 병. 특히 여자에게 많다.","[氣數] 저절로 오고 가고 한다는 길흉화복의 운수.","[耆叟] 나이가 들어 늙은 사람.","[起首] 어떤 사실의 시초.","[起溲] 술이 발효하기 시작함.","[起溲] 증편이나 강정 또는 빵 따위를 만들 때에 반죽에 술을 부어 부풀어 오르게 함.","[基數] 수를 나타내는 데 기초가 되는 수. 십진법에서는 0에서 9까지의 정수를 이른다.","[基數] 집합의 원소의 수. 집합 A와 집합 B가 일대일의 대응을 할 때, A와 B는 기수가 같다고 한다.","[淇水] → 치수이강.","[旣遂] 이미 일을 끝냄.","[旣遂] 어떠한 행위가 일정한 범죄의 구성 요건으로 완전히 성립하는 일.","[幾數] 어떤 일을 알아차릴 수 있는 눈치. 또는 일이 되어 가는 야릇한 분위기.","[期首] 기간이나 학기 따위의 처음.","[期數] 이자를 계산할 때, 빌린 돈의 기간을 나타내는 수.","[琪樹] 선경(仙境)에 있다는 옥같이 아름다운 나무.","[琪樹] 눈이 많이 쌓인 나무의 모양.","[琪樹] 아름다운 나무라는 뜻으로, 재주가 뛰어난 사람을 이르는 말.","[旗手] 기를 들고 신호하는 일을 맡은 사람.","[旗手] 사회 활동에서 앞장서서 이끄는 사람을 비유적으로 이르는 말.","[箕宿] 이십팔수의 일곱째 별자리의 별들. 주성(主星)은 궁수자리의 감마성(γ星)이다.","[機首] 비행기의 앞부분.","[機數] 비행기의 수.","[騎手] 경마에서 말을 타는 사람.","[羈愁, /, 羇愁] 객지에서 느끼는 쓸쓸함이나 시름."],"origin":"旗手"},{"id":499,"category":"한자어","term":"동기","definition":"형제와 자매, 남매를 통틀어 이르는 말.","example":"동기끼리 사이좋게 지내다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[冬氣] 겨울철의 기후.","[冬期] 겨울의 시기.","[同期] 같은 시기. 또는 같은 기간.","[同期] 학교나 훈련소 따위에서의 같은 기(期).","[同期] 같은 시기에 같은 곳에서 교육이나 강습을 함께 받은 사람.","[同期] 둘 이상의 주기 현상(週期現象)이 그들 사이의 상호 작용이나 외부로부터의 신호 작용에 의하여, 같은 위상(位相) 또는 일정한 위상차(位相差)가 되는 일. 주파수가 일치하거나 정수비(整數比)의 관계로 된다.","[動氣] 배 속에 적취(積聚)가 있을 때 배꼽 부위에서 뛰는 맥.","[動機] 어떤 일이나 행동을 일으키게 하는 계기.","[動機] 음악 형식을 구성하는 가장 작은 단위. 둘 이상의 음이 모여서 된 것인데, 선율의 기본이 되며 또 일정한 의미를 가진 소절(小節)을 이룬다.","[童伎] 국악에서, 남자아이의 음악이나 춤.","[童妓] 아직 머리를 얹지 아니한 어린 기생.","[銅器] 구리로 만든 그릇."],"origin":"同氣"},{"id":500,"category":"한자어","term":"동화","definition":"성질, 양식(樣式), 사상 따위가 다르던 것이 서로 같게 됨.","example":"자연과의 동화.","exampleSource":"표준국어대사전 용례","otherMeanings":["[同化] 밖으로부터 얻어 들인 지식 따위를 완전히 자기 것으로 만듦.","[同化] 외부에서 섭취한 에너지원을 자체의 고유한 성분으로 변화시키는 일.","[同化] 개인의 사고방식이나 행동이 사회 환경과 일치하는 일.","[同化] 어린이가 현실을 정신과 비슷한 것으로 만드는 일.","[同化] 예전부터 가지고 있던 생각에 따라 새로운 사실을 해석하는 일.","[同化] 감각이나 지각에서, 같은 성질의 것들이 서로 당기는 일.","[同化] 이전의 정황과 같은 유사한 정황에 대하여 같은 반응을 보이는 일.","[同化] 말소리가 서로 이어질 때, 어느 한쪽 또는 양쪽이 영향을 받아 비슷하거나 같은 소리로 바뀌는 소리의 변화를 이르는 말.","[同火] 서로 같은 불을 씀.","[同火] 한 솥의 밥을 먹으며 함께 생활함을 비유적으로 이르는 말.","[同和] 같이 화합함.","[動畫] 만화 영화에서, 한 장면 한 장면의 그림을 이르는 말.","[童畫] 아동이 그린 그림.","[童話] 어린이를 위하여 동심(童心)을 바탕으로 지은 이야기. 또는 그런 문예 작품. 대체로 공상적ㆍ서정적ㆍ교훈적인 내용으로 되어 있다.","[銅貨] 구리로 만든 돈. 실제로는 구리와 주석의 합금으로 되어 있다."],"origin":"同化"},{"id":501,"category":"한자어","term":"무지","definition":"무늬가 없이 전체가 한 가지 빛깔로 됨. 또는 그런 물건.","example":"나는 무늬가 없는 무지 셔츠를 골랐다.","exampleSource":"교정 예문","otherMeanings":["곡식이 완전한 한 섬이 못 되는 것.","무더기로 쌓여 있는 더미.","보통보다 훨씬 정도에 지나치게.","[拇指] 다섯 손가락 가운데 첫째 손가락. 가장 짧고 굵다.","[無知] 아는 것이 없음.","[無知] 미련하고 우악스러움.","[無智] 지혜나 꾀가 없음."],"origin":"無地"},{"id":502,"category":"한자어","term":"분수령","definition":"어떤 사실이나 사태가 발전하는 전환점 또는 어떤 일이 한 단계에서 전혀 다른 단계로 넘어가는 전환점을 비유적으로 이르는 말.","example":"외국에서 지낸 5년이 그의 인생에 있어 중요한 분수령이 되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[分水嶺] 분수계가 되는 산마루나 산맥."],"origin":"分水嶺"},{"id":503,"category":"한자어","term":"사고","definition":"뜻밖에 일어난 불행한 일.","example":"자동차 사고.","exampleSource":"표준국어대사전 용례","otherMeanings":["[司庫] 신라 때에, 조부(調府)에 속한 벼슬. 경덕왕 때 이전의 사지(舍知)를 고친 것으로, 혜공왕 때 다시 사지로 고쳤다.","[史庫] 고려 말기부터 조선 후기까지 실록 따위 국가의 중요한 서적을 보관하던 서고. 강화의 정족산, 무주의 적상산, 봉화의 태백산, 평창의 오대산에 있었다.","[四考] 고려 시대에, 육품 이하 중앙 관직의 벼슬아치들에게 일 년에 네 번 공과(功過)를 심사하던 일. 성종 8년(989)부터 실시하였다.","[四苦] 인생의 네 가지 고통. 나는 것, 늙는 것, 병드는 것, 죽는 것을 이른다.","[四庫] 음양설에서 말하는 진(辰)ㆍ술(戌)ㆍ축(丑)ㆍ미(未)의 네 방향을 이르는 말.","[四庫] 중국 당나라 현종 때 장안과 뤄양(洛陽)의 두 곳에 서적을 경(經), 사(史), 자(子), 집(集)의 네 종류로 나누어 보관하던 서고. 또는 그 서적.","[四顧] 사방을 둘러봄.","[四顧] 동, 서, 남, 북 네 방위를 통틀어 이르는 말.","[死苦] 죽을 때의 고통.","[死苦] 죽을 정도의 심한 고통.","[死苦] 팔고의 하나. 죽음의 괴로움이나 죽음과 관련하여 느끼게 되는 여러 가지 괴로움을 이른다. 사고(四苦)의 하나이기도 하다.","[私考] 사사로운 생각.","[私庫] 사사로운 개인의 창고.","[私稿] 개인의 사사로운 원고.","[事故] 사람에게 해를 입혔거나 말썽을 일으킨 나쁜 짓.","[事故] 어떤 일이 일어난 까닭.","[社告] 회사에서 내는 광고.","[思考] 생각하고 궁리함.","[思考] 심상이나 지식을 사용하는 마음의 작용. 이에 의하여 문제를 해결한다. 직관적 사고, 분석적 사고, 집중적 사고, 확산적 사고 따위가 있다.","[思考] 개념, 구성, 판단, 추리 따위를 행하는 인간의 이성 작용.","[思顧] 두루 생각함.","[思顧] 돌이켜 생각함.","[査考] 자세히 생각하고 조사함.","[師姑] 선종에서, ‘비구니’를 이르는 말.","[斜高] 기둥체, 직원뿔, 직원뿔대의 꼭짓점에서 밑면의 한 점에 이르는 선분의 길이.","[斜高] 정사각뿔의 꼭짓점에서 밑면의 한 변의 중점에 이르는 선분의 길이.","[飼藳] 말이나 소 따위의 먹이로 쓰는 짚.","[謝告] 출판물 따위에서 어떤 사실에 대하여 감사의 뜻을 알림. 또는 그런 글.","[sago] 사고 야자나무의 수심(樹心)에서 나오는 쌀알 모양의 흰 전분. 식용 또는 바르는 풀의 원료로 쓴다."],"origin":"事故"},{"id":504,"category":"한자어","term":"사주","definition":"사람이 태어난 연월일시의 네 간지(干支). 또는 이에 근거하여 사람의 길흉화복을 알아보는 점.","example":"사주를 보다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[司舟] 신라 때, 선부(船府)에 속한 벼슬. 경덕왕 때 사지(舍知)를 고친 것으로, 혜공왕 때 다시 사지로 고쳤다.","[四周] 사방의 둘레.","[四柱] 혼인이 정해진 뒤 신랑 집에서 신부 집으로 신랑의 사주를 적어서 보내는 종이.","[四洲] 수미산을 중심으로 한 사방의 세계. 남쪽의 섬부주(贍部洲), 동쪽의 승신주(勝神洲), 서쪽의 우화주(牛貨洲), 북쪽의 구로주(俱盧洲)이다.","[史籒] 십체의 하나. 중국 주나라 선왕(宣王) 때에, 태사(太史)였던 주(籒)가 창작한 한자의 자체(字體). 소전(小篆)의 전신으로 대전(大篆)이라고도 한다.","[寺主] 절의 온갖 일을 맡아 이끌어 가는 사람.","[寺主] 당탑을 건조하고 관리하는 사무를 맡은 사람.","[寺主] 신라 때에, 국왕의 고문으로서 불교 정책의 총책임을 맡아보던 승직(僧職). 진흥왕 12년(551)에 고구려에서 온 혜량 법사(惠亮法師)를 처음으로 임명하였다.","[沙柱, /, 砂柱] 사막에서 모래가 회오리바람에 말려 올라가 기둥처럼 되는 현상.","[沙洲, /, 砂洲] 바닷가에 생기는 모래사장. 파도나 조류의 작용으로 강이나 해안의 수면 위에 둑 모양으로 이루어진다.","[私鑄] 돈 따위를 개인이 사사로이 주조함.","[事主] 하느님을 섬김.","[事酒] 일이 있을 때 마시는 술.","[事酒] 예전에 제사에 쓰던 술. 제사가 끝난 뒤에 하인이나 종들에게 주었다.","[使酒] 술을 마신 기운으로 기세를 부림.","[使嗾] 남을 부추겨 좋지 않은 일을 시킴.","[社主] 회사나 결사(結社)의 주인.","[師主] ‘승려01’를 높여 이르는 말.","[紗幮] 거칠게 짠 비단으로 만든 모기장.","[蛇酒] 소주 따위의 독한 술에 뱀을 넣어 우려낸 술.","[飼主] 가축 따위를 먹여 기르는 주인.","[駛走] 빨리 달림.","[賜酒] 임금이 공훈을 세운 신하에게 그 공로를 위로하기 위하여 술을 내리던 일. 또는 그 술."],"origin":"四柱"},{"id":505,"category":"한자어","term":"양식","definition":"뛰어난 식견이나 건전한 판단.","example":"아무 데나 침을 뱉는 것은 양식 있는 행동이 아니다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[洋式] 서양의 양식이나 격식.","[洋食] 서양식 음식이나 식사.","[樣式] 일정한 모양이나 형식.","[樣式] 오랜 시간이 지나면서 자연히 정하여진 방식.","[樣式] 시대나 부류에 따라 각기 독특하게 지니는 문학, 예술 따위의 형식.","[養殖] 물고기나 해조, 버섯 따위를 인공적으로 길러서 번식하게 함.","[糧食] 생존을 위하여 필요한 사람의 먹을거리.","[糧食] 지식이나 물질, 사상 따위의 원천이 되는 것을 비유적으로 이르는 말."],"origin":"良識"},{"id":506,"category":"한자어","term":"서식","definition":"생물 따위가 일정한 곳에 자리를 잡고 삶.","example":"서식 환경.","exampleSource":"표준국어대사전 용례","otherMeanings":["[書式] 증서, 원서, 신고서 따위와 같은 서류를 꾸미는 일정한 방식."],"origin":"棲息"},{"id":507,"category":"한자어","term":"이상","definition":"순서나 위치가 일정한 기준보다 앞이나 위.","example":"이상에서 살핀 바를 간단히 요약하면 다음과 같다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[二上] 예전에, 시문(詩文)을 평하는 등급 가운데 둘째 등급의 첫째.","[二相] 그 자체만이 가지는 자상(自相)과 다른 것에도 있는 공상(共相)을 통틀어 이르는 말.","[二相] 대지도론에서, 총상(總相)과 별상(別相)을 통틀어 이르는 말.","[二相] 대승기신론에서, 동상(同相)과 이상(異相)을 통틀어 이르는 말.","[二相] 조선 시대에, ‘우찬성’을 달리 이르던 말. 이상(貳相) 가운데 버금이라는 뜻이다.","[以上] 수량이나 정도가 일정한 기준보다 더 많거나 나음. 기준이 수량으로 제시될 경우에는, 그 수량이 범위에 포함되면서 그 위인 경우를 가리킨다.","[以上] 이미 그렇게 된 바에는.","[以上] 서류나 강연 등의 마지막에 써서 ‘끝’의 뜻을 나타내는 말.","[李箱] 시인ㆍ소설가(1910~1937). 본명은 김해경(金海卿). 초현실주의적이고 실험적인 시와 심리주의적 경향이 짙은 독백체의 소설을 써서 문단의 주목을 받았다. 작품에 시 , 소설 , , 수필 따위가 있다.","[泥狀] 진흙 덩어리와 같은 모양.","[泥像] 중국 고대에 부장품으로 쓰던, 진흙으로 빚어 만든 인형. 무인(武人), 무인(舞人), 여성 따위의 인상(人像)이나 토용(土俑)이 있다.","[理想] 생각할 수 있는 범위 안에서 가장 완전하다고 여겨지는 상태.","[理想] 생각할 수 있는 가장 완전한 상태. 절대적인 지성이나 감정의 최고 형태로 실현 가능한 상대적 이상과 도달 불가능한 절대적 이상으로 구별할 수 있다.","[異狀] 평소와는 다른 상태.","[異狀] 서로 다른 모양.","[異相] 보통과는 다른 인상이나 모양.","[異相] 사상의 하나. 사물이 생기면서부터 사라져 갈 때까지 변하여 가는 모양을 이른다.","[異相] 육상의 하나. 현상계가 지닌 서로 다른 모양이나 성질을 이른다.","[異常] 정상적인 상태와 다름.","[異常] 지금까지의 경험이나 지식과는 달리 별나거나 색다름.","[異常] 의심스럽거나 알 수 없는 데가 있음.","[異象] 이상한 모양.","[異象] 특수한 현상.","[貳相] 조선 시대에, ‘좌우찬성’을 달리 이르던 말. 삼정승 다음가는 벼슬이라는 뜻이다.","[履尙] 품행이 고상함.","[履霜] 서리를 밟는다는 것은 곧 물이 얼 겨울철이 닥칠 징조라는 뜻으로, 징조를 보고 장차 다가올 일에 대비하여야 함을 경계하는 말."],"origin":"以上"},{"id":508,"category":"한자어","term":"장기","definition":"가장 잘하는 재주.","example":"장기 자랑.","exampleSource":"표준국어대사전 용례","otherMeanings":["→ 쟁기01.","[仗器] 전쟁이나 싸움에 사용되는 기구를 통틀어 이르는 말.","[壯妓] 나이가 지긋한 장년의 기생.","[壯氣] 건장한 기운. 또는 왕성한 원기.","[杖期] 상주가 상복에 지팡이를 짚고 상례(喪禮)를 지내는 일 년 동안의 기간.","[杖朞] 상례(喪禮)에서, 상주가 상장(喪杖)을 짚고 생베로 지은 상복을 일 년 동안 입는 거상(居喪). 조부가 살아 있고 조모가 사망하였거나, 아버지가 사망한 뒤 재가한 어머니가 사망하였거나, 아버지에게서 쫓겨난 어머니가 사망하였거나, 아들이 있는 서모가 사망하였을 때에 이 복제를 따랐다.","[長崎] → 나가사키.","[長期] 긴 기간.","[長旗] 나부끼는 부분이 기다란 기.","[將棋, /, 將碁] 나무로 만든 32짝의 말을 붉은 글자와 푸른 글자의 두 종류로 나누어 판 위에 벌여 놓고 서로 번갈아 가며 공격과 수비를 교대로 하여 승부를 가리는 놀이. 또는 그런 놀이를 하는 데 쓰는 기구.","[將器] 장수가 될 만한 인재.","[帳記, /, 掌記] 물건이나 논밭 따위를 팔고 사는 데 관한 품명이나 값 따위를 적어 놓은 글.","[帳記, /, 掌記] 물품의 목록.","[場技] 주로 광대가 땅에서 뛰어넘으며 펼치는 묘기나 재주.","[葬期] 상(喪)을 당한 날로부터 장사를 치르는 날까지의 기간. 예전에는 법으로 엄격히 규정하였는데, 임금이나 왕비는 5개월, 사품 이상의 문무관은 3개월, 오품 이하 문무관과 서민은 1개월 이내로 하였다.","[葬器] 장례에 쓰는 여러 가지 기구.","[瘴氣] 축축하고 더운 땅에서 생기는 독한 기운.","[臟氣] 오장(五臟)의 기(氣). 또는 그것의 기능 및 활동.","[臟器] 내장의 여러 기관."],"origin":"長技"},{"id":509,"category":"한자어","term":"군무","definition":"여러 사람이 무리를 지어 춤을 춤. 또는 그 춤.","example":"군무를 추다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[軍務] 군사(軍事)에 관한 일.","[軍務] 군인으로서 군대에 복무하는 일.","[軍舞] ‘군사 무용’을 줄여 이르는 말."],"origin":"群舞"},{"id":510,"category":"한자어","term":"독무","definition":"혼자서 추는 춤.","example":"무용수는 무대 중앙에서 독무를 선보였다.","exampleSource":"교정 예문","otherMeanings":["[毒霧] 독한 기운이 있는 안개."],"origin":"獨舞"},{"id":511,"category":"한자어","term":"가무","definition":"노래와 춤을 아울러 이르는 말.","example":"가무에 능한 기생.","exampleSource":"표준국어대사전 용례","otherMeanings":["[加貿] 관세의 수입을 늘리기 위하여 무역량을 늘리던 일. 해마다 오는 일본 사신에게 예물로 주던 인삼의 경비를 왜관에서 무역하는 사람에게 거둔 관세로 충당하던 때에, 인삼값이 모자랄 경우에 행하였다.","[家務] 살림을 꾸려 나가면서 하여야 하는 여러 가지 일. 빨래, 밥하기, 청소 따위를 이른다.","[家務] 자기 집이나 가까운 친척 집에 생기는 일이나 행사.","[笳舞] 신라 때에, 피리에 맞추어 춤을 추며 노래하던 무악(舞樂). 내물왕 때 향인(鄕人)들이 지어 즐겼다고 하는데, 가사와 악보는 전하지 않는다.","[歌舞] 노래하면서 춤을 춤."],"origin":"歌舞"},{"id":512,"category":"한자어","term":"농무","definition":"풍물놀이에 맞추어 추는 춤. 꽹과리, 북, 태평소, 징 따위의 소리에 맞추어 벙거지에 매단 털이나 띠를 빙빙 돌리며 흥겹게 춘다.","example":"농악대의 장단에 맞춰 흥겨운 농무가 펼쳐졌다.","exampleSource":"제공 자료 예문","otherMeanings":["[農務] 농사짓는 일. 또는 농사와 관계되는 일.","[農務] 농업에 관한 사무나 정무.","[濃霧] 자욱하게 낀 짙은 안개."],"origin":"農舞"},{"id":513,"category":"한자어","term":"승무","definition":"장삼과 고깔을 걸치고 북채를 쥐고 추는 민속춤. 끝내 수행을 이루지 못한 고뇌를 법고를 두드려서 잊으려는 파계승의 심정을 나타낸다.","example":"승무를 추다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[乘務] 운행 중인 차, 기차, 배, 비행기 따위의 안에서 운행과 관련된 직무와 승객에 관한 사무를 맡아봄.","[陞廡] 학덕(學德)이 있는 사람을 문묘(文廟)에 올려 함께 제사 지내던 일.","[僧舞] 조지훈이 지은 시. 승무를 추고 있는 여승을 소재로 하여 삶의 번뇌를 극복하고자 하는 염원을 회화적으로 형상화한 작품이다."],"origin":"僧舞"},{"id":514,"category":"한자어","term":"일부","definition":"한 부분. 또는 전체를 여럿으로 나눈 얼마.","example":"일부 지역.","exampleSource":"표준국어대사전 용례","otherMeanings":["[一夫] 한 사람의 평범한 남자.","[一富] 첫째가는 큰 부자.","[日附] 서류 따위에 적는 그날그날의 일자.","[日賦] 물건값이나 빚 따위의 일정한 금액을 며칠에 나누어 날마다 내는 일. 또는 그런 돈."],"origin":"一部"},{"id":515,"category":"한자어","term":"수려하다","definition":"빼어나게 아름답다.","example":"산수가 수려하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"秀麗"},{"id":516,"category":"한자어","term":"화려하다","definition":"환하게 빛나며 곱고 아름답다.","example":"의상이 화려하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[華麗, 하다] 어떤 일이나 생활 따위가 보통 사람들이 누리기 어려울 만큼 대단하거나 사치스럽다."],"origin":"華麗"},{"id":517,"category":"한자어","term":"호화","definition":"사치스럽고 화려함.","example":"호화 별장.","exampleSource":"표준국어대사전 용례","otherMeanings":["[號火] 신호를 하기 위하여 올리는 불. 봉화 따위가 있다.","[糊化] 녹말에 물을 넣어 가열할 때에 부피가 늘어나고 점성이 생겨서 풀처럼 끈적끈적하게 됨. 또는 그런 현상."],"origin":"豪華"},{"id":518,"category":"한자어","term":"영화","definition":"몸이 귀하게 되어 이름이 세상에 빛남.","example":"부귀와 영화를 누리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[映畫] 일정한 의미를 갖고 움직이는 대상을 촬영하여 영사기로 영사막에 재현하는 종합 예술.","[英貨] 영국의 화폐. 곧 파운드를 이른다.","[英華] 밖으로 드러나는 아름다운 색채.","[英華] 뛰어난 시나 문장을 비유적으로 이르는 말.","[英華] 영국과 중국을 아울러 이르는 말.","[穎花] 수상 화서로 핀 꽃.","[嬰禍] 화(禍)를 입은 일.","[靈化] 어떤 사물이 신령스럽게 됨. 또는 그렇게 되게 함."],"origin":"榮華"},{"id":519,"category":"한자어","term":"번화하다","definition":"번성하고 화려하다.","example":"번화한 거리.","exampleSource":"표준국어대사전 용례","otherMeanings":["[繁華, 하다] 얼굴에 달기(達氣)가 있고 화려하다."],"origin":"繁華"},{"id":520,"category":"한자어","term":"환갑","definition":"육십갑자의 ‘갑(甲)’으로 되돌아온다는 뜻으로, 예순한 살을 이르는 말.","example":"환갑을 맞이하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[環甲] 바탕이 되는 옷에 쇠고리를 빽빽하게 박아 붙인 갑옷."],"origin":"還甲"},{"id":521,"category":"한자어","term":"외래어","definition":"외국에서 들어온 말로 국어처럼 쓰이는 단어. 버스, 컴퓨터, 피아노 따위가 있다.","example":"어느 시대이든 외국 문물이 들어오게 되면 외래어는 생기게 마련이다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"外來語"},{"id":522,"category":"한자어","term":"관형사","definition":"체언 앞에 놓여서, 그 체언의 내용을 자세히 꾸며 주는 품사. 조사도 붙지 않고 어미 활용도 하지 않는데, ‘순 살코기’의 ‘순’과 같은 성상 관형사, ‘저 어린이’의 ‘저’와 같은 지시 관형사, ‘한 사람’의 ‘한’과 같은 수 관형사 따위가 있다.","example":"‘새’는 ‘새 옷’에서 명사를 꾸미는 관형사이다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"冠形詞"},{"id":523,"category":"한자어","term":"유의어","definition":"뜻이 서로 비슷한 말.","example":"‘기쁘다’와 ‘즐겁다’는 서로 유의어 관계에 있다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"類義語"},{"id":524,"category":"한자어","term":"반의어","definition":"그 뜻이 서로 정반대되는 관계에 있는 말. 한 쌍의 말 사이에 서로 공통되는 의미 요소가 있으면서 동시에 서로 다른 한 개의 의미 요소가 있어야 한다. ‘남자’와 ‘여자’, ‘총각’과 ‘처녀’, ‘위’와 ‘아래’, ‘작다’와 ‘크다’, ‘오다’와 ‘가다’ 따위이다.","example":"‘높다’와 ‘낮다’는 반의어이다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"反義語反意語"},{"id":525,"category":"한자어","term":"접전","definition":"경기나 전투에서 서로 맞붙어 싸움. 또는 그런 경기나 전투.","example":"순간 문치걸은 송기화와 헌병들 사이에 접전이 벌어진 것이라 판단하고 오르막길로 뛰어올라갔다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[接戰] 서로 힘이 비슷하여 승부가 쉽게 나지 아니하는 경기나 전투."],"origin":"接戰"},{"id":526,"category":"한자어","term":"낙승","definition":"힘들이지 아니하고 쉽게 이김.","example":"낙승을 거두다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[落僧] 타락한 승려."],"origin":"樂勝"},{"id":527,"category":"한자어","term":"석패","definition":"경기나 경쟁에서 약간의 점수 차이로 아깝게 짐.","example":"우리 팀은 한 점 차이로 아쉽게 석패했다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"惜敗"},{"id":528,"category":"한자어","term":"신승","definition":"경기 따위에서 힘들게 겨우 이김.","example":"어제 열린 축구 경기에서는 우리 편이 3 대 2로 한 점 차의 신승을 거두었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[神僧] 정신이 신령에 통하여 모르는 것이 없이 잘 아는 승려.","[神僧] 꿈속 따위에 나타나는 신비스러운 승려.","[新升] 새로 제정되어 현재 쓰고 있는 되. 용량이 2리터이다."],"origin":"辛勝"},{"id":529,"category":"한자어","term":"우승","definition":"경기, 경주 따위에서 이겨 첫째를 차지함. 또는 첫째 등위.","example":"영광스러운 우승.","exampleSource":"표준국어대사전 용례","otherMeanings":["[牛蠅] 쇠파릿과의 곤충. 몸의 길이는 1.5cm 정도이며 누런 갈색이다. 온몸에 검은 털이 나 있고 위 몸통에 몇 개의 검은 줄무늬가 있다. 소나 말의 살갗을 파고들어 피를 빨아 먹고 살며, 온대 지방에 널리 분포한다.","[右丞] 고려 시대에, 상서도성에 속한 종삼품 벼슬.","[右丞] 조선 전기에, 삼사에 속한 종삼품 벼슬.","[郵丞] 조선 후기에, ‘역승’을 달리 이르던 말.","[愚僧] 어리석은 승려.","[愚僧] 어리석은 승려라는 뜻으로, 승려가 자기를 낮추어 이르는 일인칭 대명사."],"origin":"優勝"},{"id":530,"category":"한자어","term":"건조","definition":"말라서 습기가 없음.","example":"실내 공기의 건조를 막기 위해 가습기를 틀었다.","exampleSource":"교정 예문","otherMeanings":["[建造] 건물이나 배 따위를 설계하여 만듦.","[乾造] 성명학(星命學)에서 이르는 남자의 운명.","[乾棗] 말린 대추.","[乾燥] 물기나 습기가 말라서 없어짐. 또는 물기나 습기를 말려서 없앰.","[乾燥] 분위기, 정신, 표현, 환경 따위가 여유나 윤기 없이 딱딱함."],"origin":"乾燥"},{"id":531,"category":"한자어","term":"가습기","definition":"수증기를 내어 실내의 습도를 조절하는 전기 기구.","example":"방이 건조해지지 않도록 가습기를 틀어 놓았다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"加濕器"},{"id":532,"category":"한자어","term":"환기","definition":"탁한 공기를 맑은 공기로 바꿈.","example":"실내 환기.","exampleSource":"표준국어대사전 용례","otherMeanings":["[喚起] 주의나 여론, 생각 따위를 불러일으킴."],"origin":"換氣"},{"id":533,"category":"한자어","term":"오염","definition":"더럽게 물듦. 또는 더럽게 물들게 함.","example":"이 지역은 지하수 오염이 심각한 상태이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[汚染] 핵무기 따위의 방사성 물질이 목표물이나 대기 속에 머무르는 상태.","[汚染] 미생물이나 다세포 생물 조직 따위를 순수 배양할 때, 다른 미생물이 밖에서 유입되어 자라는 일."],"origin":"汚染"},{"id":534,"category":"한자어","term":"부의금","definition":"부의로 보내는 돈.","example":"부의금을 내다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"賻儀金"},{"id":535,"category":"한자어","term":"주례사","definition":"주례가 예식에서 행하는 의례적인 축사.","example":"신랑, 신부의 입장 후 주례사가 이어졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"主禮辭"},{"id":536,"category":"한자어","term":"관혼상제","definition":"관례, 혼례, 상례, 제례를 아울러 이르는 말.","example":"관혼상제의 간소화.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"冠婚喪祭"},{"id":537,"category":"한자어","term":"풍습","definition":"풍속과 습관을 아울러 이르는 말.","example":"우리 민족 고유의 전통과 풍습.","exampleSource":"표준국어대사전 용례","otherMeanings":["[風濕] 풍사(風邪)와 습사(濕邪)가 겹친 것. 또는 이로 인하여 생긴 병증. 뼈마디가 쑤시고 켕기며 굽혔다 폈다 하기가 어렵다."],"origin":"風習"},{"id":538,"category":"한자어","term":"대체","definition":"다른 것으로 대신함.","example":"대체 방안.","exampleSource":"표준국어대사전 용례","otherMeanings":["[大體] 일이나 내용의 기본적인 큰 줄거리.","[大體] 다른 말은 그만두고 요점만 말하자면.","[對替] 어떤 금액을 한 계정에서 다른 계정으로 대체하는 일. 또는 그 계정."],"origin":"代替"},{"id":539,"category":"한자어","term":"상식","definition":"사람들이 보통 알고 있거나 알아야 하는 지식. 일반적 견문과 함께 이해력, 판단력, 사리 분별 따위가 포함된다.","example":"상식 밖의 행동.","exampleSource":"표준국어대사전 용례","otherMeanings":["[上食] 상가(喪家)에서 아침저녁으로 궤연 앞에 올리는 음식.","[尙食] 고려 시대에 둔 내명부의 벼슬.","[尙食] 조선 시대에, 내명부 가운데 식사에 관한 일을 맡아보던 종오품 벼슬.","[相識] 서로 얼굴이나 알 정도의 친분이 있음.","[常式] 일정한 법률이나 격식.","[常食] 늘 먹음. 또는 그런 음식."],"origin":"常識"},{"id":540,"category":"한자어","term":"이론","definition":"사물의 이치나 지식 따위를 해명하기 위하여 논리적으로 정연하게 일반화한 명제의 체계.","example":"경제 이론.","exampleSource":"표준국어대사전 용례","otherMeanings":["[理論] 실증성이 희박한, 순 관념적으로 조직된 논리.","[異論] 달리 논함. 또는 다른 이론(理論)이나 의견.","[irone] 붓꽃과 아이리스속 식물의 뿌리에서 얻는 무색 액체. 휘발성 기름 성분으로 향료에 쓴다. 화학식은 C14H22O."],"origin":"理論"},{"id":541,"category":"한자어","term":"과정","definition":"일정한 기간에 교육하거나 학습하여야 할 과목의 내용과 분량.","example":"오늘로 1학년 1학기 과정을 마치고 여름 방학에 들어간다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[科程] 학교에서 학생들이 공부하는 과목의 내용과 체계.","[過政] ‘과도 정부’를 줄여 이르는 말.","[過程] 일이 되어 가는 경로.","[課程] 해야 할 일의 정도.","[課程] 대학에서, 일정한 분야의 교수ㆍ연구를 위한 전문적인 절차."],"origin":"課程"},{"id":542,"category":"한자어","term":"수료","definition":"일정한 학과를 다 배워 끝냄.","example":"석사 과정 수료.","exampleSource":"표준국어대사전 용례","otherMeanings":["[水蓼] 마디풀과의 한해살이풀. 높이는 40~80cm이며 잎은 어긋나고 피침 모양이다. 6~9월에 꽃잎의 끝이 붉은색을 띠는 연녹색 꽃이 수상(穗狀) 화서로 피고 열매는 수과(瘦果)이다. 잎과 줄기는 짓이겨 물에 풀어서 고기를 잡는 데 쓴다. 잎은 매운맛이 나며 조미료로 쓰이기도 한다. 한국, 일본, 북미, 유럽 등지에 분포한다."],"origin":"修了"},{"id":543,"category":"한자어","term":"사상","definition":"어떠한 사물에 대하여 가지고 있는 구체적인 사고나 생각.","example":"사상의 자유.","exampleSource":"표준국어대사전 용례","otherMeanings":["[史上] 역사에 나타나 있는 바.","[四相] 사람이 겪는 네 가지 모습. 생, 노, 병, 사를 이른다.","[四相] 만물이 변하는 네 가지 모습. 생상(生相), 주상(住相), 이상(異相), 멸상(滅相)을 이른다.","[四相] 중생이 실재라고 믿는 네 가지 상. 아상(我相), 인상(人相), 중생상(衆生相), 수자상(壽者相)을 이른다.","[四象] 일월성신을 통틀어 이르는 말.","[四象] 음양(陰陽)의 네 가지 상징인 태양, 태음, 소양, 소음을 통틀어 이르는 말.","[四象] 땅속의 물, 불, 흙, 돌을 통틀어 이르는 말.","[死狀] 거의 죽게 된 상태.","[死狀] 죽어 버린 상태.","[死相] 거의 다 죽게 된 상. 또는 죽을 조짐이 나타난 상.","[死相] 죽은 사람의 얼굴.","[死傷] 죽거나 다침.","[私商] 개인이 하는 장사. 또는 그 장수.","[私傷] 공무(公務)가 아닌 사사로운 일로 입은 부상.","[私償] 사사롭게 진 빚을 갚음.","[事狀, /, 事相] 일이 되어 가는 형편이나 상황. 또는 벌어진 일의 상태.","[事相] 진리를 따라서 나타나는 현상계의 낱낱의 차별된 모양.","[事相] 밀교에서, 조단(造壇)ㆍ관정(灌頂)ㆍ인계(印契)ㆍ진언 따위의 밀교적 상징으로서 표현되는 구체적이고도 실제적인 의례와 행법.","[事象] 관찰할 수 있는 사물과 현상.","[事象] 어떤 실험이나 시행(試行)에서 일어날 수 있는 결과. 예를 들어 주사위를 던질 때 1이 나온다든가, 짝수가 나온다든가, 4 이상이 나온다든가 하는 따위이다.","[使相] 중국 당나라ㆍ송나라 때에, 재상의 호칭이 추가된 절도사나 절도사의 호칭이 추가된 은퇴한 재상을 이르던 말.","[泗上] 공자의 문하. 또는 그 학파. 공자가 화이수이강(淮水江)의 지류인 쑤수이강(泗水江) 변에서 제자를 가르쳤다는 데에서 유래한다.","[思想] 판단, 추리를 거쳐서 생긴 의식 내용.","[思想] 논리적 정합성을 가진 통일된 판단 체계.","[思想] 지역, 사회, 인생 따위에 관한 일정한 인식이나 견해.","[沙上, /, 砂上] 모래 위.","[捨象] 유의할 필요가 있는 현상의 특징 이외의 다른 성질을 버리는 일. 추상 작용에 필연적으로 수반되는 부정적 측면이다.","[蛇床] ‘사상자03「1」’의 성숙한 열매. 요통, 발기 불능(勃起不能), 낭습증 따위의 치료에 쓴다.","[絲狀] 실처럼 길고 가는 모양.","[寫象, /, 寫像] 지각 또는 사고에 의하여 과거의 대상이 의식에 다시 나타나는 상태.","[寫像] 물체에서 나온 빛이 거울에 반사 또는 굴절된 다음에 모여서 생기는 상(像).","[寫像] 광학계에서, 물체와 상과의 대응을 이르는 말.","[寫像] 어떤 집합의 임의의 원소가 다른 집합의 하나의 원소에 대응할 때, 그 두 집합 간의 대응 관계."],"origin":"思想"},{"id":544,"category":"한자어","term":"종교","definition":"신이나 초자연적인 절대자 또는 힘에 대한 믿음을 통하여 인간 생활의 고뇌를 해결하고 삶의 궁극적인 의미를 추구하는 문화 체계. 그 대상ㆍ교리ㆍ행사의 차이에 따라 여러 가지가 있는데, 애니미즘ㆍ토테미즘ㆍ물신 숭배 따위의 초기적 신앙 형태를 비롯하여 샤머니즘이나 다신교ㆍ불교ㆍ기독교ㆍ이슬람교 따위의 세계 종교에 이르기까지 비제도적인 것과 제도적인 것이 있다.","example":"종교를 믿다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"宗敎"},{"id":545,"category":"한자어","term":"인식","definition":"사물을 분별하고 판단하여 앎.","example":"인식이 높다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[認識] 자극을 받아들이고, 저장하고, 인출하는 일련의 정신 과정. 지각, 기억, 상상, 개념, 판단, 추리를 포함하여 무엇을 안다는 것을 나타내는 포괄적인 용어로 쓴다.","[認識] 일반적으로 사람이 사물에 대하여 가지는, 그것이 진(眞)이라고 하는 것을 요구할 수 있는 개념. 또는 그것을 얻는 과정."],"origin":"認識"},{"id":546,"category":"한자어","term":"패배","definition":"겨루어서 짐.","example":"찬란한 승리와 참담한 패배.","exampleSource":"표준국어대사전 용례","otherMeanings":["[敗北] 싸움에 져서 달아남."],"origin":"敗北"},{"id":547,"category":"한자어","term":"불행","definition":"행복하지 아니함.","example":"불행을 느끼다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[不幸] 행복하지 아니한 일. 또는 그런 운수."],"origin":"不幸"},{"id":548,"category":"한자어","term":"단장","definition":"몹시 슬퍼서 창자가 끊어지는 듯함.","example":"단장의 비애.","exampleSource":"표준국어대사전 용례","otherMeanings":["[丹粧] 얼굴, 머리, 옷차림 따위를 곱게 꾸밈.","[丹粧] 건물, 거리 따위를 손질하여 꾸밈.","[單葬] 주검을 하나만 묻은 무덤.","[短杖] 짧은 지팡이.","[短長] 길고 짧음.","[短章] 짧은 시가(詩歌)나 문장.","[短牆] 낮은 담.","[團長] ‘단’ 자가 붙은 단체의 우두머리.","[端莊] 단정(端整)하고 장엄함.","[端裝] 단정하게 차림.","[壇場] 단을 마련하여 놓은 곳.","[斷章] 한 체계로 묶지 아니하고 몇 줄씩의 산문체로 토막을 지어 적은 글.","[斷章] 가벼운 피아노 소곡. 베토벤의 ≪피아노 소곡집≫ 따위에서 볼 수 있다.","[簞匠] 조선 시대에, 죽순 껍질과 갈대로 돗자리를 만드는 일을 맡아 하던 사람."],"origin":"斷腸"},{"id":549,"category":"한자어","term":"궁핍","definition":"몹시 가난함.","example":"궁핍에 시달리다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"窮乏"},{"id":550,"category":"한자어","term":"난색","definition":"꺼리거나 어려워하는 기색.","example":"난색을 보이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[暖色, /, 煖色] 따뜻한 느낌을 주는 색. 노란색, 빨간색 계통의 색이다.","[難色] 비난하려는 낯빛."],"origin":"難色"},{"id":551,"category":"한자어","term":"분열","definition":"집단이나 단체, 사상 따위가 갈라져 나뉨.","example":"귀족 사회의 분열과 대립.","exampleSource":"표준국어대사전 용례","otherMeanings":["[分列] 각각 갈라져서 늘어섬. 또는 그렇게 함.","[分裂] 찢어져 나뉨.","[分裂] 원자핵이 방사능과 열을 방출하면서 다른 원자핵들로 쪼개지는 현상.","[分裂] 하나의 세포로 이루어진 개체가 둘 이상으로 나뉘어 불어나는 무성 생식. 주로 단세포 원생생물이나 박테리아에서 일어난다."],"origin":"分裂"},{"id":552,"category":"한자어","term":"신봉","definition":"사상이나 학설, 교리 따위를 옳다고 믿고 받듦.","example":"계율의 신봉.","exampleSource":"표준국어대사전 용례","otherMeanings":["[信封] 편지 봉투.","[神鳳] 중국에서, 영묘한 징조로 여기는 봉황을 이르는 말.","[新峯] 함경북도 회령군과 부령군 사이에 있는 산봉우리. 높이는 1,145미터."],"origin":"信奉"},{"id":553,"category":"한자어","term":"점멸","definition":"점점 멸망하여 감.","example":"찬란한 문화를 꽃피웠던 나라도 점멸의 길로 접어든 경우가 많다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[點滅] 등불이 켜졌다 꺼졌다 함. 또는 등불을 켰다 껐다 함.","[點滅] 어떤 생각이나 현상 따위가 생겨났다 사라졌다 함을 비유적으로 이르는 말."],"origin":"漸滅"},{"id":554,"category":"한자어","term":"불굴","definition":"온갖 어려움에도 굽히지 아니함.","example":"불굴의 신념.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"不屈"},{"id":555,"category":"한자어","term":"책임","definition":"맡아서 해야 할 임무나 의무.","example":"연락 책임.","exampleSource":"표준국어대사전 용례","otherMeanings":["[責任] 어떤 일에 관련되어 그 결과에 대하여 지는 의무나 부담. 또는 그 결과로 받는 제재(制裁).","[責任] 위법한 행동을 한 사람에게 법률적 불이익이나 제재를 가하는 일. 민사 책임과 형사 책임이 있다."],"origin":"責任"},{"id":556,"category":"한자어","term":"질서","definition":"혼란 없이 순조롭게 이루어지게 하는 사물의 순서나 차례.","example":"질서 의식.","exampleSource":"표준국어대사전 용례","otherMeanings":["[姪壻] 조카딸의 남편을 이르는 말.","[疾徐] 빠름과 느림."],"origin":"秩序"},{"id":557,"category":"한자어","term":"염원","definition":"마음에 간절히 생각하고 기원함. 또는 그런 것.","example":"우리 겨레의 염원.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"念願"},{"id":558,"category":"한자어","term":"지지","definition":"어떤 사람이나 단체 따위의 주의ㆍ정책ㆍ의견 따위에 찬동하여 이를 위하여 힘을 씀. 또는 그 원조.","example":"지지 세력.","exampleSource":"표준국어대사전 용례","otherMeanings":["어린아이의 말로, 더러운 것을 이르는 말.","수다스럽게 지껄이는 소리. 또는 그 모양.","‘지지하다02’의 어근.","[地, 지] → 지기03「2」.","[支持] 무거운 물건을 받치거나 버팀.","[支持] 주가 하락이 매입 세력에 의하여 어느 선에서 더 이상 계속되지 아니하는 일.","[止持] 몸과 말로 하는 나쁜 짓을 억제하여 죄업을 짓지 아니함.","[地支] 육십갑자의 아래 단위를 이루는 요소. 자(子), 축(丑), 인(寅), 묘(卯), 진(辰), 사(巳), 오(午), 미(未), 신(申), 유(酉), 술(戌), 해(亥)이다.","[地誌] 특정 지역의 자연 및 인문 현상을 백과사전식으로 나누어 기술한 책.","[地誌] 특정 지역의 지역적 성격을 종합적으로 구명하는 학문. 지리학의 한 분야이다.","[至知] 더없이 뛰어난 지혜. 또는 그런 지혜가 있는 사람.","[枝指] → 기지04.","[知止] 자신의 분수에 넘치지 아니하도록 그칠 줄을 앎.","[祇支] 승려가 가사 밑에 입는 옷. 왼쪽 어깨로부터 왼쪽 팔을 덮고, 한쪽 끝은 오른쪽 겨드랑이에 비스듬히 낀다.","[紙地] 종이의 품질.","[紙誌] 신문과 잡지 따위를 통틀어 이르는 말.","[智智] 지혜 가운데 지혜라는 뜻으로, 가장 뛰어난 부처의 지혜를 이르는 말.","[遲遲] ‘지지하다05’의 어근."],"origin":"支持"},{"id":559,"category":"한자어","term":"여론","definition":"사회 대중의 공통된 의견.","example":"여론 정치.","exampleSource":"표준국어대사전 용례","otherMeanings":["[餘論] 골자를 논의하고 난 뒤의 나머지 논의.","[輿論] 1922년에 미국의 평론가 리프먼(Lippmann, W.)이 쓴 여론 연구서. 여론을 실체화하고 현실적인 형성 과정 및 기능을 밝혔다."],"origin":"輿論"},{"id":560,"category":"한자어","term":"방송","definition":"라디오나 텔레비전 따위를 통하여 널리 듣고 볼 수 있도록 음성이나 영상을 전파로 내보내는 일. 특정 지역을 대상으로 유선(有線)으로 행하는 것을 포함하기도 한다.","example":"교내 방송.","exampleSource":"표준국어대사전 용례","otherMeanings":["[放送] 죄인을 감옥에서 나가도록 풀어 주던 일."],"origin":"放送"},{"id":561,"category":"한자어","term":"유선","definition":"전선에 의한 통신 방식.","example":"서울과 대전을 유선으로 연결하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[乳腺] 유방(乳房) 속에 있는, 젖이 나오는 샘.","[油扇] 기름종이를 바른 부채.","[流線] 운동하고 있는 유체에서 각 점에 대한 접선의 방향이 유체가 흐르는 방향과 일치하도록 그은 가상적인 곡선. 유체의 흐름을 묘사하는 데 편리하게 이용한다.","[遊船] 뱃놀이를 할 때 타는 배.","[儒先] 옛 선비. 또는 선대(先代)의 유학자.","[諭善] 조선 시대에, 세손강서원에 속한 벼슬 이름. 영조 때 둔 것으로, 좌유선ㆍ우유선을 한 명씩 두었는데, 당하(堂下) 삼품에서 종이품 사이의 사람으로 임명하였다."],"origin":"有線"},{"id":562,"category":"한자어","term":"정권","definition":"정치상의 권력. 또는 정치를 담당하는 권력.","example":"정권 교체.","exampleSource":"표준국어대사전 용례","otherMeanings":["[正拳] 태권도에서, 주먹 쥔 손의 손등과 직각을 이루는 네 손가락의 마디 부분.","[正權] 정당한 권리.","[呈券] 과거의 답안을 시관(試官)에게 내던 일."],"origin":"政權"},{"id":563,"category":"한자어","term":"서두","definition":"일이나 말의 첫머리.","example":"서두를 떼다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[序頭] 어떤 차례나 순서의 맨 앞.","[書頭] 글을 시작하는 첫머리.","[書頭] 책의 윗난에 있는 빈자리.","[書頭] 제본할 때, 초벌 매어 놓은 책의 가장자리를 가지런하게 도려냄. 또는 그 가장자리.","[書蠹] 지나치게 책을 읽거나 공부하는 데만 열중하는 사람을 놀림조로 이르는 말.","[書蠹] 책을 읽기는 하나 그것을 활용할 줄 모르는 사람을 비유적으로 이르는 말."],"origin":"序頭"},{"id":564,"category":"한자어","term":"선두","definition":"대열이나 행렬, 활동 따위에서 맨 앞.","example":"선두에 서다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[船頭] 배의 앞부분.","[禪頭] 선종에서 수행승의 첫째에 위치하는 승려."],"origin":"先頭"},{"id":565,"category":"한자어","term":"발전","definition":"더 낫고 좋은 상태나 더 높은 단계로 나아감.","example":"과학의 발전에 기여하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[發展] 일이 어떤 방향으로 전개됨.","[發電] 전기를 일으킴.","[發電] 전보를 쳐서 보냄."],"origin":"發展"},{"id":566,"category":"한자어","term":"발달","definition":"신체, 정서, 지능 따위가 성장하거나 성숙함.","example":"신체의 발달.","exampleSource":"표준국어대사전 용례","otherMeanings":["[發達] 학문, 기술, 문명, 사회 따위의 현상이 보다 높은 수준에 이름.","[發達] 지리상의 어떤 지역이나 대상이 제법 크게 형성됨. 또는 기압, 태풍 따위의 규모가 점차 커짐."],"origin":"發達"},{"id":567,"category":"한자어","term":"계승","definition":"조상의 전통이나 문화유산, 업적 따위를 물려받아 이어 나감.","example":"전통문화의 계승과 발전.","exampleSource":"표준국어대사전 용례","otherMeanings":["[階乘] n이 하나의 자연수일 때에, 1에서 n까지의 모든 자연수의 곱을 n에 대하여 이르는 말. n!로 나타낸다. 4의 계승은 1×2×3×4이다.","[繼承] 선임자의 뒤를 이어받음.","[繼乘] 열차나 배를 타고 가다가 내려서 다른 열차나 배로 옮겨 탐."],"origin":"繼承"},{"id":568,"category":"한자어","term":"경계","definition":"뜻밖의 사고가 생기지 않도록 조심하여 단속함.","example":"경계를 늦추다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[庚癸] 군중에서 양식을 빌리는 것을 이르는 말. 경(庚)은 서방으로 곡식을, 계(癸)는 북방으로 물을 주관한다는 데서 생긴 말이다.","[敬啓] 삼가 말씀드린다는 뜻으로 한문 투 편지의 첫머리에 쓰는 말.","[經界] 옳고 그른 경위가 분간되는 한계.","[經界] 사물이 어떠한 기준에 의하여 분간되는 한계.","[境界] 사물이 어떠한 기준에 의하여 분간되는 한계.","[境界] 지역이 구분되는 한계.","[境界] 인과의 이치에 따라 스스로 받는 과보.","[輕繫] 가벼운 죄를 짓고 옥에 갇힌 죄인.","[鏡戒] 분명히 타일러 다시는 같은 잘못을 저지르지 않도록 함.","[警戒] 옳지 않은 일이나 잘못된 일들을 하지 않도록 타일러서 주의하게 함.","[警戒] 적의 기습이나 간첩 활동 따위와 같은 예기치 못한 침입을 막기 위하여 주변을 살피면서 지킴.","[驚悸] 걸핏하면 잘 놀라고 가슴이 두근거리는 증상.","[驚悸] 놀란 것처럼 가슴이 두근거리는 증상."],"origin":"警戒"},{"id":569,"category":"한자어","term":"배제","definition":"받아들이지 아니하고 물리쳐 제외함.","example":"폭력의 배제.","exampleSource":"표준국어대사전 용례","otherMeanings":["[背題] 백성이 낸 소장(訴狀) 뒤에 판결한 내용을 적는 일. 또는 그 내용.","[配劑] 여러 가지 약제를 배합함. 또는 그 약제.","[排擠] 물리쳐 어려운 지경에 빠뜨림."],"origin":"排除"},{"id":570,"category":"한자어","term":"거부","definition":"요구나 제의 따위를 받아들이지 않고 물리침.","example":"거부 의사를 표명하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[巨富] 대단히 많은 재산.","[巨富] 부자 가운데에서도 특히 큰 부자.","[拒斧] 사마귓과의 곤충을 통틀어 이르는 말."],"origin":"拒否"},{"id":571,"category":"한자어","term":"특장","definition":"특별히 뛰어난 장점.","example":"흰 학이 구름을 박차고 하늘로 나는 듯하지 않소. 이것이 고려 예술의 특장이란 말요.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"特長"},{"id":572,"category":"한자어","term":"천분","definition":"타고난 재질이나 직분.","example":"천분의 문학성.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"天分"},{"id":573,"category":"한자어","term":"각설","definition":"말이나 글 따위에서, 이제까지 다루던 내용을 그만두고 화제를 다른 쪽으로 돌림.","example":"각설하고 어디 당신의 계획이나 들어 봅시다.","exampleSource":"제공 자료 예문","otherMeanings":["[各設] 따로따로 설치함.","[各設] 연회 따위를 따로따로 베풂.","[却說] 주로 글 따위에서, 화제를 돌려 다른 이야기를 꺼낼 때, 앞서 이야기하던 내용을 그만둔다는 뜻으로 다음 이야기의 첫머리에 쓰는 말."],"origin":"却說"},{"id":574,"category":"한자어","term":"설명","definition":"어떤 일이나 대상의 내용을 상대편이 잘 알 수 있도록 밝혀 말함. 또는 그런 말.","example":"새 기획안에 대한 설명이 끝나자 질문이 쏟아졌다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"說明"},{"id":575,"category":"한자어","term":"역설","definition":"일반적으로는 모순을 야기하지 아니하나 특정한 경우에 논리적 모순을 일으키는 논증. 모순을 일으키기는 하지만 그 속에 중요한 진리가 함축되어 있는 것으로 간주한다.","example":"신앙을 가지고 산다는 것은 이성으로는 믿기 어려운 역설을 순순히 받아들이는 것이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[力說] 자기의 뜻을 힘주어 말함. 또는 그런 말.","[逆說] 어떤 주의나 주장에 반대되는 이론이나 말."],"origin":"逆說"},{"id":576,"category":"한자어","term":"언급","definition":"어떤 문제에 대하여 말함.","example":"언급을 회피하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"言及"},{"id":577,"category":"한자어","term":"정비","definition":"흐트러진 체계를 정리하여 제대로 갖춤.","example":"교육 제도 정비.","exampleSource":"표준국어대사전 용례","otherMeanings":["[正比] 비(比)를 반비(反比)에 상대하여 이르는 말.","[正妃] 정실인 왕비를 후궁에 상대하여 이르는 말.","[情費] 조세를 바칠 때에, 비공식으로 아전들에게 주던 잡비.","[鼎沸] 솥 안에서 물이 끓는 것과 같이 떠들썩하고 요란함을 비유적으로 이르는 말.","[整備] 기계나 설비가 제대로 작동하도록 보살피고 손질함.","[整備] 도로나 시설 따위가 제 기능을 하도록 정리함."],"origin":"整備"},{"id":578,"category":"한자어","term":"갱신","definition":"이미 있던 것을 고쳐 새롭게 함.","example":"자기 갱신.","exampleSource":"표준국어대사전 용례","otherMeanings":["몸을 움직임.","[更新] 법률관계의 존속 기간이 끝났을 때 그 기간을 연장하는 일. 계약으로 기간을 연장하는 명시적 갱신과 계약 없이도 인정되는 묵시적 갱신이 있다.","[更新] 기존의 내용을 변동된 사실에 따라 변경ㆍ추가ㆍ삭제하는 일."],"origin":"更新"},{"id":579,"category":"한자어","term":"각오","definition":"앞으로 해야 할 일이나 겪을 일에 대한 마음의 준비.","example":"비장한 각오.","exampleSource":"표준국어대사전 용례","otherMeanings":["[覺悟] 도리를 깨쳐 앎.","[覺寤] 잠에서 깸."],"origin":"覺悟"},{"id":580,"category":"한자어","term":"각성","definition":"깨달아 앎.","example":"각성을 촉구하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[各姓] 서로 다른 성씨.","[各姓] 성이 각각 다른 사람.","[角星] 이십팔수의 첫째 별자리에 있는 별들. 청명절의 0시 23분에 정남쪽에 보인다.","[角聲] 뿔로 만든 나팔을 부는 소리.","[覺性] 진리를 깨달아 아는 성품이나 소질.","[覺性] 조선 시대의 승려(1575~1660). 속성은 김(金). 호는 벽암(碧巖). 병자호란 때 승려들을 규합하여 청나라에 대항하였다. 저서에 ≪도중결의(圖中決疑)≫, ≪간화결의(看話決疑)≫ 따위가 있다.","[覺醒] 깨어 정신을 차림.","[覺醒] 정신을 차리고 주의 깊게 살피어 경계하는 태도."],"origin":"覺醒"},{"id":581,"category":"한자어","term":"강단","definition":"굳세고 꿋꿋하게 견디어 내는 힘.","example":"강단이 세다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[降壇] 단상에서 내려옴.","[剛斷] 어떤 일을 야무지게 결정하고 처리하는 힘.","[講壇] 강연이나 강의, 설교 따위를 하는 사람이 올라서도록 약간 높게 만든 자리."],"origin":"剛斷"},{"id":582,"category":"한자어","term":"공격","definition":"남을 비난하거나 반대하여 나섬.","example":"동료들에게 집중 공격을 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[公格] 관직(官職)이나 공직(公職)에 관한 격식.","[攻擊] 나아가 적을 침.","[攻擊] 운동 경기나 오락 따위에서 상대편을 이기기 위한 적극적인 행동.","[攻擊] 소송에서, 원고(原告)가 자신의 신청을 이유 있는 것으로 하기 위하여 법률상, 사실상의 진술 및 증거 신청을 하는 일."],"origin":"攻擊"},{"id":583,"category":"한자어","term":"도발","definition":"남을 집적거려 일이 일어나게 함.","example":"성적인 도발.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"挑發"},{"id":584,"category":"한자어","term":"승복","definition":"납득하여 따름.","example":"적에게 승복하다.","exampleSource":"제공 자료 예문","otherMeanings":["[承服] 죄를 스스로 고백함.","[僧服] 승려의 옷."],"origin":"承服"},{"id":585,"category":"한자어","term":"판단","definition":"사물을 인식하여 논리나 기준 등에 따라 판정을 내림.","example":"상황 판단.","exampleSource":"표준국어대사전 용례","otherMeanings":["[判斷] 어떤 대상에 대하여 무슨 일인가를 판정하는 인간의 사유 작용."],"origin":"判斷"},{"id":586,"category":"한자어","term":"잠적","definition":"종적을 아주 숨김.","example":"공직자들에게는 잠적이나 도피보다 떳떳하게 나서서 사태를 감당하는 자세가 필요하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[岑寂] ‘잠적하다01’의 어근.","[潛寂] ‘잠적하다02’의 어근."],"origin":"潛跡潛迹"},{"id":587,"category":"한자어","term":"은둔","definition":"세상일을 피하여 숨음.","example":"노 교수는 모든 명예를 버리고 은둔의 생활을 택했다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"隱遁隱遯"},{"id":588,"category":"한자어","term":"임박","definition":"어떤 때가 가까이 닥쳐옴.","example":"거의 숨져 갈 임박에 자주 네 이름을 부르더군. 그래 내가 네 대신을 했었지.","exampleSource":"표준국어대사전 용례","otherMeanings":["[荏粕] 들기름을 짜내고 남은 찌꺼기. 물고기의 먹이나 거름으로 쓴다."],"origin":"臨迫"},{"id":589,"category":"한자어","term":"각박하다","definition":"인정이 없고 삭막하다.","example":"세상 인심이 각박하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[刻薄, 하다] 땅이 거칠고 기름지지 아니하다.","[刻薄, 하다] 돈 따위를 지나치게 아껴 넉넉하지 않다."],"origin":"刻薄"},{"id":590,"category":"한자어","term":"막간","definition":"어떤 일의 한 단락이 끝나고 다음 단락이 시작될 동안.","example":"막간을 이용해서 안내 말씀을 드리겠습니다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[幕間] 연극에서, 한 막이 끝났을 때부터 다음 막이 시작될 때까지의 시간."],"origin":"幕間"},{"id":591,"category":"한자어","term":"기반","definition":"기초가 되는 바탕. 또는 사물의 토대.","example":"기반을 다지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[棋盤, /, 碁盤] 바둑을 두는 판. 네모진 나무 판 위에 가로세로 각각 열아홉 줄을 그어 생긴 361개의 십자형이 있으며 한 십자형을 한 집이라고 한다.","[羈絆] 말이나 소 따위를 부리기 위하여 머리와 목에서 고삐에 걸쳐 얽어매는 줄.","[羈絆] 굴레를 씌운다는 뜻으로, 자유를 구속하거나 억압함을 이르는 말."],"origin":"基盤"},{"id":592,"category":"한자어","term":"주축","definition":"전체 가운데서 중심이 되어 영향을 미치는 존재나 세력.","example":"팀의 주축인 그의 부상으로 전력에 차질이 생겼다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[主軸] 공작 기계의 주축대에 끼워져 회전 절삭 운동을 하는 축. 한끝에 공작물이나 날붙이를 부착하는 장치가 있다.","[主軸] 원동기에서 동력을 직접 전하는 전동축.","[主軸] 일렬로 배열된 광학계에서, 렌즈의 중심과 초점을 연결한 선.","[主軸] 축성(軸性)이 있는 생물체의 가장 기본적인 축. 일반적으로 좌우 대칭인 동물에서는 머리에서 꼬리의 방향, 방사 대칭인 생물에서는 몸의 중앙을 지나는 상하 방향의 축을 이른다.","[主軸] 몇 개의 축을 가진 도형이나 물체에서 가장 주가 되는 축. 타원에서의 긴 축과 짧은 축, 2차 곡면의 대칭면이 교차하는 선 따위가 있다.","[走逐] 달아나고 뒤쫓음."],"origin":"主軸"},{"id":593,"category":"한자어","term":"주제","definition":"대화나 연구 따위에서 중심이 되는 문제.","example":"논문의 주제.","exampleSource":"표준국어대사전 용례","otherMeanings":["변변하지 못한 몰골이나 몸치장.","변변하지 못한 처지.","[主祭] 제사를 주장하여 행함. 또는 그런 사람.","[主劑] 조제할 때에 주가 되는 약제.","[主題] 예술 작품에서 지은이가 나타내고자 하는 기본적인 사상.","[主題] 주된 제목.","[主題] 하나의 악곡을 이루는 중심 악상. 악곡의 전부 또는 일부분의 기초가 되어, 그 선율적ㆍ화성적ㆍ율동적 발전이 악곡을 다양하게 전개한다.","[酒製] 술을 이용하여 약의 찬 성질을 약화하거나 덥게 하거나 약 기운을 위로 올라가게 하여 기혈이 잘 돌게 하는 일.","[酒劑] 약품을 포도주 따위의 술에 녹여서 만든 약. 강장제로 쓴다.","[誅除] 죄를 물어 죽여 없앰."],"origin":"主題"},{"id":594,"category":"한자어","term":"전제","definition":"어떠한 사물이나 현상을 이루기 위하여 먼저 내세우는 것.","example":"전제 조건.","exampleSource":"표준국어대사전 용례","otherMeanings":["[田制] 논밭에 관한 제도.","[田齊] 중국 전국 시대에, 진(陳)나라에서 제나라로 망명한 전 씨(田氏)가 주(周)나라로부터 제후로 인정받아 기원전 386년에 성립한 나라. 기원전 221년에 진(秦)나라에 망하였다.","[全制] 완전히 제어함.","[全濟] 완전히 구제함.","[典制] 예전에, 국가의 법 규범이나 규칙 또는 그것을 만드는 사람을 이르던 말.","[典制] 예전에, 일을 맡는 것을 이르던 말.","[典製] 조선 시대에, 의복의 재봉에 관한 모든 일을 맡아보던 종칠품 내명부. 또는 그 품계.","[前帝] 이전의 황제.","[前提] 추리를 할 때, 결론의 기초가 되는 판단. 삼단 논법에서는 대전제, 소전제를 구별한다.","[前際] 삼생(三生)의 하나. 이 세상에 태어나기 이전의 생애를 이른다.","[剪除, /, 翦除] 불필요한 것을 잘라서 없애 버림.","[專制] 다른 사람의 의사는 존중하지 않고 제 생각대로만 일을 결정함.","[專制] 국가의 권력을 개인이 장악하고 그 개인의 의사에 따라 모든 일을 처리함.","[專製] 독점적으로 제조함.","[奠祭] 모세의 율법에 나오는 제사의 하나. 잔에 담은 포도주나 독주(毒酒)를 제단 받침에 붓는다.","[筌蹄] 고기를 잡는 통발과 토끼를 잡는 올가미라는 뜻으로, 목적을 달성하기 위한 방편을 이르는 말.","[筌蹄] 사물의 길잡이가 되는 것.","[筌蹄] 중국 남조의 사대부가 설법을 할 때에 손에 쥐던 불자(拂子) 따위를 이르는 말.","[煎劑] 생약을 오랫동안 달여서 만든 약. 열에 대한 안정성이 높은 약재 중에서, 장시간 가열해야만 약효 성분이 추출되는 것은 오랫동안 달여서 약을 만든다."],"origin":"前提"},{"id":595,"category":"한자어","term":"상이하다","definition":"서로 다르다.","example":"형은 나와 성격 면에서 매우 상이하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"相異"},{"id":596,"category":"한자어","term":"모방","definition":"다른 것을 본뜨거나 본받음.","example":"외국 문물에 대한 분별없는 모방.","exampleSource":"표준국어대사전 용례","otherMeanings":["[모, 方] 한자 부수의 하나. ‘於’, ‘旁’ 따위에 쓰인 ‘方’을 이른다.","[모, 房] 안방의 한 모퉁이에 붙어 있는 작은 방.","[毛紡] 모방적과 모방직을 통틀어 이르는 말.","[模倣, /, 摸倣, /, 摹倣] 사회 집단의 구성원들 사이에 나타나는 의식적ㆍ무의식적 반복 행위. 어떤 개인ㆍ집단의 행위나 표현이 다른 개인ㆍ집단에 의하여 비슷하게 반복되면서 사회의 결합 관계를 강화하게 되며, 어린이의 학습 과정이나 사회적 유행, 또는 전통의 계승에 있어서 중요한 의의를 가진다.","[模倣, /, 摸倣, /, 摹倣] 하나의 주선율을 일정한 시간을 두고 다른 성부에서 거듭 쓰는 방법.","[Maubant, Pierre Phillibert] 우리나라에 최초로 들어온, 프랑스의 천주교 신부(1803~1839). 조선 헌종 1년(1835)에 서울에 몰래 들어와 전도하다가 헌종 5년(1839) 기해사옥 때에 앵베르, 샤스탕과 함께 순교하였다. 1925년에 복자위(福者位)에 올랐다."],"origin":"模倣摸倣摹倣"},{"id":597,"category":"한자어","term":"사건","definition":"사회적으로 문제를 일으키거나 주목을 받을 만한 뜻밖의 일.","example":"역사적인 사건.","exampleSource":"표준국어대사전 용례","otherMeanings":["[事件] 소송을 일으킨 일.","[事件] 어떤 실험이나 시행(試行)에서 일어날 수 있는 결과. 예를 들어 주사위를 던질 때 1이 나온다든가, 짝수가 나온다든가, 4 이상이 나온다든가 하는 따위이다.","[紗巾] 얇고 가벼운 비단인 사(紗)로 만든 두건."],"origin":"事件"},{"id":598,"category":"한자어","term":"전모","definition":"전체의 모습. 또는 전체의 내용.","example":"전모를 드러내다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[典謨] ≪서경≫의 , , , , 의 각 편을 통틀어 이르는 말.","[前母] 재취(再娶)의 자식이 그 아버지의 전처를 이르는 말.","[旃毛] 모직으로 짠 옷감의 털.","[剪毛, /, 翦毛] 짐승의 털을 깎는 일.","[剪毛, /, 翦毛] 직물 표면에 나와 있는 잔털을 깎아 올을 뚜렷하게 하는 모직물 공정.","[傳模] 회화에서, 옛사람의 작품을 모사(模寫)하는 일.","[氈帽] 조선 시대에, 여자들이 나들이할 때 쓰던 모자의 하나. 대나무로 삿갓 모양의 테두리를 만들고 여기에 종이를 발라 기름에 결어 만든다.","[顚毛] 머리에 난 털.","[顚毛] 정수리의 머리털."],"origin":"全貌"},{"id":599,"category":"한자어","term":"축적","definition":"지식, 경험, 자금 따위를 모아서 쌓음. 또는 모아서 쌓은 것.","example":"경험 축적.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"蓄積"},{"id":600,"category":"한자어","term":"이문","definition":"이익이 남는 돈.","example":"이문이 남다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[二門] 교리에 따라 나눈 불교의 큰 두 갈래. 본문과 적문, 섭수문과 절복문, 유문과 공문, 성도문과 정토문 따위이다.","[泥文, /, 尼文] 가야의 악사(?~?). 우륵의 제자로, 진흥왕 12년(551) 우륵과 낭성(娘城)에 머물다가 진흥왕에게 발탁되어 하림궁(河臨宮)에서 새로운 곡을 지어 연주하였다. 작품에 , , 따위가 있다.","[吏文] 조선 시대에 중국과 주고받던 문서에 쓰던 특수한 관용 공문의 용어나 문체. 자문(咨文), 서계(書契), 관자(關子), 감결(甘結), 보장(報狀), 제사(題辭) 따위와 같은 문서에 썼다.","[耳門] 귓구멍의 바깥쪽으로 열려 있는 곳.","[利文] 남에게 돈을 빌려 쓴 대가로 치르는 일정한 비율의 돈.","[里門] 동네 어귀에 세운 문.","[異聞] 신기하고 들을 만한 소문.","[異聞] 이상한 소문.","[移文] 중국 한대(漢代)의 공문서 가운데 같은 등급의 관아 사이에 주고받던 공문서. 때로는 격(檄)과 더불어 포고문의 성격을 띠기도 하였다.","[裏門] 뒤나 옆으로 난 문."],"origin":"利文"},{"id":601,"category":"한자어","term":"강보","definition":"어린아이의 작은 이불. 덮고 깔거나 어린아이를 업을 때 쓴다.","example":"강보에 싸인 아기.","exampleSource":"표준국어대사전 용례","otherMeanings":["[降寶] 발상(發祥)의 일곱째 장(章). 한문 가사 4언 1구로 되어 있다.","[康保] 편안히 보전함."],"origin":"襁褓"},{"id":602,"category":"한자어","term":"개인","definition":"국가나 사회, 단체 등을 구성하는 낱낱의 사람.","example":"개인 자격으로 참가하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[改印] 도장을 본디 모양과 다르게 고쳐 새김.","[改印] 신고된 인감(印鑑)을 바꿈.","[開印] 관아에서 연말에 사무를 마무리하고 넣어 둔 관인(官印)을, 연초에 다시 사무를 시작하면서 꺼내던 일.","[蓋印] 관인(官印)을 찍음."],"origin":"個人"},{"id":603,"category":"한자어","term":"객관","definition":"자기와의 관계에서 벗어나 제삼자의 입장에서 사물을 보거나 생각함.","example":"그는 감정을 배제하고 객관에 근거해 판단했다.","exampleSource":"제공 자료 예문","otherMeanings":["[客官] 관아의 사무에 직접적인 책임이 없던 벼슬아치.","[客官] 다른 관아에서 임시로 와서 사무를 보던 벼슬아치.","[客館] 나그네를 치거나 묵게 하는 집.","[客館] 고려ㆍ조선 시대에, 각 고을에 설치하여 외국 사신이나 다른 곳에서 온 벼슬아치를 대접하고 묵게 하던 숙소.","[客觀] 주관 작용의 객체가 되는 것으로 정신적ㆍ육체적 자아에 대한 공간적 외계. 또는 인식 주관에 대한 인식 내용.","[客觀] 세계나 자연 따위가 주관의 작용과는 독립하여 존재한다고 생각되는 것."],"origin":"客觀"},{"id":604,"category":"한자어","term":"거리","definition":"두 개의 물건이나 장소 따위가 공간적으로 떨어진 길이.","example":"거리가 가깝다.","exampleSource":"표준국어대사전 용례","otherMeanings":["사람이나 차가 많이 다니는 길.","내용이 될 만한 재료.","제시한 시간 동안 해낼 만한 일.","제시한 수가 처리할 만한 것.","오이나 가지 따위를 묶어 세는 단위. 한 거리는 오이나 가지 오십 개를 이른다.","탈놀음, 꼭두각시놀음, 굿 따위에서, 장(場)을 세는 단위.","음악, 연극 따위에서 단락, 과장, 마당을 이르는 말.","[巨利] 큰 이익.","[巨履] 큰 신.","[距離] 일정한 시간 동안에 이동할 만한 공간적 간격.","[距離] 사람과 사람 사이에 느껴지는 간격. 보통 서로 마음을 트고 지낼 수 없다고 느끼는 감정을 이른다.","[距離] 비교하는 두 대상 사이의 차이.","[距離] 두 점 사이를 잇는 선분의 길이.","‘비하’의 뜻을 더하는 접미사.","‘주기적으로 일어나는 동안’의 뜻을 더하는 접미사."],"origin":"距離"},{"id":605,"category":"한자어","term":"산적","definition":"물건이나 일이 산더미같이 쌓임.","example":"문 앞에 쓰레기가 산적되어 있다.","exampleSource":"제공 자료 예문","otherMeanings":["[山賊] 산속에 근거지를 두고 드나드는 도둑.","[疝癪] 가슴이나 배가 쑤시고 아픈 병.","[散炙] 쇠고기 따위를 길쭉길쭉하게 썰어 갖은양념을 하여 대꼬챙이에 꿰어 구운 음식.","[散炙] 꼬챙이에 꿰지 아니한 적. 생선적에 쇠고기를 양념하여 한편에 붙이고 이것을 달걀 푼 것을 씌워 번철이나 프라이팬 따위에 지져서 만든다.","[散積] 석탄, 광물, 곡물 따위를 용기에 넣지 아니하고 그대로 쌓거나 실음.","[蒜炙] 마늘로 만든 적."],"origin":"山積"},{"id":606,"category":"한자어","term":"낙점","definition":"여러 후보가 있을 때 그중에 마땅한 대상을 고름.","example":"낙점을 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[落點] 조선 시대에, 이품 이상의 벼슬아치를 뽑을 때 임금이 이조에서 추천된 세 후보자 가운데 마땅한 사람의 이름 위에 점을 찍던 일.","[落點] 총알이나 폭탄, 화살 따위를 쏘아서 떨어진 지점."],"origin":"落點"},{"id":607,"category":"한자어","term":"파견","definition":"일정한 임무를 주어 사람을 보냄.","example":"파견 근무.","exampleSource":"표준국어대사전 용례","otherMeanings":["[破見] 올바른 견해를 깨뜨리고 잘못된 견해에 빠지며 옳지 못한 견해를 고집하여 불법의 바른 이치에 어긋나는 일. 법(法)을 비방함과 같아 악도(惡道)에 떨어지는 무거운 죄이다."],"origin":"派遣"},{"id":608,"category":"한자어","term":"격식","definition":"격에 맞는 일정한 방식.","example":"격식을 갖추다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"格式"},{"id":609,"category":"한자어","term":"결정","definition":"행동이나 태도를 분명하게 정함. 또는 그렇게 정해진 내용.","example":"결정을 내리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[決定] 법원이 행하는 판결ㆍ명령 이외의 재판.","[結晶] 원자, 이온, 분자 따위가 규칙적으로 일정한 법칙에 따라 배열되고, 외형도 대칭 관계에 있는 몇 개의 평면으로 둘러싸여 규칙 바른 형체를 이룸. 또는 그런 물질.","[結晶] 애써 노력하여 보람 있는 결과를 이루는 것이나 그 결과를 비유적으로 이르는 말.","[潔淨] ‘결정하다03’의 어근."],"origin":"決定"},{"id":610,"category":"한자어","term":"경사","definition":"축하할 만한 기쁜 일.","example":"경사가 나다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[京司] 서울에 있던 관아를 통틀어 이르는 말.","[京師] 한 나라의 중앙 정부가 있는 곳.","[剄死] 스스로 목을 찔러 죽음.","[勁士] 굳세고 강한 병사나 군대.","[勁士] 굳세고 바른 사람.","[敬事] 공경하여 섬김.","[敬事] 삼가 일을 함.","[傾斜] 비스듬히 기울어짐. 또는 그런 상태나 정도.","[傾瀉] 액체와 침전물을 분리하는 방법. 침전물을 가라앉힌 다음, 맑은 웃물을 기울여 쏟는다.","[經史] 경서(經書)와 사기(史記)를 아울러 이르는 말.","[經師] 경문(經文)을 읽거나 외는 법사.","[經師] 경문의 뜻을 풀어 가르치는 법사.","[經師] 경문을 쓰거나, 쓴 것을 표구하고 제본하는 사람.","[經絲] 피륙이나 그물을 짤 때, 세로 방향으로 놓인 실.","[輕士] 가볍게 차린 병사.","[輕士] 신분이 낮은 병사.","[競射] 활쏘기나 사격의 실력을 겨룸.","[警査] 경찰 공무원 계급의 하나. 경위의 아래, 경장의 위이다.","[驚事] 뜻밖에 매우 놀랄 일."],"origin":"慶事"},{"id":611,"category":"한자어","term":"공감","definition":"남의 감정, 의견, 주장 따위에 대하여 자기도 그렇다고 느낌. 또는 그렇게 느끼는 기분.","example":"공감을 느끼다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"共感"},{"id":612,"category":"한자어","term":"도래","definition":"어떤 시기나 기회가 닥쳐옴.","example":"민주주의의 도래.","exampleSource":"표준국어대사전 용례","otherMeanings":["문이 저절로 열리지 못하게 하는 데 쓰는 갸름한 나무 메뚜기.","소나 염소 따위의 고삐가 자유롭게 돌 수 있도록 굴레 또는 목사리와 고삐 사이에 단 쇠나 나무로 된 고리 비슷한 물건.","낚싯줄이 꼬이지 아니하고 자유로이 감겼다 풀리도록 낚싯줄의 굴레와 고삐 사이를 이은 물건. 보통 쇠나 나무로 만들며 고리와 비슷한 모양이다.","둥근 물건의 둘레.","→ 어장10.","[渡來] 물을 건너옴.","[渡來] 외부에서 전해져 들어옴.","‘둥근’의 뜻을 더하는 접두사."],"origin":"到來"},{"id":613,"category":"한자어","term":"독려","definition":"감독하며 격려함.","example":"아내의 독려 덕분에 작업을 마칠 수 있었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"督勵"},{"id":614,"category":"한자어","term":"동요","definition":"어떤 체제나 상황 따위가 혼란스럽고 술렁임.","example":"민심의 동요.","exampleSource":"표준국어대사전 용례","otherMeanings":["[動搖] 물체 따위가 흔들리고 움직임.","[動搖] 생각이나 처지가 확고하지 못하고 흔들림.","[童謠] 문학 장르의 하나로, 어린이들의 생활 감정이나 심리를 표현한 정형시. 형식상 음수율이 강화되어 음악성이 돋보이며 형식과 수사(修辭)를 중요시한다.","[童謠] 어린이를 위하여 동심(童心)을 바탕으로 지은 노래."],"origin":"動搖"},{"id":615,"category":"한자어","term":"등기","definition":"국가 기관이 법정 절차에 따라 등기부에 부동산이나 동산ㆍ채권 등의 담보 따위에 관한 일정한 권리관계를 적는 일. 또는 적어 놓은 것.","example":"등기 서류.","exampleSource":"표준국어대사전 용례","otherMeanings":["[登記] 우편물 특수 취급의 하나. 우체국에서 우편물의 안전한 송달을 보증하기 위하여 우편물의 인수ㆍ배달 과정을 기록한다.","[等棄] 탐탁지 않게 여겨서 버림.","[謄記] 원본에서 베껴 옮김."],"origin":"登記"},{"id":616,"category":"한자어","term":"발령","definition":"명령을 내림. 또는 그 명령. 흔히 직책이나 직위와 관계된 경우를 이른다.","example":"승진 발령.","exampleSource":"표준국어대사전 용례","otherMeanings":["[發令] 긴급한 상황에 대한 경보(警報)를 발표함."],"origin":"發令"},{"id":617,"category":"한자어","term":"발부","definition":"증명서 따위를 발행하여 줌.","example":"사전 구속 영장 발부.","exampleSource":"표준국어대사전 용례","otherMeanings":["[髮膚] 머리털과 피부를 아울러 이르는 말."],"origin":"發付"},{"id":618,"category":"한자어","term":"방지","definition":"어떤 일이나 현상이 일어나지 못하게 막음.","example":"병충해 방지.","exampleSource":"표준국어대사전 용례","otherMeanings":["[方志] 한 지방에 관한 기록.","[方志] 바른 마음.","[放支] 돈이나 물품 따위를 정하여진 몫만큼 내줌.","[芳志] 주로 편지글 따위에서, 다른 사람의 친절한 마음을 높여 이르는 말.","[旁支] 본체에서 갈라져 나온 가닥."],"origin":"防止"},{"id":619,"category":"한자어","term":"변호사","definition":"법률에 규정된 자격을 가지고 소송 당사자나 관계인의 의뢰 또는 법원의 명령에 따라 피고나 원고를 변론하며 그 밖의 법률에 관한 업무에 종사하는 사람.","example":"변호사 개업.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"辯護士"},{"id":620,"category":"한자어","term":"병마","definition":"‘병04’을 악마에 비유하여 이르는 말.","example":"병마에 시달리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[兵馬] 병사(兵士)와 군마(軍馬)를 아울러 이르는 말.","[兵馬] 군대, 무기, 군비(軍備) 따위의 전쟁에 관한 모든 일을 통틀어 이르는 말.","[兵馬] 군대에서 쓰는 말.","[病馬] 병든 말."],"origin":"病魔"},{"id":621,"category":"한자어","term":"병폐","definition":"병통과 폐단을 아울러 이르는 말.","example":"병폐를 극복하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[病癈] 병으로 인하여 몸을 제대로 쓰지 못하게 됨.","[病斃] 병으로 죽음. 또는 그런 일."],"origin":"病弊"},{"id":622,"category":"한자어","term":"보류","definition":"어떤 일을 당장 처리하지 아니하고 나중으로 미루어 둠.","example":"보류 결정을 내리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[補流] 옮겨 간 바닷물을 채우기 위하여 이동하는 바닷물의 흐름."],"origin":"保留"},{"id":623,"category":"한자어","term":"봉변","definition":"뜻밖의 변이나 망신스러운 일을 당함. 또는 그 변.","example":"가까스로 봉변을 면하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"逢變"},{"id":624,"category":"한자어","term":"붕괴","definition":"무너지고 깨어짐.","example":"붕괴 위험.","exampleSource":"표준국어대사전 용례","otherMeanings":["[崩壞] 불안정한 소립자가 스스로 분열하여 다른 종류의 소립자로 바뀌는 일. 또는 불안정한 원자핵이 방사선을 방출하거나 스스로 핵분열을 일으켜 다른 종류의 원자핵으로 바뀌는 일."],"origin":"崩壞"},{"id":625,"category":"한자어","term":"비밀","definition":"숨기어 남에게 드러내거나 알리지 말아야 할 일.","example":"비밀이 탄로 나다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[祕密] 밝혀지지 않았거나 알려지지 않은 내용.","[祕密] 참된 의미를 숨기고 가르침을 설하는 것. 언어나 문자 따위의 일반적인 방법으로는 전할 수 없는 깊은 뜻을 만다라, 인계(印契), 다라니, 의례 따위의 상징적인 방법을 통해서 나타낸다."],"origin":"祕密"},{"id":626,"category":"한자어","term":"빙부","definition":"다른 사람의 장인(丈人)을 이르는 말.","example":"그는 빙부의 장례를 치르기 위해 고향으로 내려갔다.","exampleSource":"제공 자료 예문","otherMeanings":["[氷夫] 예전에, 강에서 얼음을 떠내는 일을 직업으로 하던 사람.","[氷膚] 얼음처럼 맑고 깨끗한 살결."],"origin":"聘父"},{"id":627,"category":"한자어","term":"사경","definition":"죽을 지경. 또는 죽음에 임박한 경지.","example":"사경을 헤매다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[司經] 고려 시대에, 동궁(東宮)에 속한 육품 벼슬. 공양왕 2년(1390)에 설치하였는데, 좌우 두 사람이 있었다.","[司經] 조선 시대에, 경연청에 속한 정칠품 벼슬. 임금에게 경서(經書)를 강의하고 논평하는 일을 맡아보았다.","[四更] 하룻밤을 오경(五更)으로 나눈 넷째 부분. 새벽 1시에서 3시 사이이다.","[四京] 고려 시대에, 나라의 중심지로서 중요시하던 네 지역. 남경(南京), 동경(東京), 중경(中京), 서경(西京)을 이른다.","[四經] ≪시경≫, ≪서경≫, ≪역경≫, ≪춘추≫의 네 가지 경서(經書).","[四經] ≪좌씨춘추≫, ≪곡량춘추≫, ≪고문상서≫, ≪모시≫의 네 가지 경서.","[四境] 동, 서, 남, 북 사방의 지경이나 경계.","[四境] 천하 또는 세계를 이르는 말.","[沙耕, /, 砂耕] 농작물에 필요한 양분을 준 모래에 작물을 재배하는 일.","[沙耕, /, 砂耕] 세균을 보존하는 방법의 하나. 멸균시킨 모래를 시험관에 담고 그 속에 배양한 세균을 넣어 둔다.","[沙耕, /, 砂耕] 식물의 물 재배 방법의 하나. 깨끗한 모래나 자갈에 식물을 심고 배양액으로 기른다.","[沙磬] 경쇠의 하나.","[邪徑] 곧지 않은 구불구불한 길.","[邪徑] 부정한 마음이나 행위를 비유적으로 이르는 말.","[私徑] 사사로운 이익을 추구하는 떳떳하지 못한 길.","[私耕] 묘지기나 마름이 수고의 대가로 부쳐 먹는 논밭.","[私耕] 머슴이 주인에게서 한 해 동안 일한 대가로 받는 돈이나 물건.","[査經] 교인들이 모여 성경을 공부함.","[斜徑] 비탈진 언덕의 길.","[斜傾] 한쪽으로 비스듬히 기울어짐.","[斜頸] 목의 일부 근육이 뒤틀려 머리가 한쪽으로 기우는 증상. 또는 그 증상을 보이는 목. 목 근육이 선천적으로 짧아서 그런 경우가 많으며 후천적으로는 류머티즘, 뼈의 이상, 사시(斜視)나 심인 반응도 원인이 된다.","[寫經] 후세에 전하거나 축복을 받기 위하여 경문(經文)을 베끼는 일. 또는 그런 경전."],"origin":"死境"},{"id":628,"category":"한자어","term":"삭제","definition":"깎아 없애거나 지워 버림.","example":"회원들은 회칙에서 필요 없는 조항의 삭제를 요구했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[削除] 화면(畫面)에 표시된 문자를 지우는 일. 또는 파일 내에 저장된 기록을 제거하거나 기억 장치에서 프로그램을 지우는 일.","[削蹄] 가축의 굽을 일정 기간마다 깎는 일. 다리 모양이 나빠지는 것을 방지하기 위하여 주로 말이나 소의 굽을 깎는다.","[朔祭] 왕실에서 음력 초하룻날마다 조상에게 지내던 제사."],"origin":"削除"},{"id":629,"category":"한자어","term":"속행","definition":"계속하여 행함.","example":"지난번에 연기된 경기는 이번 주 일요일에 속행될 것입니다.","exampleSource":"제공 자료 예문","otherMeanings":["[速行] 빨리 행함.","[速行] 빨리 감."],"origin":"續行"},{"id":630,"category":"한자어","term":"수렴","definition":"의견이나 사상 따위가 여럿으로 나뉘어 있는 것을 하나로 모아 정리함.","example":"여론 수렴.","exampleSource":"표준국어대사전 용례","otherMeanings":["[水廉] 무덤 안에 물이 괴어 송장이 해를 입음.","[水簾] 물의 발이라는 뜻으로, ‘폭포01’를 아름답게 이르는 말.","[收斂] 돈이나 물건 따위를 거두어들임.","[收斂] 방탕한 사람이 몸과 마음을 단속함.","[收斂] 오그라들게 함.","[收斂] 조세 따위를 거두어들임.","[收斂] 광선, 유체, 전류 따위가 한 점에 모이는 일.","[收斂] 동식물의 계통이 다른 군(群)이 같은 환경에 적응한 결과, 닮은 형질을 나타내며 진화하는 일. 오스트레일리아에 사는 유대류(有袋類)의 여러 종류는 다른 대륙의 포유류와 비슷하다.","[收斂] 수열에서, 어떤 일정한 수의 임의의 근방에 유한 개를 제외한 나머지 모든 항이 모여 있는 현상.","[收斂] 함수 ƒ(x)가 있을 때, 어떤 일정한 수의 임의의 근방에 a의 근방에 있는 모든 x의 함숫값이 모여 있는 현상.","[垂簾] 발을 드리움. 또는 그 발.","[垂簾] 임금이 어린 나이로 즉위하였을 때, 왕대비나 대왕대비가 이를 도와 정사를 돌보던 일. 왕대비가 신하를 접견할 때 그 앞에 발을 늘인 데서 유래한다.","[繡簾] 무늬를 놓아 드리운 발."],"origin":"收斂"},{"id":631,"category":"한자어","term":"수발","definition":"받음과 보냄.","example":"공문서 수발.","exampleSource":"표준국어대사전 용례","otherMeanings":["신변 가까이에서 여러 가지 시중을 듦.","[秀拔] ‘수발하다03’의 어근.","[秀發] ‘수발하다04’의 어근.","[垂髮] 어린아이의 늘어뜨린 머리. 또는 어린 나이.","[隨發] 두 가지 이상의 일이 한꺼번에 일어남. 또는 그 일.","[鬚髮] 수염과 머리털을 아울러 이르는 말."],"origin":"受發"},{"id":632,"category":"한자어","term":"수여","definition":"증서, 상장, 훈장 따위를 줌.","example":"상장 수여.","exampleSource":"표준국어대사전 용례","otherMeanings":["[睡餘] 잠에서 깬 뒤."],"origin":"授與"},{"id":633,"category":"한자어","term":"순리","definition":"순한 이치나 도리. 또는 도리나 이치에 순종함.","example":"순리를 따르다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[巡吏] 순시하는 관리.","[殉利] 이익만 좇다가 몸을 망침.","[純利] 총이익에서 영업비, 잡비 따위의 총비용을 빼고 남은 순전한 이익.","[純理] 학문의 순수한 이치.","[循吏] 법을 잘 지키며 열심히 근무하는 관리.","[順利] 이익을 좇음.","[順利] 순조로운 것.","[醇醨] 진한 술과 묽은 술을 아울러 이르는 말.","[醇醨] 순후한 풍속과 경박한 풍속을 아울러 이르는 말."],"origin":"順理"},{"id":634,"category":"한자어","term":"순연","definition":"차례로 기일을 늦춤.","example":"기왕이니 내일 제 소원대로 반지를 사 주고 나서……이렇게, 할 수 없이 순연을 하기로 요량을 했습니다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[巡演] 여러 곳으로 돌아다니면서 하는 공연.","[純然] ‘순연하다02’의 어근.","[順緣] 늙은 사람부터 차례로 죽음.","[順緣] 진리의 가르침을 듣는 것과 같은 좋은 일이 인연이 되어 불도(佛道)로 들어가는 일."],"origin":"順延"},{"id":635,"category":"한자어","term":"옹색","definition":"형편이 넉넉하지 못하여 생활에 필요한 것이 없거나 부족함. 또는 그런 형편.","example":"돈을 다소라도 마련을 해 가지고 가야만…옹색이 덜할 것이었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"壅塞"},{"id":636,"category":"한자어","term":"용역","definition":"물질적 재화의 형태를 취하지 아니하고 생산과 소비에 필요한 노무를 제공하는 일.","example":"용역 회사.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"用役"},{"id":637,"category":"한자어","term":"의결","definition":"의논하여 결정함. 또는 그런 결정.","example":"이사회의 의결이 나오는 대로 조치가 취해질 것이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[疑結] 인과(因果) 따위를 의심하는 마음에서 일어나는 번뇌."],"origin":"議決"},{"id":638,"category":"한자어","term":"인용","definition":"남의 말이나 글을 자신의 말이나 글 속에 끌어 씀.","example":"인용 보도.","exampleSource":"표준국어대사전 용례","otherMeanings":["[仁勇] 어질고 용감함.","[認容] 인정하여 용납함."],"origin":"引用"},{"id":639,"category":"한자어","term":"자만","definition":"자신이나 자신과 관련 있는 것을 스스로 자랑하며 뽐냄.","example":"자만에 빠지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[子滿] 임신 5~7개월에 배가 지나치게 커지고 가슴이 답답하며, 오줌을 잘 누지 못하고 몸이 붓는 병.","[自滿] 스스로 흡족하게 여김.","[滋蔓] 차차 늘어서 퍼짐."],"origin":"自慢"},{"id":640,"category":"한자어","term":"적령","definition":"어떤 표준이나 규정에 알맞은 나이.","example":"취학 적령.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"適齡"},{"id":641,"category":"한자어","term":"전세","definition":"부동산의 소유자에게 일정한 금액을 맡기고 그 부동산을 일정 기간 동안 빌려 쓰는 일. 또는 그 돈. 부동산을 돌려줄 때는 맡긴 돈의 전액을 되돌려받는다.","example":"전세 보증금.","exampleSource":"표준국어대사전 용례","otherMeanings":["[田稅] 논밭에 부과되는 조세.","[田稅] 고려 시대의 전시과나 조선 시대의 과전법에서 전조(田租)를 받는 사람이 다시 국가에 납부하는 세. 전조의 약 1/10, 수확량의 약 1/100을 낸다.","[前世] 지나간 시대.","[前世] 삼세의 하나. 이 세상에 태어나기 이전의 세상을 이른다.","[前歲] 이해의 바로 앞의 해.","[專貰] 계약에 의하여 일정 기간 동안 그 사람에게만 빌려주어 다른 사람의 사용을 금하는 일.","[專勢] 권세를 독차지함.","[傳世] 대대로 전함.","[傳貰] 전세를 받고 빌려주는 방. 또는 전세를 주고 빌려 쓰는 방.","[戰勢] 전쟁, 경기 따위의 형세나 형편.","[轉世] 이 세상에 다시 태어남."],"origin":"傳貰"},{"id":642,"category":"한자어","term":"전시","definition":"여러 가지 물품을 한곳에 벌여 놓고 보임.","example":"도서 전시.","exampleSource":"표준국어대사전 용례","otherMeanings":["[田矢] 사냥할 때 쓰는 화살.","[全市] 시(市)의 전체.","[前翅] 곤충류의 날개 가운데 앞에 있는 한 쌍의 날개.","[展示] 책, 편지 따위를 펴서 봄. 또는 펴서 보임.","[展翅] 곤충을 채집하여 표본으로 만드는 일.","[傳尸] 말기에 이른 폐결핵.","[傳示] 기술이나 지식 따위를 전하여 보임.","[殿試] 조선 시대에, 복시(覆試)에서 선발된 사람에게 임금이 친히 치르게 하던 과거. 문과 33명, 무과 28명의 합격자를 재시험하여 등급을 결정하였는데, 특별한 사유가 없는 한 떨어뜨리는 법은 없었다.","[廛市] 작은 규모로 물건을 파는 집.","[戰時] 전쟁이 벌어진 때."],"origin":"展示"},{"id":643,"category":"한자어","term":"절차","definition":"일을 치르는 데 거쳐야 하는 순서나 방법.","example":"수속 절차.","exampleSource":"표준국어대사전 용례","otherMeanings":["[切磋] 옥이나 돌을 갈고 닦는다는 뜻으로, 학문과 덕행을 닦음을 이르는 말."],"origin":"節次"},{"id":644,"category":"한자어","term":"정체성","definition":"변하지 아니하는 존재의 본질을 깨닫는 성질. 또는 그 성질을 가진 독립적 존재.","example":"청소년기는 자신의 정체성을 확립하는 시기이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[停滯性] 사물이 발전하거나 앞으로 나아가지 못하고 한곳에 머물러 있는 특성."],"origin":"正體性"},{"id":645,"category":"한자어","term":"제시","definition":"어떠한 의사를 말이나 글로 나타내어 보임.","example":"근본적인 해결책 제시가 없이 정책이 겉돌고 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[祭詩] 시를 짓는 괴로움을 위로하기 위하여 자기가 지은 시를 제사 지내는 일.","[提示] 검사나 검열 따위를 위하여 물품을 내어 보임.","[提示] 오단(五段) 교수법에서, 새로운 교재를 아동에게 보이는 두 번째 단계.","[提撕] 기운을 내어 떨쳐 일어남.","[提撕] 몸에 지니어 가짐.","[睇視] 곁눈으로 봄.","[齊詩] 중국 제나라의 원고생이 전하였다고 하는 ≪시경≫. 오늘날 일부분만 전한다.","[題詩] 제목을 붙여 시를 지음. 또는 그 시."],"origin":"提示"},{"id":646,"category":"한자어","term":"주창","definition":"주의나 사상을 앞장서서 주장함.","example":"사람들은 그의 주창을 보수적이라고 비판했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[主鬯] ‘황태자’를 달리 이르던 말. 종묘(宗廟)에서 제사를 지낼 때 울창주를 올린다고 하여 이렇게 이른다.","[主唱] 노래나 시 따위를 앞장서서 부름."],"origin":"主唱"},{"id":647,"category":"한자어","term":"중화","definition":"서로 성질이 다른 물질이 융합하여 각각 그 특징이나 작용을 잃음. 또는 그런 일.","example":"이 물질은 여러 가지 독성 성분을 중화하는 역할을 한다.","exampleSource":"제공 자료 예문","otherMeanings":["[中火] 길을 가다가 점심을 먹음. 또는 그 점심.","[中和] 서로 다른 성질을 가진 것이 섞여 각각의 성질을 잃거나 그 중간의 성질을 띠게 함. 또는 그런 상태.","[中和] 감정이나 성격이 치우치지 아니하고 바른 상태.","[中和] 같은 양의 양전하와 음전하가 하나가 되어 전체로는 전하를 가지지 아니함. 또는 그런 일.","[中和] 산과 염기가 반응하여 서로의 성질을 잃음. 또는 그 반응.","[中和] 서로 다른 요소가 특정한 조건에서 변별 기능을 잃고 구별되지 아니함. 또는 그런 현상. 예를 들어, ‘낟’, ‘낫’, ‘낯’, ‘낱’ 따위에 쓰인 받침소리는 모두 ‘ㄷ’으로 발음된다.","[中華] 세계 문명의 중심이라는 뜻으로, 중국 사람들이 자기 나라를 이르는 말. 주변국에서 중국을 대접하여 이르는 말로도 쓰인다.","[衆花] 많은 꽃."],"origin":"中和"},{"id":648,"category":"한자어","term":"지축","definition":"대지의 중심.","example":"지축을 울리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[支軸] 지레 따위의 지점(支點)에 있는 받침축.","[地軸] 지구의 자전축. 북극과 남극을 연결하는 축으로, 공전 궤도면에 대하여 66.5도가량 기울어져 있다."],"origin":"地軸"},{"id":649,"category":"한자어","term":"진상","definition":"사물이나 현상의 거짓 없는 모습이나 내용.","example":"진상을 밝히다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[珍賞] 진귀한 것을 보고 기뻐서 즐김.","[振上] 양손에 아령 두 개를 쥐고 다리 사이에서 두세 번 흔들다가 앞쪽으로 머리 위까지 들어 올리는 운동.","[眞想] 참된 생각.","[眞像] 진짜 모습 그대로의 형상.","[陣上] 군대나 부대의 안.","[陳狀] 일의 사정이나 상황을 말함.","[進上] 진귀한 물품이나 지방의 토산물 따위를 임금이나 고관 따위에게 바침.","[進上] 겉보기에 허름하고 질이 나쁜 물건을 속되게 이르는 말.","[塵想] 속된 생각. 또는 세속의 잡념."],"origin":"眞相"},{"id":650,"category":"한자어","term":"최면","definition":"암시에 의하여 인위적으로 이끌어 낸, 잠에 가까운 상태.","example":"최면에 빠지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[催眠] 잠이 들게 함."],"origin":"催眠"},{"id":651,"category":"한자어","term":"추종","definition":"남의 뒤를 따라서 좇음.","example":"그는 컴퓨터 분야에서는 타의 추종을 불허한다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[追從] 권력이나 권세를 가진 사람이나 자신이 동의하는 학설 따위를 별 판단 없이 믿고 따름.","[追蹤] 뒤를 밟아 쫓아간다는 뜻으로, 옛일을 더듬어 찾음을 이르는 말.","[追蹤] 다른 사람의 행동을 감시하거나 증거를 잡기 위하여 그 사람 몰래 뒤를 밟음.","[錘鐘] 추가 달린 괘종시계.","[騶從] 윗사람을 따라다니는 종."],"origin":"追從"},{"id":652,"category":"한자어","term":"편입","definition":"이미 짜인 한 동아리나 대열 따위에 끼어 들어감.","example":"그 어두운 열정은, 이제 밝고 떳떳한 삶으로의 편입이 불가능하다고 단정 짓게 되자마자 갑자기 그를 거세게 몰아친 것이었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[編入] 얽거나 짜 넣음.","[編入] 첫 학년에 입학하지 않고 어떤 학년에 도중에 들어가거나 다니던 학교를 그만두고 다른 학교에 들어감."],"origin":"編入"},{"id":653,"category":"한자어","term":"표지","definition":"표시나 특징으로 어떤 사물을 다른 것과 구별하게 함. 또는 그 표시나 특징.","example":"통행금지 표지.","exampleSource":"표준국어대사전 용례","otherMeanings":["[表紙] 책의 맨 앞뒤의 겉장.","[表紙] 읽던 곳이나 필요한 곳을 찾기 쉽도록 책갈피에 끼워 두는 종이쪽지나 끈.","[標紙] 증거의 표로 글을 적은 종이.","[標識] 다른 대상과 구별하여 어떤 대상을 확정하고, 그것을 인식할 수 있게 하는 표상적(表象的) 또는 개념적 특성."],"origin":"標識"},{"id":654,"category":"한자어","term":"게재","definition":"글이나 그림 따위를 신문이나 잡지 따위에 실음.","example":"그의 칼럼을 일주일에 한 번 신문에 게재하기로 했다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"揭載"},{"id":655,"category":"한자어","term":"결제","definition":"증권 또는 대금을 주고받아 매매 당사자 사이의 거래 관계를 끝맺는 일.","example":"결제 자금.","exampleSource":"표준국어대사전 용례","otherMeanings":["[決濟] 일을 처리하여 끝을 냄.","[結制] 안거(安居) 제도를 준수함.","[結制] 안거를 시작함.","[駃騠] 빠르게 잘 달리는 말.","[駃騠] 수말과 암탕나귀 사이에서 난 일대(一代) 잡종. 외모는 당나귀와 비슷하고 노새보다 체질과 체격이 떨어진다. 몸이 약하고 성질이 사나워 실용 가치가 거의 없다. 수컷은 번식력이 전혀 없고 암컷은 간혹 수태하나 새끼는 매우 허약하다.","[闋制] 어버이의 삼년상을 마침."],"origin":"決濟"},{"id":656,"category":"한자어","term":"계륵","definition":"닭의 갈비라는 뜻으로, 그다지 큰 소용은 없으나 버리기에는 아까운 것을 이르는 말. ≪후한서(後漢書)≫의 에 나오는 말이다.","example":"겨울이 되니 선풍기가 계륵 같은 물건이 되었다.","exampleSource":"제공 자료 예문","otherMeanings":["[鷄肋] 몸이 몹시 약한 사람을 비유적으로 이르는 말."],"origin":"鷄肋"},{"id":657,"category":"한자어","term":"도탄","definition":"진구렁에 빠지고 숯불에 탄다는 뜻으로, 몹시 곤궁하여 고통스러운 지경을 이르는 말.","example":"도탄에 들다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"塗炭"},{"id":658,"category":"한자어","term":"동량","definition":"기둥과 들보로 쓸 만한 재목이라는 뜻으로, 집안이나 나라를 떠받치는 중대한 일을 맡을 만한 인재를 이르는 말.","example":"장차 나라의 동량이 될 어린이들.","exampleSource":"표준국어대사전 용례","otherMeanings":["[同量] 같은 분량.","[洞糧] 승려가 시주(施主)를 얻으려고 돌아다니는 일. 또는 그렇게 얻은 곡식.","[棟梁, /, 棟樑] 기둥과 들보를 아울러 이르는 말."],"origin":"棟梁棟樑"},{"id":659,"category":"한자어","term":"석권","definition":"돗자리를 만다는 뜻으로, 빠른 기세로 영토를 휩쓸거나 세력 범위를 넓힘을 이르는 말.","example":"중국 대륙의 석권.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"席卷席捲"},{"id":660,"category":"한자어","term":"숙환","definition":"오래 묵은 병.","example":"아버님께서는 숙환으로 고생하시다가 별세하셨다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[宿患] 오래된 걱정거리."],"origin":"宿患"},{"id":661,"category":"한자어","term":"와중","definition":"일이나 사건 따위가 시끄럽고 복잡하게 벌어지는 가운데.","example":"많은 사람이 전란의 와중에 가족을 잃었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[渦中] 흐르는 물이 소용돌이치는 가운데.","[窩中] 굴의 안."],"origin":"渦中"},{"id":662,"category":"한자어","term":"완벽","definition":"흠이 없는 구슬이라는 뜻으로, 결함이 없이 완전함을 이르는 말.","example":"완벽에 가까운 묘기.","exampleSource":"표준국어대사전 용례","otherMeanings":["[完璧] 빌린 물건을 정중히 돌려보냄. 중국 전국 시대 조나라의 인상여(藺相如)가 진(秦)나라의 소양왕이 열다섯 성(城)과 화씨(和氏)의 벽(璧)을 바꾸자고 하여 진나라에 갔으나 소양왕이 거짓말을 하고 있다는 것을 알고, 목숨을 걸고 그 벽을 고스란히 도로 찾아왔다는 데서 유래한다."],"origin":"完璧"},{"id":663,"category":"한자어","term":"재연","definition":"한 번 하였던 행위나 일을 다시 되풀이함.","example":"상황 재연.","exampleSource":"표준국어대사전 용례","otherMeanings":["[再演] 연극이나 영화 따위를 다시 상연하거나 상영함.","[再緣] 결혼하였던 여자가 남편과 사별하거나 이혼하여 다른 남자와 결혼함.","[再燃] 꺼졌던 불이 다시 탐.","[再燃] 한동안 잠잠하던 일이 다시 문제가 되어 시끄러워짐.","[齋筵] 재식(齋食)을 마련하여 삼보(三寶)에 공양하는 법회."],"origin":"再演"},{"id":664,"category":"한자어","term":"재현","definition":"다시 나타남. 또는 다시 나타냄.","example":"즉 20세기에 들어와서 미술은 재현, 즉 모방을 버리고 표현을 주장하기에 이르렀다는 것이오.","exampleSource":"표준국어대사전 용례","otherMeanings":["[才賢] 재주가 뛰어나고 현명함. 또는 그런 사람.","[再現] 이미 경험하거나 학습한 정보를 다시 기억해 내는 일."],"origin":"再現"},{"id":665,"category":"한자어","term":"추호","definition":"매우 적거나 조금인 것을 비유적으로 이르는 말.","example":"당신을 모욕할 생각은 추호도 없었습니다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[秋毫] 가을철에 털갈이하여 새로 돋아난 짐승의 가는 털.","[追號] 죽은 임금에게 시호를 올림. 또는 그 시호.","[推戶] 지게문이나 사립문을 밀어서 엶."],"origin":"秋毫"},{"id":666,"category":"한자어","term":"각광","definition":"사회적 관심이나 흥미.","example":"각광을 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[脚光] 무대의 앞쪽 아래에 장치하여 배우를 비추는 광선."],"origin":"脚光"},{"id":667,"category":"한자어","term":"간과","definition":"큰 관심 없이 대강 보아 넘김.","example":"나는 그 사실을 결코 간과하지 않았다.","exampleSource":"제공 자료 예문","otherMeanings":["[干戈] 방패와 창이라는 뜻으로, 전쟁에 쓰는 병기를 통틀어 이르는 말.","[干戈] 전쟁 또는 병란을 비유적으로 이르는 말.","[諫果] ‘감람03’을 달리 이르는 말. 남이 충고하는 말처럼, 처음에는 쓰고 떫으나 오래 씹을수록 달고 맛있는 과일이라는 뜻이다."],"origin":"看過"},{"id":668,"category":"한자어","term":"감안","definition":"여러 사정을 참고하여 생각함.","example":"기상 상황을 감안하여 출발 시간을 늦췄다.","exampleSource":"제공 자료 예문","otherMeanings":["[疳眼] 감병(疳病)으로 생기는 눈병. 눈이 깔깔하고 허는데 더 심해지면 짓무르기도 한다."],"origin":"勘案"},{"id":669,"category":"한자어","term":"감수","definition":"책망이나 괴로움 따위를 달갑게 받아들임.","example":"전체를 위해서 개인의 희생이 감수될 수 있다는 생각은 옳지 않다.","exampleSource":"제공 자료 예문","otherMeanings":["[甘水] 맛이 단 물.","[甘遂] 대극과의 여러해살이풀. 줄기는 높이가 30cm 정도이고 붉은 보랏빛을 띠며, 자르면 젖 같은 흰색의 진이 나온다. 잎은 어긋나고 피침 모양이며, 줄기 끝에 긴 타원형의 잎이 돌려난다. 6~7월에 녹색을 띤 황색 꽃이 줄기 끝에 피고 열매는 삭과(蒴果)를 맺는다. 뿌리에는 독이 있는데 한방에서 부종(浮腫), 적취(積聚) 따위에 약으로 쓴다. 우리나라 각지에 분포한다.","[勘收] 자세히 조사하여 몰수함.","[淦水] 배의 밑바닥에 괴는 물.","[減水] 하천이나 호수 따위의 물이 줆. 또는 그 물.","[減收] 거두어들이는 것이 줆.","[減壽] 수명이 줆.","[減數] 돈이나 물품의 수를 줄임.","[減數] 어떤 수에서 다른 어떤 수를 뺄 때, 빼려는 수. ‘10-2=8’에서 ‘2’를 이른다.","[酣睡] 깊이 단잠을 잠.","[感受] 외부의 영향을 수동적으로 받아들임.","[感受] 외부 세계의 자극을 감각 신경이 받아들이는 일.","[感祟] 감기의 빌미.","[監守] 감독하고 지킴. 또는 그런 일을 맡은 사람.","[監收] 절에 딸린 땅을 관리하고 수입을 감독하는 직책. 또는 그 직책에 있는 사람.","[監修] 책의 저술이나 편찬 따위를 지도하고 감독함."],"origin":"甘受"},{"id":670,"category":"한자어","term":"강구","definition":"좋은 대책과 방법을 궁리하여 찾아내거나 좋은 대책을 세움.","example":"대책 강구.","exampleSource":"표준국어대사전 용례","otherMeanings":["→ 말감고.","[江口] 강물이 바다로 흘러가는 어귀.","[江口] 강이나 내, 또는 좁은 바닷목에서 배가 건너다니는 일정한 곳.","[江鷗] 강에서 노는 갈매기.","[康衢] 사방으로 두루 통하는 번화한 큰 길거리.","[強仇] 강한 적수. 또는 만만찮은 상대.","[強求] 구하기 힘든 것을 억지로 구함.","[強求] 억지로 또는 강제로 요구함.","[強寇] 힘이 세고 강한 적이나 도둑.","[鋼球] 강철로 둥글게 만든 알.","[講求] 조사하여 구함."],"origin":"講究"},{"id":671,"category":"한자어","term":"개연성","definition":"절대적으로 확실하지 않으나 아마 그럴 것이라고 생각되는 성질.","example":"개연성이 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"蓋然性"},{"id":672,"category":"한자어","term":"고사","definition":"제의나 권유 따위를 굳이 사양함.","example":"수차례의 고사 끝에 결국에는 그 제의를 받아들이게 되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["동양화에서, 석간주(石間硃)라는 검붉은 흙에 먹을 섞어 만든 검붉은 색. 담채화, 수묵화, 진채화 따위에 쓴다.","[古史] 옛날 역사.","[古寺] 오래된 절.","[古事] 지나간 과거의 일.","[古祠] 오래된 낡은 사당(祠堂).","[古楂] 오래 묵은 나뭇등걸이나 그루터기.","[叩謝] 머리를 조아려서 고마운 마음을 나타냄.","[叩謝] 머리를 조아려서 죄를 빎.","[考思] 생각하고 헤아려 봄.","[考査] 자세히 생각하고 조사함.","[考査] 학생들의 학업 성적을 평가하는 시험.","[考査] 고려ㆍ조선 시대에, 관리의 근무 성적을 평가하여 결정하던 일. 승진과 좌천, 포상과 처벌에 반영하였다.","[告祀] 액운(厄運)은 없어지고 풍요와 행운이 오도록 집안에서 섬기는 신(神)에게 음식을 차려 놓고 비는 제사.","[告詞, /, 告辭] 의식(儀式) 때에 상급자가 글로 써서 읽어 축하하거나 훈시하는 말.","[姑捨] ‘고사하다05’의 어근.","[孤寺] 마을에서 멀리 떨어져 있는 외딴 절.","[故事] 유래가 있는 옛날의 일. 또는 그런 일을 표현한 어구.","[故事] 옛날부터 전해 오는 규칙이나 정례(定例).","[故事] 지나간 과거의 일.","[枯死] 나무나 풀 따위가 말라 죽음.","[苦使] 매우 혹독하게 일을 시키거나 부림.","[苦思] 괴롭거나 고통스러운 생각.","[苦思] 마음을 썩이며 깊이 생각함.","[苦詞] 괴로움을 말로 늘어놓음.","[苦辭] 간절히 사양함.","[庫司] 절의 모든 일을 감독하는 직책.","[庫舍] 예전에, 곳간으로 쓰려고 지은 집.","[庫紗] 여름 옷감으로 쓰는 비단의 하나. 감이 약간 두껍고 깔깔하며 윤이 나는데, 삶지 않은 명주실로 짠 생고사와 삶은 명주실로 짠 숙고사가 있다.","[高士] 인격이 높고 성품이 깨끗한 선비. 특히 산속에 숨어 살며 세속에 물들지 않은 덕망 있는 선비를 이른다.","[高砂] ‘타이완’의 다른 이름.","[高射] 공중에 높이 쏨.","[高師] 일제 강점기에, ‘고등 사범 학교’를 줄여 이르던 말.","[鼓詞] 산문(散文)의 이야기와 운문(韻文)의 창(唱)으로 구성된 중국의 창극. 우리나라 판소리와 비슷하여 긴 사설로 엮어진 노래에 북을 쳐 장단을 맞추는데, 송나라 때에 시작되어 베이징, 톈진(天津)을 중심으로 북방에서 유행하였다.","[篙師] 배를 부리는 일에 숙련된 나이든 뱃사공."],"origin":"固辭"},{"id":673,"category":"한자어","term":"고취","definition":"의견이나 사상 따위를 열렬히 주장하여 불어넣음.","example":"민족주의 사상의 고취.","exampleSource":"표준국어대사전 용례","otherMeanings":["[高趣] 고상한 운치.","[鼓吹] 북을 치고 피리를 붊.","[鼓吹] 힘을 내도록 격려하여 용기를 북돋움.","[鼓吹] 군악을 아뢰던 악대. 중국 후한 때에 비롯되었다.","[鼓吹] 조선 시대에, 궁중 의식이나 임금이 나들이할 때 타악기와 취주 악기로 아뢰던 음악.","[鼓觜] 학춤에서 부리를 치는 동작."],"origin":"鼓吹"},{"id":674,"category":"한자어","term":"공조","definition":"여러 사람이 함께 도와주거나 서로 도와줌.","example":"야권 공조.","exampleSource":"표준국어대사전 용례","otherMeanings":["[工曹] 고려 시대에, 육조(六曹) 가운데 산택(山澤)ㆍ공장(工匠)ㆍ영조(營造)를 맡아보던 관아. 충렬왕 24년에 설치하였는데 공민왕 5년(1356)에는 공부(工部)라 불렀으며, 한때 전공사(典工司)라고 하다가 공양왕 원년(1389)에 다시 이 이름으로 고쳤다.","[工曹] 조선 시대에, 육조(六曹) 가운데 산택ㆍ공장ㆍ영선(營繕)ㆍ도야(陶冶)를 맡아보던 정이품 아문. 태조 1년(1392)에 설치하여 고종 31년(1894)에 공무아문으로 이름을 고쳤다.","[工造] 조선 시대에, 공조(工曹)ㆍ군기시ㆍ상의원(尙衣院)ㆍ교서관 따위의 관아에 속한 장인들에게 준 종팔품 벼슬.","[公租] 국가 또는 지방 공공 단체가 필요한 경비로 사용하기 위하여 국민이나 주민으로부터 강제로 거두어들이는 금전. 국세와 지방세가 있다.","[功曹] 중국 한(漢)나라 때에, 군(郡)에 속하여 군리의 임면(任免) 및 상벌에 관한 일을 맡아보던 구실아치.","[恐鳥] 모아목의 새를 통틀어 이르는 말. 키는 2~3.5미터로 거대하나 날개가 없어 날지 못한다. 뉴질랜드에서 번성했던 새로서, 20여 종이 있었다고 추정되나 마오리족의 남획과 특수한 진화에 의하여 19세기 말에 멸종하였다.","[貢租] 공물로 바치는 조세.","[貢調] 공물을 바침."],"origin":"共助"},{"id":675,"category":"한자어","term":"귀결","definition":"어떤 결말이나 결과에 이름. 또는 그 결말이나 결과.","example":"당연한 귀결.","exampleSource":"표준국어대사전 용례","otherMeanings":["[歸結] 어떤 사태를 원인으로 하여 그 결과로 생기는 상태. 또는 일정한 논리적 전제로부터 이끌어 내게 되는 결론."],"origin":"歸結"},{"id":676,"category":"한자어","term":"기인","definition":"어떠한 것에 원인을 둠.","example":"이번 사고는 운전자의 부주의에서 기인했다.","exampleSource":"제공 자료 예문","otherMeanings":["[其人] 고려ㆍ조선 시대에, 지방 호족 및 토호의 자제로서 중앙에 볼모로 와서 그 출신 지방의 행정에 고문(顧問) 구실을 하던 사람. 또는 그런 제도. 지방 세력을 견제하고 중앙 집권을 강화하기 위한 정책으로, 신라의 상수리 제도에서 유래하였다.","[其人] 조선 전기에, 궁중의 잡역을 위하여 소집한 지방 백성.","[奇人] 성격이나 말, 행동 따위가 보통 사람과 다른 별난 사람.","[起因] 일이 일어나게 된 까닭.","[基因] 근본이 되는 원인.","[飢人] 굶주린 사람.","[幾人] 몇 사람.","[棄人] 도리에서 벗어난 행동을 하여 버림을 받은 사람.","[棄人] 쓸모없이 된 사람.","[欺人] 사람을 속임.","[畸人] 독특한 지조와 행실이 있어서 세상의 풍속과 다른 면이 있는 사람.","[畸人] 몸의 어느 부분이 온전하지 못한 사람.","[旗人] 중국 청나라 때에 팔기에 딸렸던 사람. 팔기는 청나라 건국에 공이 많은 만주족의 군인들로 주로 짜였는데 일반 사람보다 좋은 대우를 받았다."],"origin":"起因"},{"id":677,"category":"한자어","term":"난항","definition":"여러 가지 장애 때문에 일이 순조롭게 진행되지 않음을 비유적으로 이르는 말.","example":"난항을 겪다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[亂杭] 적의 기병을 막으려고 굵은 말뚝을 불규칙하게 박아 동아줄로 얼기설기 얽어 놓은 장애물.","[難航] 폭풍우와 같은 나쁜 조건으로 배나 항공기가 몹시 어렵게 항행함."],"origin":"難航"},{"id":678,"category":"한자어","term":"단초","definition":"일이나 사건을 풀어 나갈 수 있는 첫머리.","example":"문제 해결의 단초를 제공하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[斷礎] 깨어져 조각이 난 주춧돌."],"origin":"端初"},{"id":679,"category":"한자어","term":"도모","definition":"어떤 일을 이루기 위하여 대책과 방법을 세움.","example":"부원들 간의 친목 도모를 위해 주말에 야유회를 가기로 했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[叨冒] 지나치게 탐하는 욕심.","[桃毛] 복숭아의 털. 몸에 있는 나쁜 기운을 물리치는 약으로 쓴다.","[悼耄] 일곱 살 어린이와 여든 살 늙은이를 아울러 이르는 말.","[掏摸] 남의 몸이나 가방을 슬쩍 뒤져 금품을 훔치는 짓. 또는 그런 사람."],"origin":"圖謀"},{"id":680,"category":"한자어","term":"묵인","definition":"모르는 체하고 하려는 대로 내버려 둠으로써 슬며시 인정함.","example":"상급자의 묵인 아래 부정을 저지르다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"默認"},{"id":681,"category":"한자어","term":"반증","definition":"어떤 사실이나 주장이 옳지 아니함을 그에 반대되는 근거를 들어 증명함. 또는 그런 증거.","example":"우리에겐 그 사실을 뒤집을 만한 반증이 없다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[反證] 어떤 사실과 모순되는 것 같지만, 거꾸로 그 사실을 증명하는 것."],"origin":"反證"},{"id":682,"category":"한자어","term":"방증","definition":"사실을 직접 증명할 수 있는 증거가 되지는 않지만, 주변의 상황을 밝힘으로써 간접적으로 증명에 도움을 줌. 또는 그 증거.","example":"방증 자료.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"傍證"},{"id":683,"category":"한자어","term":"부각","definition":"어떤 사물을 특징지어 두드러지게 함.","example":"상품명 선전은 효과가 단명한 데 비해 회사 자체의 이미지 부각은 그 수명이 영원하다는 주장과 함께 이를 위해 돈 대신 머리를 썼다.","exampleSource":"표준국어대사전 용례","otherMeanings":["다시마 조각, 깻잎, 고추 따위에 찹쌀 풀을 발라 말렸다가 기름에 튀긴 반찬.","[負角] ‘음각01’의 전 용어.","[俯角] 높은 곳에서 낮은 곳에 있는 지점을 내려다볼 때, 그 시선과 수평면이 이루는 각.","[浮刻] 조각에서, 평평한 면에 글자나 그림 따위를 도드라지게 새기는 일.","[腐刻] 약물을 써서 유리나 금속 따위에 조각함. 또는 그런 일."],"origin":"浮刻"},{"id":684,"category":"한자어","term":"상충","definition":"맞지 아니하고 서로 어긋남.","example":"두 나라 간의 이해관계의 상충으로 전쟁이 일어났다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[上衝] 위로 치밀어 오름.","[相沖] 사물이 서로 어울리지 아니하고 마주침.","[相沖] 방위, 일진(日辰), 시 따위가 서로 어울리지 아니하고 맞질림.","[桑蟲] 뽕나무하늘소의 애벌레. 뽕나무 줄기를 갉아 먹는 해충인데 한약재로 쓴다."],"origin":"相衝"},{"id":685,"category":"한자어","term":"선양","definition":"명성이나 권위 따위를 널리 떨치게 함.","example":"그는 지역의 전통문화를 선양하는 데 힘썼다.","exampleSource":"제공 자료 예문","otherMeanings":["[煽揚] 부추기어 일으킴.","[禪讓] 임금의 자리를 물려줌.","[Shenyang[瀋陽]] 중국 만주 랴오닝성(遼寧省)에 있는 도시. 교통의 요지이며 중공업이 발달하였다. 성내에는 궁전이 있고, 교외에 동릉(東陵)ㆍ북릉(北陵) 따위의 청나라 명소가 있다. 1932년 일본에 의하여 만주국이 건국되면서 펑톈(奉天)으로 이름이 바뀌었다가 1950년에 다시 선양으로 바뀌었다. 랴오닝성의 성도(省都)이다."],"origin":"宣揚"},{"id":686,"category":"한자어","term":"시사","definition":"어떤 것을 미리 간접적으로 표현해 줌.","example":"낙관적인 시사를 던져 주다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[市肆] 시장 거리의 가게.","[市肆] 조선 시대에, 지금의 종로를 중심으로 설치한 상설 시장. 관아에서 임대하여 주고, 특정 상품에 대한 독점 판매권과 난전을 금지하는 특권을 주는 대신 관아에서 필요로 하는 물품을 바칠 의무를 부과하였다.","[侍史] 옆에 모시면서 문서를 작성하고 처리하는 사람.","[侍史] 편지 겉봉에 공경하는 뜻으로, 받는 사람의 이름 아래 쓰는 말.","[侍史] 고려 시대에, 감찰사(監察司)에 속한 종오품 벼슬. 충렬왕 원년(1275)에 어사대를 감찰사로 고칠 때에, 시어사를 고친 것이다.","[侍史] 고려 말기ㆍ조선 전기에, 사헌부에 속한 정사품 벼슬. 고려 공민왕 18년(1369)에 장령(掌令)을 고친 것으로, 태종 원년(1401)에 다시 장령으로 고쳤다.","[侍師] 스승을 모심. 또는 스승으로 모심.","[侍射] 임금이 활을 쏠 때에 곁에서 모시고 활을 쏘던 일.","[侍射] 임금이 활을 쏠 때, 곁에서 모시고 거들어 주는 일을 맡은 신하.","[施舍] 은덕을 베풀어 줌.","[施舍] 나그네가 짐을 풀고 숙박하게 해 줌. 또는 그런 곳.","[時仕] 아전이나 기생 등이 그 매인 관아에서 맡은 일을 함. 또는 그 일.","[時事] 그 당시에 일어난 여러 가지 사회적 사건.","[時祀] 음력 2월, 5월, 8월, 11월에 가묘에 지내는 제사.","[時祀] 음력 10월에 5대 이상의 조상 무덤에 지내는 제사.","[視事] 임금이 신하들과 나랏일을 돌보던 일.","[詩史] 시의 발생ㆍ변천ㆍ발달 과정에 관한 역사. 또는 그것에 관한 저술.","[詩史] 서사시의 하나. 역사적 사실을 소재로 해서 쓴 시이다.","[詩社] 시인들이 조직한 문학적 단체.","[詩思] 시적인 생각이나 상념.","[試射] 총이나 활 따위를 시험 삼아 쏘아 봄. 또는 그렇게 하는 일.","[試射] 사격에 필요한 여러 기구의 성능과 특성을 검토하고 결정하기 위하여 총이나 포를 쏘아 봄.","[試射] 활을 잘 쏘는 사람을 시험 보아 뽑던 일.","[詩詞] 시(詩)와 사(詞)를 아울러 이르는 말.","[試寫] 영화나 광고 따위를 일반에게 공개하기 전에 심사원, 비평가, 제작 관계자 등의 특정인에게 시험적으로 보이는 일."],"origin":"示唆"},{"id":687,"category":"한자어","term":"심화","definition":"정도나 경지가 점점 깊어짐. 또는 깊어지게 함.","example":"빈부 격차의 심화가 사회적 문제로 부각되었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[心火] 마음속에서 북받쳐 나는 화.","[心火] 마음속의 울화로 몸과 마음이 답답하고 몸에 열이 높아지는 병.","[心火] 심장을 오행(五行)의 화(火)에 소속시켜 이르는 말.","[心火] 심장의 본질을 화(火)로 보아 심장의 정상적 생리 기능을 이르는 말.","[心火] 지압하는 부위. 가운뎃손가락 끝마디를 이른다.","[心畫] 마음을 나타내는 그림이라는 뜻으로, 문자나 필적을 이르는 말."],"origin":"深化"},{"id":688,"category":"한자어","term":"엄수","definition":"명령이나 약속 따위를 어김없이 지킴.","example":"교칙 엄수.","exampleSource":"표준국어대사전 용례","otherMeanings":["[閹豎] 조선 시대에, 내시부에 속하여 임금의 시중을 들거나 숙직 따위의 일을 맡아보던 남자. 모두 거세된 사람이었다.","[嚴囚] 달아나지 못하도록 엄중하게 가둠.","[嚴修] 의식 따위를 엄숙하게 치름."],"origin":"嚴守"},{"id":689,"category":"한자어","term":"영수","definition":"여러 사람 가운데 우두머리.","example":"여야 영수 회담.","exampleSource":"표준국어대사전 용례","otherMeanings":["[永壽] 오래도록 삶.","[英秀] ‘영수하다02’의 어근.","[英數] 영어와 수학을 아울러 이르는 말.","[瓴水] 지붕의 기와에서 흘러내리는 빗물이라는 뜻으로, 도저히 막지 못하는 형세를 비유적으로 이르는 말.","[零數] 10, 100, 1000 따위의 정수(整數)에 차지 못하거나 차고 남은 수.","[領水] 한 나라의 주권이 미치는 범위의 수역. 영해(領海) 외에 하천, 호소(湖沼), 항만 따위의 내수(內水)를 포함한다.","[領水] 영토에 인접한 해역으로서, 그 나라의 통치권이 미치는 범위. 연안해, 내해(內海), 만(灣), 해협 따위로 이루어지는데, 해수면이 가장 낮은 썰물 때의 해안선을 기준으로 폭 3해리까지가 보통이지만 나라에 따라 6해리, 12해리를 주장하기도 한다.","[領收, /, 領受] 돈이나 물품 따위를 받아들임.","[領袖] 장로교에서, 조직이 아직 갖추어지지 아니한 교회를 인도하는 임시 직분. 또는 그런 사람.","[營需] 군영(軍營)에 필요한 물품.","[贏輸] 이김과 짐.","[靈水] 신비스러운 효험이 있는 물.","[靈秀] ‘영수하다04’의 어근.","[靈邃] ‘영수하다05’의 어근.","[靈獸] 상서로운 짐승. 기린 따위를 이른다."],"origin":"領袖"},{"id":690,"category":"한자어","term":"취재","definition":"작품이나 기사에 필요한 재료나 제재(題材)를 조사하여 얻음.","example":"취재 활동.","exampleSource":"표준국어대사전 용례","otherMeanings":["[取才] 재주를 시험하여 사람을 뽑음.","[臭載] 배에 실은 짐이 상하여 냄새가 나고 못 쓰게 됨.","[臭載] 짐을 실은 배가 뒤집어져 가라앉음."],"origin":"取材"},{"id":691,"category":"한자어","term":"쾌척","definition":"금품을 마땅히 쓸 자리에 시원스럽게 내놓음.","example":"사업가는 수재민을 위해 거액을 쾌척했다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"快擲"},{"id":692,"category":"한자어","term":"간주","definition":"상태, 모양, 성질 따위가 그와 같다고 봄. 또는 그렇다고 여김.","example":"법원은 그 행위를 계약 위반으로 간주했다.","exampleSource":"제공 자료 예문","otherMeanings":["[間奏] 한 악곡의 도중에 어떤 기분을 나타내기 위하여 연주하는 부분. 협주곡의 독주부에 끼인 관현악의 합주 부분이나 노래가 잠시 그친 사이에 연주되는 기악 반주 따위이다.","[間奏] 악곡이나 오페라, 시의 낭독 사이에 삽입되는 기악 소곡.","[間柱] 기둥과 기둥 사이가 너무 멀어서 칸막이벽을 치거나 벽 바탕재를 건너 댈 수 없을 때 기둥 사이에 세우는 가는 기둥."],"origin":"看做"},{"id":693,"category":"한자어","term":"간파","definition":"속내를 꿰뚫어 알아차림.","example":"윤명선은…그의 처지며 그의 주위에서 생기고 있는 일이 무엇인지 대뜸 간파를 한 것 같았다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"看破"},{"id":694,"category":"한자어","term":"검침","definition":"전기, 수도, 가스 따위의 사용량을 알기 위하여 계량기의 숫자를 검사함.","example":"수돗물 검침이 잘못되어 요금이 많이 나왔다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[黔沈] ‘검침하다02’의 어근."],"origin":"檢針"},{"id":695,"category":"한자어","term":"결연","definition":"인연을 맺음. 또는 그런 관계.","example":"의료 기관과 양로원의 결연을 추진했다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[決然] ‘결연하다01’의 어근.","[缺然] ‘결연하다02’의 어근.","[訣宴] 헤어짐을 아쉬워하여 베푸는 연회.","[結緣] 불보살이 중생을 구제하기 위하여 중생과 인연을 맺음.","[結緣] 중생이 불도를 닦기 위하여 삼보(三寶)와 인연을 맺음."],"origin":"結緣"},{"id":696,"category":"한자어","term":"결의","definition":"뜻을 정하여 굳게 마음을 먹음. 또는 그런 마음.","example":"결의 대회.","exampleSource":"표준국어대사전 용례","otherMeanings":["[決疑] 의혹을 풂.","[決議] 의논하여 결정함. 또는 그런 결정.","[結義] 남남끼리 형제, 자매, 남매, 부자 따위 친족의 의리를 맺음."],"origin":"決意"},{"id":697,"category":"한자어","term":"경선","definition":"둘 이상의 후보가 경쟁하는 선거.","example":"경선으로 회장을 뽑다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[徑先] ‘경선하다’의 어근.","[徑線] 원이나 구 따위에서, 중심을 지나는 직선으로 그 둘레 위의 두 점을 이은 선분.","[經線] 지구를 남극과 북극을 지나는 평면으로 잘랐을 때, 그 평면과 지구 표면이 만나는 가상적인 선.","[傾船] 배를 기울어지게 하는 일.","[鯨船] 고래를 잡기 위하여 특별한 설비를 갖춘 배."],"origin":"競選"},{"id":698,"category":"한자어","term":"계시","definition":"사람의 지혜로써는 알 수 없는 진리를 신(神)이 가르쳐 알게 함.","example":"휴정은 부처의 계시를 받은 듯, 홀연히 시심(詩心)이 움직였다.","exampleSource":"표준국어대사전 용례","otherMeanings":["공장(工匠) 밑에서 일을 배우는 제자.","[계, 示] → 게시02.","[癸時] 이십사시(二十四時)의 둘째 시. 오전 영시 반에서 한 시 반까지이다.","[計示] 부기(簿記)에서, 거래 내용을 차변(借邊)과 대변(貸邊)으로 나누어 적는 일.","[計時] 기록 경기나 바둑 따위에서, 소요 시간을 재는 일. 또는 그 시간.","[啓示] 깨우쳐 보여 줌."],"origin":"啓示"},{"id":699,"category":"한자어","term":"괘념","definition":"마음에 두고 걱정하거나 잊지 않음.","example":"급한 일이 있으면 괘념 말고 가 보게.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"掛念"},{"id":700,"category":"한자어","term":"교시","definition":"가르쳐서 보임.","example":"승려는 신도들에게 여러 가지 지혜를 교시하였다.","exampleSource":"교정 예문","otherMeanings":["[交市] 주로 나라와 나라 사이에서 물건을 사고팔고 하여 서로 바꿈.","[校是] 학교의 기본 교육 방침.","[校時] 학교의 수업 시간을 세는 단위. 흔히 40분 또는 45분, 50분 따위로 정한다.","[敎示] 길잡이로 삼는 가르침."],"origin":"敎示"},{"id":701,"category":"한자어","term":"교정","definition":"남의 문장 또는 출판물의 잘못된 글자나 글귀 따위를 바르게 고침.","example":"출판 전에 원고의 오자를 교정했다.","exampleSource":"제공 자료 예문","otherMeanings":["[交情] 사귀는 정. 또는 사귀어 온 정.","[校正] 교정쇄와 원고를 대조하여 오자, 오식, 배열, 색 따위를 바르게 고침.","[校定] 출판물의 글자나 글귀를 검토하여 바르게 정하는 일.","[校庭] 학교의 마당이나 운동장.","[敎正] 가르쳐서 바르게 함.","[敎政] 교회를 다스리는 일.","[敎程] 가르치는 정도.","[敎程] 가르치는 순서와 방식.","[敎程] 학교에서 교과 과정에 따라 주된 교재로 사용하기 위하여 편찬한 책.","[敎程] 가르치는 과정.","[較正] 계기류의 정밀도 따위를 표준기와 비교하여 바로잡음.","[鉸釘] 강철 재료를 이어 붙이는 데 쓰는 못.","[矯正] 틀어지거나 잘못된 것을 바로잡음.","[矯正] 교도소나 소년원 따위에서 재소자의 잘못된 품성이나 행동을 바로잡음.","[矯正] 골절이나 탈구로 어긋난 뼈를 본디로 돌리는 일.","[矯情] 진심을 속이고 거짓으로 꾸밈.","[矯情] 마음속에서 우러나오는 감정을 억눌러 나타내지 않음.","[轎丁] 가마를 메는 사람."],"origin":"校訂"},{"id":702,"category":"한자어","term":"구명","definition":"사물의 본질, 원인 따위를 깊이 연구하여 밝힘.","example":"고대 유물에 대한 문제의 구명에서 무엇보다도 긴요한 것은 객관적인 자료의 뒷받침이다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[九命] 중국 주나라 때, 관원의 아홉 가지 임명 순서.","[求命] 맹인이 무경(巫經)을 소리 내어 읽어 안택이나 살풀이 따위를 하는 일.","[苟命] 구차한 목숨.","[救命] 사람의 목숨을 구함.","[舊名] 고치기 전의 이름. 또는 예전에 부르던 이름.","[軀命] 몸과 목숨을 아울러 이르는 말."],"origin":"究明"},{"id":703,"category":"한자어","term":"궐위","definition":"어떤 직위나 관직 따위가 빔. 또는 그런 자리.","example":"대통령의 궐위 시에는 국무총리가 그 직을 대행한다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"闕位"},{"id":704,"category":"한자어","term":"기우","definition":"앞일에 대해 쓸데없는 걱정을 함. 또는 그 걱정. 옛날 중국 기(杞)나라에 살던 한 사람이 ‘만일 하늘이 무너지면 어디로 피해야 좋을 것인가?’ 하고 침식을 잊고 걱정하였다는 데서 유래한다.","example":"기우를 덜다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[奇偶] 홀수와 짝수를 아울러 이르는 말.","[奇遇] 기이한 인연으로 만남.","[祈雨] 날이 가물 때에 비가 오기를 빎.","[氣宇] 기개와 도량을 아울러 이르는 말.","[基宇] 사물의 본질이나 본바탕.","[基宇] 사물이나 일 따위의 기본이 되는 것.","[基宇] 건물, 다리 따위와 같은 구조물의 무게를 받치기 위하여 만든 밑받침.","[寄寓] 임시로 남의 집에 몸을 의지하고 지냄.","[器宇] 사람의 재능과 도량을 아울러 이르는 말.","[騎牛] 소를 탐. 또는 탈것으로 이용하는 소.","[羈寓, /, 羇寓] 자기 고향이 아닌 고장에서 사는 일."],"origin":"杞憂"},{"id":705,"category":"한자어","term":"기탄","definition":"어렵게 여겨 꺼림.","example":"그는 아무런 기탄이 없이 말을 이었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"忌憚"},{"id":706,"category":"한자어","term":"기한","definition":"미리 한정하여 놓은 시기.","example":"납품 기한.","exampleSource":"표준국어대사전 용례","otherMeanings":["[祁寒] 매우 심한 추위.","[飢寒, /, 饑寒] 굶주리고 헐벗어 배고프고 추움.","[期限] 어느 때까지를 기약함.","[期限] 법률 행위의 효력의 발생 및 소멸, 채무 이행을 장래에 발생할 것이 확실한 사실에 의존시키는 일."],"origin":"期限"},{"id":707,"category":"한자어","term":"난삽하다","definition":"글이나 말이 매끄럽지 못하면서 어렵고 까다롭다.","example":"난삽한 문장.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"難澁"},{"id":708,"category":"한자어","term":"낭패","definition":"계획한 일이 실패로 돌아가거나 기대에 어긋나 매우 딱하게 됨.","example":"낭패를 당하다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"狼狽"},{"id":709,"category":"한자어","term":"노략","definition":"떼를 지어 돌아다니며 사람을 해치거나 재물을 강제로 빼앗음.","example":"노략을 일삼다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"擄掠"},{"id":710,"category":"한자어","term":"동경","definition":"어떤 것을 간절히 그리워하여 그것만을 생각함.","example":"동경의 대상.","exampleSource":"표준국어대사전 용례","otherMeanings":["[同庚] 육십갑자가 같다는 뜻으로, 같은 나이를 이르는 말. 또는 나이가 같은 사람.","[同慶] 모두 함께 경축함.","[東京] 발해 때에 둔 오경(五京)의 하나.","[東京] 고려 시대에 둔 사경(四京) 가운데 지금의 경주에 해당하는 행정 구역.","[東京] ‘도쿄’를 우리 한자음으로 읽은 이름.","[東經] 지구 동반구의 경도. 본초 자오선을 0도로 하여 동쪽으로 180도까지의 경선이다.","[動徑] 점의 위치를 표시할 때, 기준이 되는 점으로부터 그 점까지 그은 직선을 벡터로 하는 선분.","[銅鏡] 구리로 만든 거울. 통일 신라 시대의 유물이다. 국보 제126-18호.","[憧憬] 마음이 스스로 들떠서 안정되지 아니함."],"origin":"憧憬"},{"id":711,"category":"한자어","term":"동정","definition":"일이나 현상이 벌어지고 있는 낌새.","example":"적의 동정을 살피다.","exampleSource":"표준국어대사전 용례","otherMeanings":["한복의 저고리 깃 위에 조붓하게 덧대어 꾸미는 하얀 헝겊 오리.","[冬凊] 겨울에는 따뜻하게, 여름에는 서늘하게 한다는 뜻으로, 부모를 잘 섬기어 효도함을 이르는 말.","[同正] 고려 시대에, 육품 이하의 문관과 오품 이하의 무관에게 주던, 정직(正職)에 준하는 명예직. 처음으로 벼슬길에 오르는 경우에 주었으며 정직 이름 밑에 붙여 썼다.","[同定] 생물의 분류학상의 소속이나 명칭을 바르게 정하는 일.","[同定] 화학적 분석과 측정 따위로 해당 물질이 다른 물질과 동일한지 여부를 확인하는 일. 또는 그 물질의 소속과 명칭을 정하는 일.","[同情] 남의 어려운 처지를 자기 일처럼 딱하고 가엾게 여김.","[同情] 남의 어려운 사정을 이해하고 정신적으로나 물질적으로 도움을 베풂.","[東井] 이십팔수의 스물두째 별자리.","[東井] 음력 오월.","[東征] 동방을 정벌함. 또는 동으로 원정함.","[東庭] 집 안의 동쪽에 있는 뜰.","[東庭] 성균관의 명륜당 동쪽에 있는 뜰. 승학시를 보는 유생들이 앉던 곳이다.","[東淨] 절의 뒷간. 승방의 동쪽에 있었던 데에서 유래한다.","[動靜] 물질의 운동과 정지.","[動靜] 사람이 일상적으로 하는 일체의 행위.","[童貞] 이성과 한 번도 성교(性交)를 하지 아니하고 그대로 지키고 있는 순결. 또는 그런 사람."],"origin":"動靜"},{"id":712,"category":"한자어","term":"동향","definition":"사람들의 사고, 사상, 활동이나 일의 형세 따위가 움직여 가는 방향.","example":"학계의 연구 동향.","exampleSource":"표준국어대사전 용례","otherMeanings":["[冬享] 겨울에 지내는 제사.","[同鄕] 고향이 같음. 또는 같은 고향.","[東向] 동쪽으로 향함. 또는 그 방향.","[動向] 어떤 특정한 사람이나 사물의 낱낱의 움직임."],"origin":"動向"},{"id":713,"category":"한자어","term":"발군","definition":"여럿 가운데에서 특별히 뛰어남.","example":"발군의 성적.","exampleSource":"표준국어대사전 용례","otherMeanings":["[發軍] 전쟁을 하기 위하여 군사를 일으킴.","[撥軍] 각 역참에 속하여 중요한 공문서를 교대 교대로 변방에 급히 전하던 군졸. 보발(步撥)과 기발(騎撥)이 있었다."],"origin":"拔群"},{"id":714,"category":"한자어","term":"발굴","definition":"세상에 널리 알려지지 않거나 뛰어난 것을 찾아 밝혀냄.","example":"신인 발굴.","exampleSource":"표준국어대사전 용례","otherMeanings":["[發掘] 땅속이나 큰 덩치의 흙, 돌 더미 따위에 묻혀 있는 것을 찾아서 파냄."],"origin":"發掘"},{"id":715,"category":"한자어","term":"발발하다","definition":"전쟁이나 큰 사건 따위가 갑자기 일어나다.","example":"전쟁이 발발하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["표정이나 행동이 밝고 활기가 있다.","[勃勃, 하다] 기운이나 기세가 끓어오를 듯이 성하다."],"origin":"勃發"},{"id":716,"category":"한자어","term":"비루하다","definition":"행동이나 성질이 너절하고 더럽다.","example":"비루한 태도.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"鄙陋"},{"id":717,"category":"한자어","term":"사의","definition":"감사하게 여기는 뜻.","example":"사의를 나타내다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[司衣] 고려 시대에, 성중관 가운데 임금의 의복에 관한 일을 맡아보던 벼슬아치.","[司儀] 신라 때에, 영객부에 속한 벼슬. 경덕왕 때 사지(舍知)를 고친 것으로, 혜공왕 때 다시 사지로 고쳤다.","[司儀] 고려 시대에, 태상시에 속한 벼슬. 박사(博士)의 다음이다.","[司議] 조선 시대에, 장례원(掌隷院)에 속하여 노비의 적(籍)과 소송에 관한 일을 맡아보던 정오품의 벼슬.","[四儀] 수행자가 생활에서 갖추어야 할 네 가지의 몸가짐. 행(行), 주(住), 좌(坐), 와(臥)이다.","[死義] 의를 위하여 죽음.","[死義] 죽음의 의의.","[私意] 개인의 의견.","[私意] 사사로운 마음. 또는 자기 욕심을 채우려는 마음.","[私誼] 개인 사이에 오래 사귀어 온 정분.","[私議] 사사로이 의논함. 또는 그런 의논.","[私議] 은밀히 비평함. 또는 뒤에서 비방함.","[私議] 사사로운 개인의 의견.","[私議] 시의(諡議)의 하나로, 명신(名臣)이 시호(諡號)를 못 얻었을 때 그 문하생들이 여러모로 생각하는 일.","[邪意] 사악한 마음.","[邪義] 종교의 부정한 가르침.","[邪議] 부정한 의논.","[邪議] 간악한 계략.","[事宜] 이치에 맞아 일이 마땅함.","[事意] 일의 내용.","[思義] 옳은 길을 그리며 생각함.","[思議] 생각하여 헤아림.","[射儀] 사술(射術)에 관한 의식.","[徙倚] 이리저리 왔다 갔다 함.","[斜欹] 비스듬히 기울어짐. 또는 그런 상태나 정도.","[蛇醫] 도롱뇽과의 동물. 몸의 길이는 15cm 정도이며, 갈색 바탕에 둥근 무늬가 있다. 머리는 납작하고 꼬리가 좌우로 편평하며 옆구리에 열세 줄의 홈이 있다. 물이 깨끗하고 수온이 낮은 개울, 못, 습지 따위의 낙엽 밑이나 땅속에 사는데 우리나라 특산종이다.","[蓑衣, /, 簑衣] 짚, 띠 따위로 엮어 허리나 어깨에 걸쳐 두르는 비옷. 예전에 주로 농촌에서 일할 때 비가 오면 사용하던 것으로 안쪽은 엮고 겉은 줄거리로 드리워 끝이 너털너털하게 만든다.","[寫意] 그림 따위를 그리고 싶은 마음.","[寫意] 의미를 옮겨 쓰는 일.","[寫意] 그림에서, 사물의 형태보다는 그 내용이나 정신에 치중하여 그리는 일.","[謝意] 잘못을 비는 뜻.","[謝儀] 상대편에게 고마움의 뜻으로 보내는 물품.","[辭意] 맡아보던 일자리를 그만두고 물러날 뜻.","[辭意] 글이나 말로 이야기되는 뜻."],"origin":"謝意"},{"id":718,"category":"한자어","term":"사족","definition":"뱀을 다 그리고 나서 있지도 아니한 발을 덧붙여 그려 넣는다는 뜻으로, 쓸데없는 군짓을 하여 도리어 잘못되게 함을 이르는 말.","example":"설명 끝에 덧붙인 한마디는 오히려 사족이 되었다.","exampleSource":"교정 예문","otherMeanings":["[士族] 문벌이 좋은 집안. 또는 그 자손.","[士族] 선비나 무인(武人)의 집안. 또는 그 자손.","[四足] 짐승의 네발. 또는 네발 가진 짐승.","[四足] ‘사지06’를 속되게 이르는 말."],"origin":"蛇足"},{"id":719,"category":"한자어","term":"선처","definition":"형편에 따라 잘 처리함.","example":"선처를 부탁하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[先妻] 이혼이나 재혼을 하였을 때, 전에 혼인했던 여자를 이르는 말.","[善處] 사람이 죽은 뒤 다시 태어나는 좋은 곳."],"origin":"善處"},{"id":720,"category":"한자어","term":"선풍","definition":"돌발적으로 일어나 세상을 뒤흔드는 사건을 비유적으로 이르는 말.","example":"검거 선풍이 불어닥치다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[仙風] 신선과 같은 기질이나 풍채.","[旋風] 갑자기 생긴 저기압 주변으로 한꺼번에 모여든 공기가 나선 모양으로 일으키는 선회(旋回) 운동.","[颴風] 온대 및 한대 지방에서 발생하는 저기압계의 회오리바람. 폭풍ㆍ눈ㆍ비를 수반하며, 북반구에서는 오른쪽으로 돌고, 남반구에서는 왼쪽으로 돈다."],"origin":"旋風"},{"id":721,"category":"한자어","term":"소개","definition":"공습이나 화재 따위에 대비하여 한곳에 집중되어 있는 주민이나 시설물을 분산함.","example":"본국 정부는 미국인 소개를 서두르고 있으나 특파원은 예외다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[紹介] 둘 사이에서 양편의 일이 진행되게 주선함.","[紹介] 서로 모르는 사람들 사이에서 양편이 알고 지내도록 관계를 맺어 줌.","[紹介] 잘 알려지지 아니하였거나, 모르는 사실이나 내용을 잘 알도록 하여 주는 설명.","[疏開] 땅을 파서 물이 흐르도록 함.","[疏開] 주로 적의 포격으로부터의 피해를 줄이고자, 전투 대형의 거리나 간격을 넓히는 일.","[疏槪] 임금에게 올린 글 내용의 줄거리."],"origin":"疏開"},{"id":722,"category":"한자어","term":"송부","definition":"편지나 물품 따위를 부치어 보냄.","example":"송부를 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"送付"},{"id":723,"category":"한자어","term":"야기","definition":"일이나 사건 따위를 끌어 일으킴.","example":"혼란을 야기하다.","exampleSource":"제공 자료 예문","otherMeanings":["[夜氣] 밤공기의 차고 눅눅한 기운."],"origin":"惹起"},{"id":724,"category":"한자어","term":"어용","definition":"자신의 이익을 위하여 권력자나 권력 기관에 영합하여 줏대 없이 행동하는 것을 낮잡아 이르는 말.","example":"어용 단체.","exampleSource":"표준국어대사전 용례","otherMeanings":["[御用] 임금이 쓰는 것을 이르던 말.","[御用] 정부에서 쓰는 일."],"origin":"御用"},{"id":725,"category":"한자어","term":"억장","definition":"썩 높은 것. 또는 그런 높이.","example":"억장 같은 근심도 심심초 한 모금 빨면 다 잊어지니까.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"億丈"},{"id":726,"category":"한자어","term":"역임","definition":"여러 직위를 두루 거쳐 지냄.","example":"김 선생은 신문사에서 편집국장, 주필 등을 역임하면서 많은 공을 세웠다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"歷任"},{"id":727,"category":"한자어","term":"입추","definition":"송곳을 세움.","example":"입추의 여지가 없다.","exampleSource":"제공 자료 예문","otherMeanings":["[立秋] 이십사절기의 하나. 대서(大暑)와 처서(處暑) 사이에 들며, 이때부터 가을이 시작된다고 한다. 양력으로는 8월 8일이나 9일경이다.","[立芻] 짚이나 풀로 사람 모양을 만들어 길 좌우에 세워 두고 칼이나 창으로 찌르는 무예."],"origin":"立錐"},{"id":728,"category":"한자어","term":"종식","definition":"한때 매우 성하던 현상이나 일이 끝나거나 없어짐.","example":"냉전의 종식.","exampleSource":"표준국어대사전 용례","otherMeanings":["[種植, /, 種殖] 씨를 뿌리고 식물을 심는 일."],"origin":"終熄"},{"id":729,"category":"한자어","term":"좌천","definition":"낮은 관직이나 지위로 떨어지거나 외직으로 전근됨을 이르는 말. 예전에 중국에서 오른쪽을 숭상하고 왼쪽을 멸시하였던 데서 유래한다.","example":"면 서기들한테는 책임을 물어 시말서를 쓰게 하고 좌천을 시켰다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"左遷"},{"id":730,"category":"한자어","term":"주재","definition":"어떤 일을 중심이 되어 맡아 처리함.","example":"국무총리 주재로 가뭄 대책 회의를 열었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[主材] 주된 재료나 자재.","[主材] 신주(神主)를 만드는 데에 쓰는 나무.","[主宰] 어떤 일을 중심이 되어 맡아 처리하는 사람.","[舟載] 배에 짐을 실음.","[奏裁] 임금에게 아뢰어 재가를 청함.","[酒滓] 재강에 물을 타서 모주를 짜내고 남은 찌꺼기.","[駐在] 한곳에 머물러 있음.","[駐在] 직무상으로 파견되어 한곳에 머물러 있음."],"origin":"主宰"},{"id":731,"category":"한자어","term":"지연","definition":"무슨 일을 더디게 끌어 시간을 늦춤. 또는 시간이 늦추어짐.","example":"출발 시간의 지연.","exampleSource":"표준국어대사전 용례","otherMeanings":["[地緣] 출신 지역에 따라 연결된 인연.","[紙鳶] 종이에 댓가지를 가로세로로 붙여 실을 맨 다음 공중에 높이 날리는 장난감. 꼭지연, 반달연, 치마연, 동이연, 초연, 박이연, 발연 따위가 있다.","[遲延] 병이나 증상이 늦게 나타나는 일. 선천성 병이 중년 이후에 나타나거나, 어떤 병에 감염된 후 한참 지나서 증상이 나타나는 경우를 이른다."],"origin":"遲延"},{"id":732,"category":"한자어","term":"참가","definition":"모임이나 단체 또는 일에 관계하여 들어감.","example":"참가 대상.","exampleSource":"표준국어대사전 용례","otherMeanings":["[參加] 어떤 법률관계에 당사자 이외의 제삼자가 관여함.","[參暇] 선원에서, 볼일이 있어 15일 정도의 여가(餘暇)를 청함."],"origin":"參加"},{"id":733,"category":"한자어","term":"참척","definition":"자손이 부모나 조부모보다 먼저 죽는 일.","example":"참척의 아픔.","exampleSource":"표준국어대사전 용례","otherMeanings":["한 가지 일에만 정신을 골똘하게 씀."],"origin":"慘慽"},{"id":734,"category":"한자어","term":"창건","definition":"건물이나 조직체 따위를 처음으로 세우거나 만듦.","example":"선운사 창건 설화.","exampleSource":"표준국어대사전 용례","otherMeanings":["[蒼健] ‘창건하다02’의 어근."],"origin":"創建"},{"id":735,"category":"한자어","term":"창궐","definition":"못된 세력이나 전염병 따위가 세차게 일어나 걷잡을 수 없이 퍼짐.","example":"그녀의 허파를 파먹고 들어가는 폐균의 창궐을 어찌할 도리는 없었다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"猖獗"},{"id":736,"category":"한자어","term":"출현","definition":"나타나거나 또는 나타나서 보임.","example":"고대 국가의 출현.","exampleSource":"표준국어대사전 용례","otherMeanings":["[出現] 행성이나 위성에 가려졌던 천체가 다시 나타남."],"origin":"出現"},{"id":737,"category":"한자어","term":"치부","definition":"남에게 드러내고 싶지 아니한 부끄러운 부분.","example":"치부를 드러내다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[恥部] ‘음부07’를 달리 이르는 말.","[致富] 재물을 모아 부자가 됨.","[致賻] 임금이 특명으로 신하에게 부의(賻儀)를 내려 주던 일. 단문(袒免)의 종친, 시마(緦麻) 이상의 이성 왕친(異姓王親), 종이품 이상의 문무관, 공신(功臣), 공사(公事)로 외방에서 죽은 자와 전사자에게 행하였다.","[置簿] 금전이나 물건 따위가 들어오고 나감을 기록함. 또는 그런 장부.","[置簿] 마음속으로 그러하다고 보거나 여김."],"origin":"恥部"},{"id":738,"category":"한자어","term":"타개하다","definition":"매우 어렵거나 막힌 일을 잘 처리하여 해결의 길을 열다.","example":"정부는 수출 부진을 타개하기 위해 새로운 경기 부양책을 내놓았다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"打開"},{"id":739,"category":"한자어","term":"토로","definition":"마음에 있는 것을 죄다 드러내어서 말함.","example":"적어도 이것은 나 일개인의 경험에 의하면 참으로 엄숙하리만치 현실적인 생활 사실의 적나라한 토로에 속한다.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"吐露"},{"id":740,"category":"한자어","term":"한담","definition":"심심하거나 한가할 때 나누는 이야기. 또는 별로 중요하지 아니한 이야기.","example":"한담을 나누다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[寒痰] 담병(痰病)의 하나. 팔과 다리가 차고 마비되어서 근육이 군데군데 쑤시고 아프다."],"origin":"閑談"},{"id":741,"category":"한자어","term":"함락","definition":"적의 성, 요새, 진지 따위를 공격하여 무너뜨림.","example":"그러나 경주 함락으로 사기가 충천한 견훤의 날래고 용맹스러운 부대에 왕건 군사가 대적할 수는 없었다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[陷落] 땅이 무너져 내려앉음."],"origin":"陷落"},{"id":742,"category":"한자어","term":"결여","definition":"마땅히 있어야 할 것이 빠져서 없거나 모자람.","example":"객관성 결여.","exampleSource":"표준국어대사전 용례","otherMeanings":["[觖如] ‘결여하다02’의 어근."],"origin":"缺如"},{"id":743,"category":"한자어","term":"암시","definition":"넌지시 알림. 또는 그 내용.","example":"암시가 깔리다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[暗示] 뜻하는 바를 간접적으로 나타내는 표현법.","[暗示] 감각, 관념, 의도 따위가 이성에 호소함이 없이 언어 자극을 통하여 다른 사람에게 전달되는 현상.","[暗視] 어두운 곳에서 물체를 보는 일. 적외선 장치를 사용한다."],"origin":"暗示"},{"id":744,"category":"한자어","term":"개량","definition":"나쁜 점을 보완하여 더 좋게 고침.","example":"농기구 개량.","exampleSource":"표준국어대사전 용례","otherMeanings":["[改量] 다시 측량함."],"origin":"改良"},{"id":745,"category":"한자어","term":"보존","definition":"잘 보호하고 간수하여 남김.","example":"보존 창고.","exampleSource":"표준국어대사전 용례","otherMeanings":[],"origin":"保存"},{"id":746,"category":"한자어","term":"복원","definition":"원래대로 회복함.","example":"훼손된 문화재의 복원이 시급하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[伏願] 웃어른에게 엎드려 공손히 원함.","[復員] 전시 체제에 있던 군대를 평상 체제로 돌려 군인의 소집을 해제하는 일.","[復圓] 일식이나 월식에서, 태양이나 달이 달이나 지구의 그림자에서 완전히 빠져나온 순간."],"origin":"復元復原"},{"id":747,"category":"한자어","term":"실재","definition":"실제로 존재함.","example":"실재의 인물.","exampleSource":"표준국어대사전 용례","otherMeanings":["[實才] 글재주가 있는 사람.","[實才] 현실 문제를 처리할 수 있거나 실용에 도움이 되는 능력.","[實在] 변증법적 유물론에서, 인간의 의식으로부터 독립하여 객관적으로 존재하는 물질세계.","[實在] 관념론에서, 사물의 본질적 존재."],"origin":"實在"},{"id":748,"category":"한자어","term":"실체","definition":"실제의 물체. 또는 외형에 대한 실상(實相).","example":"사건의 실체를 파악하다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[失體] 체면이나 면목을 잃음.","[實體] 실수로 이루어진 체.","[實體] 늘 변하지 아니하고 일정하게 지속하면서 사물의 근원을 이루는 것."],"origin":"實體"},{"id":749,"category":"한자어","term":"시력","definition":"물체의 존재나 형상을 인식하는 눈의 능력. 눈으로 두 광점을 구별할 수 있는 능력으로, 광도나 그 밖의 조건이 동일할 때, 시각 세포의 분포 밀도가 클수록 시력이 좋다.","example":"시력이 떨어지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[詩歷] 시의 창작에 종사하여 온 경력."],"origin":"視力"},{"id":750,"category":"한자어","term":"안목","definition":"사물을 보고 분별하는 견식.","example":"안목이 있다.","exampleSource":"표준국어대사전 용례","otherMeanings":["집의 칸살이나 모난 그릇의 안으로 잰 척수(尺數).","통로의 안쪽에 있는 위치.","[眼目] 주된 목표."],"origin":"眼目"},{"id":751,"category":"한자어","term":"혜안","definition":"사물을 꿰뚫어 보는 안목과 식견.","example":"아마도 형은 앞날을 내다볼 줄 아는 혜안을 갖고 있었던 것 같았다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[慧眼] 오안의 하나. 우주의 진리를 밝게 보는 눈이다. 모든 현상에 대한 집착을 버리고, 차별의 현상계를 보지 않는 지혜이다."],"origin":"慧眼"},{"id":752,"category":"한자어","term":"혼돈","definition":"마구 뒤섞여 있어 갈피를 잡을 수 없음. 또는 그런 상태.","example":"혼돈에 빠지다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[混沌, /, 渾沌] 하늘과 땅이 아직 나누어지기 전의 상태.","[餛飩] 밀가루나 쌀가루 반죽을 둥글게 빚어 그 속에 소를 넣어 찐 떡."],"origin":"混沌渾沌"},{"id":753,"category":"한자어","term":"변별","definition":"사물의 옳고 그름이나 좋고 나쁨을 가림.","example":"진짜는 가짜와 반드시 변별되기 마련이다.","exampleSource":"교정 예문","otherMeanings":["[辨別] 세상에 대한 경험이나 식견에서 나오는 생각이나 판단."],"origin":"辨別"},{"id":754,"category":"한자어","term":"보결","definition":"결원이 생겼을 때에 그 빈자리를 채움.","example":"보결 입학.","exampleSource":"표준국어대사전 용례","otherMeanings":["[保結] 선비가 과거에 응시할 때나 관리가 승진할 때에 그 신분을 증명하던 보증서.","[保結] 관가에서 출생 신분을 증명하기 위하여 발행하던 증명 서류.","[補缺] 결점을 고쳐서 보충함."],"origin":"補缺"},{"id":755,"category":"한자어","term":"보조","definition":"주되는 것에 상대하여 거들거나 도움. 또는 그런 사람.","example":"보조 병력.","exampleSource":"표준국어대사전 용례","otherMeanings":["[步調] 걸음걸이의 속도나 모양 따위의 상태.","[步調] 여럿이 함께 일을 할 때의 진행 속도나 조화(調和).","[補助] 보태어 도움.","[補租] 나라에서 정한 조세 이외에 지방의 벼슬아치나 토호들이 수시로 거두어들이던 세금.","[輔助] 노력이나 행동으로 남을 도와줌.","[寶祚] 임금의 자리."],"origin":"補助"},{"id":756,"category":"한자어","term":"보수","definition":"건물이나 시설 따위의 낡거나 부서진 것을 손보아 고침.","example":"하수도 보수.","exampleSource":"표준국어대사전 용례","otherMeanings":["[步數] 걸음의 수. 거리를 대강 잴 때 사용한다.","[步數] 장기나 바둑에서, 어려운 수를 푸는 방법.","[保手] ‘보증 수표’를 줄여 이르는 말.","[保囚] 보석 보증금을 받거나 보증인을 세우고 형사 피고인을 구류에서 풀어 주는 일.","[保守] 보전하여 지킴.","[保守] 새로운 것이나 변화를 적극적으로 받아들이기보다는 전통적인 것을 옹호하며 유지하려 함.","[保授] 보석(保釋)된 사람이나 도망갈 가능성이 있는 사람을 유력자가 책임을 지고 맡던 일.","[保授] 가까운 친척이나 그 이웃 사람이 잔호를 책임지고 맡던 일.","[報囚] 죄를 논하여 결정하는 일.","[報酬] 고맙게 해 준 데 대하여 보답을 함. 또는 그 보답.","[報酬] 일한 대가로 주는 돈이나 물품.","[報酬] 행위를 촉진하거나 학습 분위기를 조성하기 위하여 사람이나 동물에게 주는 물질이나 칭찬.","[報讐] 남이 저에게 해를 준 대로 저도 그에게 해를 줌.","[補數] 각 자리의 숫자의 합이 어느 일정한 수가 되게 하는 수. 예를 들어 10의 7에 대한 보수는 3이다.","[寶樹] 극락에 일곱 줄로 벌여 있는 보물 나무. 금, 은, 유리, 파리, 마노, 거거, 산호 나무이다."],"origin":"補修"},{"id":757,"category":"한자어","term":"보상","definition":"어떤 것에 대한 대가로 갚음.","example":"노고에 대해 보상을 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[報償] 남에게 진 빚 또는 받은 물건을 갚음.","[報償] 행위를 촉진하거나 학습 분위기를 조성하기 위하여 사람이나 동물에게 주는 물질이나 칭찬.","[補償] 남에게 끼친 손해를 갚음.","[補償] 국가 또는 단체가 적법한 행위에 의하여 국민이나 주민에게 가한 재산상의 손실을 갚아 주기 위하여 제공하는 대상(代償).","[補償] 신체적으로나 정신적으로 열등함을 의식할 때, 다른 측면의 일을 잘 해냄으로써 그것을 보충하려는 마음의 작용.","[褓商] 물건을 보자기에 싸서 메고 다니며 파는 사람.","[輔相] 대신을 거느리며 임금을 도와 나라를 다스림. 또는 그런 사람.","[寶相] 부처의 존엄한 모습."],"origin":"報償"},{"id":758,"category":"한자어","term":"복기","definition":"바둑에서, 한 번 두고 난 바둑의 판국을 비평하기 위하여 두었던 대로 다시 처음부터 놓아 봄.","example":"비가 오는 날은 바둑판 앞에 앉아 명대국집을 펴 놓고 혼자 복기를 하거나….","exampleSource":"표준국어대사전 용례","otherMeanings":["[服忌] 근친의 상(喪)을 당하여 상제로서 일을 봄.","[服朞] 기년복을 입음.","[腹鰭] 물고기의 배에 달린 지느러미. 좌우에 한 쌍이 있으며 몸의 균형을 잡고 몸을 나아가게 하는 역할을 한다."],"origin":"復棋復碁"},{"id":759,"category":"한자어","term":"복합어","definition":"하나의 실질 형태소에 접사가 붙거나 두 개 이상의 실질 형태소가 결합된 말. ‘덧신’, ‘먹이’와 같은 파생어와, ‘집안’, ‘공부방’과 같은 합성어로 나뉜다.","example":"‘돌다리’는 두 형태소가 결합한 복합어이다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"複合語"},{"id":760,"category":"한자어","term":"동음어","definition":"소리는 같으나 뜻이 다른 단어.","example":"‘배’는 뜻이 여러 개인 동음어의 예로 볼 수 있다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"同音語"},{"id":761,"category":"한자어","term":"다의어","definition":"두 가지 이상의 뜻을 가진 단어. ‘다리’는 원래 ‘사람이나 짐승의 몸통 아래에 붙어서 몸을 받치며 서거나 걷거나 뛰게 하는 부분’을 가리키지만, ‘책상 다리’, ‘지겟다리’처럼 ‘물건의 하체 부분’을 가리키기도 하는데, 이러한 단어를 이른다.","example":"‘손’은 여러 의미로 쓰이는 다의어이다.","exampleSource":"제공 자료 예문","otherMeanings":[],"origin":"多義語"},{"id":762,"category":"한자어","term":"답보","definition":"상태가 나아가지 못하고 한 자리에 머무르는 일. 또는 그런 상태.","example":"협상은 진전 없이 답보 상태에 머물렀다.","exampleSource":"제공 자료 예문","otherMeanings":["→ 답치기.","[答報] 응답으로 보고함. 또는 그런 보고."],"origin":"踏步"},{"id":763,"category":"한자어","term":"양심","definition":"사물의 가치를 변별하고 자기의 행위에 대하여 옳고 그름과 선과 악의 판단을 내리는 도덕적 의식.","example":"양심의 가책을 받다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[兩心] 두 마음.","[兩心] 겉 다르고 속 다른 마음.","[養心] 심성(心性)을 수양함."],"origin":"良心"},{"id":764,"category":"한자어","term":"신념","definition":"굳게 믿는 마음.","example":"신념을 지키다.","exampleSource":"표준국어대사전 용례","otherMeanings":["[宸念] 임금의 생각 또는 걱정."],"origin":"信念"}];
+/* KBS 한국어능력시험 학습 데이터 — 교재 PDF(고유어·한자어·관용 표현·어휘 간의 의미 관계·어휘 어법 종합편)에서 정리 */
+window.VOCAB_QUESTIONS = [
+{
+"category": "고유어",
+"term": "가녘",
+"definition": "둘레나 끝에 해당되는 부분.",
+"example": "겨울 안개가 바다 가녘에까지 자욱하게 끼어 있다.",
+"related": [
+"= 가장자리"
+]
+},
+{
+"category": "고유어",
+"term": "가장자리",
+"definition": "둘레나 끝에 해당되는 부분.",
+"related": [
+"= 가녘"
+]
+},
+{
+"category": "고유어",
+"term": "가탈",
+"sense": 1,
+"definition": "일이 순조롭게 나아가는 것을 방해하는 조건.",
+"example": "처음 하는 일이라 여기저기서 가탈이 많이 생긴다."
+},
+{
+"category": "고유어",
+"term": "가탈",
+"sense": 2,
+"definition": "이리저리 트집을 잡아 까다롭게 구는 일.",
+"example": "가탈을 부리다. / 부장님께서 내가 하는 일마다 가탈이 심하시더니."
+},
+{
+"category": "고유어",
+"term": "고샅",
+"definition": "시골 마을의 좁은 골목길. 또는 골목 사이.",
+"example": "마을 고샅으로 접어드는 길."
+},
+{
+"category": "고유어",
+"term": "골치",
+"definition": "'머리' 또는 '머릿골'을 속되게 이르는 말.",
+"example": "골치가 쑤시다. / 골치가 지끈거리다."
+},
+{
+"category": "고유어",
+"term": "괄괄하다",
+"sense": 1,
+"definition": "성질이 세고 급하다.",
+"example": "내 자식이지만 누구를 닮아 성격이 괄괄한지 모르겠다."
+},
+{
+"category": "고유어",
+"term": "괄괄하다",
+"sense": 2,
+"definition": "목소리 따위가 굵고 거세다.",
+"example": "괄괄한 목소리."
+},
+{
+"category": "고유어",
+"term": "괴괴하다",
+"definition": "쓸쓸한 느낌이 들 정도로 아주 고요하다.",
+"example": "괴괴한 정적."
+},
+{
+"category": "고유어",
+"term": "깜냥",
+"definition": "스스로 일을 헤아림. 또는 헤아릴 수 있는 능력.",
+"example": "그는 자기의 깜냥을 잘 알고 있었다."
+},
+{
+"category": "고유어",
+"term": "내처",
+"sense": 1,
+"definition": "어떤 일 끝에 더 나아가.",
+"example": "가는 김에 내처 집까지 바래다주었다."
+},
+{
+"category": "고유어",
+"term": "내처",
+"sense": 2,
+"definition": "줄곧 한결같이.",
+"example": "같은 증세가 내처 계속되다."
+},
+{
+"category": "고유어",
+"term": "노량",
+"definition": "어정어정 놀면서 느릿느릿.",
+"example": "그는 일어나서 노량으로 걸음을 걸었다."
+},
+{
+"category": "고유어",
+"term": "되바라지다",
+"definition": "어린 나이에 어수룩한 데가 없고 얄밉도록 지나치게 똑똑하다.",
+"example": "젊은 놈이 어지간히 되바라졌군."
+},
+{
+"category": "고유어",
+"term": "득달같이",
+"definition": "잠시도 늦추지 아니하게.",
+"example": "득달같이 달려가다."
+},
+{
+"category": "고유어",
+"term": "머쓱하다",
+"sense": 1,
+"definition": "어울리지 않게 키가 크다.",
+"example": "키만 머쓱하게 큰 사람."
+},
+{
+"category": "고유어",
+"term": "머쓱하다",
+"sense": 2,
+"definition": "[…이] 무안을 당하거나 흥이 꺾여 어색하고 열없다.",
+"example": "그는 자신의 마음을 들킨 것이 머쓱해서 웃고 말았다."
+},
+{
+"category": "고유어",
+"term": "바투",
+"sense": 1,
+"definition": "두 대상이나 물체의 사이가 썩 가깝게.",
+"example": "바투 다가앉다."
+},
+{
+"category": "고유어",
+"term": "바투",
+"sense": 2,
+"definition": "시간이나 길이가 아주 짧게.",
+"example": "머리를 바투 깎다. / 날짜를 바투 잡다."
+},
+{
+"category": "고유어",
+"term": "부아",
+"definition": "노엽거나 분한 마음.",
+"example": "부아가 나다. / 정말 부아가 치밀어서 원."
+},
+{
+"category": "고유어",
+"term": "사뭇",
+"sense": 1,
+"definition": "거리낌 없이 마구.",
+"example": "그는 선생님 앞에서도 사뭇 술을 마셨다."
+},
+{
+"category": "고유어",
+"term": "사뭇",
+"sense": 2,
+"definition": "내내 끝까지.",
+"example": "이번 겨울 방학은 사뭇 바빴다."
+},
+{
+"category": "고유어",
+"term": "사뭇",
+"sense": 3,
+"definition": "아주 딴판으로.",
+"example": "기질도 사뭇 다르다."
+},
+{
+"category": "고유어",
+"term": "사뭇",
+"sense": 4,
+"definition": "마음에 사무치도록 매우.",
+"example": "그녀의 마음에는 사뭇 슬픔이 밀려왔다."
+},
+{
+"category": "고유어",
+"term": "설멍하다",
+"sense": 1,
+"definition": "아랫도리가 가늘고 어울리지 아니하게 길다.",
+"example": "그는 키가 설멍하게 크고 어깨가 떡 벌어졌다."
+},
+{
+"category": "고유어",
+"term": "설멍하다",
+"sense": 2,
+"definition": "옷이 몸에 맞지 않고 짧다.",
+"example": "설멍한 바지를 입고 나타난 그의 모습이 너무나 우스꽝스러웠다."
+},
+{
+"category": "고유어",
+"term": "실팍하다",
+"definition": "사람이나 물건 따위가 보기에 매우 실하다.",
+"example": "그는 실팍한 몸집인데도 쌀 한 가마를 제대로 못 옮겼다. / 그래 실팍한 녀석 말이야."
+},
+{
+"category": "고유어",
+"term": "싹수",
+"definition": "어떤 일이나 사람이 앞으로 잘될 것 같은 낌새나 징조.",
+"example": "그는 사업으로 성공할 싹수가 보인다."
+},
+{
+"category": "고유어",
+"term": "을씨년스럽다",
+"definition": "보기에 날씨나 분위기 따위가 몹시 스산하고 쓸쓸한 데가 있다.",
+"example": "새벽 가을바람은 한층 을씨년스럽다."
+},
+{
+"category": "고유어",
+"term": "재겹다",
+"definition": "몹시 지겹다.",
+"example": "그의 입에서 얼음이 깨물리는 소리가 참으로 재겹게 들리었다."
+},
+{
+"category": "고유어",
+"term": "주눅",
+"definition": "기운을 제대로 펴지 못하고 움츠러드는 태도나 성질.",
+"example": "주눅이 들다."
+},
+{
+"category": "고유어",
+"term": "지레",
+"definition": "어떤 일이 일어나기 전 또는 어떤 기회나 때가 무르익기 전에 미리.",
+"example": "지레 겁을 먹다."
+},
+{
+"category": "고유어",
+"term": "지지재재하다",
+"definition": "이러니저러니 하고 자꾸 지껄이다.",
+"example": "더 이상 지지재재하지 말고 결론을 내리자."
+},
+{
+"category": "고유어",
+"term": "짬짜미",
+"definition": "남모르게 자기들끼리만 짜고 하는 약속이나 수작.",
+"example": "그가 밤늦게 돌아오는 그 일에 분명 그녀의 짬짜미가 있으리라."
+},
+{
+"category": "고유어",
+"term": "추렴",
+"definition": "모임이나 놀이 또는 잔치 따위의 비용으로 여럿이 각각 얼마씩의 돈을 내어 거둠.",
+"example": "추렴을 내다. / 추렴을 거두다."
+},
+{
+"category": "고유어",
+"term": "해사하다",
+"definition": "얼굴이 희고 곱다랗다.",
+"example": "해사한 얼굴."
+},
+{
+"category": "고유어",
+"term": "해포",
+"definition": "한 해가 조금 넘는 동안.",
+"example": "그가 떠난 지 며칠 안 되었지만, 그녀에게는 해포가 넘는 것 같았다."
+},
+{
+"category": "고유어",
+"term": "곰실곰실",
+"definition": "작은 벌레 따위가 한데 어우러져 조금씩 자꾸 굼뜨게 움직이는 모양.",
+"example": "벌레가 곰실곰실 움직인다."
+},
+{
+"category": "고유어",
+"term": "데면데면",
+"definition": "사람을 대하는 태도가 친밀감이 없이 예사로운 모양.",
+"example": "그는 누구를 만나도 데면데면 대한다."
+},
+{
+"category": "고유어",
+"term": "엉기정기",
+"definition": "질서 없이 여기저기 벌여 놓은 모양.",
+"example": "아이가 장난감을 방 안에 엉기정기 흩트려 놓았다."
+},
+{
+"category": "고유어",
+"term": "우럭우럭",
+"sense": 1,
+"definition": "불기운이 세차게 일어나는 모양.",
+"example": "모닥불이 우럭우럭 피어오르다."
+},
+{
+"category": "고유어",
+"term": "우럭우럭",
+"sense": 2,
+"definition": "술기운이 얼굴에 나타나는 모양.",
+"example": "그는 술이 한 잔만 들어가도 술기운이 얼굴에 우럭우럭 나타난다."
+},
+{
+"category": "고유어",
+"term": "우럭우럭",
+"sense": 3,
+"definition": "병세가 점점 더하여 가는 모양.",
+"example": "방치하는 사이에 그녀의 병세가 우럭우럭 더해졌다."
+},
+{
+"category": "고유어",
+"term": "우럭우럭",
+"sense": 4,
+"definition": "심술이나 화가 점점 치밀어 오르는 모양.",
+"example": "억울한 일을 당하니 분한 마음이 우럭우럭 올라와 참을 수가 없다."
+},
+{
+"category": "고유어",
+"term": "조롱조롱",
+"sense": 1,
+"definition": "작은 열매 따위가 많이 매달려 있는 모양.",
+"example": "푸른 줄기에 조롱조롱 매달린 흰 꽃송이는 놀랍도록 싱싱했다."
+},
+{
+"category": "고유어",
+"term": "조롱조롱",
+"sense": 2,
+"definition": "아이가 많이 딸려 있는 모양.",
+"example": "그는 아이 다섯을 조롱조롱 데리고 나타났다. / 우리도 조롱조롱 달린 아이들 갈치잠 안 자게 하려면, 우리가 여기서 결딴을 내는 것부터 신경 써야 될 거야."
+},
+{
+"category": "고유어",
+"term": "티적티적",
+"definition": "남의 흠이나 트집을 잡으면서 자꾸 비위를 거스르는 모양.",
+"example": "어머니가 아버지와 티적티적 다투는 것을 여러 번 보아 왔다."
+},
+{
+"category": "고유어",
+"term": "포슬포슬",
+"definition": "덩이진 가루 따위가 물기가 적어 엉기지 못하고 바스러지기 쉬운 모양. '보슬보슬'보다 거센 느낌을 준다."
+},
+{
+"category": "고유어",
+"term": "할금할금",
+"definition": "곁눈으로 살그머니 계속 할겨 보는 모양.",
+"example": "강아지가 할금할금 내 눈치를 살핀다. / 같이 일할 때에는 할금할금 눈치만 엿보다가 결국 헤실헤실 일을 처리한다는 이야기를 듣긴 했어."
+},
+{
+"category": "고유어",
+"term": "호슬부슬",
+"definition": "차진 기가 없고 부스러져 헤어질 듯한 모양.",
+"example": "마른 흙벽에서 모래가 호슬부슬 흘러내렸다."
+},
+{
+"category": "단위어",
+"term": "한 갓",
+"definition": "굴비·비웃 따위 열 마리, 또는 고비·고사리 따위 열 모숨을 한 줄로 엮은 것.",
+"example": "물고기(굴비, 비웃), 산나물(고비, 고사리)",
+"note": "'비웃'은 청어를 식료품으로 이르는 말."
+},
+{
+"category": "단위어",
+"term": "한 거리",
+"definition": "오이나 가지 오십 개.",
+"example": "오이, 가지"
+},
+{
+"category": "단위어",
+"term": "한 길",
+"sense": 1,
+"definition": "길이의 단위. 한 길은 여덟 자 또는 열 자로 약 2.4미터 또는 3미터에 해당한다.",
+"example": "길이(나무, 높이), 거리 / 천 길 낭떠러지."
+},
+{
+"category": "단위어",
+"term": "한 길",
+"sense": 2,
+"definition": "길이의 단위. 한 길은 사람의 키 정도의 길이이다.",
+"example": "길이(나무, 높이), 거리 / 트럭에 실린 통나무는 굵기는 한 아름이 넘고 길이는 열 길이 넘었다. / 열 길 물속은 알아도 한 길 사람 속은 모른다."
+},
+{
+"category": "단위어",
+"term": "한 담불",
+"definition": "벼 백 섬.",
+"example": "벼"
+},
+{
+"category": "단위어",
+"term": "한 돈",
+"definition": "무게의 단위. 한 냥의 10분의 1, 한 푼의 열 배로 3.75그램에 해당한다.",
+"example": "무게 / 금반지 열 돈을 팔아서 쌀을 샀다."
+},
+{
+"category": "단위어",
+"term": "한 두름",
+"sense": 1,
+"definition": "물고기를 짚으로 한 줄에 열 마리씩 두 줄(스무 마리)로 엮은 것.",
+"example": "물고기(청어, 조기, 가자미)"
+},
+{
+"category": "단위어",
+"term": "한 두름",
+"sense": 2,
+"definition": "고사리 따위의 산나물을 열 모숨 정도로 엮은 것.",
+"example": "산나물(고사리, 취나물), 우거지"
+},
+{
+"category": "단위어",
+"term": "한 되",
+"definition": "부피의 단위. 한 말의 10분의 1, 한 홉의 열 배로 약 1.8리터에 해당한다.",
+"example": "곡식, 가루, 액체 따위의 부피(벼, 막걸리, 콩, 보리쌀) / 보리쌀 석 되가 없다니 정말 기가 막혔다."
+},
+{
+"category": "단위어",
+"term": "한 마지기",
+"definition": "볍씨 한 말의 모 또는 씨앗을 심을 만한 넓이. 논은 약 150~300평, 밭은 약 100평이다.",
+"example": "논밭 / 형님은 돈을 모아 논 다섯 마지기를 샀다."
+},
+{
+"category": "단위어",
+"term": "한 말",
+"definition": "부피의 단위. 한 되의 열 배로 약 18리터에 해당한다.",
+"example": "곡식, 가루, 액체 따위의 부피(벼, 막걸리, 콩, 보리쌀)"
+},
+{
+"category": "단위어",
+"term": "한 뭇",
+"sense": 1,
+"definition": "짚(볏단), 장작, 채소 따위의 작은 묶음을 세는 단위.",
+"example": "짚(볏단), 장작, 채소"
+},
+{
+"category": "단위어",
+"term": "한 뭇",
+"sense": 2,
+"definition": "생선 열 마리.",
+"example": "생선"
+},
+{
+"category": "단위어",
+"term": "한 뭇",
+"sense": 3,
+"definition": "미역 열 장.",
+"example": "미역"
+},
+{
+"category": "단위어",
+"term": "한 발",
+"definition": "길이의 단위. 한 발은 두 팔을 양옆으로 펴서 벌렸을 때 한쪽 손끝에서 다른 쪽 손끝까지의 길이이다.",
+"example": "길이 / 길이가 한 발이나 됨 직한 연어들이 대여섯 마리 노닐고 있는 것을 보았다."
+},
+{
+"category": "단위어",
+"term": "한 뼘",
+"definition": "길이의 단위. 비교적 짧은 길이를 잴 때 쓴다. 한 뼘은 엄지손가락과 다른 손가락을 한껏 벌린 길이이다.",
+"example": "길이 / 그 애가 너보다 적어도 두 뼘 정도는 더 크다."
+},
+{
+"category": "단위어",
+"term": "한 섬",
+"definition": "부피의 단위. 한 말의 열 배로 약 180리터에 해당한다.",
+"example": "곡식, 가루, 액체 따위의 부피(벼, 막걸리, 콩, 보리쌀)"
+},
+{
+"category": "단위어",
+"term": "한 손",
+"definition": "한 손에 잡을 만한 분량을 세는 단위. 조기, 고등어, 배추는 큰 것 하나와 작은 것 하나를 합한 것을, 미나리, 파는 한 줌 분량을 이른다.",
+"example": "조기, 고등어, 배추(큰 것 하나와 작은 것 하나를 합한 것), 미나리, 파(한 줌 분량) / 고등어 한 손(두 마리)."
+},
+{
+"category": "단위어",
+"term": "한 쌈",
+"sense": 1,
+"definition": "바늘 스물네 개.",
+"example": "바늘 / 어머니는 시집올 때 가져오신 바늘 한 쌈을 애지중지하셨다."
+},
+{
+"category": "단위어",
+"term": "한 쌈",
+"sense": 2,
+"definition": "옷감, 피혁 따위를 알맞은 분량으로 싸 놓은 덩이를 세는 단위.",
+"example": "옷감(빨랫감) / 아낙네들은 제각기 빨랫감 한 쌈을 들고 우물가로 향했다."
+},
+{
+"category": "단위어",
+"term": "한 쌈",
+"sense": 3,
+"definition": "금 100냥쭝(냥), 즉 1,000돈.",
+"example": "금",
+"note": "한 돈 = 한 냥의 1/10 = 3.75그램."
+},
+{
+"category": "단위어",
+"term": "한 자",
+"definition": "길이의 단위. 한 치의 열 배로 약 30.3센티미터에 해당한다.",
+"example": "길이(비단, 나무 등) / 삼베 넉 자만 있으면 옷 한 벌을 만든다."
+},
+{
+"category": "단위어",
+"term": "한 접",
+"definition": "채소나 과일 백 개.",
+"example": "과일, 채소 / 김장을 하려고 배추 한 접을 샀더니 마음이 든든하였다."
+},
+{
+"category": "단위어",
+"term": "한 죽",
+"definition": "옷, 그릇 따위의 열 벌.",
+"example": "옷(버선), 그릇(접시) / 시집갈 때 접시는 한 죽 채워 보내라."
+},
+{
+"category": "단위어",
+"term": "한 줌",
+"definition": "'주먹'의 준말. 한 손에 쥘 만한 분량을 세는 단위.",
+"example": "/ 한 줌의 흙. / 보리밥 한 줌. / 마늘 한 줌. / 환약 두어 줌."
+},
+{
+"category": "단위어",
+"term": "한 축",
+"definition": "오징어 스무 마리.",
+"example": "오징어 / 그들은 앉은자리에서 오징어 한 축을 다 먹어 버렸다."
+},
+{
+"category": "단위어",
+"term": "한 치",
+"definition": "길이의 단위. 한 자의 10분의 1로 약 3.03센티미터에 해당한다.",
+"example": "길이(비단, 나무 등) / 세 치 혀를 잘못 놀리다가는 큰 망신을 당한다."
+},
+{
+"category": "단위어",
+"term": "한 쾌",
+"definition": "북어 스무 마리.",
+"example": "북어 / 북어를 꼭 한 쾌로만 팔라는 법이 있습니까?"
+},
+{
+"category": "고유어",
+"term": "앙짜",
+"definition": "앳되게 점잔을 빼는 짓.",
+"example": "새로 들어온 그 녀석은 앙짜를 부리는 게 눈에 훤한데도 그냥 넘어가시는 거 있지?"
+},
+{
+"category": "고유어",
+"term": "나비잠",
+"definition": "갓난아이가 두 팔을 머리 위로 벌리고 자는 잠.",
+"example": "그 신입 사원이 벌써 애가 있어서 애가 나비잠 자는 거 보고 싶은데도 사무실 소파에서 새우잠을 잤대."
+},
+{
+"category": "고유어",
+"term": "새우잠",
+"definition": "새우처럼 등을 구부리고 자는 잠. 주로 모로 누워 불편하게 자는 잠.",
+"example": "사무실 소파에서 새우잠을 잤대."
+},
+{
+"category": "고유어",
+"term": "말미",
+"definition": "일정한 직업이나 일 따위에 매인 사람이 다른 일로 말미암아 얻는 겨를.",
+"example": "말미 한번 얻지 않고 일하는 모습이 꼭 옛날 자네 같지 않나?"
+},
+{
+"category": "고유어",
+"term": "상글상글",
+"definition": "눈과 입을 귀엽게 움직이며 소리 없이 정답게 자꾸 웃는 모양.",
+"example": "그 사원이 윗사람한테는 상글상글 웃고 같이 일할 때에는 할금할금 눈치만 엿보다가."
+},
+{
+"category": "고유어",
+"term": "헤실헤실",
+"definition": "사람이 맺고 끊는 것이 확실하지 않아 싱겁고 실속이 없는 모양.",
+"example": "결국 헤실헤실 일을 처리한다는 이야기를 듣긴 했어."
+},
+{
+"category": "고유어",
+"term": "갈치잠",
+"definition": "비좁은 방에서 여럿이 모로 끼어 자는 잠.",
+"example": "우리도 조롱조롱 달린 아이들 갈치잠 안 자게 하려면."
+},
+{
+"category": "고유어",
+"term": "결딴",
+"definition": "어떤 일이나 물건 따위가 아주 망가져서 도무지 손을 쓸 수 없게 된 상태.",
+"example": "우리가 여기서 결딴을 내는 것부터 신경 써야 될 거야."
+},
+{
+"category": "고유어",
+"term": "섬벅섬벅",
+"definition": "크고 연한 물건이 잘 드는 칼에 쉽게 자꾸 베어지는 소리. 또는 그 모양.",
+"example": "아내가 먼저 우리 용돈 줄부터 섬벅섬벅 벨 수도 있다고."
+},
+{
+"category": "고유어",
+"term": "노루잠",
+"definition": "깊이 들지 못하고 자꾸 놀라 깨는 잠.",
+"example": "들락날락 괜히 노루잠 자게 되기 전에, 우리 오늘도 잘 견뎌 내세."
+},
+{
+"category": "고유어",
+"term": "여물다",
+"definition": "과실이나 곡식 따위가 알이 들어 단단하게 잘 익다.",
+"example": "싸라기가 되지 않게 기본적으로 잘 여문 녀석이면 좋겠네."
+},
+{
+"category": "고유어",
+"term": "야무지다",
+"definition": "사람의 성질이나 행동, 생김새 따위가 빈틈이 없이 꽤 단단하고 굳세다.",
+"example": "야무진 녀석이면 좋겠다는 거야?"
+},
+{
+"category": "고유어",
+"term": "알차다",
+"definition": "속이 꽉 차 있거나 내용이 아주 실속이 있다.",
+"example": "당신처럼 시간도 실속 있게 알차게 쓰고."
+},
+{
+"category": "고유어",
+"term": "옹골차다",
+"definition": "매우 옹골지다.(실속이 있게 속이 꽉 차 있다.)",
+"example": "힘들고 어려운 세상도 즐겨 줄 옹골찬 아이 말이야."
+},
+{
+"category": "고유어",
+"term": "발끈",
+"definition": "사소한 일에 걸핏하면 왈칵 성을 내는 모양.",
+"example": "괜히 내가 별거 아닌 일에 발끈 화낸다고 할까 봐 말을 아끼려 했는데."
+},
+{
+"category": "고유어",
+"term": "졸이다",
+"sense": 1,
+"definition": "찌개, 국, 한약 따위의 물을 증발시켜 분량을 적어지게 하다."
+},
+{
+"category": "고유어",
+"term": "졸이다",
+"sense": 2,
+"definition": "속을 태우다시피 초조해하다.",
+"example": "마음을 졸이며 만든 게 겨우 이건가?"
+},
+{
+"category": "고유어",
+"term": "조리다",
+"definition": "양념을 한 고기나 생선, 채소 따위를 국물에 넣고 바짝 끓여서 양념이 배어들게 하다.",
+"example": "내가 고등어에 간 좀 배도록 국물 적게 조리라고 했지 언제 고등어를 짜게 해 달라고 했나?"
+},
+{
+"category": "고유어",
+"term": "욱하다",
+"definition": "앞뒤를 헤아림 없이 격한 마음이 불끈 일어나다.",
+"example": "내가 우리 집밥에 너무 익숙해서 그만 앞뒤 생각 않고 격한 마음에 욱해서 미안하네."
+},
+{
+"category": "고유어",
+"term": "쭈뼛하다",
+"definition": "무섭거나 놀라서 머리카락이 꼿꼿하게 일어서는 듯한 느낌이 들다. '주뼛하다'보다 센 느낌을 준다.",
+"example": "자네 머리카락이 꼿꼿한 게 괜히 쭈뼛했겠네."
+},
+{
+"category": "고유어",
+"term": "울컥하다",
+"definition": "격한 감정이 갑자기 일어나다. '울걱하다'보다 거센 느낌을 준다.",
+"example": "저도 갑자기 혼이 나니 순간적으로 감정이 막 올라와서 울컥했는데."
+},
+{
+"category": "고유어",
+"term": "쑤다",
+"definition": "곡식의 알이나 가루를 물에 끓여 익혀서 죽이나 메주 따위를 만들다.",
+"example": "시집보내기 전에 그래도 쌀 불려서 오랜 시간 익히는 거라며 죽 쑤는 법도 가르치고."
+},
+{
+"category": "고유어",
+"term": "섬뜩하다",
+"definition": "갑자기 소름이 끼치도록 무섭고 끔찍하다.",
+"example": "그 얘랑 붙으면 오히려 소름 끼치게 무서워서 섬뜩할 걸세."
+},
+{
+"category": "고유어",
+"term": "고다",
+"sense": 1,
+"definition": "고기나 뼈 따위를 무르거나 진액이 빠지도록 끓는 물에 푹 삶다.",
+"example": "엿이나 사골도 끓는 물에 푹 고는 법도 가르쳐 보냈는데."
+},
+{
+"category": "고유어",
+"term": "고다",
+"sense": 2,
+"definition": "졸아서 진하게 엉기도록 끓이다."
+},
+{
+"category": "고유어",
+"term": "겅중겅중",
+"definition": "긴 다리를 모으고 계속 힘 있게 솟구쳐 뛰는 모양.",
+"example": "그는 겅중겅중 뛰면서 기뻐했다."
+},
+{
+"category": "고유어",
+"term": "고삭부리",
+"sense": 1,
+"definition": "음식을 많이 먹지 못하는 사람."
+},
+{
+"category": "고유어",
+"term": "고삭부리",
+"sense": 2,
+"definition": "몸이 약하여서 늘 병치레를 하는 사람."
+},
+{
+"category": "고유어",
+"term": "곱슬곱슬",
+"definition": "머리카락이나 털 따위가 고불고불하게 말려 있는 모양.",
+"example": "곱슬곱슬 파마머리."
+},
+{
+"category": "고유어",
+"term": "국으로",
+"definition": "제 생긴 그대로. 또는 자기 주제에 맞게.",
+"example": "그냥 국으로 있었으면 오늘날 저 지경은 안 됐을 텐데 말이야."
+},
+{
+"category": "고유어",
+"term": "낫잡다",
+"definition": "금액, 나이, 수량, 수효 따위를 계산할 때에, 조금 넉넉하게 치다.",
+"example": "손님이 더 올지 모르니 음식을 낫잡아 준비해라."
+},
+{
+"category": "고유어",
+"term": "내딛다",
+"definition": "밖이나 앞으로 옮겨 디디다.",
+"example": "그는 난간을 붙잡고 겨우 앞으로 한 걸음을 내딛었다."
+},
+{
+"category": "고유어",
+"term": "너스레",
+"definition": "수다스럽게 떠벌려 늘어놓는 말이나 짓.",
+"example": "너스레를 떨다. / 그의 걸쭉한 너스레에 우리 모두 크게 웃었다."
+},
+{
+"category": "고유어",
+"term": "다그치다",
+"sense": 1,
+"definition": "일이나 행동 따위를 빨리 끝내려고 몰아치다.",
+"example": "일손을 다그치다."
+},
+{
+"category": "고유어",
+"term": "다그치다",
+"sense": 2,
+"definition": "지친 몸을 다시 추스르다.",
+"example": "그는 지친 몸을 다그쳐 다시 가파른 언덕을 오르기 시작했다."
+},
+{
+"category": "고유어",
+"term": "단내",
+"definition": "몸의 열이 몹시 높을 때, 입이나 코 안에서 나는 냄새.",
+"example": "급히 다녀오라는 어머님 말씀에 그는 목구멍에서 단내가 나도록 뛰었다."
+},
+{
+"category": "고유어",
+"term": "되뇌다",
+"definition": "같은 말을 되풀이하여 말하다.",
+"example": "그녀는 할 수 있다는 말을 버릇처럼 되뇌었다."
+},
+{
+"category": "고유어",
+"term": "둘레둘레",
+"definition": "사방을 이리저리 살피는 모양.",
+"example": "이 집 저 집 둘레둘레 돌아다닌다. / 소리가 어디서 나나 하고 둘레둘레 돌아보았다."
+},
+{
+"category": "고유어",
+"term": "드팀없다",
+"definition": "틈이 생기거나 틀리는 일이 없다. 또는 조금도 흔들림이 없다.",
+"example": "아버지의 드팀없는 성격 때문에 어머니는 늘 피곤해하셨다."
+},
+{
+"category": "고유어",
+"term": "멀거니",
+"definition": "정신없이 물끄러미 보고 있는 모양.",
+"example": "그녀는 혼자 멀거니 앉아 있었다."
+},
+{
+"category": "고유어",
+"term": "몰리다",
+"definition": "여럿이 한곳으로 모여들다.",
+"example": "입구로만 몰리는 청중들."
+},
+{
+"category": "고유어",
+"term": "뭉텅뭉텅",
+"definition": "잇따라 제법 크게 잘리거나 끊어지는 모양. '뭉떵뭉떵'보다 거센 느낌을 준다.",
+"example": "머리카락이 뭉텅뭉텅 잘리는 것을 보니 기분이 이상했다."
+},
+{
+"category": "고유어",
+"term": "바장이다",
+"definition": "부질없이 짧은 거리를 오락가락 거닐다.",
+"example": "공연히 이리저리 바장이다."
+},
+{
+"category": "고유어",
+"term": "박작거리다",
+"definition": "많은 사람이 좁은 곳에 모여 매우 어수선하게 자꾸 움직이다.",
+"example": "시장에 사람들이 박작거린다."
+},
+{
+"category": "고유어",
+"term": "벼르다",
+"definition": "어떤 일을 이루려고 마음속으로 준비를 단단히 하고 기회를 엿보다.",
+"example": "복수를 벼르다."
+},
+{
+"category": "고유어",
+"term": "본치",
+"definition": "남의 눈에 띄는 태도나 겉모양.",
+"example": "손님들이 오자 나는 점심상을 본치 좋게 차렸다."
+},
+{
+"category": "고유어",
+"term": "사부작거리다",
+"definition": "별로 힘들이지 않고 계속 가볍게 행동하다.",
+"example": "공원에서 아이들이 사부작거리는 모습이 귀엽다."
+},
+{
+"category": "고유어",
+"term": "새근새근",
+"sense": 1,
+"definition": "고르지 아니하고 가쁘게 자꾸 숨 쉬는 소리. 또는 그 모양.",
+"example": "그는 말없이 숨만 새근새근 쉬고 있었다."
+},
+{
+"category": "고유어",
+"term": "새근새근",
+"sense": 2,
+"definition": "어린아이가 곤히 잠들어 조용하게 자꾸 숨 쉬는 소리.",
+"example": "아기가 새근새근 잠이 들다."
+},
+{
+"category": "고유어",
+"term": "새록새록",
+"definition": "어떤 생각이나 느낌이 거듭하여 새롭게 생기는 모양.",
+"example": "아프고 쓰라렸던 지난 일이 새록새록 떠올랐다."
+},
+{
+"category": "고유어",
+"term": "설레설레",
+"definition": "큰 동작으로 몸의 한 부분을 거볍게 잇따라 가로흔드는 모양.",
+"example": "그는 어린애처럼 설레설레 머리를 가로저어 도리질을 했다."
+},
+{
+"category": "고유어",
+"term": "설면하다",
+"definition": "자주 만나지 못하여 낯이 좀 설다.",
+"example": "석 달 동안 헤어져 있었대서 설면할 것은 없으련마는…."
+},
+{
+"category": "고유어",
+"term": "손사래",
+"definition": "어떤 말이나 사실을 부인하거나 남에게 조용히 하라고 할 때 손을 펴서 휘젓는 일.",
+"related": [
+"손사래(를) 치다"
+]
+},
+{
+"category": "관용구",
+"term": "손사래(를) 치다",
+"definition": "거절이나 부인을 하며 손을 펴서 마구 휘젓다."
+},
+{
+"category": "고유어",
+"term": "슬쩍슬쩍",
+"sense": 1,
+"definition": "남의 눈을 피하여 잇따라 재빠르게.",
+"example": "상에 놓인 음식을 슬쩍슬쩍 집어 먹다."
+},
+{
+"category": "고유어",
+"term": "슬쩍슬쩍",
+"sense": 2,
+"definition": "힘들이지 않고 잇따라 거볍게.",
+"example": "물이 묻은 손을 바지에 슬쩍슬쩍 문질렀다."
+},
+{
+"category": "고유어",
+"term": "슬쩍슬쩍",
+"sense": 3,
+"definition": "심하지 않게 약간씩.",
+"example": "나물을 슬쩍슬쩍 데치다."
+},
+{
+"category": "고유어",
+"term": "슬쩍슬쩍",
+"sense": 4,
+"definition": "표 나지 않게 자꾸 넌지시.",
+"example": "슬쩍슬쩍 유도 신문을 하다."
+},
+{
+"category": "고유어",
+"term": "슬쩍슬쩍",
+"sense": 5,
+"definition": "특별히 마음을 쓰거나 정성을 들이지 않고 잇따라 빠르게.",
+"example": "서류를 슬쩍슬쩍 보아 넘기다."
+},
+{
+"category": "고유어",
+"term": "실랑이",
+"sense": 1,
+"definition": "이러니저러니, 옳으니 그르니 하며 남을 못살게 굴거나 괴롭히는 일.",
+"example": "빚쟁이들한테 실랑이를 받는 어머니가 불쌍하였다."
+},
+{
+"category": "고유어",
+"term": "실랑이",
+"sense": 2,
+"definition": "서로 자기주장을 고집하며 옥신각신하는 일.",
+"example": "나는 아이들과의 실랑이로 몹시 피곤하였다.",
+"related": [
+"= 승강이"
+]
+},
+{
+"category": "고유어",
+"term": "쏠리다",
+"sense": 1,
+"definition": "물체가 기울어져 한쪽으로 몰리다.",
+"example": "버스가 급정거하자 사람들이 와락 앞으로 쏠려 넘어졌다."
+},
+{
+"category": "고유어",
+"term": "쏠리다",
+"sense": 2,
+"definition": "마음이나 눈길이 어떤 대상에 끌려서 한쪽으로 기울어지다.",
+"example": "마음이 다른 곳으로 쏠리다."
+},
+{
+"category": "고유어",
+"term": "쓰렁쓰렁",
+"sense": 1,
+"definition": "남이 모르게 비밀리 행동하는 모양."
+},
+{
+"category": "고유어",
+"term": "쓰렁쓰렁",
+"sense": 2,
+"definition": "일을 건성으로 하는 모양.",
+"example": "청소를 시키면 그는 늘 쓰렁쓰렁 눈에 보이는 곳만 치우고 만다."
+},
+{
+"category": "고유어",
+"term": "어련히",
+"definition": "따로 걱정하지 아니하여도 잘될 것이 명백하거나 뚜렷하게. 대상을 긍정적으로 칭찬하는 뜻으로 쓰나, 때로 반어적으로 쓰여 비아냥거리는 뜻을 나타내기도 한다.",
+"example": "아들놈 그만큼 키웠으면 이제 밥벌이야 어련히 알아서 안 할까."
+},
+{
+"category": "고유어",
+"term": "이바지",
+"definition": "도움이 되게 함.",
+"example": "경제 발전에 이바지하다."
+},
+{
+"category": "고유어",
+"term": "재다",
+"sense": 1,
+"definition": "동작이 재빠르다.",
+"example": "손놀림이 재다. / 발걸음이 재다."
+},
+{
+"category": "고유어",
+"term": "재다",
+"sense": 2,
+"definition": "참을성이 모자라 입놀림이 가볍다.",
+"example": "입이 재다."
+},
+{
+"category": "고유어",
+"term": "제치다",
+"definition": "일정한 대상이나 범위에서 빼다.",
+"example": "어떻게 나를 제쳐 두고 너희들끼리 놀러 갈 수 있니?"
+},
+{
+"category": "고유어",
+"term": "조곤조곤",
+"definition": "성질이나 태도가 조금 은근하고 끈덕진 모양.",
+"example": "조곤조곤 설명하다."
+},
+{
+"category": "고유어",
+"term": "종종걸음",
+"definition": "발을 가까이 자주 떼며 급히 걷는 걸음.",
+"example": "거리에 오고 가는 사람들은 목을 움츠리고 종종걸음을 치는 게 겨울의 풍경이었다.",
+"related": [
+"≒ 동동걸음"
+]
+},
+{
+"category": "고유어",
+"term": "동동걸음",
+"definition": "발을 가까이 자주 떼며 급히 걷는 걸음.",
+"related": [
+"≒ 종종걸음"
+]
+},
+{
+"category": "고유어",
+"term": "지피다",
+"definition": "아궁이나 화덕 따위에 땔나무를 넣어 불을 붙이다.",
+"example": "군불을 지피다. / 장작불을 지피다."
+},
+{
+"category": "고유어",
+"term": "쪼개다",
+"definition": "시간이나 돈 따위를 아끼다.",
+"example": "내일 갈 수 있게 시간을 좀 쪼개 볼게. / 그는 잠자는 시간을 쪼개서 공부를 했다."
+},
+{
+"category": "고유어",
+"term": "찌릿찌릿",
+"definition": "뼈마디나 몸의 일부가 매우 또는 자꾸 저린 느낌.",
+"example": "벌을 받느라 무릎을 꿇고 오래 앉아 있었더니 다리가 찌릿찌릿 저리다."
+},
+{
+"category": "고유어",
+"term": "톺다",
+"definition": "가파른 곳을 오르려고 매우 힘들여 더듬다.",
+"example": "숨이 막히도록 산을 톺아 올라갔다."
+},
+{
+"category": "고유어",
+"term": "해찰하다",
+"sense": 1,
+"definition": "마음에 썩 내키지 아니하여 물건을 부질없이 이것저것 집적거려 해치다."
+},
+{
+"category": "고유어",
+"term": "해찰하다",
+"sense": 2,
+"definition": "일에는 마음을 두지 아니하고 쓸데없이 다른 짓을 하다.",
+"example": "아이들이란 자칫 한눈팔고 해찰하기 일쑤라서 가끔 주의를 환기할 필요가 있다."
+},
+{
+"category": "고유어",
+"term": "휘둥그레지다",
+"definition": "놀라거나 두려워서 눈이 크고 둥그렇게 되다.",
+"example": "사고가 났다는 말에 사람들은 휘둥그레져 사건의 경위를 물었다."
+},
+{
+"category": "고유어",
+"term": "가없다",
+"definition": "끝이 없다.",
+"example": "가없는 어머니의 은혜에 그는 눈물을 흘렸다."
+},
+{
+"category": "고유어",
+"term": "걱실걱실하다",
+"definition": "성질이 너그러워 말과 행동이 시원스럽다.",
+"example": "누님은 걱실걱실한 성격을 가졌다."
+},
+{
+"category": "고유어",
+"term": "곰살궂다",
+"sense": 1,
+"definition": "태도나 성질이 부드럽고 친절하다.",
+"example": "곰살궂게 굴다."
+},
+{
+"category": "고유어",
+"term": "곰살궂다",
+"sense": 2,
+"definition": "꼼꼼하고 자세하다.",
+"example": "나는 곰살궂게 이모의 팔다리를 주물렀다."
+},
+{
+"category": "고유어",
+"term": "기리다",
+"definition": "뛰어난 업적이나 바람직한 정신, 위대한 사람 따위를 칭찬하고 기억하다.",
+"example": "그들은 고인을 기리는 문학상을 만들기로 결정했다."
+},
+{
+"category": "고유어",
+"term": "너나들이",
+"definition": "서로 너니 나니 하고 부르며 허물없이 말을 건넴. 또는 그런 사이.",
+"example": "그 사람과 나는 너나들이로 지내는 친한 사이다."
+},
+{
+"category": "고유어",
+"term": "드레",
+"definition": "인격적으로 점잖은 무게.",
+"example": "어린 사람이 떡 드레가 있어 보인다."
+},
+{
+"category": "고유어",
+"term": "마뜩하다",
+"definition": "(주로 '않다', '못하다'와 함께 쓰여) 제법 마음에 들 만하다.",
+"example": "나는 그의 행동이 마뜩하지 않다."
+},
+{
+"category": "고유어",
+"term": "살갑다",
+"definition": "마음씨가 부드럽고 상냥하다.",
+"example": "그녀는 친구들을 살갑게 대했다."
+},
+{
+"category": "고유어",
+"term": "살뜰하다",
+"sense": 1,
+"definition": "일이나 살림을 매우 정성스럽고 규모 있게 하여 빈틈이 없다.",
+"example": "부부가 살뜰하게 살림을 꾸려 나가는 모습이 보기 좋다."
+},
+{
+"category": "고유어",
+"term": "살뜰하다",
+"sense": 2,
+"definition": "사랑하고 위하는 마음이 자상하고 지극하다.",
+"example": "그는 아내를 살뜰하게도 아껴 준다."
+},
+{
+"category": "고유어",
+"term": "수더분하다",
+"definition": "성질이 까다롭지 아니하여 순하고 무던하다.",
+"example": "수더분해 보이다. / 수더분하게 생기다."
+},
+{
+"category": "고유어",
+"term": "안차다",
+"definition": "겁이 없고 야무지다.",
+"example": "그 애는 어른이 뭐라 해도 워낙 안차서 기도 안 죽는다."
+},
+{
+"category": "고유어",
+"term": "야물다",
+"sense": 1,
+"definition": "일 처리나 언행이 옹골차고 야무지다.",
+"example": "일을 야물게 처리하다."
+},
+{
+"category": "고유어",
+"term": "야물다",
+"sense": 2,
+"definition": "사람됨이나 씀씀이 따위가 떡 옹골차고 헤프지 않다.",
+"example": "손끝이 야물다."
+},
+{
+"category": "고유어",
+"term": "음전하다",
+"definition": "말이나 행동이 곱고 우아하다. 또는 얌전하고 점잖다.",
+"example": "음전한 아가씨."
+},
+{
+"category": "고유어",
+"term": "토실토실",
+"definition": "보기 좋을 정도로 살이 통통하게 찐 모양.",
+"example": "동생은 살이 토실토실 오르고 차츰 기를 펴기 시작했다."
+},
+{
+"category": "고유어",
+"term": "훈훈하다",
+"sense": 1,
+"definition": "날씨나 온도가 견디기 좋을 만큼 덥다.",
+"example": "훈훈한 공기. / 방 안이 훈훈하다."
+},
+{
+"category": "고유어",
+"term": "훈훈하다",
+"sense": 2,
+"definition": "마음을 부드럽게 녹여 주는 따스함이 있다.",
+"example": "훈훈한 미소."
+},
+{
+"category": "고유어",
+"term": "가납사니",
+"sense": 1,
+"definition": "쓸데없는 말을 지껄이기 좋아하는 수다스러운 사람.",
+"example": "가납사니 같은 사람들이 그럴싸한 소문을 퍼뜨렸다."
+},
+{
+"category": "고유어",
+"term": "가납사니",
+"sense": 2,
+"definition": "말다툼을 잘하는 사람."
+},
+{
+"category": "고유어",
+"term": "가드락가드락",
+"definition": "조금 거만스럽게 잘난 체하며 버릇없이 자꾸 구는 모양.",
+"example": "그 사람은 가드락가드락 친구를 대하여 모두가 그를 꺼린다."
+},
+{
+"category": "고유어",
+"term": "가살",
+"definition": "말씨나 행동이 교활하고 밉살스러움. 또는 그런 짓.",
+"example": "가살을 떨다."
+},
+{
+"category": "고유어",
+"term": "객쩍다",
+"definition": "행동이나 말, 생각이 쓸데없고 싱겁다.",
+"example": "객쩍은 소리 그만두어요. 그따위 실없는 소리를 할 때가 아니에요."
+},
+{
+"category": "고유어",
+"term": "거북하다",
+"sense": 1,
+"definition": "몸이 찌뿌드드하고 괴로워 움직임이 자연스럽지 못하거나 자유롭지 못하다.",
+"example": "나는 속이 거북해서 점심을 걸렀다."
+},
+{
+"category": "고유어",
+"term": "거북하다",
+"sense": 2,
+"definition": "[-기에] 마음이 어색하고 겸연쩍어 편하지 않다.",
+"example": "나는 지금 입장이 매우 거북하다."
+},
+{
+"category": "고유어",
+"term": "구나방",
+"definition": "말이나 행동이 모질고 거칠고 사나운 사람을 이르는 말."
+},
+{
+"category": "고유어",
+"term": "구리다",
+"sense": 1,
+"definition": "똥이나 방귀 냄새와 같다.",
+"example": "구린 냄새."
+},
+{
+"category": "고유어",
+"term": "구리다",
+"sense": 2,
+"definition": "하는 짓이 더럽고 지저분하다.",
+"example": "구리게 놀다."
+},
+{
+"category": "고유어",
+"term": "구리다",
+"sense": 3,
+"definition": "행동이 떳떳하지 못하고 의심스럽다.",
+"example": "그 사람이 하는 짓이 뭔가 구리다."
+},
+{
+"category": "고유어",
+"term": "그루박다",
+"sense": 1,
+"definition": "물건을 들어 바닥에 거꾸로 탁 놓다.",
+"example": "느닷없이 집에 들이닥쳐 가재도구를 그루박는 통에 아수라장이 되었다."
+},
+{
+"category": "고유어",
+"term": "그루박다",
+"sense": 2,
+"definition": "사람을 기를 펴지 못하게 억누르다.",
+"example": "그녀는 몸은 가냘팠지만 말로 다른 사람을 그루박는 힘이 있었다."
+},
+{
+"category": "고유어",
+"term": "그루박다",
+"sense": 3,
+"definition": "말을 다지거나 힘을 주어 단단히 강조하다.",
+"example": "그는 그루박아 말하였다."
+},
+{
+"category": "고유어",
+"term": "까라지다",
+"definition": "기운이 빠져 축 늘어지다.",
+"example": "날이 흐려서인지 몸이 까라진다."
+},
+{
+"category": "고유어",
+"term": "까칠까칠",
+"definition": "야위거나 메말라 살갗이나 털 등의 여기저기가 매우 윤기가 없고 거친 모양. '가칠가칠'보다 센 느낌을 준다.",
+"example": "언제나 까칠까칠 지저분하게 얼룩져 있던 턱수염은 흔적도 없이 말끔하게 깎여 있었다."
+},
+{
+"category": "고유어",
+"term": "깔짝깔짝",
+"sense": 1,
+"definition": "자꾸 갉아서 뜯거나 계속 진집을 내는 모양."
+},
+{
+"category": "고유어",
+"term": "깔짝깔짝",
+"sense": 2,
+"definition": "자꾸 작은 물건이나 일을 가지고 만지작거리기만 하고 좀처럼 진전을 이루지 못하는 모양.",
+"example": "밥을 깔짝깔짝 먹다."
+},
+{
+"category": "고유어",
+"term": "꼼바르다",
+"definition": "마음이 좁고 지나치게 인색하다.",
+"example": "꼼바르기로 유명한 그가 한턱낼 리가 없다."
+},
+{
+"category": "고유어",
+"term": "꿈적하다",
+"definition": "몸이 둔하고 느리게 움직이다. 또는 몸을 둔하고 느리게 움직이다. '굼적하다'보다 센 느낌을 준다.",
+"example": "어머니가 심부름을 시키시려고 동생을 불렀지만 동생은 꿈적하지 않았다."
+},
+{
+"category": "고유어",
+"term": "나부대다",
+"definition": "얌전히 있지 못하고 철없이 촐랑거리다.",
+"related": [
+"≒ 나대다"
+]
+},
+{
+"category": "고유어",
+"term": "나대다",
+"definition": "얌전히 있지 못하고 철없이 촐랑거리다.",
+"related": [
+"≒ 나부대다"
+]
+},
+{
+"category": "고유어",
+"term": "노랑이",
+"definition": "속이 좁고 마음 씀씀이가 아주 인색한 사람을 낮잡아 이르는 말.",
+"example": "그는 설치비가 아까워 집에 전화조차 놓지 않은 지독한 노랑이였다."
+},
+{
+"category": "고유어",
+"term": "느물스럽다",
+"definition": "말이나 행동이 능글맞은 데가 있다.",
+"example": "느물스럽게 말하다."
+},
+{
+"category": "고유어",
+"term": "늦되다",
+"definition": "나이에 비하여 발육이 늦거나 철이 늦게 들다.",
+"example": "그는 늦되었는지 행동하는 모습이 어린애 같았다."
+},
+{
+"category": "고유어",
+"term": "덤뻑",
+"definition": "깊은 생각이 없이 무턱대고 행동하는 모양.",
+"example": "그는 생각 없이 덤뻑 일을 저질렀다."
+},
+{
+"category": "고유어",
+"term": "뒤넘스럽다",
+"definition": "주제넘게 행동하여 건방진 데가 있다.",
+"example": "매번 잘난 척을 하는 그는 뒤넘스러워."
+},
+{
+"category": "고유어",
+"term": "떼꾼하다",
+"definition": "눈이 쑥 들어가고 생기가 없다.",
+"example": "떼꾼한 눈."
+},
+{
+"category": "고유어",
+"term": "만무방",
+"sense": 1,
+"definition": "염치가 없이 막된 사람.",
+"example": "세상에 저렇게 후안무치한 만무방도 없을 거야."
+},
+{
+"category": "고유어",
+"term": "만무방",
+"sense": 2,
+"definition": "아무렇게나 생긴 사람."
+},
+{
+"category": "고유어",
+"term": "말랑말랑하다",
+"definition": "사람의 몸이나 기질이 야무지지 못하고 맺힌 데가 없어 약하다.",
+"example": "아들이 아니라 한 말랑말랑한 젊은이로 뵈는 눈총을 하고 있었다."
+},
+{
+"category": "고유어",
+"term": "몽니",
+"definition": "받고자 하는 대우를 받지 못할 때 내는 심술.",
+"example": "몽니를 부리다."
+},
+{
+"category": "고유어",
+"term": "무녀리",
+"sense": 1,
+"definition": "한 태에 낳은 여러 마리 새끼 가운데 가장 먼저 나온 새끼."
+},
+{
+"category": "고유어",
+"term": "무녀리",
+"sense": 2,
+"definition": "말이나 행동이 좀 모자란 듯이 보이는 사람을 비유적으로 이르는 말.",
+"example": "무녀리인 줄 알았던 그는 알고 보니 영특한 학생이었다."
+},
+{
+"category": "고유어",
+"term": "무람없다",
+"definition": "예의를 지키지 않으며 삼가고 조심하는 것이 없다.",
+"example": "어른에게 무람없이 굴지 마라."
+},
+{
+"category": "고유어",
+"term": "무쪽같다",
+"definition": "하는 행동이 변변치 못함을 이르는 말.",
+"example": "할머니는 살뜰하게 살림을 꾸리시는 분인데, 무쪽같은 나는 어떻게 살림을 해야 할지 몰라 공연히 허둥대기만 한다."
+},
+{
+"category": "고유어",
+"term": "발",
+"definition": "새로 생긴 나쁜 버릇이나 관례.",
+"example": "쓸데없이 혀를 날름거리다 그것이 발이 되면 고치기 힘드니 조심해라."
+},
+{
+"category": "고유어",
+"term": "발만스럽다",
+"definition": "두려워하거나 삼가는 태도가 없이 꽤 버릇없다.",
+"example": "요즘에는 어머니에게도 마구 바락바락 들이덤비는 게 그 행실이 꽤 발만스럽습니다."
+},
+{
+"category": "고유어",
+"term": "본데없다",
+"definition": "보고 배운 것이 없다. 또는 행동이 예의범절에 어긋나는 데가 있다.",
+"example": "어디서 배운 버릇이냐, 본데없는 놈 같으니라고."
+},
+{
+"category": "고유어",
+"term": "볼썽사납다",
+"definition": "어떤 사람이나 사물의 모습이 보기에 역겹다.",
+"example": "그의 얼굴은 며칠 씻지 않은 사람처럼 볼썽사나웠다."
+},
+{
+"category": "고유어",
+"term": "부산하다",
+"definition": "급하게 서두르거나 시끄럽게 떠들어 어수선하다.",
+"example": "교실 안은 많은 아이들로 매우 부산하다."
+},
+{
+"category": "고유어",
+"term": "부추기다",
+"definition": "감정이나 상황 따위가 더 심해지도록 영향을 미치다.",
+"example": "경쟁심을 부추기다. / 싸움을 부추기다. / 과소비를 부추기다."
+},
+{
+"category": "고유어",
+"term": "뻐기다",
+"definition": "얄미울 정도로 매우 우쭐거리며 자랑하다.",
+"example": "잘한 일이라고 뻐기다. / 그는 우등상을 탔다고 무척 뻐기고 다닌다."
+},
+{
+"category": "고유어",
+"term": "사박스럽다",
+"definition": "성질이 보기에 독살스럽고 야멸친 데가 있다.",
+"example": "그가 사박스럽게 몰아붙여서 할 말을 잃었다."
+},
+{
+"category": "고유어",
+"term": "새살스럽다",
+"definition": "성질이 차분하지 못하고 가벼워 말이나 행동이 실없고 부산한 데가 있다.",
+"example": "사람이 많은 곳에서 새살스럽게 행동해 주변 사람에게 눈총을 받았다."
+},
+{
+"category": "고유어",
+"term": "생게망게하다",
+"definition": "하는 행동이나 말이 갑작스럽고 터무니없다.",
+"example": "그의 행동은 전반적으로 생게망게하여 당황스러울 때가 많았다."
+},
+{
+"category": "고유어",
+"term": "솔다",
+"definition": "시끄러운 소리나 귀찮은 말을 자꾸 들어서 귀가 아프다.",
+"example": "그 말은 귀가 솔도록 들었다."
+},
+{
+"category": "고유어",
+"term": "아리다",
+"sense": 1,
+"definition": "혀끝을 찌를 듯이 알알한 느낌이 있다.",
+"example": "마늘을 깨물었더니 혀가 아리다."
+},
+{
+"category": "고유어",
+"term": "아리다",
+"sense": 2,
+"definition": "상처나 살갗 따위가 찌르는 듯이 아프다.",
+"example": "불에 덴 상처가 아리다."
+},
+{
+"category": "고유어",
+"term": "아리다",
+"sense": 3,
+"definition": "마음이 몹시 고통스럽다.",
+"example": "그의 얼굴이 떠오르자 가슴이 찢어지듯 아려 왔다."
+},
+{
+"category": "고유어",
+"term": "알찐대다",
+"definition": "남의 비위를 맞추려고 가까이 붙어서 계속 아첨하다.",
+"example": "알 만큼 안다는 사람이 어째 계속 남에게 알찐대며 사는지 모르겠다."
+},
+{
+"category": "고유어",
+"term": "야멸차다",
+"sense": 1,
+"definition": "자기만 생각하고 남의 사정을 돌볼 마음이 거의 없다.",
+"example": "교감 선생님, 그렇게 야멸차게 하는 법이 어디 있나요.",
+"related": [
+"≒ 야멸치다"
+]
+},
+{
+"category": "고유어",
+"term": "야멸차다",
+"sense": 2,
+"definition": "태도가 차고 야무지다.",
+"example": "야멸차게 쏘아붙이다.",
+"related": [
+"≒ 야멸치다"
+]
+},
+{
+"category": "고유어",
+"term": "압삽하다",
+"definition": "(속되게) 사람이 얕은꾀를 쓰면서 자신의 이익만을 챙기려는 태도가 있다.",
+"example": "그는 출세한 형의 덕을 입을 수도 있지 않겠느냐는 압삽한 희망을 버리지 않았다."
+},
+{
+"category": "고유어",
+"term": "어깃장",
+"definition": "짐짓 어기대는 행동.",
+"example": "그는 거래 직전 갑자기 기존의 입장을 바꾸어 어깃장을 놓기 시작했다."
+},
+{
+"category": "고유어",
+"term": "얼뜨다",
+"definition": "다부지지 못하여 어수룩하고 얼빠진 데가 있다.",
+"example": "일손이 얼뜨니 일이 언제 끝날지 모르겠다."
+},
+{
+"category": "고유어",
+"term": "열없다",
+"sense": 1,
+"definition": "좀 겸연쩍고 부끄럽다.",
+"example": "나는 내 실수가 열없어서 얼굴이 붉어졌다."
+},
+{
+"category": "고유어",
+"term": "열없다",
+"sense": 2,
+"definition": "담이 작고 겁이 많다."
+},
+{
+"category": "고유어",
+"term": "열없다",
+"sense": 3,
+"definition": "성질이 다부지지 못하고 묽다."
+},
+{
+"category": "고유어",
+"term": "열없다",
+"sense": 4,
+"definition": "어설프고 짜임새가 없다.",
+"example": "급히 문서를 작성했더니 열없이 되었다."
+},
+{
+"category": "고유어",
+"term": "옴짝달싹",
+"definition": "몸을 아주 조금 움직이는 모양.",
+"example": "옴짝달싹 못 하게 묶다."
+},
+{
+"category": "고유어",
+"term": "우렁잇속",
+"definition": "품은 생각을 모두 털어놓지 아니하는 의뭉스러운 속마음을 비유적으로 이르는 말.",
+"example": "그 녀석의 속마음은 우렁잇속 같아서 뭐가 뭔지 알 수가 없다."
+},
+{
+"category": "고유어",
+"term": "우세스럽다",
+"definition": "남에게 놀림과 비웃음을 받을 듯하다.",
+"example": "그런 말씀 마시오. 벌어먹고 사는 일이 우세스러울 것 조금도 없습니다.",
+"related": [
+"= 남우세스럽다"
+]
+},
+{
+"category": "고유어",
+"term": "의뭉하다",
+"definition": "겉으로는 어리석은 것처럼 보이면서 속으로는 엉큼하다.",
+"example": "여태 꿀 장수로 보였던 놈이 갑자기 소도둑놈같이 의뭉하게 보였다."
+},
+{
+"category": "고유어",
+"term": "이물스럽다",
+"definition": "성질이 음험하여 속을 헤아리기에 어려움이 있다.",
+"example": "원체 이물스러운 자들이라 무슨 까탈을 잡아 흉한 짓을 할지 모른다."
+},
+{
+"category": "고유어",
+"term": "이지러지다",
+"sense": 1,
+"definition": "불쾌한 감정 따위로 얼굴이 일그러지다.",
+"example": "심정을 억누르자니 표정이 이지러졌다."
+},
+{
+"category": "고유어",
+"term": "이지러지다",
+"sense": 2,
+"definition": "성격, 생각, 행동 따위가 바르지 못하고 비뚤어지다.",
+"example": "삭막함이 사람의 마음을 구기고 이지러지게 한다."
+},
+{
+"category": "고유어",
+"term": "입방아",
+"definition": "어떤 사실을 화제로 삼아 이러쿵저러쿵 쓸데없이 입을 놀리는 일.",
+"example": "입방아에 오르내리다."
+},
+{
+"category": "고유어",
+"term": "자글자글",
+"sense": 1,
+"definition": "걱정스럽거나 조바심이 나거나 못마땅하여 마음을 졸이는 모양."
+},
+{
+"category": "고유어",
+"term": "자글자글",
+"sense": 2,
+"definition": "어린아이가 아파서 열이 자꾸 나며 몸이 달아오르는 모양.",
+"example": "아이의 이마가 자글자글 끓어오르고 있다."
+},
+{
+"category": "고유어",
+"term": "자발없이",
+"definition": "행동이 가볍고 참을성이 없이.",
+"example": "한 살 더 먹었으니, 이제는 자발없이 굴지 말고 잘 생각하고 행동하렴."
+},
+{
+"category": "고유어",
+"term": "차리다",
+"definition": "자기의 이익을 따져 챙기다.",
+"example": "제 욕심만 차리다."
+},
+{
+"category": "고유어",
+"term": "추레하다",
+"sense": 1,
+"definition": "겉모양이 깨끗하지 못하고 생기가 없다.",
+"example": "옷차림도 영 추레한 것이 부잣집 아들처럼 보이지는 않는다."
+},
+{
+"category": "고유어",
+"term": "추레하다",
+"sense": 2,
+"definition": "태도 따위가 너절하고 고상하지 못하다."
+},
+{
+"category": "고유어",
+"term": "추저분하다",
+"definition": "더럽고 지저분하다."
+},
+{
+"category": "고유어",
+"term": "치근덕거리다",
+"definition": "성가실 정도로 끈덕지게 자꾸 귀찮게 굴다.",
+"example": "동생이 같이 가자고 치근덕거려서 귀찮았다."
+},
+{
+"category": "고유어",
+"term": "콩팔칠팔하다",
+"sense": 1,
+"definition": "갈피를 잡을 수 없도록 마구 지껄이다.",
+"example": "아들이 돌아온다고 하니 괜히 기분 좋은 말만 골라 한다고 콩팔칠팔해 대던 것이다."
+},
+{
+"category": "고유어",
+"term": "콩팔칠팔하다",
+"sense": 2,
+"definition": "하찮은 일을 가지고 시비조로 캐묻고 따지다.",
+"example": "나는 화가 나서 그를 흘겨보며 콩팔칠팔했다."
+},
+{
+"category": "고유어",
+"term": "트레바리",
+"definition": "이유 없이 남의 말에 반대하기를 좋아함. 또는 그런 성격을 지닌 사람."
+},
+{
+"category": "고유어",
+"term": "파임내다",
+"definition": "일치한 의논을 나중에 다른 소리를 하여 그르치게 하다.",
+"example": "몇 년을 공들여 온 아버지의 정성을 몇 마디 말로 파임내다니."
+},
+{
+"category": "고유어",
+"term": "하릴없이",
+"sense": 1,
+"definition": "달리 어떻게 할 도리가 없이.",
+"example": "여덟 식구가 하릴없이 쪽박을 찰 수밖에 없었다."
+},
+{
+"category": "고유어",
+"term": "하릴없이",
+"sense": 2,
+"definition": "조금도 틀림이 없이.",
+"example": "앙상한 그의 종아리는 하릴없이 장작개비와 같았다."
+},
+{
+"category": "고유어",
+"term": "해망쩍다",
+"definition": "영리하지 못하고 아둔하다.",
+"example": "그 아이는 좀 해망쩍어서 자기 잇속을 챙길 줄 모른다."
+},
+{
+"category": "고유어",
+"term": "허릅숭이",
+"definition": "일을 실답게 하지 못하는 사람을 낮잡아 이르는 말."
+},
+{
+"category": "고유어",
+"term": "허투루",
+"definition": "아무렇게나 되는대로.",
+"example": "허투루 말하다. / 손님을 허투루 대접하다."
+},
+{
+"category": "고유어",
+"term": "헤살",
+"definition": "일을 짓궂게 훼방함. 또는 그런 짓.",
+"example": "헤살을 놓다. / 헤살을 부리다."
+},
+{
+"category": "고유어",
+"term": "황망히",
+"definition": "마음이 몹시 급하여 당황하고 허둥지둥하는 면이 있게.",
+"example": "그는 인사할 겨를도 없이 황망히 떠났다."
+},
+{
+"category": "고유어",
+"term": "후리다",
+"sense": 1,
+"definition": "남의 것을 갑자기 빼앗거나 슬쩍 가지다.",
+"example": "그 주인은 머슴의 재물을 후려 먹었다."
+},
+{
+"category": "고유어",
+"term": "후리다",
+"sense": 2,
+"definition": "그럴듯한 말로 속여 넘기다.",
+"example": "그는 어수룩한 사람을 후리고 다닌다."
+},
+{
+"category": "고유어",
+"term": "후줄근하다",
+"sense": 1,
+"definition": "옷이나 종이 따위가 약간 젖거나 풀기가 빠져 아주 보기 흉하게 축 늘어져 있다.",
+"example": "옷이 비에 젖어 후줄근하다."
+},
+{
+"category": "고유어",
+"term": "후줄근하다",
+"sense": 2,
+"definition": "몹시 지치고 고단하여 몸이 축 늘어질 정도로 아주 힘이 없다.",
+"example": "장마철에 계속되는 비로 기분이 후줄근했다."
+},
+{
+"category": "고유어",
+"term": "두런두런",
+"definition": "여럿이 나지막한 목소리로 서로 조용히 이야기하는 소리. 또는 그 모양.",
+"example": "안방에서 사람들이 두런두런 이야기하는 소리가 들린다."
+},
+{
+"category": "고유어",
+"term": "볼멘소리",
+"definition": "서운하거나 성이 나서 퉁명스럽게 하는 말투.",
+"example": "무엇에 심사가 틀렸는지 그는 계속 볼멘소리로 대거리를 하고 있었다."
+},
+{
+"category": "고유어",
+"term": "소곤소곤",
+"definition": "남이 알아듣지 못하도록 작은 목소리로 자꾸 가만가만 이야기하는 소리. 또는 그 모양.",
+"example": "귀를 끌어다가 소곤소곤 귓속말을 하였다."
+},
+{
+"category": "고유어",
+"term": "술렁술렁",
+"definition": "자꾸 어수선하게 소란이 이는 모양.",
+"example": "패전 소식을 들은 병사들은 술렁술렁 동요하기 시작했다."
+},
+{
+"category": "고유어",
+"term": "옥실옥실",
+"definition": "'옥시글옥시글'의 준말. 여럿이 한데 모여 몹시 들끓는 모양.",
+"example": "좁은 골목에 아이들이 몰려와 옥실옥실 떠들어 댄다."
+},
+{
+"category": "고유어",
+"term": "올러대다",
+"definition": "위협적인 언동으로 올러서 남을 억누르다.",
+"example": "친구는 나에게 당장 조세를 내지 않으면 토지를 몰수하겠다고 올러댔다."
+},
+{
+"category": "고유어",
+"term": "입찬소리",
+"definition": "자기의 지위나 능력을 믿고 지나치게 장담하는 말.",
+"example": "자기 아니면 못할 소임이나 맡은 듯이 입찬소리를 한다.",
+"related": [
+"= 입찬말"
+]
+},
+{
+"category": "고유어",
+"term": "조잘조잘",
+"sense": 1,
+"definition": "조금 낮은 목소리로 빠르게 말을 계속하는 모양.",
+"example": "아이는 엄마에게 수업 시간에 있었던 일을 조잘조잘 이야기했다."
+},
+{
+"category": "고유어",
+"term": "조잘조잘",
+"sense": 2,
+"definition": "참새 따위의 작은 새가 잇따라 지저귀는 모양."
+},
+{
+"category": "고유어",
+"term": "중얼중얼",
+"definition": "남이 알아듣지 못할 정도의 작고 낮은 목소리로 혼잣말을 자꾸 하는 소리. 또는 그 모양.",
+"example": "점쟁이가 주문을 중얼중얼 외웠다."
+},
+{
+"category": "고유어",
+"term": "지청구",
+"sense": 1,
+"definition": "아랫사람의 잘못을 꾸짖는 말.",
+"example": "말을 꺼냈다가는 또 무슨 지청구를 들을지 모른다.",
+"related": [
+"= 꾸지람"
+]
+},
+{
+"category": "고유어",
+"term": "지청구",
+"sense": 2,
+"definition": "까닭 없이 남을 탓하고 원망함.",
+"example": "그는 자신이 잘못한 것이라 아내의 지청구를 받아들였다."
+},
+{
+"category": "고유어",
+"term": "짝짜꿍이",
+"sense": 1,
+"definition": "끼리끼리만 내통하거나 어울려서 손발을 맞추는 일.",
+"example": "그는 뒷구멍으로 짝짜꿍이 수작을 했다."
+},
+{
+"category": "고유어",
+"term": "짝짜꿍이",
+"sense": 2,
+"definition": "옥신각신 다투는 일."
+},
+{
+"category": "고유어",
+"term": "투덜투덜",
+"definition": "남이 알아듣기 어려운 정도의 낮은 목소리로 불평을 자꾸 하는 모양. '두덜두덜'보다 거센 느낌을 준다.",
+"example": "그는 신발에 구멍이 났다고 투덜투덜 볼멘소리를 냈다."
+},
+{
+"category": "고유어",
+"term": "흰소리",
+"definition": "터무니없이 자랑으로 떠벌리거나 거드럭거리며 허풍을 떠는 말.",
+"example": "수작은 어디까지나 농담이요, 흰소리에 불과한 것이었다."
+},
+{
+"category": "고유어",
+"term": "고깝다",
+"definition": "섭섭하고 야속하여 마음이 언짢다.",
+"example": "나를 모르는 체하는 것이 고까운 생각이 들었다."
+},
+{
+"category": "고유어",
+"term": "굴뚝같다",
+"definition": "바라거나 그리워하는 마음이 몹시 간절하다.",
+"example": "며칠을 굶었더니 밥 생각이 굴뚝같다."
+},
+{
+"category": "고유어",
+"term": "끌끌하다",
+"definition": "마음이 맑고 바르고 깨끗하다.",
+"example": "그의 끌끌하고 점잖은 풍모는 재상이라도 따를 수 없었다."
+},
+{
+"category": "고유어",
+"term": "도탑다",
+"definition": "서로의 관계에 사랑이나 인정이 많고 깊다.",
+"example": "우정이 도탑다. / 형제간에 도타운 정을 나누었다."
+},
+{
+"category": "고유어",
+"term": "못내",
+"definition": "자꾸 마음에 두거나 잊지 못하는 모양.",
+"example": "못내 아쉽다."
+},
+{
+"category": "고유어",
+"term": "삽삽하다",
+"definition": "태도나 마음 씀씀이가 마음에 들게 부드럽고 사근사근하다.",
+"example": "청년의 삽삽한 태도에 마음이 누그러졌다."
+},
+{
+"category": "고유어",
+"term": "서름하다",
+"definition": "남과 가깝지 못하고 사이가 조금 서먹하다.",
+"example": "우리는 처음 만난 사이라 서름한 느낌이 들었다."
+},
+{
+"category": "고유어",
+"term": "애처롭다",
+"definition": "가엾고 불쌍하여 마음이 슬프다.",
+"example": "애처롭게 울다."
+},
+{
+"category": "고유어",
+"term": "에다",
+"sense": 1,
+"definition": "칼 따위로 도려내듯 베다.",
+"example": "가뜩이나 빈속은 칼로 에는 것처럼 쓰렸다."
+},
+{
+"category": "고유어",
+"term": "에다",
+"sense": 2,
+"definition": "마음을 몹시 아프게 하다.",
+"example": "갑자기 가슴을 에는 듯한 슬픔이 몰아쳤다."
+},
+{
+"category": "고유어",
+"term": "저미다",
+"definition": "마음을 몹시 아프게 하다.",
+"example": "마음을 저미는 그 이야기에 모두 눈물을 흘렸다."
+},
+{
+"category": "고유어",
+"term": "짠하다",
+"definition": "안타깝게 뉘우쳐져 마음이 조금 언짢고 아프다.",
+"example": "마음이 짠하다."
+},
+{
+"category": "고유어",
+"term": "늦되다",
+"definition": "곡식이나 열매 따위가 제철보다 늦게 익다.",
+"example": "벼가 늦되다."
+},
+{
+"category": "고유어",
+"term": "돌기",
+"definition": "채 익지 않은 과일.",
+"example": "소년은 너무 배가 고파서 산에 있는 돌기까지 마구 따 먹었다."
+},
+{
+"category": "고유어",
+"term": "맏물",
+"definition": "과일, 푸성귀, 해산물 따위에서 그해의 맨 처음에 나는 것.",
+"example": "삼촌네 과수원에서 나는 사과는 맏물이 가장 크고 달다."
+},
+{
+"category": "고유어",
+"term": "송아리",
+"definition": "꽃이나 열매 따위가 잘게 모여 달려 있는 덩어리.",
+"example": "포도 송아리. / 꽃 송아리. / 눈 송아리."
+},
+{
+"category": "고유어",
+"term": "아람",
+"definition": "밤이나 상수리 따위가 충분히 익어 저절로 떨어질 정도가 된 상태. 또는 그런 열매.",
+"example": "남은 밤송이가 저 혼자 아람이 벌어져 떨어져 내렸다."
+},
+{
+"category": "고유어",
+"term": "이울다",
+"definition": "꽃이나 잎이 시들다.",
+"example": "감꽃이 하얗게 이울 때쯤이면 아이들은 곧잘 새벽잠을 설치곤 했었다."
+},
+{
+"category": "고유어",
+"term": "딸각딸각",
+"definition": "'딸가닥딸가닥'의 준말. 작고 단단한 물건이 자꾸 맞부딪치는 소리.",
+"example": "부엌에서 설거지를 하는지 딸각딸각 소리가 난다."
+},
+{
+"category": "고유어",
+"term": "마구리하다",
+"definition": "기다란 물건 끝을 막다.",
+"example": "주석으로 지팡이를 마구리하다."
+},
+{
+"category": "고유어",
+"term": "벼리다",
+"definition": "무디어진 연장의 날을 불에 달구어 두드려서 날카롭게 만들다.",
+"example": "대장장이가 농기구를 만들기 위해 날을 벼리었다."
+},
+{
+"category": "고유어",
+"term": "성기다",
+"sense": 1,
+"definition": "물건의 사이가 뜨다.",
+"example": "점심때까지만 해도 성기던 빗줄기가 그새 드세어졌다."
+},
+{
+"category": "고유어",
+"term": "성기다",
+"sense": 2,
+"definition": "반복되는 횟수나 도수(度數)가 뜨다.",
+"example": "매일같이 만나던 두 사람이 요즘 들어서는 만남이 성기다."
+},
+{
+"category": "고유어",
+"term": "스러지다",
+"sense": 1,
+"definition": "형체나 현상 따위가 차차 희미해지면서 없어지다.",
+"example": "의식이 희미해지고, 그의 모습이 스러졌다."
+},
+{
+"category": "고유어",
+"term": "스러지다",
+"sense": 2,
+"definition": "불기운이 약해져서 꺼지다.",
+"example": "스러지는 불꽃. / 스러지는 촛불."
+},
+{
+"category": "고유어",
+"term": "시루",
+"definition": "떡이나 쌀 따위를 찌는 데 쓰는 둥근 질그릇."
+},
+{
+"category": "고유어",
+"term": "아귀",
+"definition": "사물의 갈라진 부분.",
+"example": "장식장의 문짝이 아귀가 잘 맞질 않는지 여닫을 때마다 덜컹거린다."
+},
+{
+"category": "고유어",
+"term": "이지러지다",
+"sense": 1,
+"definition": "한쪽 귀퉁이가 떨어져 없어지다.",
+"example": "이리저리 깎이고 닳아서 형체가 몹시 이지러진 수많은 조개껍데기들이 바닥에 하얗게 박혀 있었다.",
+"note": "p.33의 이지러지다(얼굴이 일그러지다/비뚤어지다)와 별도 표제"
+},
+{
+"category": "고유어",
+"term": "이지러지다",
+"sense": 2,
+"definition": "달 따위가 한쪽이 차지 않다.",
+"example": "추석이 가까워 오는 하늘에는 좀 이지러지기는 했으나 달이 휘영청 떠 있었다.",
+"note": "p.33의 이지러지다(얼굴이 일그러지다/비뚤어지다)와 별도 표제"
+},
+{
+"category": "고유어",
+"term": "꼬들꼬들",
+"definition": "밥알 따위가 물기가 적거나 말라서 속은 무르고 겉은 조금 굳은 상태. '고들고들'보다 센 느낌을 준다.",
+"example": "밥이 꼬들꼬들 말라 버렸다."
+},
+{
+"category": "고유어",
+"term": "단김",
+"definition": "음식물의 제맛이 되는 맛이나 김.",
+"example": "단김이 빠진 맥주.",
+"note": "단김01"
+},
+{
+"category": "고유어",
+"term": "단김",
+"definition": "달아올라 뜨거운 김.",
+"example": "펄펄 끓는 물에서 단김이 솟았다.",
+"note": "단김02"
+},
+{
+"category": "고유어",
+"term": "단물",
+"sense": 1,
+"definition": "단맛이 나는 물.",
+"example": "아이는 껌의 단물만 빨아 먹고선 바로 버렸다."
+},
+{
+"category": "고유어",
+"term": "단물",
+"sense": 2,
+"definition": "알짜나 실속이 있는 부분을 비유적으로 이르는 말.",
+"example": "단물은 다 빨아먹고 이제 와서 그를 버리다니."
+},
+{
+"category": "고유어",
+"term": "말랑말랑",
+"definition": "매우 또는 여기저기가 야들야들하게 보드랍고 무른 느낌.",
+"example": "말랑말랑 젤리가 입에서 살살 녹는다."
+},
+{
+"category": "고유어",
+"term": "맞갖다",
+"definition": "마음이나 입맛에 꼭 맞다.",
+"example": "입에 맞갖지 않은 음식이겠지만 많이 들게."
+},
+{
+"category": "고유어",
+"term": "맵짜다",
+"sense": 1,
+"definition": "음식의 맛이 맵고 짜다.",
+"example": "간을 보지 않고 요리를 했더니 음식이 모두 맵짜다."
+},
+{
+"category": "고유어",
+"term": "맵짜다",
+"sense": 2,
+"definition": "바람 따위가 매섭게 사납다.",
+"example": "겨울밤의 맵짠 바람은 옷깃을 단단히 여미게 한다."
+},
+{
+"category": "고유어",
+"term": "맵짜다",
+"sense": 3,
+"definition": "성미가 사납고 독하다.",
+"example": "맵짠 표정. / 맵짠 눈으로 흘겨보는 사람의 시선을 피했다."
+},
+{
+"category": "고유어",
+"term": "맵짜다",
+"sense": 4,
+"definition": "성질 따위가 야무지고 옹골차다.",
+"example": "보기보다 살림 솜씨가 맵짜다."
+},
+{
+"category": "고유어",
+"term": "바특하다",
+"definition": "국물이 조금 적어 묽지 아니하다.",
+"example": "국이 바특하다."
+},
+{
+"category": "고유어",
+"term": "삼삼하다",
+"sense": 1,
+"definition": "음식 맛이 조금 싱거운 듯하면서 맛이 있다.",
+"example": "국물이 삼삼하다."
+},
+{
+"category": "고유어",
+"term": "삼삼하다",
+"sense": 2,
+"definition": "사물이나 사람의 생김새나 됨됨이가 마음이 끌리게 그럴듯하다.",
+"example": "얼굴이 삼삼하게 생기다."
+},
+{
+"category": "고유어",
+"term": "싱겁다",
+"sense": 1,
+"definition": "음식의 간이 보통 정도에 이르지 못하고 약하다.",
+"example": "물을 많이 넣어 국이 싱겁다."
+},
+{
+"category": "고유어",
+"term": "싱겁다",
+"sense": 2,
+"definition": "술이나 담배나 한약 따위의 맛이 약하다.",
+"example": "싱거운 막걸리. / 약을 재탕하면 싱겁게 된다."
+},
+{
+"category": "고유어",
+"term": "싱겁다",
+"sense": 3,
+"definition": "사람의 말이나 행동이 상황에 어울리지 않고 다소 엉뚱한 느낌을 주다.",
+"example": "그는 괜히 싱겁게 잘 웃는다. / 그런 싱거운 소리는 그만해라."
+},
+{
+"category": "고유어",
+"term": "싱겁다",
+"sense": 4,
+"definition": "어떤 행동이나 말, 글 따위가 흥미를 끌지 못하고 흐지부지하다.",
+"example": "무슨 소설이 이렇게 싱겁게 끝나니?"
+},
+{
+"category": "고유어",
+"term": "싱겁다",
+"sense": 5,
+"definition": "물건이나 그림의 배치에 빈 곳이 많아 야물지 못하고 엉성하다.",
+"example": "집 안 분위기가 싱거운 것 같으니 화초라도 좀 키우자."
+},
+{
+"category": "고유어",
+"term": "아귀아귀",
+"definition": "음식을 욕심껏 입안에 넣고 마구 씹어 먹는 모양.",
+"example": "그는 밥을 아귀아귀 먹어 대며 내심 화를 삭이고 있었다."
+},
+{
+"category": "고유어",
+"term": "안치다",
+"definition": "밥, 떡, 찌개 따위를 만들기 위하여 그 재료를 솥이나 냄비 따위에 넣고 불 위에 올리다.",
+"example": "시루에 떡을 안치다. / 솥에 고구마를 안쳤다."
+},
+{
+"category": "고유어",
+"term": "자글자글",
+"definition": "적은 양의 액체나 기름 따위가 걸쭉하게 잦아들면서 자꾸 끓는 소리. 또는 그 모양.",
+"example": "찌개가 자글자글 끓고 있다.",
+"note": "p.33의 자글자글(마음을 졸이는 모양/열이 나는 모양)과 별도 표제"
+},
+{
+"category": "고유어",
+"term": "잦히다",
+"definition": "밥물이 끓으면 불의 세기를 잠깐 줄였다가 다시 조금 세게 해서 물이 잦아지게 하다.",
+"example": "밥물을 잦히다."
+},
+{
+"category": "고유어",
+"term": "재다",
+"definition": "고기 따위의 음식을 양념하여 그릇에 차곡차곡 담아 두다.",
+"example": "쇠고기를 양념에 재어 놓았다.",
+"related": [
+"≒ 쟁이다"
+]
+},
+{
+"category": "고유어",
+"term": "주리다",
+"sense": 1,
+"definition": "[…을] 제대로 먹지 못하여 배를 곯다.",
+"example": "난민들은 며칠 동안 배를 주리고 있었다."
+},
+{
+"category": "고유어",
+"term": "주리다",
+"sense": 2,
+"definition": "[…에] 원하는 것을 얻지 못하여 몹시 아쉬워하다.",
+"example": "모성애에 주린 그는 강아지를 끔찍하게 귀여워했다."
+},
+{
+"category": "고유어",
+"term": "차지다",
+"sense": 1,
+"definition": "반죽이나 밥, 떡 따위가 끈기가 많다.",
+"example": "그는 차진 밥을 좋아한다."
+},
+{
+"category": "고유어",
+"term": "차지다",
+"sense": 2,
+"definition": "성질이 야무지고 까다로우며 빈틈이 없다.",
+"example": "그녀는 차지고 단단한 사람이었다."
+},
+{
+"category": "고유어",
+"term": "토렴하다",
+"definition": "밥이나 국수에 뜨거운 국물을 부었다 따랐다 하여 덥게 하다.",
+"example": "그는 나의 국 대접에 더운 국물을 정성스레 토렴하여 주었다."
+},
+{
+"category": "고유어",
+"term": "푸지다",
+"definition": "매우 많아서 넉넉하다.",
+"example": "잔칫상에 음식이 푸지다."
+},
+{
+"category": "고유어",
+"term": "한소끔",
+"definition": "한 번 끓어오르는 모양.",
+"example": "밥이 한소끔 끓다."
+},
+{
+"category": "고유어",
+"term": "허발",
+"definition": "몹시 굶주려 있거나 궁하여 체면 없이 함부로 먹거나 덤빔.",
+"example": "배고픈 김에 허발을 하고 음식을 걷어 먹었다."
+},
+{
+"category": "고유어",
+"term": "갈무리",
+"sense": 1,
+"definition": "물건 따위를 잘 정리하거나 간수함.",
+"example": "겨울 동안 갈무리를 했던 토란잎, 아주까리 잎을 내다 팔았다."
+},
+{
+"category": "고유어",
+"term": "갈무리",
+"sense": 2,
+"definition": "일을 처리하여 마무리함.",
+"example": "옆 사람에게 일의 갈무리를 부탁했다."
+},
+{
+"category": "고유어",
+"term": "곰비임비",
+"definition": "물건이 거듭 쌓이거나 일이 계속 일어남을 나타내는 말.",
+"example": "경사스러운 일이 곰비임비 일어난다."
+},
+{
+"category": "고유어",
+"term": "마름질",
+"definition": "옷감이나 재목 따위를 치수에 맞도록 재거나 자르는 일.",
+"example": "옷감을 펼쳐 놓고 마름질을 시작하다."
+},
+{
+"category": "고유어",
+"term": "마수걸이",
+"sense": 1,
+"definition": "맨 처음으로 물건을 파는 일. 또는 거기서 얻은 소득.",
+"example": "오후 한 시가 넘도록 마수걸이도 못 했다."
+},
+{
+"category": "고유어",
+"term": "마수걸이",
+"sense": 2,
+"definition": "맨 처음으로 부딪는 일.",
+"example": "마수걸이에 수월치 아니한 고개를 만났다."
+},
+{
+"category": "고유어",
+"term": "매조지다",
+"definition": "일의 끝을 단단히 단속하여 마무리하다.",
+"example": "그는 홈런을 친 선수를 삼진으로 잡아내 경기를 매조졌다."
+},
+{
+"category": "고유어",
+"term": "모꼬지",
+"definition": "놀이나 잔치 또는 그 밖의 일로 여러 사람이 모이는 일.",
+"example": "형은 항상 모꼬지 자리에 빠지는 법이 없었다."
+},
+{
+"category": "고유어",
+"term": "무릎맞춤",
+"definition": "두 사람의 말이 서로 어긋날 때, 제삼자를 앞에 두고 전에 한 말을 되풀이하여 옳고 그름을 따짐.",
+"example": "그와 무릎맞춤을 해서 의심이 풀릴 일이라면 백 번이라도 하겠다."
+},
+{
+"category": "고유어",
+"term": "빨",
+"definition": "일이 되어 가는 형편과 모양.",
+"example": "그 노인이 하는 빨로 따라 하면 된다."
+},
+{
+"category": "고유어",
+"term": "새록새록",
+"definition": "새로운 물건이나 일이 잇따라 생기는 모양.",
+"example": "봄이 되자 새순이 새록새록 돋아난다."
+},
+{
+"category": "고유어",
+"term": "에누리",
+"sense": 1,
+"definition": "물건값을 받을 값보다 더 많이 부르는 일. 또는 그 물건값.",
+"example": "에누리가 없는 정가(正價)이다."
+},
+{
+"category": "고유어",
+"term": "에누리",
+"sense": 2,
+"definition": "값을 깎는 일.",
+"example": "에누리를 해 주셔야 다음에 또 오지요."
+},
+{
+"category": "고유어",
+"term": "에누리",
+"sense": 3,
+"definition": "실제보다 더 보태거나 깎아서 말하는 일.",
+"example": "그의 말에는 에누리도 섞여 있다."
+},
+{
+"category": "고유어",
+"term": "에누리",
+"sense": 4,
+"definition": "용서하거나 사정을 보아주는 일.",
+"example": "에누리 없이 사는 사람 있던가?"
+},
+{
+"category": "고유어",
+"term": "영금",
+"definition": "따끔하게 당하는 곤욕.",
+"example": "영금을 보다."
+},
+{
+"category": "고유어",
+"term": "울력",
+"definition": "여러 사람이 힘을 합하여 일함. 또는 그런 힘.",
+"example": "울력을 믿고 함부로 덤비다."
+},
+{
+"category": "고유어",
+"term": "잡도리",
+"sense": 1,
+"definition": "단단히 준비하거나 대책을 세움. 또는 그 대책.",
+"example": "그는 일을 시작하기 전에 철저히 잡도리를 하였다."
+},
+{
+"category": "고유어",
+"term": "잡도리",
+"sense": 2,
+"definition": "잘못되지 않도록 엄하게 단속하는 일.",
+"example": "이번에 잡도리를 못 하면 더 버릇없는 사람이 되고 말 것이다."
+},
+{
+"category": "고유어",
+"term": "잡도리",
+"sense": 3,
+"definition": "아주 요란스럽게 닦달하거나 족치는 일.",
+"example": "경찰은 범인을 철저히 심문하며 잡도리를 하였다."
+},
+{
+"category": "고유어",
+"term": "종요롭다",
+"definition": "없어서는 안 될 정도로 매우 긴요하다.",
+"example": "이번 기술 제휴는 우리 회사를 키우는 데 종요로운 일이므로 모두가 성심으로 이 일에 임해 주기 바랍니다."
+},
+{
+"category": "고유어",
+"term": "그끄저께",
+"definition": "그저께의 전날.",
+"related": [
+"= 그끄제"
+],
+"note": "날짜와 관련된 고유어: 그끄저께(그끄제) → 그저께(그제) → 어제 → 오늘 → 내일 → 모레(내일모레) → 글피 → 그글피"
+},
+{
+"category": "고유어",
+"term": "그저께",
+"definition": "어제의 전날.",
+"related": [
+"= 그제"
+],
+"note": "날짜와 관련된 고유어: 그끄저께(그끄제) → 그저께(그제) → 어제 → 오늘 → 내일 → 모레(내일모레) → 글피 → 그글피"
+},
+{
+"category": "고유어",
+"term": "모레",
+"definition": "내일의 다음 날.",
+"related": [
+"= 내일모레"
+],
+"note": "날짜와 관련된 고유어: 그끄저께(그끄제) → 그저께(그제) → 어제 → 오늘 → 내일 → 모레(내일모레) → 글피 → 그글피"
+},
+{
+"category": "고유어",
+"term": "글피",
+"definition": "모레의 다음 날.",
+"note": "날짜와 관련된 고유어: 그끄저께(그끄제) → 그저께(그제) → 어제 → 오늘 → 내일 → 모레(내일모레) → 글피 → 그글피"
+},
+{
+"category": "고유어",
+"term": "그글피",
+"definition": "글피의 다음 날.",
+"note": "날짜와 관련된 고유어: 그끄저께(그끄제) → 그저께(그제) → 어제 → 오늘 → 내일 → 모레(내일모레) → 글피 → 그글피"
+},
+{
+"category": "고유어",
+"term": "겨를",
+"definition": "어떤 일을 하다가 생각 따위를 다른 데로 돌릴 수 있는 시간적인 여유.",
+"related": [
+"≒ 틈"
+]
+},
+{
+"category": "고유어",
+"term": "단김에",
+"sense": 1,
+"definition": "열기가 아직 식지 아니하였을 적에.",
+"example": "단김에 결판을 내다."
+},
+{
+"category": "고유어",
+"term": "단김에",
+"sense": 2,
+"definition": "좋은 기회가 지나기 전에."
+},
+{
+"category": "고유어",
+"term": "달포",
+"definition": "한 달이 조금 넘는 기간.",
+"example": "그가 떠난 지 달포가량 지났다."
+},
+{
+"category": "고유어",
+"term": "댓바람",
+"sense": 1,
+"definition": "일이나 때를 당하여 서슴지 않고 당장.",
+"example": "소식을 듣자마자 댓바람으로 달려 나갔다."
+},
+{
+"category": "고유어",
+"term": "댓바람",
+"sense": 2,
+"definition": "일이나 때를 당하여 단 한 번.",
+"example": "댓바람에 몇 사발이고 먹어 치울 것 같은 시장기와 갈증을 느끼다."
+},
+{
+"category": "고유어",
+"term": "댓바람",
+"sense": 3,
+"definition": "아주 이른 시간.",
+"example": "하루를 그 일로 하여 아침 댓바람부터 잡쳐 버린 셈이 되었다."
+},
+{
+"category": "고유어",
+"term": "들마",
+"definition": "가게 문을 닫을 무렵.",
+"example": "들마에 손님들이 몰려왔다."
+},
+{
+"category": "고유어",
+"term": "들머리",
+"definition": "들어가는 맨 첫머리.",
+"example": "동네 들머리. / 겨울 들머리.",
+"related": [
+"≒ 들목"
+]
+},
+{
+"category": "고유어",
+"term": "바특하다",
+"definition": "시간이나 길이가 조금 짧다.",
+"example": "시간이 너무 바특하다.",
+"note": "p.36의 바특하다(국물이 조금 적다)와 다른 뜻"
+},
+{
+"category": "고유어",
+"term": "해거름",
+"definition": "해가 서쪽으로 넘어가는 일. 또는 그런 때.",
+"example": "이제 곧 떠나야 할 나그네만이 저무는 해거름을 아쉬워하는 건 아니다."
+},
+{
+"category": "고유어",
+"term": "해거리",
+"definition": "한 해를 거름. 또는 그런 간격.",
+"example": "이 대회는 해거리로 열린다.",
+"related": [
+"≒ 격년(隔年)"
+]
+},
+{
+"category": "고유어",
+"term": "후미지다",
+"sense": 1,
+"definition": "물가나 산길이 휘어서 굽어 들어간 곳이 매우 깊다.",
+"example": "후미진 골짜기. / 심마니는 오른쪽 후미진 바위 벼랑에서 산삼을 발견했다."
+},
+{
+"category": "고유어",
+"term": "후미지다",
+"sense": 2,
+"definition": "아주 구석지고 으슥하다.",
+"example": "후미진 골목."
+},
+{
+"category": "고유어",
+"term": "긋다",
+"sense": 1,
+"definition": "비가 잠시 그치다.",
+"example": "비가 긋는 것도 잠깐, 곧이어 빗줄기가 다시 쏟아지기 시작했다."
+},
+{
+"category": "고유어",
+"term": "긋다",
+"sense": 2,
+"definition": "[…을] 비를 잠시 피하여 그치기를 기다리다.",
+"example": "처마 밑에서 비를 긋다."
+},
+{
+"category": "고유어",
+"term": "물쿠다",
+"definition": "날씨가 찌는 듯이 더워지다.",
+"example": "날씨가 물쿠고 무덥더니 비가 내리기 시작하였다."
+},
+{
+"category": "고유어",
+"term": "비거스렁이",
+"definition": "비가 갠 뒤에 바람이 불고 기온이 낮아지는 현상.",
+"example": "비거스렁이를 하느라고 바람이 몹시 매서웠다."
+},
+{
+"category": "고유어",
+"term": "비설거지",
+"definition": "비가 오려고 하거나 올 때, 비에 맞으면 안 되는 물건을 치우거나 덮는 일.",
+"example": "갑자기 비가 쏟아져 잠을 설치며 비설거지를 해야 했다."
+},
+{
+"category": "고유어",
+"term": "빗밑",
+"definition": "비가 그치어 날이 개는 속도.",
+"example": "빗밑이 가볍다."
+},
+{
+"category": "고유어",
+"term": "스산하다",
+"sense": 1,
+"definition": "몹시 어수선하고 쓸쓸하다.",
+"example": "가랑비가 뿌리고 산바람도 불어와 스산하였다."
+},
+{
+"category": "고유어",
+"term": "스산하다",
+"sense": 2,
+"definition": "날씨가 흐리고 으스스하다.",
+"example": "날씨가 스산하다."
+},
+{
+"category": "고유어",
+"term": "여우비",
+"definition": "볕이 나 있는 날 잠깐 오다가 그치는 비.",
+"example": "여우비가 온 끝이라 개울가의 풀들이나 물빛이 더욱 뚜렷하였다."
+},
+{
+"category": "고유어",
+"term": "구태여",
+"definition": "일부러 애써.",
+"example": "네가 원한다면 구태여 나서지는 않겠다."
+},
+{
+"category": "고유어",
+"term": "그저",
+"sense": 1,
+"definition": "변함없이 이제까지.",
+"example": "그는 하루 종일 그저 잠만 자고 있다."
+},
+{
+"category": "고유어",
+"term": "그저",
+"sense": 2,
+"definition": "다른 일은 하지 않고 그냥.",
+"example": "그는 묻는 말에 그저 \"예, 예.\" 하며 대답하였다."
+},
+{
+"category": "고유어",
+"term": "그저",
+"sense": 3,
+"definition": "('그렇다', '그러하다' 따위와 함께 쓰여) 별로 신기할 것 없이.",
+"example": "우리들은 모두 그저 그런 보통 사람들입니다."
+},
+{
+"category": "고유어",
+"term": "그저",
+"sense": 4,
+"definition": "어쨌든지 무조건.",
+"example": "그저 감사할 뿐입니다."
+},
+{
+"category": "고유어",
+"term": "그저",
+"sense": 5,
+"definition": "특별한 목적이나 이유 없이.",
+"example": "그저 한번 해 본 말이다."
+},
+{
+"category": "고유어",
+"term": "그저",
+"sense": 6,
+"definition": "아닌 게 아니라 과연. 남을 책망하거나 비난하는 뜻으로 쓴다.",
+"example": "내 그저 그럴 줄 알았지."
+},
+{
+"category": "고유어",
+"term": "노상",
+"definition": "언제나 변함없이 한 모양으로 줄곧.",
+"example": "그는 노상 웃고 다닌다."
+},
+{
+"category": "고유어",
+"term": "들입다",
+"definition": "세차게 마구.",
+"example": "그는 목이 탔는지 물을 입에 들입다 부었다."
+},
+{
+"category": "고유어",
+"term": "미처",
+"definition": "아직 거기까지 미치도록.",
+"example": "음식이 미처 준비도 되지 않았는데 손님들이 몰려왔다."
+},
+{
+"category": "고유어",
+"term": "어떻든",
+"sense": 1,
+"definition": "의견이나 일의 성질, 형편, 상태 따위가 어떻게 되어 있든.",
+"example": "어떻든 나는 그의 요청을 들어주기로 했다.",
+"related": [
+"= 아무튼"
+]
+},
+{
+"category": "고유어",
+"term": "어떻든",
+"sense": 2,
+"definition": "'어떠하든'이 줄어든 말.",
+"example": "몸집은 어떻든 얼굴에는 귀티가 있다."
+},
+{
+"category": "고유어",
+"term": "어쩌다",
+"sense": 1,
+"definition": "'어쩌다가'의 준말. 뜻밖에 우연히.",
+"example": "그는 어쩌다 나와 눈을 마주치기라도 하면 기겁을 하는 것이었다."
+},
+{
+"category": "고유어",
+"term": "어쩌다",
+"sense": 2,
+"definition": "'어쩌다가'의 준말. 이따금 또는 가끔가다가.",
+"example": "결혼 전에는 그래도 어쩌다 영화관에 가곤 했다."
+},
+{
+"category": "고유어",
+"term": "어쩌다",
+"sense": 3,
+"definition": "'어찌하다가'가 줄어든 말. 어떠한 이유로.",
+"example": "장난감을 어쩌다 망가뜨렸어?"
+},
+{
+"category": "고유어",
+"term": "얼추",
+"sense": 1,
+"definition": "어지간한 정도로 대충.",
+"example": "얼추 짐작하다. / 헤아려 보니 모인 사람이 얼추 500명은 되겠다."
+},
+{
+"category": "고유어",
+"term": "얼추",
+"sense": 2,
+"definition": "어떤 기준에 거의 가깝게.",
+"example": "도착할 시간이 얼추 다 되었다."
+},
+{
+"category": "고유어",
+"term": "이루",
+"definition": "여간하여서는 도저히.",
+"example": "이루 다 헤아릴 수 없다."
+},
+{
+"category": "고유어",
+"term": "일껏",
+"definition": "모처럼 애써서.",
+"example": "그는 일껏 마련한 좋은 기회를 놓쳤다."
+},
+{
+"category": "고유어",
+"term": "자못",
+"definition": "생각보다 매우.",
+"example": "여러분에 대한 기대가 자못 큽니다."
+},
+{
+"category": "고유어",
+"term": "좀체",
+"definition": "(주로 부정적인 의미를 가진 단어와 호응하여) 여간하여서는.",
+"example": "일자리가 좀체 구해지지 않는가 봐요.",
+"related": [
+"= 좀처럼"
+]
+},
+{
+"category": "고유어",
+"term": "좋이",
+"definition": "거리, 수량, 시간 따위가 어느 한도에 미칠 만하게.",
+"example": "학교에서 집까지는 좋이 이십 분은 걸렸다."
+},
+{
+"category": "고유어",
+"term": "짐짓",
+"sense": 1,
+"definition": "마음으로는 그렇지 않으나 일부러 그렇게.",
+"example": "짐짓 모른 체하다. / 짐짓 놀라는 척하다."
+},
+{
+"category": "고유어",
+"term": "짐짓",
+"sense": 2,
+"definition": "아닌 게 아니라 정말로. 주로 생각과 실제가 같음을 확인할 때에 쓴다.",
+"example": "먹어 보니, 짐짓 기가 막힌 음식이더라.",
+"related": [
+"= 과연"
+]
+},
+{
+"category": "고유어",
+"term": "짜장",
+"definition": "과연 정말로.",
+"example": "그는 짜장 사실인 것처럼 이야기를 한다."
+},
+{
+"category": "고유어",
+"term": "차라리",
+"definition": "여러 가지 사실을 말할 때에, 저리하는 것보다 이리하는 것이 나음을 이르는 말. 대비되는 두 가지 사실이 모두 마땅치 않을 때 상대적으로 나음을 나타낸다.",
+"example": "이런 음식을 먹을 바에야 차라리 안 먹는 게 낫다."
+},
+{
+"category": "고유어",
+"term": "차마",
+"definition": "부끄럽거나 안타까워서 감히.",
+"example": "그는 부끄러워 차마 얼굴을 들 수가 없었다."
+},
+{
+"category": "고유어",
+"term": "터울",
+"definition": "한 어머니로부터 먼저 태어난 아이와 그다음에 태어난 아이와의 나이 차이. 또는 먼저 아이를 낳은 때로부터 다음 아이를 낳은 때까지의 사이.",
+"example": "터울이 지다. / 형과 나는 두 살 터울이다."
+},
+{
+"category": "고유어",
+"term": "가닥가닥",
+"sense": 1,
+"definition": "여러 군데서 갈려 나온 낱낱의 줄.",
+"example": "베개 밑으로 흘러내리고 있는 그 섬세한 머리칼의 가닥가닥은 멜로디를 닮았다."
+},
+{
+"category": "고유어",
+"term": "가닥가닥",
+"sense": 2,
+"definition": "여러 가닥으로 갈라진 모양.",
+"example": "가닥가닥 꼰 새끼줄."
+},
+{
+"category": "고유어",
+"term": "갈팡질팡",
+"definition": "갈피를 잡지 못하고 이리저리 헤매는 모양.",
+"example": "사병들이 요란한 총성에 놀라 갈팡질팡 어둠 속을 뛰고 있다."
+},
+{
+"category": "고유어",
+"term": "갉작갉작",
+"sense": 1,
+"definition": "날카롭고 뾰족한 끝으로 자꾸 바닥이나 거죽을 문지르는 모양.",
+"example": "눈가를 새끼손가락으로 갉작갉작 긁는다."
+},
+{
+"category": "고유어",
+"term": "갉작갉작",
+"sense": 2,
+"definition": "되는대로 자꾸 글이나 그림 따위를 쓰거나 그리는 모양."
+},
+{
+"category": "고유어",
+"term": "감실감실",
+"definition": "사람이나 물체, 빛 따위가 먼 곳에서 자꾸 아렴풋이 움직이는 모양.",
+"example": "줄 끊긴 방패연은 바람에 날려 저 멀리 감실감실 사라져 갔다."
+},
+{
+"category": "고유어",
+"term": "고분고분",
+"definition": "말이나 행동이 공손하고 부드러운 모양.",
+"example": "그 아이는 시키는 대로 고분고분 말을 잘 듣는다."
+},
+{
+"category": "고유어",
+"term": "괴발개발",
+"definition": "고양이의 발과 개의 발이라는 뜻으로, 글씨를 되는대로 아무렇게나 써 놓은 모양을 이르는 말.",
+"example": "담벼락에는 괴발개발 아무렇게나 낙서가 되어 있었다.",
+"related": [
+"≒ 개발새발"
+]
+},
+{
+"category": "고유어",
+"term": "그득그득",
+"definition": "분량이나 수효 따위가 어떤 범위나 한도에 여럿이 다 또는 몹시 꽉 찬 모양.",
+"example": "항아리마다 물이 그득그득 담겨 있었다."
+},
+{
+"category": "고유어",
+"term": "넘실넘실",
+"sense": 1,
+"definition": "물결 따위가 부드럽게 자꾸 굽이쳐 움직이는 모양.",
+"example": "파도가 넘실넘실 뱃전을 두드리다."
+},
+{
+"category": "고유어",
+"term": "넘실넘실",
+"sense": 2,
+"definition": "부드럽고 가볍게 자꾸 움직이는 모양.",
+"example": "넘실넘실 칼춤을 추다."
+},
+{
+"category": "고유어",
+"term": "넘실넘실",
+"sense": 3,
+"definition": "해 따위가 솟아오르는 모양.",
+"example": "아침 해가 수평선 위로 넘실넘실 떠오른다."
+},
+{
+"category": "고유어",
+"term": "넘실넘실",
+"sense": 4,
+"definition": "액체 따위가 그득 차서 넘칠 듯 말 듯 하게 흔들리는 모양.",
+"example": "청주를 술잔에 넘실넘실 부었다."
+},
+{
+"category": "고유어",
+"term": "다닥다닥",
+"sense": 1,
+"definition": "자그마한 것들이 한곳에 많이 붙어 있는 모양.",
+"example": "바닷가 바위틈에 따개비들이 다닥다닥 붙어 있다."
+},
+{
+"category": "고유어",
+"term": "다닥다닥",
+"sense": 2,
+"definition": "보기 흉할 정도로 지저분하게 여기저기 기운 모양.",
+"example": "형편이 얼마나 안 좋은지 양말 여기저기를 다닥다닥 기워 신었다."
+},
+{
+"category": "고유어",
+"term": "대롱대롱",
+"definition": "작은 물건이 매달려 가볍게 잇따라 흔들리는 모양.",
+"example": "감나무에 감이 대롱대롱 달려 있다."
+},
+{
+"category": "고유어",
+"term": "드문드문",
+"sense": 1,
+"definition": "시간적으로 잦지 않고 드문 모양.",
+"example": "드문드문 찾아드는 손님."
+},
+{
+"category": "고유어",
+"term": "드문드문",
+"sense": 2,
+"definition": "공간적으로 배지 않고 사이가 드문 모양.",
+"example": "드문드문 서 있는 나무."
+},
+{
+"category": "고유어",
+"term": "듬성듬성",
+"definition": "매우 드물고 성긴 모양.",
+"example": "야구장에는 사람들이 듬성듬성 앉아 있었다."
+},
+{
+"category": "고유어",
+"term": "문실문실",
+"definition": "나무 따위가 거침없이 잘 자라는 모양.",
+"example": "청운의 뜻을 품고 하늘을 향하여 문실문실 자란 나무들이었다."
+},
+{
+"category": "고유어",
+"term": "물큰",
+"definition": "냄새 따위가 한꺼번에 확 풍기는 모양.",
+"example": "뚜껑을 여는 순간 고약한 냄새가 물큰 코를 찔렀다."
+},
+{
+"category": "고유어",
+"term": "미적미적",
+"sense": 1,
+"definition": "무거운 것을 조금씩 앞으로 자꾸 내미는 모양.",
+"example": "농부가 달구지를 미적미적 밀고 간다."
+},
+{
+"category": "고유어",
+"term": "미적미적",
+"sense": 2,
+"definition": "해야 할 일이나 날짜 따위를 미루어 자꾸 시간을 끄는 모양.",
+"example": "미적미적 미루다가 하루는 마음을 크게 먹고 치과를 갔다.",
+"related": [
+"= 미루적미루적"
+]
+},
+{
+"category": "고유어",
+"term": "미적미적",
+"sense": 3,
+"definition": "자꾸 꾸물대거나 망설이는 모양.",
+"example": "재우는 그를 뿌리칠 수가 없어 미적미적 끌려가고 있었다."
+},
+{
+"category": "고유어",
+"term": "바득바득",
+"definition": "악지를 부려 자꾸 우기거나 조르는 모양.",
+"example": "수영이가 바득바득 우기는 바람에 결국 우리는 그의 편을 들었다."
+},
+{
+"category": "고유어",
+"term": "바락바락",
+"sense": 1,
+"definition": "성이 나서 잇따라 기를 쓰거나 소리를 지르는 모양.",
+"example": "바락바락 대들다."
+},
+{
+"category": "고유어",
+"term": "바락바락",
+"sense": 2,
+"definition": "빨래 따위를 가볍게 조금씩 주무르는 모양.",
+"example": "얼룩이 생긴 옷을 바락바락 주물렀다."
+},
+{
+"category": "고유어",
+"term": "보암보암",
+"definition": "이모저모 살펴보아 짐작할 수 있는 겉모양.",
+"example": "보암보암에 괜찮은 것 같더니 실제는 형편없다."
+},
+{
+"category": "고유어",
+"term": "부득부득",
+"definition": "물기가 있는 물건의 거죽이 거의 말라 약간 뻣뻣하게 굳어진 모양.",
+"example": "비에 젖었던 구두가 부득부득 말라 있어서 신기가 불편했다."
+},
+{
+"category": "고유어",
+"term": "부슬부슬",
+"definition": "눈이나 비가 조용히 성기게 내리는 모양.",
+"example": "봄비가 부슬부슬 내리다."
+},
+{
+"category": "고유어",
+"term": "비실비실",
+"sense": 1,
+"definition": "흐느적흐느적 힘없이 자꾸 비틀거리는 모양.",
+"example": "그는 며칠 굶더니 비실비실 걷다가 결국 쓰러졌다."
+},
+{
+"category": "고유어",
+"term": "비실비실",
+"sense": 2,
+"definition": "비굴하게 눈치를 보며 행동하는 모양.",
+"example": "사태가 불리해지자 적군들은 비실비실 도망쳤다."
+},
+{
+"category": "고유어",
+"term": "선득선득",
+"sense": 1,
+"definition": "갑자기 서늘한 느낌이 자꾸 드는 모양.",
+"example": "문틈으로 찬 바람이 불어오면서 선득선득 목덜미를 지나갔다."
+},
+{
+"category": "고유어",
+"term": "선득선득",
+"sense": 2,
+"definition": "갑자기 놀라서 마음에 서늘한 느낌이 자꾸 드는 모양.",
+"example": "공포 영화를 보고 나오니 작은 소리에도 선득선득 움츠러든다."
+},
+{
+"category": "고유어",
+"term": "성큼성큼",
+"definition": "다리를 잇따라 높이 들어 크게 떼어 놓는 모양.",
+"example": "황새는 길고 가는 다리를 성큼성큼 떼어 놓으며 숲으로 들어갔다."
+},
+{
+"category": "고유어",
+"term": "아롱다롱",
+"definition": "여러 가지 빛깔의 작은 점이나 줄 따위가 고르지 아니하고 촘촘하게 무늬를 이룬 모양.",
+"example": "꽃들이 모두 아롱다롱 곱고 다채롭게 피었다."
+},
+{
+"category": "고유어",
+"term": "어슷비슷",
+"definition": "큰 차이가 없이 서로 비슷비슷한 모양.",
+"example": "그들은 형제도 아닌데 얼굴이 어슷비슷 닮았다."
+},
+{
+"category": "고유어",
+"term": "어슷어슷",
+"definition": "여럿이 다 한쪽으로 조금 비뚤어진 모양.",
+"example": "어슷어슷 누빈 옷. / 어슷어슷 썬 풋고추."
+},
+{
+"category": "고유어",
+"term": "얼키설키",
+"sense": 1,
+"definition": "가는 것이 이리저리 뒤섞이어 얽힌 모양.",
+"example": "거미줄이 얼키설키 서리다."
+},
+{
+"category": "고유어",
+"term": "얼키설키",
+"sense": 2,
+"definition": "엉성하고 조잡한 모양.",
+"example": "그 집의 지붕은 양철과 루핑으로 얼키설키 얹혀 있었다."
+},
+{
+"category": "고유어",
+"term": "얼키설키",
+"sense": 3,
+"definition": "관계나 일, 감정 따위가 복잡하게 얽힌 모양.",
+"example": "세상만사가 재미로 얼키설키 엉키었지."
+},
+{
+"category": "고유어",
+"term": "얼핏얼핏",
+"sense": 1,
+"definition": "지나는 결에 잇따라 잠깐씩 나타나는 모양.",
+"example": "창밖으로 낯선 풍경이 얼핏얼핏 지나갔다."
+},
+{
+"category": "고유어",
+"term": "얼핏얼핏",
+"sense": 2,
+"definition": "생각이나 기억 따위가 잇따라 문득문득 떠오르는 모양.",
+"example": "이따금 영태가 내게 물었던 말들이 얼핏얼핏 되살아나곤 했다."
+},
+{
+"category": "고유어",
+"term": "우물우물",
+"definition": "말을 시원스럽게 하지 아니하고 입안에서 자꾸 중얼거리는 모양.",
+"example": "주인아저씨가 공연히 겸연쩍어하다가 우물우물 말했다."
+},
+{
+"category": "고유어",
+"term": "일렁일렁",
+"definition": "크고 긴 물건 따위가 자꾸 이리저리로 크게 흔들리는 모양.",
+"example": "그녀는 배가 아래위로 일렁일렁 움직이자 몹시 어지럽고 멀미가 났다."
+},
+{
+"category": "고유어",
+"term": "자근자근",
+"sense": 1,
+"definition": "조금 성가실 정도로 자꾸 은근히 귀찮게 구는 모양.",
+"example": "외판원은 자근자근 나를 따라다니며 책을 권했다."
+},
+{
+"category": "고유어",
+"term": "자근자근",
+"sense": 2,
+"definition": "자꾸 가볍게 누르거나 밟는 모양.",
+"example": "나는 아버지의 다리를 자근자근 주물러 드렸다."
+},
+{
+"category": "고유어",
+"term": "자근자근",
+"sense": 3,
+"definition": "자꾸 가볍게 씹는 모양.",
+"example": "껌을 자근자근 씹다."
+},
+{
+"category": "고유어",
+"term": "주저리주저리",
+"sense": 1,
+"definition": "너저분한 물건이 어지럽게 많이 매달려 있는 모양.",
+"example": "주저리주저리 달리다."
+},
+{
+"category": "고유어",
+"term": "주저리주저리",
+"sense": 2,
+"definition": "너저분하게 이것저것 끊임없이 이야기하는 모양.",
+"example": "아이는 신이 나서 주저리주저리 떠들어 댔다."
+},
+{
+"category": "고유어",
+"term": "추적추적",
+"sense": 1,
+"definition": "비나 진눈깨비가 자꾸 축축하게 내리는 모양.",
+"example": "창밖에는 가을비가 추적추적 내렸다."
+},
+{
+"category": "고유어",
+"term": "추적추적",
+"sense": 2,
+"definition": "자꾸 물기가 축축하게 젖어 드는 모양.",
+"example": "눈물은 추적추적 베갯잇을 적셨다."
+},
+{
+"category": "고유어",
+"term": "펄럭펄럭",
+"definition": "바람에 잇따라 빠르고 힘차게 나부끼는 소리. 또는 그 모양.",
+"example": "깃발이 펄럭펄럭 나부끼다. / 책장을 펄럭펄럭 넘기다."
+},
+{
+"category": "고유어",
+"term": "한들한들",
+"definition": "가볍게 자꾸 이리저리 흔들리거나 흔들리게 하는 모양.",
+"example": "간간이 부는 가는 바람에도 나무 끝은 한들한들 흔들린다."
+},
+{
+"category": "고유어",
+"term": "허둥지둥",
+"definition": "정신을 차릴 수 없을 만큼 갈팡질팡하며 다급하게 서두르는 모양.",
+"example": "시험 시간이 모자라 허둥지둥 아무 답에나 표시를 하고 나왔다."
+},
+{
+"category": "고유어",
+"term": "헤실바실",
+"definition": "모르는 사이에 흐지부지 없어지는 모양."
+},
+{
+"category": "고유어",
+"term": "휘뚜루마뚜루",
+"definition": "이것저것 가리지 아니하고 닥치는 대로 마구 해치우는 모양.",
+"example": "이번 방학에는 무계획적으로 휘뚜루마뚜루 돌아다니려 한다."
+},
+{
+"category": "고유어",
+"term": "가늠",
+"sense": 1,
+"definition": "목표나 기준에 맞고 안 맞음을 헤아려 봄. 또는 헤아려 보는 목표나 기준.",
+"example": "매사가 다 그렇듯이 떡 반죽도 가늠을 알맞게 해야 송편을 빚기가 좋다."
+},
+{
+"category": "고유어",
+"term": "가늠",
+"sense": 2,
+"definition": "사물을 어림잡아 헤아림.",
+"example": "그 건물의 높이가 가늠이 안 된다."
+},
+{
+"category": "고유어",
+"term": "가리다",
+"definition": "자기 일을 알아서 스스로 처리하다.",
+"example": "그는 자기 앞도 못 가리는 처지라 결혼은 꿈도 못 꾼다."
+},
+{
+"category": "고유어",
+"term": "가리사니",
+"sense": 1,
+"definition": "사물을 판단할 만한 지각."
+},
+{
+"category": "고유어",
+"term": "가리사니",
+"sense": 2,
+"definition": "사물을 분간하여 판단할 수 있는 실마리.",
+"example": "일이 복잡하게 얽히고설키어 가리사니를 잡을 수 없다."
+},
+{
+"category": "고유어",
+"term": "가뭇없이",
+"sense": 1,
+"definition": "보이던 것이 전혀 보이지 않아 찾을 곳이 감감하게.",
+"example": "아끼던 반지가 가뭇없이 사라졌다."
+},
+{
+"category": "고유어",
+"term": "가뭇없이",
+"sense": 2,
+"definition": "눈에 띄지 않게 감쪽같이.",
+"example": "소매치기가 승객의 호주머니에서 지갑을 가뭇없이 꺼냈다."
+},
+{
+"category": "고유어",
+"term": "갈마들다",
+"definition": "서로 번갈아들다.",
+"example": "낮과 밤이 갈마들다. / 희비가 갈마드는 인생."
+},
+{
+"category": "고유어",
+"term": "갈피",
+"definition": "일이나 사물의 갈래가 구별되는 어름.",
+"example": "갈피를 못 잡다."
+},
+{
+"category": "고유어",
+"term": "감돌다",
+"definition": "어떤 기체나 기운이 가득 차서 떠돌다.",
+"example": "방 안에 그윽한 차의 향기가 감돌았다."
+},
+{
+"category": "고유어",
+"term": "감투",
+"definition": "벼슬이나 직위를 속되게 이르는 말.",
+"example": "위원장이라는 감투를 둘러싸고 싸움이 끊이질 않았다."
+},
+{
+"category": "관용구",
+"term": "감투(를) 쓰다",
+"definition": "벼슬자리나 높은 지위에 오름을 속되게 이르는 말.",
+"note": "참고: 감투 관련 관용구"
+},
+{
+"category": "고유어",
+"term": "개평",
+"definition": "노름이나 내기 따위에서 남이 가지게 된 몫에서 조금 얻어 가지는 공것."
+},
+{
+"category": "고유어",
+"term": "거스러미",
+"definition": "손발톱 뒤의 살 껍질이나 나무의 결 따위가 얇게 터져 일어난 부분.",
+"example": "판자의 거스러미."
+},
+{
+"category": "고유어",
+"term": "견주다",
+"definition": "둘 이상의 사물을 질(質)이나 양(量) 따위에서 어떠한 차이가 있는지 알기 위하여 서로 대어 보다.",
+"example": "나는 그와 실력을 견주기에는 부족함이 있다."
+},
+{
+"category": "고유어",
+"term": "고대",
+"sense": 1,
+"definition": "이제 막.",
+"example": "고대 한 이야기를 또 하란 말이냐."
+},
+{
+"category": "고유어",
+"term": "고대",
+"sense": 2,
+"definition": "바로 곧.",
+"example": "학교에서 돌아오자마자 고대 놀러 나갔다."
+},
+{
+"category": "고유어",
+"term": "고명딸",
+"definition": "아들 많은 집의 외딸."
+},
+{
+"category": "고유어",
+"term": "괴괴하다",
+"definition": "정상적이지 않고 별나며 괴상하다.",
+"example": "해삼을 손으로 만졌더니 느낌이 괴괴하다.",
+"related": [
+"= 이상야릇하다"
+],
+"note": "괴괴하다02"
+},
+{
+"category": "고유어",
+"term": "굴레",
+"definition": "부자연스럽게 얽매이는 일을 비유적으로 이르는 말.",
+"example": "그는 평생 가난의 굴레에서 벗어나지 못했다."
+},
+{
+"category": "고유어",
+"term": "궁글다",
+"definition": "착 달라붙어 있어야 할 물건이 들떠서 속이 비다.",
+"example": "벽지가 궁글어 보기 싫다."
+},
+{
+"category": "고유어",
+"term": "기슭",
+"definition": "산이나 처마 따위에서 비탈진 곳의 아랫부분.",
+"example": "북한산 기슭의 양지바른 곳에 묘소를 잡아 장례를 지냈다."
+},
+{
+"category": "고유어",
+"term": "꼭뒤",
+"definition": "뒤통수의 한가운데.",
+"example": "어쩔 수 없는 분노가 꼭뒤까지 치밀어 오르는 것이다."
+},
+{
+"category": "고유어",
+"term": "농투성이",
+"definition": "'농부'를 낮잡아 이르는 말."
+},
+{
+"category": "고유어",
+"term": "늘비하다",
+"definition": "질서 없이 여기저기 많이 늘어서 있거나 놓여 있다.",
+"example": "마당에 늘비하게 서 있는 사람들."
+},
+{
+"category": "고유어",
+"term": "다락같이",
+"definition": "덩치나 규모, 정도가 매우 크고 심하게.",
+"example": "날씨가 다락같이 추워져 잠이 안 옵니다. / 그는 입맛이 다락같이 까다로웠다."
+},
+{
+"category": "고유어",
+"term": "단출하다",
+"sense": 1,
+"definition": "식구나 구성원이 많지 않아서 홀가분하다.",
+"example": "살림이 단출하다."
+},
+{
+"category": "고유어",
+"term": "단출하다",
+"sense": 2,
+"definition": "일이나 차림차림이 간편하다.",
+"example": "이번 출장은 며칠 안 되니 세면도구만 들고 단출하게 떠나기로 했다."
+},
+{
+"category": "고유어",
+"term": "둔덕",
+"definition": "가운데가 솟아서 불룩하게 언덕이 진 곳.",
+"example": "할아버지가 끄는 수레는 둔덕을 넘지 못하고 미끄러지기만 했다."
+},
+{
+"category": "고유어",
+"term": "마루",
+"definition": "등성이를 이루는 지붕이나 산 따위의 꼭대기.",
+"example": "그녀는 동산 마루에 걸린 해를 지켜보았다."
+},
+{
+"category": "고유어",
+"term": "맵자하다",
+"definition": "모양이 제격에 어울려서 맞다.",
+"example": "옷차림이 맵자하다."
+},
+{
+"category": "고유어",
+"term": "모지락스럽다",
+"definition": "보기에 억세고 모질다.",
+"example": "고향을 생각하면, 마음이 모지락스러운 그도 목울대가 후끈거렸다."
+},
+{
+"category": "고유어",
+"term": "무릇",
+"definition": "대체로 헤아려 생각하건대.",
+"example": "무릇 법도란 지키기 위해 존재하는 것이다."
+},
+{
+"category": "고유어",
+"term": "무지근하다",
+"definition": "뒤가 잘 안 나와서 기분이 무겁다.",
+"example": "아랫배가 무지근하다."
+},
+{
+"category": "고유어",
+"term": "묵새기다",
+"definition": "[…에서] 별로 하는 일 없이 한곳에서 오래 묵으며 날을 보내다.",
+"example": "그는 고향에서 묵새기며 요양하고 있다."
+},
+{
+"category": "고유어",
+"term": "뭇별",
+"definition": "많은 별.",
+"example": "그는 밤하늘의 뭇별을 바라보며 과거를 회상하였다."
+},
+{
+"category": "고유어",
+"term": "뭉뚱그리다",
+"sense": 1,
+"definition": "되는대로 대강 뭉쳐 싸다.",
+"example": "아기를 뭉뚱그려 안다. / 짐을 뭉뚱그리다."
+},
+{
+"category": "고유어",
+"term": "뭉뚱그리다",
+"sense": 2,
+"definition": "여러 사실을 하나로 포괄하다.",
+"example": "의견을 뭉뚱그려 말하자면 작업 환경을 개선하자는 것이다."
+},
+{
+"category": "고유어",
+"term": "발치",
+"definition": "사물의 꼬리나 아래쪽이 되는 끝부분.",
+"example": "그는 휴대 전화를 침대 발치에 놓아두곤 했다."
+},
+{
+"category": "고유어",
+"term": "버름하다",
+"sense": 1,
+"definition": "물건의 틈이 꼭 맞지 않고 조금 벌어져 있다.",
+"example": "버름한 문틀."
+},
+{
+"category": "고유어",
+"term": "버름하다",
+"sense": 2,
+"definition": "마음이 서로 맞지 않아 사이가 뜨다.",
+"example": "요즘 들어 둘 사이가 다소 버름하다."
+},
+{
+"category": "고유어",
+"term": "불잉걸",
+"definition": "불이 이글이글하게 핀 숯덩이.",
+"example": "아궁이에서 불잉걸을 하나 집었다."
+},
+{
+"category": "고유어",
+"term": "빌미",
+"definition": "재앙이나 탈 따위가 생기는 원인.",
+"example": "빌미를 잡히다. / 독재자는 이 사건을 탄압의 빌미로 삼았다."
+},
+{
+"category": "고유어",
+"term": "사그라들다",
+"definition": "삭아서 없어져 가다.",
+"example": "나는 부모님의 노여움이 사그라들기를 기다렸다."
+},
+{
+"category": "고유어",
+"term": "사르다",
+"definition": "불에 태워 없애다.",
+"example": "성냥불을 켜서 편지를 살랐다.",
+"related": [
+"= 불사르다"
+]
+},
+{
+"category": "고유어",
+"term": "사리다",
+"sense": 1,
+"definition": "국수, 새끼, 실 따위를 동그랗게 포개어 감다.",
+"example": "다음에 쓰기 좋게 줄을 잘 사려 두어라."
+},
+{
+"category": "고유어",
+"term": "사리다",
+"sense": 2,
+"definition": "뱀 따위가 몸을 똬리처럼 동그랗게 감다.",
+"example": "큰 뱀이 둥글게 몸을 사리고 있다."
+},
+{
+"category": "고유어",
+"term": "사리다",
+"sense": 3,
+"definition": "어떤 일에 적극적으로 나서지 않고 살살 피하며 몸을 아끼다.",
+"example": "몸을 사리다."
+},
+{
+"category": "고유어",
+"term": "사위다",
+"definition": "불이 사그라져서 재가 되다.",
+"example": "새벽에도 모닥불이 아직 완전히 사위지 않았다."
+},
+{
+"category": "고유어",
+"term": "숫제",
+"sense": 1,
+"definition": "순박하고 진실하게.",
+"example": "그도 이제는 숫제 착실한 생활을 한다."
+},
+{
+"category": "고유어",
+"term": "숫제",
+"sense": 2,
+"definition": "처음부터 차라리. 또는 아예 전적으로.",
+"example": "하다가 말 것이라면 숫제 안 하는 것이 낫다."
+},
+{
+"category": "고유어",
+"term": "실마리",
+"definition": "일이나 사건을 풀어 나갈 수 있는 첫머리.",
+"example": "해결의 실마리가 보이다."
+},
+{
+"category": "고유어",
+"term": "아련하다",
+"definition": "똑똑히 분간하기 힘들게 아렴풋하다.",
+"example": "그때 그 시절의 추억이 아련하다."
+},
+{
+"category": "고유어",
+"term": "아름",
+"definition": "둘레의 길이를 나타내는 단위.",
+"example": "두 아름 가까이 되는 느티나무."
+},
+{
+"category": "고유어",
+"term": "알싸하다",
+"definition": "매운맛이나 독한 냄새 따위로 콧속이나 혀끝이 알알하다.",
+"example": "고추가 매워 혀끝이 알싸하다."
+},
+{
+"category": "고유어",
+"term": "애오라지",
+"sense": 1,
+"definition": "'겨우'를 강조하여 이르는 말.",
+"example": "주머니엔 애오라지 동전 두 닢뿐이다."
+},
+{
+"category": "고유어",
+"term": "애오라지",
+"sense": 2,
+"definition": "'오로지'를 강조하여 이르는 말.",
+"example": "애오라지 자식을 위하는 부모 마음."
+},
+{
+"category": "고유어",
+"term": "어우러지다",
+"sense": 1,
+"definition": "여럿이 조화되어 한 덩어리나 한판을 크게 이루게 되다.",
+"example": "들꽃이 어우러져 핀 둑은 환상적으로 아름답다."
+},
+{
+"category": "고유어",
+"term": "어우러지다",
+"sense": 2,
+"definition": "여럿이 조화를 이루거나 섞이다.",
+"example": "한동안 바이올린이며 첼로, 비올라가 한데 어우러졌다."
+},
+{
+"category": "고유어",
+"term": "어우러지다",
+"sense": 3,
+"definition": "여럿이 자연스럽게 사귀어 조화를 이루거나 일정한 분위기에 같이 휩싸이다.",
+"example": "학생들과 주민들이 함께 어우러진 흥겨운 잔치 마당이 펼쳐졌다."
+},
+{
+"category": "고유어",
+"term": "여의다",
+"sense": 1,
+"definition": "부모나 사랑하는 사람이 죽어서 이별하다.",
+"example": "그는 일찍이 부모를 여의고 고아로 자랐다."
+},
+{
+"category": "고유어",
+"term": "여의다",
+"sense": 2,
+"definition": "딸을 시집보내다.",
+"example": "막내딸을 여의다."
+},
+{
+"category": "고유어",
+"term": "여의다",
+"sense": 3,
+"definition": "멀리 떠나보내다.",
+"example": "일체의 번뇌를 여의다."
+},
+{
+"category": "고유어",
+"term": "오그라들다",
+"sense": 1,
+"definition": "물체가 안쪽으로 오목하게 휘어져 들어가다.",
+"example": "주전자의 한쪽이 오그라들다."
+},
+{
+"category": "고유어",
+"term": "오그라들다",
+"sense": 2,
+"definition": "물체의 거죽이 오글쪼글하게 주름이 잡히며 줄어들다.",
+"example": "물빨래를 했더니 실크가 오그라들었다."
+},
+{
+"category": "고유어",
+"term": "오그라들다",
+"sense": 3,
+"definition": "형세나 형편 따위가 전보다 못하게 되다.",
+"example": "살림이 오그라들다."
+},
+{
+"category": "고유어",
+"term": "우리다",
+"definition": "어떤 물건을 액체에 담가 맛이나 빛깔 따위의 성질이 액체 속으로 빠져나오게 하다.",
+"example": "어머니는 멸치를 우려 국물을 만드셨다."
+},
+{
+"category": "고유어",
+"term": "우수리",
+"sense": 1,
+"definition": "물건값을 제하고 거슬러 받는 잔돈.",
+"example": "만 원을 내고 우수리로 천 원을 거슬러 받았다.",
+"related": [
+"≒ 거스름돈"
+]
+},
+{
+"category": "고유어",
+"term": "우수리",
+"sense": 2,
+"definition": "일정한 수나 수량에 차고 남는 수나 수량.",
+"example": "한 사람 앞에 5개씩 주었는데도 우수리가 7개나 된다."
+},
+{
+"category": "고유어",
+"term": "으늑하다",
+"definition": "푸근하게 감싸인 듯 편안하고 조용한 느낌이 있다.",
+"example": "으늑한 분위기."
+},
+{
+"category": "고유어",
+"term": "이드거니",
+"definition": "충분한 분량으로 만족스러운 모양.",
+"example": "바쁜 일정 때문에 부족했던 저녁 식사를 모처럼 이드거니 먹었다."
+},
+{
+"category": "고유어",
+"term": "자취",
+"definition": "어떤 것이 남긴 표시나 자리.",
+"example": "자취를 남기다."
+},
+{
+"category": "고유어",
+"term": "잔챙이",
+"sense": 1,
+"definition": "여럿 가운데 가장 작고 품이 낮은 것.",
+"example": "그 많던 고기가 어디 갔는지 월척은커녕 잔챙이조차 낚이지 않는다."
+},
+{
+"category": "고유어",
+"term": "잔챙이",
+"sense": 2,
+"definition": "지지리 못난 사람을 낮잡아 이르는 말."
+},
+{
+"category": "고유어",
+"term": "재주",
+"definition": "어떤 일에 대처하는 방도나 꾀.",
+"example": "그는 위기 상황에서 갖은 재주를 부려 교묘히 빠져나갔다."
+},
+{
+"category": "고유어",
+"term": "추리다",
+"definition": "섞여 있는 것에서 여럿을 뽑아내거나 골라내다.",
+"example": "버려진 것 중에서 쓸 만한 것을 추렸다."
+},
+{
+"category": "고유어",
+"term": "털다",
+"definition": "자기가 가지고 있는 것을 남김없이 내다.",
+"example": "사재를 털다."
+},
+{
+"category": "고유어",
+"term": "푼푼하다",
+"definition": "모자람이 없이 넉넉하다.",
+"example": "먹을 것이 푼푼하다."
+},
+{
+"category": "고유어",
+"term": "한물지다",
+"definition": "채소, 과일, 어물 따위가 한창 나오는 때가 되다."
+},
+{
+"category": "고유어",
+"term": "함함하다",
+"definition": "털이 보드랍고 반지르르하다.",
+"example": "고슴도치도 자기 새끼는 함함하다고 한다.",
+"note": "함함하다01"
+},
+{
+"category": "고유어",
+"term": "허섭스레기",
+"definition": "좋은 것이 빠지고 난 뒤에 남은 허름한 물건.",
+"example": "이삿짐을 싸고 남은 허섭스레기. / 사방에 허섭스레기가 널려 있다.",
+"related": [
+"≒ 허접쓰레기"
+]
+},
+{
+"category": "고유어",
+"term": "허수롭다",
+"definition": "짜임새나 단정함이 없이 느슨한 데가 있다.",
+"example": "무슨 일에나 계획적이었던 그가 그런 것에 허수로울 리가 없다."
+},
+{
+"category": "고유어",
+"term": "호젓하다",
+"sense": 1,
+"definition": "후미져서 무서움을 느낄 만큼 고요하다.",
+"example": "다들 돌아가 버린 호젓한 바닷가에 나 혼자만 남겨졌다."
+},
+{
+"category": "고유어",
+"term": "호젓하다",
+"sense": 2,
+"definition": "매우 홀가분하여 쓸쓸하고 외롭다.",
+"example": "호젓한 시간. / 호젓하게 지내다."
+},
+{
+"category": "고유어",
+"term": "홀몸",
+"definition": "배우자나 형제가 없는 사람.",
+"example": "사고로 아내를 잃고 홀몸이 되었다.",
+"note": "홀몸(배우자·형제 없음) vs 홑몸(딸린 사람 없음/임신하지 않은 몸) 구별"
+},
+{
+"category": "고유어",
+"term": "홑몸",
+"sense": 1,
+"definition": "딸린 사람이 없는 혼자의 몸.",
+"example": "그는 교통사고로 가족을 모두 잃고 홑몸이 되었다.",
+"note": "교재에는 '홀몸'으로 인쇄됨(표준국어대사전 기준 '홑몸'의 뜻). 홀몸(배우자·형제 없음) vs 홑몸 구별"
+},
+{
+"category": "고유어",
+"term": "홑몸",
+"sense": 2,
+"definition": "아이를 배지 아니한 몸.",
+"example": "홑몸도 아닌데 장시간의 여행은 무리다.",
+"note": "교재에는 '홀몸'으로 인쇄됨(표준국어대사전 기준 '홑몸'의 뜻). 홀몸(배우자·형제 없음) vs 홑몸 구별"
+},
+{
+"category": "고유어",
+"term": "화수분",
+"definition": "재물이 계속 나오는 보물단지. 그 안에 온갖 물건을 담아 두면 끝없이 새끼를 쳐 그 내용물이 줄어들지 않는다는 설화상의 단지를 이른다.",
+"example": "전문가들은 불경기에도 매출이 줄지 않는 화수분 같은 사업은 없다고 말했다."
+},
+{
+"category": "고유어",
+"term": "회목",
+"definition": "손목이나 발목의 잘록한 부분.",
+"example": "회목을 잡다."
+},
+{
+"category": "고유어",
+"term": "가시버시",
+"definition": "'부부'를 낮잡아 이르는 말.",
+"note": "교재는 '아내와 남편을 아울러 이르는 말'로 풀이"
+},
+{
+"category": "고유어",
+"term": "도담도담",
+"definition": "어린아이가 탈 없이 잘 놀며 자라는 모양."
+},
+{
+"category": "고유어",
+"term": "비나리",
+"definition": "앞길의 행복을 비는 말."
+},
+{
+"category": "고유어",
+"term": "살갑다",
+"definition": "마음씨가 부드럽고 다정스럽다.",
+"note": "'살가웁다'(×) → '살갑다'(○)"
+},
+{
+"category": "고유어",
+"term": "아스라이",
+"definition": "보기에 아슬아슬할 만큼 높거나 까마득하게 멀게."
+},
+{
+"category": "고유어",
+"term": "안다미로",
+"definition": "담은 것이 그릇에 넘치도록 많이."
+},
+{
+"category": "고유어",
+"term": "자몽하다",
+"definition": "졸릴 때처럼 정신이 흐릿한 상태에 있다."
+},
+{
+"category": "고유어",
+"term": "지망지망하다",
+"definition": "조심성이 없고 가볍다."
+},
+{
+"category": "고유어",
+"term": "희나리",
+"definition": "채 마르지 아니한 장작."
+},
+{
+"category": "고유어",
+"term": "갈음",
+"definition": "다른 것으로 바꾸어 대신함.",
+"example": "이것으로 인사에 갈음합니다.",
+"note": "갈음(대신함) ↔ 가름(나눔, 승부를 정함)"
+},
+{
+"category": "고유어",
+"term": "가멸다",
+"definition": "재산이나 자원 따위가 넉넉하고 많다."
+},
+{
+"category": "고유어",
+"term": "시나브로",
+"definition": "모르는 사이에 조금씩 조금씩."
+},
+{
+"category": "고유어",
+"term": "윤슬",
+"definition": "햇빛이나 달빛에 비치어 반짝이는 잔물결."
+},
+{
+"category": "고유어",
+"term": "미립",
+"definition": "경험을 통하여 얻은 묘한 이치나 요령."
+},
+{
+"category": "고유어",
+"term": "길라잡이",
+"definition": "길을 인도해 주는 사람이나 사물.",
+"related": [
+"= 길잡이"
+]
+},
+{
+"category": "고유어",
+"term": "느루",
+"definition": "한꺼번에 몰아치지 아니하고 오래도록."
+},
+{
+"category": "한자 성어",
+"term": "견강부회",
+"hanja": "牽强附會",
+"definition": "이치에 맞지 않는 말을 억지로 끌어 붙여 자기에게 유리하게 함."
+},
+{
+"category": "한자 성어",
+"term": "곡학아세",
+"hanja": "曲學阿世",
+"definition": "바른 학문을 굽히어 세상 사람들에게 아첨함."
+},
+{
+"category": "한자 성어",
+"term": "교각살우",
+"hanja": "矯角殺牛",
+"definition": "소의 뿔을 바로잡으려다가 소를 죽인다는 뜻으로, 잘못된 점을 고치려다가 그 방법이나 정도가 지나쳐 오히려 일을 그르침을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "수수방관",
+"hanja": "袖手傍觀",
+"definition": "팔짱을 끼고 보고만 있다는 뜻으로, 간섭하거나 거들지 아니하고 그대로 버려둠을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "연목구어",
+"hanja": "緣木求魚",
+"definition": "나무에 올라가서 물고기를 구한다는 뜻으로, 도저히 불가능한 일을 굳이 하려 함을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "고진감래",
+"hanja": "苦盡甘來",
+"definition": "쓴 것이 다하면 단 것이 온다는 뜻으로, 고생 끝에 즐거움이 옴을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "다다익선",
+"hanja": "多多益善",
+"definition": "많으면 많을수록 더욱 좋음."
+},
+{
+"category": "한자 성어",
+"term": "동병상련",
+"hanja": "同病相憐",
+"definition": "같은 병을 앓는 사람끼리 서로 가엾게 여긴다는 뜻으로, 어려운 처지에 있는 사람끼리 서로 가엾게 여김을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "막역지우",
+"hanja": "莫逆之友",
+"definition": "허물이 없이 아주 친한 친구."
+},
+{
+"category": "한자 성어",
+"term": "새옹지마",
+"hanja": "塞翁之馬",
+"definition": "인생의 길흉화복은 변화가 많아서 예측하기가 어렵다는 말."
+},
+{
+"category": "한자 성어",
+"term": "어부지리",
+"hanja": "漁夫之利",
+"definition": "두 사람이 이해관계로 서로 다투는 사이에 엉뚱한 제삼자가 이익을 가로챔을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "온고지신",
+"hanja": "溫故知新",
+"definition": "옛것을 익히고 그것을 미루어서 새것을 앎."
+},
+{
+"category": "한자 성어",
+"term": "유비무환",
+"hanja": "有備無患",
+"definition": "미리 준비가 되어 있으면 걱정할 것이 없음."
+},
+{
+"category": "한자 성어",
+"term": "일취월장",
+"hanja": "日就月將",
+"definition": "나날이 다달이 자라거나 발전함."
+},
+{
+"category": "한자 성어",
+"term": "전화위복",
+"hanja": "轉禍爲福",
+"definition": "재앙과 근심, 걱정이 바뀌어 오히려 복이 됨."
+},
+{
+"category": "한자 성어",
+"term": "조삼모사",
+"hanja": "朝三暮四",
+"definition": "간사한 꾀로 남을 속여 희롱함을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "토사구팽",
+"hanja": "兔死狗烹",
+"definition": "토끼가 죽으면 사냥개를 삶아 먹는다는 뜻으로, 필요할 때는 쓰고 필요 없을 때는 야박하게 버리는 경우를 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "호연지기",
+"hanja": "浩然之氣",
+"definition": "도의에 근거를 두고 굽히지 않고 흔들리지 않는 바르고 큰 마음."
+},
+{
+"category": "한자 성어",
+"term": "결초보은",
+"hanja": "結草報恩",
+"definition": "죽은 뒤에라도 은혜를 잊지 않고 갚음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "과유불급",
+"hanja": "過猶不及",
+"definition": "정도를 지나침은 미치지 못함과 같다는 뜻으로, 중용이 중요함을 이르는 말."
+},
+{
+"category": "관용구",
+"term": "귀가 얇다",
+"definition": "남의 말을 쉽게 받아들인다.",
+"related": [
+"≒ 귀가 가볍다"
+]
+},
+{
+"category": "관용구",
+"term": "귀가 질기다",
+"definition": "둔하여 말귀를 잘 알아듣지 못하다.",
+"note": "교재: 말을 몹시 듣지 아니하다."
+},
+{
+"category": "관용구",
+"term": "눈이 맵다",
+"definition": "성격이 앙칼지다. 또는 눈썰미가 있다."
+},
+{
+"category": "관용구",
+"term": "입이 짧다",
+"definition": "음식을 심하게 가리거나 아주 적게 먹다."
+},
+{
+"category": "관용구",
+"term": "코가 납작해지다",
+"definition": "몹시 무안을 당하거나 기가 죽어 위신이 뚝 떨어지다."
+},
+{
+"category": "속담",
+"term": "간에 붙었다 쓸개에 붙었다 한다",
+"definition": "자기에게 조금이라도 이익이 되면 지조 없이 이편에 붙었다 저편에 붙었다 함을 이르는 말."
+},
+{
+"category": "한자어",
+"term": "간발",
+"hanja": "間髮",
+"definition": "아주 잠시 또는 아주 적음을 이르는 말. 터럭(털)과 터럭 사이라는 뜻.",
+"example": "벌써 그의 가슴으로 간발의 틈을 노린 칼끝이 닿고 있었다."
+},
+{
+"category": "한자어",
+"term": "개재",
+"hanja": "介在",
+"definition": "어떤 것들 사이에 끼여 있음.",
+"example": "이번 협상에는 수많은 변수가 개재되어 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "개정",
+"hanja": "改正",
+"definition": "주로 문서의 내용 따위를 고쳐 바르게 함.",
+"example": "회칙을 개정하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "개정",
+"hanja": "改定",
+"definition": "이미 정하였던 것을 고쳐 다시 정함.",
+"example": "대회 날짜를 개정하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "개정",
+"hanja": "改訂",
+"definition": "글자나 글의 틀린 곳을 고쳐 바로잡음.",
+"example": "원고를 개정하여 출간하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "갱신",
+"hanja": "更新",
+"definition": "「법률」 법률관계의 존속 기간이 끝났을 때 그 기간을 연장하는 일.",
+"example": "계약 갱신. / 비자 갱신."
+},
+{
+"category": "한자어",
+"term": "게재",
+"hanja": "揭載",
+"definition": "글이나 그림 따위를 신문이나 잡지 따위에 실음.",
+"example": "그의 칼럼을 일주일에 한 번 신문에 게재하기로 했다."
+},
+{
+"category": "한자어",
+"term": "결부",
+"hanja": "結付",
+"definition": "일정한 사물이나 현상을 서로 연관시킴.",
+"example": "그 두 문제는 매우 밀접히 결부되어 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "결재",
+"hanja": "決裁",
+"definition": "결정할 권한이 있는 상관이 부하가 제출한 안건을 검토하여 허가하거나 승인함.",
+"example": "결재 서류."
+},
+{
+"category": "혼동 어휘",
+"term": "결제",
+"hanja": "決濟",
+"definition": "「경제」 증권 또는 대금을 주고받아 매매 당사자 사이의 거래 관계를 끝맺는 일.",
+"example": "결제 자금. / 어음의 결제."
+},
+{
+"category": "혼동 어휘",
+"term": "경신",
+"hanja": "更新",
+"sense": 1,
+"definition": "기록경기 따위에서 종전의 기록을 깨뜨림.",
+"example": "마라톤 세계 기록 경신."
+},
+{
+"category": "혼동 어휘",
+"term": "경신",
+"hanja": "更新",
+"sense": 2,
+"definition": "어떤 분야의 종전 최고치나 최저치를 깨뜨림.",
+"example": "무더위로 최대 전력 수요 경신이 계속되고 있다."
+},
+{
+"category": "한자어",
+"term": "계륵",
+"hanja": "鷄肋",
+"sense": 1,
+"definition": "닭의 갈비라는 뜻으로, 그다지 큰 소용은 없으나 버리기에는 아까운 것을 이르는 말.",
+"example": "겨울이 되니 선풍기가 계륵 같은 물건이 되었다."
+},
+{
+"category": "한자어",
+"term": "계륵",
+"hanja": "鷄肋",
+"sense": 2,
+"definition": "몸이 몹시 약한 사람을 비유적으로 이르는 말."
+},
+{
+"category": "한자어",
+"term": "계제",
+"hanja": "階梯",
+"definition": "어떤 일을 할 수 있게 된 형편이나 기회.",
+"example": "지금은 이것저것 가릴 계제가 아니다."
+},
+{
+"category": "한자어",
+"term": "곤혹",
+"hanja": "困惑",
+"definition": "곤란한 일을 당하여 어찌할 바를 모름.",
+"example": "예기치 못한 질문에 곤혹을 느끼다.",
+"note": "전혀 예상하지 못한 질문을 받고 곤욕을 느꼈다.(×) → 전혀 예상하지 못한 질문을 받고 곤혹을 느꼈다.(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "공포",
+"hanja": "公布",
+"definition": "「법률」 이미 확정된 법률, 조약, 명령 따위를 일반 국민에게 널리 알리는 일. 관보(官報) 따위의 정부의 정기 간행물에 게재하여 알린다.",
+"example": "새로 시행할 정책을 전 국민에게 공포했다."
+},
+{
+"category": "혼동 어휘",
+"term": "공표",
+"hanja": "公表",
+"definition": "여러 사람에게 널리 드러내어 알림.",
+"example": "그는 지동설의 정당성을 확인하고 이를 공표하였다.",
+"note": "참고: '공개 발표', '발표'로 순화. / 학회는 새 학설의 공포를 미루기로 결정했다.(×) → 학회는 새 학설의 공표를 미루기로 결정했다.(○)"
+},
+{
+"category": "한자어",
+"term": "관건",
+"hanja": "關鍵",
+"sense": 1,
+"definition": "문빗장과 자물쇠를 아울러 이르는 말.",
+"example": "아무 관건 장치도 없는 방문."
+},
+{
+"category": "한자어",
+"term": "관건",
+"hanja": "關鍵",
+"sense": 2,
+"definition": "어떤 사물이나 문제 해결의 가장 중요한 부분.",
+"example": "문제 해결의 관건을 쥐다."
+},
+{
+"category": "한자어",
+"term": "도탄",
+"hanja": "塗炭",
+"definition": "진구렁에 빠지고 숯불에 탄다는 뜻으로, 몹시 곤궁하여 고통스러운 지경을 이르는 말.",
+"example": "나라에서 심하게 세금을 수탈해 백성들이 도탄에 빠졌다."
+},
+{
+"category": "한자어",
+"term": "동량",
+"hanja": "棟梁/棟樑",
+"sense": 1,
+"definition": "마룻대와 들보를 아울러 이르는 말.",
+"example": "동량을 잘 세워야 집의 균형이 바로잡힌다."
+},
+{
+"category": "한자어",
+"term": "동량",
+"hanja": "棟梁/棟樑",
+"sense": 2,
+"definition": "집안이나 나라를 떠받치는 중대한 일을 맡을 만한 인재.",
+"example": "장차 나라의 동량이 될 어린이들.",
+"related": [
+"= 동량지재"
+]
+},
+{
+"category": "한자어",
+"term": "면목",
+"hanja": "面目",
+"sense": 1,
+"definition": "얼굴의 생김새."
+},
+{
+"category": "한자어",
+"term": "면목",
+"hanja": "面目",
+"sense": 2,
+"definition": "남을 대할 만한 체면.",
+"example": "면목을 세우다. / 무슨 면목으로 부모님을 대하겠는가?",
+"related": [
+"= 낯"
+]
+},
+{
+"category": "한자어",
+"term": "면목",
+"hanja": "面目",
+"sense": 3,
+"definition": "사람이나 사물의 겉모습.",
+"example": "서울은 세계적인 도시의 면목을 지녔다."
+},
+{
+"category": "관용구",
+"term": "면목(이) 없다",
+"definition": "부끄러워 남을 대할 용기가 나지 않다.",
+"example": "약속을 지키지 못해 그를 대할 면목이 없다."
+},
+{
+"category": "한자어",
+"term": "모략",
+"hanja": "謀略",
+"sense": 1,
+"definition": "계책이나 책략.",
+"example": "저번 사건도 그의 모략으로 무사히 넘길 수 있었다."
+},
+{
+"category": "한자어",
+"term": "모략",
+"hanja": "謀略",
+"sense": 2,
+"definition": "사실을 왜곡하거나 속임수를 써 남을 해롭게 함. 또는 그런 일.",
+"example": "모략에 빠지다. / 모략을 꾸미다."
+},
+{
+"category": "한자어",
+"term": "백미",
+"hanja": "白眉",
+"definition": "흰 눈썹이라는 뜻으로, 여럿 가운데에서 가장 뛰어난 사람이나 훌륭한 물건을 비유적으로 이르는 말. 중국 촉한(蜀漢) 때 마씨(馬氏) 다섯 형제가 모두 재주가 있었는데 그중에서도 눈썹 속에 흰 털이 난 마량(馬良)이 가장 뛰어났다는 데서 유래한다.",
+"example": "《춘향전》은 한국 고전 문학의 백미이다."
+},
+{
+"category": "한자어",
+"term": "보전",
+"hanja": "保全",
+"definition": "온전하게 보호하여 유지함.",
+"example": "생태계 보전. / 환경 보전."
+},
+{
+"category": "한자어",
+"term": "비견",
+"hanja": "比肩",
+"definition": "서로 비슷한 위치에서 견줌. 또는 견주어짐.",
+"example": "그는 톨스토이에 비견할 만한 소설가이다."
+},
+{
+"category": "한자어",
+"term": "산실",
+"hanja": "産室",
+"sense": 1,
+"definition": "해산하는 방.",
+"example": "이 병원에는 산실이 모자란다."
+},
+{
+"category": "한자어",
+"term": "산실",
+"hanja": "産室",
+"sense": 2,
+"definition": "어떤 일을 꾸미거나 이루어 내는 곳. 또는 그런 바탕.",
+"example": "우리 연구부를 기술 개발의 산실로 키우겠다."
+},
+{
+"category": "한자어",
+"term": "서광",
+"hanja": "瑞光",
+"sense": 1,
+"definition": "상서로운 빛."
+},
+{
+"category": "한자어",
+"term": "서광",
+"hanja": "瑞光",
+"sense": 2,
+"definition": "좋은 일이 일어날 조짐.",
+"example": "암울한 역사는 가고 이제 서광의 시대가 열릴 것이다."
+},
+{
+"category": "한자어",
+"term": "석권",
+"hanja": "席卷/席捲",
+"definition": "돗자리를 만다는 뜻으로, 빠른 기세로 영토를 휩쓸거나 세력 범위를 넓힘을 이르는 말.",
+"example": "이번 대회에는 기량이 월등한 선수들만 참가하므로 전 종목 석권이 가능하다."
+},
+{
+"category": "한자어",
+"term": "수리",
+"hanja": "修理",
+"definition": "고장 나거나 허름한 데를 손보아 고침.",
+"example": "그는 물이 새는 낡은 집을 수리하기 위해 준비를 하고 있었다."
+},
+{
+"category": "한자어",
+"term": "숙환",
+"hanja": "宿患",
+"sense": 1,
+"definition": "오래 묵은 병.",
+"example": "아버님께서는 숙환으로 고생하시다가 별세하셨다."
+},
+{
+"category": "한자어",
+"term": "숙환",
+"hanja": "宿患",
+"sense": 2,
+"definition": "오래된 걱정거리."
+},
+{
+"category": "한자어",
+"term": "슬하",
+"hanja": "膝下",
+"definition": "무릎의 아래라는 뜻으로, 어버이나 조부모의 보살핌 아래. 주로 부모의 보호를 받는 테두리 안을 이른다.",
+"example": "슬하에 자녀는 몇이나 두었소?"
+},
+{
+"category": "한자어",
+"term": "아성",
+"hanja": "牙城",
+"sense": 1,
+"definition": "아기(牙旗)를 세운 성이라는 뜻으로, 주장(主將)이 거처하는 성을 이르던 말."
+},
+{
+"category": "한자어",
+"term": "아성",
+"hanja": "牙城",
+"sense": 2,
+"definition": "아주 중요한 근거지를 비유적으로 이르는 말.",
+"example": "수십 년 쌓아 온 그의 아성을 무너뜨릴 수는 없었다."
+},
+{
+"category": "한자어",
+"term": "염치",
+"hanja": "廉恥",
+"definition": "체면을 차릴 줄 알며 부끄러움을 아는 마음.",
+"example": "예의와 염치에 어긋나다."
+},
+{
+"category": "한자어",
+"term": "와중",
+"hanja": "渦中",
+"definition": "(흔히 '와중에' 꼴로 쓰여) 일이나 사건 따위가 시끄럽고 복잡하게 벌어지는 가운데.",
+"example": "많은 사람이 전란의 와중에 가족을 잃었다.",
+"note": "조용한 와중에(×)"
+},
+{
+"category": "한자어",
+"term": "완벽",
+"hanja": "完璧",
+"definition": "흠이 없는 구슬이라는 뜻으로, 결함이 없이 완전함을 이르는 말.",
+"example": "완벽에 가까운 묘기. / 행사 준비에 완벽을 기하다."
+},
+{
+"category": "한자어",
+"term": "유례",
+"hanja": "類例",
+"sense": 1,
+"definition": "같거나 비슷한 예.",
+"example": "그들의 잔혹한 통치 정책은 세계에서 유례를 찾기 힘든 것이다."
+},
+{
+"category": "한자어",
+"term": "유례",
+"hanja": "類例",
+"sense": 2,
+"definition": "이전부터 있었던 사례.",
+"example": "역사상 유례가 없는 이변. / 유례를 찾아볼 수 없는 호황.",
+"related": [
+"= 전례(前例)"
+]
+},
+{
+"category": "한자어",
+"term": "자청",
+"hanja": "自請",
+"definition": "어떤 일에 나서기를 스스로 청함.",
+"example": "그는 그 일을 맡겠다고 자청을 하고 나섰다. / 기자 회견을 자청하다."
+},
+{
+"category": "한자어",
+"term": "장족",
+"hanja": "長足",
+"sense": 1,
+"definition": "기다랗게 생긴 다리."
+},
+{
+"category": "한자어",
+"term": "장족",
+"hanja": "長足",
+"sense": 2,
+"definition": "('장족의', '장족으로' 꼴로 쓰여) 사물의 발전이나 진행이 매우 빠름.",
+"example": "장족의 발전. / 그의 독일어 실력은 장족으로 진보했다."
+},
+{
+"category": "혼동 어휘",
+"term": "재연",
+"hanja": "再演",
+"sense": 1,
+"definition": "연극이나 영화 따위를 다시 상연하거나 상영함.",
+"example": "그 연극은 공연이 금지된 지 삼 년 만에 재연되고 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "재연",
+"hanja": "再演",
+"sense": 2,
+"definition": "한 번 하였던 행위나 일을 다시 되풀이함.",
+"example": "최악의 사태가 재연되고야 말았다. / 현장 검증에 나선 범인은 태연히 범행을 재연했다."
+},
+{
+"category": "혼동 어휘",
+"term": "재연",
+"hanja": "再燃",
+"sense": 1,
+"definition": "꺼졌던 불이 다시 탐.",
+"example": "산불을 겨우 진압하기는 했으나 재연을 경계해야 한다."
+},
+{
+"category": "혼동 어휘",
+"term": "재연",
+"hanja": "再燃",
+"sense": 2,
+"definition": "한동안 잠잠하던 일이 다시 문제가 되어 시끄러워짐.",
+"example": "일이 이렇게 된 이상 그 문제의 재연은 이제 막을 수가 없다."
+},
+{
+"category": "한자어",
+"term": "진수",
+"hanja": "眞髓",
+"definition": "사물이나 현상의 가장 중요하고 본질적인 부분.",
+"example": "이번 연주회에서는 바흐 음악의 진수를 맛볼 수 있었다."
+},
+{
+"category": "한자어",
+"term": "추호",
+"hanja": "秋毫",
+"sense": 1,
+"definition": "가을철에 털갈이하여 새로 돋아난 짐승의 가는 털."
+},
+{
+"category": "한자어",
+"term": "추호",
+"hanja": "秋毫",
+"sense": 2,
+"definition": "매우 적거나 조금인 것을 비유적으로 이르는 말.",
+"example": "내 말에는 추호의 거짓도 없다."
+},
+{
+"category": "한자어",
+"term": "회자",
+"hanja": "膾炙",
+"definition": "회와 구운 고기라는 뜻으로, 칭찬을 받으며 사람의 입에 자주 오르내림을 이르는 말.",
+"example": "그 노래는 오늘날까지 많은 사람 사이에 널리 회자되고 있다."
+},
+{
+"category": "한자어",
+"term": "희사",
+"hanja": "喜捨",
+"sense": 1,
+"definition": "어떤 목적을 위하여 기꺼이 돈이나 물건을 내놓음.",
+"example": "한 독지가의 희사로 고아원이 운영되어 왔다."
+},
+{
+"category": "한자어",
+"term": "희사",
+"hanja": "喜捨",
+"sense": 2,
+"definition": "신불(神佛)의 일로 돈이나 물건을 기부함.",
+"example": "신도들이 절 증축에 필요한 자금을 절에 희사하였다."
+},
+{
+"category": "한자어",
+"term": "가공",
+"hanja": "架空",
+"sense": 1,
+"definition": "어떤 시설물을 공중에 가설함."
+},
+{
+"category": "한자어",
+"term": "가공",
+"hanja": "架空",
+"sense": 2,
+"definition": "이유나 근거가 없이 꾸며 냄. 또는 사실이 아니고 거짓이나 상상으로 꾸며 냄.",
+"example": "가공의 세계. / 가공의 인물. / 해태는 가공의 동물이다."
+},
+{
+"category": "한자어",
+"term": "가관",
+"hanja": "可觀",
+"sense": 1,
+"definition": "경치 따위가 꽤 볼만함.",
+"example": "내장산의 단풍은 참으로 가관이지."
+},
+{
+"category": "한자어",
+"term": "가관",
+"hanja": "可觀",
+"sense": 2,
+"definition": "꼴이 볼만하다는 뜻으로, 남의 언행이나 어떤 상태를 비웃는 뜻으로 이르는 말.",
+"example": "잘난 체하는 꼴이 정말 가관이다."
+},
+{
+"category": "한자어",
+"term": "각서",
+"hanja": "覺書",
+"definition": "약속을 지키겠다는 내용을 적은 문서.",
+"example": "그는 다시는 술을 안 마시겠다는 각서를 쓰고 겨우 용서를 받았다."
+},
+{
+"category": "한자어",
+"term": "각축",
+"hanja": "角逐",
+"definition": "서로 이기려고 다투며 덤벼듦.",
+"example": "10여 개의 팀이 우승을 놓고 각축을 벌였다."
+},
+{
+"category": "한자어",
+"term": "간과하다",
+"hanja": "看過",
+"definition": "큰 관심 없이 대강 보아 넘기다.",
+"example": "나는 그 사실을 결코 간과하지 않았다."
+},
+{
+"category": "한자어",
+"term": "간주",
+"hanja": "看做",
+"definition": "상태, 모양, 성질 따위가 그와 같다고 봄. 또는 그렇다고 여김.",
+"example": "위험한 인물로 간주되다. / 훌륭한 작품으로 간주되다."
+},
+{
+"category": "한자어",
+"term": "간파",
+"hanja": "看破",
+"definition": "속내를 꿰뚫어 알아차림.",
+"example": "상대의 약점을 간파하다."
+},
+{
+"category": "한자어",
+"term": "감퇴",
+"hanja": "減退",
+"definition": "기운이나 세력 따위가 줄어 쇠퇴함.",
+"example": "식욕 감퇴. / 시력 감퇴. / 의욕 감퇴. / 기억력 감퇴."
+},
+{
+"category": "한자어",
+"term": "강구",
+"hanja": "講究",
+"definition": "좋은 대책과 방법을 궁리하여 찾아내거나 좋은 대책을 세움.",
+"example": "대책 강구."
+},
+{
+"category": "한자어",
+"term": "강등",
+"hanja": "降等",
+"definition": "등급이나 계급 따위가 낮아짐. 또는 등급이나 계급 따위를 낮춤.",
+"example": "그가 중령에서 소령으로 강등된 것은 충격적이었다."
+},
+{
+"category": "한자어",
+"term": "강변",
+"hanja": "強辯",
+"definition": "이치에 닿지 아니한 것을 끝까지 굽히지 않고 주장하거나 변명함.",
+"example": "그는 말도 안 되는 논리로 자기 행동의 타당성을 강변했다."
+},
+{
+"category": "한자어",
+"term": "개관",
+"hanja": "槪觀",
+"definition": "전체를 대강 살펴봄. 또는 그런 것.",
+"example": "국문학사의 개관."
+},
+{
+"category": "한자어",
+"term": "객기",
+"hanja": "客氣",
+"definition": "객쩍게 부리는 혈기(血氣)나 용기.",
+"example": "객기를 부리다."
+},
+{
+"category": "한자어",
+"term": "거치",
+"hanja": "据置",
+"definition": "「경제」 공채(公債), 사채(社債) 따위의 상환 또는 지급을 일정 기간 하지 않는 일.",
+"example": "3년 거치 5년 상환 조건으로 돈을 융자하다."
+},
+{
+"category": "한자어",
+"term": "건재",
+"hanja": "健在",
+"definition": "힘이나 능력이 줄어들지 않고 여전히 그대로 있음.",
+"example": "그의 건재는 학계에 커다란 힘이 되었다."
+},
+{
+"category": "한자어",
+"term": "검수",
+"hanja": "檢收",
+"definition": "물건의 규격, 수량, 품질 따위를 검사한 후 물건을 받음.",
+"example": "검수 기간. / 검수 절차."
+},
+{
+"category": "한자어",
+"term": "검침",
+"hanja": "檢針",
+"definition": "전기, 수도, 가스 따위의 사용량을 알기 위하여 계량기의 숫자를 검사함.",
+"example": "수돗물 검침이 잘못되어 요금이 많이 나왔다."
+},
+{
+"category": "한자어",
+"term": "결연",
+"hanja": "結緣",
+"definition": "인연을 맺음. 또는 그런 관계.",
+"example": "의료 기관과 양로원의 결연을 추진했다. / 많은 결연 단체가 복지 시설을 후원한다."
+},
+{
+"category": "한자어",
+"term": "결의",
+"hanja": "決意",
+"definition": "뜻을 정하여 굳게 마음을 먹음. 또는 그런 마음.",
+"example": "굳은 결의. / 필승의 결의를 다지다."
+},
+{
+"category": "한자어",
+"term": "경과",
+"hanja": "經過",
+"sense": 1,
+"definition": "시간이 지나감.",
+"example": "시일의 경과. / 십 분 경과."
+},
+{
+"category": "한자어",
+"term": "경과",
+"hanja": "經過",
+"sense": 2,
+"definition": "어떤 단계나 시기, 장소를 거침.",
+"example": "늪지대의 경과. / 유년기의 경과."
+},
+{
+"category": "한자어",
+"term": "경과",
+"hanja": "經過",
+"sense": 3,
+"definition": "일이 되어 가는 과정.",
+"example": "사건 경과. / 경과를 묻다. / 경과를 듣다."
+},
+{
+"category": "한자어",
+"term": "경륜",
+"hanja": "經綸",
+"definition": "일정한 포부를 가지고 일을 조직적으로 계획함. 또는 그 계획이나 포부.",
+"example": "경륜이 있는 사람. / 경륜을 품다."
+},
+{
+"category": "한자어",
+"term": "경색",
+"hanja": "梗塞",
+"definition": "소통되지 못하고 막힘.",
+"example": "이번 조치는 금융 시장의 경색을 초래했다."
+},
+{
+"category": "한자어",
+"term": "경선",
+"hanja": "競選",
+"definition": "둘 이상의 후보가 경쟁하는 선거.",
+"example": "대통령 후보 경선에 나서다."
+},
+{
+"category": "한자어",
+"term": "경시",
+"hanja": "輕視",
+"definition": "대수롭지 않게 보거나 업신여김.",
+"example": "한동안 고유의 전통문화가 경시되기도 했다."
+},
+{
+"category": "한자어",
+"term": "경주",
+"hanja": "傾注",
+"definition": "힘이나 정신을 한곳에만 기울임.",
+"example": "좋은 결과를 거둘 수 있도록 그 일에 최선의 노력이 경주되어야 한다."
+},
+{
+"category": "한자어",
+"term": "경질",
+"hanja": "更迭/更佚",
+"definition": "어떤 직위에 있는 사람을 다른 사람으로 바꿈.",
+"example": "김 부장은 회사 내의 자금 문제로 물의를 일으켜 인사에서 경질되었다."
+},
+{
+"category": "한자어",
+"term": "계류",
+"hanja": "繫留",
+"sense": 1,
+"definition": "일정한 곳을 벗어나지 못하도록 밧줄 같은 것으로 붙잡아 매어 놓음."
+},
+{
+"category": "한자어",
+"term": "계류",
+"hanja": "繫留",
+"sense": 2,
+"definition": "어떤 사건이 해결되지 않고 걸려 있음.",
+"example": "그 사건은 법원에 계류 중이다."
+},
+{
+"category": "한자어",
+"term": "계시",
+"hanja": "啓示",
+"sense": 1,
+"definition": "깨우쳐 보여 줌."
+},
+{
+"category": "한자어",
+"term": "계시",
+"hanja": "啓示",
+"sense": 2,
+"definition": "「종교 일반」 사람의 지혜로써는 알 수 없는 진리를 신(神)이 가르쳐 알게 함.",
+"example": "그녀는 본인이 부처의 계시를 받았다고 주장했다."
+},
+{
+"category": "한자어",
+"term": "고견",
+"hanja": "高見",
+"sense": 1,
+"definition": "뛰어난 의견이나 생각.",
+"example": "그 사람의 정치적 판단은 당시의 고견이었다."
+},
+{
+"category": "한자어",
+"term": "고견",
+"hanja": "高見",
+"sense": 2,
+"definition": "남의 의견을 높여 이르는 말.",
+"example": "이번 안건에 대한 선생님의 고견을 듣고 싶습니다."
+},
+{
+"category": "한자어",
+"term": "고소",
+"hanja": "苦笑",
+"definition": "어이가 없거나 마지못하여 짓는 웃음.",
+"example": "고소를 금치 못하다. / 고소를 띠다.",
+"related": [
+"= 쓴웃음"
+]
+},
+{
+"category": "한자어",
+"term": "고시",
+"hanja": "告示",
+"definition": "글로 써서 게시하여 널리 알림. 주로 행정 기관에서 일반 국민들을 대상으로 어떤 내용을 알리는 경우를 이른다.",
+"example": "문화 관광부 고시. / 이 지역은 택지 개발 예정 지구로 고시되어 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "고적",
+"hanja": "孤寂",
+"definition": "외롭고 쓸쓸함.",
+"example": "이국땅에서 고적을 느끼며 살아온 동포들은 고향 땅을 밟는 순간 눈물을 터뜨렸다."
+},
+{
+"category": "혼동 어휘",
+"term": "고적",
+"hanja": "鼓笛",
+"definition": "북과 피리를 아울러 이르는 말.",
+"example": "고적 소리가 점점 가까이 들렸다."
+},
+{
+"category": "한자어",
+"term": "고증",
+"hanja": "考證",
+"definition": "예전에 있던 사물들의 시대, 가치, 내용 따위를 옛 문헌이나 물건에 기초하여 증거를 세워 이론적으로 밝힘.",
+"example": "왕궁이 철저한 문헌의 고증을 통해 복원되었다."
+},
+{
+"category": "한자어",
+"term": "고착",
+"hanja": "固着",
+"sense": 1,
+"definition": "물건 같은 것이 굳게 들러붙어 있음."
+},
+{
+"category": "한자어",
+"term": "고착",
+"hanja": "固着",
+"sense": 2,
+"definition": "어떤 상황이나 현상이 굳어져 변하지 않음.",
+"example": "분단의 고착을 막고 통일을 앞당기려는 노력이 필요하다."
+},
+{
+"category": "한자어",
+"term": "고찰",
+"hanja": "考察",
+"definition": "어떤 것을 깊이 생각하고 연구함.",
+"example": "한국 문학에 대한 새로운 고찰."
+},
+{
+"category": "한자어",
+"term": "곡진하다",
+"hanja": "曲盡",
+"sense": 1,
+"definition": "매우 정성스럽다.",
+"example": "곡진한 사랑. / 대접이 곡진하다."
+},
+{
+"category": "한자어",
+"term": "곡진하다",
+"hanja": "曲盡",
+"sense": 2,
+"definition": "매우 자세하고 간곡하다.",
+"example": "곡진한 사연. / 자네가 그만큼 곡진한 말로 동생을 타일렀는데도 말을 듣지 않으니 이제 포기하게."
+},
+{
+"category": "한자어",
+"term": "공방",
+"hanja": "攻防",
+"definition": "서로 공격하고 방어함.",
+"example": "공방이 치열하다."
+},
+{
+"category": "한자어",
+"term": "공상",
+"hanja": "空想",
+"definition": "현실적이지 못하거나 실현될 가망이 없는 것을 막연히 그리어 봄. 또는 그런 생각.",
+"example": "공상에 빠지다. / 공상에 잠기다."
+},
+{
+"category": "한자어",
+"term": "공전",
+"hanja": "空前",
+"definition": "(주로 '공전의' 꼴로 쓰여) 비교할 만한 것이 이전에는 없음.",
+"example": "공전의 대성공. / 공전의 히트."
+},
+{
+"category": "한자어",
+"term": "공활하다",
+"hanja": "空豁",
+"definition": "텅 비고 매우 넓다.",
+"example": "공활한 가을 하늘."
+},
+{
+"category": "한자어",
+"term": "관측",
+"hanja": "觀測",
+"definition": "어떤 사정이나 형편 따위를 잘 살펴보고 그 장래를 헤아림.",
+"example": "내년부터는 경기가 회복기에 접어들 것이라는 희망적인 관측이 나오고 있다."
+},
+{
+"category": "한자어",
+"term": "괘념",
+"hanja": "掛念",
+"definition": "마음에 두고 걱정하거나 잊지 않음.",
+"example": "대수로운 일도 아니니 너무 괘념 마시고 마음 편히 가지십시오."
+},
+{
+"category": "한자어",
+"term": "교시",
+"hanja": "敎示",
+"sense": 1,
+"definition": "가르쳐서 보임.",
+"example": "승려는 신도들에게 여러 가지 지혜를 교시하였다."
+},
+{
+"category": "한자어",
+"term": "교시",
+"hanja": "敎示",
+"sense": 2,
+"definition": "길잡이로 삼는 가르침.",
+"example": "그러나 일이 너무 중요하기에 접주님의 교시를 받고자 찾아왔습니다."
+},
+{
+"category": "한자어",
+"term": "교정",
+"hanja": "校訂",
+"definition": "남의 문장 또는 출판물의 잘못된 글자나 글귀 따위를 바르게 고침."
+},
+{
+"category": "한자어",
+"term": "교착",
+"hanja": "膠着",
+"sense": 1,
+"definition": "아주 단단히 달라붙음."
+},
+{
+"category": "한자어",
+"term": "교착",
+"hanja": "膠着",
+"sense": 2,
+"definition": "어떤 상태가 굳어 조금도 변동이나 진전이 없이 머묾.",
+"example": "회담이 교착 상태에 빠지다."
+},
+{
+"category": "한자어",
+"term": "구금",
+"hanja": "拘禁",
+"definition": "「법률」 피고인 또는 피의자를 구치소나 교도소 따위에 가두어 신체의 자유를 구속하는 강제 처분.",
+"example": "구치소에 구금되다."
+},
+{
+"category": "한자어",
+"term": "구명",
+"hanja": "究明",
+"definition": "사물의 본질, 원인 따위를 깊이 연구하여 밝힘.",
+"example": "고대 유물 문제의 구명에서 중요한 것은 객관적인 자료의 뒷받침이다."
+},
+{
+"category": "한자어",
+"term": "구분",
+"hanja": "區分",
+"definition": "일정한 기준에 따라 전체를 몇 개로 갈라 나눔.",
+"example": "구분을 짓다. / 서정시와 서사시의 구분은 상대적일 뿐이다."
+},
+{
+"category": "한자어",
+"term": "구비",
+"hanja": "具備",
+"definition": "있어야 할 것을 빠짐없이 다 갖춤.",
+"example": "구비 서류. / 구비 조건."
+},
+{
+"category": "한자어",
+"term": "구제",
+"hanja": "救濟",
+"definition": "자연적인 재해나 사회적인 피해를 당하여 어려운 처지에 있는 사람을 도와줌.",
+"example": "난민 구제."
+},
+{
+"category": "한자어",
+"term": "구조",
+"hanja": "構造",
+"definition": "부분이나 요소가 어떤 전체를 짜 이룸. 또는 그렇게 이루어진 얼개.",
+"example": "가옥 구조. / 권력 구조. / 이 제품은 구조가 간단하다."
+},
+{
+"category": "한자어",
+"term": "구현",
+"hanja": "具現/具顯",
+"definition": "어떤 내용이 구체적인 사실로 나타나게 함.",
+"example": "민주주의의 구현. / 정의 구현."
+},
+{
+"category": "한자어",
+"term": "국한되다",
+"hanja": "局限",
+"definition": "범위가 일정한 부분에 한정되다.",
+"example": "오염 문제는 이제 도시에만 국한된 것이 아니다."
+},
+{
+"category": "한자어",
+"term": "굴지",
+"hanja": "屈指",
+"definition": "(흔히 '굴지의' 꼴로 쓰여) 매우 뛰어나 수많은 가운데서 손꼽힘.",
+"example": "국내 굴지의 대학."
+},
+{
+"category": "한자어",
+"term": "궐위",
+"hanja": "闕位",
+"definition": "어떤 직위나 관직 따위가 빔. 또는 그런 자리.",
+"example": "대통령의 궐위 시에는 국무총리가 그 직을 대행한다."
+},
+{
+"category": "한자어",
+"term": "궤변",
+"hanja": "詭辯",
+"definition": "「철학」 상대편을 이론으로 이기기 위하여 상대편의 사고(思考)를 혼란시키거나 감정을 격앙시켜 거짓을 참인 것처럼 꾸며 대는 논법."
+},
+{
+"category": "한자어",
+"term": "귀착",
+"hanja": "歸着",
+"definition": "의논이나 의견 따위가 여러 경로(經路)를 거쳐 어떤 결론에 다다름.",
+"example": "삶의 목표가 돈벌이로 귀착되는 것은 서글픈 일이다."
+},
+{
+"category": "한자어",
+"term": "규탄",
+"hanja": "糾彈",
+"definition": "잘못이나 옳지 못한 일을 잡아내어 따지고 나무람.",
+"example": "시민들은 광장에 모여 관계 당국이 약속을 어겼음을 규탄하였다."
+},
+{
+"category": "한자어",
+"term": "금도",
+"hanja": "襟度",
+"definition": "다른 사람을 포용할 만한 도량.",
+"example": "병사들은 장군의 장수다운 배포와 금도에 감격하였다."
+},
+{
+"category": "한자어",
+"term": "금자탑",
+"hanja": "金字塔",
+"sense": 1,
+"definition": "'金' 자 모양의 탑이라는 뜻으로, 피라미드를 이르던 말."
+},
+{
+"category": "한자어",
+"term": "금자탑",
+"hanja": "金字塔",
+"sense": 2,
+"definition": "길이 후세에 남을 뛰어난 업적을 비유적으로 이르는 말.",
+"example": "금자탑을 세우다. / 금자탑을 쌓다."
+},
+{
+"category": "한자어",
+"term": "금침",
+"hanja": "衾枕",
+"definition": "이부자리와 베개를 아울러 이르는 말."
+},
+{
+"category": "한자어",
+"term": "기거",
+"hanja": "起居",
+"sense": 1,
+"definition": "일정한 곳에서 먹고 자고 하는 따위의 일상적인 생활을 함. 또는 그 생활.",
+"example": "기거 양식. / 나는 대학 시절에 자취방에서 기거하였다."
+},
+{
+"category": "한자어",
+"term": "기거",
+"hanja": "起居",
+"sense": 2,
+"definition": "앉아 있다가 손님을 영접하려고 일어섬."
+},
+{
+"category": "한자어",
+"term": "기거",
+"hanja": "起居",
+"sense": 3,
+"definition": "몸을 뜻대로 움직이며 생활함.",
+"example": "아버지는 지난봄 낙상하신 후 기거가 불편하시다."
+},
+{
+"category": "한자어",
+"term": "기고하다",
+"hanja": "起稿",
+"definition": "원고를 쓰기 시작하다.",
+"example": "그 소설을 기고한 지 3개월 만에 탈고하였다."
+},
+{
+"category": "한자어",
+"term": "기량",
+"hanja": "技倆/伎倆",
+"definition": "기술상의 재주.",
+"example": "기량을 연마하다. / 예술적 기량이 뛰어나다."
+},
+{
+"category": "한자어",
+"term": "기부",
+"hanja": "寄附",
+"definition": "자선 사업이나 공공사업을 돕기 위하여 돈이나 물건 따위를 대가 없이 내놓음.",
+"example": "구두쇠가 장학금 기부를 약속하다니 믿을 수 없는 일이다."
+},
+{
+"category": "한자어",
+"term": "기색",
+"hanja": "氣色",
+"sense": 1,
+"definition": "마음의 작용으로 얼굴에 드러나는 빛.",
+"example": "어머니는 놀란 기색이 역력했다."
+},
+{
+"category": "한자어",
+"term": "기색",
+"hanja": "氣色",
+"sense": 2,
+"definition": "어떠한 행동이나 현상 따위가 일어나는 것을 짐작할 수 있게 하여 주는 눈치나 낌새.",
+"example": "해가 중천에 떴는데도 형은 일어날 기색을 보이지 않는다."
+},
+{
+"category": "한자어",
+"term": "기술",
+"hanja": "記述",
+"definition": "대상이나 과정의 내용과 특징을 있는 그대로 열거하거나 기록하여 서술함. 또는 그런 기록.",
+"example": "사회학자는 그 사회의 현상, 구조, 변동 따위에 대하여 적합한 기술을 할 수 있어야 한다. / 이 역사책은 사료에 대한 객관적인 기술로 유명하다."
+},
+{
+"category": "한자어",
+"term": "기실",
+"hanja": "其實",
+"sense": 1,
+"definition": "(주로 '기실은' 꼴로 쓰여) 실제의 사정.",
+"example": "언뜻 보기에는 쉬워 보이지만 기실은 여간 어렵지 않다.",
+"note": "참고: '사실은', '실제 사정'으로 순화."
+},
+{
+"category": "한자어",
+"term": "기실",
+"hanja": "其實",
+"sense": 2,
+"definition": "실제에 있어서.",
+"example": "기실 알고 보면 그 사람도 나쁜 사람은 아니다."
+},
+{
+"category": "한자어",
+"term": "기우",
+"hanja": "杞憂",
+"definition": "앞일에 대해 쓸데없는 걱정을 함. 또는 그 걱정.",
+"example": "기우에 불과하다."
+},
+{
+"category": "한자어",
+"term": "기탄",
+"hanja": "忌憚",
+"definition": "어렵게 여겨 꺼림.",
+"example": "그는 아무런 기탄이 없이 말을 이었다."
+},
+{
+"category": "한자어",
+"term": "기한",
+"hanja": "期限",
+"sense": 1,
+"definition": "미리 한정하여 놓은 시기.",
+"example": "납품 기한. / 서류 제출 기한은 다음 달 10일까지입니다."
+},
+{
+"category": "한자어",
+"term": "기한",
+"hanja": "期限",
+"sense": 2,
+"definition": "어느 때까지를 기약함.",
+"example": "언니에게 석 달을 기한하고 돈을 빌렸다."
+},
+{
+"category": "한자어",
+"term": "난관",
+"hanja": "難關",
+"definition": "일을 하여 나가면서 부딪치는 어려운 고비.",
+"example": "난관에 봉착하다. / 난관에 부딪치다."
+},
+{
+"category": "한자어",
+"term": "난삽하다",
+"hanja": "難澁",
+"definition": "글이나 말이 매끄럽지 못하면서 어렵고 까다롭다.",
+"example": "난삽한 문장. / 글이 난삽하다."
+},
+{
+"category": "한자어",
+"term": "납량",
+"hanja": "納涼",
+"definition": "여름철에 더위를 피하여 서늘한 기운을 느낌.",
+"example": "납량 특집극."
+},
+{
+"category": "한자어",
+"term": "낭보",
+"hanja": "朗報",
+"definition": "기쁜 기별이나 소식.",
+"example": "세계 선수권 대회에서 우리나라 농구 팀이 우승했다는 낭보가 전해졌다."
+},
+{
+"category": "한자어",
+"term": "낭패",
+"hanja": "狼狽",
+"definition": "계획한 일이 실패로 돌아가거나 기대에 어긋나 매우 딱하게 됨.",
+"example": "낭패를 당하다. / 벌써 기차가 떠났다니, 이것 참 낭패로군."
+},
+{
+"category": "한자어",
+"term": "냉소",
+"hanja": "冷笑",
+"definition": "쌀쌀한 태도로 비웃음. 또는 그런 웃음.",
+"example": "냉소를 머금다. / 냉소를 짓다. / 냉소에 찬 목소리."
+},
+{
+"category": "한자어",
+"term": "노략",
+"hanja": "擄掠",
+"definition": "떼를 지어 돌아다니며 사람을 해치거나 재물을 강제로 빼앗음.",
+"example": "섬사람들은 툭하면 왜구에게 노략을 당하였다."
+},
+{
+"category": "한자어",
+"term": "노파",
+"hanja": "老婆",
+"definition": "늙은 여자.",
+"example": "노파가 지팡이를 짚고 길을 건넌다."
+},
+{
+"category": "한자어",
+"term": "논고",
+"hanja": "論告",
+"definition": "자기의 주장이나 믿는 바를 논술하여 알림.",
+"example": "논고를 펼치다. / 그의 논고는 타당하나 몇 가지 오류가 있다."
+},
+{
+"category": "한자어",
+"term": "농단",
+"hanja": "壟斷/隴斷",
+"definition": "이익이나 권리를 독차지함을 이르는 말.",
+"example": "탐관오리들이 나랏돈을 농단한다며 백성들의 원성이 높았다."
+},
+{
+"category": "한자어",
+"term": "누락",
+"hanja": "漏落",
+"definition": "기입되어야 할 것이 기록에서 빠짐. 또는 그렇게 되게 함.",
+"example": "명부에 누락이 생기다. / 행여나 장부에 누락이 생기지 않도록 철저히 점검해라."
+},
+{
+"category": "한자어",
+"term": "누적",
+"hanja": "累積",
+"definition": "포개어 여러 번 쌓음. 또는 포개져 여러 번 쌓임.",
+"example": "누적된 피로. / 불만이 누적되다. / 외채가 누적되다."
+},
+{
+"category": "한자어",
+"term": "단연",
+"hanja": "斷然",
+"definition": "확실히 단정할 만하게.",
+"example": "개인기로 보나 체력으로 보나 우리 편이 단연 앞선다."
+},
+{
+"category": "한자어",
+"term": "담합",
+"hanja": "談合",
+"sense": 1,
+"definition": "서로 의논하여 합의함.",
+"example": "그들 사이엔 이미 모종의 담합이 있었다.",
+"note": "참고: '짬짜미'로 순화."
+},
+{
+"category": "한자어",
+"term": "담합",
+"hanja": "談合",
+"sense": 2,
+"definition": "「법률」 경매 입찰을 할 때에 입찰 참가자가 서로 의논하여 미리 입찰 가격이나 낙찰자 따위를 정하는 일."
+},
+{
+"category": "한자어",
+"term": "답습",
+"hanja": "踏襲",
+"definition": "예로부터 해 오던 방식이나 수법을 좇아 그대로 행함.",
+"example": "전통의 계승과 답습을 혼동해서는 안 된다."
+},
+{
+"category": "한자어",
+"term": "당돌",
+"hanja": "撞突",
+"definition": "서로 맞부딪치거나 맞섬.",
+"related": [
+"= 충돌"
+]
+},
+{
+"category": "한자어",
+"term": "대응",
+"hanja": "對應",
+"definition": "어떤 일이나 사태에 맞추어 태도나 행동을 취함.",
+"example": "급변하는 사태에 대한 신속한 대응이 필요하다."
+},
+{
+"category": "한자어",
+"term": "덕분",
+"hanja": "德分",
+"definition": "베풀어 준 은혜나 도움.",
+"example": "선생님 덕분에 대학 생활을 무사히 마칠 수 있었습니다."
+},
+{
+"category": "한자어",
+"term": "도저하다",
+"hanja": "到底",
+"definition": "학식이나 생각, 기술 따위가 아주 깊다.",
+"example": "학문이 도저하다."
+},
+{
+"category": "한자어",
+"term": "도태되다",
+"hanja": "淘汰/陶汰",
+"sense": 1,
+"definition": "물건 따위가 물속에서 일어져 좋은 것만 골라지고 불필요한 것이 가려져서 버려지다."
+},
+{
+"category": "한자어",
+"term": "도태되다",
+"hanja": "淘汰/陶汰",
+"sense": 2,
+"definition": "여럿 중에서 불필요하거나 무능한 것이 줄어 없어지다.",
+"example": "우리는 치열한 경쟁 사회에서 도태되지 않도록 열심히 살아야 한다."
+},
+{
+"category": "한자어",
+"term": "독창",
+"hanja": "獨創",
+"definition": "다른 것을 모방함이 없이 새로운 것을 처음으로 만들어 내거나 생각해 냄."
+},
+{
+"category": "한자어",
+"term": "돌연",
+"hanja": "突然",
+"definition": "예기치 못한 사이에 급히.",
+"example": "그때 나는 예상 못했던 일과 돌연 마주치게 되었다."
+},
+{
+"category": "한자어",
+"term": "돌출",
+"hanja": "突出",
+"sense": 1,
+"definition": "예기치 못하게 갑자기 쑥 나오거나 불거짐.",
+"example": "돌출 발언."
+},
+{
+"category": "한자어",
+"term": "돌출",
+"hanja": "突出",
+"sense": 2,
+"definition": "쑥 내밀거나 불거져 있음.",
+"example": "돌출 고지. / 이번에 발견된 화석은 광대뼈의 돌출이 없었다."
+},
+{
+"category": "한자어",
+"term": "동결",
+"hanja": "凍結",
+"sense": 1,
+"definition": "추위나 냉각으로 얼어붙음. 또는 그렇게 함.",
+"example": "동결 식품. / 상수도의 동결."
+},
+{
+"category": "한자어",
+"term": "동결",
+"hanja": "凍結",
+"sense": 2,
+"definition": "사업, 계획, 활동 따위가 중단됨. 또는 그렇게 함.",
+"example": "핵 개발 동결."
+},
+{
+"category": "한자어",
+"term": "동결",
+"hanja": "凍結",
+"sense": 3,
+"definition": "자산이나 자금 따위의 사용이나 변동이 금지됨. 또는 그렇게 함.",
+"example": "예산 동결. / 등록금 동결."
+},
+{
+"category": "한자어",
+"term": "동경",
+"hanja": "憧憬",
+"definition": "어떤 것을 간절히 그리워하여 그것만을 생각함.",
+"example": "동경의 대상."
+},
+{
+"category": "한자어",
+"term": "동정",
+"hanja": "動靜",
+"definition": "일이나 현상이 벌어지고 있는 낌새.",
+"example": "적의 동정을 살피다."
+},
+{
+"category": "한자어",
+"term": "동향",
+"hanja": "動向",
+"sense": 1,
+"definition": "사람들의 사고, 사상, 활동이나 일의 형세 따위가 움직여 가는 방향.",
+"example": "학계의 연구 동향. / 여론의 동향. / 민심의 동향."
+},
+{
+"category": "한자어",
+"term": "동향",
+"hanja": "動向",
+"sense": 2,
+"definition": "어떤 특정한 사람이나 사물의 낱낱의 움직임.",
+"example": "그 사람의 동향을 낱낱이 파악하여 수시로 보고하도록 하라.",
+"note": "참고: '움직임새'로 순화."
+},
+{
+"category": "한자어",
+"term": "두각",
+"hanja": "頭角",
+"sense": 1,
+"definition": "짐승의 머리에 있는 뿔."
+},
+{
+"category": "한자어",
+"term": "두각",
+"hanja": "頭角",
+"sense": 2,
+"definition": "뛰어난 학식이나 재능을 비유적으로 이르는 말.",
+"example": "그는 학업에서도 남다른 두각을 나타냈다."
+},
+{
+"category": "한자어",
+"term": "두서",
+"hanja": "頭緖",
+"definition": "일의 차례나 갈피.",
+"example": "두서가 잡히다. / 일의 두서를 가리다. / 두서를 차리다."
+},
+{
+"category": "한자어",
+"term": "두찬",
+"hanja": "杜撰",
+"definition": "전거나 출처가 확실하지 못한 저술."
+},
+{
+"category": "한자어",
+"term": "막후",
+"hanja": "幕後",
+"sense": 1,
+"definition": "막의 뒤.",
+"example": "그 연극의 관중 모두가 막후를 궁금해했다."
+},
+{
+"category": "한자어",
+"term": "막후",
+"hanja": "幕後",
+"sense": 2,
+"definition": "겉으로 드러나지 않은 뒷면.",
+"example": "막후 협상. / 막후 실력자. / 막후에서 영향력을 행사하다."
+},
+{
+"category": "한자어",
+"term": "만끽하다",
+"hanja": "滿喫",
+"sense": 1,
+"definition": "마음껏 먹고 마시다.",
+"example": "별미를 만끽하다. / 지방에 여행을 가서 그곳의 진미를 만끽하고 왔다."
+},
+{
+"category": "한자어",
+"term": "만끽하다",
+"hanja": "滿喫",
+"sense": 2,
+"definition": "욕망을 마음껏 충족하다.",
+"example": "자유를 만끽하다. / 승리의 환희를 만끽하다. / 그는 도시를 떠나 전원생활을 만끽하고 있다."
+},
+{
+"category": "한자어",
+"term": "만류",
+"hanja": "挽留",
+"definition": "붙들고 못 하게 말림.",
+"example": "만류를 뿌리치다. / 수민이의 만류에도 그와 헤어졌다."
+},
+{
+"category": "한자어",
+"term": "만반",
+"hanja": "萬般",
+"definition": "(흔히 '만반', '만반의' 꼴로 쓰여) 마련할 수 있는 모든 것.",
+"example": "적국의 침입에 대비해 만반의 준비를 하다."
+},
+{
+"category": "한자어",
+"term": "망라",
+"hanja": "網羅",
+"definition": "물고기나 새를 잡는 그물이라는 뜻으로, 널리 받아들여 모두 포함함을 이르는 말.",
+"example": "각계각층의 지도자들이 망라되다."
+},
+{
+"category": "한자어",
+"term": "면모",
+"hanja": "面貌",
+"sense": 1,
+"definition": "얼굴의 모양.",
+"example": "그의 수려한 면모를 본 사람이면 누구나 그에게 반하지 않을 수 없었다."
+},
+{
+"category": "한자어",
+"term": "면모",
+"hanja": "面貌",
+"sense": 2,
+"definition": "사람이나 사물의 겉모습. 또는 그 됨됨이.",
+"example": "면모를 일신하다. / 그는 귀공자다운 면모를 풍기는 사람이었다."
+},
+{
+"category": "한자어",
+"term": "모골",
+"hanja": "毛骨",
+"definition": "털과 뼈를 아울러 이르는 말.",
+"example": "무서운 얘기를 듣고 나는 모골이 오싹해졌다."
+},
+{
+"category": "관용구",
+"term": "모골이 송연하다",
+"definition": "끔찍스러워서 몸이 으쓱하고 털끝이 쭈뼛해지다."
+},
+{
+"category": "한자어",
+"term": "목하",
+"hanja": "目下",
+"definition": "바로 지금.",
+"example": "목하 휴업 중. / 영희는 목하 열애 중이다."
+},
+{
+"category": "한자어",
+"term": "몰각",
+"hanja": "沒却",
+"sense": 1,
+"definition": "아주 없애 버림.",
+"example": "옛날 생활의 흔적들이 모두 몰각되고 말았다."
+},
+{
+"category": "한자어",
+"term": "몰각",
+"hanja": "沒却",
+"sense": 2,
+"definition": "무시해 버림.",
+"example": "개성이 몰각된 사회. / 근본 취지가 몰각되다."
+},
+{
+"category": "한자어",
+"term": "묵인",
+"hanja": "默認",
+"definition": "모르는 체하고 하려는 대로 내버려 둠으로써 슬며시 인정함.",
+"example": "지방 수령들의 수탈이 묵인되면서 백성들의 생활고는 더 심해졌다."
+},
+{
+"category": "한자어",
+"term": "미수",
+"hanja": "未遂",
+"definition": "목적한 바를 시도하였으나 이루지 못함.",
+"example": "암살 기도가 미수로 그치다."
+},
+{
+"category": "한자어",
+"term": "미증유",
+"hanja": "未曾有",
+"definition": "지금까지 한 번도 있어 본 적이 없음.",
+"example": "역사 이래 미증유의 사건."
+},
+{
+"category": "한자어",
+"term": "박명",
+"hanja": "薄命",
+"definition": "복이 없고 팔자가 사나움.",
+"example": "박명하고 비참한 삶이 원망스러웠다."
+},
+{
+"category": "한자어",
+"term": "박약",
+"hanja": "薄弱",
+"sense": 1,
+"definition": "의지나 체력 따위가 굳세지 못하고 여림.",
+"example": "그는 목표를 이루려는 의지가 박약하다."
+},
+{
+"category": "한자어",
+"term": "박약",
+"hanja": "薄弱",
+"sense": 2,
+"definition": "불충분하거나 모자란 데가 있음."
+},
+{
+"category": "한자어",
+"term": "박약",
+"hanja": "薄弱",
+"sense": 3,
+"definition": "지능 따위가 정상적이지 못한 상태임."
+},
+{
+"category": "한자어",
+"term": "박약",
+"hanja": "薄弱",
+"sense": 4,
+"definition": "얇고도 약함."
+},
+{
+"category": "한자어",
+"term": "박장대소",
+"hanja": "拍掌大笑",
+"definition": "손뼉을 치며 크게 웃음.",
+"example": "사회자의 재치 있는 말에 방청석에서 박장대소가 터졌다."
+},
+{
+"category": "한자어",
+"term": "반려",
+"hanja": "返戾",
+"definition": "주로 윗사람이나 상급 기관에 제출한 문서를 처리하지 않고 되돌려줌.",
+"example": "사표 반려."
+},
+{
+"category": "한자어",
+"term": "반응",
+"hanja": "反應",
+"definition": "자극에 대응하여 어떤 현상이 일어남. 또는 그 현상.",
+"example": "이 브레이크는 살짝만 밟아도 민감하게 반응한다."
+},
+{
+"category": "한자어",
+"term": "반추",
+"hanja": "反芻",
+"definition": "어떤 일을 되풀이하여 음미하거나 생각함. 또는 그런 일.",
+"example": "지나간 50년을 곰곰 반추하여 보니 후회되는 일이 허다하다."
+},
+{
+"category": "한자어",
+"term": "발군",
+"hanja": "拔群",
+"definition": "(흔히 '발군의' 꼴로 쓰여) 여럿 가운데에서 특별히 뛰어남.",
+"example": "그 학생은 여러 학생 가운데 발군의 성적을 보였다."
+},
+{
+"category": "한자어",
+"term": "발굴",
+"hanja": "發掘",
+"sense": 1,
+"definition": "땅속이나 큰 덩치의 흙, 돌 더미 따위에 묻혀 있는 것을 찾아서 파냄.",
+"example": "유적 발굴. / 지하자원의 발굴."
+},
+{
+"category": "한자어",
+"term": "발굴",
+"hanja": "發掘",
+"sense": 2,
+"definition": "세상에 널리 알려지지 않거나 뛰어난 것을 찾아 밝혀냄.",
+"example": "신인 발굴. / 인재 발굴."
+},
+{
+"category": "한자어",
+"term": "발발",
+"hanja": "勃發",
+"definition": "전쟁이나 큰 사건 따위가 갑자기 일어남.",
+"example": "한국 전쟁 발발."
+},
+{
+"category": "한자어",
+"term": "발발하다",
+"hanja": "勃勃",
+"definition": "기운이나 기세가 끓어오를 듯이 성하다.",
+"example": "새로운 예술이 발발하게 일어나면서 문예 부흥의 꽃이 피었다."
+},
+{
+"category": "한자어",
+"term": "발연하다",
+"hanja": "勃然/艴然",
+"definition": "왈칵 성을 내는 태도나 일어나는 모양이 세차고 갑작스럽다.",
+"example": "할아버지의 발연한 모습에 온 식구가 쥐 죽은 듯이 숨을 죽이고 벌벌 떨었다."
+},
+{
+"category": "한자어",
+"term": "발인",
+"hanja": "發靷",
+"definition": "장례를 지내러 가기 위하여 상여 따위가 집에서 떠남. 또는 그런 절차.",
+"example": "발인을 서두르다. / 발인이 끝나다. / 아침 열 시에 발인한다."
+},
+{
+"category": "한자어",
+"term": "발현",
+"hanja": "發現/發顯",
+"definition": "속에 있거나 숨은 것이 밖으로 나타나거나 그렇게 나타나게 함. 또는 그런 결과.",
+"example": "누구에게나 착한 심성이 있지만 누구나 그것을 발현하는 것은 아니다."
+},
+{
+"category": "한자어",
+"term": "방출",
+"hanja": "放出",
+"sense": 1,
+"definition": "비축하여 놓은 것을 내놓음.",
+"example": "은행의 자금 방출로 기업의 숨통이 조금 트였다."
+},
+{
+"category": "한자어",
+"term": "방출",
+"hanja": "放出",
+"sense": 2,
+"definition": "「물리」 입자나 전자기파의 형태로 에너지를 내보냄.",
+"example": "은하가 태양계에 방출하는 빛의 양은 은하의 기울기에 따라 달라진다.",
+"related": [
+"≒ 내쏘기"
+]
+},
+{
+"category": "한자어",
+"term": "배열",
+"hanja": "配列/排列",
+"definition": "일정한 차례나 간격에 따라 벌여 놓음.",
+"example": "상품을 보기 좋게 배열해야 고객의 시선을 끌 수 있다."
+},
+{
+"category": "한자어",
+"term": "배임",
+"hanja": "背任",
+"definition": "주어진 임무를 저버림. 주로 공무원 또는 회사원이 자기의 이익을 위하여 임무를 수행하지 않고 국가나 회사에 재산상의 손해를 주는 경우를 이른다.",
+"example": "그 공무원은 배임 및 횡령죄로 구속되었다."
+},
+{
+"category": "한자어",
+"term": "배치되다",
+"hanja": "背馳",
+"definition": "서로 반대로 되어 어그러지거나 어긋나게 되다.",
+"example": "너의 행동은 네가 평소 말해 왔던 이념에 배치된 것이었다."
+},
+{
+"category": "한자어",
+"term": "배포",
+"hanja": "配布",
+"definition": "신문이나 책자 따위를 널리 나누어 줌.",
+"example": "신문 배포."
+},
+{
+"category": "한자어",
+"term": "변질",
+"hanja": "變質",
+"definition": "성질이 달라지거나 물질의 질이 변함. 또는 그런 성질이나 물질.",
+"example": "식료품의 변질을 막기 위해서는 냉동 보관이 필요하다."
+},
+{
+"category": "한자어",
+"term": "병행",
+"hanja": "竝行",
+"definition": "둘 이상의 일을 한꺼번에 행함.",
+"example": "투약과 식이 요법의 병행."
+},
+{
+"category": "한자어",
+"term": "보도",
+"hanja": "報道",
+"definition": "대중 전달 매체를 통하여 일반 사람들에게 새로운 소식을 알림. 또는 그 소식.",
+"example": "신문에 보도된 사건."
+},
+{
+"category": "한자어",
+"term": "보루",
+"hanja": "堡壘",
+"definition": "「군사」 적의 침입을 막기 위하여 돌이나 콘크리트 따위로 튼튼하게 쌓은 구축물.",
+"example": "최후의 보루."
+},
+{
+"category": "한자어",
+"term": "보무",
+"hanja": "步武",
+"definition": "위엄 있고 활기 있게 걷는 걸음.",
+"example": "보무도 당당한 옛 군인의 모습."
+},
+{
+"category": "한자어",
+"term": "보우",
+"hanja": "保佑",
+"definition": "보호하고 도와줌.",
+"example": "천지신명이시여, 저희를 길이 보우해 주심을 바라나이다."
+},
+{
+"category": "한자어",
+"term": "복기",
+"hanja": "復棋/復碁",
+"definition": "「체육」 바둑에서, 한 번 두고 난 바둑의 판국을 비평하기 위하여 두었던 대로 다시 처음부터 놓아 봄.",
+"example": "이번에 둔 바둑을 복기해 보니 내가 끝내기에서 실수한 것을 깨달았다."
+},
+{
+"category": "한자어",
+"term": "봉정",
+"hanja": "奉呈/捧呈",
+"definition": "문서나 문집 따위를 삼가 받들어 올림.",
+"example": "화갑 기념 논문집 봉정. / 선생님께 회갑 기념 논문집을 봉정했다."
+},
+{
+"category": "한자어",
+"term": "부과",
+"hanja": "賦課",
+"definition": "세금이나 부담금 따위를 매기어 부담하게 함.",
+"example": "정부는 생필품의 수출입에는 관세 부과를 없앨 예정이다."
+},
+{
+"category": "한자어",
+"term": "부담",
+"hanja": "負擔",
+"definition": "어떠한 의무나 책임을 짐.",
+"example": "부담이 없다. / 부담을 가지다."
+},
+{
+"category": "한자어",
+"term": "부양",
+"hanja": "扶養",
+"definition": "생활 능력이 없는 사람의 생활을 돌봄."
+},
+{
+"category": "한자어",
+"term": "부여",
+"hanja": "附與",
+"definition": "사람에게 권리·명예·임무 따위를 지니도록 해 주거나, 사물이나 일에 가치·의의 따위를 붙여 줌.",
+"example": "임무 부여. / 특권 부여."
+},
+{
+"category": "한자어",
+"term": "부연",
+"hanja": "敷衍/敷演",
+"definition": "이해하기 쉽도록 설명을 덧붙여 자세히 말함.",
+"example": "그는 그동안의 진행 과정을 부연하여 설명하였다."
+},
+{
+"category": "한자어",
+"term": "부재",
+"hanja": "不在",
+"definition": "그곳에 있지 아니함.",
+"example": "어머니의 부재로 집 안은 늘 썰렁했다."
+},
+{
+"category": "한자어",
+"term": "부족",
+"hanja": "不足",
+"definition": "필요한 양이나 기준에 미치지 못해 충분하지 아니함.",
+"example": "시간 부족. / 예산 부족."
+},
+{
+"category": "한자어",
+"term": "부흥",
+"hanja": "復興",
+"definition": "쇠퇴하였던 것이 다시 일어남. 또는 그렇게 되게 함.",
+"example": "경제 부흥을 위해 노력하다."
+},
+{
+"category": "한자어",
+"term": "분수령",
+"hanja": "分水嶺",
+"definition": "어떤 사실이나 사태가 발전하는 전환점 또는 어떤 일이 한 단계에서 전혀 다른 단계로 넘어가는 전환점을 비유적으로 이르는 말.",
+"example": "외국에서 지낸 5년이 그의 인생에 있어 중요한 분수령이 되었다."
+},
+{
+"category": "한자어",
+"term": "분탕",
+"hanja": "焚蕩",
+"definition": "집안의 재산을 다 없애 버림."
+},
+{
+"category": "한자어",
+"term": "불식",
+"hanja": "拂拭",
+"definition": "먼지를 떨고 훔친다는 뜻으로, 의심이나 부조리한 점 따위를 말끔히 떨어 없앰을 이르는 말.",
+"example": "여러 차례 해명에도 불구하고 그의 부패 의혹은 불식되지 않았다."
+},
+{
+"category": "한자어",
+"term": "비루하다",
+"hanja": "鄙陋",
+"definition": "행동이나 성질이 너절하고 더럽다.",
+"example": "비루한 태도. / 비루하게 굴다."
+},
+{
+"category": "한자어",
+"term": "비위",
+"hanja": "脾胃",
+"sense": 1,
+"definition": "「의학」 지라와 위를 통틀어 이르는 말."
+},
+{
+"category": "한자어",
+"term": "비위",
+"hanja": "脾胃",
+"sense": 2,
+"definition": "음식물을 삭여 내는 능력.",
+"example": "비위가 좋다."
+},
+{
+"category": "한자어",
+"term": "비위",
+"hanja": "脾胃",
+"sense": 3,
+"definition": "어떤 음식물을 먹고 싶은 마음.",
+"example": "비위가 동하다. / 비위를 돋우는 음식이 많다."
+},
+{
+"category": "한자어",
+"term": "비위",
+"hanja": "脾胃",
+"sense": 4,
+"definition": "어떤 것을 좋아하거나 싫어하는 성미. 또는 그러한 기분.",
+"example": "그 사람 비위를 맞추기란 쉬운 일이 아니다."
+},
+{
+"category": "한자어",
+"term": "비치",
+"hanja": "備置",
+"definition": "마련하여 갖추어 둠.",
+"example": "비치 도서. / 비치 목록."
+},
+{
+"category": "한자어",
+"term": "비호",
+"hanja": "庇護",
+"definition": "편들어서 감싸 주고 보호함.",
+"example": "그와 같은 엄청난 사건은 권력의 비호를 받지 않고서는 일어날 수 없다."
+},
+{
+"category": "한자어",
+"term": "빈사",
+"hanja": "瀕死",
+"definition": "거의 죽게 됨. 또는 그런 상태.",
+"example": "빈사 상태에 빠지다.",
+"related": [
+"= 반죽음"
+]
+},
+{
+"category": "한자어",
+"term": "빙자하다",
+"hanja": "憑藉",
+"sense": 1,
+"definition": "남의 힘을 빌려서 의지하다.",
+"example": "철수는 대기업에 다니는 지인을 빙자하여 취업하려 했다."
+},
+{
+"category": "한자어",
+"term": "빙자하다",
+"hanja": "憑藉",
+"sense": 2,
+"definition": "말막음을 위하여 핑계로 내세우다.",
+"example": "그는 병을 빙자하여 아무도 만나지 않았다."
+},
+{
+"category": "한자어",
+"term": "사단",
+"hanja": "事端",
+"definition": "사건의 단서. 또는 일의 실마리.",
+"example": "이 문제에 대해 논하려면 사단을 먼저 구해야 한다.",
+"note": "'사단이 나다'(×) → '사달이 나다'(○). '사달'은 '사고나 탈'을 뜻하는 고유어임."
+},
+{
+"category": "한자어",
+"term": "사사하다",
+"hanja": "師事",
+"definition": "스승으로 섬기다. 또는 스승으로 삼고 가르침을 받다.",
+"example": "그는 김 선생에게서 창을 사사하였다."
+},
+{
+"category": "한자어",
+"term": "사의",
+"hanja": "謝儀",
+"definition": "상대편에게 고마움의 뜻으로 보내는 물품."
+},
+{
+"category": "한자어",
+"term": "사장",
+"hanja": "死藏",
+"definition": "사물 따위를 필요한 곳에 활용하지 않고 썩혀 둠.",
+"example": "경기가 악화되면서 많은 연구가 사장되었다."
+},
+{
+"category": "혼동 어휘",
+"term": "사족",
+"hanja": "四足",
+"sense": 1,
+"definition": "짐승의 네발. 또는 네발 가진 짐승."
+},
+{
+"category": "혼동 어휘",
+"term": "사족",
+"hanja": "四足",
+"sense": 2,
+"definition": "'사지(四肢)'를 속되게 이르는 말.",
+"example": "사족이 멀쩡한데, 무슨 일을 못 하겠느냐?"
+},
+{
+"category": "관용구",
+"term": "사족(을) 못 쓰다",
+"definition": "무슨 일에 반하거나 혹하여 꼼짝 못 하다.",
+"example": "그는 친구의 말이라면 사족을 못 쓴다.",
+"related": [
+"≒ 사지를 못 쓰다"
+]
+},
+{
+"category": "혼동 어휘",
+"term": "사족",
+"hanja": "蛇足",
+"definition": "뱀을 다 그리고 나서 있지도 아니한 발을 덧붙여 그려 넣는다는 뜻으로, 쓸데없는 군짓을 하여 도리어 잘못되게 함을 이르는 말.",
+"example": "사족을 달다. / 사족을 붙이다.",
+"related": [
+"= 화사첨족(畫蛇添足)"
+]
+},
+{
+"category": "한자어",
+"term": "사활",
+"hanja": "死活",
+"definition": "죽기와 살기라는 뜻으로, 어떤 중대한 문제를 비유적으로 이르는 말.",
+"example": "사활을 걸다."
+},
+{
+"category": "한자어",
+"term": "산화하다",
+"hanja": "散花/散華",
+"definition": "어떤 대상이나 목적을 위하여 목숨을 바치다.",
+"example": "조국을 위해 장렬히 산화하다."
+},
+{
+"category": "한자어",
+"term": "상기되다",
+"hanja": "上氣",
+"definition": "흥분이나 부끄러움으로 얼굴이 붉어지다.",
+"example": "그녀는 황급히 오느라고 얼굴이 빨갛게 상기되어 있었다."
+},
+{
+"category": "한자어",
+"term": "상념",
+"hanja": "想念",
+"definition": "마음속에 품고 있는 여러 가지 생각.",
+"example": "그는 의자에 앉아 한동안 상념에 잠겨 있었다."
+},
+{
+"category": "한자어",
+"term": "상당",
+"hanja": "相當",
+"definition": "일정한 액수나 수치 따위에 해당함.",
+"example": "시가 백만 원 상당의 시계."
+},
+{
+"category": "한자어",
+"term": "상도",
+"hanja": "商道",
+"definition": "상업 활동에서 지켜야 할 도덕. 특히 상업자들 사이에서 지켜야 할 도의를 이른다.",
+"example": "소상인들은 거상들의 이번 조치는 상도를 어긴 것이라고 항의했다.",
+"related": [
+"= 상도덕"
+]
+},
+{
+"category": "한자어",
+"term": "상쇄",
+"hanja": "相殺",
+"definition": "상반되는 것이 서로 영향을 주어 효과가 없어지는 일.",
+"example": "이번 일로 과거 불미스러웠던 일을 상쇄한 셈이었다."
+},
+{
+"category": "한자어",
+"term": "상수",
+"hanja": "上手",
+"definition": "남보다 뛰어난 수나 솜씨. 또는 그런 수나 솜씨를 가진 사람.",
+"example": "이번 대회에서는 초반부터 상수를 만나 고전이 예상된다."
+},
+{
+"category": "한자어",
+"term": "상정",
+"hanja": "上程",
+"definition": "토의할 안건을 회의 석상에 내어놓음.",
+"example": "여러 의원들이 새로운 의제를 본회의에 상정하였다."
+},
+{
+"category": "한자어",
+"term": "상주하다",
+"hanja": "常住",
+"definition": "늘 일정하게 살다.",
+"example": "그 섬에 상주하는 사람은 100명 정도밖에 안 된다."
+},
+{
+"category": "한자어",
+"term": "상치",
+"hanja": "相馳",
+"definition": "일이나 뜻이 서로 어긋남.",
+"example": "상대방과 의견이 상치되면 다소 여유를 갖고 대화에 임해야 한다."
+},
+{
+"category": "한자어",
+"term": "상환",
+"hanja": "償還",
+"definition": "갚거나 돌려줌.",
+"example": "원리금 상환."
+},
+{
+"category": "한자어",
+"term": "생면하다",
+"hanja": "生面",
+"definition": "처음으로 대하다.",
+"example": "그 아이를 생면하던 날, 심장이 두근거려 숨 쉬기도 어려웠던 기억이 난다."
+},
+{
+"category": "한자어",
+"term": "선수",
+"hanja": "先手",
+"definition": "남이 하기 전에 앞질러 하는 행동.",
+"example": "선수를 빼앗기다."
+},
+{
+"category": "한자어",
+"term": "선처",
+"hanja": "善處",
+"definition": "형편에 따라 잘 처리함.",
+"example": "아무쪼록 선처를 바랍니다."
+},
+{
+"category": "한자어",
+"term": "선풍",
+"hanja": "旋風",
+"sense": 1,
+"definition": "「지구」 갑자기 생긴 저기압 주변으로 한꺼번에 모여든 공기가 나선 모양으로 일으키는 선회 운동.",
+"related": [
+"= 회오리바람"
+]
+},
+{
+"category": "한자어",
+"term": "선풍",
+"hanja": "旋風",
+"sense": 2,
+"definition": "돌발적으로 일어나 세상을 뒤흔드는 사건을 비유적으로 이르는 말.",
+"example": "그의 대하소설이 일대 선풍을 일으켰다."
+},
+{
+"category": "한자어",
+"term": "소개",
+"hanja": "疏開",
+"definition": "공습이나 화재 따위에 대비하여 한곳에 집중되어 있는 주민이나 시설물을 분산함.",
+"example": "소방관들이 폭발에 대비하여 주민들을 안전한 곳으로 소개하였다."
+},
+{
+"category": "한자어",
+"term": "소거하다",
+"hanja": "消去",
+"definition": "글자나 그림 따위를 지워 없애다.",
+"example": "벽에 있는 낙서를 소거하다."
+},
+{
+"category": "한자어",
+"term": "소관",
+"hanja": "所管",
+"definition": "맡아 관리하는 바. 또는 그 범위.",
+"example": "소관 업무. / 그 일은 우리 소관 밖의 일이다."
+},
+{
+"category": "한자어",
+"term": "소정",
+"hanja": "所定",
+"definition": "(주로 '소정', '소정의' 꼴로 쓰여) 정해진 바.",
+"example": "소정 기간. / 소정의 양식. / 소정의 금액. / 소정의 상품."
+},
+{
+"category": "한자어",
+"term": "소지",
+"hanja": "所持",
+"definition": "물건을 지니고 있는 일. 또는 그런 물건.",
+"example": "경로 우대증 소지 노인은 무료입장이다."
+},
+{
+"category": "한자어",
+"term": "소진하다",
+"hanja": "消盡",
+"definition": "점점 줄어들어 다 없어지다. 또는 다 써서 없애다.",
+"example": "모든 힘을 소진하다. / 시간을 헛되이 소진하다."
+},
+{
+"category": "한자어",
+"term": "소청",
+"hanja": "所請",
+"definition": "남에게 청하거나 바라는 일.",
+"example": "부디 소녀의 소청을 들어주십시오."
+},
+{
+"category": "혼동 어휘",
+"term": "소환",
+"hanja": "召喚",
+"definition": "「법률」 법원이 피고인, 증인, 변호인, 대리인 따위의 소송 관계인에게 소환장을 발부하여, 공판 기일이나 그 밖의 일정한 일시에 법원 또는 법원이 지정한 장소에 나올 것을 명령하는 일.",
+"example": "소환에 불응하다. / 검찰에 피의자 소환을 요구하다."
+},
+{
+"category": "혼동 어휘",
+"term": "소환",
+"hanja": "召還",
+"sense": 1,
+"definition": "「법률」 국제법에서, 본국에서 외국에 파견한 외교 사절이나 영사를 불러들이는 일."
+},
+{
+"category": "혼동 어휘",
+"term": "소환",
+"hanja": "召還",
+"sense": 2,
+"definition": "「법률」 헌법에서, 국가나 지방 자치 단체의 공직에 있는 사람을 임기가 끝나기 전에 국민의 투표로 파면하는 일. 또는 그런 제도."
+},
+{
+"category": "한자어",
+"term": "송부",
+"hanja": "送付",
+"definition": "편지나 물품 따위를 부치어 보냄."
+},
+{
+"category": "한자어",
+"term": "송영",
+"hanja": "送迎",
+"sense": 1,
+"definition": "가는 사람을 보내고 오는 사람을 맞음.",
+"example": "송영 나온 군중은 깃발을 두르며 만세를 불렀다."
+},
+{
+"category": "한자어",
+"term": "송영",
+"hanja": "送迎",
+"sense": 2,
+"definition": "묵은해를 보내고 새해를 맞음.",
+"related": [
+"= 송구영신"
+]
+},
+{
+"category": "한자어",
+"term": "송치",
+"hanja": "送致",
+"definition": "「법률」 수사 기관에서 검찰청으로, 또는 한 검찰청에서 다른 검찰청으로 피의자와 서류를 넘겨 보내는 일.",
+"example": "경찰은 최종 수사 결과를 발표하고 사건을 검찰에 송치하였다."
+},
+{
+"category": "한자어",
+"term": "수납",
+"hanja": "收納",
+"definition": "돈이나 물품 따위를 받아 거두어들임.",
+"example": "수납 창구."
+},
+{
+"category": "한자어",
+"term": "수뢰",
+"hanja": "受賂",
+"definition": "뇌물을 받음.",
+"example": "검찰은 수뢰 혐의로 전직 장관을 기소했다."
+},
+{
+"category": "한자어",
+"term": "수반",
+"hanja": "隨伴",
+"sense": 1,
+"definition": "붙좇아서 따름."
+},
+{
+"category": "한자어",
+"term": "수반",
+"hanja": "隨伴",
+"sense": 2,
+"definition": "어떤 일과 더불어 생김.",
+"example": "조직 개편으로 인해 인력 수급 문제가 수반되었다."
+},
+{
+"category": "한자어",
+"term": "수임",
+"hanja": "受任",
+"definition": "「법률」 위임 계약에 의하여 상대편의 법률 행위나 사무 처리를 맡음.",
+"example": "변호사가 사건을 수임하다."
+},
+{
+"category": "한자어",
+"term": "수작",
+"hanja": "酬酌",
+"definition": "남의 말이나 행동, 계획을 낮잡아 이르는 말.",
+"example": "속이 빤히 보이는 수작에 넘어가다."
+},
+{
+"category": "한자어",
+"term": "수주",
+"hanja": "受注",
+"definition": "주문을 받음. 주로 물건을 생산하는 업자가 제품의 주문을 받는 것을 이르는 말이다.",
+"example": "수주가 줄다. / 국내 건설업체들의 건설 공사 수주가 활기를 띠고 있다."
+},
+{
+"category": "한자어",
+"term": "수지",
+"hanja": "收支",
+"sense": 1,
+"definition": "수입과 지출을 아울러 이르는 말.",
+"example": "수지 균형을 맞추다."
+},
+{
+"category": "한자어",
+"term": "수지",
+"hanja": "收支",
+"sense": 2,
+"definition": "거래 관계에서 얻는 이익.",
+"example": "수지가 맞는 장사."
+},
+{
+"category": "한자어",
+"term": "수탁",
+"hanja": "受託",
+"sense": 1,
+"definition": "다른 사람의 의뢰나 부탁을 받음. 또는 그런 일.",
+"example": "이 연구소는 중소기업의 수탁을 받아 연구 개발 사업을 수행한다."
+},
+{
+"category": "한자어",
+"term": "수탁",
+"hanja": "受託",
+"sense": 2,
+"definition": "남의 물건 따위를 맡음.",
+"example": "화물의 수탁."
+},
+{
+"category": "한자어",
+"term": "숙연하다",
+"hanja": "肅然",
+"definition": "고요하고 엄숙하다.",
+"example": "그의 말을 듣자 모두가 숙연해졌다."
+},
+{
+"category": "한자어",
+"term": "시금석",
+"hanja": "試金石",
+"definition": "가치, 능력, 역량 따위를 알아볼 수 있는 기준이 되는 기회나 사물을 비유적으로 이르는 말.",
+"example": "이번 총선은 민주주의의 발전 정도를 한 단계 높이거나 떨어뜨릴 수 있는 중요한 시금석이다."
+},
+{
+"category": "한자어",
+"term": "시여",
+"hanja": "施與",
+"definition": "남에게 물건을 거저 줌.",
+"example": "불우 이웃에 대한 그의 시여 행위가 알려졌다."
+},
+{
+"category": "한자어",
+"term": "식언",
+"hanja": "食言",
+"definition": "한번 입 밖에 낸 말을 도로 입속에 넣는다는 뜻으로, 약속한 말대로 지키지 아니함을 이르는 말.",
+"example": "식언을 일삼다. / 식언을 밥 먹듯 하다."
+},
+{
+"category": "한자어",
+"term": "신병",
+"hanja": "身柄",
+"definition": "보호나 구금의 대상이 되는 사람의 몸.",
+"example": "신병 처리. / 신병을 인도하다. / 범죄 용의자의 신병을 확보하다."
+},
+{
+"category": "한자어",
+"term": "신산하다",
+"hanja": "辛酸",
+"sense": 1,
+"definition": "맛이 맵고 시다.",
+"example": "신산한 맛."
+},
+{
+"category": "한자어",
+"term": "신산하다",
+"hanja": "辛酸",
+"sense": 2,
+"definition": "(비유적으로) 세상살이가 힘들고 고생스럽다.",
+"example": "기숙사 생활이 여간 신산한 것이 아니었다.",
+"related": [
+"≒ 산신하다"
+]
+},
+{
+"category": "한자어",
+"term": "신수",
+"hanja": "身手",
+"sense": 1,
+"definition": "용모와 풍채를 통틀어 이르는 말.",
+"example": "신수가 멀끔하다."
+},
+{
+"category": "한자어",
+"term": "신수",
+"hanja": "身手",
+"sense": 2,
+"definition": "얼굴에 나타난 건강 색.",
+"example": "신수가 피다. / 신수가 말이 아니다."
+},
+{
+"category": "한자어",
+"term": "실각",
+"hanja": "失脚",
+"sense": 1,
+"definition": "발을 헛디딤.",
+"example": "그는 계단에서 실각하여 부상을 입었다."
+},
+{
+"category": "한자어",
+"term": "실각",
+"hanja": "失脚",
+"sense": 2,
+"definition": "세력을 잃고 지위에서 물러남.",
+"example": "내각은 내분과 총리의 건강 악화 등으로 실각의 위기를 맞고 있었다."
+},
+{
+"category": "한자어",
+"term": "심금",
+"hanja": "心琴",
+"definition": "외부의 자극에 따라 미묘하게 움직이는 마음을 비유적으로 이르는 말.",
+"example": "맑고 고운 목소리가 심금을 미묘하게 휘저었다.",
+"related": [
+"≒ 흉금"
+]
+},
+{
+"category": "한자어",
+"term": "아량",
+"hanja": "雅量",
+"definition": "너그럽고 속이 깊은 마음씨.",
+"example": "아량을 베풀다. / 그는 넓은 아량으로 부하 직원의 잘못을 용서했다."
+},
+{
+"category": "한자어",
+"term": "애도",
+"hanja": "哀悼",
+"definition": "사람의 죽음을 슬퍼함.",
+"example": "애도 기간."
+},
+{
+"category": "한자어",
+"term": "야기",
+"hanja": "惹起",
+"definition": "일이나 사건 따위를 끌어 일으킴.",
+"example": "혼란을 야기하다."
+},
+{
+"category": "한자어",
+"term": "어안",
+"hanja": "魚眼",
+"definition": "물고기의 눈.",
+"note": "참고: 어안이 벙벙하다 — 이때 '어안'은 고유어로, 어이없어 말을 못 하고 있는 혀 안을 의미함."
+},
+{
+"category": "한자어",
+"term": "어용",
+"hanja": "御用",
+"definition": "자신의 이익을 위하여 권력자나 권력 기관에 영합하여 줏대 없이 행동하는 것을 낮잡아 이르는 말.",
+"example": "어용 단체. / 어용으로 몰리다."
+},
+{
+"category": "한자어",
+"term": "억장",
+"hanja": "億丈",
+"definition": "썩 높은 것. 또는 그런 높이.",
+"example": "억장 같은 근심 때문에 한숨만 내쉬었다."
+},
+{
+"category": "관용구",
+"term": "억장이 무너지다",
+"definition": "극심한 슬픔이나 절망 따위로 몹시 가슴이 아프고 괴롭다."
+},
+{
+"category": "한자어",
+"term": "언변",
+"hanja": "言辯",
+"definition": "말을 잘하는 재주나 솜씨.",
+"example": "유창한 언변."
+},
+{
+"category": "한자어",
+"term": "역임",
+"hanja": "歷任",
+"definition": "여러 직위를 두루 거쳐 지냄.",
+"example": "김 선생은 신문사에서 편집국장, 주필 등을 역임하면서 많은 공을 세웠다."
+},
+{
+"category": "한자어",
+"term": "영고",
+"hanja": "榮枯",
+"definition": "번성함과 쇠퇴함.",
+"example": "그것은 국가의 영고에까지 관하는 문제가 될 것이 자명하다.",
+"related": [
+"≒ 영락"
+]
+},
+{
+"category": "한자어",
+"term": "영유",
+"hanja": "領有",
+"definition": "자기의 것으로 차지하여 가짐.",
+"example": "우리나라가 독도를 영유하는 것은 정당하다."
+},
+{
+"category": "한자어",
+"term": "영전",
+"hanja": "榮轉",
+"definition": "전보다 더 좋은 자리나 직위로 옮김."
+},
+{
+"category": "한자어",
+"term": "예방",
+"hanja": "禮訪",
+"definition": "예를 갖추는 의미로 인사차 방문함.",
+"example": "대통령은 외국 경제 사절단의 예방을 받고 투자 문제에 대해 논의했다.",
+"note": "수험생은 시험 치기 전에 시험장을 예방하는 것이 좋다.(×)"
+},
+{
+"category": "한자어",
+"term": "왜곡",
+"hanja": "歪曲",
+"definition": "사실과 다르게 해석하거나 그릇되게 함.",
+"example": "역사 왜곡. / 왜곡 보도."
+},
+{
+"category": "한자어",
+"term": "오찬",
+"hanja": "午餐",
+"definition": "손님을 초대하여 함께 먹는 점심 식사."
+},
+{
+"category": "한자어",
+"term": "용렬하다",
+"hanja": "庸劣",
+"definition": "사람이 변변하지 못하고 졸렬하다.",
+"example": "그는 매사에 하는 행동이 용렬하기 짝이 없다."
+},
+{
+"category": "한자어",
+"term": "우골탑",
+"hanja": "牛骨塔",
+"definition": "가난한 농가에서 소를 팔아 마련한 학생의 등록금으로 세운 건물이라는 뜻으로, '대학'을 속되게 이르는 말.",
+"example": "한때, 대학은 상아탑 대신에 우골탑으로 불렸다."
+},
+{
+"category": "한자어",
+"term": "우수",
+"hanja": "憂愁",
+"definition": "근심과 걱정을 아울러 이르는 말.",
+"example": "우수가 서린 낯빛. / 우수를 띤 표정. / 우수에 젖은 눈."
+},
+{
+"category": "한자어",
+"term": "우활하다",
+"hanja": "迂闊",
+"sense": 1,
+"definition": "곧바르지 아니하고 에돌아서 실제와는 거리가 멀다."
+},
+{
+"category": "한자어",
+"term": "우활하다",
+"hanja": "迂闊",
+"sense": 2,
+"definition": "사리에 어둡고 세상 물정을 잘 모르다."
+},
+{
+"category": "한자어",
+"term": "우활하다",
+"hanja": "迂闊",
+"sense": 3,
+"definition": "주의가 부족하다."
+},
+{
+"category": "한자어",
+"term": "위상",
+"hanja": "位相",
+"definition": "어떤 사물이 다른 사물과의 관계 속에서 가지는 위치나 상태.",
+"example": "위상을 높이다. / 위상이 추락하다. / 국제 사회에서 우리나라의 위상을 강화해야 한다."
+},
+{
+"category": "한자어",
+"term": "위생",
+"hanja": "衛生",
+"definition": "건강에 유익하도록 조건을 갖추거나 대책을 세우는 일.",
+"example": "위생 검사. / 위생 관념. / 위생 상태 점검."
+},
+{
+"category": "한자어",
+"term": "유감",
+"hanja": "遺憾",
+"definition": "마음에 차지 아니하여 섭섭하거나 불만스럽게 남아 있는 느낌.",
+"example": "유감의 뜻을 표하다."
+},
+{
+"category": "한자어",
+"term": "유기",
+"hanja": "遺棄",
+"definition": "내다 버림.",
+"example": "불의에 침묵하는 것은 지성인의 사회적 책임을 유기하는 행위이다."
+},
+{
+"category": "한자어",
+"term": "유수",
+"hanja": "有數",
+"definition": "손꼽을 만큼 두드러지거나 훌륭함.",
+"example": "국내 유수의 대기업.",
+"note": "국내 유수(流水)의 대기업(×). 맥락에 맞는 한자어를 묻는 문제에서 동음이의어인 한자어가 출제되어 많은 수험생이 어려움을 겪었음."
+},
+{
+"category": "한자어",
+"term": "유예",
+"hanja": "猶豫",
+"sense": 1,
+"definition": "망설여 일을 결행하지 아니함.",
+"example": "안주하고 있는 것은 회피나 유예에 불과하지 않은가."
+},
+{
+"category": "한자어",
+"term": "유예",
+"hanja": "猶豫",
+"sense": 2,
+"definition": "일을 결행하는 데 날짜나 시간을 미룸. 또는 그런 기간.",
+"example": "원리금 상환을 유예하다. / 공장의 철거를 유예하다."
+},
+{
+"category": "한자어",
+"term": "유예",
+"hanja": "猶豫",
+"sense": 3,
+"definition": "「법률」 소송 행위를 하거나 소송 행위의 효력을 발생시키기 위하여 일정한 기간을 둠. 또는 그런 기간.",
+"example": "유예 처분을 받다. / 유예를 받고 풀려나다. / 선고를 유예하다."
+},
+{
+"category": "한자어",
+"term": "유치",
+"hanja": "誘致",
+"sense": 1,
+"definition": "꾀어서 데려옴."
+},
+{
+"category": "한자어",
+"term": "유치",
+"hanja": "誘致",
+"sense": 2,
+"definition": "행사나 사업 따위를 이끌어 들임.",
+"example": "시설 유치. / 공장 유치."
+},
+{
+"category": "한자어",
+"term": "윤색",
+"hanja": "潤色",
+"definition": "사실을 과장하거나 미화함을 비유적으로 이르는 말.",
+"example": "번역극을 다루다 보면 우리 실정에 맞는 내용의 윤색도 필요하다."
+},
+{
+"category": "한자어",
+"term": "융성",
+"hanja": "隆盛",
+"definition": "기운차게 일어나거나 대단히 번성함.",
+"example": "세종 대왕 때에는 나라가 크게 융성했다."
+},
+{
+"category": "한자어",
+"term": "응대",
+"hanja": "應對",
+"definition": "부름이나 물음 또는 요구 따위에 응하여 상대함.",
+"example": "몇 번 물어보았으나 아무런 응대도 없다."
+},
+{
+"category": "한자어",
+"term": "응수",
+"hanja": "應酬",
+"definition": "상대편이 한 말이나 행동을 받아서 마주 응함.",
+"example": "무례한 상대에게 적절한 응수를 하지 못했다."
+},
+{
+"category": "한자어",
+"term": "인멸",
+"hanja": "湮滅/堙滅",
+"definition": "자취도 없이 모두 없어짐. 또는 그렇게 없앰.",
+"example": "증거품을 인멸하다."
+},
+{
+"category": "한자어",
+"term": "인수",
+"hanja": "引受",
+"definition": "물건이나 권리를 건네받음.",
+"example": "물품 인수. / 판권의 인수."
+},
+{
+"category": "한자어",
+"term": "인지하다",
+"hanja": "認知",
+"definition": "어떤 사실을 인정하여 알다.",
+"example": "신호를 인지하다. / 존재를 인지하다. / 현실을 인지하다."
+},
+{
+"category": "한자어",
+"term": "일별하다",
+"hanja": "一瞥",
+"definition": "한 번 흘낏 보다.",
+"example": "전처만은 마뜩잖은 눈길로 그들을 일별하고 돌아서서 남은 길을 재촉했다."
+},
+{
+"category": "한자어",
+"term": "임대",
+"hanja": "賃貸",
+"definition": "돈을 받고 자기의 물건을 남에게 빌려줌.",
+"example": "임대 아파트. / 임대 가격이 싸다. / 임대 조건이 좋다."
+},
+{
+"category": "한자어",
+"term": "임종",
+"hanja": "臨終",
+"sense": 1,
+"definition": "죽음을 맞이함.",
+"example": "할머니는 편안하게 임종을 하셨다.",
+"related": [
+"≒ 임명",
+"≒ 임명종"
+]
+},
+{
+"category": "한자어",
+"term": "임종",
+"hanja": "臨終",
+"sense": 2,
+"definition": "부모가 돌아가실 때 그 곁에 지키고 있음.",
+"example": "아들은 어머님의 임종을 지키지 못한 것이 못내 한이 되었다.",
+"related": [
+"≒ 종신"
+]
+},
+{
+"category": "한자어",
+"term": "임차",
+"hanja": "賃借",
+"definition": "돈을 내고 남의 물건을 빌려 씀.",
+"example": "은행 돈을 빌려 사무실을 임차하였다.",
+"related": [
+"↔ 임대"
+]
+},
+{
+"category": "한자어",
+"term": "입선",
+"hanja": "入選",
+"definition": "출품한 작품이 심사에 합격하여 뽑힘.",
+"example": "전시회 1층에는 이번 대회의 입선 작품들이 전시되었다."
+},
+{
+"category": "한자어",
+"term": "입찰",
+"hanja": "入札",
+"definition": "「경제」 상품의 매매나 도급 계약을 체결할 때 여러 희망자들에게 각자의 낙찰 희망 가격을 서면으로 제출하게 하는 일.",
+"example": "여러 업체들이 우리가 예상한 것보다 낮은 입찰 금액을 제출했다."
+},
+{
+"category": "한자어",
+"term": "입추",
+"hanja": "立錐",
+"definition": "송곳을 세움."
+},
+{
+"category": "관용구",
+"term": "입추의 여지가 없다",
+"definition": "송곳 끝도 세울 수 없을 정도라는 뜻으로, 발 들여놓을 데가 없을 정도로 많은 사람들이 꽉 들어찬 경우를 비유적으로 이르는 말."
+},
+{
+"category": "한자어",
+"term": "자웅",
+"hanja": "雌雄",
+"sense": 1,
+"definition": "암컷과 수컷을 아울러 이르는 말.",
+"example": "그의 집 마당에는 닭 한 자웅이 있었다.",
+"related": [
+"= 암수"
+]
+},
+{
+"category": "한자어",
+"term": "자웅",
+"hanja": "雌雄",
+"sense": 2,
+"definition": "승부, 우열, 강약 따위를 비유적으로 이르는 말.",
+"example": "자웅을 겨루다. / 자웅을 다투다."
+},
+{
+"category": "한자어",
+"term": "자작",
+"hanja": "自酌",
+"definition": "자기 스스로 술을 따라 마심.",
+"example": "자작으로 잔을 비우다."
+},
+{
+"category": "한자어",
+"term": "자충수",
+"hanja": "自充手",
+"sense": 1,
+"definition": "「체육」 바둑에서, 자충이 되는 수.",
+"example": "자충수를 두다."
+},
+{
+"category": "한자어",
+"term": "자충수",
+"hanja": "自充手",
+"sense": 2,
+"definition": "스스로 행한 행동이 결국에 가서는 자신에게 불리한 결과를 가져오게 됨을 비유적으로 이르는 말.",
+"example": "그는 실언을 해서 자충수를 두는 꼴이 되었다."
+},
+{
+"category": "한자어",
+"term": "작고",
+"hanja": "作故",
+"definition": "고인이 되었다는 뜻으로, 사람의 죽음을 높여 이르는 말."
+},
+{
+"category": "한자어",
+"term": "작렬하다",
+"hanja": "炸裂",
+"sense": 1,
+"definition": "포탄 따위가 터져서 쫙 퍼지다.",
+"example": "작렬하는 포성. / 수류탄이 작렬하다."
+},
+{
+"category": "한자어",
+"term": "작렬하다",
+"hanja": "炸裂",
+"sense": 2,
+"definition": "(비유적으로) 박수 소리나 운동 경기에서의 공격 따위가 포탄이 터지듯 극렬하게 터져 나오다."
+},
+{
+"category": "한자어",
+"term": "작태",
+"hanja": "作態",
+"sense": 1,
+"definition": "의도적으로 어떠한 태도나 표정을 지음. 또는 그 태도나 표정.",
+"example": "아양스러운 작태. / 가게 주인은 손님에게 친절한 작태를 해 보였다."
+},
+{
+"category": "한자어",
+"term": "작태",
+"hanja": "作態",
+"sense": 2,
+"definition": "하는 짓거리.",
+"example": "몰상식한 작태를 보이다."
+},
+{
+"category": "한자어",
+"term": "잠언",
+"hanja": "箴言",
+"definition": "가르쳐서 훈계하는 말."
+},
+{
+"category": "한자어",
+"term": "잡기",
+"hanja": "雜技",
+"definition": "잡다한 놀이의 기술이나 재주.",
+"example": "그는 잡기에 능하다."
+},
+{
+"category": "한자어",
+"term": "장계",
+"hanja": "狀啓",
+"definition": "왕명을 받고 지방에 나가 있는 신하가 자기 관하(管下)의 중요한 일을 왕에게 보고하던 일. 또는 그런 문서."
+},
+{
+"category": "한자어",
+"term": "장고",
+"hanja": "長考",
+"definition": "오랫동안 깊이 생각함.",
+"example": "천재 바둑 기사는 인공지능 컴퓨터의 변칙적인 수에 장고를 거듭했다."
+},
+{
+"category": "한자어",
+"term": "장사진",
+"hanja": "長蛇陣",
+"definition": "많은 사람이 줄을 지어 길게 늘어선 모양을 이르는 말.",
+"example": "결승전의 입장권을 구입하려는 사람들이 새벽부터 장사진을 치고 있다."
+},
+{
+"category": "한자어",
+"term": "장악",
+"hanja": "掌握",
+"definition": "손안에 잡아 쥔다는 뜻으로, 무엇을 마음대로 할 수 있게 됨을 이르는 말.",
+"example": "그는 언론을 장악하기 시작했다."
+},
+{
+"category": "한자어",
+"term": "장지",
+"hanja": "葬地",
+"definition": "장사하여 시체를 묻는 땅.",
+"example": "장지로 향하다. / 장지는 어디로 정했는가?"
+},
+{
+"category": "한자어",
+"term": "장착",
+"hanja": "裝着",
+"definition": "의복, 기구, 장비 따위에 장치를 부착함.",
+"example": "안전띠 장착을 의무화하다."
+},
+{
+"category": "한자어",
+"term": "재고",
+"hanja": "再考",
+"definition": "어떤 일이나 문제 따위에 대하여 다시 생각함.",
+"example": "그 일의 결과는 너무나 뻔하므로 재고의 여지도 없다."
+},
+{
+"category": "한자어",
+"term": "재기",
+"hanja": "才氣",
+"definition": "재주가 있는 기질.",
+"example": "재기 발랄한 젊은이. / 재기가 넘치다. / 재기가 있다."
+},
+{
+"category": "한자어",
+"term": "재원",
+"hanja": "才媛",
+"definition": "재주가 뛰어난 젊은 여자.",
+"example": "그녀는 이 지방에서 이름난 재원이다."
+},
+{
+"category": "한자어",
+"term": "쟁탈",
+"hanja": "爭奪",
+"definition": "서로 다투어 빼앗음.",
+"example": "왕위 쟁탈. / 사람들이 모였다 하면 이권 쟁탈에만 열을 올렸다."
+},
+{
+"category": "한자어",
+"term": "저간",
+"hanja": "這間",
+"definition": "바로 얼마 전부터 이제까지의 무렵.",
+"example": "저간의 소식.",
+"related": [
+"= 요즈음"
+]
+},
+{
+"category": "한자어",
+"term": "적폐",
+"hanja": "積弊",
+"definition": "오랫동안 쌓이고 쌓인 폐단.",
+"example": "새로운 세제법이 이전의 적폐를 극복할 수 있기를 모두가 바란다."
+},
+{
+"category": "한자어",
+"term": "전망",
+"hanja": "展望",
+"definition": "앞날을 헤아려 내다봄. 또는 내다보이는 장래의 상황.",
+"example": "도시 교통 문제의 현황과 전망."
+},
+{
+"category": "한자어",
+"term": "전역",
+"hanja": "全域",
+"definition": "어느 지역의 전체.",
+"example": "수도권 전역에 비가 온다."
+},
+{
+"category": "한자어",
+"term": "전용",
+"hanja": "專用",
+"definition": "특정한 목적으로 일정한 부문에만 한하여 씀.",
+"example": "버스 전용 차선."
+},
+{
+"category": "한자어",
+"term": "전치",
+"hanja": "全治",
+"definition": "병을 완전히 고침.",
+"example": "전치 4주의 중상을 입다."
+},
+{
+"category": "한자어",
+"term": "절찬리",
+"hanja": "絶讚裡",
+"definition": "지극한 칭찬을 받는 가운데.",
+"example": "공연이 절찬리에 상연되었다. / 신제품은 절찬리에 판매되고 있다."
+},
+{
+"category": "한자어",
+"term": "점멸",
+"hanja": "漸滅",
+"definition": "점점 멸망하여 감.",
+"example": "찬란한 문화를 꽃피웠던 나라도 점멸의 길로 접어든 경우가 많다."
+},
+{
+"category": "한자어",
+"term": "점유",
+"hanja": "占有",
+"definition": "물건이나 영역, 지위 따위를 차지함.",
+"example": "이 제품의 중국 시장 점유 비율이 지속적으로 상승했다."
+},
+{
+"category": "한자어",
+"term": "접수",
+"hanja": "接受",
+"sense": 1,
+"definition": "신청이나 신고 따위를 구두(口頭)나 문서로 받음.",
+"example": "접수 번호. / 원서 접수. / 접수를 마감하다."
+},
+{
+"category": "한자어",
+"term": "접수",
+"hanja": "接受",
+"sense": 2,
+"definition": "돈이나 물건 따위를 받음.",
+"example": "너만 좋다면 부의금 접수는 내가 맡아보면 어떠니?"
+},
+{
+"category": "한자어",
+"term": "정곡",
+"hanja": "正鵠",
+"sense": 1,
+"definition": "과녁의 한가운데가 되는 점.",
+"example": "정곡을 맞히다. / 화살이 정곡에 꽂히다."
+},
+{
+"category": "한자어",
+"term": "정곡",
+"hanja": "正鵠",
+"sense": 2,
+"definition": "가장 중요한 요점 또는 핵심.",
+"example": "정곡을 짚다. / 정곡을 뚫다. / 정곡을 찌르다."
+},
+{
+"category": "한자어",
+"term": "정곡",
+"hanja": "正鵠",
+"sense": 3,
+"definition": "('정곡으로' 꼴로 쓰여) 조금도 틀림없이 바로.",
+"example": "그는 심장에 정곡으로 칼을 맞고 죽었다."
+},
+{
+"category": "한자어",
+"term": "정서",
+"hanja": "情緖",
+"definition": "사람의 마음에 일어나는 여러 가지 감정. 또는 감정을 불러일으키는 기분이나 분위기.",
+"example": "그는 자연 속에서 느낀 정서를 시로 읊었다."
+},
+{
+"category": "한자어",
+"term": "정주",
+"hanja": "定住",
+"definition": "일정한 곳에 자리를 잡고 삶.",
+"example": "청사 이전을 반대하는 사람들은 이 지역에 오랫동안 정주해 온 사람들이다."
+},
+{
+"category": "한자어",
+"term": "정치하다",
+"hanja": "精緻--",
+"definition": "정교하고 치밀하다.",
+"example": "교수는 다른 학자들을 설득하기 위해 좀 더 정치한 논리를 마련했다."
+},
+{
+"category": "한자어",
+"term": "제고",
+"hanja": "提高",
+"definition": "수준이나 정도 따위를 끌어올림.",
+"example": "생산성의 제고. / 능률의 제고. / 이미지 제고."
+},
+{
+"category": "한자어",
+"term": "제반",
+"hanja": "諸般",
+"definition": "어떤 것과 관련된 모든 것.",
+"example": "제반 사항. / 서울은 대도시의 제반 면모를 갖춘 국제적 도시다."
+},
+{
+"category": "한자어",
+"term": "제재",
+"hanja": "制裁",
+"sense": 1,
+"definition": "일정한 규칙이나 관습의 위반에 대하여 제한하거나 금지함. 또는 그런 조치.",
+"example": "제재를 가하다. / 아무런 제재도 안 받고 무사통과했다."
+},
+{
+"category": "한자어",
+"term": "제재",
+"hanja": "制裁",
+"sense": 2,
+"definition": "『법률』 법이나 규정을 어겼을 때 국가가 처벌이나 금지 따위를 행함. 또는 그런 일.",
+"example": "유엔 안보리의 도발국 제재 방안."
+},
+{
+"category": "한자어",
+"term": "제청",
+"hanja": "提請",
+"definition": "어떤 안건을 제시하여 결정하여 달라고 청구함.",
+"example": "국무총리의 제청으로 장관이 임명된다."
+},
+{
+"category": "한자어",
+"term": "조망",
+"hanja": "眺望",
+"definition": "먼 곳을 바라봄. 또는 그런 경치.",
+"example": "조망이 좋다. / 조망이 탁 트이다."
+},
+{
+"category": "한자어",
+"term": "조문",
+"hanja": "弔問",
+"definition": "남의 죽음에 대하여 슬퍼하는 뜻을 드러내어 상주(喪主)를 위문함. 또는 그 위문.",
+"example": "조문을 가다. / 조문을 온 그는 유족보다 더 목메어 애통해했다.",
+"related": [
+"≒ 문상"
+]
+},
+{
+"category": "한자어",
+"term": "조장",
+"hanja": "助長",
+"definition": "바람직하지 않은 일을 더 심해지도록 부추김.",
+"example": "지역감정을 조장하다.",
+"note": "'조장(助長)'은 부정적인 상황에 어울리는 표현이다."
+},
+{
+"category": "한자어",
+"term": "조정",
+"hanja": "調停",
+"definition": "분쟁을 중간에서 화해하게 하거나 서로 타협점을 찾아 합의하도록 함.",
+"example": "의견 조정. / 실무자 간의 이견 조정을 위한 회의가 열렸다."
+},
+{
+"category": "한자어",
+"term": "졸지",
+"hanja": "猝地",
+"definition": "(흔히 '졸지에' 꼴로 쓰여) 갑작스러운 판국.",
+"example": "일제히 퍼붓는 집중 사격에 아군의 상당수가 졸지에 희생을 당했다."
+},
+{
+"category": "한자어",
+"term": "종식",
+"hanja": "終熄",
+"definition": "한때 매우 성하던 현상이나 일이 끝나거나 없어짐.",
+"example": "냉전의 종식."
+},
+{
+"category": "한자어",
+"term": "좌천",
+"hanja": "左遷",
+"definition": "낮은 관직이나 지위로 떨어지거나 외직으로 전근됨을 이르는 말. 예전에 중국에서 오른쪽을 숭상하고 왼쪽을 멸시하였던 데서 유래한다.",
+"example": "국장에서 과장으로 좌천되다."
+},
+{
+"category": "한자어",
+"term": "주재",
+"hanja": "主宰",
+"definition": "어떤 일을 중심이 되어 맡아 처리함.",
+"example": "국무총리 주재로 가뭄 대책 회의를 열었다."
+},
+{
+"category": "한자어",
+"term": "주지",
+"hanja": "周知",
+"definition": "여러 사람이 두루 앎.",
+"example": "주지하다시피 수출난으로 회사가 어려움을 겪고 있습니다."
+},
+{
+"category": "한자어",
+"term": "준거",
+"hanja": "準據",
+"definition": "사물의 정도나 성격 따위를 알기 위한 근거나 기준.",
+"example": "판단의 준거가 명확하지 않다.",
+"related": [
+"= 표준"
+]
+},
+{
+"category": "한자어",
+"term": "준공",
+"hanja": "竣工",
+"definition": "공사를 다 마침.",
+"example": "스포츠 센터를 착공 2년 만에 준공하였다."
+},
+{
+"category": "한자어",
+"term": "준수",
+"hanja": "遵守",
+"definition": "전례나 규칙, 명령 따위를 그대로 좇아서 지킴.",
+"example": "안전 수칙 준수. / 준수 사항."
+},
+{
+"category": "한자어",
+"term": "중용",
+"hanja": "重用",
+"definition": "중요한 자리에 임용함.",
+"example": "요직에 중용되다."
+},
+{
+"category": "한자어",
+"term": "즐비하다",
+"hanja": "櫛比--",
+"definition": "빗살처럼 줄지어 빽빽하게 늘어서 있다.",
+"example": "지금 그곳은 고층 아파트들이 즐비하게 들어섰다."
+},
+{
+"category": "한자어",
+"term": "증편",
+"hanja": "增便",
+"definition": "정기적인 교통편의 횟수를 늘림.",
+"example": "지금 추세로 보아 이 구간의 항공기 증편은 불가피하다."
+},
+{
+"category": "한자어",
+"term": "지연",
+"hanja": "遲延",
+"definition": "무슨 일을 더디게 끌어 시간을 늦춤. 또는 시간이 늦추어짐.",
+"example": "출발 시간이 지연되다. / 공사가 지연되다."
+},
+{
+"category": "한자어",
+"term": "진단",
+"hanja": "診斷",
+"definition": "『의학』 의사가 환자의 병 상태를 판단하는 일.",
+"example": "의사의 진단을 받다."
+},
+{
+"category": "한자어",
+"term": "진척",
+"hanja": "進陟",
+"sense": 1,
+"definition": "일이 목적한 방향대로 진행되어 감.",
+"example": "진척 과정. / 진척 상태. / 빠른 진척을 보이다."
+},
+{
+"category": "한자어",
+"term": "진척",
+"hanja": "進陟",
+"sense": 2,
+"definition": "벼슬이 높아짐."
+},
+{
+"category": "한자어",
+"term": "질곡",
+"hanja": "桎梏",
+"definition": "몹시 속박하여 자유를 가질 수 없는 고통의 상태를 비유적으로 이르는 말.",
+"example": "질곡의 세월."
+},
+{
+"category": "한자어",
+"term": "질책",
+"hanja": "叱責",
+"definition": "꾸짖어 나무람.",
+"example": "질책을 당하다. / 질책이 쏟아지다."
+},
+{
+"category": "한자어",
+"term": "집체",
+"hanja": "集體",
+"sense": 1,
+"definition": "물체가 한곳에 모여 이루어진 것."
+},
+{
+"category": "한자어",
+"term": "집체",
+"hanja": "集體",
+"sense": 2,
+"definition": "힘, 지혜, 동작, 개념 따위를 하나로 뭉친 것.",
+"example": "집체 훈련. / 집체 교육."
+},
+{
+"category": "한자어",
+"term": "징발",
+"hanja": "徵發",
+"definition": "남에게 물품을 강제적으로 모아 거둠.",
+"example": "반군은 점령지 주민들로부터 각종 물자의 징발을 시작했다."
+},
+{
+"category": "한자어",
+"term": "징후",
+"hanja": "徵候",
+"definition": "겉으로 나타나는 낌새.",
+"example": "지진이 발생하기 직전에는 여러 가지 징후가 나타난다."
+},
+{
+"category": "한자어",
+"term": "차제",
+"hanja": "此際",
+"definition": "(흔히 '차제에' 꼴로 쓰여) 때마침 주어진 기회.",
+"example": "미뤘던 문제는 차제에 꼭 짚고 넘어가자. / 차제에 그동안 못 했던 말을 다 털어놓겠습니다."
+},
+{
+"category": "한자어",
+"term": "차출",
+"hanja": "差出",
+"sense": 1,
+"definition": "예전에, 관원으로 임명하기 위하여 인재를 뽑던 일."
+},
+{
+"category": "한자어",
+"term": "차출",
+"hanja": "差出",
+"sense": 2,
+"definition": "어떤 일을 시키기 위하여 인원을 선발하여 냄.",
+"example": "인원 차출. / 노동력 차출. / 병력 차출. / 대표 팀 차출.",
+"note": "'뽑아냄'으로 순화."
+},
+{
+"category": "한자어",
+"term": "차치",
+"hanja": "且置",
+"definition": "내버려 두고 문제 삼지 아니함.",
+"example": "다른 건 차치하더라도 공식 석상에서의 태도는 그냥 넘어갈 수 없다."
+},
+{
+"category": "한자어",
+"term": "착공",
+"hanja": "着工",
+"definition": "공사를 시작함.",
+"example": "지하철 확장 사업은 이달 중에 착공될 예정이다."
+},
+{
+"category": "한자어",
+"term": "착상",
+"hanja": "着想",
+"definition": "어떤 일이나 창작의 실마리가 되는 생각이나 구상 따위를 잡음. 또는 그 생각이나 구상.",
+"example": "문제 해결을 위한 기발한 착상이 떠올랐다."
+},
+{
+"category": "한자어",
+"term": "착수",
+"hanja": "着手",
+"definition": "어떤 일에 손을 댐. 또는 어떤 일을 시작함.",
+"example": "그들은 역할을 분담해 취재에 착수하였다."
+},
+{
+"category": "한자어",
+"term": "착오",
+"hanja": "錯誤",
+"definition": "착각을 하여 잘못함. 또는 그런 잘못.",
+"example": "착오가 생기다. / 착오를 저지르다. / 담당자의 착오로 문제가 발생하였다."
+},
+{
+"category": "한자어",
+"term": "착종",
+"hanja": "錯綜",
+"definition": "이것저것이 뒤섞여 엉클어짐.",
+"example": "이사하느라고 그의 방에는 많은 책이 착종되어 있다."
+},
+{
+"category": "한자어",
+"term": "찬동",
+"hanja": "贊同",
+"definition": "어떤 행동이나 견해 따위가 옳거나 좋다고 판단하여 그에 뜻을 같이함.",
+"example": "조직원들은 내 계획에 찬동의 뜻을 표시했다."
+},
+{
+"category": "한자어",
+"term": "찰나",
+"hanja": "刹那",
+"sense": 1,
+"definition": "어떤 일이나 사물 현상이 일어나는 바로 그때.",
+"example": "그녀가 물속으로 뛰어들려던 찰나에 그가 나타나 그녀를 말렸다."
+},
+{
+"category": "한자어",
+"term": "찰나",
+"hanja": "刹那",
+"sense": 2,
+"definition": "『불교』 매우 짧은 시간."
+},
+{
+"category": "한자어",
+"term": "참가",
+"hanja": "參加",
+"definition": "모임이나 단체 또는 일에 관계하여 들어감.",
+"example": "참가 대상. / 전원 참가. / 참가에 의의가 있다."
+},
+{
+"category": "한자어",
+"term": "참척",
+"hanja": "慘慽",
+"definition": "자손이 부모나 조부모보다 먼저 죽는 일.",
+"example": "참척의 아픔."
+},
+{
+"category": "한자어",
+"term": "창건",
+"hanja": "創建",
+"definition": "건물이나 조직체 따위를 처음으로 세우거나 만듦.",
+"example": "선운사 창건 설화. / 신당의 창건 과정. / 새 왕조 창건."
+},
+{
+"category": "한자어",
+"term": "창궐",
+"hanja": "猖獗",
+"definition": "못된 세력이나 전염병 따위가 세차게 일어나 걷잡을 수 없이 퍼짐."
+},
+{
+"category": "한자어",
+"term": "창달",
+"hanja": "暢達",
+"definition": "거침없이 쑥쑥 뻗어 나감. 또는 그렇게 되게 함.",
+"example": "할머니는 민족 문화의 창달을 위해 평생을 바치셨다."
+},
+{
+"category": "한자어",
+"term": "채근",
+"hanja": "採根",
+"sense": 1,
+"definition": "식물의 뿌리를 캐냄."
+},
+{
+"category": "한자어",
+"term": "채근",
+"hanja": "採根",
+"sense": 2,
+"definition": "어떤 일의 내용, 원인, 근원 따위를 캐어 알아냄.",
+"example": "지금까지 채근을 해 본 바로 그는 이 사건과 무관하다."
+},
+{
+"category": "한자어",
+"term": "채근",
+"hanja": "採根",
+"sense": 3,
+"definition": "어떻게 행동하기를 따지어 독촉함.",
+"example": "두말 말고 어서 그렇게 하라고 채근했다."
+},
+{
+"category": "한자어",
+"term": "채근",
+"hanja": "採根",
+"sense": 4,
+"definition": "남에게 받을 것을 달라고 독촉함.",
+"example": "채권자의 빚 채근에 꽤 들볶였다."
+},
+{
+"category": "한자어",
+"term": "책동",
+"hanja": "策動",
+"definition": "좋지 아니한 일을 몰래 꾸미어 시행함.",
+"example": "암투와 음모와 책동을 자행하다."
+},
+{
+"category": "한자어",
+"term": "척결",
+"hanja": "剔抉",
+"sense": 1,
+"definition": "살을 도려내고 뼈를 발라냄."
+},
+{
+"category": "한자어",
+"term": "척결",
+"hanja": "剔抉",
+"sense": 2,
+"definition": "나쁜 부분이나 요소들을 깨끗이 없애 버림.",
+"example": "비리의 척결. / 부정부패 척결."
+},
+{
+"category": "한자어",
+"term": "천착",
+"hanja": "穿鑿",
+"definition": "어떤 원인이나 내용 따위를 따지고 파고들어 알려고 하거나 연구함.",
+"example": "다양한 실험을 통해 우리 것에 대한 천착을 계속하다."
+},
+{
+"category": "한자어",
+"term": "철석",
+"hanja": "鐵石",
+"sense": 1,
+"definition": "쇠와 돌을 아울러 이르는 말."
+},
+{
+"category": "한자어",
+"term": "철석",
+"hanja": "鐵石",
+"sense": 2,
+"definition": "매우 굳고 단단한 것을 비유적으로 이르는 말."
+},
+{
+"category": "한자어",
+"term": "첨삭",
+"hanja": "添削",
+"definition": "시문(詩文)이나 답안 따위의 내용 일부를 보태거나 삭제하여 고침.",
+"example": "첨삭 지도. / 편집부장은 언제나 기사 내용의 첨삭을 자기 맘대로 하였다."
+},
+{
+"category": "한자어",
+"term": "체계",
+"hanja": "體系",
+"definition": "일정한 원리에 따라서 낱낱의 부분이 짜임새 있게 조직되어 통일된 전체.",
+"example": "명령 체계. / 이론 체계."
+},
+{
+"category": "한자어",
+"term": "체류",
+"hanja": "滯留",
+"definition": "객지에 가서 머물러 있음.",
+"example": "체류 일정. / 장기 체류."
+},
+{
+"category": "한자어",
+"term": "체불",
+"hanja": "滯拂",
+"definition": "마땅히 지급하여야 할 것을 지급하지 못하고 미룸.",
+"example": "임금이 체불되다."
+},
+{
+"category": "한자어",
+"term": "체증",
+"hanja": "滯症",
+"definition": "교통의 흐름이 순조롭지 아니하여 길이 막히는 상태.",
+"example": "교통 체증이 해소되다."
+},
+{
+"category": "한자어",
+"term": "초록",
+"hanja": "抄錄",
+"definition": "필요한 부분만을 뽑아서 적음. 또는 그런 기록.",
+"example": "논문의 초록을 영문으로 작성하다."
+},
+{
+"category": "한자어",
+"term": "초미",
+"hanja": "焦眉",
+"definition": "(주로 '초미의' 꼴로 쓰여) 눈썹에 불이 붙었다는 뜻으로, 매우 급함을 이르는 말.",
+"example": "노사 양측의 견해차를 어떻게 좁히느냐가 초미의 관심사이다."
+},
+{
+"category": "한자어",
+"term": "초봉",
+"hanja": "初俸",
+"definition": "처음으로 받는 봉급.",
+"example": "요즘 대기업의 대졸자 초봉이 얼마인지 알기나 해?"
+},
+{
+"category": "한자어",
+"term": "촉탁되다",
+"hanja": "囑託--",
+"definition": "일이 부탁이 되어 맡겨지다.",
+"example": "그는 자기에게 억지로 촉탁된 일도 기꺼이 하는 것을 보면 참 무던해."
+},
+{
+"category": "한자어",
+"term": "추대",
+"hanja": "推戴",
+"definition": "윗사람으로 떠받듦.",
+"example": "임원들의 추대로 그는 회장이 되었다."
+},
+{
+"category": "한자어",
+"term": "추모",
+"hanja": "追慕",
+"definition": "죽은 사람을 그리며 생각함.",
+"example": "추모 행렬."
+},
+{
+"category": "한자어",
+"term": "추방",
+"hanja": "追放",
+"definition": "일정한 지역이나 조직 밖으로 쫓아냄.",
+"example": "국외 추방. / 부정부패 추방."
+},
+{
+"category": "한자어",
+"term": "추서",
+"hanja": "追敍",
+"definition": "죽은 뒤에 관등을 올리거나 훈장 따위를 줌.",
+"example": "훈장 추서."
+},
+{
+"category": "한자어",
+"term": "추인",
+"hanja": "追認",
+"definition": "지나간 사실을 소급하여 추후에 인정함.",
+"example": "회사 측은 긴급 회생 절차를 시행한 후 주주 총회에서 추인을 받기로 했다."
+},
+{
+"category": "한자어",
+"term": "추징",
+"hanja": "追徵",
+"definition": "『법률』 형법상 몰수하여야 할 물건을 몰수할 수 없을 때에 몰수할 수 없는 부분에 해당하는 값의 금전을 징수하는 일.",
+"example": "정부 당국은 세무 조사를 통해 탈세가 확인되면 세금을 추징하기로 했다."
+},
+{
+"category": "한자어",
+"term": "추출",
+"hanja": "抽出",
+"sense": 1,
+"definition": "전체 속에서 어떤 물건, 생각, 요소 따위를 뽑아냄.",
+"example": "이 글에서는 주된 생각이나 의견을 추출하기가 어렵다."
+},
+{
+"category": "한자어",
+"term": "추출",
+"hanja": "抽出",
+"sense": 2,
+"definition": "『수학』 모집단(母集團)에서 표본을 뽑아내는 일."
+},
+{
+"category": "한자어",
+"term": "추출",
+"hanja": "抽出",
+"sense": 3,
+"definition": "『화학』 고체 또는 액체의 혼합물에 용매(溶媒)를 가하여 혼합물 속의 어떤 물질을 용매에 녹여 뽑아내는 일."
+},
+{
+"category": "한자어",
+"term": "추풍선",
+"hanja": "秋風扇",
+"definition": "가을철의 부채라는 뜻으로, 철이 지나서 쓸모없이 된 물건을 비유적으로 이르는 말."
+},
+{
+"category": "한자어",
+"term": "축수",
+"hanja": "祝壽",
+"definition": "오래 살기를 빎.",
+"example": "산신령께 어머님의 축수를 기원하나이다."
+},
+{
+"category": "한자어",
+"term": "축출",
+"hanja": "逐出",
+"definition": "쫓아내거나 몰아냄.",
+"example": "당 지도부는 뇌물죄로 사법 처리를 당한 의원들의 축출을 결의하였다."
+},
+{
+"category": "한자어",
+"term": "출시",
+"hanja": "出市",
+"definition": "상품이 시중에 나옴. 또는 상품을 시중에 내보냄.",
+"example": "출시 시기. / 출시 기념행사."
+},
+{
+"category": "한자어",
+"term": "출현",
+"hanja": "出現",
+"definition": "나타나거나 또는 나타나서 보임.",
+"example": "고대 국가의 출현. / 구세주의 출현."
+},
+{
+"category": "한자어",
+"term": "치료",
+"hanja": "治療",
+"definition": "병이나 상처 따위를 잘 다스려 낫게 함.",
+"example": "그는 심한 감기에 걸려 병원에 가서 치료를 받아야 했다."
+},
+{
+"category": "한자어",
+"term": "치부",
+"hanja": "恥部",
+"definition": "남에게 드러내고 싶지 아니한 부끄러운 부분.",
+"example": "치부를 드러내다. / 치부를 폭로하다."
+},
+{
+"category": "한자어",
+"term": "치성",
+"hanja": "致誠",
+"sense": 1,
+"definition": "있는 정성을 다함. 또는 그 정성.",
+"example": "병자를 치성으로 간호하다.",
+"related": [
+"≒ 진관"
+]
+},
+{
+"category": "한자어",
+"term": "치성",
+"hanja": "致誠",
+"sense": 2,
+"definition": "신이나 부처에게 지성으로 빎. 또는 그런 일.",
+"example": "부녀자들이 치성을 드리려고 절을 들락거린다."
+},
+{
+"category": "한자어",
+"term": "친소",
+"hanja": "親疏",
+"definition": "친함과 친하지 아니함.",
+"example": "직원들은 사장이 친소 관계를 따져 일을 배분하는 것에 불만이 많았다."
+},
+{
+"category": "한자어",
+"term": "칩거",
+"hanja": "蟄居",
+"definition": "나가서 활동하지 아니하고 집 안에만 틀어박혀 있음.",
+"example": "칩거 생활을 하다."
+},
+{
+"category": "한자어",
+"term": "쾌거",
+"hanja": "快擧",
+"definition": "통쾌하고 장한 행위.",
+"example": "그는 올림픽에서 4관왕이 되는 쾌거를 이룩했다."
+},
+{
+"category": "한자어",
+"term": "타개하다",
+"hanja": "打開--",
+"definition": "매우 어렵거나 막힌 일을 잘 처리하여 해결의 길을 열다.",
+"example": "정부는 수출 부진을 타개하기 위해 새로운 경기 부양책을 내놓았다."
+},
+{
+"category": "한자어",
+"term": "탁견",
+"hanja": "卓見",
+"definition": "두드러진 의견이나 견해.",
+"example": "그는 환경 문제에 대해 탁견을 가지고 있다.",
+"note": "'뛰어난 의견'으로 순화."
+},
+{
+"category": "한자어",
+"term": "토로",
+"hanja": "吐露",
+"definition": "마음에 있는 것을 죄다 드러내어서 말함.",
+"example": "어머니께 흉금을 토로하다. / 친구에게 심정을 토로하다."
+},
+{
+"category": "한자어",
+"term": "통달하다",
+"hanja": "通達--",
+"sense": 1,
+"definition": "말이나 문서로써 기별하여 알리다.",
+"example": "육군 본부는 각 부대에 전투 준비를 철저히 하라고 통달했다."
+},
+{
+"category": "한자어",
+"term": "통달하다",
+"hanja": "通達--",
+"sense": 2,
+"definition": "사물의 이치나 지식, 기술 따위를 훤히 알거나 아주 능란하게 하다.",
+"example": "한문과 불경에 통달하다."
+},
+{
+"category": "한자어",
+"term": "통변",
+"hanja": "通辯",
+"definition": "말이 통하지 아니하는 사람 사이에서 뜻이 통하도록 말을 옮겨 줌. 또는 그런 일을 하는 사람."
+},
+{
+"category": "한자어",
+"term": "특기",
+"hanja": "特記",
+"definition": "특별히 다루어 기록함. 또는 그런 기록.",
+"example": "특기 사항. / 특기할 만한 사건이 벌어지다."
+},
+{
+"category": "한자어",
+"term": "파장",
+"hanja": "波長",
+"definition": "충격적인 일이 끼치는 영향 또는 그 영향이 미치는 정도나 동안을 비유적으로 이르는 말.",
+"example": "신문 기사의 파장은 매우 컸다."
+},
+{
+"category": "한자어",
+"term": "파천황",
+"hanja": "破天荒",
+"definition": "(주로 '파천황의' 꼴로 쓰여) 이전에 아무도 하지 못한 일을 처음으로 해냄을 이르는 말. 《북몽쇄언(北夢瑣言)》에 나오는 말로, 중국 당나라의 형주(荊州) 지방에서 과거의 합격자가 없어 천지가 아직 열리지 않은 혼돈한 상태라는 뜻으로 천황(天荒)이라고 불리었는데 유세(劉蛻)라는 사람이 처음으로 합격하여 천황을 깼다는 데서 유래한다.",
+"example": "그가 이번에 달성한 성과는 파천황의 일이다."
+},
+{
+"category": "한자어",
+"term": "팽배",
+"hanja": "澎湃/彭湃",
+"definition": "어떤 기세나 사조 따위가 매우 거세게 일어남.",
+"example": "기대 심리의 팽배. / 위기감 팽배."
+},
+{
+"category": "한자어",
+"term": "포복절도",
+"hanja": "抱腹絶倒",
+"definition": "배를 그러안고 넘어질 정도로 몹시 웃음.",
+"example": "그의 유머에 모두가 포복절도하였다."
+},
+{
+"category": "한자어",
+"term": "폭등",
+"hanja": "暴騰",
+"definition": "물건의 값이나 주가 따위가 갑자기 큰 폭으로 오름.",
+"example": "가뭄으로 농작물이 피해를 입어 농산물 값의 폭등 사태가 우려된다."
+},
+{
+"category": "한자어",
+"term": "품의",
+"hanja": "稟議",
+"definition": "웃어른이나 상사에게 말이나 글로 여쭈어 의논함.",
+"example": "그는 선생님께 사전 품의를 해 왔어야 하는데 그러지 않았다."
+},
+{
+"category": "한자어",
+"term": "풍미",
+"hanja": "風味",
+"definition": "음식의 고상한 맛."
+},
+{
+"category": "한자어",
+"term": "풍운",
+"hanja": "風雲",
+"sense": 1,
+"definition": "바람과 구름을 아울러 이르는 말.",
+"example": "풍운의 조화를 부릴 줄 아는 신선의 경지에 이르다."
+},
+{
+"category": "한자어",
+"term": "풍운",
+"hanja": "風雲",
+"sense": 2,
+"definition": "용이 바람과 구름을 타고 하늘로 오르는 것처럼 영웅호걸들이 세상에 두각을 나타내는 좋은 기운.",
+"example": "풍운을 타다. / 풍운과 비운으로 점철된 생애."
+},
+{
+"category": "한자어",
+"term": "풍운",
+"hanja": "風雲",
+"sense": 3,
+"definition": "사회적·정치적으로 세상이 크게 변하려는 기운을 비유적으로 이르는 말.",
+"example": "심상치 않은 풍운이 감돌자 그는 인적이 드문 곳으로 거처를 옮겼다."
+},
+{
+"category": "한자어",
+"term": "풍조",
+"hanja": "風潮",
+"sense": 1,
+"definition": "바람과 조수(潮水)를 아울러 이르는 말. 또는 바람에 따라 흐르는 조수."
+},
+{
+"category": "한자어",
+"term": "풍조",
+"hanja": "風潮",
+"sense": 2,
+"definition": "시대에 따라 변하는 세태.",
+"example": "과소비 풍조. / 불신 풍조."
+},
+{
+"category": "한자어",
+"term": "피력하다",
+"hanja": "披瀝--",
+"definition": "생각하는 것을 털어놓고 말하다.",
+"example": "자신의 견해를 피력하다."
+},
+{
+"category": "한자어",
+"term": "피폐하다",
+"hanja": "疲弊--",
+"definition": "지치고 쇠약하여지다.",
+"example": "형의 피폐한 모습이 순간적으로 나를 두렵게 했다."
+},
+{
+"category": "한자어",
+"term": "한담",
+"hanja": "閑談",
+"definition": "심심하거나 한가할 때 나누는 이야기. 또는 별로 중요하지 아니한 이야기.",
+"example": "한담을 나누다. / 한담을 즐기다."
+},
+{
+"category": "한자어",
+"term": "할거",
+"hanja": "割據",
+"definition": "땅을 나누어 차지하고 굳게 지킴.",
+"example": "군웅이 할거하던 춘추 전국 시대."
+},
+{
+"category": "한자어",
+"term": "함락",
+"hanja": "陷落",
+"definition": "적의 성, 요새, 진지 따위를 공격하여 무너뜨림.",
+"example": "적군에게 수도가 함락되었다."
+},
+{
+"category": "한자어",
+"term": "함양",
+"hanja": "涵養",
+"definition": "능력이나 품성 따위를 길러 쌓거나 갖춤.",
+"example": "인격 함양. / 독서는 학생들의 지식과 정서 함양에 크게 이바지한다."
+},
+{
+"category": "한자어",
+"term": "함의하다",
+"hanja": "含意--",
+"definition": "말이나 글 속에 어떠한 뜻을 포함하고 있다.",
+"example": "우리는 파격적인 그의 그림이 무엇을 함의하고 있는가를 어렴풋이 느낄 수 있었다."
+},
+{
+"category": "한자어",
+"term": "항간",
+"hanja": "巷間",
+"definition": "일반 사람들 사이.",
+"example": "항간에 떠도는 소문. / 이 노래가 요즘 항간에서 유행하는 것이다."
+},
+{
+"category": "한자어",
+"term": "항진",
+"hanja": "亢進",
+"sense": 1,
+"definition": "위세 좋게 뽐내고 나아감."
+},
+{
+"category": "한자어",
+"term": "항진",
+"hanja": "亢進",
+"sense": 2,
+"definition": "병세 따위가 심하여짐."
+},
+{
+"category": "한자어",
+"term": "항진",
+"hanja": "亢進",
+"sense": 3,
+"definition": "기세나 기능 따위가 높아짐."
+},
+{
+"category": "한자어",
+"term": "해촉",
+"hanja": "解囑",
+"definition": "위촉했던 직책이나 자리에서 물러나게 함.",
+"example": "규정을 어겼다는 이유로 해촉 통보를 받다."
+},
+{
+"category": "한자어",
+"term": "해후",
+"hanja": "邂逅",
+"definition": "오랫동안 헤어졌다가 뜻밖에 다시 만남.",
+"example": "감격적인 해후. / 극적인 해후. / 헤어졌던 친구와 십여 년 만에 해후했다."
+},
+{
+"category": "한자어",
+"term": "행간",
+"hanja": "行間",
+"sense": 1,
+"definition": "쓰거나 인쇄한 글의 줄과 줄 사이. 또는 행과 행 사이.",
+"example": "행간이 넓다. / 행간에 밑줄을 긋다."
+},
+{
+"category": "한자어",
+"term": "행간",
+"hanja": "行間",
+"sense": 2,
+"definition": "글에 직접적으로 나타나 있지 아니하나 그 글을 통하여 나타내려고 하는 숨은 뜻을 비유적으로 이르는 말.",
+"example": "행간을 읽다."
+},
+{
+"category": "한자어",
+"term": "향년",
+"hanja": "享年",
+"definition": "한평생 살아 누린 나이. 죽을 때의 나이를 말할 때 쓴다.",
+"example": "향년 83세를 일기(一期)로 별세하다."
+},
+{
+"category": "한자어",
+"term": "확장",
+"hanja": "擴張",
+"definition": "범위, 규모, 세력 따위를 늘려서 넓힘.",
+"example": "고속 도로 확장이 시급하다."
+},
+{
+"category": "한자어",
+"term": "환담",
+"hanja": "歡談",
+"definition": "정답고 즐겁게 서로 이야기함. 또는 그런 이야기.",
+"example": "환담을 나누다."
+},
+{
+"category": "한자어",
+"term": "환희",
+"hanja": "歡喜",
+"definition": "매우 기뻐함. 또는 큰 기쁨.",
+"example": "환희의 함성. / 환희에 차다."
+},
+{
+"category": "한자어",
+"term": "횡사",
+"hanja": "橫死",
+"definition": "뜻밖의 재앙으로 죽음.",
+"example": "비명에 횡사를 당하다."
+},
+{
+"category": "한자어",
+"term": "효험",
+"hanja": "效驗",
+"definition": "일의 좋은 보람. 또는 어떤 작용의 결과.",
+"example": "약을 먹은 지 꽤 되었는데도 효험은 나타날 기미조차 보이지 않았다."
+},
+{
+"category": "한자어",
+"term": "흔연하다",
+"hanja": "欣然--",
+"definition": "기쁘거나 반가워 기분이 좋다.",
+"example": "반가운 소식을 접하니 기쁘고 흔연하기 짝이 없습니다."
+},
+{
+"category": "한자어",
+"term": "흠모",
+"hanja": "欽慕",
+"definition": "기쁜 마음으로 공경하며 사모함.",
+"example": "흠모의 대상."
+},
+{
+"category": "한자어",
+"term": "힐난",
+"hanja": "詰難",
+"definition": "트집을 잡아 거북할 만큼 따지고 듦.",
+"example": "그 속에는 이 사람을 절대 용서할 수 없다는 힐난이 담겨 있었다."
+},
+{
+"category": "한자어",
+"term": "힐문",
+"hanja": "詰問",
+"definition": "트집을 잡아 따져 물음.",
+"example": "그것은 거의 힐문에 가까운 물음이었다."
+},
+{
+"category": "혼동 어휘",
+"term": "개선",
+"hanja": "改善",
+"definition": "잘못된 것이나 부족한 것, 나쁜 것 따위를 고쳐 더 좋게 만듦.",
+"example": "회사는 유통 구조를 개선하기 위해 노력하고 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "개발",
+"hanja": "開發",
+"sense": 1,
+"definition": "토지나 천연자원 따위를 유용하게 만듦.",
+"example": "유전 개발. / 수자원 개발. / 경치가 좋은 곳은 관광지로 개발하려는 시도가 끊이지 않고 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "개발",
+"hanja": "開發",
+"sense": 2,
+"definition": "지식이나 재능 따위를 발달하게 함.",
+"example": "자신의 능력 개발."
+},
+{
+"category": "혼동 어휘",
+"term": "개발",
+"hanja": "開發",
+"sense": 3,
+"definition": "산업이나 경제 따위를 발전하게 함.",
+"example": "산업 개발."
+},
+{
+"category": "혼동 어휘",
+"term": "개발",
+"hanja": "開發",
+"sense": 4,
+"definition": "새로운 물건을 만들거나 새로운 생각을 내어놓음.",
+"example": "신제품 개발. / 핵무기 개발. / 프로그램 개발."
+},
+{
+"category": "혼동 어휘",
+"term": "계발",
+"hanja": "啓發",
+"definition": "슬기나 재능, 사상 따위를 일깨워 줌.",
+"example": "상상력 계발. / 외국어 능력의 계발. / 평소에 자기 계발을 계속한 사람은 좋은 기회가 왔을 때에 그것을 잡을 수 있다. / 점심시간을 자기 계발에 활용하는 직장인들이 많다."
+},
+{
+"category": "혼동 어휘",
+"term": "개칠",
+"hanja": "改漆",
+"sense": 1,
+"definition": "한 번 칠한 것을 다시 고쳐 칠함.",
+"example": "칠이 벗겨진 불상을 개칠하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "개칠",
+"hanja": "改漆",
+"sense": 2,
+"definition": "글씨를 쓰거나 그림을 그릴 때, 한 번 그은 곳에 다시 붓을 대서 칠함.",
+"example": "이것은 물론 지우거나 개칠하지 못하기 때문이기도 하지만 실상 획의 성패란 획 그 자체에 있지 않고……."
+},
+{
+"category": "혼동 어휘",
+"term": "수정",
+"hanja": "修正",
+"definition": "바로잡아 고침.",
+"example": "궤도의 수정. / 대폭적인 수정. / 향후 목표에 근본적인 수정을 가하다."
+},
+{
+"category": "혼동 어휘",
+"term": "수정",
+"hanja": "修訂",
+"definition": "글이나 글자의 잘못된 점을 고침.",
+"example": "그는 출판하기 전에 원고의 오타를 꼼꼼히 수정하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "갱신",
+"hanja": "更新",
+"definition": "『법률』 법률관계의 존속 기간이 끝났을 때 그 기간을 연장하는 일.",
+"example": "계약 갱신. / 비자 갱신. / 여권 갱신을 받다."
+},
+{
+"category": "혼동 어휘",
+"term": "경신",
+"hanja": "更新",
+"sense": 1,
+"definition": "기록경기 따위에서, 종전의 기록을 깨뜨림.",
+"example": "마라톤 세계 기록 경신. / 최근 열린 국제 공인 큐브 대회에서 한국인이 세계 최고 기록을 경신했다."
+},
+{
+"category": "혼동 어휘",
+"term": "결벽",
+"hanja": "潔癖",
+"definition": "유난스럽게 깨끗한 것을 좋아하는 성벽(性癖).",
+"example": "결벽이 심하다.",
+"note": "그가 결벽하다면 누명은 곧 벗겨질 것이다.(×) → 그가 결백하다면 누명은 곧 벗겨질 것이다.(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "결백",
+"hanja": "潔白",
+"definition": "행동이나 마음씨가 깨끗하고 조촐하여 아무런 허물이 없음.",
+"example": "결백을 주장하다. / 그가 결백하다면 누명은 곧 벗겨질 것이다.",
+"note": "그가 결벽하다면(×) → 그가 결백하다면(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "결제",
+"hanja": "決濟",
+"definition": "『경제』 증권 또는 대금을 주고받아 매매 당사자 사이의 거래 관계를 끝맺는 일.",
+"example": "결제 자금. / 어음의 결제. / 부모님의 전화 요금은 내 통장에서 자동 결제된다."
+},
+{
+"category": "혼동 어휘",
+"term": "결손",
+"hanja": "缺損",
+"definition": "어느 부분이 없거나 잘못되어서 불완전함.",
+"example": "동력 전달 장치에 결손이 있다.",
+"note": "'모자람'으로 순화."
+},
+{
+"category": "혼동 어휘",
+"term": "결여",
+"hanja": "缺如",
+"definition": "마땅히 있어야 할 것이 빠져서 없거나 모자람.",
+"example": "그에게는 성실성이 결여되어 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "결함",
+"hanja": "缺陷",
+"definition": "부족하거나 완전하지 못하여 흠이 되는 부분.",
+"example": "성격상의 결함. / 마찬가지로 한 자가 잘못된 때는 그다음 자 또는 그 다음다음 자로써 그 결함을 보상하려고 합니다."
+},
+{
+"category": "혼동 어휘",
+"term": "흠결",
+"hanja": "欠缺",
+"definition": "일정한 수효에서 부족함이 생김. 또는 그런 부족.",
+"example": "전하께서 왕위를 이어받으신 초기에는 간언(諫言)을 따르시는 미덕이 거의 흠결이 없었으므로 사람마다 용기를 갖고 하고 싶은 말을 다 하려고 생각하였으나…….",
+"related": [
+"= 흠축"
+]
+},
+{
+"category": "혼동 어휘",
+"term": "훼손",
+"hanja": "毁損",
+"sense": 1,
+"definition": "체면이나 명예를 손상함.",
+"example": "명예에 훼손을 입다."
+},
+{
+"category": "혼동 어휘",
+"term": "훼손",
+"hanja": "毁損",
+"sense": 2,
+"definition": "헐거나 깨뜨려 못 쓰게 만듦.",
+"example": "문화유산 훼손. / 자연환경 훼손이 심하다."
+},
+{
+"category": "혼동 어휘",
+"term": "계시",
+"hanja": "啓示",
+"sense": 2,
+"definition": "『종교 일반』 사람의 지혜로써는 알 수 없는 진리를 신(神)이 가르쳐 알게 함."
+},
+{
+"category": "혼동 어휘",
+"term": "암시",
+"hanja": "暗示",
+"definition": "넌지시 알림. 또는 그 내용.",
+"example": "암시가 깔리다. / 암시를 받다. / 암시를 주다."
+},
+{
+"category": "혼동 어휘",
+"term": "게시",
+"hanja": "揭示",
+"definition": "여러 사람에게 알리기 위하여 내붙이거나 내걸어 두루 보게 함. 또는 그런 물건.",
+"example": "행사 일정표의 게시. / 합격자 명단이 과 사무실 알림판에 게시되었다.",
+"note": "계시(啓示)되었다(×) → 게시(揭示)되었다(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "계량",
+"hanja": "計量",
+"sense": 1,
+"definition": "수량을 헤아림."
+},
+{
+"category": "혼동 어휘",
+"term": "계량",
+"hanja": "計量",
+"sense": 2,
+"definition": "부피, 무게 따위를 잼."
+},
+{
+"category": "혼동 어휘",
+"term": "개량",
+"hanja": "改良",
+"definition": "나쁜 점을 보완하여 더 좋게 고침.",
+"example": "농기구 개량. / 품종 개량."
+},
+{
+"category": "혼동 어휘",
+"term": "곤욕",
+"hanja": "困辱",
+"definition": "심한 모욕. 또는 참기 힘든 일.",
+"example": "곤욕을 치르다. / 곤욕을 겪다.",
+"note": "전혀 예상하지 못한 질문을 받고 곤욕을 느꼈다.(×) → 곤혹을 느꼈다.(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "공포",
+"hanja": "公布",
+"definition": "『법률』 이미 확정된 법률, 조약, 명령 따위를 일반 국민에게 널리 알리는 일. 관보(官報) 따위의 정부의 정기 간행물에 게재하여 알린다.",
+"example": "국민의 많은 관심을 받은 이 법률은 공포와 더불어 시행될 예정이다. / 새로 시행할 정책을 전 국민에게 공포했다. / 이번에 공포된 법률은 건전한 결혼 문화를 형성하기 위한 것이다.",
+"note": "일반적으로 '공포'는 법률 전문 용어로서 법률을 일반 국민에게 널리 알리는 일을 의미함."
+},
+{
+"category": "혼동 어휘",
+"term": "담백하다",
+"hanja": "淡白--",
+"sense": 1,
+"definition": "욕심이 없고 마음이 깨끗하다.",
+"example": "솔직하고 담백한 성격."
+},
+{
+"category": "혼동 어휘",
+"term": "담백하다",
+"hanja": "淡白--",
+"sense": 2,
+"definition": "아무 맛이 없이 싱겁다.",
+"example": "이 집의 반찬 맛은 담백하다."
+},
+{
+"category": "혼동 어휘",
+"term": "담백하다",
+"hanja": "淡白--",
+"sense": 3,
+"definition": "음식이 느끼하지 않고 산뜻하다.",
+"example": "담백한 음식. / 옥수수는 맛이 담백하다."
+},
+{
+"category": "혼동 어휘",
+"term": "담백하다",
+"hanja": "淡白--",
+"sense": 4,
+"definition": "빛깔이 진하지 않고 산뜻하다.",
+"example": "담백한 색의 옷."
+},
+{
+"category": "혼동 어휘",
+"term": "단순하다",
+"hanja": "單純--",
+"sense": 1,
+"definition": "복잡하지 않고 간단하다.",
+"example": "단순한 구조. / 단순하게 여기다. / 세상일이란 그렇게 단순하지가 않다."
+},
+{
+"category": "혼동 어휘",
+"term": "단순하다",
+"hanja": "單純--",
+"sense": 2,
+"definition": "외곬으로 순진하고 어수룩하다.",
+"example": "어린아이처럼 단순하다."
+},
+{
+"category": "혼동 어휘",
+"term": "당황하다",
+"hanja": "唐慌--/唐惶--",
+"definition": "놀라거나 다급하여 어찌할 바를 모르다.",
+"example": "그는 갑작스럽게 벌어진 사태에 당황하고 겁이 나서 부들부들 떨었다.",
+"note": "소문의 내용이 너무 당황하여 믿을 수가 없었다.(×) → 황당하여(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "황당하다",
+"hanja": "荒唐--",
+"definition": "말이나 행동 따위가 참되지 않고 터무니없다.",
+"example": "황당한 말. / 황당하기 짝이 없는 일. / 소문이 너무 황당하여 어이없다. / 소문의 내용이 너무 황당하여 믿을 수가 없었다.",
+"note": "당황하여(×) → 황당하여(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "대비",
+"hanja": "對備",
+"definition": "앞으로 일어날지도 모르는 어떠한 일에 대응하기 위하여 미리 준비함. 또는 그런 준비.",
+"example": "노후 대비. / 비상사태에 대한 대비. / 학생들은 중간고사 대비에 힘을 쏟았다.",
+"note": "'대비'는 앞으로 일어날 일, '대처'는 이미 일어난 일이나 진행 중인 일에 대해 사용하는 경우가 많음."
+},
+{
+"category": "혼동 어휘",
+"term": "대처",
+"hanja": "對處",
+"definition": "어떤 정세나 사건에 대하여 알맞은 조치를 취함.",
+"example": "미온적인 대처 방안. / 강력한 대처를 촉구하다. / 일본 정부가 독도 영유권 강화를 주장하자 유관 부처가 긴급 회의를 여는 등 대처 방안을 강구 중이다.",
+"note": "'대비'는 앞으로 일어날 일, '대처'는 이미 일어난 일이나 진행 중인 일에 대해 사용하는 경우가 많음."
+},
+{
+"category": "혼동 어휘",
+"term": "독립",
+"hanja": "獨立",
+"sense": 1,
+"definition": "다른 것에 예속하거나 의존하지 아니하는 상태로 됨."
+},
+{
+"category": "혼동 어휘",
+"term": "독립",
+"hanja": "獨立",
+"sense": 2,
+"definition": "독자적으로 존재함.",
+"example": "독립 초소."
+},
+{
+"category": "혼동 어휘",
+"term": "독립",
+"hanja": "獨立",
+"sense": 3,
+"definition": "『법률』 개인이 한집안을 이루고 완전히 사권(私權)을 행사하는 능력을 가짐."
+},
+{
+"category": "혼동 어휘",
+"term": "독립",
+"hanja": "獨立",
+"sense": 4,
+"definition": "『정치』 한 나라가 정치적으로 완전한 주권을 행사함.",
+"example": "조국의 독립을 위해 우리 모두가 노력해야 한다."
+},
+{
+"category": "혼동 어휘",
+"term": "독존",
+"hanja": "獨存",
+"definition": "홀로 존재함.",
+"example": "하나의 획이 다른 획을 만나지 않고서 어찌 제 혼자서 자(字)가 될 수 있겠습니까. 획도 흡사 사람과 같아서 독존하지 못하는 반쪽인 듯합니다."
+},
+{
+"category": "혼동 어휘",
+"term": "자립",
+"hanja": "自立",
+"definition": "남에게 예속되거나 의지하지 아니하고 스스로 섬.",
+"example": "자립 경제. / 경제적으로 자립하다."
+},
+{
+"category": "혼동 어휘",
+"term": "자존",
+"hanja": "自存",
+"definition": "자기 힘으로 생존함.",
+"example": "일제 치하에서 수없이 많은 사람이 민족 자존과 독립을 위해 싸우다 죽었다."
+},
+{
+"category": "관용구",
+"term": "면목이 없다",
+"hanja": "面目",
+"definition": "부끄러워 남을 대할 용기가 나지 않다.",
+"example": "약속을 지키지 못해 그를 대할 면목이 없다.",
+"note": "면목(이) 없다"
+},
+{
+"category": "혼동 어휘",
+"term": "방증",
+"hanja": "傍證",
+"definition": "사실을 직접 증명할 수 있는 증거가 되지는 않지만, 주변의 상황을 밝힘으로써 간접적으로 증명에 도움을 줌. 또는 그 증거.",
+"example": "이렇게 종류가 다양하다는 사실은 이 제품이 얼마나 인기가 있는가를 방증하는 것입니다."
+},
+{
+"category": "혼동 어휘",
+"term": "반증",
+"hanja": "反證",
+"definition": "어떤 사실이나 주장이 옳지 아니함을 그에 반대되는 근거를 들어 증명함. 또는 그런 증거.",
+"example": "그의 주장은 논리가 워낙 치밀해서 반증을 대기가 어렵다. / 우리에겐 그 사실을 뒤집을 만한 반증이 없다."
+},
+{
+"category": "혼동 어휘",
+"term": "배상",
+"hanja": "賠償",
+"definition": "『법률』 남의 권리를 침해한 사람이 그 손해를 물어 주는 일.",
+"example": "피해자에게 손해를 배상하고 용서를 빌었다.",
+"note": "그는 아무런 배상도 바라지 않고 나를 도와주었다.(×) → 보상도(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "보상",
+"hanja": "報償",
+"sense": 1,
+"definition": "남에게 진 빚 또는 받은 물건을 갚음.",
+"example": "빌린 돈의 보상이 어렵게 되었다. / 그는 보상을 약속하고 그녀에게 사업 자금을 빌려 갔다."
+},
+{
+"category": "혼동 어휘",
+"term": "보상",
+"hanja": "報償",
+"sense": 2,
+"definition": "어떤 것에 대한 대가로 갚음.",
+"example": "노고에 대해 보상을 받다. / 그는 사건을 묵인하는 보상으로 거액을 받았다. / 그는 아무런 보상도 바라지 않고 나를 도와주었다.",
+"note": "그는 아무런 배상도 바라지 않고 나를 도와주었다.(×) → 보상도(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "보상",
+"hanja": "報償",
+"sense": 3,
+"definition": "『심리』 행위를 촉진하거나 학습 분위기를 조성하기 위하여 사람이나 동물에게 주는 물질이나 칭찬."
+},
+{
+"category": "혼동 어휘",
+"term": "변동",
+"hanja": "變動",
+"definition": "바뀌어 달라짐.",
+"example": "가격의 변동. / 여행 계획에 변동 사항이 있으면 알려 주세요. / 현재 국제 정세에 큰 변동이 일어나고 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "변형",
+"hanja": "變形",
+"definition": "모양이나 형태가 달라지거나 달라지게 함. 또는 그 달라진 형태.",
+"example": "그 물건은 심하게 변형을 겪어서 원래 형태를 찾아볼 수 없었다. / 자동차 안전 시트나 안락의자로 변형이 가능한 유모차가 새로 나왔다."
+},
+{
+"category": "혼동 어휘",
+"term": "변별",
+"hanja": "辨別",
+"sense": 1,
+"definition": "사물의 옳고 그름이나 좋고 나쁨을 가림.",
+"example": "진짜는 가짜와 반드시 변별되기 마련이다."
+},
+{
+"category": "혼동 어휘",
+"term": "변별",
+"hanja": "辨別",
+"sense": 2,
+"definition": "세상에 대한 경험이나 식견에서 나오는 생각이나 판단."
+},
+{
+"category": "혼동 어휘",
+"term": "보조",
+"hanja": "補助",
+"sense": 1,
+"definition": "보태어 도움.",
+"example": "국가에서 보조를 받다. / 친구는 삼촌의 보조로 대학을 마쳤다. / 우수 학생들의 학비를 보조하도록 약간의 돈을 기부했다."
+},
+{
+"category": "혼동 어휘",
+"term": "보조",
+"hanja": "補助",
+"sense": 2,
+"definition": "주되는 것에 상대하여 거들거나 도움. 또는 그런 사람.",
+"example": "보조 병력. / 보조 수단. / 주방에 보조를 두 명 두고 일했다."
+},
+{
+"category": "혼동 어휘",
+"term": "보전",
+"hanja": "補塡",
+"definition": "부족한 부분을 보태어 채움.",
+"example": "적자의 보전. / 부동산을 매각함으로써 투자 손실을 보전하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "보결",
+"hanja": "補缺",
+"sense": 1,
+"definition": "결원이 생겼을 때에 그 빈자리를 채움.",
+"example": "보결 입학. / 그는 학교에 보결로 들어갔다.",
+"related": [
+"≒ 보궐"
+]
+},
+{
+"category": "혼동 어휘",
+"term": "보결",
+"hanja": "補缺",
+"sense": 2,
+"definition": "결점을 고쳐서 보충함."
+},
+{
+"category": "혼동 어휘",
+"term": "보존",
+"hanja": "保存",
+"definition": "잘 보호하고 간수하여 남김.",
+"example": "우리 문화의 보존에 힘쓰다. / 전통문화를 고스란히 보존하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "보충",
+"hanja": "補充",
+"definition": "부족한 것을 보태어 채움.",
+"example": "보충 교육. / 보충 설명. / 학교 공부의 보충으로 학원에 다닌다. / 기둥은 실하지 못했으나 흙벽이 두껍게 발라져 있어 서까래만 보충하고 기와를 일 수 있었다."
+},
+{
+"category": "혼동 어휘",
+"term": "보완",
+"hanja": "補完",
+"definition": "모자라거나 부족한 것을 보충하여 완전하게 함.",
+"example": "보완 대책. / 단점 보완. / 그는 자신의 문제점을 보완하기 위하여 최선을 다하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "복기",
+"hanja": "復棋/復碁",
+"definition": "『체육』 바둑에서, 한 번 두고 난 바둑의 판국을 비평하기 위하여 두었던 대로 다시 처음부터 놓아 봄.",
+"note": "예상치 못한 오류로 인해 저장한 자료를 복기할 수 없게 되었다.(×) → 복원할(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "복원",
+"hanja": "復元/復原",
+"definition": "원래대로 회복함.",
+"example": "훼손된 문화재의 복원이 시급하다. / 예상치 못한 오류로 인해 저장한 자료를 복원할 수 없게 되었다.",
+"note": "복기할(×) → 복원할(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "부득이",
+"hanja": "不得已",
+"definition": "마지못하여 하는 수 없이.",
+"example": "집안 사정으로 부득이 약속을 취소하다. / 나는 마음이 내키지는 않았지만 부득이하게 그를 따랐다."
+},
+{
+"category": "혼동 어휘",
+"term": "부조리",
+"hanja": "不條理",
+"definition": "이치에 맞지 아니하거나 도리에 어긋남. 또는 그런 일.",
+"example": "부조리한 사회. / 부조리한 제도. / 부조리한 현실을 극복하다."
+},
+{
+"category": "혼동 어휘",
+"term": "불가해",
+"hanja": "不可解",
+"definition": "이해할 수 없음.",
+"example": "불가해 현상. / 불가해의 사건. / 내세(來世)의 문제는 영원히 불가해하다."
+},
+{
+"category": "혼동 어휘",
+"term": "사사하다",
+"hanja": "謝辭--",
+"sense": 1,
+"definition": "고마운 뜻을 나타내는 말을 하다."
+},
+{
+"category": "혼동 어휘",
+"term": "사사하다",
+"hanja": "謝辭--",
+"sense": 2,
+"definition": "사죄하는 말을 하다."
+},
+{
+"category": "혼동 어휘",
+"term": "사사하다",
+"hanja": "謝辭--",
+"sense": 3,
+"definition": "예를 갖추어 사양하다. 또는 그런 뜻을 나타내는 말을 하다."
+},
+{
+"category": "혼동 어휘",
+"term": "사철하다",
+"hanja": "捨撤--",
+"definition": "베풀어 주다.",
+"example": "그는 많은 재산을 복지 단체에 사철했다."
+},
+{
+"category": "혼동 어휘",
+"term": "설정",
+"hanja": "設定",
+"definition": "새로 만들어 정해 둠.",
+"example": "상황 설정. / 서울을 둘러싼 주변 지역에 광대한 개발 제한 구역이 설정되어 있다.",
+"note": "'설정'은 새로 정한다는 의미, '선정'은 여러 개 중에서 고른다는 의미, '지정'은 가리키어 정한다는 의미를 갖고 있음."
+},
+{
+"category": "혼동 어휘",
+"term": "선정",
+"hanja": "選定",
+"definition": "여럿 가운데서 어떤 것을 뽑아 정함.",
+"example": "기자단은 그를 이달의 선수에 선정하였다.",
+"note": "'설정'은 새로 정한다는 의미, '선정'은 여러 개 중에서 고른다는 의미, '지정'은 가리키어 정한다는 의미를 갖고 있음."
+},
+{
+"category": "혼동 어휘",
+"term": "지정",
+"hanja": "指定",
+"sense": 1,
+"definition": "가리키어 확실하게 정함.",
+"example": "지정 좌석에 앉으시오. / 북한은 1991년에 나진 등 3개 항을 자유 무역항으로 지정하였다.",
+"note": "'설정'은 새로 정한다는 의미, '선정'은 여러 개 중에서 고른다는 의미, '지정'은 가리키어 정한다는 의미를 갖고 있음."
+},
+{
+"category": "혼동 어휘",
+"term": "지정",
+"hanja": "指定",
+"sense": 2,
+"definition": "관공서, 학교, 회사, 개인 등이 어떤 것에 특정한 자격을 줌.",
+"example": "지정 병원. / 문화재 지정."
+},
+{
+"category": "혼동 어휘",
+"term": "실제",
+"hanja": "實際",
+"definition": "사실의 경우나 형편.",
+"example": "실제 모습. / 실제 상황. / 그는 실제 나이보다 젊게 보인다. / 그동안 학설로만 주장되어 오던 우리 고유의 청동 종 밀랍 주조 기술이 이번에 실제 종을 제작하는 데 적용되었다."
+},
+{
+"category": "혼동 어휘",
+"term": "실재",
+"hanja": "實在",
+"definition": "실제로 존재함.",
+"example": "실재의 인물. / 경찰이 오랫동안 추적하던 용의자는 수사 결과 실재의 인물이 아닌 가공의 인물임이 드러났다."
+},
+{
+"category": "혼동 어휘",
+"term": "실존",
+"hanja": "實存",
+"definition": "실제로 존재함. 또는 그런 존재.",
+"example": "신의 실존에 대해 많은 논란이 있다. / 그 영화의 주인공은 실존 인물을 바탕으로 만들어졌다."
+},
+{
+"category": "혼동 어휘",
+"term": "실체",
+"hanja": "實體",
+"definition": "실제의 물체. 또는 외형에 대한 실상(實相).",
+"example": "사건의 실체를 파악하다. / 그의 실체가 만천하에 밝혀졌다."
+},
+{
+"category": "혼동 어휘",
+"term": "시력",
+"hanja": "視力",
+"definition": "물체의 존재나 형상을 인식하는 눈의 능력.",
+"example": "시력이 떨어지다. / 안경을 맞출 때는 반드시 시력을 먼저 측정해야 한다. / 그는 시력이 나빠 안경을 쓴다."
+},
+{
+"category": "혼동 어휘",
+"term": "시선",
+"hanja": "視線",
+"sense": 1,
+"definition": "눈이 가는 길. 또는 눈의 방향.",
+"example": "시선을 돌리다. / 아이는 장난감 가게 앞에서 시선을 떼지 못하고 서 있었다."
+},
+{
+"category": "혼동 어휘",
+"term": "시선",
+"hanja": "視線",
+"sense": 2,
+"definition": "주의 또는 관심을 비유적으로 이르는 말.",
+"example": "최근 환경 문제에 세인의 시선이 집중되고 있다. / 남의 시선을 너무 의식하지 말고 소신껏 추진하시오."
+},
+{
+"category": "혼동 어휘",
+"term": "안목",
+"hanja": "眼目",
+"definition": "사물을 보고 분별하는 견식.",
+"example": "안목이 있다. / 안목이 없다. / 안목이 높다. / 당신은 사람을 보는 안목이 매우 높구려."
+},
+{
+"category": "혼동 어휘",
+"term": "안광",
+"hanja": "眼光",
+"sense": 1,
+"definition": "눈의 정기.",
+"example": "안광이 형형하다. / 안광이 번뜩이다."
+},
+{
+"category": "혼동 어휘",
+"term": "안광",
+"hanja": "眼光",
+"sense": 2,
+"definition": "사물을 보는 힘.",
+"example": "안광이 날카롭다. / 그는 사물의 본질을 꿰뚫어 보는 안광을 지니고 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "신중",
+"hanja": "愼重",
+"definition": "매우 조심스러움.",
+"example": "신중한 자세. / 일을 신중하게 처리하다. / 그는 매사에 신중하여 무리하게 일을 진행하지 않는다."
+},
+{
+"category": "혼동 어휘",
+"term": "조신",
+"hanja": "操身",
+"definition": "몸가짐을 조심함.",
+"example": "조신한 성품. / 조신하게 굴다. / 조신하게 대답하다."
+},
+{
+"category": "혼동 어휘",
+"term": "실패",
+"hanja": "失敗",
+"definition": "일을 잘못하여 뜻한 대로 되지 아니하거나 그르침.",
+"example": "실패가 없도록 주의하다. / 아버지 사업이 실패했다."
+},
+{
+"category": "혼동 어휘",
+"term": "운치",
+"hanja": "韻致",
+"definition": "고상하고 우아한 멋.",
+"example": "운치가 있는 풍경. / 그 집의 정원은 운치가 있어 보인다. / 미닫이는 젊은 중들이 길거리에서 주워 온 종이를 표백하여 곱게 바른 것이어서 더욱 운치가 있었다."
+},
+{
+"category": "혼동 어휘",
+"term": "가치",
+"hanja": "價値",
+"definition": "사물이 지니고 있는 쓸모.",
+"example": "상품 가치. / 가치가 높다. / 우리나라의 자연은 외국인에게 자랑할 만한 가치가 있다."
+},
+{
+"category": "혼동 어휘",
+"term": "일상사",
+"hanja": "日常事",
+"definition": "날마다 또는 늘 있는 일.",
+"example": "그가 그녀의 곁을 떠난 후로, 허무감은 그녀의 일상사가 되어 버렸다."
+},
+{
+"category": "혼동 어휘",
+"term": "다반사",
+"hanja": "茶飯事",
+"definition": "차를 마시고 밥을 먹는 일이라는 뜻으로, 보통 있는 예사로운 일을 이르는 말.",
+"example": "결산을 하는 월말엔 일이 밀려 며칠씩 집에 안 들어오는 일이 다반사였다. / 그는 배가 고프면 밥을 먹는 것과 같이 다반사로 뛰어난 작품들을 만들었다.",
+"related": [
+"≒ 일상다반사",
+"≒ 항다반사"
+],
+"note": "'예삿일', '흔한 일'로 순화."
+},
+{
+"category": "혼동 어휘",
+"term": "재현",
+"hanja": "再現",
+"definition": "다시 나타남. 또는 다시 나타냄.",
+"example": "100년 전 도시의 모습을 그대로 재현한 전시회가 열렸다. / 이것은 선사 시대의 생활상을 재현한 전시물이다.",
+"note": "재연한(×) → 재현한(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "정체",
+"hanja": "停滯",
+"definition": "사물이 발전하거나 나아가지 못하고 한자리에 머물러 그침.",
+"example": "경제의 정체로 불황이 지속된다. / 주말이 되면 이 도로는 교외로 나들이 가는 차량으로 극심한 정체를 이룬다.",
+"note": "교통 안내 방송의 경우, 도로에서 자동차들이 달리는 속도에 따라 표현하는 말이 다르다. 서울 시내에서 시속 10km 이내는 정체, 시속 20km 이내는 지체, 시속 30~50km 정도는 서행."
+},
+{
+"category": "혼동 어휘",
+"term": "지체",
+"hanja": "遲滯",
+"definition": "때를 늦추거나 질질 끎.",
+"example": "잠시도 지체 말고 바로 집으로 돌아가시오. / 컴퓨터가 고장 나서 일 처리가 지체되고 있다.",
+"note": "교통 안내 방송의 경우, 도로에서 자동차들이 달리는 속도에 따라 표현하는 말이 다르다. 서울 시내에서 시속 10km 이내는 정체, 시속 20km 이내는 지체, 시속 30~50km 정도는 서행."
+},
+{
+"category": "혼동 어휘",
+"term": "서행",
+"hanja": "徐行",
+"definition": "사람이나 차가 천천히 감.",
+"example": "차가 시내로 들어오면서 서행하기 시작했다.",
+"note": "교통 안내 방송의 경우, 도로에서 자동차들이 달리는 속도에 따라 표현하는 말이 다르다. 서울 시내에서 시속 10km 이내는 정체, 시속 20km 이내는 지체, 시속 30~50km 정도는 서행."
+},
+{
+"category": "혼동 어휘",
+"term": "제안",
+"hanja": "提案",
+"definition": "안이나 의견으로 내놓음. 또는 그 안이나 의견.",
+"example": "시민의 제안. / 제안을 받아들이다."
+},
+{
+"category": "혼동 어휘",
+"term": "조율",
+"hanja": "調律",
+"sense": 1,
+"definition": "악기의 음을 표준음에 맞추어 고름.",
+"example": "조율이 잘된 악기."
+},
+{
+"category": "혼동 어휘",
+"term": "조율",
+"hanja": "調律",
+"sense": 2,
+"definition": "문제를 어떤 대상에 알맞거나 마땅하도록 조절함을 비유적으로 이르는 말.",
+"example": "사전 조율. / 두 집안의 갈등에 조율이 필요하다."
+},
+{
+"category": "혼동 어휘",
+"term": "조정",
+"hanja": "調整",
+"definition": "어떤 기준이나 실정에 맞게 정돈함.",
+"example": "선거구 조정. / 시내버스 노선의 조정. / 회사의 구조 조정으로 많은 부서가 재편되었다."
+},
+{
+"category": "혼동 어휘",
+"term": "조절",
+"hanja": "調節",
+"definition": "균형이 맞게 바로잡음. 또는 적당하게 맞추어 나감.",
+"example": "체중을 조절하다. / 그 선수는 컨디션 조절에 실패하여 중도에서 탈락했다. / 특히 임신 초기인 2~3개월은 태아의 뇌신경 세포가 급격히 성장하여 완성되는 시기이므로 이 시기에는 산모가 자신의 정서 조절에 힘써야 한다."
+},
+{
+"category": "혼동 어휘",
+"term": "주관",
+"hanja": "主管",
+"definition": "어떤 일을 책임을 지고 맡아 관리함.",
+"example": "프랑스 문화원 주관으로 청소년 영화제가 개최되었다.",
+"note": "'주관'은 어떤 일 또는 행사에 대해 실무 처리를 할 때 쓰고, '주최'는 어떤 일이나 행사에 대해 계획하거나 최종 결정을 하며 이에 따르는 책임을 질 때 씀."
+},
+{
+"category": "혼동 어휘",
+"term": "주최",
+"hanja": "主催",
+"definition": "행사나 모임을 주장하고 기획하여 엶.",
+"example": "군청 주최 씨름 대회. / 방송사 주최의 토론회. / 서울 중랑구민 회관에서 대한 큐브 협회 주최로 큐브 대회가 열렸다.",
+"note": "'주관'은 어떤 일 또는 행사에 대해 실무 처리를 할 때 쓰고, '주최'는 어떤 일이나 행사에 대해 계획하거나 최종 결정을 하며 이에 따르는 책임을 질 때 씀."
+},
+{
+"category": "혼동 어휘",
+"term": "주요하다",
+"hanja": "主要--",
+"definition": "주되고 중요하다.",
+"example": "이것들은 모두 제품 생산에 주요한 시설들이다."
+},
+{
+"category": "혼동 어휘",
+"term": "주효하다",
+"hanja": "奏效--",
+"definition": "효력이 나타나다.",
+"example": "계약을 성공시키는 데 그의 노력이 주효했던 것으로 보인다."
+},
+{
+"category": "혼동 어휘",
+"term": "중개",
+"hanja": "仲介",
+"definition": "제삼자로서 두 당사자 사이에 서서 일을 주선함.",
+"example": "중개 수수료. / 부동산 중개. / 노인들 몇 분이 동네에 조그만 복덕방을 하나 차려 놓고 집을 팔고 사고 하는 일을 중개하여 용돈을 버신다. / 그의 중개로 미국과의 거래를 성사시켰다."
+},
+{
+"category": "혼동 어휘",
+"term": "중재",
+"hanja": "仲裁",
+"definition": "분쟁에 끼어들어 쌍방을 화해시킴.",
+"example": "그는 늘 논쟁을 중재하는 역할을 맡았다. / 이야기가 결론 나지 않자, 물러나 있던 김 선생이 중재에 나섰다."
+},
+{
+"category": "혼동 어휘",
+"term": "중계",
+"hanja": "中繼",
+"sense": 1,
+"definition": "중간에서 이어 줌.",
+"example": "산간 지대에서는 사단과 대대, 대대와 중대 사이의 교신이 잘 안되니까 중계 역할을 하는 곳이 필요하다."
+},
+{
+"category": "혼동 어휘",
+"term": "중계",
+"hanja": "中繼",
+"sense": 2,
+"definition": "『매체』 어느 방송국의 방송을 다른 방송국에서 연결하여 방송하는 일.",
+"example": "라디오 중계. / 텔레비전 중계. / 세계 재즈 축제를 위성으로 중계방송해 준다고 한다.",
+"related": [
+"= 중계방송"
+]
+},
+{
+"category": "혼동 어휘",
+"term": "착안",
+"hanja": "着眼",
+"definition": "어떤 일을 주의하여 봄. 또는 어떤 문제를 해결하기 위한 실마리를 잡음.",
+"example": "그는 눈의 구조에 착안하여 사진기를 발명하였다. / 기업의 경영자 대다수는 자신이 착안한 사업에 대해서도 독특한 탁견이 없고, 다만 주위를 육안으로만 살펴보아 피상적으로 판단한다."
+},
+{
+"category": "혼동 어휘",
+"term": "육안",
+"hanja": "肉眼",
+"sense": 1,
+"definition": "안경이나 망원경, 현미경 따위를 이용하지 아니하고 직접 보는 눈.",
+"example": "태양의 흑점은 육안으로는 볼 수 없다.",
+"related": [
+"= 맨눈"
+]
+},
+{
+"category": "혼동 어휘",
+"term": "육안",
+"hanja": "肉眼",
+"sense": 2,
+"definition": "식견 없이 단순히 표면적인 현상만을 보는 것.",
+"example": "다만 주위를 육안으로만 살펴보아 피상적으로 판단한다."
+},
+{
+"category": "혼동 어휘",
+"term": "심안",
+"hanja": "心眼",
+"definition": "사물을 살펴 분별하는 능력. 또는 그런 작용.",
+"example": "사람의 겉모습만 보지 말고 심안으로 보아야 한다. / 이는 사물을 제대로 살펴 분별하는 심안을 가지지 못했기 때문이다.",
+"related": [
+"≒ 마음눈"
+]
+},
+{
+"category": "혼동 어휘",
+"term": "혜안",
+"hanja": "慧眼",
+"definition": "사물을 꿰뚫어 보는 안목과 식견.",
+"example": "아마도 형은 앞날을 내다볼 줄 아는 혜안을 갖고 있었던 것 같았다."
+},
+{
+"category": "혼동 어휘",
+"term": "참석",
+"hanja": "參席",
+"definition": "모임이나 회의 따위의 자리에 참여함.",
+"example": "참석 인원. / 선약이 있어서 그 모임에 참석이 어렵게 되었다."
+},
+{
+"category": "혼동 어휘",
+"term": "참여",
+"hanja": "參與",
+"definition": "어떤 일에 끼어들어 관계함.",
+"example": "현실 참여. / 홍보 부족 때문인지 사람들의 참여가 너무 적었다. / 경수는 그 공론에 참여하지 않으려고 다른 곳을 쳐다보고 있었다. / 주희는 축제에 참여하는 사람들과 어울리기 위해 공원으로 달려왔다."
+},
+{
+"category": "혼동 어휘",
+"term": "참견",
+"hanja": "參見",
+"definition": "자기와 별로 관계없는 일이나 말 따위에 끼어들어 쓸데없이 아는 체하거나 이래라저래라 함.",
+"example": "쓸데없는 참견. / 남의 일에 참견하다."
+},
+{
+"category": "혼동 어휘",
+"term": "참관",
+"hanja": "參觀",
+"definition": "어떤 자리에 직접 나아가서 봄.",
+"example": "수업 참관. / 대회 참관."
+},
+{
+"category": "혼동 어휘",
+"term": "처방",
+"hanja": "處方",
+"sense": 1,
+"definition": "병을 치료하기 위하여 증상에 따라 약을 짓는 방법.",
+"example": "처방을 내리다. / 의사의 처방에 따라 약국에 가서 약을 지었다.",
+"note": "응급실에 가서 상처를 소독하는 처방을 받았다.(×) → 처치를 받았다.(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "처방",
+"hanja": "處方",
+"sense": 2,
+"definition": "일정한 문제를 처리하는 방법."
+},
+{
+"category": "혼동 어휘",
+"term": "처치",
+"hanja": "處置",
+"sense": 1,
+"definition": "일을 감당하여 처리함.",
+"example": "그가 늑장을 부리는 바람에 처치된 것이 하나도 없다."
+},
+{
+"category": "혼동 어휘",
+"term": "처치",
+"hanja": "處置",
+"sense": 2,
+"definition": "처리하여 없애거나 죽여 버림.",
+"example": "쓰레기가 집 앞에 잔뜩 쌓여 있는데 처치 곤란이다."
+},
+{
+"category": "혼동 어휘",
+"term": "처치",
+"hanja": "處置",
+"sense": 3,
+"definition": "상처나 헌데 따위를 치료함.",
+"example": "응급실에 가서 상처를 소독하는 처치를 받았다.",
+"note": "처방을 받았다(×) → 처치를 받았다(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "체재",
+"hanja": "體裁",
+"definition": "생기거나 이루어진 틀. 또는 그런 됨됨이.",
+"example": "작품의 구성과 체재. / 체재를 개편하다. / 체재에 구애되지 않다.",
+"note": "각 단어의 정의로 구별하기가 쉽지 않으면, 예시로 익히는 것이 좋다."
+},
+{
+"category": "혼동 어휘",
+"term": "체제",
+"hanja": "體制",
+"definition": "사회를 하나의 유기체로 볼 때에, 그 조직이나 양식, 또는 그 상태를 이르는 말.",
+"example": "냉전 체제. / 체제 개편. / 중앙 집권 체제. / 새로운 지도 체제가 들어서다. / 이번에 왕위에 오른 그는 국왕이 명실상부하게 정치를 주도하는 체제를 구축하고자 노력했다.",
+"note": "각 단어의 정의로 구별하기가 쉽지 않으면, 예시로 익히는 것이 좋다."
+},
+{
+"category": "혼동 어휘",
+"term": "추돌",
+"hanja": "追突",
+"definition": "자동차나 기차 따위가 뒤에서 들이받음.",
+"example": "버스 한 대와 승용차 두 대가 부딪치는 이중 추돌이 일어났다.",
+"note": "마주 오던 화물차와 버스가 정면으로 추돌하는 사고가 발생했다.(×) → 충돌하는(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "충돌",
+"hanja": "衝突",
+"definition": "서로 맞부딪치거나 맞섬.",
+"example": "자동차 충돌. / 의견 충돌. / 마주 오던 화물차와 버스가 정면으로 충돌하는 사고가 발생했다.",
+"note": "추돌하는(×) → 충돌하는(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "출원",
+"hanja": "出願",
+"definition": "청원이나 원서를 냄.",
+"example": "발명 특허의 출원. / 오랜 연구 끝에 부품 특허를 출원하게 되었다.",
+"note": "부품 특허를 출현하게 되었다.(×) → 출원하게 되었다.(○)"
+},
+{
+"category": "혼동 어휘",
+"term": "피격",
+"hanja": "被擊",
+"definition": "습격이나 사격을 받음.",
+"example": "민간 항공기 피격 사건. / 그는 괴한의 피격을 받고 병원에 실려 갔다."
+},
+{
+"category": "혼동 어휘",
+"term": "피살",
+"hanja": "被殺",
+"definition": "죽임을 당함.",
+"example": "피살 사건. / 남편의 피살 소식을 들은 부인은 그 자리에서 혼절하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "살해",
+"hanja": "殺害",
+"definition": "사람을 해치어 죽임.",
+"example": "살해 사건. / 살해 현장. / 유괴범은 납치한 아이를 살해하였다."
+},
+{
+"category": "혼동 어휘",
+"term": "사살",
+"hanja": "射殺",
+"definition": "활이나 총 따위로 쏘아 죽임.",
+"example": "포로 사살. / 사살을 당하다."
+},
+{
+"category": "혼동 어휘",
+"term": "혼동",
+"hanja": "混同",
+"sense": 1,
+"definition": "구별하지 못하고 뒤섞어서 생각함.",
+"example": "친구 아버지의 전화 음성은 친구의 음성과 혼동될 정도로 유사하다. / 잠이 덜 깼는지 그는 현실과 꿈 사이에서 혼동을 일으켰다.",
+"note": "현대 사회의 문제점은 여러 가치관이 마구 혼동되어 있다는 것이다.(×) → 혼돈되어(○). '혼동'은 뒤섞어 보거나 잘못 판단하는 것을 의미하므로, '얼굴이 비슷해서 혼동하기 쉽다.' 또는 '자유와 방종을 혼동하지 마라.'와 같이 사용됨. '혼돈'은 하늘과 땅이 아직 나뉘지 않은 상태 또는 사물의 구별 상태가 확실하지 않은 것을 가리키기도 함. '혼돈 상태', '혼돈 세계'와 같은 표현으로 사용됨."
+},
+{
+"category": "혼동 어휘",
+"term": "혼동",
+"hanja": "混同",
+"sense": 2,
+"definition": "서로 뒤섞이어 하나가 됨."
+},
+{
+"category": "혼동 어휘",
+"term": "혼돈",
+"hanja": "混沌/渾沌",
+"definition": "마구 뒤섞여 있어 갈피를 잡을 수 없음. 또는 그런 상태.",
+"example": "혼돈에 빠지다. / 그 나라는 극심한 정치적 혼돈으로 국민 복지에 신경 쓸 겨를이 없다. / 외래문화의 무분별한 수용은 가치관의 혼돈을 초래하였다. / 현대 사회의 문제점은 여러 가지 가치관이 마구 혼돈되어 있다는 것이다.",
+"note": "혼동되어(×) → 혼돈되어(○). '혼동'은 뒤섞어 보거나 잘못 판단하는 것을 의미하므로, '얼굴이 비슷해서 혼동하기 쉽다.' 또는 '자유와 방종을 혼동하지 마라.'와 같이 사용됨. '혼돈'은 하늘과 땅이 아직 나뉘지 않은 상태 또는 사물의 구별 상태가 확실하지 않은 것을 가리키기도 함. '혼돈 상태', '혼돈 세계'와 같은 표현으로 사용됨."
+},
+{
+"category": "혼동 어휘",
+"term": "혼선",
+"hanja": "混線",
+"sense": 1,
+"definition": "전신·전화·무선 통신 따위에서, 선이 서로 닿거나 전파가 뒤섞여 통신이 엉클어지는 일.",
+"example": "전화에 갑자기 혼선이 생겨 통화를 중단했다."
+},
+{
+"category": "혼동 어휘",
+"term": "혼선",
+"hanja": "混線",
+"sense": 2,
+"definition": "말이나 일 따위를 서로 다르게 파악하여 혼란이 생김.",
+"example": "혼선을 빚다. / 혼선이 일어나다. / 목격자들이 제각기 다른 말을 하는 까닭에 수사는 혼선을 빚고 있었다."
+},
+{
+"category": "혼동 어휘",
+"term": "혼잡",
+"hanja": "混雜",
+"definition": "여럿이 한데 뒤섞이어 어수선함.",
+"example": "교통 혼잡. / 갑자기 내린 눈 때문에 출퇴근 시간에 큰 혼잡이 일어났다."
+},
+{
+"category": "혼동 어휘",
+"term": "화제",
+"hanja": "話題",
+"definition": "이야기할 만한 재료나 소재.",
+"example": "화제의 인물. / 화제로 삼다. / 그의 무용담은 우리 사무실에서 화제가 되었다.",
+"related": [
+"= 이야깃거리"
+]
+},
+{
+"category": "혼동 어휘",
+"term": "화두",
+"hanja": "話頭",
+"definition": "이야기의 첫머리.",
+"example": "화두를 바꾸다. / 영철이는 또 이데올로기 문제를 가지고 화두를 꺼냈다. / 나의 선(禪)은 이 이끼 앉은 바위를 바라보며 시를, 민족을, 죽음을 화두로 삼고 있었다."
+},
+{
+"category": "동음이의어",
+"term": "가장",
+"hanja": "家長",
+"definition": "한 가정을 이끌어 나가는 사람.",
+"example": "한집안의 가장 노릇을 하기가 그리 쉬운 게 아니다."
+},
+{
+"category": "동음이의어",
+"term": "가장",
+"hanja": "假裝",
+"definition": "태도를 거짓으로 꾸밈.",
+"example": "그는 우연을 가장하여 나에게 접근했다."
+},
+{
+"category": "동음이의어",
+"term": "가장",
+"hanja": "假葬",
+"definition": "임시로 장사 지냄. 또는 그 장사.",
+"example": "친구는 돌아가신 아버지 시신을 일단 가장했다."
+},
+{
+"category": "동음이의어",
+"term": "감사",
+"hanja": "感謝",
+"definition": "고마움을 나타내는 인사.",
+"example": "감사 편지."
+},
+{
+"category": "동음이의어",
+"term": "감사",
+"hanja": "監査",
+"definition": "감독하고 검사함.",
+"example": "국정 감사. / 감사 자료를 준비하느라 바쁘다."
+},
+{
+"category": "동음이의어",
+"term": "감사",
+"hanja": "監事",
+"definition": "「경영」 법인의 재산이나 업무를 감사하는 상설 기관. 또는 그런 사람.",
+"example": "그는 재단 비상임 감사로 임명되었다."
+},
+{
+"category": "동음이의어",
+"term": "감수",
+"hanja": "甘受",
+"definition": "책망이나 괴로움 따위를 달갑게 받아들임.",
+"example": "전체를 위해서 개인의 희생이 감수될 수 있다는 생각은 옳지 않다."
+},
+{
+"category": "동음이의어",
+"term": "감수",
+"hanja": "感受",
+"definition": "외부의 영향을 수동적으로 받아들임."
+},
+{
+"category": "동음이의어",
+"term": "감수",
+"hanja": "監修",
+"definition": "책의 저술이나 편찬 따위를 지도하고 감독함."
+},
+{
+"category": "동음이의어",
+"term": "경기",
+"hanja": "景氣",
+"definition": "「경제」 매매나 거래에 나타나는 호황·불황 따위의 경제 활동 상태.",
+"example": "경기 부진. / 경기 침체. / 부동산 경기가 좋다."
+},
+{
+"category": "동음이의어",
+"term": "경기",
+"hanja": "競技",
+"definition": "일정한 규칙 아래 기량과 기술을 겨룸. 또는 그런 일.",
+"example": "경기 규칙. / 무술 경기. / 경기를 관전하다."
+},
+{
+"category": "동음이의어",
+"term": "경기",
+"hanja": "驚氣",
+"definition": "「한의」 어린아이에게 나타나는 증상의 하나. 풍(風)으로 인해 갑자기 의식을 잃고 경련하는 병증.",
+"example": "경기를 일으키다. / 이제 겨우 돌을 넘긴 아이가 경기 들린 듯 하루 종일 울어 대기만 했다.",
+"related": [
+"= 경풍"
+]
+},
+{
+"category": "동음이의어",
+"term": "고도",
+"hanja": "古都",
+"definition": "옛 도읍.",
+"example": "경주는 신라의 고도이다."
+},
+{
+"category": "동음이의어",
+"term": "고도",
+"hanja": "高度",
+"sense": 1,
+"definition": "평균 해수면 따위를 0으로 하여 측정한 대상 물체의 높이.",
+"example": "고도를 유지하며 날다. / 고도가 점차 낮아지고 있다."
+},
+{
+"category": "동음이의어",
+"term": "고도",
+"hanja": "高度",
+"sense": 2,
+"definition": "수준이나 정도 따위가 매우 높거나 뛰어남. 또는 그런 정도.",
+"example": "고도로 숙련된 기술. / 문명이 고도로 발달하다."
+},
+{
+"category": "동음이의어",
+"term": "고사",
+"hanja": "考査",
+"sense": 1,
+"definition": "자세히 생각하고 조사함."
+},
+{
+"category": "동음이의어",
+"term": "고사",
+"hanja": "考査",
+"sense": 2,
+"definition": "학생들의 학업 성적을 평가하는 시험.",
+"example": "월말 고사. / 학기마다 두 번씩 고사를 치른다."
+},
+{
+"category": "동음이의어",
+"term": "고사",
+"hanja": "告祀",
+"definition": "「민속」 액운(厄運)은 없어지고 풍요와 행운이 오도록 집안에서 섬기는 신(神)에게 음식을 차려 놓고 비는 제사.",
+"example": "고사를 지내다. / 터주에게 고사를 드리다."
+},
+{
+"category": "동음이의어",
+"term": "고사",
+"hanja": "姑捨",
+"definition": "어떤 일이나 그에 대한 능력, 경험, 지불 따위를 배제하다. 앞에 오는 말의 내용이 불가능하여 뒤에 오는 말의 내용 역시 기대에 못 미침을 나타낸다.",
+"example": "1등은 고사하고 중간도 못 가는 성적이다.",
+"note": "표제: 姑捨(姑捨하다)"
+},
+{
+"category": "동음이의어",
+"term": "고수",
+"hanja": "固守",
+"definition": "차지한 물건이나 형세 따위를 굳게 지킴.",
+"example": "강경 노선 고수. / 올해 우리 팀은 선두권 고수를 목표로 삼고 있다."
+},
+{
+"category": "동음이의어",
+"term": "고수",
+"hanja": "高手",
+"sense": 1,
+"definition": "바둑이나 장기 따위에서 수가 높음. 또는 그런 사람.",
+"example": "정석을 배우되 정석을 버리지 않고선 진정한 바둑 고수가 될 수 없다."
+},
+{
+"category": "동음이의어",
+"term": "고수",
+"hanja": "高手",
+"sense": 2,
+"definition": "어떤 분야나 집단에서 기술이나 능력이 매우 뛰어난 사람.",
+"example": "이 분야의 고수가 되기 위해 최선을 다하였다."
+},
+{
+"category": "동음이의어",
+"term": "고수",
+"hanja": "鼓手",
+"definition": "「음악」 북이나 장구 따위를 치는 사람.",
+"example": "북채를 든 고수. / 고수의 북소리에 맞추어 행진하는 군대."
+},
+{
+"category": "동음이의어",
+"term": "고전",
+"hanja": "古典",
+"sense": 1,
+"definition": "옛날의 의식(儀式)이나 법식(法式)."
+},
+{
+"category": "동음이의어",
+"term": "고전",
+"hanja": "古典",
+"sense": 2,
+"definition": "오랫동안 많은 사람에게 널리 읽히고 모범이 될 만한 문학이나 예술 작품.",
+"example": "문학 고전 100선. / 그 책은 철학의 고전으로 불리는 책이다."
+},
+{
+"category": "동음이의어",
+"term": "고전",
+"hanja": "古典",
+"sense": 3,
+"definition": "고대 그리스와 로마의 대표적 저술."
+},
+{
+"category": "동음이의어",
+"term": "고전",
+"hanja": "古典",
+"sense": 4,
+"definition": "옛날의 서적이나 작품."
+},
+{
+"category": "동음이의어",
+"term": "고전",
+"hanja": "古傳",
+"definition": "예로부터 전하여 내려옴.",
+"example": "고전 민담(民譚)."
+},
+{
+"category": "동음이의어",
+"term": "고전",
+"hanja": "苦戰",
+"definition": "전쟁이나 운동 경기 따위에서, 몹시 힘들고 어렵게 싸움. 또는 그 싸움.",
+"example": "이번 경기는 선수들의 부상으로 고전을 면치 못했다."
+},
+{
+"category": "동음이의어",
+"term": "공과",
+"hanja": "工科",
+"definition": "「공업」 대학에서, 공업 생산에 필요한 과학 기술을 전공하는 학과를 통틀어 이르는 말.",
+"example": "아들은 공과 대학에 다니고 있다."
+},
+{
+"category": "동음이의어",
+"term": "공과",
+"hanja": "公課",
+"definition": "국가나 공공 단체가 국민에게 부과하는 금전상의 부담이나 육체적인 일.",
+"example": "이번 달 공과금이 많이 나왔다."
+},
+{
+"category": "동음이의어",
+"term": "공과",
+"hanja": "功過",
+"definition": "공로와 과실을 아울러 이르는 말.",
+"example": "공과를 논하다."
+},
+{
+"category": "동음이의어",
+"term": "공사",
+"hanja": "工事",
+"definition": "토목이나 건축 따위의 일.",
+"example": "공사 중에 안전사고가 발생했다."
+},
+{
+"category": "동음이의어",
+"term": "공사",
+"hanja": "公私",
+"definition": "공공의 일과 사사로운 일을 아울러 이르는 말.",
+"example": "그는 공사를 엄격히 구분했다."
+},
+{
+"category": "동음이의어",
+"term": "공사",
+"hanja": "公社",
+"definition": "「행정」 국가적 사업을 수행하기 위하여 설립된 공공 기업체의 하나.",
+"example": "한국 방송 공사."
+},
+{
+"category": "동음이의어",
+"term": "공포",
+"hanja": "公布",
+"definition": "일반 대중에게 널리 알림."
+},
+{
+"category": "동음이의어",
+"term": "공포",
+"hanja": "空砲",
+"definition": "실탄을 넣지 않고 소리만 나게 하는 총질."
+},
+{
+"category": "동음이의어",
+"term": "공포",
+"hanja": "恐怖",
+"definition": "두렵고 무서움.",
+"example": "공포에 떨다."
+},
+{
+"category": "동음이의어",
+"term": "관용",
+"hanja": "官用",
+"definition": "정부 기관이나 국립 공공 기관에서 사용함.",
+"example": "관용 차량."
+},
+{
+"category": "동음이의어",
+"term": "관용",
+"hanja": "寬容",
+"definition": "남의 잘못 따위를 너그럽게 받아들이거나 용서함. 또는 그런 용서.",
+"example": "관용을 베풀다."
+},
+{
+"category": "동음이의어",
+"term": "관용",
+"hanja": "慣用",
+"sense": 1,
+"definition": "습관적으로 늘 씀. 또는 그렇게 쓰는 것.",
+"example": "관용 수단."
+},
+{
+"category": "동음이의어",
+"term": "관용",
+"hanja": "慣用",
+"sense": 2,
+"definition": "오랫동안 써서 굳어진 대로 늘 씀. 또는 그렇게 쓰는 것.",
+"example": "관용 표현."
+},
+{
+"category": "동음이의어",
+"term": "교사",
+"hanja": "狡詐",
+"definition": "교활하게 남을 속임.",
+"example": "그의 비상한 머리는 교사에도 재능을 보였다."
+},
+{
+"category": "동음이의어",
+"term": "교사",
+"hanja": "校舍",
+"definition": "학교의 건물.",
+"example": "신축 교사."
+},
+{
+"category": "동음이의어",
+"term": "교사",
+"hanja": "敎唆",
+"definition": "남을 꾀거나 부추겨서 나쁜 짓을 하게 함.",
+"example": "그는 부하들에게 폭력을 교사한 혐의로 검거되었다."
+},
+{
+"category": "동음이의어",
+"term": "구속",
+"hanja": "拘束",
+"definition": "행동이나 의사의 자유를 제한하거나 속박함.",
+"example": "아버지는 자식들의 생활을 일일이 구속했다."
+},
+{
+"category": "동음이의어",
+"term": "구속",
+"hanja": "拘俗",
+"definition": "세속(世俗)에 얽매임."
+},
+{
+"category": "동음이의어",
+"term": "구제",
+"hanja": "舊製",
+"definition": "옛적에 만듦. 또는 그런 물건.",
+"example": "그는 저렴한 구제 의류를 즐겨 입었다."
+},
+{
+"category": "동음이의어",
+"term": "구제",
+"hanja": "驅除",
+"definition": "해충 따위를 몰아내어 없앰.",
+"example": "기생충 구제. / 해충 구제 사업."
+},
+{
+"category": "동음이의어",
+"term": "기수",
+"hanja": "旗手",
+"definition": "행사 때 대열의 앞에 서서 기를 드는 일을 맡은 사람.",
+"related": [
+"≒ 기잡이"
+]
+},
+{
+"category": "동음이의어",
+"term": "기수",
+"hanja": "機首",
+"definition": "비행기의 앞부분.",
+"example": "기수를 남으로 향하다."
+},
+{
+"category": "동음이의어",
+"term": "기수",
+"hanja": "騎手",
+"definition": "경마에서 말을 타는 사람."
+},
+{
+"category": "동음이의어",
+"term": "동기",
+"hanja": "同氣",
+"definition": "형제와 자매, 남매를 통틀어 이르는 말.",
+"example": "동기끼리 사이좋게 지내다."
+},
+{
+"category": "동음이의어",
+"term": "동기",
+"hanja": "同期",
+"sense": 1,
+"definition": "같은 시기. 또는 같은 기간.",
+"example": "6월 중 수출 실적은 전년 동기 대비 32.5%가 증가했다."
+},
+{
+"category": "동음이의어",
+"term": "동기",
+"hanja": "同期",
+"sense": 2,
+"definition": "학교나 훈련소 따위에서의 같은 기(期).",
+"example": "입사 동기."
+},
+{
+"category": "동음이의어",
+"term": "동기",
+"hanja": "動機",
+"definition": "어떤 일이나 행동을 일으키게 하는 계기.",
+"example": "범행의 동기."
+},
+{
+"category": "동음이의어",
+"term": "동화",
+"hanja": "同化",
+"definition": "성질, 양식(樣式), 사상 따위가 다르던 것이 서로 같게 됨.",
+"example": "자연과의 동화. / 감정의 동화가 일어나다. / 원만한 사회생활을 위해선 주변 사람들과의 동화가 필요하다."
+},
+{
+"category": "동음이의어",
+"term": "동화",
+"hanja": "同和",
+"definition": "같이 화합함.",
+"example": "부부는 동화하면서 닮아 간다."
+},
+{
+"category": "동음이의어",
+"term": "동화",
+"hanja": "童畫",
+"definition": "「미술」 아동이 그린 그림."
+},
+{
+"category": "동음이의어",
+"term": "동화",
+"hanja": "童話",
+"definition": "「문학」 어린이를 위하여 동심(童心)을 바탕으로 지은 이야기. 또는 그런 문예 작품."
+},
+{
+"category": "동음이의어",
+"term": "무지",
+"hanja": "拇指",
+"definition": "다섯 손가락 가운데 첫째 손가락.",
+"related": [
+"= 엄지손가락"
+]
+},
+{
+"category": "동음이의어",
+"term": "무지",
+"hanja": "無地",
+"definition": "무늬가 없이 전체가 한 가지 빛깔로 됨. 또는 그런 물건."
+},
+{
+"category": "동음이의어",
+"term": "무지",
+"hanja": "無知",
+"sense": 1,
+"definition": "아는 것이 없음.",
+"example": "무지를 자각하다. / 그것은 실로 가난과 무지가 낳은 비극이었다."
+},
+{
+"category": "동음이의어",
+"term": "무지",
+"hanja": "無知",
+"sense": 2,
+"definition": "미련하고 우악스러움.",
+"example": "그 사람 말고 이런 무지한 짓거리를 할 사람이 또 있겠니."
+},
+{
+"category": "동음이의어",
+"term": "보수",
+"hanja": "保守",
+"sense": 1,
+"definition": "보전하여 지킴."
+},
+{
+"category": "동음이의어",
+"term": "보수",
+"hanja": "保守",
+"sense": 2,
+"definition": "새로운 것이나 변화를 적극적으로 받아들이기보다는 전통적인 것을 옹호하며 유지하려 함.",
+"example": "보수 세력."
+},
+{
+"category": "동음이의어",
+"term": "보수",
+"hanja": "報酬",
+"sense": 1,
+"definition": "고맙게 해 준 데 대하여 보답을 함. 또는 그 보답.",
+"example": "가난한 이에게 도움을 준 사람에게는 반드시 그 보수가 따를 것이다."
+},
+{
+"category": "동음이의어",
+"term": "보수",
+"hanja": "報酬",
+"sense": 2,
+"definition": "일한 대가로 주는 돈이나 물품.",
+"example": "한 달 치 보수."
+},
+{
+"category": "동음이의어",
+"term": "보수",
+"hanja": "補修",
+"definition": "건물이나 시설 따위의 낡거나 부서진 것을 손보아 고침.",
+"example": "하수도 보수. / 철교 보수 작업."
+},
+{
+"category": "동음이의어",
+"term": "부정",
+"hanja": "不正",
+"definition": "올바르지 아니하거나 옳지 못함.",
+"example": "부정 축재. / 입시 부정."
+},
+{
+"category": "동음이의어",
+"term": "부정",
+"hanja": "父情",
+"definition": "자식에 대한 아버지의 정."
+},
+{
+"category": "동음이의어",
+"term": "부정",
+"hanja": "否定",
+"definition": "그렇지 아니하다고 단정하거나 옳지 아니하다고 반대함.",
+"example": "그녀는 긍정도 부정도 아닌 미소만 지었다."
+},
+{
+"category": "동음이의어",
+"term": "분수",
+"hanja": "分數",
+"definition": "「수학」 정수 a를 0이 아닌 정수 b로 나눈 몫을 a/b로 표시한 것."
+},
+{
+"category": "동음이의어",
+"term": "분수",
+"hanja": "噴水",
+"definition": "압력으로 좁은 구멍을 통하여 물을 위로 세차게 내뿜거나 뿌리도록 만든 설비. 또는 그 물. 흔히 공원이나 광장 한가운데에 설치한다.",
+"example": "시원스럽게 내뿜는 분수를 보니 더위가 한결 가신다."
+},
+{
+"category": "동음이의어",
+"term": "사고",
+"hanja": "事故",
+"sense": 1,
+"definition": "뜻밖에 일어난 불행한 일.",
+"example": "자동차 사고. / 그분은 불의의 사고로 세상을 떠나셨다."
+},
+{
+"category": "동음이의어",
+"term": "사고",
+"hanja": "事故",
+"sense": 2,
+"definition": "사람에게 해를 입혔거나 말썽을 일으킨 나쁜 짓.",
+"example": "사고를 치다. / 사고를 저지르다. / 저놈은 허구한 날 사고만 내고 다닌다."
+},
+{
+"category": "동음이의어",
+"term": "사고",
+"hanja": "思考",
+"definition": "생각하고 궁리함.",
+"example": "진보적 사고. / 사고 능력. / 사고의 영역을 넓히다."
+},
+{
+"category": "동음이의어",
+"term": "사기",
+"hanja": "士氣",
+"definition": "의욕이나 자신감 따위로 충만하여 굽힐 줄 모르는 기세.",
+"example": "사기가 높다. / 사기가 떨어지다."
+},
+{
+"category": "동음이의어",
+"term": "사기",
+"hanja": "史記",
+"definition": "역사적 사실을 기록한 책."
+},
+{
+"category": "동음이의어",
+"term": "사기",
+"hanja": "沙器/砂器",
+"definition": "고령토, 장석, 석영 따위의 가루를 빚어서 구워 만든, 희고 매끄러운 그릇. 또는 그 재료로 만든 물건.",
+"example": "사기 항아리.",
+"related": [
+"≒ 사기그릇"
+]
+},
+{
+"category": "동음이의어",
+"term": "사기",
+"hanja": "邪氣",
+"definition": "요사스럽고 나쁜 기운.",
+"example": "이 부적은 사기를 쫓아 준다."
+},
+{
+"category": "동음이의어",
+"term": "사기",
+"hanja": "詐欺",
+"definition": "나쁜 꾀로 남을 속임.",
+"example": "사기를 당하다. / 사기 행각을 벌이다."
+},
+{
+"category": "동음이의어",
+"term": "사료",
+"hanja": "史料",
+"definition": "역사 연구에 필요한 문헌이나 유물, 문서, 기록, 건축, 조각 따위를 이른다.",
+"example": "사료 수집. / 이번 발굴 작업에서 새로운 사료가 발견되었다."
+},
+{
+"category": "동음이의어",
+"term": "사료",
+"hanja": "思料",
+"definition": "깊이 생각하여 헤아림.",
+"example": "이 이상 그를 놔두심은 일을 더욱 어렵게 하는 것으로 사료되옵니다."
+},
+{
+"category": "동음이의어",
+"term": "사료",
+"hanja": "飼料",
+"definition": "가축에게 주는 먹을거리.",
+"example": "사료를 주다. / 사료를 먹이다."
+},
+{
+"category": "동음이의어",
+"term": "사주",
+"hanja": "四柱",
+"definition": "「민속」 사람이 태어난 연월일시의 네 간지(干支). 또는 이에 근거하여 사람의 길흉화복을 알아보는 점."
+},
+{
+"category": "동음이의어",
+"term": "사주",
+"hanja": "使嗾",
+"definition": "남을 부추겨 좋지 않은 일을 시킴.",
+"example": "그는 적의 사주를 받아 내부의 기밀을 염탐했다."
+},
+{
+"category": "동음이의어",
+"term": "사주",
+"hanja": "社主",
+"definition": "회사나 결사(結社)의 주인.",
+"example": "우리 회사는 사주가 바뀌고 말았다."
+},
+{
+"category": "동음이의어",
+"term": "사학",
+"hanja": "史學",
+"definition": "역사를 연구 대상으로 하는 학문.",
+"example": "민족 사학. / 사회·경제 사학.",
+"related": [
+"= 역사학"
+]
+},
+{
+"category": "동음이의어",
+"term": "사학",
+"hanja": "死學",
+"definition": "실용적인 가치가 없는 학문.",
+"example": "현실과 유리된 학문은 사학이다."
+},
+{
+"category": "동음이의어",
+"term": "사학",
+"hanja": "私學",
+"definition": "「교육」 개인 또는 사법인이 설립하여 경영하는 학교.",
+"example": "우리 학교는 사학의 명문이다.",
+"related": [
+"= 사립학교"
+]
+},
+{
+"category": "동음이의어",
+"term": "사학",
+"hanja": "邪學",
+"definition": "「철학」 조선 시대에, 주자학에 반대되거나 위배되는 학문을 이르던 말. 조선 중기에는 양명학을, 후기에는 천주교나 동학을 가리켰다.",
+"example": "홍주는 사학에 가장 심하게 물든 지역이니 홍주 목사를 붙잡아 국문하자. -《순조실록》"
+},
+{
+"category": "동음이의어",
+"term": "수",
+"hanja": "手",
+"definition": "바둑이나 장기 따위를 두는 기술. 또는 그 기술 수준.",
+"example": "한 수 위. / 수를 읽다. / 내가 한 수 가르쳐 주지."
+},
+{
+"category": "동음이의어",
+"term": "수",
+"hanja": "首",
+"definition": "시나 노래를 세는 단위.",
+"example": "시 한 수 읊조리다. / 시조 한 수를 짓다."
+},
+{
+"category": "동음이의어",
+"term": "수",
+"hanja": "數",
+"sense": 1,
+"definition": "이미 정하여져 있어 인간의 힘으로는 어쩔 수 없는 천운(天運)과 기수(氣數).",
+"example": "그는 수가 좋아 하는 일마다 잘된다. / 올해는 수가 나쁘니 조심해라.",
+"related": [
+"= 운수"
+]
+},
+{
+"category": "동음이의어",
+"term": "수",
+"hanja": "數",
+"sense": 2,
+"definition": "좋은 운수.",
+"example": "그는 수를 만나 횡재했다."
+},
+{
+"category": "동음이의어",
+"term": "수령",
+"hanja": "受領",
+"definition": "돈이나 물품을 받아들임.",
+"example": "반품 및 교환은 물품 수령 후 3일 안에만 가능합니다.",
+"note": "'받음'으로 순화."
+},
+{
+"category": "동음이의어",
+"term": "수령",
+"hanja": "首領",
+"definition": "한 당파나 무리의 우두머리.",
+"example": "홍길동은 활빈당의 수령이 되었다."
+},
+{
+"category": "동음이의어",
+"term": "수령",
+"hanja": "樹齡",
+"definition": "나무의 나이.",
+"example": "이 은행나무는 수령이 200년이 넘어 보호수로 지정되었다."
+},
+{
+"category": "동음이의어",
+"term": "수리",
+"hanja": "水利",
+"definition": "식용, 관개용, 공업용 따위로 물을 이용하는 일.",
+"example": "농업 생산을 늘리기 위하여 수리 시설을 확충하다."
+},
+{
+"category": "동음이의어",
+"term": "수리",
+"hanja": "數理",
+"sense": 1,
+"definition": "수학의 이론이나 이치.",
+"example": "그는 수리에 밝아서 계산이 틀리는 일이 없다."
+},
+{
+"category": "동음이의어",
+"term": "수리",
+"hanja": "數理",
+"sense": 2,
+"definition": "수학과 자연 과학을 아울러 이르는 말.",
+"example": "이번 시험은 언어 영역보다 수리 영역이 어려웠다."
+},
+{
+"category": "동음이의어",
+"term": "수정",
+"hanja": "水晶",
+"definition": "「광업」 무색투명한 석영의 하나.",
+"example": "물이 맑아 마치 수정을 보는 것만 같았다."
+},
+{
+"category": "동음이의어",
+"term": "수정",
+"hanja": "受精",
+"definition": "「생명」 암수의 생식 세포가 하나로 합쳐져 접합자가 됨. 또는 그런 현상.",
+"example": "벌은 식물의 수정을 돕는 역할을 한다."
+},
+{
+"category": "동음이의어",
+"term": "시가",
+"hanja": "市街",
+"definition": "도시의 큰 길거리.",
+"example": "버스는 어느새 시가를 빠져나와 국도를 향해 달렸다."
+},
+{
+"category": "동음이의어",
+"term": "시가",
+"hanja": "市價",
+"definition": "시장에서 상품이 매매되는 가격.",
+"example": "시가보다 싸게 팔다. / 이 집은 시가가 1억 원 정도 된다."
+},
+{
+"category": "동음이의어",
+"term": "시가",
+"hanja": "始價",
+"definition": "「경제」 증권 거래소에서 당일 입회에서 최초로 형성된 가격.",
+"example": "외국인 보유 주식의 시가 총액이 사상 최고치를 기록했다."
+},
+{
+"category": "동음이의어",
+"term": "양식",
+"hanja": "良識",
+"definition": "뛰어난 식견이나 건전한 판단.",
+"example": "아무 데나 침을 뱉는 것은 양식 있는 행동이 아니다."
+},
+{
+"category": "동음이의어",
+"term": "양식",
+"hanja": "樣式",
+"sense": 1,
+"definition": "일정한 모양이나 형식.",
+"example": "주어진 양식에 따라 보고서를 제출하시오.",
+"note": "'서식'으로 순화."
+},
+{
+"category": "동음이의어",
+"term": "양식",
+"hanja": "樣式",
+"sense": 2,
+"definition": "오랜 시간이 지나면서 자연히 정하여진 방식.",
+"example": "행동 양식. / 인간 활동의 양식은 자연환경의 영향을 받는다."
+},
+{
+"category": "동음이의어",
+"term": "양식",
+"hanja": "糧食",
+"definition": "생존을 위하여 필요한 사람의 먹을거리.",
+"example": "먹을 양식이 다 떨어졌다."
+},
+{
+"category": "동음이의어",
+"term": "연기",
+"hanja": "延期",
+"definition": "정해진 기한을 뒤로 물려서 늘림.",
+"example": "무기한 연기. / 지급 연기 신청."
+},
+{
+"category": "동음이의어",
+"term": "연기",
+"hanja": "煙氣",
+"definition": "무엇이 불에 탈 때에 생겨나는 흐릿한 기체나 기운.",
+"example": "굴뚝에서 연기가 나다. / 방 안에 담배 연기가 자욱하다."
+},
+{
+"category": "동음이의어",
+"term": "연기",
+"hanja": "演技",
+"definition": "「연기」 배우가 배역의 인물, 성격, 행동 따위를 표현해 내는 일.",
+"example": "연기 지도. / 내면 연기. / 목소리 연기. / 연기의 폭을 넓히다."
+},
+{
+"category": "동음이의어",
+"term": "유지",
+"hanja": "有志",
+"definition": "마을이나 지역에서 명망 있고 영향력을 가진 사람.",
+"example": "지역 유지. / 그 어른은 이곳에서 가장 영향력이 큰 유지이다."
+},
+{
+"category": "동음이의어",
+"term": "유지",
+"hanja": "維持",
+"definition": "어떤 상태나 상황을 그대로 보존하거나 변함없이 계속하여 지탱함.",
+"example": "질서 유지. / 건강 유지."
+},
+{
+"category": "동음이의어",
+"term": "유지",
+"hanja": "遺志",
+"definition": "죽은 사람이 살아서 이루지 못하고 남긴 뜻.",
+"example": "아버지의 유지를 따르다. / 유지를 받들다."
+},
+{
+"category": "동음이의어",
+"term": "이상",
+"hanja": "以上",
+"definition": "수량이나 정도가 일정한 기준보다 더 많거나 나음. 기준이 수량으로 제시될 경우에는, 그 수량이 범위에 포함되면서 그 위인 경우를 가리킨다.",
+"example": "키 158cm 이상. / 만 20세 이상."
+},
+{
+"category": "동음이의어",
+"term": "이상",
+"hanja": "理想",
+"definition": "생각할 수 있는 범위 안에서 가장 완전하다고 여겨지는 상태.",
+"example": "이상을 향한 열정. / 높은 이상을 품다."
+},
+{
+"category": "동음이의어",
+"term": "이상",
+"hanja": "異常",
+"sense": 1,
+"definition": "정상적인 상태와 다름.",
+"example": "이상 저온. / 기계에 이상이 생기다. / 그는 몸에 이상을 느끼고 병원을 찾았다."
+},
+{
+"category": "동음이의어",
+"term": "이상",
+"hanja": "異常",
+"sense": 2,
+"definition": "지금까지의 경험이나 지식과는 달리 별나거나 색다름.",
+"example": "이상한 냄새."
+},
+{
+"category": "동음이의어",
+"term": "이상",
+"hanja": "異常",
+"sense": 3,
+"definition": "의심스럽거나 알 수 없는 데가 있음."
+},
+{
+"category": "동음이의어",
+"term": "장기",
+"hanja": "長技",
+"definition": "가장 잘하는 재주.",
+"example": "장기 자랑."
+},
+{
+"category": "동음이의어",
+"term": "장기",
+"hanja": "長期",
+"definition": "긴 기간.",
+"example": "장기 출장을 다녀올 예정이다.",
+"related": [
+"= 장기간"
+]
+},
+{
+"category": "동음이의어",
+"term": "장기",
+"hanja": "臟器",
+"definition": "「의학」 내장의 여러 기관.",
+"example": "환자들이 장기 이식을 기다리고 있다."
+},
+{
+"category": "동음이의어",
+"term": "전기",
+"hanja": "前期",
+"definition": "일정 기간을 몇 개로 나눈 첫 시기.",
+"example": "프로 야구 전기 리그. / 전기 중세 국어."
+},
+{
+"category": "동음이의어",
+"term": "전기",
+"hanja": "傳記",
+"definition": "한 사람의 일생 동안의 행적을 적은 기록.",
+"example": "한국 위인 전기."
+},
+{
+"category": "동음이의어",
+"term": "전기",
+"hanja": "轉機",
+"definition": "전환점이 되는 기회나 시기.",
+"example": "전기를 맞이하다. / 새로운 치료법의 발견으로 암 치료에 전기가 마련되었다."
+},
+{
+"category": "동음이의어",
+"term": "정상",
+"hanja": "頂上",
+"sense": 1,
+"definition": "산 따위의 맨 꼭대기.",
+"example": "지리산의 정상."
+},
+{
+"category": "동음이의어",
+"term": "정상",
+"hanja": "頂上",
+"sense": 2,
+"definition": "그 이상 더없는 최고의 상태.",
+"example": "인기 정상의 가수."
+},
+{
+"category": "동음이의어",
+"term": "정상",
+"hanja": "頂上",
+"sense": 3,
+"definition": "한 나라의 최고 수뇌.",
+"example": "정상들이 회담을 갖기로 하였다."
+},
+{
+"category": "동음이의어",
+"term": "정상",
+"hanja": "正常",
+"definition": "특별한 변동이나 탈이 없이 제대로인 상태.",
+"example": "공장이 정상으로 가동되다."
+},
+{
+"category": "동음이의어",
+"term": "정상",
+"hanja": "情狀",
+"sense": 1,
+"definition": "있는 그대로의 사정과 형편.",
+"example": "물품을 받으려면 정상과 상관없이 차례에 따라야 한다."
+},
+{
+"category": "동음이의어",
+"term": "정상",
+"hanja": "情狀",
+"sense": 2,
+"definition": "딱하거나 가엾은 상태.",
+"example": "정상을 살피다."
+},
+{
+"category": "동음이의어",
+"term": "정상",
+"hanja": "情狀",
+"sense": 3,
+"definition": "「법률」 구체적 범죄에서 구체적 책임의 경중에 영향을 미치는 일체의 사정.",
+"example": "정상을 참작하다."
+},
+{
+"category": "동음이의어",
+"term": "정체",
+"hanja": "正體",
+"definition": "참된 본디의 형체.",
+"example": "정체가 불명한 괴한들. / 정체가 탄로 나다."
+},
+{
+"category": "동음이의어",
+"term": "정체",
+"hanja": "政體",
+"definition": "「정치」 국가의 통치 형태. 군주제, 귀족제, 민주제, 공화제 따위가 있다.",
+"example": "대한민국 임시 정부는 민주 공화제를 정체로 한다."
+},
+{
+"category": "동음이의어",
+"term": "조사",
+"hanja": "弔詞/弔辭",
+"definition": "죽은 사람을 슬퍼하여 조문(弔問)의 뜻을 표하는 글이나 말."
+},
+{
+"category": "동음이의어",
+"term": "조사",
+"hanja": "助詞",
+"definition": "「언어」 체언이나 부사, 어미 따위에 붙어 그 말과 다른 말과의 문법적 관계를 표시하거나 그 말의 뜻을 도와주는 품사.",
+"example": "우리 국어는 조사와 어미가 발달되었다."
+},
+{
+"category": "동음이의어",
+"term": "조사",
+"hanja": "調査",
+"definition": "사물의 내용을 명확히 알기 위하여 자세히 살펴보거나 찾아봄.",
+"example": "사고 경위 조사. / 외래어 사용 실태 조사. / 조사를 받다."
+},
+{
+"category": "동음이의어",
+"term": "조수",
+"hanja": "助手",
+"definition": "어떤 책임자 밑에서 지도를 받으면서 그 일을 도와주는 사람.",
+"example": "그는 선생님 밑에서 조수로 일하던 사람이다."
+},
+{
+"category": "동음이의어",
+"term": "조수",
+"hanja": "鳥獸",
+"definition": "새와 짐승을 아울러 이르는 말.",
+"example": "여기는 유해 조수가 많아 출입을 통제했다."
+},
+{
+"category": "동음이의어",
+"term": "조수",
+"hanja": "潮水",
+"definition": "「해양」 달, 태양 따위의 인력에 의하여 주기적으로 높아졌다 낮아졌다 하는 바닷물.",
+"example": "서해는 동해에 비해 조수 간만의 차가 크다."
+},
+{
+"category": "동음이의어",
+"term": "지향",
+"hanja": "志向",
+"definition": "어떤 목표로 뜻이 쏠리어 향함. 또는 그 방향이나 그쪽으로 쏠리는 의지.",
+"example": "평화 통일 지향. / 출세 지향."
+},
+{
+"category": "동음이의어",
+"term": "지향",
+"hanja": "指向",
+"definition": "작정하거나 지정한 방향으로 나아감. 또는 그 방향.",
+"example": "길을 잃고 지향 없이 헤매다."
+},
+{
+"category": "동음이의어",
+"term": "진하다",
+"hanja": "盡--",
+"definition": "다하여 없어지다.",
+"example": "국운이 진하다. / 기력이 진하다."
+},
+{
+"category": "동음이의어",
+"term": "-진",
+"hanja": "-陣",
+"definition": "(일부 명사 뒤에 붙어) '사람의 무리' 또는 '집단'의 뜻을 더하는 접미사.",
+"example": "간부진. / 배역진. / 의료진. / 보도진. / 임원진. / 취재진."
+},
+{
+"category": "동음이의어",
+"term": "진-",
+"hanja": "眞-",
+"definition": "(일부 명사 앞에 붙어) '참된' 또는 '진짜'의 뜻을 더하는 접두사.",
+"example": "진면모. / 진면목. / 진범인. / 진분수."
+},
+{
+"category": "동음이의어",
+"term": "현상",
+"hanja": "現狀",
+"definition": "나타나 보이는 현재의 상태.",
+"example": "현상을 극복하려는 의지. / 현상을 파악하다. / 현상을 유지하다."
+},
+{
+"category": "동음이의어",
+"term": "현상",
+"hanja": "現象",
+"definition": "인간이 지각할 수 있는, 사물의 모양과 상태.",
+"example": "열대야 현상. / 핵가족화 현상. / 피부 노화 현상."
+},
+{
+"category": "동음이의어",
+"term": "현상",
+"hanja": "現想",
+"definition": "보고 듣는 데 관련하여 일어나는 생각.",
+"example": "현상의 교차. / 현상의 차이."
+},
+{
+"category": "동음이의어",
+"term": "현상",
+"hanja": "現像",
+"definition": "「영상」 노출된 필름이나 인화지를 약품으로 처리하여 상이 나타나도록 함.",
+"example": "필름을 현상하다."
+},
+{
+"category": "동음이의어",
+"term": "현상",
+"hanja": "懸賞",
+"definition": "무엇을 모집하거나 구하거나 사람을 찾는 일 따위에 현금이나 물품 따위를 내걺. 또는 그 현금이나 물품.",
+"example": "현상 공모. / 현상 모집. / 현상 수배."
+},
+{
+"category": "한자어",
+"term": "난무",
+"hanja": "亂舞",
+"sense": 1,
+"definition": "엉킨 듯이 어지럽게 추는 춤. 또는 그렇게 춤을 춤.",
+"example": "나비들의 난무. / 백설(白雪)의 난무. / 무희들의 난무에 눈이 어지럽다."
+},
+{
+"category": "한자어",
+"term": "난무",
+"hanja": "亂舞",
+"sense": 2,
+"definition": "함부로 나서서 마구 날뜀을 비유적으로 이르는 말.",
+"example": "금권의 난무. / 무책임한 보도 난무. / 증오와 폭력의 난무."
+},
+{
+"category": "한자어",
+"term": "군무",
+"hanja": "群舞",
+"definition": "여러 사람이 무리를 지어 춤을 춤. 또는 그 춤.",
+"related": [
+"≒ 떼춤"
+]
+},
+{
+"category": "한자어",
+"term": "원무",
+"hanja": "圓舞",
+"definition": "「무용」 여럿이 동그랗게 둘러서서 추거나 돌면서 추는 춤."
+},
+{
+"category": "한자어",
+"term": "독무",
+"hanja": "獨舞",
+"definition": "「무용」 혼자서 추는 춤."
+},
+{
+"category": "한자어",
+"term": "가무",
+"hanja": "歌舞",
+"definition": "노래와 춤을 아울러 이르는 말."
+},
+{
+"category": "한자어",
+"term": "농무",
+"hanja": "農舞",
+"definition": "「민속」 풍물놀이에 맞추어 추는 춤.",
+"related": [
+"= 농악무"
+]
+},
+{
+"category": "한자어",
+"term": "승무",
+"hanja": "僧舞",
+"definition": "「무용」 장삼과 고깔을 걸치고 북채를 쥐고 추는 민속춤. 장삼을 날리며 절제된 춤사위를 보이는 것이 특징이다."
+},
+{
+"category": "한자어",
+"term": "수려하다",
+"hanja": "秀麗--",
+"definition": "빼어나게 아름답다.",
+"example": "산수가 수려하다."
+},
+{
+"category": "한자어",
+"term": "화려하다",
+"hanja": "華麗--",
+"definition": "환하게 빛나며 곱고 아름답다.",
+"example": "의상이 화려하다."
+},
+{
+"category": "한자어",
+"term": "호화",
+"hanja": "豪華",
+"definition": "사치스럽고 화려함.",
+"example": "호화 별장."
+},
+{
+"category": "한자어",
+"term": "영화",
+"hanja": "榮華",
+"definition": "몸이 귀하게 되어 이름이 세상에 빛남.",
+"example": "부귀와 영화를 누리다."
+},
+{
+"category": "한자어",
+"term": "번화하다",
+"hanja": "繁華--",
+"definition": "번성하고 화려하다.",
+"example": "번화한 거리. / 시가가 번화하다."
+},
+{
+"category": "한자어",
+"term": "환갑",
+"hanja": "還甲",
+"definition": "육십갑자의 '갑(甲)'으로 되돌아온다는 뜻으로, 예순한 살을 이르는 말."
+},
+{
+"category": "한자어",
+"term": "회갑",
+"hanja": "回甲",
+"definition": "육십갑자의 '갑(甲)'으로 되돌아온다는 뜻으로, 예순한 살을 이르는 말.",
+"related": [
+"= 환갑"
+]
+},
+{
+"category": "한자어",
+"term": "주갑",
+"hanja": "周甲",
+"definition": "육십갑자의 '갑(甲)'으로 되돌아온다는 뜻으로, 예순한 살을 이르는 말.",
+"related": [
+"= 환갑"
+]
+},
+{
+"category": "한자어",
+"term": "진갑",
+"hanja": "進甲",
+"definition": "환갑의 이듬해. 또는 그해의 생일."
+},
+{
+"category": "한자어",
+"term": "고유어",
+"hanja": "固有語",
+"definition": "「언어」 해당 언어에 본디부터 있던 말이나 그것에 기초하여 새로 만들어진 말."
+},
+{
+"category": "한자어",
+"term": "한자어",
+"hanja": "漢字語",
+"definition": "한자에 기초하여 만들어진 말."
+},
+{
+"category": "한자어",
+"term": "복합어",
+"hanja": "複合語",
+"definition": "「언어」 하나의 실질 형태소에 접사가 붙거나 두 개 이상의 실질 형태소가 결합된 말. 파생어와 합성어로 나뉜다."
+},
+{
+"category": "한자어",
+"term": "합성어",
+"hanja": "合成語",
+"definition": "「언어」 둘 이상의 실질 형태소가 결합하여 하나의 단어가 된 말. '집안', '돌다리' 따위이다."
+},
+{
+"category": "한자어",
+"term": "외래어",
+"hanja": "外來語",
+"definition": "「언어」 외국에서 들어온 말로 국어에서 널리 쓰이는 단어. 버스, 컴퓨터, 피아노 따위가 있다."
+},
+{
+"category": "한자어",
+"term": "관형사",
+"hanja": "冠形詞",
+"definition": "「언어」 체언 앞에 놓여서, 그 체언의 내용을 자세히 꾸며 주는 품사."
+},
+{
+"category": "한자어",
+"term": "유의어",
+"hanja": "類義語",
+"definition": "「언어」 뜻이 서로 비슷한 말."
+},
+{
+"category": "한자어",
+"term": "반의어",
+"hanja": "反義語",
+"definition": "「언어」 그 뜻이 서로 정반대되는 관계에 있는 말."
+},
+{
+"category": "한자어",
+"term": "동음어",
+"hanja": "同音語",
+"definition": "「언어」 소리는 같으나 뜻이 다른 단어."
+},
+{
+"category": "한자어",
+"term": "다의어",
+"hanja": "多義語",
+"definition": "「언어」 두 가지 이상의 뜻을 가진 단어."
+},
+{
+"category": "한자어",
+"term": "접전",
+"hanja": "接戰",
+"sense": 1,
+"definition": "경기나 전투에서 서로 맞붙어 싸움. 또는 그런 경기나 전투.",
+"example": "두 부대의 접전에서 발생한 사상자의 수는 어마어마했다."
+},
+{
+"category": "한자어",
+"term": "접전",
+"hanja": "接戰",
+"sense": 2,
+"definition": "서로 힘이 비슷하여 승부가 쉽게 나지 아니하는 경기나 전투.",
+"example": "팽팽한 접전. / 치열한 접전 끝에 비기다. / 막상막하의 접전을 벌이다."
+},
+{
+"category": "한자어",
+"term": "낙승",
+"hanja": "樂勝",
+"definition": "힘들이지 아니하고 쉽게 이김.",
+"example": "낙승을 거두다. / 낙승을 장담하다."
+},
+{
+"category": "한자어",
+"term": "석패",
+"hanja": "惜敗",
+"definition": "경기나 경쟁에서 약간의 점수 차이로 아깝게 짐."
+},
+{
+"category": "한자어",
+"term": "신승",
+"hanja": "辛勝",
+"definition": "경기 따위에서 힘들게 겨우 이김.",
+"example": "어제 열린 축구 경기에서는 우리 편이 3 대 2로 한 점 차의 신승을 거두었다."
+},
+{
+"category": "한자어",
+"term": "우승",
+"hanja": "優勝",
+"definition": "경기, 경주 따위에서 이겨 첫째를 차지함. 또는 첫째 등위.",
+"example": "영광스러운 우승. / 우승 후보."
+},
+{
+"category": "한자어",
+"term": "건조",
+"hanja": "乾燥",
+"definition": "말라서 습기가 없음."
+},
+{
+"category": "한자어",
+"term": "가습기",
+"hanja": "加濕器",
+"definition": "수증기를 내어 실내의 습도를 조절하는 전기 기구."
+},
+{
+"category": "한자어",
+"term": "환기",
+"hanja": "換氣",
+"definition": "탁한 공기를 맑은 공기로 바꿈."
+},
+{
+"category": "한자어",
+"term": "오염",
+"hanja": "汚染",
+"definition": "더럽게 물듦. 또는 더럽게 물들게 함."
+},
+{
+"category": "한자어",
+"term": "부의금",
+"hanja": "賻儀金",
+"definition": "부의로 보내는 돈."
+},
+{
+"category": "한자어",
+"term": "주례사",
+"hanja": "主禮辭",
+"definition": "주례가 예식에서 행하는 의례적인 축사."
+},
+{
+"category": "한자어",
+"term": "호적법",
+"hanja": "戶籍法",
+"definition": "「법률」 호적에 관한 사항을 규정하는 법률."
+},
+{
+"category": "한자어",
+"term": "관혼상제",
+"hanja": "冠婚喪祭",
+"definition": "관례, 혼례, 상례, 제례를 아울러 이르는 말."
+},
+{
+"category": "한자어",
+"term": "풍습",
+"hanja": "風習",
+"definition": "풍속과 습관을 아울러 이르는 말."
+},
+{
+"category": "한자어",
+"term": "불과",
+"hanja": "不過",
+"definition": "그 수량에 지나지 아니한 상태임을 이르는 말.",
+"example": "그 사실을 아는 사람은 불과 몇 명뿐이었다."
+},
+{
+"category": "한자어",
+"term": "하필",
+"hanja": "何必",
+"definition": "다른 방도를 취하지 아니하고 어찌하여 꼭.",
+"example": "하필 오늘같이 더운 날 대청소를 할 게 뭐야."
+},
+{
+"category": "한자어",
+"term": "단번",
+"hanja": "單番",
+"definition": "단 한 번.",
+"example": "단번의 기회."
+},
+{
+"category": "한자어",
+"term": "대체",
+"hanja": "大體",
+"definition": "다른 말은 그만두고 요점만 말하자면.",
+"example": "대체 어찌 된 일이냐? / 너는 대체 누구냐?",
+"related": [
+"= 도대체"
+]
+},
+{
+"category": "한자어",
+"term": "가령",
+"hanja": "假令",
+"definition": "가정하여 말하여.",
+"example": "가령 너에게 그런 행운이 온다면 너는 어떻게 하겠니?"
+},
+{
+"category": "한자어",
+"term": "탐구",
+"hanja": "探究",
+"definition": "진리, 학문 따위를 파고들어 깊이 연구함.",
+"example": "과학 탐구. / 진리 탐구."
+},
+{
+"category": "한자어",
+"term": "지식",
+"hanja": "知識",
+"definition": "어떤 대상에 대하여 배우거나 실천을 통하여 알게 된 명확한 인식이나 이해.",
+"example": "지식을 쌓다."
+},
+{
+"category": "한자어",
+"term": "학문",
+"hanja": "學問",
+"definition": "어떤 분야를 체계적으로 배워서 익힘. 또는 그런 지식.",
+"example": "학문이 깊다."
+},
+{
+"category": "한자어",
+"term": "상식",
+"hanja": "常識",
+"definition": "사람들이 보통 알고 있거나 알아야 하는 지식. 일반적 견문과 함께 이해력, 판단력, 사리 분별 따위가 포함된다.",
+"example": "상식 밖의 행동."
+},
+{
+"category": "한자어",
+"term": "이론",
+"hanja": "理論",
+"definition": "사물의 이치나 지식 따위를 해명하기 위하여 논리적으로 정연하게 일반화한 명제의 체계.",
+"example": "경제 이론. / 빛의 입자 이론."
+},
+{
+"category": "한자어",
+"term": "과정",
+"hanja": "課程",
+"sense": 1,
+"definition": "해야 할 일의 정도."
+},
+{
+"category": "한자어",
+"term": "과정",
+"hanja": "課程",
+"sense": 2,
+"definition": "일정한 기간에 교육하거나 학습하여야 할 과목의 내용과 분량.",
+"example": "오늘로 1학년 1학기 과정을 마치고 여름 방학에 들어간다."
+},
+{
+"category": "한자어",
+"term": "수료",
+"hanja": "修了",
+"definition": "일정한 학과를 다 배워 끝냄.",
+"example": "석사 과정 수료."
+},
+{
+"category": "한자어",
+"term": "기원",
+"hanja": "起源/起原",
+"definition": "사물이 처음으로 생김. 또는 그런 근원.",
+"example": "생명의 기원."
+},
+{
+"category": "한자어",
+"term": "사상",
+"hanja": "思想",
+"definition": "어떠한 사물에 대하여 가지고 있는 구체적인 사고나 생각.",
+"example": "사상의 자유."
+},
+{
+"category": "한자어",
+"term": "종교",
+"hanja": "宗敎",
+"definition": "「종교 일반」 신이나 초자연적인 절대자 또는 힘에 대한 믿음을 통하여 인간 생활의 고뇌를 해결하고 삶의 궁극적인 의미를 추구하는 문화 체계."
+},
+{
+"category": "한자어",
+"term": "인식",
+"hanja": "認識",
+"definition": "사물을 분별하고 판단하여 앎.",
+"example": "인식이 부족하다."
+},
+{
+"category": "한자어",
+"term": "비극",
+"hanja": "悲劇",
+"definition": "인생의 슬프고 애달픈 일을 당하여 불행한 경우를 이르는 말.",
+"example": "비극이 일어나다."
+},
+{
+"category": "한자어",
+"term": "패배",
+"hanja": "敗北",
+"definition": "겨루어서 짐.",
+"example": "찬란한 승리와 참담한 패배."
+},
+{
+"category": "한자어",
+"term": "불행",
+"hanja": "不幸",
+"definition": "행복하지 아니함.",
+"example": "불행을 느끼다."
+},
+{
+"category": "한자어",
+"term": "단장",
+"hanja": "斷腸",
+"definition": "몹시 슬퍼서 창자가 끊어지는 듯함.",
+"example": "단장의 비애."
+},
+{
+"category": "한자어",
+"term": "궁핍",
+"hanja": "窮乏",
+"definition": "몹시 가난함.",
+"example": "궁핍에 시달리다."
+},
+{
+"category": "한자어",
+"term": "불의",
+"hanja": "不義",
+"definition": "의리, 도의, 정의 따위에 어긋남.",
+"example": "불의를 저지르다."
+},
+{
+"category": "한자어",
+"term": "난색",
+"hanja": "難色",
+"definition": "꺼리거나 어려워하는 기색.",
+"example": "난색을 보이다."
+},
+{
+"category": "한자어",
+"term": "분열",
+"hanja": "分裂",
+"definition": "집단이나 단체, 사상 따위가 갈라져 나뉨.",
+"example": "귀족 사회의 분열과 대립."
+},
+{
+"category": "한자어",
+"term": "방만하다",
+"hanja": "放漫--",
+"definition": "맺고 끊는 데가 없이 제멋대로 풀어져 있다.",
+"example": "방만한 지출."
+},
+{
+"category": "한자어",
+"term": "답보",
+"hanja": "踏步",
+"definition": "상태가 나아가지 못하고 한자리에 머무르는 일. 또는 그런 상태.",
+"example": "우리나라의 현재 교육 여건은 10년 전의 상태를 그대로 답보하고 있다.",
+"related": [
+"= 제자리걸음"
+]
+},
+{
+"category": "한자어",
+"term": "양심",
+"hanja": "良心",
+"definition": "자신의 행위에 대해 옳음과 그름, 선함과 악함을 분별하여 도덕적으로 올바른 행동을 하려는 의식."
+},
+{
+"category": "한자어",
+"term": "인내",
+"hanja": "忍耐",
+"definition": "괴로움이나 어려움을 참고 견딤.",
+"example": "인내로 역경을 극복하다."
+},
+{
+"category": "한자어",
+"term": "신념",
+"hanja": "信念",
+"definition": "굳게 믿는 마음.",
+"example": "신념을 지키다."
+},
+{
+"category": "한자어",
+"term": "신봉",
+"hanja": "信奉",
+"definition": "사상이나 학설, 교리 따위를 옳다고 믿고 받듦.",
+"example": "그의 그 이론에 대한 신봉은 신앙과도 같았다."
+},
+{
+"category": "한자어",
+"term": "정열",
+"hanja": "情熱",
+"definition": "가슴속에서 맹렬하게 일어나는 적극적인 감정."
+},
+{
+"category": "한자어",
+"term": "불굴",
+"hanja": "不屈",
+"definition": "온갖 어려움에도 굽히지 아니함."
+},
+{
+"category": "한자어",
+"term": "책임",
+"hanja": "責任",
+"definition": "맡아서 해야 할 임무나 의무."
+},
+{
+"category": "한자어",
+"term": "공정",
+"hanja": "公正",
+"definition": "공평하고 올바름.",
+"example": "공정 보도."
+},
+{
+"category": "한자어",
+"term": "질서",
+"hanja": "秩序",
+"definition": "혼란 없이 순조롭게 이루어지게 하는 사물의 순서나 차례.",
+"example": "질서 의식. / 질서가 무너지다."
+},
+{
+"category": "한자어",
+"term": "축복",
+"hanja": "祝福",
+"definition": "행복을 빎. 또는 그 행복."
+},
+{
+"category": "한자어",
+"term": "염원",
+"hanja": "念願",
+"definition": "마음에 간절히 생각하고 기원함. 또는 그런 것.",
+"example": "우리 겨레의 염원."
+},
+{
+"category": "한자어",
+"term": "지지",
+"hanja": "支持",
+"definition": "어떤 사람이나 단체 따위의 주의·정책·의견 따위에 찬동하여 이를 위하여 힘을 씀. 또는 그 원조.",
+"example": "지지 세력."
+},
+{
+"category": "한자어",
+"term": "여론",
+"hanja": "輿論",
+"definition": "사회 대중의 공통된 의견.",
+"example": "여론 정치. / 여론이 들끓다."
+},
+{
+"category": "한자어",
+"term": "유세",
+"hanja": "遊說",
+"definition": "자기 의견 또는 자기 소속 정당의 주장을 선전하며 돌아다님.",
+"example": "선거 유세."
+},
+{
+"category": "한자어",
+"term": "방송",
+"hanja": "放送",
+"definition": "라디오나 텔레비전 따위를 통하여 널리 듣고 볼 수 있도록 음성이나 영상을 전파로 내보내는 일. 특정 지역을 대상으로 유선(有線)으로 행하는 것을 포함하기도 한다."
+},
+{
+"category": "한자어",
+"term": "권세",
+"hanja": "權勢",
+"definition": "권력과 세력을 아울러 이르는 말."
+},
+{
+"category": "한자어",
+"term": "정권",
+"hanja": "政權",
+"definition": "정치상의 권력. 또는 정치를 담당하는 권력.",
+"example": "정권 교체. / 정권을 잡다."
+},
+{
+"category": "한자어",
+"term": "서두",
+"hanja": "序頭",
+"definition": "일이나 말의 첫머리.",
+"example": "서두를 떼다. / 서두를 늘어놓다."
+},
+{
+"category": "한자어",
+"term": "선두",
+"hanja": "先頭",
+"definition": "대열이나 행렬, 활동 따위에서 맨 앞.",
+"example": "선두에 서다. / 선두에 있다."
+},
+{
+"category": "한자어",
+"term": "벽두",
+"hanja": "劈頭",
+"sense": 1,
+"definition": "글의 첫머리."
+},
+{
+"category": "한자어",
+"term": "벽두",
+"hanja": "劈頭",
+"sense": 2,
+"definition": "맨 처음. 또는 일이 시작된 머리.",
+"example": "신년 벽두. / 새해 벽두부터 우울한 소식이 들려왔다."
+},
+{
+"category": "한자어",
+"term": "발전",
+"hanja": "發展",
+"definition": "더 낫고 좋은 상태나 더 높은 단계로 나아감.",
+"example": "과학의 발전에 기여하다."
+},
+{
+"category": "한자어",
+"term": "발달",
+"hanja": "發達",
+"sense": 1,
+"definition": "신체, 정서, 지능 따위가 성장하거나 성숙함.",
+"example": "신체의 발달. / 운동 신경의 발달. / 음악은 아이의 정서적 발달에 좋다."
+},
+{
+"category": "한자어",
+"term": "발달",
+"hanja": "發達",
+"sense": 2,
+"definition": "학문, 기술, 문명, 사회 따위의 현상이 보다 높은 수준에 이름.",
+"example": "의학의 발달."
+},
+{
+"category": "한자어",
+"term": "발견",
+"hanja": "發見",
+"definition": "미처 찾아내지 못하였거나 아직 알려지지 아니한 사물이나 현상, 사실 따위를 찾아냄.",
+"example": "새 항로의 발견."
+},
+{
+"category": "한자어",
+"term": "촉진",
+"hanja": "促進",
+"definition": "다그쳐 빨리 나아가게 함.",
+"example": "수출 산업화의 촉진."
+},
+{
+"category": "한자어",
+"term": "성장",
+"hanja": "成長",
+"definition": "사람이나 동식물 따위가 자라서 점점 커짐.",
+"example": "물고기의 성장 과정."
+},
+{
+"category": "한자어",
+"term": "성공",
+"hanja": "成功",
+"definition": "목적하는 바를 이룸.",
+"example": "성공 사례."
+},
+{
+"category": "한자어",
+"term": "도모",
+"hanja": "圖謀",
+"definition": "어떤 일을 이루기 위하여 대책과 방법을 세움.",
+"example": "부원들 간의 친목 도모를 위해 주말에 야유회를 가기로 했다."
+},
+{
+"category": "한자어",
+"term": "계승",
+"hanja": "繼承",
+"sense": 1,
+"definition": "조상의 전통이나 문화유산, 업적 따위를 물려받아 이어 나감.",
+"example": "전통문화의 계승과 발전. / 역사는 문화 창조와 계승의 과정이라 할 수 있다."
+},
+{
+"category": "한자어",
+"term": "계승",
+"hanja": "繼承",
+"sense": 2,
+"definition": "선임자의 뒤를 이어받음.",
+"example": "여러 외척 간에 왕위 계승을 둘러싼 권력 싸움이 벌어졌다."
+},
+{
+"category": "한자어",
+"term": "회의",
+"hanja": "懷疑",
+"definition": "의심을 품음. 또는 마음속에 품고 있는 의심.",
+"example": "회의가 생기다."
+},
+{
+"category": "한자어",
+"term": "경계",
+"hanja": "警戒",
+"definition": "뜻밖의 사고가 생기지 않도록 조심하여 단속함.",
+"example": "경계를 늦추다. / 경계의 눈초리로 지켜보다."
+},
+{
+"category": "한자어",
+"term": "배제",
+"hanja": "排除",
+"definition": "받아들이지 아니하고 물리쳐 제외함.",
+"example": "폭력의 배제."
+},
+{
+"category": "한자어",
+"term": "거부",
+"hanja": "拒否",
+"definition": "요구나 제의 따위를 받아들이지 않고 물리침.",
+"example": "거부 의사를 표명하다."
+},
+{
+"category": "한자어",
+"term": "질책",
+"hanja": "叱責",
+"definition": "꾸짖어 바로잡음."
+},
+{
+"category": "한자어",
+"term": "재질",
+"hanja": "才質",
+"definition": "재주와 기질을 아울러 이르는 말."
+},
+{
+"category": "한자어",
+"term": "특장",
+"hanja": "特長",
+"definition": "특별히 뛰어난 장점."
+},
+{
+"category": "한자어",
+"term": "천분",
+"hanja": "天分",
+"definition": "타고난 재질이나 직분.",
+"example": "천분의 문학성. / 천분이 뛰어나다."
+},
+{
+"category": "한자어",
+"term": "각설",
+"hanja": "却說",
+"definition": "말이나 글 따위에서, 이제까지 다루던 내용을 그만두고 화제를 다른 쪽으로 돌림.",
+"example": "자, 각설하고 어디 당신의 계획이나 들어 봅시다."
+},
+{
+"category": "한자어",
+"term": "설명",
+"hanja": "說明",
+"definition": "어떤 일이나 대상의 내용을 상대편이 잘 알 수 있도록 밝혀 말함. 또는 그런 말."
+},
+{
+"category": "한자어",
+"term": "천명",
+"hanja": "闡明",
+"definition": "진리나 사실, 입장 따위를 드러내어 밝힘.",
+"example": "개혁의 의지를 세계만방에 천명하다."
+},
+{
+"category": "한자어",
+"term": "역설",
+"hanja": "逆說",
+"sense": 1,
+"definition": "어떤 주의나 주장에 반대되는 이론이나 말."
+},
+{
+"category": "한자어",
+"term": "역설",
+"hanja": "逆說",
+"sense": 2,
+"definition": "「철학」 일반적으로는 모순을 야기하지 아니하나 특정한 경우에 논리적 모순을 일으키는 논증. 모순을 일으키기는 하지만 그 속에 중요한 진리가 함축되어 있는 것으로 간주한다.",
+"example": "역설적 표현."
+},
+{
+"category": "한자어",
+"term": "언급",
+"hanja": "言及",
+"definition": "어떤 문제에 대하여 말함.",
+"example": "언급을 회피하다."
+},
+{
+"category": "한자어",
+"term": "덕담",
+"hanja": "德談",
+"definition": "남이 잘되기를 비는 말. 주로 새해에 많이 나누는 말이다."
+},
+{
+"category": "한자어",
+"term": "취임사",
+"hanja": "就任辭",
+"definition": "취임할 때 인사로 하는 말.",
+"example": "신임 장관의 취임사를 듣다."
+},
+{
+"category": "한자어",
+"term": "형식",
+"hanja": "形式",
+"definition": "사물이 외부로 나타나 보이는 모양.",
+"example": "형식을 갖추다."
+},
+{
+"category": "한자어",
+"term": "시정",
+"hanja": "是正",
+"definition": "잘못된 것을 바로잡음.",
+"example": "시정을 촉구하다."
+},
+{
+"category": "한자어",
+"term": "정비",
+"hanja": "整備",
+"sense": 1,
+"definition": "흐트러진 체계를 정리하여 제대로 갖춤.",
+"example": "교육 제도 정비. / 축구 대표 팀의 정비. / 체제 정비 사업."
+},
+{
+"category": "한자어",
+"term": "정비",
+"hanja": "整備",
+"sense": 2,
+"definition": "기계나 설비가 제대로 작동하도록 보살피고 손질함.",
+"example": "전동차 정비. / 정비 공장."
+},
+{
+"category": "한자어",
+"term": "정비",
+"hanja": "整備",
+"sense": 3,
+"definition": "도로나 시설 따위가 제 기능을 하도록 정리함.",
+"example": "가로수 정비. / 하천 정비. / 도서관 시설의 정비로 도서관을 열흘 동안 이용할 수 없게 되었다."
+},
+{
+"category": "한자어",
+"term": "갱신",
+"hanja": "更新",
+"definition": "「법률」 법률관계의 존속 기간이 끝났을 때 그 기간을 연장하는 일. 계약으로 기간을 연장하는 명시적 갱신과 계약 없이도 인정되는 묵시적 갱신이 있다.",
+"example": "계약 갱신. / 비자 갱신."
+},
+{
+"category": "한자어",
+"term": "각오",
+"hanja": "覺悟",
+"definition": "앞으로 해야 할 일이나 겪을 일에 대한 마음의 준비.",
+"example": "비장한 각오."
+},
+{
+"category": "한자어",
+"term": "각성",
+"hanja": "覺醒",
+"definition": "깨달아 앎.",
+"example": "잘못을 각성하다."
+},
+{
+"category": "한자어",
+"term": "강단",
+"hanja": "剛斷",
+"definition": "굳세고 꿋꿋하게 견디어 내는 힘.",
+"example": "강단이 세다. / 우리 어머니들은 그 어려운 시절을 강단으로 버텨 오셨다."
+},
+{
+"category": "한자어",
+"term": "공격",
+"hanja": "攻擊",
+"sense": 1,
+"definition": "나아가 적을 침.",
+"example": "공격 목표. / 공격 전술."
+},
+{
+"category": "한자어",
+"term": "공격",
+"hanja": "攻擊",
+"sense": 2,
+"definition": "남을 비난하거나 반대하여 나섬.",
+"example": "동료들에게 집중 공격을 받다."
+},
+{
+"category": "한자어",
+"term": "도발",
+"hanja": "挑發",
+"definition": "남을 집적거려 일이 일어나게 함.",
+"example": "성적인 도발. / 전쟁 도발."
+},
+{
+"category": "한자어",
+"term": "승복",
+"hanja": "承服",
+"definition": "납득하여 따름.",
+"example": "적에게 승복하다. / 그 선수는 심판의 판정에 끝내 승복하지 않았다."
+},
+{
+"category": "한자어",
+"term": "결렬",
+"hanja": "決裂",
+"definition": "교섭이나 회의 따위에서 의견이 합쳐지지 않아 각각 갈라서게 됨.",
+"example": "회담의 결렬."
+},
+{
+"category": "한자어",
+"term": "교역",
+"hanja": "交易",
+"definition": "주로 나라와 나라 사이에서 물건을 사고팔고 하여 서로 바꿈.",
+"example": "국제 교역."
+},
+{
+"category": "한자어",
+"term": "친교",
+"hanja": "親交",
+"definition": "친밀하게 사귐. 또는 그런 교분.",
+"example": "친교를 나누다."
+},
+{
+"category": "한자어",
+"term": "검토",
+"hanja": "檢討",
+"definition": "어떤 사실이나 내용을 분석하여 따짐.",
+"example": "면밀한 검토 후에 결론을 내리자."
+},
+{
+"category": "한자어",
+"term": "모색",
+"hanja": "摸索",
+"definition": "일이나 사건 따위를 해결할 수 있는 방법이나 실마리를 더듬어 찾음.",
+"example": "해결 방안의 모색."
+},
+{
+"category": "한자어",
+"term": "판단",
+"hanja": "判斷",
+"definition": "사물을 인식하여 논리나 기준 등에 따라 판정을 내림.",
+"example": "상황 판단."
+},
+{
+"category": "한자어",
+"term": "잠적",
+"hanja": "潛跡/潛迹",
+"definition": "종적을 아주 숨김.",
+"example": "공직자들에게는 잠적이나 도피보다 떳떳하게 나서서 사태를 감당하는 자세가 필요하다."
+},
+{
+"category": "한자어",
+"term": "은둔",
+"hanja": "隱遁/隱遯",
+"definition": "세상일을 피하여 숨음.",
+"example": "노 교수는 모든 명예를 버리고 은둔의 생활을 택했다."
+},
+{
+"category": "한자어",
+"term": "임박",
+"hanja": "臨迫",
+"definition": "어떤 때가 가까이 닥쳐옴.",
+"example": "막차 시간이 임박하다."
+},
+{
+"category": "한자어",
+"term": "각박하다",
+"hanja": "刻薄--",
+"sense": 1,
+"definition": "인정이 없고 삭막하다.",
+"example": "세상 인심이 각박하다."
+},
+{
+"category": "한자어",
+"term": "각박하다",
+"hanja": "刻薄--",
+"sense": 2,
+"definition": "땅이 거칠고 기름지지 아니하다.",
+"example": "자갈이 섞인 각박한 땅이라 농사를 지을 수가 없다."
+},
+{
+"category": "한자어",
+"term": "막간",
+"hanja": "幕間",
+"definition": "어떤 일의 한 단락이 끝나고 다음 단락이 시작될 동안.",
+"example": "막간을 이용해서 안내 말씀을 드리겠습니다."
+},
+{
+"category": "한자어",
+"term": "기반",
+"hanja": "基盤",
+"definition": "기초가 되는 바탕. 또는 사물의 토대.",
+"example": "기반을 다지다."
+},
+{
+"category": "한자어",
+"term": "주축",
+"hanja": "主軸",
+"definition": "전체 가운데서 중심이 되어 영향을 미치는 존재나 세력.",
+"example": "팀의 주축인 그의 부상으로 전력에 차질이 생겼다."
+},
+{
+"category": "한자어",
+"term": "주제",
+"hanja": "主題",
+"definition": "대화나 연구 따위에서 중심이 되는 문제.",
+"example": "논문의 주제. / 대화의 주제."
+},
+{
+"category": "한자어",
+"term": "전제",
+"hanja": "前提",
+"definition": "어떠한 사물이나 현상을 이루기 위하여 먼저 내세우는 것.",
+"example": "전제 조건."
+},
+{
+"category": "한자어",
+"term": "상이하다",
+"hanja": "相異--",
+"definition": "서로 다르다.",
+"example": "형은 나와 성격 면에서 매우 상이하다."
+},
+{
+"category": "한자어",
+"term": "모방",
+"hanja": "模倣/摸倣/摹倣",
+"definition": "다른 것을 본뜨거나 본받음.",
+"example": "외국 문물에 대한 분별없는 모방."
+},
+{
+"category": "한자어",
+"term": "사건",
+"hanja": "事件",
+"definition": "사회적으로 문제를 일으키거나 주목을 받을 만한 뜻밖의 일.",
+"example": "역사적인 사건."
+},
+{
+"category": "한자어",
+"term": "전모",
+"hanja": "全貌",
+"definition": "전체의 모습. 또는 전체의 내용.",
+"example": "전모를 드러내다."
+},
+{
+"category": "한자어",
+"term": "진로",
+"hanja": "進路",
+"definition": "앞으로 나아갈 길.",
+"example": "진로 상담."
+},
+{
+"category": "한자어",
+"term": "장래",
+"hanja": "將來",
+"definition": "다가올 앞날.",
+"example": "장래 계획."
+},
+{
+"category": "한자어",
+"term": "용이하다",
+"hanja": "容易--",
+"definition": "어렵지 아니하고 매우 쉽다.",
+"example": "이 선풍기는 조립이 용이한 것이 장점이다."
+},
+{
+"category": "한자어",
+"term": "용납",
+"hanja": "容納",
+"definition": "너그러운 마음으로 남의 말이나 행동을 받아들임.",
+"example": "너의 그런 무례한 행동은 도저히 용납을 할 수 없다."
+},
+{
+"category": "한자어",
+"term": "간섭",
+"hanja": "干涉",
+"definition": "직접 관계가 없는 남의 일에 부당하게 참견함.",
+"example": "간섭에서 벗어나다."
+},
+{
+"category": "한자어",
+"term": "구축",
+"hanja": "構築",
+"sense": 1,
+"definition": "어떤 시설물을 쌓아 올려 만듦.",
+"example": "방공호 구축. / 진지 구축."
+},
+{
+"category": "한자어",
+"term": "구축",
+"hanja": "構築",
+"sense": 2,
+"definition": "체제, 체계 따위의 기초를 닦아 세움.",
+"example": "신뢰 구축."
+},
+{
+"category": "한자어",
+"term": "축적",
+"hanja": "蓄積",
+"definition": "지식, 경험, 자금 따위를 모아서 쌓음. 또는 모아서 쌓은 것.",
+"example": "경험 축적. / 자본의 축적."
+},
+{
+"category": "한자어",
+"term": "이문",
+"hanja": "利文",
+"definition": "이익이 남는 돈.",
+"example": "이문이 남다."
+},
+{
+"category": "한자어",
+"term": "도로",
+"hanja": "道路",
+"definition": "사람, 차 따위가 잘 다닐 수 있도록 만들어 놓은 비교적 넓은 길.",
+"example": "도로를 내다."
+},
+{
+"category": "한자어",
+"term": "주변",
+"hanja": "周邊",
+"definition": "어떤 대상의 둘레.",
+"example": "주변 정세. / 주변 환경. / 학교 주변."
+},
+{
+"category": "한자어",
+"term": "풍광",
+"hanja": "風光",
+"definition": "산이나 들, 강, 바다 따위의 자연이나 지역의 모습.",
+"example": "자연의 풍광을 담은 사진.",
+"related": [
+"= 경치"
+]
+},
+{
+"category": "한자어",
+"term": "보관",
+"hanja": "保管",
+"definition": "물건을 맡아서 간직하고 관리함.",
+"example": "보관에 주의하다."
+},
+{
+"category": "한자어",
+"term": "산적",
+"hanja": "山積",
+"definition": "물건이나 일이 산더미같이 쌓임.",
+"example": "문 앞에 쓰레기가 산적되어 있다."
+},
+{
+"category": "한자어",
+"term": "낙점",
+"hanja": "落點",
+"definition": "여러 후보가 있을 때 그중에 마땅한 대상을 고름.",
+"example": "낙점을 받다."
+},
+{
+"category": "한자어",
+"term": "추천",
+"hanja": "推薦",
+"definition": "어떤 조건에 적합한 대상을 책임지고 소개함.",
+"example": "추천 도서."
+},
+{
+"category": "한자어",
+"term": "파견",
+"hanja": "派遣",
+"definition": "일정한 임무를 주어 사람을 보냄.",
+"example": "파견 근무. / 파견 명령."
+},
+{
+"category": "한자어",
+"term": "강보",
+"hanja": "襁褓",
+"definition": "어린아이의 작은 이불.",
+"related": [
+"= 포대기"
+]
+},
+{
+"category": "한자어",
+"term": "강제",
+"hanja": "強制",
+"definition": "권력이나 위력(威力)으로 남의 자유의사를 억눌러 원하지 않는 일을 억지로 시킴.",
+"example": "강제 노동. / 강제 노역. / 강제 동원. / 강제 모병. / 강제로 일을 시키다."
+},
+{
+"category": "한자어",
+"term": "개인",
+"hanja": "個人",
+"definition": "국가나 사회, 단체 등을 구성하는 낱낱의 사람.",
+"example": "개인 자격으로 참가하다."
+},
+{
+"category": "한자어",
+"term": "객관",
+"hanja": "客觀",
+"definition": "자기와의 관계에서 벗어나 제삼자의 입장에서 사물을 보거나 생각함."
+},
+{
+"category": "한자어",
+"term": "거리",
+"hanja": "距離",
+"sense": 1,
+"definition": "두 개의 물건이나 장소 따위가 공간적으로 떨어진 길이.",
+"example": "거리가 가깝다. / 거리가 멀다."
+},
+{
+"category": "한자어",
+"term": "거리",
+"hanja": "距離",
+"sense": 2,
+"definition": "(주로 시간의 길이를 나타내는 명사 뒤에 쓰여) 일정한 시간 동안에 이동할 만한 공간적 간격.",
+"example": "집에서 학교까지는 20분 거리이다."
+},
+{
+"category": "한자어",
+"term": "거리",
+"hanja": "距離",
+"sense": 3,
+"definition": "사람과 사람 사이에 느껴지는 간격. 보통 서로 마음을 트고 지낼 수 없다고 느끼는 감정을 이른다.",
+"example": "그 친구와는 왠지 거리가 느껴진다. / 우리, 앞으로는 거리를 두지 말고 지내도록 하자."
+},
+{
+"category": "한자어",
+"term": "거리",
+"hanja": "距離",
+"sense": 4,
+"definition": "비교하는 두 대상 사이의 차이.",
+"example": "이상과 현실 사이에는 거리가 있기 마련이다."
+},
+{
+"category": "한자어",
+"term": "격식",
+"hanja": "格式",
+"definition": "격에 맞는 일정한 방식.",
+"example": "격식을 갖추다."
+},
+{
+"category": "한자어",
+"term": "견적",
+"hanja": "見積",
+"definition": "어떤 일을 하는 데 필요한 비용 따위를 미리 어림잡아 계산함. 또는 그런 계산.",
+"example": "아파트 내부 수리를 하는 데 견적이 얼마나 나올 것 같습니까?",
+"note": "'어림셈'으로 순화."
+},
+{
+"category": "한자어",
+"term": "결정",
+"hanja": "決定",
+"definition": "행동이나 태도를 분명하게 정함. 또는 그렇게 정해진 내용.",
+"example": "결정을 내리다."
+},
+{
+"category": "한자어",
+"term": "경사",
+"hanja": "慶事",
+"definition": "축하할 만한 기쁜 일.",
+"example": "경사가 나다."
+},
+{
+"category": "한자어",
+"term": "경지",
+"hanja": "境地",
+"sense": 1,
+"definition": "일정한 경계 안의 땅."
+},
+{
+"category": "한자어",
+"term": "경지",
+"hanja": "境地",
+"sense": 2,
+"definition": "학문, 예술, 인품 따위에서 일정한 특성과 체계를 갖춘 독자적인 범주나 부분.",
+"example": "새로운 경지를 개척하다. / 그는 수필 문학의 새로운 경지를 연 작가이다."
+},
+{
+"category": "한자어",
+"term": "경지",
+"hanja": "境地",
+"sense": 3,
+"definition": "몸이나 마음, 기술 따위가 어떤 단계에 도달해 있는 상태.",
+"example": "무아의 경지. / 달관의 경지. / 입신의 경지에 들다. / 성인(聖人)의 경지에 도달하다."
+},
+{
+"category": "한자어",
+"term": "공감",
+"hanja": "共感",
+"definition": "남의 감정, 의견, 주장 따위에 대하여 자기도 그렇다고 느낌. 또는 그렇게 느끼는 기분.",
+"example": "공감을 느끼다."
+},
+{
+"category": "한자어",
+"term": "공손하다",
+"hanja": "恭遜--",
+"definition": "말이나 행동이 겸손하고 예의 바르다.",
+"example": "공손한 말씨. / 공손한 태도. / 술잔을 두 손으로 공손하게 받아 들다."
+},
+{
+"category": "한자어",
+"term": "공지",
+"hanja": "公知",
+"definition": "세상에 널리 알림.",
+"example": "공지 사항을 알리다."
+},
+{
+"category": "한자어",
+"term": "광복",
+"hanja": "光復",
+"definition": "빼앗긴 주권을 도로 찾음.",
+"example": "광복을 맞이하다. / 많은 사람이 조국의 광복을 위해 몸을 바쳤다."
+},
+{
+"category": "한자어",
+"term": "구두",
+"hanja": "句讀",
+"definition": "「언어」 글을 쓸 때 문장 부호를 쓰는 방법.",
+"related": [
+"= 구두법"
+]
+},
+{
+"category": "한자어",
+"term": "내방",
+"hanja": "來訪",
+"definition": "만나기 위하여 찾아옴.",
+"example": "가끔 귀한 손님들이 우리 집에 내방하는 일이 있었다."
+},
+{
+"category": "한자어",
+"term": "도래",
+"hanja": "到來",
+"definition": "어떤 시기나 기회가 닥쳐옴.",
+"example": "이제 새로운 국제화 시대가 도래한 것이다."
+},
+{
+"category": "한자어",
+"term": "독려",
+"hanja": "督勵",
+"definition": "감독하며 격려함.",
+"example": "어머니의 독려 덕분에 작업을 마칠 수 있었다. / 그의 독려가 이번 훈련에 도움이 되었다."
+},
+{
+"category": "한자어",
+"term": "동요",
+"hanja": "動搖",
+"definition": "어떤 체제나 상황 따위가 혼란스럽고 술렁임.",
+"example": "신분제의 동요로 양반 중심 사회는 커다란 위기에 처했다."
+},
+{
+"category": "한자어",
+"term": "둔화",
+"hanja": "鈍化",
+"definition": "느리고 무디어짐.",
+"example": "인구 증가율의 둔화. / 수출의 둔화로 경제가 악화되었다."
+},
+{
+"category": "한자어",
+"term": "등기",
+"hanja": "登記",
+"definition": "「법률」 국가 기관이 법정 절차에 따라 등기부에 부동산이나 동산·채권 등의 담보 따위에 관한 일정한 권리관계를 적는 일. 또는 적어 놓은 것.",
+"example": "동 주민 센터에 가서 집 등기를 뗐다."
+},
+{
+"category": "한자어",
+"term": "반복",
+"hanja": "反復",
+"definition": "같은 일을 되풀이함.",
+"example": "반복 훈련."
+},
+{
+"category": "한자어",
+"term": "발령",
+"hanja": "發令",
+"sense": 1,
+"definition": "명령을 내림. 또는 그 명령. 흔히 직책이나 직위와 관계된 경우를 이른다.",
+"example": "승진 발령. / 인사 발령. / 정식 사원으로 발령 나다."
+},
+{
+"category": "한자어",
+"term": "발령",
+"hanja": "發令",
+"sense": 2,
+"definition": "긴급한 상황에 대한 경보(警報)를 발표함.",
+"example": "훈련 경계경보 발령. / 갑자기 내려진 공습경보 발령으로 온 시내가 아수라장이었다."
+},
+{
+"category": "한자어",
+"term": "발부",
+"hanja": "發付",
+"definition": "증명서 따위를 발행하여 줌.",
+"example": "고지서를 납세자들에게 발부하다.",
+"related": [
+"= 발급"
+]
+},
+{
+"category": "한자어",
+"term": "발산",
+"hanja": "發散",
+"sense": 1,
+"definition": "감정 따위를 밖으로 드러내어 해소함. 또는 분위기 따위를 한껏 드러냄.",
+"example": "감정의 발산. / 젊음의 발산."
+},
+{
+"category": "한자어",
+"term": "발산",
+"hanja": "發散",
+"sense": 2,
+"definition": "냄새, 빛, 열 따위가 사방으로 퍼져 나감.",
+"example": "향기의 발산. / 열의 발산."
+},
+{
+"category": "한자어",
+"term": "발효",
+"hanja": "發效",
+"definition": "조약, 법, 공문서 따위의 효력이 나타남. 또는 그 효력을 나타냄.",
+"example": "무역 협정이 발효되다."
+},
+{
+"category": "한자어",
+"term": "방지",
+"hanja": "防止",
+"definition": "어떤 일이나 현상이 일어나지 못하게 막음.",
+"example": "병충해 방지. / 재해 방지. / 사고 방지 대책을 마련하다."
+},
+{
+"category": "한자어",
+"term": "변호사",
+"hanja": "辯護士",
+"definition": "「법률」 법률에 규정된 자격을 가지고 소송 당사자나 관계인의 의뢰 또는 법원의 명령에 따라 피고나 원고를 변론하며 그 밖의 법률에 관한 업무에 종사하는 사람."
+},
+{
+"category": "한자어",
+"term": "병마",
+"hanja": "病魔",
+"definition": "'병'을 악마에 비유하여 이르는 말.",
+"example": "그는 평생을 병마와 싸우다 숨을 거두었다."
+},
+{
+"category": "한자어",
+"term": "병폐",
+"hanja": "病弊",
+"definition": "병통과 폐단을 아울러 이르는 말.",
+"example": "촛불 집회는 우리 사회의 병폐를 극복하는 계기가 되었다."
+},
+{
+"category": "한자어",
+"term": "보류",
+"hanja": "保留",
+"definition": "어떤 일을 당장 처리하지 아니하고 나중으로 미루어 둠.",
+"example": "지난번에 보류되었던 안건을 이번 회의에서 다시 토의했다."
+},
+{
+"category": "한자어",
+"term": "봉변",
+"hanja": "逢變",
+"definition": "뜻밖의 변이나 망신스러운 일을 당함. 또는 그 변.",
+"example": "가까스로 봉변을 면하다."
+},
+{
+"category": "한자어",
+"term": "부합",
+"hanja": "符合",
+"definition": "부신(符信)이 꼭 들어맞듯 사물이나 현상이 서로 꼭 들어맞음.",
+"example": "실제에 부합되는 이론. / 그의 행동은 사회 관습에 부합되지 않는 것이다."
+},
+{
+"category": "한자어",
+"term": "불특정",
+"hanja": "不特定",
+"definition": "특별히 정하지 아니함."
+},
+{
+"category": "한자어",
+"term": "붕괴",
+"hanja": "崩壞",
+"definition": "무너지고 깨어짐.",
+"example": "붕괴 위험. / 축대의 붕괴."
+},
+{
+"category": "한자어",
+"term": "비밀",
+"hanja": "祕密",
+"definition": "숨기어 남에게 드러내거나 알리지 말아야 할 일.",
+"example": "비밀이 탄로 나다."
+},
+{
+"category": "한자어",
+"term": "빙부",
+"hanja": "聘父",
+"definition": "다른 사람의 장인(丈人)을 이르는 말.",
+"related": [
+"= 빙장"
+]
+},
+{
+"category": "한자어",
+"term": "사경",
+"hanja": "死境",
+"definition": "죽을 지경. 또는 죽음에 임박한 경지.",
+"example": "그는 전염병에 걸려 사경을 헤매고 있었다."
+},
+{
+"category": "한자어",
+"term": "사진사",
+"hanja": "寫眞師",
+"definition": "사진 찍는 일을 직업으로 하는 사람."
+},
+{
+"category": "한자어",
+"term": "삭제",
+"hanja": "削除",
+"definition": "깎아 없애거나 지워 버림.",
+"example": "회원들은 회칙에서 필요 없는 조항의 삭제를 요구했다."
+},
+{
+"category": "한자어",
+"term": "상충",
+"hanja": "相衝",
+"definition": "맞지 아니하고 서로 어긋남.",
+"example": "아내는 나와 사사건건 의견이 상충된다."
+},
+{
+"category": "한자어",
+"term": "성원",
+"hanja": "成員",
+"definition": "회의 성립에 필요한 인원.",
+"example": "이제 성원이 되었으니, 회의를 시작합시다."
+},
+{
+"category": "한자어",
+"term": "소홀",
+"hanja": "疏忽",
+"definition": "대수롭지 아니하고 예사로움. 또는 탐탁하지 아니하고 데면데면함.",
+"example": "이번 붕괴 사건은 공사 관리 소홀로 빚어진 인재이다."
+},
+{
+"category": "한자어",
+"term": "속행",
+"hanja": "續行",
+"definition": "계속하여 행함.",
+"example": "지난번에 연기된 경기는 이번 주 일요일에 속행될 것입니다."
+},
+{
+"category": "한자어",
+"term": "수렴",
+"hanja": "收斂",
+"sense": 1,
+"definition": "돈이나 물건 따위를 거두어들임.",
+"example": "지역 발전 명목으로 수렴이 심해지자 많은 주민들이 반발했다."
+},
+{
+"category": "한자어",
+"term": "수렴",
+"hanja": "收斂",
+"sense": 2,
+"definition": "의견이나 사상 따위가 여럿으로 나뉘어 있는 것을 하나로 모아 정리함.",
+"example": "여론 수렴. / 의견 수렴에 들어가다."
+},
+{
+"category": "한자어",
+"term": "수렴",
+"hanja": "收斂",
+"sense": 3,
+"definition": "방탕한 사람이 몸과 마음을 단속함."
+},
+{
+"category": "한자어",
+"term": "수렴",
+"hanja": "收斂",
+"sense": 4,
+"definition": "오그라들게 함."
+},
+{
+"category": "한자어",
+"term": "수렴",
+"hanja": "收斂",
+"sense": 5,
+"definition": "조세 따위를 거두어들임."
+},
+{
+"category": "한자어",
+"term": "수발",
+"hanja": "受發",
+"definition": "받음과 보냄.",
+"example": "공문서 수발."
+},
+{
+"category": "한자어",
+"term": "수습",
+"hanja": "收拾",
+"sense": 1,
+"definition": "흩어진 재산이나 물건을 거두어 정돈함.",
+"example": "유품 수습."
+},
+{
+"category": "한자어",
+"term": "수습",
+"hanja": "收拾",
+"sense": 2,
+"definition": "어수선한 사태를 거두어 바로잡음.",
+"example": "사고 수습 대책 본부."
+},
+{
+"category": "한자어",
+"term": "수습",
+"hanja": "收拾",
+"sense": 3,
+"definition": "어지러운 마음을 가라앉히어 바로잡음.",
+"example": "민심 수습."
+},
+{
+"category": "한자어",
+"term": "수여",
+"hanja": "授與",
+"definition": "증서, 상장, 훈장 따위를 줌.",
+"example": "상장 수여. / 졸업장 수여."
+},
+{
+"category": "한자어",
+"term": "순리",
+"hanja": "順理",
+"definition": "순한 이치나 도리. 또는 도리나 이치에 순종함.",
+"example": "순리를 따르다. / 순리를 어기다. / 순리를 거역하다. / 순리를 좇다. / 자연의 순리를 터득하다."
+},
+{
+"category": "한자어",
+"term": "순연",
+"hanja": "順延",
+"definition": "차례로 기일을 늦춤.",
+"example": "오늘 경기는 경기장 사정으로 순연되어 내일 오전에 열린다."
+},
+{
+"category": "한자어",
+"term": "압축",
+"hanja": "壓縮",
+"sense": 1,
+"definition": "물질 따위에 압력을 가하여 그 부피를 줄임.",
+"example": "공기 압축."
+},
+{
+"category": "한자어",
+"term": "압축",
+"hanja": "壓縮",
+"sense": 2,
+"definition": "문장 따위를 줄여 짧게 함.",
+"example": "시의 표현이 지닌 특징은 생략과 압축이다."
+},
+{
+"category": "한자어",
+"term": "압축",
+"hanja": "壓縮",
+"sense": 3,
+"definition": "일정한 범위나 테두리를 줄임."
+},
+{
+"category": "한자어",
+"term": "연마",
+"hanja": "研磨/練磨/鍊磨",
+"sense": 1,
+"definition": "주로 돌이나 쇠붙이, 보석, 유리 따위의 고체를 갈고 닦아서 표면을 반질반질하게 함."
+},
+{
+"category": "한자어",
+"term": "연마",
+"hanja": "研磨/練磨/鍊磨",
+"sense": 2,
+"definition": "학문이나 기술 따위를 힘써 배우고 닦음.",
+"example": "정신의 수양과 심신의 연마. / 기술 연마에 힘쓰다."
+},
+{
+"category": "한자어",
+"term": "연주",
+"hanja": "演奏",
+"definition": "악기를 다루어 곡을 표현하거나 들려주는 일.",
+"example": "피아노 연주. / 기타 연주. / 활발한 연주 활동을 벌이다."
+},
+{
+"category": "한자어",
+"term": "영수",
+"hanja": "領袖",
+"definition": "여러 사람 가운데 우두머리.",
+"example": "여야 영수 회담."
+},
+{
+"category": "한자어",
+"term": "옹색",
+"hanja": "壅塞",
+"definition": "형편이 넉넉하지 못하여 생활에 필요한 것이 없거나 부족함. 또는 그런 형편.",
+"example": "벌이가 옹색하지 않을 정도는 됩니다."
+},
+{
+"category": "한자어",
+"term": "용역",
+"hanja": "用役",
+"definition": "「경제」 물질적 재화의 형태를 취하지 아니하고 생산과 소비에 필요한 노무를 제공하는 일.",
+"example": "용역 회사. / 경비와 청소를 용역으로 하다."
+},
+{
+"category": "한자어",
+"term": "의결",
+"hanja": "議決",
+"definition": "의논하여 결정함. 또는 그런 결정.",
+"example": "이사회의 의결이 나오는 대로 조치가 취해질 것이다."
+},
+{
+"category": "한자어",
+"term": "인용",
+"hanja": "引用",
+"definition": "남의 말이나 글을 자신의 말이나 글 속에 끌어 씀.",
+"example": "대부분이 인용으로 이루어진 글."
+},
+{
+"category": "한자어",
+"term": "자만",
+"hanja": "自慢",
+"definition": "자신이나 자신과 관련 있는 것을 스스로 자랑하며 뽐냄.",
+"example": "자만에 빠지다."
+},
+{
+"category": "한자어",
+"term": "적령",
+"hanja": "適齡",
+"definition": "어떤 표준이나 규정에 알맞은 나이.",
+"example": "벽지 학교일수록 적령을 초과해서 입학하는 애들이 많다."
+},
+{
+"category": "한자어",
+"term": "적벽가",
+"hanja": "赤壁歌",
+"definition": "「음악」 판소리 열두 마당의 하나. 적벽전에서 관우가 조조를 잡지 않고 길을 터 주어 조조가 화용도까지 달아나는 장면을 노래한 것이다."
+},
+{
+"category": "한자어",
+"term": "전가",
+"hanja": "轉嫁",
+"definition": "잘못이나 책임을 다른 사람에게 넘겨씌움.",
+"example": "책임 전가."
+},
+{
+"category": "한자어",
+"term": "전세",
+"hanja": "傳貰",
+"definition": "「경제」 부동산의 소유자에게 일정한 금액을 맡기고 그 부동산을 일정 기간 동안 빌려 쓰는 일. 또는 그 돈. 부동산을 돌려줄 때는 맡긴 돈의 전액을 되돌려받는다.",
+"example": "전세 보증금 때문에 서울에서 못 살겠다. / 살던 집을 전세 놓고 아파트로 이사 갔다."
+},
+{
+"category": "한자어",
+"term": "전시",
+"hanja": "展示",
+"definition": "여러 가지 물품을 한곳에 벌여 놓고 보임.",
+"example": "도서 전시. / 이번 달로 미술품 전시가 끝난다."
+},
+{
+"category": "한자어",
+"term": "절차",
+"hanja": "節次",
+"definition": "일을 치르는 데 거쳐야 하는 순서나 방법.",
+"example": "수속 절차. / 법적 절차."
+},
+{
+"category": "한자어",
+"term": "절호",
+"hanja": "絶好",
+"definition": "무엇을 하기에 기회나 시기 따위가 더할 수 없이 좋음.",
+"example": "절호의 기회."
+},
+{
+"category": "한자어",
+"term": "점철",
+"hanja": "點綴",
+"definition": "관련이 있는 상황이나 사실 따위가 서로 이어짐. 또는 그것들을 서로 이음.",
+"example": "오욕과 영광으로 점철된 생애."
+},
+{
+"category": "한자어",
+"term": "정수",
+"hanja": "淨水",
+"definition": "물을 깨끗하고 맑게 함. 또는 그 물.",
+"example": "정수 과정을 거친 물."
+},
+{
+"category": "한자어",
+"term": "정체성",
+"hanja": "停滯性",
+"definition": "사물이 발전하거나 앞으로 나아가지 못하고 한곳에 머물러 있는 특성."
+},
+{
+"category": "한자어",
+"term": "제시",
+"hanja": "提示",
+"definition": "어떠한 의사를 말이나 글로 나타내어 보임.",
+"example": "근본적인 해결책 제시가 없이 정책이 겉돌고 있다."
+},
+{
+"category": "한자어",
+"term": "주창",
+"hanja": "主唱",
+"definition": "주의나 사상을 앞장서서 주장함.",
+"example": "근래 독신 생활을 주창하는 여성들이 부쩍 늘었다."
+},
+{
+"category": "한자어",
+"term": "중화",
+"hanja": "中和",
+"definition": "「화학」 서로 성질이 다른 물질이 융합하여 각각 그 특징이나 작용을 잃음. 또는 그런 일.",
+"example": "이 물질은 여러 가지 독성 성분을 중화하는 역할을 한다."
+},
+{
+"category": "한자어",
+"term": "지축",
+"hanja": "地軸",
+"definition": "「지리」 대지의 중심.",
+"example": "지축을 흔드는 전차 부대의 행렬이 계속됐다."
+},
+{
+"category": "한자어",
+"term": "지혜",
+"hanja": "智慧/知慧",
+"definition": "사물의 이치를 빨리 깨닫고 사물을 정확하게 처리하는 정신적 능력.",
+"example": "삶의 지혜."
+},
+{
+"category": "한자어",
+"term": "진상",
+"hanja": "眞相",
+"definition": "사물이나 현상의 거짓 없는 모습이나 내용.",
+"example": "진상을 규명하다.",
+"note": "'참된 모습'으로 순화."
+},
+{
+"category": "한자어",
+"term": "최면",
+"hanja": "催眠",
+"definition": "암시에 의하여 인위적으로 이끌어 낸, 잠에 가까운 상태.",
+"example": "최면에 빠지다."
+},
+{
+"category": "한자어",
+"term": "추종",
+"hanja": "追從",
+"definition": "남의 뒤를 따라서 좇음.",
+"example": "그는 컴퓨터 분야에서는 타의 추종을 불허한다."
+},
+{
+"category": "한자어",
+"term": "취재",
+"hanja": "取材",
+"definition": "작품이나 기사에 필요한 재료나 제재(題材)를 조사하여 얻음.",
+"example": "취재에 응하다. / 그는 취재를 끝낸 후 깊은 한숨을 내쉬었다."
+},
+{
+"category": "한자어",
+"term": "쾌척",
+"hanja": "快擲",
+"definition": "금품을 마땅히 쓸 자리에 시원스럽게 내놓음."
+},
+{
+"category": "한자어",
+"term": "투영",
+"hanja": "投影",
+"sense": 1,
+"definition": "물체의 그림자를 어떤 물체 위에 비추는 일. 또는 그 비친 그림자.",
+"example": "맑은 강물에 나무의 그림자가 투영되어 아름다웠다."
+},
+{
+"category": "한자어",
+"term": "투영",
+"hanja": "投影",
+"sense": 2,
+"definition": "「심리」 어떤 상황이나 자극에 대한 해석, 판단, 표현 따위에 심리 상태나 성격이 반영되는 일.",
+"example": "그는 타인의 고통에 불행했던 자신을 투영하면서 위안을 얻는다.",
+"related": [
+"= 투사"
+]
+},
+{
+"category": "한자어",
+"term": "편입",
+"hanja": "編入",
+"sense": 1,
+"definition": "이미 짜인 한 동아리나 대열 따위에 끼어 들어감.",
+"example": "자본주의 사회로 편입되자 많은 것이 바뀌었다."
+},
+{
+"category": "한자어",
+"term": "편입",
+"hanja": "編入",
+"sense": 2,
+"definition": "첫 학년에 입학하지 않고 어떤 학년에 도중에 들어가거나 다니던 학교를 그만두고 다른 학교에 들어감.",
+"example": "그는 회사를 그만두고 교사가 되기 위해 교대에 편입했다.",
+"related": [
+"= 편입학"
+]
+},
+{
+"category": "한자어",
+"term": "표지",
+"hanja": "標識",
+"definition": "표시나 특징으로 어떤 사물을 다른 것과 구별하게 함. 또는 그 표시나 특징.",
+"example": "통행금지 표지. / 공중전화 표지."
+},
+{
+"category": "한자어",
+"term": "형안",
+"hanja": "炯眼",
+"definition": "빛나는 눈. 또는 날카로운 눈매."
+},
+{
+"category": "속담",
+"term": "가랑비에 옷 젖는 줄 모른다",
+"definition": "아무리 사소한 것이라도 그것이 거듭되면 무시하지 못할 정도로 크게 됨을 비유적으로 이르는 말.",
+"related": [
+"= 숫돌이 저 닳는 줄 모른다"
+]
+},
+{
+"category": "속담",
+"term": "숫돌이 저 닳는 줄 모른다",
+"definition": "아무리 사소한 것이라도 그것이 거듭되면 무시하지 못할 정도로 크게 됨을 비유적으로 이르는 말.",
+"related": [
+"= 가랑비에 옷 젖는 줄 모른다"
+]
+},
+{
+"category": "속담",
+"term": "가마 타고 옷고름 단다",
+"definition": "미리 준비를 해 놓지 않아서 임박해서야 허둥지둥하게 되는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 말 태우고 버선 깁는다"
+]
+},
+{
+"category": "속담",
+"term": "말 태우고 버선 깁는다",
+"definition": "미리 준비를 해 놓지 않아서 임박해서야 허둥지둥하게 되는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 가마 타고 옷고름 단다"
+]
+},
+{
+"category": "한자 성어",
+"term": "각주구검",
+"hanja": "刻舟求劍",
+"definition": "융통성 없이 현실에 맞지 않는 낡은 생각을 고집하는 어리석음을 이르는 말.",
+"related": [
+"= 목불식정",
+"= 어로불변",
+"= 일자무식",
+"= 숙맥불변",
+"= 두 소경 한 막대 짚고 걷는다",
+"= 낫 놓고 기역 자도 모른다",
+"= 기역 자 왼 다리도 못 그린다",
+"= 가갸 뒷다리[뒤 자]도 모른다"
+]
+},
+{
+"category": "한자 성어",
+"term": "목불식정",
+"hanja": "目不識丁",
+"definition": "아주 간단한 글자인 ‘丁’ 자를 보고도 그것이 ‘고무래’인 줄을 알지 못한다는 뜻으로, 아주 까막눈임을 이르는 말.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "한자 성어",
+"term": "어로불변",
+"hanja": "魚魯不辨",
+"definition": "‘어(魚)’ 자와 ‘노(魯)’ 자를 구별하지 못한다는 뜻으로, 아주 무식함을 비유적으로 이르는 말.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "한자 성어",
+"term": "일자무식",
+"hanja": "一字無識",
+"definition": "글자 한 자도 모를 정도로 무식함.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "한자 성어",
+"term": "숙맥불변",
+"hanja": "菽麥不辨",
+"definition": "콩인지 보리인지를 구별하지 못한다는 뜻으로, 사리 분별을 못 하고 세상 물정을 잘 모름을 이르는 말.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "속담",
+"term": "두 소경 한 막대 짚고 걷는다",
+"definition": "어리석은 두 사람이 같은 잘못을 저지르는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "속담",
+"term": "낫 놓고 기역 자도 모른다",
+"definition": "글자 한 자도 모를 정도로 무식함.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "속담",
+"term": "기역 자 왼 다리도 못 그린다",
+"definition": "글자 한 자도 모를 정도로 무식함.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "속담",
+"term": "가갸 뒷다리[뒤 자]도 모른다",
+"definition": "글자 한 자도 모를 정도로 무식함.",
+"related": [
+"= 각주구검"
+]
+},
+{
+"category": "속담",
+"term": "갈매기도 제집이 있다",
+"definition": "하찮은 까마귀나 까치들도 다 제집이 있는 법이라는 뜻으로, 집 없는 사람의 서러운 처지를 한탄하여 이르는 말.",
+"related": [
+"= 까막까치도 집이 있다"
+]
+},
+{
+"category": "속담",
+"term": "까막까치도 집이 있다",
+"definition": "하찮은 까마귀나 까치들도 다 제집이 있는 법이라는 뜻으로, 집 없는 사람의 서러운 처지를 한탄하여 이르는 말.",
+"related": [
+"= 갈매기도 제집이 있다"
+]
+},
+{
+"category": "한자 성어",
+"term": "갈이천정",
+"hanja": "渴而穿井",
+"definition": "목이 말라야 비로소 샘을 팜. 일을 미리 준비하여 두지 않고 임박하여 급히 하면 이미 때가 늦음을 이르는 말.",
+"related": [
+"= 망양보뢰",
+"= 만시지탄",
+"= 사후 약방문",
+"= 소 잃고 외양간 고친다",
+"= 도둑맞고 사립 고친다"
+]
+},
+{
+"category": "한자 성어",
+"term": "망양보뢰",
+"hanja": "亡羊補牢",
+"definition": "양을 잃고 우리를 고침.",
+"related": [
+"= 갈이천정"
+]
+},
+{
+"category": "한자 성어",
+"term": "만시지탄",
+"hanja": "晩時之歎",
+"definition": "시기에 늦어 기회를 놓쳤음을 안타까워하는 탄식.",
+"related": [
+"= 갈이천정"
+]
+},
+{
+"category": "한자 성어",
+"term": "사후 약방문",
+"hanja": "死後藥方文",
+"definition": "사람이 죽은 다음에야 약을 구함.",
+"related": [
+"= 갈이천정"
+]
+},
+{
+"category": "속담",
+"term": "소 잃고 외양간 고친다",
+"definition": "일이 이미 잘못된 뒤에는 손을 써도 소용이 없음을 비꼬는 말.",
+"related": [
+"= 갈이천정"
+]
+},
+{
+"category": "속담",
+"term": "도둑맞고 사립 고친다",
+"definition": "일이 이미 잘못된 뒤에는 손을 써도 소용이 없음을 비꼬는 말.",
+"related": [
+"= 갈이천정"
+]
+},
+{
+"category": "한자 성어",
+"term": "감탄고토",
+"hanja": "甘呑苦吐",
+"definition": "달면 삼키고 쓰면 뱉는다.",
+"related": [
+"= 우선 먹기는 곶감이 달다",
+"= 추우면 다가들고 더우면 물러선다"
+]
+},
+{
+"category": "속담",
+"term": "우선 먹기는 곶감이 달다",
+"definition": "앞일은 생각해 보지도 아니하고 당장 좋은 것만 취하는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 감탄고토"
+]
+},
+{
+"category": "속담",
+"term": "추우면 다가들고 더우면 물러선다",
+"definition": "달면 삼키고 쓰면 뱉는다.",
+"related": [
+"= 감탄고토"
+]
+},
+{
+"category": "한자 성어",
+"term": "견마지로",
+"hanja": "犬馬之勞",
+"definition": "윗사람에게 충성을 다하는 자기의 노력을 낮추어 이르는 말.",
+"related": [
+"= 견마지심"
+]
+},
+{
+"category": "한자 성어",
+"term": "견마지심",
+"hanja": "犬馬之心",
+"definition": "개나 말이 주인을 위하는 마음이라는 뜻으로, 신하나 백성이 임금이나 나라에 충성하는 마음을 낮추어 이르는 말.",
+"related": [
+"= 견마지로"
+]
+},
+{
+"category": "한자 성어",
+"term": "결초보은",
+"hanja": "結草報恩",
+"definition": "죽은 뒤에라도 은혜를 잊지 않고 갚음. 중국 춘추 시대에, 진나라의 위과(魏顆)가 아버지가 세상을 떠난 후에 서모를 개가시켜 순사(殉死)하지 않게 하였더니, 그 뒤 싸움터에서 그 서모 아버지의 혼이 적군의 앞길에 풀을 묶어 적을 넘어뜨려 위과가 공을 세울 수 있도록 하였다는 고사에서 유래함.",
+"related": [
+"= 각골난망"
+]
+},
+{
+"category": "한자 성어",
+"term": "각골난망",
+"hanja": "刻骨難忘",
+"definition": "남에게 입은 은혜가 뼈에 새길 만큼 커서 잊히지 아니함.",
+"related": [
+"= 결초보은"
+]
+},
+{
+"category": "한자 성어",
+"term": "고식지계",
+"hanja": "姑息之計",
+"definition": "우선 당장 편한 것만을 택하는 꾀나 방법. 한때의 안정을 위하여 임시로 둘러맞추어 처리하거나 이리저리 주선하여 꾸며 내는 계책을 이름.",
+"related": [
+"= 미봉책",
+"= 임기응변",
+"= 임시변통",
+"= 하석상대",
+"= 엄이도령",
+"= 동족방뇨",
+"= 언 발에 오줌 누기"
+]
+},
+{
+"category": "한자 성어",
+"term": "미봉책",
+"hanja": "彌縫策",
+"definition": "눈가림만 하는 일시적인 계책(計策).",
+"related": [
+"= 고식지계"
+]
+},
+{
+"category": "한자 성어",
+"term": "임기응변",
+"hanja": "臨機應變",
+"definition": "그때그때 처한 사태에 맞추어 즉각 그 자리에서 결정하거나 처리함.",
+"related": [
+"= 고식지계"
+]
+},
+{
+"category": "한자 성어",
+"term": "임시변통",
+"hanja": "臨時變通",
+"definition": "갑자기 터진 일을 우선 간단하게 둘러맞추어 처리함.",
+"related": [
+"= 고식지계"
+]
+},
+{
+"category": "한자 성어",
+"term": "하석상대",
+"hanja": "下石上臺",
+"definition": "아랫돌 빼서 윗돌 괴고 윗돌 빼서 아랫돌 괸다는 뜻.",
+"related": [
+"= 고식지계"
+]
+},
+{
+"category": "한자 성어",
+"term": "엄이도령",
+"hanja": "掩耳盜鈴",
+"definition": "귀를 막고 방울을 훔친다는 뜻. 모든 사람이 그 잘못을 다 알고 있는데 얕은꾀를 써서 남을 속이려 함을 이르는 말.",
+"related": [
+"= 고식지계"
+]
+},
+{
+"category": "한자 성어",
+"term": "동족방뇨",
+"hanja": "凍足放尿",
+"definition": "언 발에 오줌 누기라는 뜻으로, 잠시 동안만 효력이 있을 뿐 효력이 바로 사라짐을 비유적으로 이르는 말.",
+"related": [
+"= 고식지계"
+]
+},
+{
+"category": "속담",
+"term": "언 발에 오줌 누기",
+"definition": "언 발에 오줌 누기라는 뜻으로, 잠시 동안만 효력이 있을 뿐 효력이 바로 사라짐을 비유적으로 이르는 말.",
+"related": [
+"= 고식지계"
+]
+},
+{
+"category": "한자 성어",
+"term": "고장난명",
+"hanja": "孤掌難鳴",
+"definition": "외손뼉만으로는 소리가 울리지 아니한다는 뜻으로, 혼자의 힘만으로 어떤 일을 이루기 어려움을 이르는 말.",
+"related": [
+"= 십시일반",
+"= 백지장도 맞들면 낫다"
+]
+},
+{
+"category": "한자 성어",
+"term": "십시일반",
+"hanja": "十匙一飯",
+"definition": "밥 열 술이 한 그릇이 된다는 뜻으로, 여러 사람이 조금씩 힘을 합치면 한 사람을 돕기 쉬움을 이르는 말.",
+"related": [
+"= 고장난명"
+]
+},
+{
+"category": "속담",
+"term": "백지장도 맞들면 낫다",
+"definition": "외손뼉만으로는 소리가 울리지 아니한다는 뜻으로, 혼자의 힘만으로 어떤 일을 이루기 어려움을 이르는 말.",
+"related": [
+"= 고장난명"
+]
+},
+{
+"category": "한자 성어",
+"term": "고진감래",
+"hanja": "苦盡甘來",
+"definition": "고생 끝에 즐거움이 옴.",
+"related": [
+"= 태산을 넘으면 평지를 본다"
+]
+},
+{
+"category": "속담",
+"term": "태산을 넘으면 평지를 본다",
+"definition": "고생 끝에 즐거움이 옴.",
+"related": [
+"= 고진감래"
+]
+},
+{
+"category": "한자 성어",
+"term": "교왕과직",
+"hanja": "矯枉過直",
+"definition": "소의 뿔을 바로잡으려다가 소를 죽인다는 뜻으로, 잘못된 점을 고치려다가 그 방법이나 정도가 지나쳐 오히려 일을 그르침을 이르는 말.",
+"related": [
+"= 교각살우"
+]
+},
+{
+"category": "속담",
+"term": "빈대 미워 집에 불 놓는다",
+"definition": "손해를 크게 볼 것은 생각지 아니하고 자기에게 마땅치 아니한 것을 없애려고 그저 덤비기만 하는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 교각살우"
+]
+},
+{
+"category": "속담",
+"term": "빈대 잡으려고 초가삼간 태운다",
+"definition": "소의 뿔을 바로잡으려다가 소를 죽인다는 뜻으로, 잘못된 점을 고치려다가 그 방법이나 정도가 지나쳐 오히려 일을 그르침을 이르는 말.",
+"related": [
+"= 교각살우"
+]
+},
+{
+"category": "속담",
+"term": "싸라기 닭아 먹으려다 노적가리에 불 놓는다",
+"definition": "소의 뿔을 바로잡으려다가 소를 죽인다는 뜻으로, 잘못된 점을 고치려다가 그 방법이나 정도가 지나쳐 오히려 일을 그르침을 이르는 말.",
+"related": [
+"= 교각살우"
+]
+},
+{
+"category": "속담",
+"term": "쥐 잡으려다가 쌀독 깬다",
+"definition": "소의 뿔을 바로잡으려다가 소를 죽인다는 뜻으로, 잘못된 점을 고치려다가 그 방법이나 정도가 지나쳐 오히려 일을 그르침을 이르는 말.",
+"related": [
+"= 교각살우"
+]
+},
+{
+"category": "한자 성어",
+"term": "금지옥엽",
+"hanja": "金枝玉葉",
+"sense": 1,
+"definition": "금으로 된 가지와 옥으로 된 잎이라는 뜻으로, 임금의 가족을 높여 이르는 말.",
+"related": [
+"= 애지중지",
+"= 쥐면 꺼질까 불면 날까"
+]
+},
+{
+"category": "한자 성어",
+"term": "금지옥엽",
+"hanja": "金枝玉葉",
+"sense": 2,
+"definition": "귀한 자손을 이르는 말.",
+"related": [
+"= 애지중지",
+"= 쥐면 꺼질까 불면 날까"
+]
+},
+{
+"category": "한자 성어",
+"term": "애지중지",
+"hanja": "愛之重之",
+"definition": "매우 사랑하고 소중히 여기는 모양.",
+"related": [
+"= 금지옥엽"
+]
+},
+{
+"category": "속담",
+"term": "쥐면 꺼질까 불면 날까",
+"definition": "어린 자녀를 애지중지하여 기르는 부모의 사랑을 비유적으로 이르는 말.",
+"related": [
+"= 금지옥엽"
+]
+},
+{
+"category": "속담",
+"term": "냉수 먹고 갈비 트림 한다",
+"definition": "시시한 일을 해 놓고 큰일을 한 것처럼 으스대는 것을 비유적으로 이르는 말.",
+"related": [
+"= 미꾸라짓국 먹고 용트림한다",
+"= 냉수 먹고 이 쑤시기"
+]
+},
+{
+"category": "속담",
+"term": "미꾸라짓국 먹고 용트림한다",
+"definition": "시시한 일을 해 놓고 큰일을 한 것처럼 으스대는 것을 비유적으로 이르는 말.",
+"related": [
+"= 냉수 먹고 갈비 트림 한다"
+]
+},
+{
+"category": "속담",
+"term": "냉수 먹고 이 쑤시기",
+"definition": "시시한 일을 해 놓고 큰일을 한 것처럼 으스대는 것을 비유적으로 이르는 말.",
+"related": [
+"= 냉수 먹고 갈비 트림 한다"
+]
+},
+{
+"category": "한자 성어",
+"term": "당랑거철",
+"hanja": "螳螂拒轍",
+"definition": "제 역량을 생각하지 않고, 강한 상대나 되지 않을 일에 덤벼드는 무모한 행동거지를 비유적으로 이르는 말. 사마귀가 앞발을 들고 수레를 멈추려 했다는 고사에서 유래함.",
+"related": [
+"= 범 모르는 하룻강아지",
+"= 미련한 송아지 백정을 모른다",
+"= 하룻강아지 범 무서운 줄 모른다"
+]
+},
+{
+"category": "속담",
+"term": "범 모르는 하룻강아지",
+"definition": "철없이 함부로 덤비는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 당랑거철"
+]
+},
+{
+"category": "속담",
+"term": "미련한 송아지 백정을 모른다",
+"definition": "철없이 함부로 덤비는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 당랑거철"
+]
+},
+{
+"category": "속담",
+"term": "하룻강아지 범 무서운 줄 모른다",
+"definition": "철없이 함부로 덤비는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 당랑거철"
+]
+},
+{
+"category": "속담",
+"term": "될성부른 나무는 떡잎부터 알아본다",
+"definition": "잘될 사람은 어려서부터 남달리 장래성이 엿보인다는 말.",
+"related": [
+"= 용 될 고기는 모이 철부터 안다",
+"= 정승 될 아이는 고뿔도 안 한다"
+]
+},
+{
+"category": "속담",
+"term": "용 될 고기는 모이 철부터 안다",
+"definition": "잘될 사람은 어려서부터 남달리 장래성이 엿보인다는 말.",
+"related": [
+"= 될성부른 나무는 떡잎부터 알아본다"
+]
+},
+{
+"category": "속담",
+"term": "정승 될 아이는 고뿔도 안 한다",
+"definition": "잘될 사람은 어려서부터 남달리 장래성이 엿보인다는 말.",
+"related": [
+"= 될성부른 나무는 떡잎부터 알아본다"
+]
+},
+{
+"category": "한자 성어",
+"term": "맥수지탄",
+"hanja": "麥秀之嘆",
+"definition": "고국의 멸망을 한탄함을 이르는 말. 기자(箕子)가 은(殷)나라가 망한 뒤에도 보리만은 잘 자라는 것을 보고 한탄하였다는 데서 유래함.",
+"related": [
+"= 서리지탄"
+]
+},
+{
+"category": "한자 성어",
+"term": "서리지탄",
+"hanja": "黍離之嘆",
+"definition": "나라가 멸망하여 옛 궁궐 터에는 기장만이 무성한 것을 탄식함.",
+"related": [
+"= 맥수지탄"
+]
+},
+{
+"category": "속담",
+"term": "바늘구멍으로 황소바람 들어온다",
+"definition": "추울 때에는 바늘구멍 같은 작은 구멍에도 엄청나게 센 찬 바람이 들어온다는 뜻으로, 작은 것이라도 때에 따라서는 소홀히 하여서는 안 됨을 비유적으로 이르는 말.",
+"related": [
+"= 공든 탑도 개미구멍으로 무너진다",
+"= 큰 둑도 개미구멍으로 무너진다",
+"= 제궤의혈"
+]
+},
+{
+"category": "속담",
+"term": "공든 탑도 개미구멍으로 무너진다",
+"definition": "추울 때에는 바늘구멍 같은 작은 구멍에도 엄청나게 센 찬 바람이 들어온다는 뜻으로, 작은 것이라도 때에 따라서는 소홀히 하여서는 안 됨을 비유적으로 이르는 말.",
+"related": [
+"= 바늘구멍으로 황소바람 들어온다"
+]
+},
+{
+"category": "속담",
+"term": "큰 둑도 개미구멍으로 무너진다",
+"definition": "추울 때에는 바늘구멍 같은 작은 구멍에도 엄청나게 센 찬 바람이 들어온다는 뜻으로, 작은 것이라도 때에 따라서는 소홀히 하여서는 안 됨을 비유적으로 이르는 말.",
+"related": [
+"= 바늘구멍으로 황소바람 들어온다"
+]
+},
+{
+"category": "한자 성어",
+"term": "제궤의혈",
+"hanja": "堤潰蟻穴",
+"definition": "추울 때에는 바늘구멍 같은 작은 구멍에도 엄청나게 센 찬 바람이 들어온다는 뜻으로, 작은 것이라도 때에 따라서는 소홀히 하여서는 안 됨을 비유적으로 이르는 말.",
+"related": [
+"= 바늘구멍으로 황소바람 들어온다"
+]
+},
+{
+"category": "한자 성어",
+"term": "반포지효",
+"hanja": "反哺之孝",
+"definition": "까마귀 새끼가 자라서 늙은 어미에게 먹이를 물어다 주는 효(孝)라는 뜻으로, 자식이 자란 후에 어버이의 은혜를 갚는 효성을 이르는 말.",
+"related": [
+"= 반포보은",
+"= 망운지정",
+"= 혼정신성",
+"= 동온하정"
+]
+},
+{
+"category": "한자 성어",
+"term": "반포보은",
+"hanja": "反哺報恩",
+"definition": "까마귀 새끼가 자라서 늙은 어미에게 먹이를 물어다 주는 효(孝)라는 뜻으로, 자식이 자란 후에 어버이의 은혜를 갚는 효성을 이르는 말.",
+"related": [
+"= 반포지효"
+]
+},
+{
+"category": "한자 성어",
+"term": "망운지정",
+"hanja": "望雲之情",
+"definition": "자식이 객지에서 고향에 계신 어버이를 생각하는 마음.",
+"related": [
+"= 반포지효"
+]
+},
+{
+"category": "한자 성어",
+"term": "혼정신성",
+"hanja": "昏定晨省",
+"definition": "밤에는 부모의 잠자리를 보아 드리고 이른 아침에는 부모의 밤새 안부를 묻는다는 뜻으로, 부모를 잘 섬기고 효성을 다함을 이르는 말.",
+"related": [
+"= 반포지효"
+]
+},
+{
+"category": "한자 성어",
+"term": "동온하정",
+"hanja": "冬溫夏凊",
+"definition": "겨울에는 따뜻하게, 여름에는 서늘하게 한다는 뜻으로, 부모를 잘 섬기어 효도함을 이르는 말.",
+"related": [
+"= 반포지효"
+]
+},
+{
+"category": "한자 성어",
+"term": "백미",
+"hanja": "白眉",
+"definition": "흰 눈썹이라는 뜻으로, 여럿 가운데에서 가장 뛰어난 사람이나 훌륭한 물건을 비유적으로 이르는 말.",
+"related": [
+"= 군계일학",
+"= 낭중지추",
+"= 철중쟁쟁"
+]
+},
+{
+"category": "한자 성어",
+"term": "군계일학",
+"hanja": "群鷄一鶴",
+"definition": "닭의 무리 가운데에서 한 마리의 학이란 뜻으로, 많은 사람 가운데서 뛰어난 인물을 이르는 말.",
+"related": [
+"= 백미"
+]
+},
+{
+"category": "한자 성어",
+"term": "낭중지추",
+"hanja": "囊中之錐",
+"definition": "주머니 속의 송곳이라는 뜻으로, 재능이 뛰어난 사람은 숨어 있어도 저절로 사람들에게 알려짐을 이르는 말.",
+"related": [
+"= 백미"
+]
+},
+{
+"category": "한자 성어",
+"term": "철중쟁쟁",
+"hanja": "鐵中錚錚",
+"definition": "여러 쇠붙이 가운데서도 유난히 맑게 쟁그랑거리는 소리가 난다는 뜻으로, 같은 무리 가운데서도 가장 뛰어남. 또는 그런 사람을 이르는 말.",
+"related": [
+"= 백미"
+]
+},
+{
+"category": "한자 성어",
+"term": "부창부수",
+"hanja": "夫唱婦隨",
+"definition": "남편이 주장하고 아내가 이에 잘 따름. 또는 부부 사이의 그런 도리.",
+"related": [
+"= 바늘 가는 데 실 간다",
+"= 구름 갈 제 비가 간다",
+"= 녹수 갈 제 원앙 가듯",
+"= 바람 간 데 범 간다",
+"= 봉 가는 데 황 간다"
+]
+},
+{
+"category": "속담",
+"term": "바늘 가는 데 실 간다",
+"definition": "바늘이 가는 데 실이 항상 뒤따른다는 뜻으로, 사람의 긴밀한 관계를 이르는 말.",
+"related": [
+"= 부창부수"
+]
+},
+{
+"category": "속담",
+"term": "구름 갈 제 비가 간다",
+"definition": "바늘이 가는 데 실이 항상 뒤따른다는 뜻으로, 사람의 긴밀한 관계를 이르는 말.",
+"related": [
+"= 부창부수"
+]
+},
+{
+"category": "속담",
+"term": "녹수 갈 제 원앙 가듯",
+"definition": "바늘이 가는 데 실이 항상 뒤따른다는 뜻으로, 사람의 긴밀한 관계를 이르는 말.",
+"related": [
+"= 부창부수"
+]
+},
+{
+"category": "속담",
+"term": "바람 간 데 범 간다",
+"definition": "바늘이 가는 데 실이 항상 뒤따른다는 뜻으로, 사람의 긴밀한 관계를 이르는 말.",
+"related": [
+"= 부창부수"
+]
+},
+{
+"category": "속담",
+"term": "봉 가는 데 황 간다",
+"definition": "바늘이 가는 데 실이 항상 뒤따른다는 뜻으로, 사람의 긴밀한 관계를 이르는 말.",
+"related": [
+"= 부창부수"
+]
+},
+{
+"category": "한자 성어",
+"term": "사면초가",
+"hanja": "四面楚歌",
+"definition": "아무에게도 도움을 받지 못하는 외롭고 곤란한 지경에 빠진 형편을 이르는 말.",
+"related": [
+"= 아랫길도 못 가고 윗길도 못 가겠다",
+"= 뜨거운 감자",
+"= 나무 끝의 새 같다"
+]
+},
+{
+"category": "속담",
+"term": "아랫길도 못 가고 윗길도 못 가겠다",
+"definition": "이것도 저것도 다 믿을 수 없고 어찌해야 할지 모름을 비유적으로 이르는 말.",
+"related": [
+"= 사면초가"
+]
+},
+{
+"category": "관용구",
+"term": "뜨거운 감자",
+"definition": "중요한 문제이지만 쉽게 다루기 어려운 문제를 비유적으로 이르는 말.",
+"related": [
+"= 사면초가"
+]
+},
+{
+"category": "속담",
+"term": "나무 끝의 새 같다",
+"definition": "오래 머물러 있지 못할 위태로운 곳에 있음을 비유적으로 이르는 말.",
+"related": [
+"= 사면초가"
+]
+},
+{
+"category": "한자 성어",
+"term": "설상가상",
+"hanja": "雪上加霜",
+"definition": "눈 위에 서리가 덮인다는 뜻으로, 난처한 일이나 불행한 일이 잇따라 일어남을 이르는 말.",
+"related": [
+"= 엎친 데 덮치다",
+"= 기침에 재채기"
+]
+},
+{
+"category": "관용구",
+"term": "엎친 데 덮치다",
+"definition": "어렵거나 나쁜 일이 겹치어 일어남.",
+"related": [
+"= 설상가상"
+]
+},
+{
+"category": "속담",
+"term": "기침에 재채기",
+"definition": "어렵거나 나쁜 일이 겹치어 일어남.",
+"related": [
+"= 설상가상"
+]
+},
+{
+"category": "한자 성어",
+"term": "수불석권",
+"hanja": "手不釋卷",
+"definition": "손에서 책을 놓지 아니하고 늘 글을 읽음.",
+"related": [
+"= 형설지공",
+"= 주경야독"
+]
+},
+{
+"category": "한자 성어",
+"term": "형설지공",
+"hanja": "螢雪之功",
+"definition": "반딧불·눈과 함께 하는 노력이라는 뜻으로, 고생을 하면서 부지런하고 꾸준하게 공부하는 자세를 이르는 말.",
+"related": [
+"= 수불석권"
+]
+},
+{
+"category": "한자 성어",
+"term": "주경야독",
+"hanja": "晝耕夜讀",
+"definition": "낮에는 농사짓고, 밤에는 글을 읽는다는 뜻으로, 어려운 여건 속에서도 꿋꿋이 공부함을 이르는 말.",
+"related": [
+"= 수불석권"
+]
+},
+{
+"category": "속담",
+"term": "썩어도 준치",
+"definition": "본래 좋고 훌륭한 것은 비록 상해도 그 본질에는 변함이 없음을 비유적으로 이르는 말.",
+"related": [
+"= 물어도 준치 썩어도 생치"
+]
+},
+{
+"category": "속담",
+"term": "물어도 준치 썩어도 생치",
+"definition": "본래 좋고 훌륭한 것은 비록 상해도 그 본질에는 변함이 없음을 비유적으로 이르는 말.",
+"related": [
+"= 썩어도 준치"
+]
+},
+{
+"category": "한자 성어",
+"term": "오비이락",
+"hanja": "烏飛梨落",
+"definition": "아무 관계도 없이 한 일이 공교롭게도 때가 같아 억울하게 의심을 받거나 난처한 위치에 서게 됨을 이르는 말.",
+"related": [
+"= 까마귀 날자 배 떨어진다"
+]
+},
+{
+"category": "속담",
+"term": "까마귀 날자 배 떨어진다",
+"definition": "아무 관계도 없이 한 일이 공교롭게도 때가 같아 억울하게 의심을 받거나 난처한 위치에 서게 됨을 이르는 말.",
+"related": [
+"= 오비이락"
+]
+},
+{
+"category": "한자 성어",
+"term": "유유상종",
+"hanja": "類類相從",
+"definition": "같은 무리끼리 서로 사귐.",
+"related": [
+"= 가재는 게 편이요 초록은 한 빛이라",
+"= 같은 깃의 새는 같이 모인다",
+"= 검둥개는 돼지 편",
+"= 솔개는 매 편"
+]
+},
+{
+"category": "속담",
+"term": "가재는 게 편이요 초록은 한 빛이라",
+"definition": "모양이나 형편이 서로 비슷하고 인연이 있는 것끼리 서로 잘 어울리고, 사정을 보아주며 감싸 주기 쉬움을 비유적으로 이르는 말.",
+"related": [
+"= 유유상종"
+]
+},
+{
+"category": "속담",
+"term": "같은 깃의 새는 같이 모인다",
+"definition": "같은 무리끼리 서로 사귐.",
+"related": [
+"= 유유상종"
+]
+},
+{
+"category": "속담",
+"term": "검둥개는 돼지 편",
+"definition": "같은 무리끼리 서로 사귐.",
+"related": [
+"= 유유상종"
+]
+},
+{
+"category": "속담",
+"term": "솔개는 매 편",
+"definition": "같은 무리끼리 서로 사귐.",
+"related": [
+"= 유유상종"
+]
+},
+{
+"category": "속담",
+"term": "자라 보고 놀란 가슴 솥뚜껑 보고 놀란다",
+"definition": "어떤 사물에 몹시 놀란 사람은 비슷한 사물만 보아도 겁을 냄을 비유적으로 이르는 말.",
+"related": [
+"= 국에 덴 놈 물 보고도 분다",
+"= 더위 먹은 소 달만 보아도 헐떡인다",
+"= 뜨거운 물에 덴 놈 숭늉 보고도 놀란다",
+"= 불에 놀란 놈이 부지깽이만 보아도 놀란다"
+]
+},
+{
+"category": "속담",
+"term": "국에 덴 놈 물 보고도 분다",
+"definition": "어떤 사물에 몹시 놀란 사람은 비슷한 사물만 보아도 겁을 냄을 비유적으로 이르는 말.",
+"related": [
+"= 자라 보고 놀란 가슴 솥뚜껑 보고 놀란다"
+]
+},
+{
+"category": "속담",
+"term": "더위 먹은 소 달만 보아도 헐떡인다",
+"definition": "어떤 사물에 몹시 놀란 사람은 비슷한 사물만 보아도 겁을 냄을 비유적으로 이르는 말.",
+"related": [
+"= 자라 보고 놀란 가슴 솥뚜껑 보고 놀란다"
+]
+},
+{
+"category": "속담",
+"term": "뜨거운 물에 덴 놈 숭늉 보고도 놀란다",
+"definition": "어떤 사물에 몹시 놀란 사람은 비슷한 사물만 보아도 겁을 냄을 비유적으로 이르는 말.",
+"related": [
+"= 자라 보고 놀란 가슴 솥뚜껑 보고 놀란다"
+]
+},
+{
+"category": "속담",
+"term": "불에 놀란 놈이 부지깽이만 보아도 놀란다",
+"definition": "어떤 사물에 몹시 놀란 사람은 비슷한 사물만 보아도 겁을 냄을 비유적으로 이르는 말.",
+"related": [
+"= 자라 보고 놀란 가슴 솥뚜껑 보고 놀란다"
+]
+},
+{
+"category": "한자 성어",
+"term": "전무후무",
+"hanja": "前無後無",
+"definition": "이전에도 없었고 앞으로도 없음.",
+"related": [
+"= 공전절후",
+"= 전대미문",
+"= 전인미답"
+]
+},
+{
+"category": "한자 성어",
+"term": "공전절후",
+"hanja": "空前絶後",
+"definition": "이전에도 없었고 앞으로도 없음.",
+"related": [
+"= 전무후무"
+]
+},
+{
+"category": "한자 성어",
+"term": "전대미문",
+"hanja": "前代未聞",
+"definition": "이제까지 들어 본 적이 없음.",
+"related": [
+"= 전무후무"
+]
+},
+{
+"category": "한자 성어",
+"term": "전인미답",
+"hanja": "前人未踏",
+"definition": "이제까지 그 누구도 가 보지 못함.",
+"related": [
+"= 전무후무"
+]
+},
+{
+"category": "속담",
+"term": "제 논에 물 대기",
+"definition": "자기에게만 이롭도록 일을 하는 경우를 비유적으로 이르는 말.",
+"related": [
+"= 견강부회"
+]
+},
+{
+"category": "한자 성어",
+"term": "좌정관천",
+"hanja": "坐井觀天",
+"definition": "우물 속에 앉아서 하늘을 본다는 뜻으로, 사람의 견문(見聞)이 매우 좁음을 이르는 말.",
+"related": [
+"= 우물 안 개구리",
+"= 바늘구멍으로 하늘 보기",
+"= 댓구멍으로 하늘을 본다",
+"= 정저지와"
+]
+},
+{
+"category": "속담",
+"term": "우물 안 개구리",
+"sense": 1,
+"definition": "넓은 세상의 형편을 알지 못하는 사람을 비유적으로 이르는 말.",
+"related": [
+"= 좌정관천"
+]
+},
+{
+"category": "속담",
+"term": "우물 안 개구리",
+"sense": 2,
+"definition": "견식이 좁아 저만 잘난 줄로 아는 사람을 비꼬는 말.",
+"related": [
+"= 좌정관천"
+]
+},
+{
+"category": "속담",
+"term": "바늘구멍으로 하늘 보기",
+"definition": "조그만 바늘구멍으로 넓디넓은 하늘을 본다는 뜻으로, 전체를 포괄적으로 보지 못하는 매우 좁은 소견이나 관찰을 비꼬는 말.",
+"related": [
+"= 좌정관천"
+]
+},
+{
+"category": "속담",
+"term": "댓구멍으로 하늘을 본다",
+"definition": "조그만 바늘구멍으로 넓디넓은 하늘을 본다는 뜻으로, 전체를 포괄적으로 보지 못하는 매우 좁은 소견이나 관찰을 비꼬는 말.",
+"related": [
+"= 좌정관천"
+]
+},
+{
+"category": "한자 성어",
+"term": "정저지와",
+"hanja": "井底之蛙",
+"definition": "소견(所見)이나 견문(見聞)이 몹시 좁은 것.",
+"related": [
+"= 좌정관천"
+]
+},
+{
+"category": "한자 성어",
+"term": "주마가편",
+"hanja": "走馬加鞭",
+"definition": "달리는 말에 채찍질한다는 뜻으로, 잘하는 사람을 더욱 장려함을 이르는 말.",
+"related": [
+"= 닫는 말에도 채를 친다",
+"= 달리는 말에 채찍질"
+]
+},
+{
+"category": "속담",
+"term": "닫는 말에도 채를 친다",
+"sense": 1,
+"definition": "기세가 한창 좋을 때 더 힘을 가한다는 말.",
+"related": [
+"= 주마가편"
+]
+},
+{
+"category": "속담",
+"term": "닫는 말에도 채를 친다",
+"sense": 2,
+"definition": "힘껏 하는데도 자꾸 더 하라고 한다는 말.",
+"related": [
+"= 주마가편"
+]
+},
+{
+"category": "속담",
+"term": "달리는 말에 채찍질",
+"sense": 1,
+"definition": "기세가 한창 좋을 때 더 힘을 가한다는 말.",
+"related": [
+"= 주마가편"
+]
+},
+{
+"category": "속담",
+"term": "달리는 말에 채찍질",
+"sense": 2,
+"definition": "힘껏 하는데도 자꾸 더 하라고 한다는 말.",
+"related": [
+"= 주마가편"
+]
+},
+{
+"category": "한자 성어",
+"term": "주마간산",
+"hanja": "走馬看山",
+"definition": "말을 타고 달리며 산천을 구경한다는 뜻으로, 자세히 살피지 아니하고 대충대충 보고 지나감을 이르는 말.",
+"related": [
+"= 수박 겉 핥기",
+"= 개 머루 먹듯",
+"= 꿀단지 겉 핥는다",
+"= 언청이가 콩가루 먹듯",
+"= 후추를 통째로 삼킨다"
+]
+},
+{
+"category": "속담",
+"term": "수박 겉 핥기",
+"definition": "맛있는 수박을 먹는다는 것이 딱딱한 겉만 핥고 있다는 뜻으로, 사물의 속 내용은 모르고 겉만 건드리는 일을 비유적으로 이르는 말.",
+"related": [
+"= 주마간산"
+]
+},
+{
+"category": "속담",
+"term": "개 머루 먹듯",
+"definition": "맛있는 수박을 먹는다는 것이 딱딱한 겉만 핥고 있다는 뜻으로, 사물의 속 내용은 모르고 겉만 건드리는 일을 비유적으로 이르는 말.",
+"related": [
+"= 주마간산"
+]
+},
+{
+"category": "속담",
+"term": "꿀단지 겉 핥는다",
+"definition": "맛있는 수박을 먹는다는 것이 딱딱한 겉만 핥고 있다는 뜻으로, 사물의 속 내용은 모르고 겉만 건드리는 일을 비유적으로 이르는 말.",
+"related": [
+"= 주마간산"
+]
+},
+{
+"category": "속담",
+"term": "언청이가 콩가루 먹듯",
+"definition": "맛있는 수박을 먹는다는 것이 딱딱한 겉만 핥고 있다는 뜻으로, 사물의 속 내용은 모르고 겉만 건드리는 일을 비유적으로 이르는 말.",
+"related": [
+"= 주마간산"
+]
+},
+{
+"category": "속담",
+"term": "후추를 통째로 삼킨다",
+"definition": "맛있는 수박을 먹는다는 것이 딱딱한 겉만 핥고 있다는 뜻으로, 사물의 속 내용은 모르고 겉만 건드리는 일을 비유적으로 이르는 말.",
+"related": [
+"= 주마간산"
+]
+},
+{
+"category": "한자 성어",
+"term": "지음",
+"hanja": "知音",
+"definition": "마음이 서로 통하는 친한 벗을 비유적으로 이르는 말. 거문고의 명인 백아가 자기의 소리를 잘 이해해 준 벗 종자기가 죽자 자신의 거문고 소리를 아는 자가 없다고 하여 거문고 줄을 끊었다는 데서 유래함.",
+"related": [
+"= 지기지우",
+"= 백아절현",
+"= 간담상조",
+"= 관포지교",
+"= 금란지의",
+"= 금란지계",
+"= 단금지교",
+"= 막역",
+"= 문경지교",
+"= 수어지교",
+"= 죽마고우"
+]
+},
+{
+"category": "한자 성어",
+"term": "지기지우",
+"hanja": "知己之友",
+"definition": "마음이 서로 통하는 친한 벗을 비유적으로 이르는 말. 거문고의 명인 백아가 자기의 소리를 잘 이해해 준 벗 종자기가 죽자 자신의 거문고 소리를 아는 자가 없다고 하여 거문고 줄을 끊었다는 데서 유래함.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "백아절현",
+"hanja": "伯牙絶絃",
+"definition": "자기를 알아주는 참다운 벗의 죽음을 슬퍼함. 종자기가 죽자 백아가 거문고 줄을 끊어 버리고 다시는 거문고를 타지 않았다는 데서 유래함.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "간담상조",
+"hanja": "肝膽相照",
+"definition": "서로 속마음을 털어놓고 친하게 사귐. 간과 담을 비추어 보일 정도의 사이라는 데서 나온 말.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "관포지교",
+"hanja": "管鮑之交",
+"definition": "관중과 포숙의 사귐이란 뜻으로, 우정이 아주 돈독한 친구 관계를 이르는 말.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "금란지의",
+"hanja": "金蘭之誼",
+"definition": "친구 사이의 매우 두터운 정을 이르는 말. 금은 지극히 견고하지만 두 사람의 마음을 합치면 그 견고함이 능히 금을 단절할 수 있으며, 두 사람의 진정한 우정은 향기로운 난초와 같다는 데서 나온 말.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "금란지계",
+"hanja": "金蘭之契",
+"definition": "친구 사이의 매우 두터운 정을 이르는 말. 금은 지극히 견고하지만 두 사람의 마음을 합치면 그 견고함이 능히 금을 단절할 수 있으며, 두 사람의 진정한 우정은 향기로운 난초와 같다는 데서 나온 말.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "단금지교",
+"hanja": "斷金之交",
+"definition": "쇠라도 자를 만큼 강한 교분이라는 뜻으로, 매우 두터운 우정을 이르는 말.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "막역",
+"hanja": "莫逆",
+"definition": "진정한 친구는 서로가 서로를 거역하지 않는다는 데서 나온 말.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "문경지교",
+"hanja": "刎頸之交",
+"definition": "생사를 같이할 수 있는 아주 가까운 사이.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "수어지교",
+"hanja": "水魚之交",
+"definition": "물고기와 물의 관계라는 뜻으로, 아주 친밀하여 떨어질 수 없는 사이를 비유적으로 이르는 말.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "죽마고우",
+"hanja": "竹馬故友",
+"definition": "어릴 때부터 같이 놀며 자란 벗.",
+"related": [
+"= 지음"
+]
+},
+{
+"category": "한자 성어",
+"term": "청출어람",
+"hanja": "靑出於藍",
+"definition": "제자나 후배가 스승이나 선배보다 나음을 비유적으로 이르는 말.",
+"related": [
+"= 나중 난 뿔이 우뚝하다"
+]
+},
+{
+"category": "속담",
+"term": "나중 난 뿔이 우뚝하다",
+"definition": "제자나 후배가 스승이나 선배보다 나음을 비유적으로 이르는 말.",
+"related": [
+"= 청출어람"
+]
+},
+{
+"category": "한자 성어",
+"term": "소탐대실",
+"hanja": "小貪大失",
+"definition": "작은 것을 탐하다가 큰 것을 잃음.",
+"related": [
+"참고 교각살우"
+],
+"note": "교각살우 묶음의 참고 표현"
+},
+{
+"category": "한자 성어",
+"term": "풍수지탄",
+"hanja": "風樹之嘆",
+"definition": "효도를 다하지 못한 채 어버이를 여읜 자식의 슬픔을 이르는 말.",
+"related": [
+"참고 반포지효"
+],
+"note": "반포지효 묶음의 참고 표현"
+},
+{
+"category": "속담",
+"term": "모기 보고 칼[환도] 빼기[뽑기]",
+"sense": 1,
+"definition": "시시한 일로 소란을 피움을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "모기 보고 칼[환도] 빼기[뽑기]",
+"sense": 2,
+"definition": "보잘것없는 작은 일에 어울리지 않게 엄청나게 큰 대책을 씀을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "역지사지",
+"hanja": "易地思之",
+"definition": "처지를 바꾸어서 생각하여 봄.",
+"related": [
+"↔ 자기 배 부르면 남의 배 고픈 줄 모른다"
+]
+},
+{
+"category": "속담",
+"term": "자기 배 부르면 남의 배 고픈 줄 모른다",
+"definition": "자기와 환경이나 조건이 다른 사람의 사정을 이해하기가 어려움을 이르는 말.",
+"related": [
+"↔ 역지사지"
+]
+},
+{
+"category": "한자 성어",
+"term": "감언이설",
+"hanja": "甘言利說",
+"definition": "귀가 솔깃하도록 남의 비위를 맞추거나 이로운 조건을 내세워 꾀는 말."
+},
+{
+"category": "한자 성어",
+"term": "감지덕지",
+"hanja": "感之德之",
+"definition": "분에 넘치는 듯싶어 매우 고맙게 여기는 모양."
+},
+{
+"category": "한자 성어",
+"term": "거두절미",
+"hanja": "去頭截尾",
+"definition": "어떤 일의 요점만 간단히 말함."
+},
+{
+"category": "한자 성어",
+"term": "건곤일척",
+"hanja": "乾坤一擲",
+"definition": "주사위를 던져 승패를 건다는 뜻으로, 운명을 걸고 단판걸이로 승부를 겨룸을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "견리사의",
+"hanja": "見利思義",
+"definition": "눈앞의 이익을 보면 의리를 먼저 생각함."
+},
+{
+"category": "한자 성어",
+"term": "견물생심",
+"hanja": "見物生心",
+"definition": "어떠한 실물을 보게 되면 그것을 가지고 싶은 욕심이 생김."
+},
+{
+"category": "한자 성어",
+"term": "견원지간",
+"hanja": "犬猿之間",
+"definition": "개와 원숭이의 사이라는 뜻으로, 사이가 매우 나쁜 두 관계를 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "경천동지",
+"hanja": "驚天動地",
+"definition": "하늘을 놀라게 하고 땅을 뒤흔든다는 뜻으로, 세상을 몹시 놀라게 함을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "고육지계",
+"hanja": "苦肉之計",
+"definition": "자기 몸을 상해 가면서까지 꾸며 내는 계책이라는 뜻으로, 어려운 상태를 벗어나기 위해 어쩔 수 없이 꾸며 내는 계책을 이르는 말.",
+"related": [
+"= 고육지책"
+]
+},
+{
+"category": "한자 성어",
+"term": "고육지책",
+"hanja": "苦肉之策",
+"definition": "자기 몸을 상해 가면서까지 꾸며 내는 계책이라는 뜻으로, 어려운 상태를 벗어나기 위해 어쩔 수 없이 꾸며 내는 계책을 이르는 말.",
+"related": [
+"= 고육지계"
+]
+},
+{
+"category": "한자 성어",
+"term": "곡학아세",
+"hanja": "曲學阿世",
+"definition": "바른길에서 벗어난 학문으로 세상 사람에게 아첨함."
+},
+{
+"category": "한자 성어",
+"term": "괄목상대",
+"hanja": "刮目相對",
+"definition": "눈을 비비고 상대편을 본다는 뜻으로, 남의 학식이나 재주가 놀랄 만큼 부쩍 늚을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "괴괴망측",
+"hanja": "怪怪罔測",
+"definition": "말할 수 없을 만큼 이상야릇함."
+},
+{
+"category": "한자 성어",
+"term": "괴담이설",
+"hanja": "怪談異說",
+"definition": "괴상하고 이상한 이야기."
+},
+{
+"category": "한자 성어",
+"term": "교학상장",
+"hanja": "敎學相長",
+"definition": "사람에게 가르쳐 주거나 스승에게 배우는 일이 모두 자신의 학업을 증진시킴."
+},
+{
+"category": "한자 성어",
+"term": "구우일모",
+"hanja": "九牛一毛",
+"definition": "아홉 마리의 소 가운데 박힌 하나의 털이란 뜻으로, 매우 많은 것 가운데 극히 적은 수를 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "구중심처",
+"hanja": "九重深處",
+"sense": 1,
+"definition": "밖으로 잘 드러나지 않는 깊숙한 곳."
+},
+{
+"category": "한자 성어",
+"term": "구중심처",
+"hanja": "九重深處",
+"sense": 2,
+"definition": "겹겹이 문으로 막은 깊은 궁궐이라는 뜻으로, 임금이 있는 대궐 안을 이르는 말.",
+"related": [
+"= 구중궁궐(九重宮闕)"
+]
+},
+{
+"category": "한자 성어",
+"term": "권토중래",
+"hanja": "捲土重來",
+"definition": "땅을 말아 일으킬 것 같은 기세로 다시 온다는 뜻으로, 한 번 실패하였으나 힘을 회복하여 다시 쳐들어옴을 이르는 말. 중국 당나라 두목의 〈오강정시(烏江亭詩)〉에 나오는 말로, 항우가 유방과의 결전에서 패하여 오강(烏江) 근처에서 자결한 것을 탄식한 말에서 유래함."
+},
+{
+"category": "한자 성어",
+"term": "금과옥조",
+"hanja": "金科玉條",
+"definition": "금이나 옥처럼 귀중히 여겨 꼭 지켜야 할 법칙이나 규정."
+},
+{
+"category": "한자 성어",
+"term": "기고만장",
+"hanja": "氣高萬丈",
+"definition": "일이 뜻대로 잘될 때, 우쭐하여 뽐내는 기세가 대단함."
+},
+{
+"category": "한자 성어",
+"term": "기호지세",
+"hanja": "騎虎之勢",
+"definition": "호랑이를 타고 달리는 형세라는 뜻으로, 이미 시작한 일을 중도에서 그만둘 수 없는 경우를 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "난공불락",
+"hanja": "難攻不落",
+"definition": "공격하기가 어려워 쉽사리 함락되지 아니함."
+},
+{
+"category": "한자 성어",
+"term": "난형난제",
+"hanja": "難兄難弟",
+"definition": "누구를 형이라 하고 누구를 아우라 하기 어렵다는 뜻으로, 두 사물이 비슷하여 낫고 못함을 정하기 어려움을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "누란지위",
+"hanja": "累卵之危",
+"definition": "층층이 쌓아 놓은 알의 위태로움이라는 뜻으로, 몹시 아슬아슬한 위기를 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "다기망양",
+"hanja": "多岐亡羊",
+"definition": "갈림길이 많아 잃어버린 양을 찾지 못한다는 뜻으로, 두루 섭렵하기만 하고 전공하는 바가 없어 끝내 성취하지 못함을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "다문박식",
+"hanja": "多聞博識",
+"definition": "보고 들은 것이 많고 아는 것이 많음."
+},
+{
+"category": "한자 성어",
+"term": "다정다감",
+"hanja": "多情多感",
+"definition": "정이 많고 감정이 풍부함."
+},
+{
+"category": "한자 성어",
+"term": "단기지계",
+"hanja": "斷機之戒",
+"definition": "학문을 중도에서 그만두면 짜던 베의 날을 끊는 것처럼 아무 쓸모 없음을 경계한 말."
+},
+{
+"category": "한자 성어",
+"term": "당구풍월",
+"hanja": "堂狗風月",
+"definition": "서당에서 기르는 개가 풍월을 읊는다는 뜻으로, 그 분야에 대하여 경험과 지식이 전혀 없는 사람이라도 오래 있으면 얼마간의 경험과 지식을 가짐을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "대기만성",
+"hanja": "大器晩成",
+"definition": "큰 그릇을 만드는 데는 시간이 오래 걸린다는 뜻으로, 크게 될 사람은 늦게 이루어짐을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "독수공방",
+"hanja": "獨守空房",
+"sense": 1,
+"definition": "혼자서 지내는 것."
+},
+{
+"category": "한자 성어",
+"term": "독수공방",
+"hanja": "獨守空房",
+"sense": 2,
+"definition": "아내가 남편 없이 혼자 지내는 것."
+},
+{
+"category": "한자 성어",
+"term": "동고동락",
+"hanja": "同苦同樂",
+"definition": "괴로움도 즐거움도 함께함."
+},
+{
+"category": "한자 성어",
+"term": "두문불출",
+"hanja": "杜門不出",
+"definition": "집에만 있고 바깥출입을 아니함."
+},
+{
+"category": "한자 성어",
+"term": "득의지추",
+"hanja": "得意之秋",
+"definition": "일이 뜻대로 이루어졌거나 이루어질 좋은 기회."
+},
+{
+"category": "한자 성어",
+"term": "등화가친",
+"hanja": "燈火可親",
+"definition": "등불을 가까이 할 만하다는 뜻으로, 서늘한 가을밤은 등불을 가까이하여 글 읽기에 좋음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "마이동풍",
+"hanja": "馬耳東風",
+"definition": "동풍이 말의 귀를 스쳐 간다는 뜻으로, 남의 말을 귀담아듣지 아니하고 지나쳐 흘려버림을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "만경창파",
+"hanja": "萬頃蒼波",
+"definition": "만 이랑의 푸른 물결이라는 뜻으로, 한없이 넓고 넓은 바다를 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "만고절색",
+"hanja": "萬古絶色",
+"definition": "세상에 비길 데 없이 뛰어난 미인."
+},
+{
+"category": "한자 성어",
+"term": "만원사례",
+"hanja": "滿員謝禮",
+"definition": "만원을 이루게 해 주어서 고맙다는 뜻으로, 이미 만원이 되어 들어오려는 사람을 더 받을 수 없음을 완곡하게 이르는 말. 극장 매표소에 써서 붙여 놓은 말에서 유래함."
+},
+{
+"category": "한자 성어",
+"term": "망양지탄",
+"hanja": "亡羊之歎",
+"definition": "갈림길이 매우 많아 잃어버린 양을 찾을 길이 없음을 탄식한다는 뜻으로, 학문의 길이 여러 갈래여서 한 갈래의 진리도 얻기 어려움을 이르는 말.",
+"related": [
+"= 망양지탄(亡羊之嘆)"
+]
+},
+{
+"category": "한자 성어",
+"term": "면종복배",
+"hanja": "面從腹背",
+"definition": "겉으로는 복종하는 체하면서 내심으로는 배반함."
+},
+{
+"category": "한자 성어",
+"term": "명약관화",
+"hanja": "明若觀火",
+"definition": "불을 보듯 분명하고 뻔함."
+},
+{
+"category": "한자 성어",
+"term": "묘항현령",
+"hanja": "猫項懸鈴",
+"definition": "쥐가 고양이 목에 방울을 단다는 뜻으로, 실행할 수 없는 헛된 논의를 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "문경지교",
+"hanja": "刎頸之交",
+"definition": "서로를 위해서라면 목이 잘린다 해도 후회하지 않을 정도의 사이라는 뜻으로, 생사를 같이할 수 있는 아주 가까운 사이. 또는 그런 친구를 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "반면교사",
+"hanja": "反面敎師",
+"definition": "사람이나 사물 따위의 부정적인 면에서 얻는 깨달음이나 가르침을 주는 대상을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "방약무인",
+"hanja": "傍若無人",
+"definition": "곁에 사람이 없는 것처럼 아무 거리낌 없이 함부로 말하고 행동하는 태도가 있음."
+},
+{
+"category": "한자 성어",
+"term": "백척간두",
+"hanja": "百尺竿頭",
+"definition": "백 자나 되는 높은 장대 위에 올라섰다는 뜻으로, 몹시 어렵고 위태로운 지경을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "부화뇌동",
+"hanja": "附和雷同",
+"definition": "줏대 없이 남의 의견에 따라 움직임."
+},
+{
+"category": "한자 성어",
+"term": "불언가상",
+"hanja": "不言可想",
+"definition": "아무 말을 하지 않아도 능히 짐작할 수 있음."
+},
+{
+"category": "한자 성어",
+"term": "불철주야",
+"hanja": "不撤晝夜",
+"definition": "어떤 일에 몰두하여 조금도 쉴 사이 없이 밤낮을 가리지 아니함."
+},
+{
+"category": "한자 성어",
+"term": "사고무친",
+"hanja": "四顧無親",
+"definition": "의지할 만한 사람이 아무도 없음."
+},
+{
+"category": "한자 성어",
+"term": "사필귀정",
+"hanja": "事必歸正",
+"definition": "모든 일은 반드시 바른길로 돌아감."
+},
+{
+"category": "한자 성어",
+"term": "상명지통",
+"hanja": "喪明之痛",
+"definition": "눈이 멀 정도로 슬프다는 뜻으로, 아들이 죽은 슬픔을 비유적으로 이르는 말. 옛날 중국의 자하(子夏)가 아들을 잃고 슬피 운 끝에 눈이 멀었다는 데서 유래함."
+},
+{
+"category": "한자 성어",
+"term": "상전벽해",
+"hanja": "桑田碧海",
+"definition": "뽕나무밭이 변하여 푸른 바다가 된다는 뜻으로, 세상일의 변천이 심함을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "성동격서",
+"hanja": "聲東擊西",
+"definition": "동쪽에서 소리를 내고 서쪽에서 적을 친다는 뜻으로, 적을 유인하여 이쪽을 공격하는 체하다가 그 반대쪽을 치는 전술을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "수구초심",
+"hanja": "首丘初心",
+"definition": "여우가 죽을 때에 머리를 자기가 살던 굴 쪽으로 둔다는 뜻으로, 고향을 그리워하는 마음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "수주대토",
+"hanja": "守株待兎",
+"definition": "한 가지 일에만 얽매여 발전을 모르는 어리석은 사람을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "양두구육",
+"hanja": "羊頭狗肉",
+"definition": "양의 머리를 걸어 놓고 개고기를 판다는 뜻으로, 겉보기만 그럴듯하게 보이고 속은 변변하지 아니함을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "여리박빙",
+"hanja": "如履薄氷",
+"definition": "살얼음을 밟는 것과 같다는 뜻으로, 아슬아슬하고 위험한 일을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "오십보백보",
+"hanja": "五十步百步",
+"definition": "조금 낫고 못한 정도의 차이는 있으나 본질적으로는 차이가 없음을 이르는 말.",
+"related": [
+"= 도토리 키 재기"
+]
+},
+{
+"category": "한자 성어",
+"term": "오월동주",
+"hanja": "吳越同舟",
+"definition": "서로 적의를 품은 사람들이 한자리에 있게 된 경우나 서로 협력하여야 하는 상황을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "와신상담",
+"hanja": "臥薪嘗膽",
+"definition": "불편한 섶에 몸을 눕히고 쓸개를 맛본다는 뜻으로, 원수를 갚거나 마음먹은 일을 이루기 위하여 온갖 어려움과 괴로움을 참고 견딤을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "용호상박",
+"hanja": "龍虎相搏",
+"definition": "용과 범이 서로 싸운다는 뜻으로, 강자끼리 서로 싸움을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "우공이산",
+"hanja": "愚公移山",
+"definition": "우공이 산을 옮긴다는 뜻으로, 어떤 일이든 끊임없이 노력하면 반드시 이루어짐을 이르는 말. 우공(愚公)이라는 노인이 집을 가로막은 산을 옮기려고 대대로 산의 흙을 파서 나르겠다고 하여 이에 감동한 하느님이 산을 옮겨 주었다는 데서 유래함."
+},
+{
+"category": "한자 성어",
+"term": "위편삼절",
+"hanja": "韋編三絶",
+"definition": "공자가 주역을 즐겨 읽어 책의 가죽끈이 세 번이나 끊어졌다는 뜻으로, 책을 열심히 읽음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "유만부동",
+"hanja": "類萬不同",
+"sense": 1,
+"definition": "비슷한 것이 많으나 서로 같지는 아니함."
+},
+{
+"category": "한자 성어",
+"term": "유만부동",
+"hanja": "類萬不同",
+"sense": 2,
+"definition": "정도에 넘침. 또는 분수에 맞지 아니함."
+},
+{
+"category": "한자 성어",
+"term": "읍참마속",
+"hanja": "泣斬馬謖",
+"definition": "큰 목적을 위하여 자기가 아끼는 사람을 버림을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "이합집산",
+"hanja": "離合集散",
+"definition": "헤어졌다가 만나고 모였다가 흩어짐."
+},
+{
+"category": "한자 성어",
+"term": "일모도원",
+"hanja": "日暮途遠",
+"definition": "날은 저물고 갈 길은 멀다는 뜻으로, 늙고 쇠약한데 앞으로 해야 할 일은 많음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "자가당착",
+"hanja": "自家撞着",
+"definition": "같은 사람의 말이나 행동이 앞뒤가 서로 맞지 아니하고 모순됨."
+},
+{
+"category": "한자 성어",
+"term": "자강불식",
+"hanja": "自強不息",
+"definition": "스스로 힘써 몸과 마음을 가다듬어 쉬지 아니함."
+},
+{
+"category": "한자 성어",
+"term": "자승자박",
+"hanja": "自繩自縛",
+"definition": "자기의 줄로 자기 몸을 옭아 묶는다는 뜻으로, 자기가 한 말과 행동에 자기 자신이 옭혀 곤란하게 됨을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "자신지책",
+"hanja": "資身之策",
+"definition": "자기 한 몸의 생활을 꾀하는 계책."
+},
+{
+"category": "한자 성어",
+"term": "적수공권",
+"hanja": "赤手空拳",
+"definition": "맨손과 맨주먹이라는 뜻으로, 아무것도 가진 것이 없음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "전도유망",
+"hanja": "前途有望",
+"definition": "앞으로 잘될 희망이 있음."
+},
+{
+"category": "한자 성어",
+"term": "전전불매",
+"hanja": "輾轉不寐",
+"definition": "누워서 몸을 이리저리 뒤척이며 잠을 이루지 못함.",
+"related": [
+"= 전전반측(輾轉反側)"
+]
+},
+{
+"category": "한자 성어",
+"term": "절차탁마",
+"hanja": "切磋琢磨",
+"definition": "옥이나 돌 따위를 갈고 닦아서 빛을 낸다는 뜻으로, 부지런히 학문과 덕행을 닦음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "절체절명",
+"hanja": "絶體絶命",
+"definition": "몸도 목숨도 다 되었다는 뜻으로, 어찌할 수 없는 절박한 경우를 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "절치부심",
+"hanja": "切齒腐心",
+"definition": "몹시 분하여 이를 갈며 속을 썩임."
+},
+{
+"category": "한자 성어",
+"term": "조족지혈",
+"hanja": "鳥足之血",
+"definition": "새 발의 피라는 뜻으로, 매우 적은 분량을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "종두득두",
+"hanja": "種豆得豆",
+"definition": "콩을 심으면 반드시 콩이 나온다는 뜻으로, 원인에 따라 결과가 생김을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "지록위마",
+"hanja": "指鹿爲馬",
+"definition": "윗사람을 농락하여 권세를 마음대로 함을 이르는 말. 중국 진(秦)나라의 조고(趙高)가 자신의 권세를 시험하여 보고자 황제 호해(胡亥)에게 사슴을 가리키며 말이라고 한 데서 유래함."
+},
+{
+"category": "한자 성어",
+"term": "천석고황",
+"hanja": "泉石膏肓",
+"definition": "자연의 아름다운 경치를 몹시 사랑하고 즐기는 성벽(性癖).",
+"related": [
+"= 연하고질(煙霞痼疾)"
+]
+},
+{
+"category": "한자 성어",
+"term": "천의무봉",
+"hanja": "天衣無縫",
+"definition": "천사의 옷은 꿰맨 흔적이 없다는 뜻으로, 일부러 꾸민 데 없이 자연스럽고 아름다우면서 완전함을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "천재일우",
+"hanja": "千載一遇",
+"definition": "천 년 동안 단 한 번 만난다는 뜻으로, 좀처럼 만나기 어려운 좋은 기회를 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "촌철살인",
+"hanja": "寸鐵殺人",
+"definition": "한 치의 쇠붙이로도 사람을 죽일 수 있다는 뜻으로, 간단한 말로도 남을 감동하게 하거나 남의 약점을 찌를 수 있음을 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "침소봉대",
+"hanja": "針小棒大",
+"definition": "작은 일을 크게 불리어 떠벌림."
+},
+{
+"category": "한자 성어",
+"term": "풍비박산",
+"hanja": "風飛雹散",
+"definition": "사방으로 날아 흩어짐."
+},
+{
+"category": "한자 성어",
+"term": "풍전등화",
+"hanja": "風前燈火",
+"definition": "바람 앞의 등불이라는 뜻으로, 사물이 매우 위태로운 처지에 놓여 있음을 비유적으로 이르는 말."
+},
+{
+"category": "한자 성어",
+"term": "학수고대",
+"hanja": "鶴首苦待",
+"definition": "학의 목처럼 목을 길게 빼고 간절히 기다림."
+},
+{
+"category": "한자 성어",
+"term": "허허실실",
+"hanja": "虛虛實實",
+"definition": "허를 찌르고 실을 꾀하는 계책."
+},
+{
+"category": "한자 성어",
+"term": "혈혈단신",
+"hanja": "孑孑單身",
+"definition": "의지할 곳이 없는 외로운 홀몸."
+},
+{
+"category": "한자 성어",
+"term": "호가호위",
+"hanja": "狐假虎威",
+"definition": "남의 권세를 빌려 위세를 부림."
+},
+{
+"category": "한자 성어",
+"term": "호구지책",
+"hanja": "糊口之策",
+"definition": "가난한 살림에서 그저 겨우 먹고살아 가는 방책."
+},
+{
+"category": "한자 성어",
+"term": "화룡점정",
+"hanja": "畫龍點睛",
+"definition": "무슨 일을 하는 데에 가장 중요한 부분을 완성함을 비유적으로 이르는 말. 용을 그리고 난 후에 마지막으로 눈동자를 그려 넣었더니 그 용이 실제 용이 되어 홀연히 구름을 타고 하늘로 날아 올라갔다는 고사에서 유래함."
+},
+{
+"category": "한자 성어",
+"term": "화중지병",
+"hanja": "畫中之餠",
+"definition": "그림의 떡."
+},
+{
+"category": "한자 성어",
+"term": "화촉동방",
+"hanja": "華燭洞房",
+"definition": "첫날밤에 신랑 신부가 자는 방."
+},
+{
+"category": "한자 성어",
+"term": "환골탈태",
+"hanja": "換骨奪胎",
+"definition": "사람이 보다 나은 방향으로 변하여 전혀 딴사람처럼 됨."
+},
+{
+"category": "한자 성어",
+"term": "후안무치",
+"hanja": "厚顔無恥",
+"definition": "뻔뻔스러워 부끄러움이 없음."
+},
+{
+"category": "한자 성어",
+"term": "흥진비래",
+"hanja": "興盡悲來",
+"definition": "즐거운 일이 다하면 슬픈 일이 닥쳐온다는 뜻으로, 세상일은 순환되는 것임을 이르는 말."
+},
+{
+"category": "속담",
+"term": "가게 기둥에 입춘",
+"definition": "추하고 보잘것없는 가겟집 기둥에 ‘입춘대길’이라 써 붙인다는 뜻으로, 제격에 맞지 않음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "가난한 양반 씻나락 주무르듯",
+"definition": "가난한 양반이 털어먹자니 앞날이 걱정스럽고 그냥 두자니 당장 굶는 일이 걱정되어서 볍씨만 한없이 주무르고 있다는 뜻으로, 어떤 일에 닥쳐 우물쭈물하기만 하면서 선뜻 결정을 내리지 못하고 있는 모양을 이르는 말."
+},
+{
+"category": "속담",
+"term": "가마솥에 든 고기",
+"definition": "꼼짝없이 죽게 된 신세를 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "가을 들이 딸네 집보다 낫다",
+"definition": "가을 들판에는 오곡이 익어 먹을 것이 풍부하기 때문에 가난한 집보다 먹을 것이 많아서 낫다.",
+"related": [
+"= 가을 들판이 어설픈 친정보다 낫다"
+]
+},
+{
+"category": "속담",
+"term": "가을철에는 죽은 송장도 꿈지럭한다",
+"definition": "가을걷이 때에는 일이 많아서 누구나 바삐 나서서 거들게 됨을 비유적으로 이르는 말.",
+"related": [
+"= 가을에는 부지깽이도 덤벙인다",
+"= 가을 판에는 대부인마님이 나막신짝 들고 나선다"
+]
+},
+{
+"category": "속담",
+"term": "가을 머슴꾼 비질하듯",
+"definition": "가을걷이를 하고 낟알을 털어도 머슴에게는 별로 잇속이 없으므로 쓰레질도 흥 없이 된다는 뜻으로, 일을 성의 없이 대강 해치움을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "가을바람의 새털",
+"definition": "가을바람에 이리저리 날리는 새털처럼 매우 가볍고 꿋꿋하지 못한 것을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "가을 식은 밥이 봄 양식이다",
+"definition": "먹을 것이 흔한 가을에는 먹지 않고 내놓은 식은 밥이 봄에 가서는 귀중한 양식이 된다는 뜻으로, 풍족할 때 함부로 낭비하지 않고 절약하면 뒷날의 궁함을 면할 수 있음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "가을 중 싸대듯",
+"definition": "수확이 많은 가을철에 조금이라도 더 시주를 얻기 위하여 중이 바쁘게 돌아다닌다는 뜻으로, 여기저기 분주히 돌아다님을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "가을 중의 시주 바가지 같다",
+"definition": "가을에는 곡식이 풍성하여 시주도 많이 하게 되므로 시주 바가지가 가득하다는 데서, 무엇이 가득 담긴 것을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "가지 많은 나무에 바람 잘 날이 없다",
+"definition": "가지가 많고 잎이 무성한 나무는 살랑거리는 바람에도 잎이 흔들려서 잠시도 조용한 날이 없다는 뜻으로, 자식을 많이 둔 어버이에게는 근심, 걱정이 끊일 날이 없음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "간에 붙었다 쓸개[염통]에 붙었다 한다",
+"definition": "자기에게 조금이라도 이익이 되면 지조 없이 이편에 붙었다 저편에 붙었다 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "개똥밭에 굴러도 이승이 좋다",
+"definition": "아무리 천하고 고생스럽게 살더라도 죽는 것보다는 사는 것이 나음을 이르는 말.",
+"related": [
+"= 거꾸로 매달아도 사는 세상이 낫다",
+"= 땡감을 따 먹어도 이승이 좋다",
+"= 산 개 새끼가 죽은 정승보다 낫다"
+]
+},
+{
+"category": "속담",
+"term": "개똥밭에 이슬 내릴 때가 있다",
+"definition": "몹시 고생을 하는 삶도 좋은 운수가 터질 날이 있다는 말.",
+"related": [
+"= 쥐구멍에도 볕 들 날 있다"
+]
+},
+{
+"category": "속담",
+"term": "거미줄에 목을 맨다",
+"definition": "어처구니없는 일로 몹시 억울하고 원통함을 이르는 말."
+},
+{
+"category": "속담",
+"term": "걱정이 많으면 빨리 늙는다",
+"definition": "쓸데없는 잔걱정을 하지 말라는 말."
+},
+{
+"category": "속담",
+"term": "계란에도 뼈가 있다",
+"definition": "늘 일이 잘 안되던 사람이 모처럼 좋은 기회를 만났건만, 그 일마저 역시 잘 안됨을 이르는 말."
+},
+{
+"category": "속담",
+"term": "공든 탑도 개미구멍으로 무너진다",
+"definition": "조그마한 실수나 방심으로 큰일을 망쳐 버린다는 말."
+},
+{
+"category": "속담",
+"term": "구멍 보아 가며 말뚝 깎는다",
+"definition": "무슨 일이고 간에 조건과 사정을 보아 가며 거기에 알맞게 일을 하여야 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "굳은 땅에 물이 괸다",
+"sense": 1,
+"definition": "헤프게 쓰지 않고 아끼는 사람이 재산을 모으게 됨을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "굳은 땅에 물이 괸다",
+"sense": 2,
+"definition": "무슨 일이든 마음을 굳게 먹고 해야 좋은 결과를 얻게 됨을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "남의 두루마기에 밤 주워 담는다",
+"definition": "아무리 하여도 남 좋은 일만 한 결과가 됨을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "남의 잔치에 감 놓아라 배 놓아라 한다",
+"definition": "남의 일에 공연히 간섭하고 나섬을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "내 건너 배 타기",
+"definition": "무슨 일에나 순서가 있어 건너뛰어서는 할 수 없음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "눈 가리고 아웅",
+"definition": "실제로 보람도 없을 일을 공연히 형식적으로 하는 체하며 부질없는 짓을 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "눈은 풍년이나 입은 흉년이다",
+"definition": "눈에 보이는 것은 많아도 정작 먹을 것은 없음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "다 가도 문턱 못 넘기",
+"definition": "애써 일을 하였으나 끝맺음을 못하여 보람이 없게 됨을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "다 된 농사에 낫 들고 덤빈다",
+"definition": "일이 다 끝난 뒤에 쓸데없이 참견하고 나섬을 비유적으로 이르는 말.",
+"related": [
+"= 열흘날 잔치에 열하룻날 병풍 친다"
+]
+},
+{
+"category": "속담",
+"term": "다 된 죽에 코 풀기",
+"sense": 1,
+"definition": "거의 다 된 일을 망쳐 버리는 주책없는 행동을 비유적으로 이르는 말.",
+"related": [
+"= 다 된 죽에 코 빠졌다"
+]
+},
+{
+"category": "속담",
+"term": "다 된 죽에 코 풀기",
+"sense": 2,
+"definition": "남의 다 된 일을 악랄한 방법으로 방해하는 것을 비유적으로 이르는 말.",
+"related": [
+"= 잘되는 밥 가마에 재를 넣는다"
+]
+},
+{
+"category": "속담",
+"term": "단솥에 물 붓기",
+"sense": 1,
+"definition": "형편이 이미 기울어 아무리 도와주어도 보람이 없음.",
+"related": [
+"= 밑 빠진 독에 물 붓기"
+]
+},
+{
+"category": "속담",
+"term": "단솥에 물 붓기",
+"sense": 2,
+"definition": "조금의 여유도 없이 버쩍버쩍 없어짐."
+},
+{
+"category": "속담",
+"term": "대추나무에 연 걸리듯",
+"definition": "여기저기에 빚을 많이 진 것을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "독 틈에도 용소가 있다",
+"definition": "독 틈에도 깊은 웅덩이가 있다는 뜻으로, 무슨 일에든지 남을 속이려 하는 수작이 있으니 조심해야 한다는 말."
+},
+{
+"category": "속담",
+"term": "두부 먹다 이 빠진다",
+"definition": "마음을 놓으면 생각지 아니하던 실수가 생길 수 있으니 항상 조심하라는 말."
+},
+{
+"category": "속담",
+"term": "두부살에 바늘뼈",
+"definition": "바늘처럼 가는 뼈에 두부같이 힘없는 살이란 뜻으로, 몸이 아주 연약한 사람을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "땅내가 고소하다",
+"definition": "머지않아 죽게 될 것 같다는 말."
+},
+{
+"category": "속담",
+"term": "땅 넓은 줄을 모르고 하늘 높은 줄만 안다",
+"definition": "키만 홀쭉하게 크고 마른 사람을 놀림조로 이르는 말."
+},
+{
+"category": "속담",
+"term": "땅을 팔 노릇",
+"definition": "사정이 불가능하여 할 수 없는 것을 억지로 우기며 고집을 피울 때 하는 말."
+},
+{
+"category": "속담",
+"term": "떡 줄 사람은 꿈도 안 꾸는데 김칫국부터 마신다",
+"definition": "해 줄 사람은 생각지도 않는데 미리부터 다 된 일로 알고 행동한다는 말."
+},
+{
+"category": "속담",
+"term": "마른나무를 태우면 생나무도 탄다",
+"definition": "안되는 일도 대세를 타면 잘될 수 있음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "마른 논에 물 대기",
+"definition": "일이 매우 힘들거나 힘들여 해 놓아도 성과가 없는 경우를 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "말 타면 종 두고 싶다",
+"definition": "사람의 욕심이란 한이 없다는 말.",
+"related": [
+"= 말 타면 경마 잡히고 싶다"
+]
+},
+{
+"category": "속담",
+"term": "말은 할 탓이다",
+"definition": "같은 내용의 말이라도 하기에 달렸다는 말."
+},
+{
+"category": "속담",
+"term": "모난 돌이 정 맞는다",
+"sense": 1,
+"definition": "두각을 나타내는 사람이 남에게 미움을 받게 된다는 말."
+},
+{
+"category": "속담",
+"term": "모난 돌이 정 맞는다",
+"sense": 2,
+"definition": "강직한 사람은 남의 공박을 받는다는 말."
+},
+{
+"category": "속담",
+"term": "믿는 도끼에 발등 찍힌다",
+"definition": "잘되리라고 믿었던 일이 어긋나거나 믿고 있던 사람이 배반하여 오히려 해를 입음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "바늘구멍으로 코끼리를 몰라 한다",
+"definition": "작은 바늘구멍으로 엄청나게 큰 코끼리를 몰라고 한다는 뜻으로, 전혀 가능성이 없는 일을 하라고 강요하는 경우를 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "바지저고리만 다닌다[앉았다]",
+"definition": "사람의 몸뚱이는 없고 바지저고리만 걸어 다닌다는 뜻으로, 사람이 아무 속이 없고 맺힌 데가 없이 행동하는 경우를 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "밤눈 어두운 말이 워낭 소리 듣고 따라간다",
+"definition": "맹목적으로 남이 하는 대로 따라 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "밥 위에 떡",
+"definition": "좋은 일에 더욱 좋은 일이 겹침을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "배 먹고 이 닦기",
+"definition": "배를 먹으면 이까지 하얗게 닦아진다는 뜻으로, 한 가지 일에 두 가지 이로움이 있음을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "부자는 망해도 삼 년 먹을 것이 있다",
+"definition": "본래 부자이던 사람은 망했다 하더라도 얼마 동안은 그럭저럭 살아 나갈 수가 있다는 말."
+},
+{
+"category": "속담",
+"term": "붉고 쓴 장",
+"definition": "빛이 좋아서 맛있을 듯한 간장이 쓰다는 뜻으로, 겉모양은 그럴듯하게 좋으나 실속은 흉악하여 안팎이 서로 다름을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "비 오는 것은 밥 짓는 부엌에서 먼저 안다",
+"definition": "비가 오려고 기압이 낮아지면 아궁이에 불이 잘 안 붙으므로 부엌의 아낙네들이 비 오는 것을 먼저 알게 된다는 말."
+},
+{
+"category": "속담",
+"term": "비 오는 날 장독 덮었다",
+"definition": "당연히 할 일을 하고 유세하는 경우를 비꼬는 말."
+},
+{
+"category": "속담",
+"term": "비 온 뒤에 땅이 굳어진다",
+"definition": "어떤 시련을 겪은 뒤에 더 강해짐을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "비 틈으로 빠져나가겠다",
+"definition": "행동이나 동작이 매우 민첩함을 이르는 말."
+},
+{
+"category": "속담",
+"term": "사람과 산은 멀리서 보는 게 낫다",
+"definition": "사람을 가까이 사귀면 멀리서 볼 때 안 보이던 결점이 다 드러나 실망하게 됨을 이르는 말."
+},
+{
+"category": "속담",
+"term": "산 까마귀 염불한다",
+"definition": "산에 있는 까마귀가 산에 있는 절에서 염불하는 것을 하도 많이 보고 들어서 염불하는 흉내를 낸다는 뜻으로, 무엇을 전혀 모르던 사람도 오랫동안 보고 듣노라면 제법 따라 할 수 있게 됨을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "삼밭에 쑥대",
+"definition": "쑥이 삼밭에 섞여 자라면 삼대처럼 곧아진다는 뜻으로, 좋은 환경에서 자라면 좋은 영향을 받게 됨을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "석새짚신에 구슬 감기",
+"definition": "거칠게 만든 하찮은 물건에 고급스러운 물건을 사용한다는 뜻으로, 격에 어울리지 않는 모양이나 차림새를 비유적으로 이르는 말.",
+"related": [
+"= 짚신에 국화 그리기"
+]
+},
+{
+"category": "속담",
+"term": "선무당이 사람 잡는다",
+"definition": "의술에 서투른 사람이 치료해 준다고 하다가 사람을 죽이기까지 한다는 뜻으로, 능력이 없어서 제구실을 못하면서 함부로 하다가 큰일을 저지르게 됨을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "세 살 적 버릇이 여든까지 간다",
+"definition": "어릴 때 몸에 밴 버릇은 늙어 죽을 때까지 고치기 힘들다는 뜻으로, 어릴 때부터 나쁜 버릇이 들지 않도록 잘 가르쳐야 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "소 가는 데 말도 간다",
+"definition": "남이 할 수 있는 일이면 나도 할 수 있다는 말."
+},
+{
+"category": "속담",
+"term": "소 죽은 귀신 같다",
+"definition": "소가 고집이 세고 힘줄이 질기다는 데서, 몹시 고집 세고 질긴 사람의 성격을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "손 안 대고 코 풀기",
+"definition": "손조차 사용하지 아니하고 코를 푼다는 뜻으로, 일을 힘 안 들이고 아주 쉽게 해치움을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "아닌 밤중에 홍두깨",
+"definition": "별안간 엉뚱한 말이나 행동을 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "앉아 주고 서서 받는다",
+"definition": "빌려주기는 쉬우나 돌려받기는 어려움을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "옥에 티",
+"definition": "나무랄 데 없이 훌륭하거나 좋은 것에 있는 사소한 흠을 이르는 말."
+},
+{
+"category": "속담",
+"term": "욕심이 사람 죽인다",
+"definition": "욕심이 너무 지나치면 사리를 분별하지 못하고 위태로운 일까지 거리낌 없이 하게 됨을 비유적으로 이르는 말.",
+"related": [
+"= 허욕이 패가(敗家)라"
+]
+},
+{
+"category": "속담",
+"term": "우물에 가 숭늉 찾는다",
+"definition": "모든 일에는 질서와 차례가 있는 법인데 일의 순서도 모르고 성급하게 덤빔을 비유적으로 이르는 말.",
+"related": [
+"= 보리밭에 가 숭늉 찾는다",
+"= 싸전에 가서 밥 달라고 한다",
+"= 콩밭에 가서 두부 찾는다",
+"= 콩밭에 간수 치겠다"
+]
+},
+{
+"category": "속담",
+"term": "원님 덕에 나발[나팔] 분다",
+"definition": "남의 덕으로 당치도 아니한 행세를 하게 되거나 그런 대접을 받고 우쭐대는 모양을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "절에 간 색시",
+"sense": 1,
+"definition": "남이 시키는 대로 따라 하는 사람을 이르는 말."
+},
+{
+"category": "속담",
+"term": "절에 간 색시",
+"sense": 2,
+"definition": "아무리 싫어도 남이 시키는 대로 따라 하지 아니할 수 없는 처지에 있는 사람을 이르는 말."
+},
+{
+"category": "속담",
+"term": "젊은이 망령은 몽둥이로 고친다",
+"definition": "노인들은 그저 잘 위해 드려야 하고, 아이들이 잘못했을 경우에는 엄하게 다스려 교육해야 한다는 말.",
+"related": [
+"= 젊은이 망령은 홍두깨로 고치고 늙은이 망령은 곰국으로 고친다"
+]
+},
+{
+"category": "속담",
+"term": "조자룡이 헌 창[칼] 쓰듯",
+"definition": "돈이나 물건을 헤프게 쓰는 경우를 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "중이 제 머리를 못 깎는다",
+"definition": "자기가 자신에 관한 일을 좋게 해결하기는 어려운 일이어서 남의 손을 빌려야만 이루기 쉬움을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "중의 빗",
+"definition": "몹시 구하기 어려운 물건을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "차돌에 바람 들면 석돌보다 못하다",
+"definition": "오달진 사람일수록 한번 타락하면 건잡을 수 없게 된다는 말."
+},
+{
+"category": "속담",
+"term": "책력 보아 가며 밥 먹는다",
+"definition": "매일 밥을 먹을 수가 없어 책력을 보아 가며 좋은 날만을 택하여 밥을 먹는다는 뜻으로, 가난하여 끼니를 자주 거른다는 말."
+},
+{
+"category": "속담",
+"term": "처삼촌 뫼에 벌초하듯",
+"definition": "일에 정성을 들이지 아니하고 마지못하여 건성으로 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "큰북에서 큰 소리 난다",
+"sense": 1,
+"definition": "크고 훌륭한 데서라야 좋은 일이 생길 수 있다는 말."
+},
+{
+"category": "속담",
+"term": "큰북에서 큰 소리 난다",
+"sense": 2,
+"definition": "도량이 커야 훌륭한 일을 할 수 있다는 말."
+},
+{
+"category": "속담",
+"term": "타고난 재주 사람마다 하나씩은 있다",
+"definition": "사람은 누구나 한 가지씩의 재주는 가지고 있어서 그것으로 먹고살아 가게 마련이라는 말."
+},
+{
+"category": "속담",
+"term": "하나는 열을 꾸려도 열은 하나를 못 꾸린다",
+"sense": 1,
+"definition": "한 사람이 잘되면 여러 사람을 돌보아 줄 수 있으나 여러 사람이 힘을 합하여 한 사람을 돌보아 주기는 힘들다는 말."
+},
+{
+"category": "속담",
+"term": "하나는 열을 꾸려도 열은 하나를 못 꾸린다",
+"sense": 2,
+"definition": "자식이 많아도 부모는 잘 거느리고 살아가나 자식들은 그렇지 못하다는 말."
+},
+{
+"category": "속담",
+"term": "하늘의 별 따기",
+"definition": "무엇을 얻거나 성취하기가 매우 어려운 경우를 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "하루가 여삼추",
+"definition": "하루가 삼 년과 같다는 뜻으로, 짧은 시간이 매우 길게 느껴짐을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "하루 세끼 밥 먹듯",
+"definition": "아주 예사로운 일로 생각함을 이르는 말."
+},
+{
+"category": "속담",
+"term": "행차 뒤에 나팔",
+"definition": "사또 행차가 다 지나간 뒤에야 악대를 불러 나팔을 분다는 뜻으로, 제때 안 하다가 뒤늦게 대책을 세우며 서두름을 핀잔하는 말."
+},
+{
+"category": "속담",
+"term": "한 손으로는 손뼉을 못 친다",
+"definition": "상대가 없이 혼자서는 싸움이 되지 아니한다는 말."
+},
+{
+"category": "속담",
+"term": "황소 제 이불 뜯어 먹기",
+"definition": "어떤 일을 한 결과가 결국 제 손해가 되었다는 말."
+},
+{
+"category": "관용구",
+"term": "경종을 울리다",
+"definition": "잘못이나 위험을 미리 경계하여 주의를 환기시키다.",
+"example": "시민들의 촛불 시위는 타락한 정권에 경종을 울리는 계기가 되었다."
+},
+{
+"category": "관용구",
+"term": "고택골로 가다",
+"definition": "'죽다'를 속되게 이르는 말.",
+"example": "나한테 한 대 맞으면 고택골로 가니까 조심하라고 해."
+},
+{
+"category": "관용구",
+"term": "공기가 팽팽하다",
+"definition": "분위기가 몹시 긴장되어 있다."
+},
+{
+"category": "관용구",
+"term": "구색(을) 맞추다",
+"definition": "여러 가지가 고루 갖추어지게 하다."
+},
+{
+"category": "관용구",
+"term": "국수(를) 먹다",
+"definition": "결혼식 피로연에서 흔히 국수를 대접하는 데서, 결혼식을 올리는 일을 비유적으로 이르는 말."
+},
+{
+"category": "관용구",
+"term": "기름을 끼얹다",
+"definition": "감정이나 행동을 부추겨 정도를 심하게 만들다.",
+"example": "그녀는 화가 난 그에게 기름을 끼얹는 말만 골라서 했다."
+},
+{
+"category": "관용구",
+"term": "길을 열다",
+"definition": "방도를 찾아내거나 마련하다.",
+"example": "장학 제도는 학비가 없는 학생들에게 배움의 길을 열어 주기 위한 것이다."
+},
+{
+"category": "관용구",
+"term": "김이 식다",
+"definition": "재미나 의욕이 없어지다.",
+"example": "나는 그 일에 대한 김이 식어서 이제는 아무것도 하고 싶지 않다."
+},
+{
+"category": "관용구",
+"term": "꼬리를 빼다",
+"definition": "달아나거나 도망치다.",
+"example": "내가 강하게 나가자 그는 꼬리를 빼고 말았다."
+},
+{
+"category": "관용구",
+"term": "나발(을) 불다",
+"sense": 1,
+"definition": "당치 않은 말을 함부로 하거나 터무니없이 과장하여 말을 하다.",
+"example": "어디서 그런 가짜를 진짜라고 나발을 불어?"
+},
+{
+"category": "관용구",
+"term": "나발(을) 불다",
+"sense": 2,
+"definition": "술이나 음료를 병째로 마시다.",
+"example": "그는 맥주를 병째 나발 불었다."
+},
+{
+"category": "관용구",
+"term": "나발(을) 불다",
+"sense": 3,
+"definition": "어떤 사실을 자백하다.",
+"example": "시치미 떼, 알겠니? 나발 불었다가는 우린 끝장이다."
+},
+{
+"category": "관용구",
+"term": "날(을) 받다",
+"sense": 1,
+"definition": "결혼식 날짜를 정하다.",
+"example": "종현이와 은재는 날을 받았다.",
+"related": [
+"≒ 날(을) 잡다 ①"
+]
+},
+{
+"category": "관용구",
+"term": "날(을) 받다",
+"sense": 2,
+"definition": "어떤 일에 대비하여 미리 날을 정하다.",
+"example": "그는 마치 큰 잔치나 배설하려는 것처럼 날을 받아 놓고 제관 준비에 바빴다.",
+"related": [
+"≒ 날(을) 잡다 ②"
+]
+},
+{
+"category": "관용구",
+"term": "녹초가 되다",
+"definition": "'맥이 풀리어 힘을 못 쓰는 상태가 되다.'라는 뜻으로, 녹초는 초가 녹아 내린 것처럼 흐물흐물해지거나 보잘것없이 된 상태를 빗대어 나타낸 말."
+},
+{
+"category": "관용구",
+"term": "느루 가다",
+"definition": "양식이 일정한 예정보다 더 오래가다.",
+"example": "먹을 게 없던 시절, 죽을 쑤어서라도 느루 가게 생활했던 그때가 종종 떠오른다."
+},
+{
+"category": "관용구",
+"term": "달(이) 차다",
+"definition": "아이를 배어 낳을 달이 되다.",
+"example": "달이 차서 아이가 나올 때까지는 잘 먹고 잘 쉬어야 한다."
+},
+{
+"category": "관용구",
+"term": "돌(을) 던지다",
+"definition": "남의 잘못을 비난하다.",
+"example": "최선을 다한 너에게 돌을 던질 사람은 아무도 없을 것이다."
+},
+{
+"category": "관용구",
+"term": "뒷짐(을) 지다[짚다]",
+"definition": "어떤 일에 자신은 전혀 상관없는 것처럼 구경만 하고 있다."
+},
+{
+"category": "관용구",
+"term": "떼어 놓은 당상",
+"hanja": "堂上",
+"definition": "일이 확실하여 조금도 틀림이 없음을 이르는 말.",
+"related": [
+"= 받아 놓은 밥상"
+]
+},
+{
+"category": "관용구",
+"term": "마각이 드러나다",
+"definition": "숨기고 있던 일이나 정체가 드러나다."
+},
+{
+"category": "관용구",
+"term": "막을[막이] 내리다",
+"definition": "무대의 공연이나 어떤 행사를 마치다."
+},
+{
+"category": "관용구",
+"term": "말꼬리(를) 잡다",
+"definition": "남의 말 가운데서 잘못 표현된 부분의 약점을 잡다.",
+"example": "말꼬리를 잡아 시비를 걸다.",
+"related": [
+"≒ 말끝(을) 잡다"
+]
+},
+{
+"category": "관용구",
+"term": "말이 굳다",
+"definition": "말이 더듬더듬 막히다.",
+"example": "무슨 잘못을 했는지 말이 굳어 있었다."
+},
+{
+"category": "관용구",
+"term": "말이[말(도)] 아니다",
+"sense": 1,
+"definition": "말이 이치에 맞지 아니하다.",
+"example": "말이 아닌 소리는 하지도 마라."
+},
+{
+"category": "관용구",
+"term": "말이[말(도)] 아니다",
+"sense": 2,
+"definition": "사정·형편 따위가 몹시 어렵거나 딱하다.",
+"example": "그도 사는 형편이 말이 아니지 뭐야."
+},
+{
+"category": "관용구",
+"term": "바닥을 기다",
+"definition": "정도나 수준이 형편없다.",
+"example": "중학교 때는 수학 성적이 바닥을 기었는데 이제는 꽤 나아졌습니다."
+},
+{
+"category": "관용구",
+"term": "바람을 일으키다",
+"sense": 1,
+"definition": "사회적으로 많은 사람에게 영향을 미치다.",
+"example": "그의 새로운 유행어가 아이들 사이에서 바람을 일으켰다."
+},
+{
+"category": "관용구",
+"term": "바람을 일으키다",
+"sense": 2,
+"definition": "사회적 문제를 만들거나 소란을 일으키다.",
+"example": "복부인들은 부동산 투기 바람을 일으키고 다녔다."
+},
+{
+"category": "관용구",
+"term": "벽(을) 쌓다",
+"definition": "서로 사귀던 관계를 끊다.",
+"example": "그는 친척들과 벽을 쌓고 지낸 지가 꽤 오래되었다."
+},
+{
+"category": "관용구",
+"term": "변죽(을) 울리다",
+"definition": "바로 집어 말을 하지 않고 둘러서 말을 하다."
+},
+{
+"category": "관용구",
+"term": "별이 보이다",
+"definition": "충격을 받아서 갑자기 정신이 아득하고 어지럽다.",
+"example": "집안이 망했다는 소식을 듣고 별이 보이더니 정신이 없었다."
+},
+{
+"category": "관용구",
+"term": "볼꼴 좋다",
+"definition": "(놀림조로) 꼴이 보기에 흉하다.",
+"example": "내 말을 그렇게 안 듣더니 볼꼴 좋게 딱지를 맞았구나."
+},
+{
+"category": "관용구",
+"term": "봉(을) 잡다",
+"definition": "상상 속에서만 존재하는 진귀한 봉황을 잡는다는 뜻으로, 매우 귀하고 훌륭한 사람이나 일을 얻음을 비유적으로 이르는 말.",
+"example": "그렇게 좋은 일을 네가 맡게 되었다고? 넌 이제 봉을 잡은 거야."
+},
+{
+"category": "관용구",
+"term": "사람 죽이다",
+"sense": 1,
+"definition": "너무 힘겨운 경우를 당하여 매우 힘들고 고달프다.",
+"example": "전셋돈 마련할 길이 막막하니, 정말 돈이 사람 죽이는구나!"
+},
+{
+"category": "관용구",
+"term": "사람 죽이다",
+"sense": 2,
+"definition": "사람을 어이없게 만들다.",
+"example": "그런 말도 안 되는 오해를 하다니, 사람 죽이겠네요."
+},
+{
+"category": "관용구",
+"term": "사람 죽이다",
+"sense": 3,
+"definition": "사람의 마음을 황홀하게 하거나 녹이다.",
+"example": "이 김치 맛 사람 죽이는데."
+},
+{
+"category": "관용구",
+"term": "산통(을) 깨다",
+"definition": "다 잘되어 가던 일을 이루지 못하게 뒤틀다."
+},
+{
+"category": "관용구",
+"term": "살이 끼다",
+"definition": "사람이나 물건 따위를 해치는 불길한 기운이 들러붙다.",
+"example": "이번 달에는 큰 재난이 많으니, 이달에 살이 끼었나 보다."
+},
+{
+"category": "관용구",
+"term": "상투(를) 잡다",
+"definition": "(속되게) 가장 높은 시세에 주식을 매입하다.",
+"example": "상투를 잡는 바람에 손해 봤다."
+},
+{
+"category": "관용구",
+"term": "상투(를) 틀다",
+"definition": "총각이 장가들어 어른이 되다."
+},
+{
+"category": "관용구",
+"term": "서릿발(이) 치다",
+"sense": 1,
+"definition": "서릿발이 생기다.",
+"example": "날이 몹시 추워서 물로 닦은 창문에 서릿발이 쳤다.",
+"note": "서릿발: 땅속의 물이 얼어 기둥 모양으로 솟아오른 것. 또는 그것이 뻗는 기운."
+},
+{
+"category": "관용구",
+"term": "서릿발(이) 치다",
+"sense": 2,
+"definition": "기세가 매우 매섭고 준엄하다.",
+"example": "서릿발 치는 기세로 적을 물리치는 장군.",
+"note": "서릿발: 땅속의 물이 얼어 기둥 모양으로 솟아오른 것. 또는 그것이 뻗는 기운."
+},
+{
+"category": "관용구",
+"term": "서막을 올리다",
+"definition": "어떤 일이 시작되다.",
+"example": "그 집회는 전국적인 환경 운동의 서막을 올린 사건이었다."
+},
+{
+"category": "관용구",
+"term": "수(가) 좋다",
+"definition": "수단이 매우 뛰어나다.",
+"example": "그는 수가 좋아서 무슨 일이든지 잘한다."
+},
+{
+"category": "관용구",
+"term": "수판(을) 놓다",
+"definition": "어떤 일에 대하여 이해득실을 계산하다.",
+"example": "개인주의가 만연하면서 자신의 이익을 위하여 수판을 놓는 사람이 많아졌다."
+},
+{
+"category": "관용구",
+"term": "시색(이) 좋다",
+"definition": "당대에 행세하는 것이 버젓하다.",
+"example": "구차한 살림을 해 가면서도 시색 좋은 친정에 한 번 구구한 말을 비친 일도 없었다."
+},
+{
+"category": "관용구",
+"term": "심사(가) 꿰지다",
+"definition": "잘 대하려는 마음이 틀어져서 심술궂게 나가다.",
+"example": "나는 그 아이와 잘 놀다가도 괜히 심사가 꿰져 자주 싸웠다."
+},
+{
+"category": "관용구",
+"term": "심사(가) 사납다",
+"definition": "마음이 심술궂고 나쁘다."
+},
+{
+"category": "관용구",
+"term": "아귀(가) 맞다",
+"sense": 1,
+"definition": "앞뒤가 빈틈없이 들어맞다."
+},
+{
+"category": "관용구",
+"term": "아귀(가) 맞다",
+"sense": 2,
+"definition": "일정한 수량 따위가 들어맞다."
+},
+{
+"category": "관용구",
+"term": "악어의 눈물",
+"definition": "거짓 눈물을 비유적으로 이르는 말. 악어는 입안에 수분을 보충함으로써 먹이를 쉽게 삼키기 위하여 먹잇감을 잡아먹을 때 눈물을 흘리는데 이를 언뜻 보면 잡아먹히는 동물이 불쌍해 눈물을 흘리는 것처럼 보이는 데서 유래한 말이다."
+},
+{
+"category": "관용구",
+"term": "오지랖(이) 넓다",
+"sense": 1,
+"definition": "쓸데없이 지나치게 아무 일에나 참견하는 면이 있다.",
+"related": [
+"= 치마폭이 넓다"
+]
+},
+{
+"category": "관용구",
+"term": "오지랖(이) 넓다",
+"sense": 2,
+"definition": "염치없이 행동하는 면이 있다."
+},
+{
+"category": "관용구",
+"term": "치마폭이 넓다",
+"definition": "(비꼬는 뜻으로) 남의 일에 쓸데없이 간섭하고 참견하다.",
+"related": [
+"= 오지랖(이) 넓다"
+]
+},
+{
+"category": "관용구",
+"term": "장단(을) 맞추다",
+"definition": "남의 기분이나 비위를 맞추기 위하여 말이나 행동을 하다."
+},
+{
+"category": "관용구",
+"term": "주머니가 가볍다",
+"definition": "가지고 있는 돈이 적다.",
+"example": "오늘은 주머니가 가벼우니 저녁을 간단하게 먹자."
+},
+{
+"category": "관용구",
+"term": "죽을 쑤다",
+"definition": "어떤 일을 망치거나 실패하다.",
+"example": "오늘 시합은 죽을 쑤었다."
+},
+{
+"category": "관용구",
+"term": "줄(을) 대다",
+"definition": "자신에게 이익이 될 만한 사람과 관계를 맺다.",
+"example": "관리자에게 줄을 대어 승진을 하던 시대는 지났다."
+},
+{
+"category": "관용구",
+"term": "줄(을) 타다",
+"definition": "힘이 될 만한 사람과 관계를 맺어 그 힘을 이용하다.",
+"example": "그는 사장의 줄을 타려고 애를 썼다."
+},
+{
+"category": "관용구",
+"term": "침(을) 놓다",
+"definition": "강하게 알리거나 요구를 나타내면서 꼼짝 못 하게 하다.",
+"example": "선생님은 다시 떠들면 벌을 주겠다고 아이들에게 침을 놓았다."
+},
+{
+"category": "관용구",
+"term": "큰물이 가다",
+"definition": "큰비가 내려 강이나 개울의 물이 넘쳐 논밭을 휩쓸고 지나가다.",
+"example": "정월 대보름의 망월을 보고 노인들은 올해는 큰물이 갈까 보다고 염려하였다."
+},
+{
+"category": "관용구",
+"term": "태깔(이) 나다",
+"definition": "맵시 있는 태도가 보이다.",
+"example": "그녀는 이제 숙녀로 성장하여 제법 태깔이 난다."
+},
+{
+"category": "관용구",
+"term": "파김치(가) 되다",
+"definition": "몹시 지쳐서 기운이 아주 느른하게 되다."
+},
+{
+"category": "관용구",
+"term": "파리(를) 날리다",
+"definition": "영업이나 사업 따위가 잘 안되어 한가하다.",
+"example": "손님이 뜸해지기 시작하더니 지금은 파리를 날리고 있다."
+},
+{
+"category": "관용구",
+"term": "학을 떼다",
+"definition": "괴롭거나 어려운 상황을 벗어나느라고 진땀을 빼거나, 그것에 질려 버리다.",
+"related": [
+"= 학질을 떼다"
+]
+},
+{
+"category": "관용구",
+"term": "회가 동하다",
+"definition": "구미가 당기거나 무엇을 하고 싶은 마음이 생기다."
+},
+{
+"category": "속담",
+"term": "가난이 소 아들이라",
+"definition": "소처럼 죽도록 일해도 가난에서 벗어날 수 없음을 이르는 말."
+},
+{
+"category": "속담",
+"term": "가는 말에도 채찍을 치랬다",
+"definition": "형편이나 힘이 한창 좋을 때라도 더욱 마음을 써서 힘써야 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "개구리 낯짝에 물 붓기",
+"definition": "물에 사는 개구리의 낯에 물을 끼얹어 보았자 개구리가 놀랄 일이 아니라는 뜻으로, 어떤 자극을 주어도 그 자극이 조금도 먹혀들지 아니하거나 어떤 처사를 당하여도 태연함을 이르는 말."
+},
+{
+"category": "속담",
+"term": "개 발에 (주석) 편자",
+"definition": "옷차림이나 지닌 물건 따위가 제격에 맞지 아니하여 어울리지 않음."
+},
+{
+"category": "속담",
+"term": "고양이는 발톱을 감춘다",
+"definition": "재주 있는 사람은 그것을 깊이 감추고 함부로 드러내지 아니한다는 말."
+},
+{
+"category": "속담",
+"term": "고양이 목에 방울 달기[단다]",
+"definition": "실행하기 어려운 것을 공연히 의논함을 이르는 말."
+},
+{
+"category": "속담",
+"term": "고양이보고 반찬 가게 지키라는 격이다",
+"definition": "고양이한테 반찬 가게를 맡기면 고양이가 음식을 먹을 것이 뻔한 일이란 뜻으로, 어떤 일이나 사물을 믿지 못할 사람에게 맡겨 놓고 마음이 놓이지 않아 걱정함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "고양이 쥐 어르듯",
+"sense": 1,
+"definition": "상대편을 제 마음대로 가지고 노는 모양을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "고양이 쥐 어르듯",
+"sense": 2,
+"definition": "당장에라도 잡아먹을 듯이 덤비는 모양을 이르는 말."
+},
+{
+"category": "속담",
+"term": "굴레 벗은 말[망아지/송아지]",
+"sense": 1,
+"definition": "거칠게 행동하는 사람을 이르는 말."
+},
+{
+"category": "속담",
+"term": "굴레 벗은 말[망아지/송아지]",
+"sense": 2,
+"definition": "구속이나 통제에서 벗어나 몸이 자유로움을 이르는 말."
+},
+{
+"category": "속담",
+"term": "까치집에 비둘기 들어 있다",
+"definition": "남의 집에 들어가서 주인 행세를 함을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "놓아먹인 망아지 (놀듯)",
+"definition": "들에 풀어놓고 기른 말 새끼 또는 그 노는 모양이라는 뜻으로, 교양이 없고 막돼먹은 사람 또는 그런 행동을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "물 건너온 범",
+"definition": "한풀 꺾인 사람을 비유적으로 이르는 말."
+},
+{
+"category": "속담",
+"term": "비 오는 날 소꼬리 같다",
+"definition": "비를 맞은 소꼬리가 흔드는 대로 들러붙는 것처럼, 몹시 귀찮게 구는 것을 비유적으로 이르는 말."
+},
+{
+"category": "관용구",
+"term": "쇠털같이 많다",
+"definition": "수효가 셀 수 없이 많음을 비유적으로 이르는 말."
+},
+{
+"category": "관용구",
+"term": "쉬파리 끓듯",
+"definition": "무질서하고 복잡하게 모여 있는 경우를 비유적으로 이르는 말."
+},
+{
+"category": "관용구",
+"term": "자라목(이) 되다",
+"definition": "사물이나 기세 따위가 움츠러들다."
+},
+{
+"category": "속담",
+"term": "쥐 죽은 날 고양이 눈물",
+"definition": "쥐가 죽었다고 고양이가 눈물을 흘릴 리 없다는 데서, 아주 없거나 있어도 매우 적을 때를 이르는 말."
+},
+{
+"category": "관용구",
+"term": "낯을 못 들다",
+"definition": "창피하여 남을 떳떳이 대하지 못하다.",
+"example": "도저히 낯을 못 들고 다닐 만큼 부끄러운 일을 저지르고 말았다."
+},
+{
+"category": "관용구",
+"term": "얼굴이 넓다",
+"definition": "사귀어 아는 사람이 많다."
+},
+{
+"category": "속담",
+"term": "자기 얼굴[낯]에 침 뱉기",
+"definition": "남을 해치려고 하다가 도리어 자기가 해를 입게 된다는 것을 비유적으로 이르는 말.",
+"related": [
+"= 누워서 침 뱉기"
+]
+},
+{
+"category": "관용구",
+"term": "눈물이 앞서다",
+"definition": "말을 하지 못하고 눈물을 먼저 흘리다."
+},
+{
+"category": "관용구",
+"term": "눈에 밟히다",
+"definition": "잊히지 않고 자꾸 눈에 떠오르다."
+},
+{
+"category": "관용구",
+"term": "눈에서 황이 나다",
+"definition": "몹시 억울하거나 질투가 날 때 이르는 말."
+},
+{
+"category": "관용구",
+"term": "눈을 감다",
+"sense": 1,
+"definition": "사람의 목숨이 끊어지다."
+},
+{
+"category": "관용구",
+"term": "눈을 감다",
+"sense": 2,
+"definition": "남의 잘못을 알고도 모르는 체하다."
+},
+{
+"category": "관용구",
+"term": "눈을 거치다",
+"definition": "글 따위를 검토하거나 분별하다.",
+"example": "위작은 대부분 여러 사람의 눈을 거치는 동안 가려진다."
+},
+{
+"category": "관용구",
+"term": "눈(을) 돌리다",
+"definition": "관심을 돌리다."
+},
+{
+"category": "관용구",
+"term": "눈(을) 뒤집다",
+"definition": "주로 좋지 않은 일에 열중하여 제정신을 잃다.",
+"example": "아이들은 서로 빼앗아 먹으려고 눈을 뒤집고 싸웠다."
+},
+{
+"category": "관용구",
+"term": "눈(을) 붙이다",
+"definition": "잠을 자다."
+},
+{
+"category": "관용구",
+"term": "눈을 크게 뜨다",
+"definition": "정신을 바짝 차리고 주의를 기울이다."
+},
+{
+"category": "관용구",
+"term": "눈이 가매지게[가매지도록]",
+"definition": "몹시 기다리는 모양을 비유적으로 이르는 말."
+},
+{
+"category": "관용구",
+"term": "눈이 곤두서다",
+"definition": "화가 나서 눈에 독기가 오르다.",
+"example": "형님은 친구가 비웃는 소리를 하자 눈이 곤두섰다."
+},
+{
+"category": "관용구",
+"term": "눈(이) 나오다",
+"definition": "몹시 놀라다.",
+"example": "그녀는 비싼 가격을 확인하고 눈이 나왔다."
+},
+{
+"category": "관용구",
+"term": "코가 꿰이다",
+"definition": "약점이 잡히다."
+},
+{
+"category": "관용구",
+"term": "코가 높다",
+"definition": "잘난 체하고 뽐내는 기세가 있다.",
+"example": "그녀는 코가 높아서 네가 상대하기 쉽지 않겠구나."
+},
+{
+"category": "관용구",
+"term": "코(가) 빠지다",
+"definition": "근심에 싸여 기가 죽고 맥이 빠지다.",
+"example": "마을 사람들 모두 코가 빠져 아무 일도 하지 못했다."
+},
+{
+"category": "관용구",
+"term": "코가 솟다",
+"definition": "뽐낼 일이 있어 우쭐해지다."
+},
+{
+"category": "관용구",
+"term": "코를 떼다",
+"definition": "무안을 당하거나 핀잔을 맞다."
+},
+{
+"category": "관용구",
+"term": "코(를) 빠뜨리다",
+"definition": "못 쓰게 만들거나 일을 망치다.",
+"example": "다 된 일에 코를 빠뜨렸다."
+},
+{
+"category": "관용구",
+"term": "코 큰 소리",
+"definition": "잘난 체하는 소리."
+},
+{
+"category": "관용구",
+"term": "마른침을 삼키다",
+"definition": "몹시 긴장하거나 초조해하다.",
+"example": "애가 탄 철수는 자꾸 마른침을 삼키고 있었다."
+},
+{
+"category": "관용구",
+"term": "입(을) 맞추다",
+"definition": "서로의 말이 일치하도록 하다."
+},
+{
+"category": "관용구",
+"term": "입(을) 모으다",
+"definition": "여러 사람이 같은 의견을 말하다."
+},
+{
+"category": "관용구",
+"term": "입(을) 씻다[닦다]",
+"definition": "이익 따위를 혼자 차지하거나 가로채고서는 시치미를 떼다."
+},
+{
+"category": "관용구",
+"term": "입에 발린[붙은] 소리",
+"definition": "마음에도 없이 겉치레로 하는 말."
+},
+{
+"category": "관용구",
+"term": "치(를) 떨다",
+"definition": "몹시 분해하거나 지긋지긋해하다.",
+"example": "뼈아픈 배신감에 치를 떨다."
+},
+{
+"category": "관용구",
+"term": "침 발라 놓다",
+"definition": "자기 소유임을 표시하다.",
+"example": "내가 침 발라 놓은 고기에 손댈 생각은 하지 마라."
+},
+{
+"category": "관용구",
+"term": "혀(가) 굳다",
+"definition": "놀라거나 당황하여 말을 잘하지 못하다.",
+"example": "그는 무슨 말을 하려고 입을 벌리는데 혀가 굳어서 목소리가 잘 나오지 않는다."
+},
+{
+"category": "관용구",
+"term": "귀가 열리다",
+"definition": "세상 물정을 알게 되다.",
+"example": "웬만큼 귀가 열린 사람이라면 이런 일에 누가 시비를 걸겠소."
+},
+{
+"category": "관용구",
+"term": "귀(가) 질기다",
+"sense": 1,
+"definition": "둔하여 남의 말을 잘 이해하지 못하다.",
+"example": "워낙 귀가 질긴 친구라 알아듣지 못할 거다."
+},
+{
+"category": "관용구",
+"term": "귀(가) 질기다",
+"sense": 2,
+"definition": "말을 싹싹하게 잘 듣지 않고 끈덕지다.",
+"example": "이렇게 고집만 피우다니 생각보다 귀가 질기군!"
+},
+{
+"category": "관용구",
+"term": "손길을 뻗치다",
+"definition": "적극적인 도움, 요구, 침략, 간섭 따위의 행위가 미치다."
+},
+{
+"category": "관용구",
+"term": "손(을) 거치다",
+"definition": "어떤 사람의 노력으로 손질되다.",
+"example": "무너져 내릴 것같이 허름하던 지붕이 그의 손을 거치자 아주 말끔해졌다."
+},
+{
+"category": "관용구",
+"term": "손(을) 끊다",
+"definition": "교제나 거래 따위를 중단하다.",
+"example": "나쁜 친구들과 손을 끊어라. / 그는 이제 건축 일에는 손을 끊었다."
+},
+{
+"category": "관용구",
+"term": "손(을) 넘기다",
+"definition": "물건을 셀 때 그 번수를 잘못 계산하여 실제보다 많거나 적게 되다.",
+"example": "은행원들은 특히 바쁜 월말에 실수로 손을 넘기는 경우가 간혹 있다."
+},
+{
+"category": "관용구",
+"term": "손(을) 맺다",
+"definition": "할 일이 있는데도 아무 일도 안 하고 그냥 있다.",
+"example": "할 일이 태산같이 많은데 손을 맺고 있으면서 저절로 되기를 바라는 거냐?"
+},
+{
+"category": "관용구",
+"term": "손(이) 뜨다",
+"definition": "일하는 동작이 매우 굼뜨다.",
+"example": "그렇게 손이 떠서야 제시간에 끝마칠 수가 있겠니?"
+},
+{
+"category": "관용구",
+"term": "발꿈치를 물리다",
+"definition": "은혜를 베풀어 준 상대로부터 뜻밖에 해를 입다.",
+"example": "그는 지금 친구를 위해 보증을 서 주다가 발꿈치를 물려 철창신세라네."
+},
+{
+"category": "관용구",
+"term": "발등(을) 찍히다",
+"definition": "남에게 배신을 당하다.",
+"example": "그는 믿었던 친구에게 발등을 찍혔다."
+},
+{
+"category": "관용구",
+"term": "발(을) 구르다",
+"definition": "매우 안타까워하거나 다급해하다.",
+"example": "늦은 밤이 되어도 아이가 돌아오지 않자 어머니는 동동 발을 굴렀다."
+},
+{
+"category": "관용구",
+"term": "발(을) 빼다[씻다]",
+"definition": "어떤 일에서 관계를 완전히 끊고 물러나다.",
+"example": "노름판에서 발을 빼고 이제 착실히 일을 하기로 했네.",
+"related": [
+"= 손(을) 빼다",
+"= 손(을) 씻다"
+]
+},
+{
+"category": "관용구",
+"term": "발을 달다",
+"definition": "끝난 말이나 이미 있는 말에 말을 덧붙이다."
+},
+{
+"category": "관용구",
+"term": "발을 타다",
+"definition": "강아지 따위가 걸음을 걷기 시작하다.",
+"example": "우리 집 강아지들이 발을 타기 시작했다."
+},
+{
+"category": "관용구",
+"term": "발이 익다",
+"definition": "여러 번 다니어서 길에 익숙하다.",
+"example": "왠지 발이 익다 했더니, 어릴 적에 술래잡기하면서 자주 다니던 골목이었다."
+},
+{
+"category": "관용구",
+"term": "머리가 깨다",
+"definition": "뒤떨어진 생각에서 벗어나다.",
+"example": "할아버지는 머리가 깬 분이셔서 그 시절에 어머니를 유학까지 보내셨다."
+},
+{
+"category": "관용구",
+"term": "머리를 들다",
+"definition": "눌려 있거나 숨겨 온 생각·세력 따위가 겉으로 나타나다.",
+"example": "은혜를 갚아야만 한다는 생각이 계속해서 머리를 들었다."
+},
+{
+"category": "관용구",
+"term": "머리를 쥐어짜다",
+"definition": "몹시 애를 써서 궁리하다.",
+"example": "아무리 머리를 쥐어짜도 별 뾰족한 수가 나오지 않았다."
+},
+{
+"category": "관용구",
+"term": "다리가 길다",
+"definition": "음식 먹는 자리에 우연히 가게 되어 먹을 복이 있다."
+},
+{
+"category": "관용구",
+"term": "가슴이 뜨끔하다",
+"definition": "자극을 받아 마음이 깜짝 놀라거나 양심의 가책을 받다.",
+"example": "가슴이 뜨끔했지만 그는 아무렇지 않은 척 행동했다."
+},
+{
+"category": "관용구",
+"term": "간(이) 뒤집히다",
+"definition": "까닭 없이 웃음을 나무라는 말.",
+"example": "이 사람이 간이 뒤집혔나, 웃긴 왜 웃어?"
+},
+{
+"category": "관용구",
+"term": "다리(를) 놓다",
+"definition": "일이 잘되게 하기 위하여 둘 또는 여럿을 연결하다.",
+"example": "그가 중간에서 다리를 놓아 물건을 쉽게 팔았다.",
+"note": "이는 '다리02'의 뜻에 해당함."
+},
+{
+"category": "관용구",
+"term": "목(을) 놓아[놓고]",
+"definition": "주로 울거나 부르짖을 때에 참거나 삼가지 않고 소리를 크게 내어."
+},
+{
+"category": "관용구",
+"term": "목에 힘을 주다",
+"definition": "거드름을 피우거나 남을 깔보는 듯한 태도를 취하다."
+},
+{
+"category": "관용구",
+"term": "배알이 꼴리다[뒤틀리다]",
+"definition": "비위에 거슬려 아니꼽다."
+},
+{
+"category": "관용구",
+"term": "살(을) 붙이다",
+"definition": "바탕에 여러 가지를 덧붙여 보태다.",
+"example": "그는 떠도는 이야기에 살을 붙여 드라마 극본을 썼다."
+},
+{
+"category": "관용구",
+"term": "속(을) 긁다",
+"definition": "남의 속이 뒤집히게 비위를 살살 건드리다.",
+"example": "남편은 아침부터 속 긁는 소리를 해 댔다."
+},
+{
+"category": "관용구",
+"term": "속이 마르다",
+"sense": 1,
+"definition": "성격이 꼬장꼬장하다."
+},
+{
+"category": "관용구",
+"term": "속이 마르다",
+"sense": 2,
+"definition": "생각하는 것이 답답하고 너그럽지 못하다."
+},
+{
+"category": "관용구",
+"term": "허리띠를 졸라매다",
+"sense": 1,
+"definition": "검소한 생활을 하다."
+},
+{
+"category": "관용구",
+"term": "허리띠를 졸라매다",
+"sense": 2,
+"definition": "마음먹은 일을 이루려고 새로운 결의와 단단한 각오로 일에 임하다."
+},
+{
+"category": "다의어",
+"term": "부르다",
+"definition": "기출 다의어 용례: 같은 단어 '부르다'가 여러 의미로 쓰인 예.",
+"example": "분노가 분노를 부르지 않게, 면전에서 만세를 부르지 마라.",
+"note": "부르다01"
+},
+{
+"category": "동음이의어",
+"term": "풀",
+"definition": "기출 동음이의어 용례: '풀이 돋아나다'의 '풀'과 '풀이 죽다'의 '풀'은 동음이의어이다.",
+"example": "풀이 돋아나다. / 풀이 죽다."
+},
+{
+"category": "동음이의어",
+"term": "먹다",
+"definition": "기출 동음이의어 용례: '귀가 먹다'의 '먹다'와 '칼이 먹다, 종이 먹다, 마음을 먹다'의 '먹다'는 동음이의어이다.",
+"example": "귀가 먹다. / 칼이 먹다. 종이 먹다. 마음을 먹다."
+},
+{
+"category": "다의어",
+"term": "갈다",
+"sense": 1,
+"definition": "[…을] 날카롭게 날을 세우거나 표면을 매끄럽게 하기 위하여 다른 물건에 대고 문지르다.",
+"example": "기계로 옥돌을 갈아 구슬을 만든다.",
+"note": "갈다02"
+},
+{
+"category": "다의어",
+"term": "갈다",
+"sense": 2,
+"definition": "[…을] 잘게 부수기 위하여 단단한 물건에 대고 문지르거나 단단한 물건 사이에 넣어 으깨다.",
+"example": "무를 강판에 갈아 즙을 내다.",
+"note": "갈다02"
+},
+{
+"category": "다의어",
+"term": "갈다",
+"sense": 3,
+"definition": "[…을] 먹을 풀기 위하여 벼루에 대고 문지르다.",
+"example": "벼루에 먹을 갈다.",
+"note": "갈다02"
+},
+{
+"category": "다의어",
+"term": "갈다",
+"sense": 4,
+"definition": "[…을] 윗니와 아랫니를 맞대고 문질러 소리를 내다.",
+"example": "자면서 뽀드득뽀드득 이를 갈다.",
+"note": "갈다02"
+},
+{
+"category": "다의어",
+"term": "갈다",
+"sense": 1,
+"definition": "[…을] 쟁기나 트랙터 따위의 농기구나 농기계로 땅을 파서 뒤집다.",
+"example": "경운기로 논을 갈다.",
+"note": "갈다03"
+},
+{
+"category": "다의어",
+"term": "갈다",
+"sense": 2,
+"definition": "[…에 …을] 주로 밭작물의 씨앗을 심어 가꾸다.",
+"example": "밭에 보리를 갈다.",
+"note": "갈다03"
+},
+{
+"category": "다의어",
+"term": "낮다",
+"sense": 1,
+"definition": "아래에서 위까지의 높이가 기준이 되는 대상이나 보통 정도에 미치지 못하는 상태에 있다.",
+"example": "저 산은 낮지만 험하다."
+},
+{
+"category": "다의어",
+"term": "낮다",
+"sense": 2,
+"definition": "높낮이로 잴 수 있는 수치나 정도가 기준이 되는 대상이나 보통 정도에 미치지 못하는 상태에 있다.",
+"example": "온도가 낮다. / 기압이 낮다."
+},
+{
+"category": "다의어",
+"term": "낮다",
+"sense": 3,
+"definition": "품위, 능력, 품질 따위가 바라는 기준보다 못하거나 보통 정도에 미치지 못하는 상태에 있다.",
+"example": "질이 낮은 물건. / 교육 수준이 낮다."
+},
+{
+"category": "다의어",
+"term": "낮다",
+"sense": 4,
+"definition": "지위나 계급 따위가 기준이 되는 대상이나 보통 정도에 미치지 못하는 상태에 있다.",
+"example": "소령은 대령보다 계급이 낮다."
+},
+{
+"category": "다의어",
+"term": "낮다",
+"sense": 5,
+"definition": "소리가 음계에서 아래쪽이거나 진동수가 작은 상태에 있다.",
+"example": "콘트라베이스의 낮은 선율이 흘렀다."
+},
+{
+"category": "다의어",
+"term": "누르다",
+"sense": 1,
+"definition": "[…을] 물체의 전체 면이나 부분에 대하여 힘이나 무게를 가하다.",
+"example": "초인종을 누르다. / 자동차의 경적을 누르다.",
+"note": "누르다01"
+},
+{
+"category": "다의어",
+"term": "누르다",
+"sense": 2,
+"definition": "[…을] 마음대로 행동하지 못하도록 힘이나 규제를 가하다.",
+"example": "법에서까지 우리를 이렇게 누르기만 하면 살길이 막막해진다.",
+"note": "누르다01"
+},
+{
+"category": "다의어",
+"term": "누르다",
+"sense": 3,
+"definition": "[…을] 자신의 감정이나 생각을 밖으로 드러내지 않고 참다.",
+"example": "분노를 누르다. / 욕망을 누르다.",
+"note": "누르다01"
+},
+{
+"category": "다의어",
+"term": "누르다",
+"sense": 4,
+"definition": "[…을] 경기나 경선 따위에서, 상대를 제압하여 이기다.",
+"example": "우리나라 축구팀이 일본 팀을 누르고 우승했다.",
+"note": "누르다01"
+},
+{
+"category": "다의어",
+"term": "누르다",
+"definition": "황금이나 놋쇠의 빛깔과 같이 다소 밝고 탁하다.",
+"example": "누른 잎. / 나뭇잎이 누르러 보이니 이제 겨울도 머지않았다.",
+"note": "누르다02"
+},
+{
+"category": "다의어",
+"term": "눈",
+"sense": 1,
+"definition": "빛의 자극을 받아 물체를 볼 수 있는 감각 기관.",
+"example": "눈이 맑다. / 눈이 초롱초롱하다. / 눈을 뜨다.",
+"note": "눈01"
+},
+{
+"category": "다의어",
+"term": "눈",
+"sense": 2,
+"definition": "물체의 존재나 형상을 인식하는 눈의 능력.",
+"example": "눈이 좋다. / 눈이 밝다.",
+"related": [
+"= 시력(視力)01"
+],
+"note": "눈01"
+},
+{
+"category": "다의어",
+"term": "눈",
+"sense": 3,
+"definition": "사물을 보고 판단하는 힘.",
+"example": "그는 보는 눈이 정확하다.",
+"note": "눈01"
+},
+{
+"category": "다의어",
+"term": "눈",
+"sense": 4,
+"definition": "('눈으로' 꼴로 쓰여) 무엇을 보는 표정이나 태도.",
+"example": "동경의 눈으로 바라보다.",
+"note": "눈01"
+},
+{
+"category": "다의어",
+"term": "눈",
+"sense": 5,
+"definition": "사람들의 눈길.",
+"example": "다른 사람의 눈을 의식하다.",
+"note": "눈01"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 1,
+"definition": "타지 않는 단단한 물체가 열로 몹시 뜨거워지다.",
+"example": "다리미가 달다. / 쇠가 벌겋게 달았다.",
+"note": "달다01"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 2,
+"definition": "물기가 많은 음식이나 탕약 따위에 열을 가하여 물이 졸아들다.",
+"note": "달다01"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 3,
+"definition": "열이 나거나 부끄러워서 몸이나 몸의 일부가 뜨거워지다.",
+"example": "많은 사람들 앞에서 발표를 하려니 얼굴이 화끈 달았다.",
+"note": "달다01"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 4,
+"definition": "입안이나 코안이 마르고 뜨거워지다.",
+"note": "달다01"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 5,
+"definition": "안타깝거나 조마조마하여 마음이 몹시 조급해지다.",
+"example": "애가 달아서 어쩔 줄을 모른다.",
+"note": "달다01"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 1,
+"definition": "꿀이나 설탕의 맛과 같다.",
+"example": "초콜릿이 달다.",
+"note": "달다07"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 2,
+"definition": "입맛이 당기도록 맛이 있다.",
+"example": "밥을 달게 먹고 잠을 푹 잤다.",
+"note": "달다07"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 3,
+"definition": "흡족하여 기분이 좋다.",
+"example": "낮잠을 달게 자다.",
+"note": "달다07"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 4,
+"definition": "('달게' 꼴로 쓰여) 마땅하여 기껍다.",
+"example": "벌을 달게 받다.",
+"note": "달다07"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 1,
+"definition": "반죽이나 밥 따위가 물기가 적어 빡빡하다.",
+"example": "밥이 너무 되다.",
+"note": "되다04"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 2,
+"definition": "줄 따위가 단단하고 팽팽하다.",
+"example": "새끼줄로 되게 묶어라.",
+"note": "되다04"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 3,
+"definition": "일이 힘에 벅차다.",
+"example": "일이 되면 쉬어 가면서 해라.",
+"note": "되다04"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 4,
+"definition": "몹시 심하거나 모질다.",
+"example": "집안 어른한테 된 꾸중을 들었다.",
+"note": "되다04"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 1,
+"definition": "[…을 …에] 일정한 곳에 놓다.",
+"example": "연필을 책상 위에 두다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 2,
+"definition": "[…을 …에] 어떤 상황이나 상태 속에 놓다.",
+"example": "승리를 눈앞에 두다. / 식품을 필요 이상으로 고온에 두지 마라.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 3,
+"definition": "[…을 …에] 가져가거나 데려가지 않고 남기거나 버리다.",
+"example": "집에 두고 온 어린 자식을 생각하면 가슴이 미어진다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 4,
+"definition": "[…을 …에] 기본 음식에 딴 재료를 섞어 넣다.",
+"example": "백설기에 건포도를 두었다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 1,
+"definition": "[…에 …을] 물건을 일정한 곳에 걸거나 매어 놓다.",
+"example": "배에 돛을 달다. / 국경일인데도 대문에 태극기를 단 집이 생각보다 적다.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 2,
+"definition": "[…에 …을] 물건을 일정한 곳에 붙이다.",
+"example": "옷에 단추를 달다. / 저고리에 동정을 달다. / 유치원생들이 가슴에 이름표를 달고 한 줄로 서 있었다.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 3,
+"definition": "[…에 …을] 어떤 기기를 설치하다.",
+"example": "안방에 전화를 달다. / 자동차에 에어컨을 달고 싶지만 돈이 없다.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 4,
+"definition": "[…에 …을] 글이나 말에 설명 따위를 덧붙이거나 보태다.",
+"example": "본문에 각주를 달다. / 한문 원문에 토를 다니 읽기가 훨씬 수월하다.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 5,
+"definition": "[…에 …을] 이름이나 제목 따위를 정하여 붙이다.",
+"example": "작품에 제목을 달다.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 6,
+"definition": "[…에 …을] 장부에 적다.",
+"example": "오늘 술값은 장부에 달아 두세요.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 7,
+"definition": "[…에 …을] 윷판에서 처음으로 말을 놓다.",
+"example": "우리 편이 먼저 막동을 달았다.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"sense": 8,
+"definition": "[…에 …을] 물건을 잇대어 붙이다.",
+"example": "기관차에 객차를 달다.",
+"note": "달다03"
+},
+{
+"category": "다의어",
+"term": "달다",
+"definition": "[…을 …에] 저울로 무게를 헤아리다.",
+"example": "고기를 저울에 달다.",
+"note": "달다04"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 5,
+"definition": "[…을 …에] 이부자리나 옷 따위에 솜 따위를 넣다.",
+"example": "버선에 솜을 두다. / 요즘에는 이불에 오리털을 두어서 누비기도 한다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 6,
+"definition": "[…을 …에] 사람을 머물거나 묵게 하다.",
+"example": "너 같은 놈을 집에 두었다가는 얼마 못 가서 살림이 거덜 나겠다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 7,
+"definition": "[…을 …에] 진영 따위를 설치하다.",
+"example": "산 밑에 본진을 두다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 8,
+"definition": "[…을 …에] 직책이나 조직, 기구 따위를 설치하다.",
+"example": "세계 각지에 지사를 두다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 9,
+"definition": "[…을 …에] 중요성이나 가치 따위를 부여하다.",
+"example": "경제 문제에 초점을 두다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 10,
+"definition": "[…을 …에] 생각 따위를 가지다.",
+"example": "이번 일을 염두에 두지 마라.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 11,
+"definition": "[…을 …에] 인정, 사정 따위를 헤아려 주다.",
+"example": "우리는 그런 비열한 짓에는 인정을 두지 않는다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 12,
+"definition": "[…을 …에] ['적(籍)'을 목적어로 하여] 공식적인 직장으로 가지다.",
+"example": "대학에 적을 두다.",
+"note": "「동사」[1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 1,
+"definition": "[…을 …에][…을 …으로] 행위의 준거점, 목표, 근거 따위를 설정하다.",
+"example": "기준을 어디에 두느냐에 따라 결과는 달라진다.",
+"note": "「동사」[2]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 2,
+"definition": "[…을 …에][…을 …으로] (주로 '두고' 꼴로 쓰여) 어떤 것을 일정한 방향으로 향하게 하다.",
+"example": "강을 앞에 두다.",
+"note": "「동사」[2]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 1,
+"definition": "[…을] (주로 '두었다가' 꼴로 쓰여) 사용하지 않고 보관하거나 간직하다.",
+"example": "그것을 잘 두었다가 요긴할 때 써라.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 2,
+"definition": "[…을] (주로 '두었다가' 꼴로 쓰여) 어떤 일을 처리하지 않고 미루다.",
+"example": "그 사건은 두었다가 나중에 처리합시다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 3,
+"definition": "[…을] 시간적 여유나 공간적 간격 따위를 주다.",
+"example": "간격을 두고 말을 하다. / 틈을 두지 말고 따라잡아야 한다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 4,
+"definition": "[…을] (주로 '두고' 꼴로 쓰여) 어떤 상황이 어떤 시간이나 기간에 걸치다.",
+"example": "세 시간을 두고 생각하다. / 며칠을 두고 끙끙 앓았다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 5,
+"definition": "[…을 …으로] 사람을 데리고 쓰다.",
+"example": "비서를 두다. / 가정 교사를 두다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 6,
+"definition": "[…을 …으로] 어떤 사람을 가족이나 친인척으로 가지다.",
+"example": "자식을 셋 두었다. / 잘난 남편을 둔 덕에 호강하고 산다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 7,
+"definition": "[-ㄴ지를] (주로 '두고' 꼴로 쓰여) 어떤 것을 논쟁이나 감정, 언급의 대상으로 삼다.",
+"example": "황소 한 마리를 두고 씨름판을 벌이다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 8,
+"definition": "[…을] (주로 '두고' 꼴로 쓰여) 앞의 것을 부정하고 뒤의 것을 긍정하거나 선택할 때 쓴다.",
+"example": "큰길을 두고 샛길로 가다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"sense": 9,
+"definition": "[…을] 바둑이나 장기 따위의 놀이를 하다. 또는 그 알을 놓거나 말을 쓰다.",
+"example": "바둑을 두다.",
+"note": "「동사」[3]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"definition": "[…에/에게 …을][(…과) …을] ('거리'를 목적어로 하여) 세상이나 사람들과 밀접한 관계를 갖지 않고 얼마간 떨어져 있다.",
+"example": "그는 그녀를 좀 더 객관적으로 지켜보기 위해서 일부러 그녀에게 일정한 거리를 두었다.",
+"note": "「동사」[4]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"definition": "[…을 …으로][…을 -게] 어떤 대상을 일정한 상태로 있게 하다.",
+"example": "아이를 절대로 그 상태로 두어서는 안 됩니다. / 건드리지 말고 가만히 두시오.",
+"note": "「동사」[5]"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"definition": "[…을] 물건 팔기를 그만두고 가게 문을 닫다.",
+"note": "드리다05"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 1,
+"definition": "[…에][…으로] 밖에서 속이나 안으로 향해 가거나 오거나 하다.",
+"example": "사랑에 들다. / 숲속에 드니 공기가 훨씬 맑았다.",
+"note": "들다01 [1]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 2,
+"definition": "[…에][…으로] 빛, 볕, 물 따위가 안으로 들어오다.",
+"example": "이 방에는 볕이 잘 든다.",
+"note": "들다01 [1]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 3,
+"definition": "[…에][…으로] 방이나 집 따위에 있거나 거처를 정해 머무르게 되다.",
+"example": "어제 호텔에 든 손님. / 새집에 들다.",
+"note": "들다01 [1]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 4,
+"definition": "[…에][…으로] 길을 택하여 가거나 오다.",
+"example": "컴컴한 골목길에 들고부터는 그녀의 발걸음이 빨라졌다.",
+"note": "들다01 [1]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 5,
+"definition": "[…에][…으로] 수면을 취하기 위한 장소에 가거나 오다.",
+"example": "이불 속에 들다.",
+"note": "들다01 [1]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 1,
+"definition": "[…에] 어떤 일에 돈, 시간, 노력, 물자 따위가 쓰이다.",
+"example": "잔치 음식에는 품이 많이 든다.",
+"note": "들다01 [2]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 2,
+"definition": "[…에] 물감, 색깔, 물기, 소금기가 스미거나 배다.",
+"example": "설악산에 단풍이 들다.",
+"note": "들다01 [2]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 3,
+"definition": "[…에] 어떤 범위나 기준, 또는 일정한 기간 안에 속하거나 포함되다.",
+"example": "반에서 5등 안에 들다.",
+"note": "들다01 [2]"
+},
+{
+"category": "다의어",
+"term": "들다",
+"sense": 4,
+"definition": "[…에] 안에 담기거나 그 일부를 이루다.",
+"example": "그 글에는 이런 내용이 들어 있다.",
+"note": "들다01 [2]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"definition": "[…에][…으로] 물속이나 지면 따위에서 가라앉거나 내려앉지 않고 물 위나 공중에 있거나 위쪽으로 솟아오르다.",
+"example": "종이배가 물에 뜨다.",
+"note": "뜨다01 [1]"
+},
+{
+"category": "다의어",
+"term": "두다",
+"definition": "(동사 뒤에서 '-어 두다' 구성으로 쓰여) 앞말이 뜻하는 행동을 끝내고 그 결과를 유지함을 나타내는 말. 주로 그 행동이 어떤 다른 일에 미리 대비하기 위한 것임을 보일 때 쓴다.",
+"example": "불을 켜 두고 잠이 들었다. / 기계는 세워 두면 녹이 슬어요.",
+"note": "「보조 동사」[Ⅱ]"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"sense": 1,
+"definition": "[…에/에게 …을] '주다01 [Ⅰ]「1」'의 높임말.",
+"note": "드리다01"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"sense": 2,
+"definition": "[…에/에게 …을] 윗사람에게 그 사람을 높여 말이나 인사, 결의, 축하 따위를 하다.",
+"note": "드리다01"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"sense": 3,
+"definition": "[…에/에게 …을] 신에게 비는 일을 하다.",
+"note": "드리다01"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"definition": "[…에 …을] 섞인 잡것을 없애기 위하여 떨어 놓은 곡식을 바람에 날리다.",
+"note": "드리다02"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"sense": 1,
+"definition": "[…에 …을] 여러 가닥의 실이나 끈을 하나로 땋거나 꼬다.",
+"note": "드리다03"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"sense": 2,
+"definition": "[…에 …을] 땋은 머리 끝에 댕기를 물리다.",
+"note": "드리다03"
+},
+{
+"category": "다의어",
+"term": "드리다",
+"definition": "[…에 …을] 집에 문, 마루, 벽장, 광 따위를 만들거나 구조를 바꾸어 꾸미다.",
+"note": "드리다04"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 1,
+"definition": "착 달라붙지 않아 틈이 생기다.",
+"example": "풀칠이 잘못되어 도배지가 떴다.",
+"note": "뜨다01 [2]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 1,
+"definition": "물기 있는 물체가 제 훈김으로 썩기 시작하다.",
+"example": "뒤뜰에 쌓아 놓은 시금치는 사 온 지 오래됐는지 누렇게 떠 있었다.",
+"note": "뜨다02"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 2,
+"definition": "누룩이나 메주 따위가 발효하다.",
+"example": "어두운 방에 들어서니 곰팡이 뜨는 냄새가 났다.",
+"note": "뜨다02"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 3,
+"definition": "병 따위로 얼굴빛이 누르고 살갗이 부은 것처럼 되다.",
+"example": "부황이 들어 뜬 얼굴.",
+"note": "뜨다02"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"definition": "[…에서][…을] 다른 곳으로 가기 위하여 있던 곳에서 다른 곳으로 떠나다.",
+"example": "고향에서 뜨다.",
+"note": "뜨다03 [1]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"definition": "[…을] (속되게) 몰래 달아나다.",
+"example": "그 가족은 밤중에 몰래 이 마을을 떴다.",
+"note": "뜨다03 [2]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 1,
+"definition": "[…에서 …을] 큰 것에서 일부를 떼어 내다.",
+"example": "우리는 저쪽 산 밑에서 떼를 떴다.",
+"note": "뜨다04 [1]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 2,
+"definition": "[…에서 …을] 물속에 있는 것을 건져 내다.",
+"example": "양어장에서 그물로 물고기를 떴다.",
+"note": "뜨다04 [1]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 3,
+"definition": "[…에 …을] 어떤 곳에 담겨 있는 물건을 퍼내거나 덜어 내다.",
+"example": "어머니는 간장 항아리에서 간장을 뜨고 계셨다.",
+"note": "뜨다04 [1]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 1,
+"definition": "[…을] 수저 따위로 음식을 조금 먹다.",
+"example": "먼 길 가는데 아무리 바빠도 한술 뜨고 가거라.",
+"note": "뜨다04 [2]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 2,
+"definition": "[…을] 고기 따위를 얇게 저미다.",
+"example": "생선회를 뜨다.",
+"note": "뜨다04 [2]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 3,
+"definition": "[…을] 종이나 김 따위를 틀에 펴서 낱장으로 만들어 내다.",
+"example": "한지는 틀로 하나씩 떠서 말린다.",
+"note": "뜨다04 [2]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 4,
+"definition": "[…을] 피륙에서 옷감이 될 만큼 끊어 내다.",
+"example": "혼숫감으로 옷감을 떠 왔다.",
+"note": "뜨다04 [2]"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 1,
+"definition": "「동사」[…을] 감았던 눈을 벌리다.",
+"example": "그는 잠이 깨어 눈을 떴다.",
+"note": "뜨다05"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 1,
+"definition": "「동사」[…을] 실 따위로 코를 얽어서 무엇을 만들다.",
+"example": "털실로 장갑을 떠서 선물하였다.",
+"note": "뜨다06"
+},
+{
+"category": "다의어",
+"term": "뜨다",
+"sense": 1,
+"definition": "「형용사」 행동 따위가 느리고 더디다.",
+"example": "그렇게 행동이 떠서 어디 제대로 먹고살겠어?",
+"note": "뜨다13"
+},
+{
+"category": "다의어",
+"term": "마르다",
+"sense": 1,
+"definition": "물기가 다 날아가서 없어지다.",
+"example": "날씨가 맑아 빨래가 잘 마른다.",
+"note": "마르다01"
+},
+{
+"category": "다의어",
+"term": "마르다",
+"sense": 2,
+"definition": "입이나 목구멍에 물기가 적어져 갈증이 나다.",
+"example": "뜨거운 태양 아래서 달리기를 했더니 목이 몹시 마른다.",
+"note": "마르다01"
+},
+{
+"category": "다의어",
+"term": "마르다",
+"sense": 3,
+"definition": "살이 빠져 야위다.",
+"example": "공부를 하느라 몸이 많이 말랐다.",
+"note": "마르다01"
+},
+{
+"category": "다의어",
+"term": "맞다",
+"sense": 1,
+"definition": "[…을] 오는 사람이나 물건을 예의로 받아들이다.",
+"example": "현관에서 방문객을 맞다.",
+"note": "맞다02 [1]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 1,
+"definition": "[…을] 끈이나 줄 따위의 두 끝을 엇걸고 잡아당기어 풀어지지 아니하게 마디를 만들다.",
+"example": "신발 끈을 매다. / 옷고름을 매다.",
+"note": "매다01 [1]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 2,
+"definition": "[…을] 끈이나 줄 따위로 꿰매거나 동이거나 하여 무엇을 만들다.",
+"example": "붓을 매다. / 책을 매다.",
+"note": "매다01 [1]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 3,
+"definition": "[…을] 가축을 기르다.",
+"example": "암소 한 마리와 송아지 두 마리를 매다.",
+"note": "매다01 [1]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 4,
+"definition": "[…을] 옷감을 짜기 위하여 날아 놓은 날실에 풀을 먹이고 고루 다듬어 말리어 감다.",
+"example": "베를 매다.",
+"note": "매다01 [1]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 1,
+"definition": "[…에 …을] 끈이나 줄 따위를 몸에 두르거나 감아 잘 풀어지지 아니하게 마디를 만들다.",
+"example": "전대를 허리에 매다.",
+"note": "매다01 [2]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 2,
+"definition": "[…에 …을] 달아나지 못하도록 고정된 것에 끈이나 줄 따위로 잇대어 묶다.",
+"example": "소를 말뚝에 매다. / 죄인을 형틀에 매다.",
+"note": "매다01 [2]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 3,
+"definition": "[…에 …을] 끈이나 줄 따위를 어떤 물체에 단단히 묶어서 걸다.",
+"example": "나무에 그네를 매다. / 빨랫줄을 처마 밑에 매다.",
+"note": "매다01 [2]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 4,
+"definition": "[…에 …을] 전화를 가설하다.",
+"note": "매다01 [2]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 5,
+"definition": "[…에 …을] (주로 '목'을 목적어로 하여) 어떤 데에서 떠나지 못하고 딸리어 있다.",
+"example": "형은 그 일에 목을 매고 있다.",
+"note": "매다01 [2]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"sense": 6,
+"definition": "[…에 …을] 일정한 기준에 따라 사물의 값이나 등수 따위를 정하다.",
+"example": "상품에 값을 매다. / 쌀에 등급을 매다.",
+"related": [
+"= 매기다「1」"
+],
+"note": "매다01 [2]"
+},
+{
+"category": "다의어",
+"term": "마르다",
+"sense": 4,
+"definition": "강이나 우물 따위의 물이 줄어 없어지다.",
+"example": "가뭄에도 이 우물은 마르지 않는다.",
+"note": "마르다01"
+},
+{
+"category": "다의어",
+"term": "마르다",
+"sense": 5,
+"definition": "돈이나 물건 따위가 다 쓰여 없어지다.",
+"example": "따로 돈이 나올 구멍이 없어 보이는데도 그의 주머니 속은 마르지 않았다.",
+"note": "마르다01"
+},
+{
+"category": "다의어",
+"term": "마르다",
+"sense": 6,
+"definition": "감정이나 열정 따위가 없어지다.",
+"example": "애정이 마르다.",
+"note": "마르다01"
+},
+{
+"category": "다의어",
+"term": "맞다",
+"sense": 1,
+"definition": "문제에 대한 답이 틀리지 아니하다.",
+"example": "과연 그 답이 맞는지는 더 생각해 보기로 하자.",
+"note": "맞다01 [1]"
+},
+{
+"category": "다의어",
+"term": "맞다",
+"sense": 2,
+"definition": "말, 육감, 사실 따위가 틀리지 아니하다.",
+"example": "엄마는 항상 맞는 말씀만 하신다.",
+"note": "맞다01 [1]"
+},
+{
+"category": "다의어",
+"term": "맞다",
+"sense": 1,
+"definition": "[(…과)] 어떤 행동, 의견, 상황 따위가 다른 것과 서로 어긋나지 아니하고 어울리다.",
+"example": "만일 내 동작이 다른 사람들과 맞지 않으면 관중이 웃을 것이다.",
+"note": "맞다01 [4]"
+},
+{
+"category": "다의어",
+"term": "맞다",
+"sense": 2,
+"definition": "[…에/에게] 모습, 분위기, 취향 따위가 다른 것에 잘 어울리다.",
+"example": "그것은 나의 분위기와는 절대로 맞지 않는다.",
+"note": "맞다01 [4]"
+},
+{
+"category": "다의어",
+"term": "매다",
+"definition": "[…을] 논밭에 난 잡풀을 뽑다.",
+"note": "매다02"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"definition": "[(…을)] 귀나 코가 막혀서 제 기능을 하지 못하게 되다. 또는 그렇게 되게 하다.",
+"example": "이 사람은 귀가 먹어서 잘 못 들으니까 큰 소리로 말씀하셔야 돼요.",
+"note": "먹다01"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 1,
+"definition": "[…을] 음식 따위를 입을 통하여 뱃속에 들여보내다.",
+"example": "밥을 먹다. / 그는 보약을 몇 차례나 먹어도 늘 골골거렸다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 2,
+"definition": "[…을] 담배나 아편 따위를 피우다.",
+"example": "담배를 먹다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 3,
+"definition": "[…을] 연기나 가스 따위를 들이마시다.",
+"example": "연탄가스를 먹다. / 탄내를 먹다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 4,
+"definition": "[…을] 어떤 마음이나 감정을 품다.",
+"example": "앙심을 먹고 투서를 하다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 5,
+"definition": "[…을] 일정한 나이에 이르거나 나이를 더하다.",
+"example": "네 살 먹은 아이.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 6,
+"definition": "[…을] 겁, 충격 따위를 느끼게 되다.",
+"example": "겁을 먹다. / 충격을 먹다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 7,
+"definition": "[…을] 욕, 핀잔 따위를 듣거나 당하다.",
+"example": "하루 종일 욕만 되게 먹었네.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 8,
+"definition": "[…을] (속되게) 뇌물을 받아 가지다.",
+"example": "뇌물을 먹다. / 뇌물을 먹고 탈세를 눈감아 주다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 9,
+"definition": "[…을] 수익이나 이문을 차지하여 가지다.",
+"example": "남은 이익은 모두 네가 먹어라.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 10,
+"definition": "[…을] 물이나 습기 따위를 빨아들이다.",
+"example": "기름 먹은 종이.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 11,
+"definition": "[…을] 어떤 등급을 차지하거나 점수를 따다.",
+"example": "1등을 먹다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 12,
+"definition": "[…을] 구기 경기에서, 점수를 잃다.",
+"example": "상대편에게 먼저 한 골을 먹었다.",
+"note": "먹다02 [1]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 1,
+"definition": "[…에] 날이 있는 도구가 소재를 깎거나 자르거나 갈거나 하는 작용을 하다.",
+"example": "이 고기에는 칼이 잘 먹지 않는다.",
+"note": "먹다02 [2]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 2,
+"definition": "[…에] 바르는 물질이 배어들거나 고루 퍼지다.",
+"example": "옷감에 풀이 잘 먹어야 다림질하기가 좋다. / 얼굴에 화장이 잘 먹지 않고 들뜬다.",
+"note": "먹다02 [2]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 3,
+"definition": "[…에] 벌레, 균 따위가 파 들어가거나 퍼지다.",
+"example": "사과에 벌레가 많이 먹었다.",
+"note": "먹다02 [2]"
+},
+{
+"category": "다의어",
+"term": "먹다",
+"sense": 4,
+"definition": "[…에] 돈이나 물자 따위가 들거나 쓰이다.",
+"example": "공사에 철근이 생각보다 많이 먹어 걱정이다.",
+"note": "먹다02 [2]"
+},
+{
+"category": "다의어",
+"term": "멀다",
+"sense": 1,
+"definition": "시력이나 청력 따위를 잃다.",
+"example": "사고로 눈이 멀다.",
+"note": "멀다01"
+},
+{
+"category": "다의어",
+"term": "멀다",
+"sense": 2,
+"definition": "[…에/에게] ('눈'을 주어로 하여) 어떤 생각에 빠져 판단력을 잃다.",
+"example": "그들은 사랑에 눈이 멀었다.",
+"note": "멀다01"
+},
+{
+"category": "다의어",
+"term": "멀다",
+"definition": "[…에서][(…과)] 거리가 많이 떨어져 있다.",
+"example": "집에서 버스 정류장까지는 매우 멀다.",
+"note": "멀다02 [1]"
+},
+{
+"category": "다의어",
+"term": "묻다",
+"sense": 3,
+"definition": "[…을 …으로] 얼굴을 수그려 손으로 감싸거나 다른 물체에 가리듯 기대다.",
+"example": "아이는 어머니의 가슴에 얼굴을 묻었다.",
+"note": "묻다02"
+},
+{
+"category": "다의어",
+"term": "묻다",
+"sense": 4,
+"definition": "의자나 이불 같은 데에 몸을 깊이 기대다.",
+"example": "지친 몸을 침대에 묻다.",
+"note": "묻다02"
+},
+{
+"category": "다의어",
+"term": "물다",
+"sense": 1,
+"definition": "[…을] 윗니나 아랫니 또는 양 입술 사이에 끼운 상태로 떨어지거나 빠져나가지 않도록 다소 세게 누르다.",
+"example": "담배를 물다. / 아기가 젖병을 물다.",
+"note": "물다02 [1]"
+},
+{
+"category": "다의어",
+"term": "물다",
+"sense": 2,
+"definition": "[…을] 윗니와 아랫니 사이에 끼운 상태로 상처가 날 만큼 세게 누르다.",
+"example": "팔을 세게 물다. / 개가 사람을 물다.",
+"note": "물다02 [1]"
+},
+{
+"category": "다의어",
+"term": "물다",
+"sense": 3,
+"definition": "[…을] 이, 빈대, 모기 따위의 벌레가 주둥이 끝으로 살을 찌르다.",
+"example": "모기가 옷을 뚫고 팔을 마구 물어 대었다.",
+"note": "물다02 [1]"
+},
+{
+"category": "다의어",
+"term": "물다",
+"sense": 4,
+"definition": "[…을] (속되게) 이익이 되는 어떤 것이나 사람을 차지하다.",
+"example": "돈이 많은 사람을 물다.",
+"note": "물다02 [1]"
+},
+{
+"category": "다의어",
+"term": "물다",
+"definition": "[…을 …에] 입속에 넣어 두다.",
+"example": "물을 한 모금 입에 물다. / 사탕을 입에 물다.",
+"note": "물다02 [2]"
+},
+{
+"category": "다의어",
+"term": "물다",
+"sense": 1,
+"definition": "[…에/에게 …을] 갚아야 할 것을 치르다.",
+"example": "주인에게 외상값을 물다.",
+"note": "물다03"
+},
+{
+"category": "다의어",
+"term": "물다",
+"sense": 2,
+"definition": "[…에/에게 …을] 남에게 입힌 손해를 돈으로 갚아 주거나 본래의 상태로 해 주다.",
+"example": "차 주인에게 손해를 물다. / 잃어버린 책을 도서관에 물다.",
+"note": "물다03"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 1,
+"definition": "[…을] 일정한 방향으로 움직이도록 반대쪽에서 힘을 가하다.",
+"example": "수레를 뒤에서 밀다.",
+"note": "밀다01 [1]"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 2,
+"definition": "[…을] 나무 따위의 거친 표면을 반반하고 매끄럽게 깎다.",
+"example": "대패로 통나무를 밀다.",
+"note": "밀다01 [1]"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 3,
+"definition": "[…을] 머리카락이나 털 따위를 매우 짧게 깎다.",
+"example": "수염을 밀다. / 머리를 밀다.",
+"note": "밀다01 [1]"
+},
+{
+"category": "다의어",
+"term": "멀다",
+"sense": 2,
+"definition": "[-기에] 어떤 기준점에 모자라다.",
+"example": "너의 그림 솜씨는 화가가 되기엔 아직도 멀었다.",
+"note": "멀다02 [2]"
+},
+{
+"category": "다의어",
+"term": "묻다",
+"sense": 1,
+"definition": "[…에] 가루, 풀, 물 따위가 그보다 큰 다른 물체에 들러붙거나 흔적이 남게 되다.",
+"example": "손에 기름이 묻다.",
+"note": "묻다01「1」"
+},
+{
+"category": "다의어",
+"term": "묻다",
+"sense": 2,
+"definition": "[…에] ('묻어', '묻어서' 꼴로 다른 동사와 함께 쓰여) 함께 팔리거나 섞이다.",
+"example": "가는 김에 나도 좀 묻어 타자.",
+"note": "묻다01「2」"
+},
+{
+"category": "다의어",
+"term": "묻다",
+"sense": 1,
+"definition": "[…에 …을] 물건을 흙이나 다른 물건 속에 넣어 보이지 않게 쌓아 덮다.",
+"example": "밥을 식지 않게 아랫목에 묻다.",
+"note": "묻다02「1」"
+},
+{
+"category": "다의어",
+"term": "묻다",
+"sense": 2,
+"definition": "[…에 …을][…을 …으로] 일을 드러내지 아니하고 속 깊이 숨기어 감추다.",
+"example": "아우는 형의 말을 비밀로 묻어 두었다.",
+"note": "묻다02「2」"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 4,
+"definition": "[…을] 피부에 묻은 지저분한 것을 문질러 벗겨 내다.",
+"example": "때를 밀다.",
+"note": "밀다01 [1]「4」"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 5,
+"definition": "[…을] 허물어 옮기거나 깎아 없애다.",
+"example": "불도저로 야산을 밀다.",
+"note": "밀다01 [1]「5」"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 6,
+"definition": "[…을] 뒤에서 보살피고 도와주다.",
+"example": "아무래도 누군가 그를 밀고 있다.",
+"note": "밀다01 [1]「6」"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 7,
+"definition": "[…을] 바닥이 반반해지도록 연장을 누르면서 문지르다.",
+"example": "롤러로 운동장을 밀다. / 구겨진 바지를 다리미로 한 번 밀어라.",
+"note": "밀다01 [1]「7」"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 8,
+"definition": "[…을] 눌러서 얇게 펴다.",
+"example": "만두피를 밀다. / 어머니는 밀가루 반죽을 밀개로 밀고 계셨다.",
+"note": "밀다01 [1]「8」"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 9,
+"definition": "[…을] 등사기로 인쇄하다.",
+"example": "사람들에게 나눠 줄 유인물을 만들기 위해 등사 롤러를 밀었다.",
+"note": "밀다01 [1]「9」"
+},
+{
+"category": "다의어",
+"term": "밀다",
+"sense": 10,
+"definition": "[…을 …으로] 특정한 지위를 차지하도록 내세우거나 지지하다.",
+"example": "그를 반장으로 밀었다. / 당원들은 당 총재를 대통령 후보로 밀었다.",
+"note": "밀다01 [2]"
+},
+{
+"category": "다의어",
+"term": "바르다",
+"sense": 1,
+"definition": "[…을 …에][…을 …으로] 풀칠한 종이나 헝겊 따위를 다른 물건의 표면에 고루 붙이다.",
+"example": "벽지를 벽에 바르다.",
+"note": "바르다01 [1]「1」"
+},
+{
+"category": "다의어",
+"term": "바르다",
+"sense": 2,
+"definition": "[…을 …에][…을 …으로] 차지게 이긴 흙 따위를 다른 물체의 표면에 고르게 덧붙이다.",
+"example": "흙을 벽에 바르다.",
+"note": "바르다01 [1]「2」"
+},
+{
+"category": "다의어",
+"term": "바르다",
+"sense": 3,
+"definition": "[…에 …을] 물이나 풀, 약, 화장품 따위를 물체의 표면에 문질러 묻히다.",
+"example": "상처에 약을 바르다. / 얼굴에 분을 바르다.",
+"note": "바르다01 [2]"
+},
+{
+"category": "다의어",
+"term": "바르다",
+"sense": 1,
+"definition": "겉으로 보기에 비뚤어지거나 굽은 데가 없다.",
+"example": "길이 바르다. / 줄을 바르게 서다.",
+"note": "바르다03「1」"
+},
+{
+"category": "다의어",
+"term": "바르다",
+"sense": 2,
+"definition": "말이나 행동 따위가 사회적인 규범이나 사리에 어긋나지 아니하고 들어맞다.",
+"example": "생각이 바른 사람. / 마음가짐이 바르다.",
+"note": "바르다03「2」"
+},
+{
+"category": "다의어",
+"term": "바르다",
+"sense": 3,
+"definition": "사실과 어긋남이 없다.",
+"example": "숨기지 말고 바르게 대답하시오.",
+"note": "바르다03「3」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 1,
+"definition": "[…에] 스며들거나 스며 나오다.",
+"example": "옷에 땀이 배다. / 종이에 기름이 배다. / 웃음이 배어 나오다.",
+"note": "배다01「1」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 2,
+"definition": "[…에] 버릇이 되어 익숙해지다.",
+"example": "일이 손에 배다. / 욕이 입에 배다.",
+"note": "배다01「2」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 3,
+"definition": "[…에] 냄새가 스며들어 오래도록 남아 있다.",
+"example": "담배 냄새가 옷에 배었다.",
+"note": "배다01「3」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 4,
+"definition": "[…에] 느낌, 생각 따위가 깊이 느껴지거나 오래 남아 있다.",
+"example": "농악에는 우리 민족의 정서가 배어 있다.",
+"note": "배다01「4」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 1,
+"definition": "[…을] 뱃속에 아이나 새끼를 가지다.",
+"example": "아이를 배다.",
+"note": "배다02 [1]"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 2,
+"definition": "[…에][…을] 식물의 줄기 속에 이삭이 생기다. 또는 이삭을 가지다.",
+"example": "벼 포기에 이삭이 벌써 배었다.",
+"note": "배다02 [2]「1」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 3,
+"definition": "[…에][…을] ('알'과 함께 쓰여) 물고기 따위의 뱃속에 알이 들다. 또는 알을 가지다.",
+"example": "잡은 고기에 알이 배어 있었다.",
+"note": "배다02 [2]「2」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 4,
+"definition": "[…에] ('알'과 함께 쓰여) 사람의 근육에 뭉친 것과 같은 것이 생기다.",
+"example": "계단을 오르락내리락했더니 다리에 알이 뱄다.",
+"note": "배다02 [3]"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 1,
+"definition": "물건의 사이가 비좁거나 촘촘하다.",
+"example": "그물코가 배다. / 모를 배게 심다. / 물건이 창고에 배게 들어찼다.",
+"note": "배다03「1」"
+},
+{
+"category": "다의어",
+"term": "배다",
+"sense": 2,
+"definition": "생각이나 안목이 매우 좁다.",
+"example": "그는 속이 너무 배서 큰 인물은 못 되겠다.",
+"note": "배다03「2」"
+},
+{
+"category": "다의어",
+"term": "베다",
+"definition": "[…을] 누울 때, 베개 따위를 머리 아래에 받치다.",
+"example": "베개를 베다.",
+"note": "베다01"
+},
+{
+"category": "다의어",
+"term": "베다",
+"sense": 1,
+"definition": "[…을] 날이 있는 연장 따위로 무엇을 끊거나 자르거나 가르다.",
+"example": "낫으로 벼를 베다.",
+"note": "베다02「1」"
+},
+{
+"category": "다의어",
+"term": "베다",
+"sense": 2,
+"definition": "[…을] 날이 있는 물건으로 상처를 내다.",
+"example": "칼로 살을 베다.",
+"note": "베다02「2」"
+},
+{
+"category": "다의어",
+"term": "붓다",
+"sense": 1,
+"definition": "살가죽이나 어떤 기관이 부풀어 오르다.",
+"example": "얼굴이 붓다.",
+"note": "붓다01「1」"
+},
+{
+"category": "다의어",
+"term": "붓다",
+"sense": 2,
+"definition": "(속되게) 성이 나서 뾰로통해지다.",
+"example": "왜 잔뜩 부어 있니?",
+"note": "붓다01「2」"
+},
+{
+"category": "다의어",
+"term": "붓다",
+"sense": 1,
+"definition": "[…에/에게 …을] 액체나 가루 따위를 다른 곳에 담다.",
+"example": "자루에 밀가루를 붓다. / 가마솥에 물을 붓다.",
+"note": "붓다02「1」"
+},
+{
+"category": "다의어",
+"term": "붓다",
+"sense": 2,
+"definition": "[…에/에게 …을] 모종을 내기 위하여 씨앗을 많이 뿌리다.",
+"example": "볍씨를 붓다. / 모판에 배추씨를 붓다.",
+"note": "붓다02「2」"
+},
+{
+"category": "다의어",
+"term": "붓다",
+"sense": 3,
+"definition": "[…에/에게 …을] 불입금, 이자, 곗돈 따위를 일정한 기간마다 내다.",
+"example": "은행에 적금을 붓다.",
+"note": "붓다02「3」"
+},
+{
+"category": "다의어",
+"term": "붓다",
+"sense": 4,
+"definition": "[…에/에게 …을] 시선을 한곳에 모으면서 바라보다.",
+"example": "소년은 수평선에 눈을 부은 채 움직이지 않았다.",
+"note": "붓다02「4」"
+},
+{
+"category": "다의어",
+"term": "붇다",
+"sense": 1,
+"definition": "물에 젖어서 부피가 커지다.",
+"example": "콩이 붇다. / 북어포가 물에 불어 부드러워지다. / 오래되어 불은 국수는 맛이 없다.",
+"note": "참고 '붇다'와 '불다' — 붇다「1」 / 학습TIP: 라면이 불기 전에(×) → 라면이 붇기 전에(○)"
+},
+{
+"category": "다의어",
+"term": "붇다",
+"sense": 2,
+"definition": "분량이나 수효가 많아지다.",
+"example": "개울물이 붇다. / 체중이 붇다.",
+"note": "참고 '붇다'와 '불다' — 붇다「2」 / 학습TIP: 라면이 불기 전에(×) → 라면이 붇기 전에(○)"
+},
+{
+"category": "다의어",
+"term": "불다",
+"sense": 1,
+"definition": "바람이 일어나서 어느 방향으로 움직이다.",
+"example": "동풍이 부는 날.",
+"note": "참고 '붇다'와 '불다' — 불다 [1] / 학습TIP: 라면이 불기 전에(×) → 라면이 붇기 전에(○)"
+},
+{
+"category": "다의어",
+"term": "불다",
+"sense": 2,
+"definition": "[…에] 유행, 풍조, 변화 따위가 일어나 휩쓸다.",
+"example": "사무실에 영어 회화 바람이 불다.",
+"note": "참고 '붇다'와 '불다' — 불다 [2] / 학습TIP: 라면이 불기 전에(×) → 라면이 붇기 전에(○)"
+},
+{
+"category": "다의어",
+"term": "불다",
+"sense": 3,
+"definition": "[…을] 입을 오므리고 날숨을 내어보내어, 입김을 내거나 바람을 일으키다.",
+"example": "유리창에 입김을 불다.",
+"note": "참고 '붇다'와 '불다' — 불다 [3]「1」 / 학습TIP: 라면이 불기 전에(×) → 라면이 붇기 전에(○)"
+},
+{
+"category": "다의어",
+"term": "불다",
+"sense": 4,
+"definition": "[…을] 입술을 좁게 오므리고 그 사이로 숨을 내쉬어 소리를 내다.",
+"example": "휘파람 부는 아이.",
+"note": "참고 '붇다'와 '불다' — 불다 [3]「2」 / 학습TIP: 라면이 불기 전에(×) → 라면이 붇기 전에(○)"
+},
+{
+"category": "다의어",
+"term": "불다",
+"sense": 5,
+"definition": "[…을] 코로 날숨을 세게 내어보내다.",
+"example": "소가 콧김을 불다.",
+"note": "참고 '붇다'와 '불다' — 불다 [3]「3」 / 학습TIP: 라면이 불기 전에(×) → 라면이 붇기 전에(○)"
+},
+{
+"category": "다의어",
+"term": "빌다",
+"sense": 1,
+"definition": "[…에/에게 …을][…에/에게 -기를][…에/에게 -고][…에/에게 -도록] 바라는 바를 이루게 하여 달라고 신이나 사람, 사물 따위에 간청하다.",
+"example": "소녀는 하늘에 소원을 빌었다.",
+"note": "빌다01「1」"
+},
+{
+"category": "다의어",
+"term": "빌다",
+"sense": 2,
+"definition": "[…에/에게 …을][…에/에게 -기를][…에/에게 -고] 잘못을 용서하여 달라고 호소하다.",
+"example": "학생은 무릎을 꿇고 선생님께 용서를 빌었다.",
+"note": "빌다01「2」"
+},
+{
+"category": "다의어",
+"term": "빌다",
+"definition": "[…을] 남의 물건을 공짜로 달라고 호소하여 얻다.",
+"example": "이웃에게 양식을 빌다. / 사람들에게 밥을 빌러 다니다.",
+"note": "빌다02"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 1,
+"definition": "[…에서] 박힌 물건이 제자리에서 나오다.",
+"example": "책상 다리에서 못이 빠지다.",
+"note": "빠지다01 [1]「1」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 2,
+"definition": "[…에서] 어느 정도 이익이 남다.",
+"example": "아무래도 이렇게 장사가 되지 않으면 본전도 빠지지 않겠다.",
+"note": "빠지다01 [1]「2」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 3,
+"definition": "[…에서] 원래 있어야 할 것에서 모자라다.",
+"example": "구백 원만 있다면 천 원에서 백 원이 빠지는 셈이구나.",
+"note": "빠지다01 [1]「3」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 4,
+"definition": "[…에][…에서] 속에 있는 액체나 기체 또는 냄새 따위가 밖으로 새어 나가거나 흘러 나가다.",
+"example": "방에 냄새가 빠지다.",
+"note": "빠지다01 [2]「1」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 5,
+"definition": "[…에][…에서] 때, 빛깔 따위가 씻기거나 없어지다.",
+"example": "옷에 때가 쑥 빠지다.",
+"note": "빠지다01 [2]「2」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 6,
+"definition": "[…에][…에서] 차례를 거르거나 일정하게 들어 있어야 할 곳에 들어 있지 아니하다.",
+"example": "이 책에는 중요한 내용이 빠져 있다.",
+"note": "빠지다01 [2]「3」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 7,
+"definition": "[…에][…에서] 정신이나 기운이 줄거나 없어지다.",
+"example": "그 말을 들으니 다리에 기운이 빠져서 서 있을 수가 없었다.",
+"note": "빠지다01 [2]「4」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 8,
+"definition": "[…에][…에서] […을] 어떤 일이나 모임에 참여하지 아니하다.",
+"example": "동창회에 빠지다.",
+"note": "빠지다01 [2]「5」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 9,
+"definition": "그릇이나 신발 따위의 밑바닥이 떨어져 나가다.",
+"example": "구두가 밑창이 빠지다.",
+"note": "빠지다01 [3]「1」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 10,
+"definition": "살이 여위다.",
+"example": "며칠 밤을 새웠더니 눈이 쑥 들어가고 얼굴의 살이 쪽 빠졌다.",
+"note": "빠지다01 [3]「2」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 11,
+"definition": "[…으로] 일정한 곳에서 다른 데로 벗어나다.",
+"example": "샛길로 빠지다.",
+"note": "빠지다01 [4]"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 12,
+"definition": "[-게] 생김새가 미끈하게 균형이 잡히다.",
+"example": "옷을 쑥 빠지게 차려입었다.",
+"note": "빠지다01 [5]"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 13,
+"definition": "[…에/에게] 남이나 다른 것에 비해 뒤떨어지거나 모자라다.",
+"example": "그의 실력은 절대로 다른 경쟁자들에게 빠지지 않는다.",
+"note": "빠지다01 [6]"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 1,
+"definition": "[…에] […으로] 물이나 구덩이 따위 속으로 떨어져 잠기거나 잠겨 들어가다.",
+"example": "개울에 빠지다. / 차가 갑자기 웅덩이에 빠지고 말았다.",
+"note": "빠지다02 [1]「1」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 2,
+"definition": "[…에] 곤란한 처지에 놓이다.",
+"example": "궁지에 빠지다.",
+"note": "빠지다02 [1]「2」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 3,
+"definition": "[…에] 그럴듯한 말이나 꾐에 속아 넘어가다.",
+"example": "유혹에 빠지다.",
+"note": "빠지다02 [1]「3」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 4,
+"definition": "[…에] 잠이나 혼수상태에 들게 되다.",
+"example": "그는 너무나 깊은 잠에 빠져서 일어날 줄을 모른다.",
+"note": "빠지다02 [1]「4」"
+},
+{
+"category": "다의어",
+"term": "빠지다",
+"sense": 5,
+"definition": "[…에/에게] 무엇에 정신이 아주 쏠리어 헤어나지 못하다.",
+"example": "사랑에 빠지다.",
+"note": "빠지다02 [2]"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 1,
+"definition": "생각을 하고 언어를 사용하며, 도구를 만들어 쓰고 사회를 이루어 사는 동물.",
+"example": "사람은 만물의 영장이다.",
+"related": [
+"≒ 인간01「1」"
+],
+"note": "사람「1」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 2,
+"definition": "어떤 지역이나 시기에 태어나거나 살고 있거나 살았던 자.",
+"example": "아버지는 충남 사람이다.",
+"note": "사람「2」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 3,
+"definition": "일정한 자격이나 품격 등을 갖춘 이.",
+"example": "사람을 기르다. / 사람을 만들다.",
+"related": [
+"≒ 인간01「3」"
+],
+"note": "사람「3」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 4,
+"definition": "인격에서 드러나는 됨됨이나 성질.",
+"example": "사람이 괜찮다.",
+"note": "사람「4」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 5,
+"definition": "상대편에게 자기 자신을 엄연한 인격체로서 가리키는 말.",
+"example": "돈 좀 있다고 사람 무시하지 마라.",
+"note": "사람「5」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 6,
+"definition": "친근한 상대편을 가리키거나 부를 때 사용하는 말.",
+"example": "이 사람아, 이게 얼마 만인가?",
+"note": "사람「6」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 7,
+"definition": "자기 외의 남을 막연하게 이르는 말.",
+"example": "사람들이 뭐라 해도 할 수 없다.",
+"note": "사람「7」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 8,
+"definition": "뛰어난 인재나 인물.",
+"example": "이곳은 사람이 많이 난 고장이다.",
+"note": "사람「8」"
+},
+{
+"category": "다의어",
+"term": "사람",
+"sense": 9,
+"definition": "어떤 일을 시키거나 심부름을 할 일꾼이나 인원.",
+"example": "그 일은 사람이 많이 필요하다. / 사람을 보내 마중을 나갔다.",
+"note": "사람「9」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 1,
+"definition": "생명을 지니고 있다.",
+"example": "그는 백 살까지 살았다.",
+"note": "살다01「1」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 2,
+"definition": "불 따위가 타거나 비치고 있는 상태에 있다.",
+"example": "잿더미에 불씨가 아직 살아 있다.",
+"note": "살다01「2」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 3,
+"definition": "본래 가지고 있던 색깔이나 특징 따위가 그대로 있거나 뚜렷이 나타나다.",
+"example": "개성이 살아 있는 글.",
+"note": "살다01「3」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 4,
+"definition": "성질이나 기운 따위가 뚜렷이 나타나다.",
+"example": "칭찬 몇 마디 해 주었더니 기운이 살아서 잘난 척이다.",
+"note": "살다01「4」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 5,
+"definition": "마음이나 의식 속에 남아 있거나 생생하게 일어나다.",
+"example": "어렸을 때 배운 노래 한 구절이 머릿속에 아직도 살아 있다.",
+"note": "살다01「5」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 6,
+"definition": "움직이던 물체가 멈추지 않고 제 기능을 하다.",
+"example": "그렇게 세게 부딪혔는데도 시계가 살아 있다.",
+"note": "살다01「6」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 7,
+"definition": "경기나 놀이 따위에서, 상대편에게 잡히지 않고 제 기능을 하다.",
+"example": "바둑에서 간신히 두 집 내고 살았다.",
+"note": "살다01「7」"
+},
+{
+"category": "다의어",
+"term": "살다",
+"sense": 8,
+"definition": "글이나 말, 또는 어떤 현상의 효력 따위가 현실과 관련되어 생동성이 있다.",
+"example": "산 역사. / 산 교훈. / 살아 있는 규범.",
+"note": "살다01「8」"
+},
+{
+"category": "다의어",
+"term": "살피다",
+"sense": 1,
+"definition": "[…을] 두루두루 주의하여 자세히 보다.",
+"example": "그는 주변을 살피며 낮은 목소리로 말했다.",
+"note": "살피다01「1」"
+},
+{
+"category": "다의어",
+"term": "살피다",
+"sense": 2,
+"definition": "[…을] 형편이나 사정 따위를 자세히 알아보다.",
+"example": "민심을 살피다.",
+"note": "살피다01「2」"
+},
+{
+"category": "다의어",
+"term": "살피다",
+"sense": 3,
+"definition": "[…을] 자세히 따지거나 헤아려 보다.",
+"example": "상대방과의 관계를 살피는 일이 중요하다.",
+"note": "살피다01「3」"
+},
+{
+"category": "다의어",
+"term": "삶다",
+"sense": 1,
+"definition": "[…을] 물에 넣고 끓이다.",
+"example": "국수를 삶다. / 달걀을 삶다. / 빨래를 삶다.",
+"note": "삶다「1」"
+},
+{
+"category": "다의어",
+"term": "삶다",
+"sense": 2,
+"definition": "[…을] 달래거나 꾀어서 자기 말을 잘 듣게 만들다.",
+"example": "우선 그 집 하인을 잘 삶아서 내 편을 만들어야지.",
+"note": "삶다「2」"
+},
+{
+"category": "다의어",
+"term": "삶다",
+"sense": 3,
+"definition": "[…을] 논밭의 흙을 써레로 썰고 나래로 골라 노글노글하게 만들다.",
+"example": "밭을 삶다.",
+"note": "삶다「3」"
+},
+{
+"category": "다의어",
+"term": "삶다",
+"sense": 4,
+"definition": "[…을] 날씨가 몹시 무덥고 찌는 듯하여 뜨거운 열기로 가득함을 비유적으로 이르는 말.",
+"example": "푹푹 삶는 무더위가 계속되었다.",
+"note": "삶다「4」"
+},
+{
+"category": "다의어",
+"term": "손",
+"sense": 1,
+"definition": "사람의 팔목 끝에 달린 부분.",
+"example": "손으로 잡다.",
+"note": "손01「1」"
+},
+{
+"category": "다의어",
+"term": "손",
+"sense": 2,
+"definition": "손끝의 다섯 개로 갈라진 부분. 또는 그것 하나하나.",
+"example": "손에 반지를 끼다.",
+"related": [
+"= 손가락"
+],
+"note": "손01「2」"
+},
+{
+"category": "다의어",
+"term": "손",
+"sense": 3,
+"definition": "일을 하는 사람.",
+"example": "손이 부족하다.",
+"related": [
+"= 일손「3」"
+],
+"note": "손01「3」"
+},
+{
+"category": "다의어",
+"term": "손",
+"sense": 4,
+"definition": "어떤 일을 하는 데 드는 사람의 힘이나 노력, 기술.",
+"example": "나는 부모님이 돌아가셔서 할머니의 손에서 자랐다.",
+"note": "손01「4」"
+},
+{
+"category": "다의어",
+"term": "손",
+"sense": 5,
+"definition": "어떤 사람의 영향력이나 권한이 미치는 범위.",
+"example": "손에 넣다. / 일의 성패는 네 손에 달려 있다.",
+"note": "손01「5」"
+},
+{
+"category": "다의어",
+"term": "손",
+"sense": 6,
+"definition": "사람의 수완이나 꾀.",
+"example": "장사꾼의 손에 놀아나다.",
+"note": "손01「6」"
+},
+{
+"category": "다의어",
+"term": "쓰다",
+"sense": 1,
+"definition": "[…에 …을] 어떤 일을 하는 데에 재료나 도구, 수단을 이용하다.",
+"example": "빨래하는 데에 합성 세제를 많이 쓴다고 빨래가 깨끗하게 되는 것은 아니다.",
+"note": "쓰다03 [1]「1」"
+},
+{
+"category": "다의어",
+"term": "쓰다",
+"sense": 2,
+"definition": "[…에 …을][…을 …으로] 사람에게 어떤 일을 하게 하다.",
+"example": "하수도 공사에 인부를 쓴다. / 회사에서는 그 자리에 경험자를 쓰기로 했다.",
+"note": "쓰다03 [1]「2」"
+},
+{
+"category": "다의어",
+"term": "쓰다",
+"sense": 3,
+"definition": "[…에/에게 …을] (흔히, '한턱', '턱' 따위와 함께 쓰여) 다른 사람에게 베풀거나 내다.",
+"example": "그는 취직 기념으로 친구들에게 한턱을 썼다.",
+"note": "쓰다03 [2]「1」"
+},
+{
+"category": "다의어",
+"term": "쓰다",
+"definition": "[…에 …을][…을 …으로] 시체를 묻고 무덤을 만들다.",
+"example": "공원묘지에 묘를 쓰다.",
+"note": "쓰다04"
+},
+{
+"category": "다의어",
+"term": "쓰다",
+"definition": "[…을] 장기나 윷놀이 따위에서 말을 규정대로 옮겨 놓다.",
+"example": "윷놀이는 말을 잘 쓰는 것이 제일 중요하다.",
+"note": "쓰다05"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 1,
+"definition": "[…에] 눈에 눈물이 조금 괴다.",
+"example": "눈에 눈물이 어리다.",
+"note": "어리다01「1」"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 2,
+"definition": "[…에] 어떤 현상, 기운, 추억 따위가 배어 있거나 은근히 드러나다.",
+"example": "정성 어린 선물. / 취기가 어린 말투.",
+"note": "어리다01「2」"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 3,
+"definition": "[…에] 빛이나 그림자, 모습 따위가 희미하게 비치다.",
+"example": "수면에 어리는 그림자.",
+"note": "어리다01「3」"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 4,
+"definition": "[…에] 연기, 안개, 구름 따위가 한곳에 모여 나타나다.",
+"example": "앞들 무논 위에 아지랑이가 어리기 시작한다.",
+"note": "어리다01「4」"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 1,
+"definition": "나이가 적다. 10대 전반을 넘지 않은 나이를 이른다.",
+"example": "나는 어린 시절을 시골에서 보냈다.",
+"note": "어리다03「1」"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 2,
+"definition": "나이가 비교 대상보다 적다.",
+"example": "김 선생은 나보다 세 살이 어리니 올해 마흔다섯이다.",
+"note": "어리다03「2」"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 3,
+"definition": "동물이나 식물 따위가 난 지 얼마 안 되어 작고 여리다.",
+"example": "어린 묘목을 옮겨 심다.",
+"note": "어리다03「3」"
+},
+{
+"category": "다의어",
+"term": "어리다",
+"sense": 4,
+"definition": "생각이 모자라거나 경험이 적거나 수준이 낮다.",
+"example": "저의 어린 소견을 끝까지 경청해 주셔서 고맙습니다.",
+"note": "어리다03「4」"
+},
+{
+"category": "다의어",
+"term": "여리다",
+"sense": 1,
+"definition": "단단하거나 질기지 않아 부드럽거나 약하다.",
+"example": "살갗이 여리다.",
+"note": "여리다「1」"
+},
+{
+"category": "다의어",
+"term": "여리다",
+"sense": 2,
+"definition": "의지나 감정 따위가 모질지 못하고 약간 무르다.",
+"example": "여린 마음에 상처를 받다.",
+"note": "여리다「2」"
+},
+{
+"category": "다의어",
+"term": "여리다",
+"sense": 3,
+"definition": "빛깔이나 소리 따위가 약간 흐리거나 약하다.",
+"example": "박자가 여리다. / 색깔이 여리다.",
+"note": "여리다「3」"
+},
+{
+"category": "다의어",
+"term": "여리다",
+"sense": 4,
+"definition": "기준보다 약간 모자라다.",
+"example": "이번에 사 온 천은 감이 좀 여리다.",
+"note": "여리다「4」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 1,
+"definition": "[…에][…을] 사람이나 동물 따위가 아래에서 위쪽으로 움직여 가다.",
+"example": "산에 오르다.",
+"note": "오르다 [1]"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 2,
+"definition": "[…에] 지위나 신분 따위를 얻게 되다.",
+"example": "왕위에 오르다.",
+"note": "오르다 [2]「1」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 3,
+"definition": "[…에] 탈것에 타다.",
+"example": "기차에 오른 것은 한밤중이 되어서였다. / 배에 오르기 전에 표를 사야 한다.",
+"note": "오르다 [2]「2」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 4,
+"definition": "[…에] 어떤 정도에 달하다.",
+"example": "사업이 비로소 정상 궤도에 올랐다.",
+"note": "오르다 [2]「3」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 5,
+"definition": "[…에] 길을 떠나다.",
+"example": "다 잊어버리고 여행길에나 오르지 그래.",
+"note": "오르다 [2]「4」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 6,
+"definition": "[…에] 뭍에서 육지로 옮다.",
+"example": "뭍에 오른 물고기 신세란 바로 그를 두고 하는 말이었다.",
+"note": "오르다 [2]「5」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 7,
+"definition": "[…에] 몸 따위에 살이 많아지다.",
+"example": "얼굴에 살이 오르니 귀여워 보인다.",
+"note": "오르다 [2]「6」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 8,
+"definition": "[…에] 식탁, 도마 따위에 놓이다.",
+"example": "모처럼 저녁상에 갈비가 올랐다. / 고등어가 도마에 올라 칼질을 기다리고 있다.",
+"note": "오르다 [2]「7」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 9,
+"definition": "[…에] 남의 이야깃거리가 되다.",
+"example": "구설에 오르다.",
+"note": "오르다 [2]「8」"
+},
+{
+"category": "다의어",
+"term": "오르다",
+"sense": 10,
+"definition": "[…에] 기록에 적히다.",
+"example": "호적에 오르다.",
+"note": "오르다 [2]「9」"
+},
+{
+"category": "다의어",
+"term": "울다",
+"sense": 1,
+"definition": "기쁨, 슬픔 따위의 감정을 억누르지 못하거나 아픔을 참지 못하여 눈물을 흘리다. 또는 그렇게 눈물을 흘리면서 소리를 내다.",
+"example": "승리의 기쁨에 넘쳐 우는 선수들.",
+"note": "울다01「1」"
+},
+{
+"category": "다의어",
+"term": "울다",
+"sense": 2,
+"definition": "짐승, 벌레, 바람 따위가 소리를 내다.",
+"example": "늑대 우는 소리.",
+"note": "울다01「2」"
+},
+{
+"category": "다의어",
+"term": "울다",
+"sense": 3,
+"definition": "물체가 바람에 흔들리거나 움직여 소리가 나다.",
+"example": "전깃줄이 바람에 운다. / 문풍지가 바람에 울고 있다.",
+"note": "울다01「3」"
+},
+{
+"category": "다의어",
+"term": "울다",
+"sense": 4,
+"definition": "종이나 천둥, 벨 따위가 소리를 내다.",
+"example": "천둥이 우는 소리.",
+"note": "울다01「4」"
+},
+{
+"category": "다의어",
+"term": "울다",
+"sense": 5,
+"definition": "병적으로 일정한 높이로 계속되는 소리가 실제로는 들리지 않는데도 들리는 것처럼 느끼다.",
+"example": "귀에서 우는 소리가 난다.",
+"note": "울다01「5」"
+},
+{
+"category": "다의어",
+"term": "울다",
+"sense": 6,
+"definition": "(비유적으로) 상대를 때리거나 공격할 수 없어 분한 마음을 느끼다.",
+"example": "주먹이 운다 울어.",
+"note": "울다01「6」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 1,
+"definition": "열매나 씨가 여물다.",
+"example": "배가 익다.",
+"note": "익다01「1」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 2,
+"definition": "고기나 채소, 곡식 따위의 날것이 뜨거운 열을 받아 그 성질과 맛이 달라지다.",
+"example": "고기가 푹 익다. / 고구마가 먹기 좋게 익었다.",
+"note": "익다01「2」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 3,
+"definition": "김치, 술, 장 따위가 맛이 들다.",
+"example": "간장이 익다. / 김치가 알맞게 익었다.",
+"note": "익다01「3」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 4,
+"definition": "불이나 볕을 오래 쬐거나 뜨거운 물에 담가서 살갗이 빨갛게 되다.",
+"example": "벌거벗고 땡볕에 돌아다녔더니 살이 익었다.",
+"note": "익다01「4」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 5,
+"definition": "썩히려고 하는 것이 잘 썩다.",
+"example": "거름이 익다.",
+"note": "익다01「5」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 6,
+"definition": "사물이나 시기 따위가 충분히 마련되거나 알맞게 되다.",
+"example": "가을이 익어 가고 있는 들판을 한참 바라보았다.",
+"note": "익다01「6」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 1,
+"definition": "[…에] 자주 경험하여 조금도 서투르지 않다.",
+"example": "이젠 바느질 솜씨가 손끝에 제법 익었다.",
+"note": "익다02「1」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 2,
+"definition": "[…에] 여러 번 겪어 설지 않다.",
+"example": "이젠 이 고장의 풍토에 익었을 뿐만 아니었다.",
+"note": "익다02「2」"
+},
+{
+"category": "다의어",
+"term": "잘다",
+"sense": 1,
+"definition": "알곡이나 과일, 모래 따위의 둥근 물건이나 글씨 따위의 크기가 작다.",
+"example": "알약이 너무 커서 잘게 부순 다음 삼켰다.",
+"note": "잘다「1」"
+},
+{
+"category": "다의어",
+"term": "잘다",
+"sense": 2,
+"definition": "길이가 있는 물건의 몸피가 가늘고 작다.",
+"example": "무를 잘게 썰다.",
+"note": "잘다「2」"
+},
+{
+"category": "다의어",
+"term": "잘다",
+"sense": 3,
+"definition": "일이 작고 소소하다.",
+"note": "잘다「3」"
+},
+{
+"category": "다의어",
+"term": "잘다",
+"sense": 4,
+"definition": "세밀하고 자세하다.",
+"example": "잔 주석. / 소설을 잘게 분석하다.",
+"note": "잘다「4」"
+},
+{
+"category": "다의어",
+"term": "잘다",
+"sense": 5,
+"definition": "생각이나 성질이 대담하지 못하고 좀스럽다.",
+"example": "그는 사람 됨됨이가 잘고 경망스러워 보인다.",
+"note": "잘다「5」"
+},
+{
+"category": "다의어",
+"term": "줄다",
+"sense": 1,
+"definition": "물체의 길이나 넓이, 부피 따위가 본디보다 작아지다.",
+"example": "소매 길이가 줄다. / 면적이 줄다.",
+"note": "줄다「1」"
+},
+{
+"category": "다의어",
+"term": "줄다",
+"sense": 2,
+"definition": "수나 분량이 본디보다 적어지거나 무게가 덜 나가게 되다.",
+"example": "인원이 줄다. / 몸무게가 줄다. / 재고가 줄다.",
+"note": "줄다「2」"
+},
+{
+"category": "다의어",
+"term": "줄다",
+"sense": 3,
+"definition": "힘이나 세력 따위가 본디보다 못하게 되다.",
+"example": "속력이 줄다. / 나이가 들어 기운도 많이 줄었다.",
+"note": "줄다「3」"
+},
+{
+"category": "다의어",
+"term": "줄다",
+"sense": 4,
+"definition": "재주나 능력, 실력 따위가 본디보다 못하게 되다.",
+"example": "수학 실력이 줄다.",
+"note": "줄다「4」"
+},
+{
+"category": "다의어",
+"term": "줄다",
+"sense": 5,
+"definition": "살림이 어려워지거나 본디보다 못하여지다.",
+"example": "주는 것은 살림살이요 느는 것은 빚뿐일세.",
+"note": "줄다「5」"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 1,
+"definition": "[…을] 팔다리나 막대기 따위를 내뻗치어 대상물을 힘껏 건드리다.",
+"example": "한 아이가 골문을 향해 공을 힘차게 지른다.",
+"note": "지르다02 [1]「1」"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 2,
+"definition": "[…을] 냄새가 갑자기 후각을 자극하다.",
+"example": "구린내가 코를 지른다.",
+"note": "지르다02 [1]「2」"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 3,
+"definition": "[…을] 도박이나 내기에서, 돈이나 물건 따위를 걸다.",
+"example": "판돈을 지르다.",
+"note": "지르다02 [1]「3」"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 4,
+"definition": "[…에 …을] 양쪽 사이를 막대기나 줄 따위로 가로 건너막거나 내리꽂다.",
+"example": "머리에 비녀를 지르다.",
+"note": "지르다02 [2]「1」"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 1,
+"definition": "【…에】 자주 경험하여 조금도 서투르지 않다.",
+"example": "이젠 바느질 솜씨가 손끝에 제법 익었다.",
+"note": "익다02"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 2,
+"definition": "【…에】 여러 번 겪어 설지 않다.",
+"example": "이젠 이 고장의 풍토에 익었을 뿐만 아니었다.",
+"note": "익다02"
+},
+{
+"category": "다의어",
+"term": "익다",
+"sense": 3,
+"definition": "【…에】 눈이 어둡거나 밝은 곳에 적응한 상태에 있다.",
+"example": "어둠에 눈이 익자 낯익은 방 안 풍경이 조금씩 드러났다.",
+"note": "익다02"
+},
+{
+"category": "다의어",
+"term": "일다",
+"sense": 1,
+"definition": "없던 현상이 생기다.",
+"example": "파문이 일다.",
+"note": "일다01"
+},
+{
+"category": "다의어",
+"term": "일다",
+"sense": 2,
+"definition": "희미하거나 약하던 것이 왕성하여지다.",
+"example": "꺼져 가던 불길이 일어 주변이 밝아졌다.",
+"note": "일다01"
+},
+{
+"category": "다의어",
+"term": "일다",
+"sense": 3,
+"definition": "겉으로 부풀거나 위로 솟아오르다.",
+"example": "보풀이 일다. / 거품이 일다.",
+"note": "일다01"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 1,
+"definition": "【…을】 팔다리나 막대기 따위를 내뻗치어 대상물을 힘껏 건드리다.",
+"example": "한 아이가 골문을 향해 공을 힘차게 지른다.",
+"note": "지르다02 [1]"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 2,
+"definition": "【…을】 냄새가 갑자기 후각을 자극하다.",
+"example": "구린내가 코를 지른다.",
+"note": "지르다02 [1]"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 3,
+"definition": "【…을】 도박이나 내기에서, 돈이나 물건 따위를 걸다.",
+"example": "판돈을 지르다.",
+"note": "지르다02 [1]"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 1,
+"definition": "【…에 …을】 양쪽 사이를 막대기나 줄 따위로 가로 건너막거나 내리꽂다.",
+"example": "머리에 비녀를 지르다.",
+"note": "지르다02 [2]"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"sense": 2,
+"definition": "【…에 …을】 불을 붙이다.",
+"example": "논둑에 불을 지르다.",
+"note": "지르다02 [2]"
+},
+{
+"category": "다의어",
+"term": "지르다",
+"definition": "【…을】 목청을 높여 소리를 크게 내다.",
+"example": "괴성을 지르다.",
+"note": "지르다03"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 1,
+"definition": "【…을】 사개를 맞추어 가구나 상자 따위를 만들다.",
+"example": "관을 짜다. / 장롱을 짜다.",
+"note": "짜다01 [1]"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 2,
+"definition": "【…을】 실이나 끈 따위를 씨와 날로 결어서 천 따위를 만들다.",
+"example": "가마니를 짜다. / 돗자리를 짜다. / 베를 짜다.",
+"note": "짜다01 [1]"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 3,
+"definition": "【…을】 머리를 틀어 상투를 만들다.",
+"note": "짜다01 [1]"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 4,
+"definition": "【…을】 사람을 모아 무리를 만들다.",
+"example": "편을 짜다. / 네 사람씩 조를 짜다.",
+"note": "짜다01 [1]"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 5,
+"definition": "【…을】 계획이나 일정 따위를 세우다.",
+"example": "생활 계획표를 짜다. / 시간표를 짜다.",
+"note": "짜다01 [1]"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 1,
+"definition": "【…을】 누르거나 비틀어서 물기나 기름 따위를 빼내다.",
+"example": "여드름을 짜다. / 치약을 짜다.",
+"note": "짜다02"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 2,
+"definition": "【…을】 온갖 수단을 써서 남의 재물 따위를 빼앗다.",
+"note": "짜다02"
+},
+{
+"category": "다의어",
+"term": "짜다",
+"sense": 3,
+"definition": "【…을】 어떤 새로운 것을 생각해 내기 위하여 온 힘을 기울이거나, 온 정신을 기울이다.",
+"example": "생각을 짜다. / 지혜를 짜다.",
+"note": "짜다02"
+},
+{
+"category": "다의어",
+"term": "차다",
+"definition": "【…에】【…으로】 일정한 공간에 사람, 사물, 냄새 따위가 더 들어갈 수 없이 가득하게 되다.",
+"example": "독에 물이 가득 차다.",
+"note": "차다01 [1]"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 1,
+"definition": "【…에】 감정이나 기운 따위가 가득하게 되다.",
+"example": "실의에 차다. / 적의에 차다.",
+"note": "차다01 [2]"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 2,
+"definition": "【…에】 어떤 대상이 흡족하게 마음에 들다.",
+"note": "차다01 [2]"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 3,
+"definition": "【…에】 어떤 높이나 한도에 이르는 상태가 되다.",
+"example": "쌓인 눈이 가랑이까지 찼다. / 말이 목구멍까지 차 있다.",
+"note": "차다01 [2]"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 1,
+"definition": "【…을】 발로 내어 지르거나 받아 올리다.",
+"example": "공을 차다. / 제기를 차다.",
+"note": "차다02"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 2,
+"definition": "【…을】 발을 힘껏 뻗어 사람을 치다.",
+"example": "그는 상대편 선수를 발로 찼다.",
+"note": "차다02"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 3,
+"definition": "【…을】 혀끝을 입천장 앞쪽에 붙였다가 떼어 소리를 내다.",
+"example": "혀를 끌끌 차다.",
+"note": "차다02"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 4,
+"definition": "【…을】 발로 힘 있게 밀어젖히다.",
+"example": "선수들은 출발선을 차며 힘차게 내달렸다.",
+"note": "차다02"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 5,
+"definition": "【…을】 (속되게) 주로 남녀 관계에서 일방적으로 관계를 끊다.",
+"example": "친구는 5년을 사귄 사람을 차 버렸다.",
+"note": "차다02"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 6,
+"definition": "【…을】 날쌔게 빼앗거나 움켜 가지다.",
+"example": "매가 병아리를 차서 하늘 높이 날아갔다. / 소매치기가 지갑을 차서 달아났다.",
+"note": "차다02"
+},
+{
+"category": "다의어",
+"term": "차다",
+"sense": 7,
+"definition": "【…을】 (비유적으로) 자기에게 베풀어지거나 차례가 오는 것을 받아들이지 않다.",
+"example": "들어오는 복을 차다.",
+"note": "차다02"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 1,
+"definition": "바람이 세차게 불거나 비, 눈 따위가 세차게 뿌리다.",
+"example": "세찬 눈보라가 치다.",
+"note": "치다01"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 2,
+"definition": "천둥이나 번개 따위가 큰 소리나 빛을 내면서 일어나다.",
+"example": "벼락이 치다.",
+"note": "치다01"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 3,
+"definition": "서리가 몹시 차갑게 내리다.",
+"example": "된서리가 치는 바람에 농작물이 다 얼어 버렸다.",
+"note": "치다01"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 4,
+"definition": "물결이나 파도 따위가 일어 움직이다.",
+"example": "파도가 가볍게 치다.",
+"note": "치다01"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 1,
+"definition": "【…에 …을】 막이나 그물, 발 따위를 펴서 벌이거나 늘어뜨리다.",
+"example": "천막을 치다. / 진을 치다. / 대문에 금줄을 치다.",
+"note": "치다05"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 2,
+"definition": "【…에 …을】 벽 따위를 둘러서 세우거나 쌓다.",
+"example": "싸리나무로 담을 치다.",
+"note": "치다05"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 1,
+"definition": "【…을】 가축이나 가금 따위를 기르다.",
+"example": "양을 치다.",
+"note": "치다07"
+},
+{
+"category": "다의어",
+"term": "치다",
+"sense": 2,
+"definition": "【…을】 식물이 가지나 뿌리를 밖으로 돋아 나오게 하다.",
+"example": "나무가 가지를 많이 쳐서 제법 무성하다.",
+"note": "치다07"
+},
+{
+"category": "다의어",
+"term": "치르다",
+"definition": "【…에/에게 …을】 주어야 할 돈을 내주다.",
+"example": "주인에게 내일까지 아파트 잔금을 치러야 한다.",
+"note": "치르다 [1]"
+},
+{
+"category": "다의어",
+"term": "치르다",
+"sense": 1,
+"definition": "【…을】 무슨 일을 겪어 내다.",
+"example": "시험을 치르다. / 잔치를 치르다.",
+"note": "치르다 [2]"
+},
+{
+"category": "다의어",
+"term": "치르다",
+"sense": 2,
+"definition": "【…을】 아침, 점심 따위를 먹다.",
+"example": "아침을 치르고 대문을 나서던 참이었다.",
+"note": "치르다 [2]"
+},
+{
+"category": "다의어",
+"term": "칼",
+"definition": "물건을 베거나 썰거나 깎는 데 쓰는 도구. 날과 자루로 이루어져 있다.",
+"related": [
+"칼(을) 갈다[벼리다]",
+"칼(을) 품다"
+],
+"note": "칼01"
+},
+{
+"category": "관용구",
+"term": "칼(을) 갈다[벼리다]",
+"sense": 1,
+"definition": "싸움이나 침략 따위를 준비하다.",
+"note": "'칼'과 관련된 관용구"
+},
+{
+"category": "관용구",
+"term": "칼(을) 갈다[벼리다]",
+"sense": 2,
+"definition": "복수를 준비하다.",
+"note": "'칼'과 관련된 관용구"
+},
+{
+"category": "관용구",
+"term": "칼(을) 품다",
+"definition": "살의를 품다.",
+"note": "'칼'과 관련된 관용구"
+},
+{
+"category": "다의어",
+"term": "칼",
+"definition": "「역사」 죄인에게 씌우던 형틀. 두껍고 긴 널빤지의 한끝에 구멍을 뚫어 죄인의 목을 끼우고 비녀장을 질렀다.",
+"note": "칼02"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 1,
+"definition": "너무 마르거나 춥거나 하여 틈이 생겨서 갈라지다.",
+"example": "논바닥이 트다. / 손이 트다. / 입술이 트다.",
+"note": "트다01"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 2,
+"definition": "식물의 싹, 움, 순 따위가 벌어지다.",
+"example": "움이 트다.",
+"note": "트다01"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 3,
+"definition": "날이 새면서 동쪽 하늘이 훤해지다.",
+"example": "어느덧 동이 트기 시작했다.",
+"note": "트다01"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 4,
+"definition": "더 기대할 것이 없는 상태가 되다.",
+"example": "차가 끊겨서 오늘 가기는 텄다.",
+"note": "트다01"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 1,
+"definition": "【…을】 막혀 있던 것을 치우고 통하게 하다.",
+"example": "길을 트다. / 벽을 트다.",
+"note": "트다02 [1]"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 2,
+"definition": "【…을】 장(場) 따위를 열다.",
+"example": "난장을 트면 전국 각지에서 장사꾼들이 몰려든다.",
+"note": "트다02 [1]"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 1,
+"definition": "【(…과) …을】 서로 스스럼없이 사귀는 관계가 되다.",
+"example": "친구와 마음을 트고 지내다.",
+"note": "트다02 [2]"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 2,
+"definition": "【(…과) …을】 서로 거래하는 관계를 맺다.",
+"example": "은행과 거래를 트다.",
+"note": "트다02 [2]"
+},
+{
+"category": "다의어",
+"term": "트다",
+"sense": 3,
+"definition": "【(…과) …을】 어떤 사람과 해라체를 쓰거나 반말을 하는 상태가 되다.",
+"example": "나이도 동갑이니 우리 말을 트고 지내자.",
+"note": "트다02 [2]"
+},
+{
+"category": "다의어",
+"term": "패다",
+"sense": 1,
+"definition": "곡식의 이삭 따위가 나오다.",
+"example": "보리가 패다.",
+"note": "패다01"
+},
+{
+"category": "다의어",
+"term": "패다",
+"sense": 2,
+"definition": "사내아이의 목소리가 변성기를 지나 깊고 굵게 되다.",
+"note": "패다01"
+},
+{
+"category": "다의어",
+"term": "패다",
+"definition": "【…이】 머리 따위가 몹시 아프고 쑤시다.",
+"example": "술을 많이 먹은 다음 날은 어김없이 머리가 팬다.",
+"note": "패다02"
+},
+{
+"category": "다의어",
+"term": "패다",
+"definition": "【…을】 사정없이 마구 때리다.",
+"example": "사람을 패다.",
+"note": "패다03"
+},
+{
+"category": "다의어",
+"term": "패다",
+"definition": "【…을】 도끼로 장작 따위를 쪼개다.",
+"example": "장작을 패다.",
+"note": "패다04"
+},
+{
+"category": "다의어",
+"term": "행각",
+"hanja": "行脚",
+"sense": 1,
+"definition": "(주로 부정적인 의미로 쓰여) 어떤 목적으로 여기저기 돌아다님.",
+"example": "구걸 행각. / 도피 행각. / 애정 행각. / 사기 행각을 벌이다.",
+"note": "행각01"
+},
+{
+"category": "혼동 어휘",
+"term": "행위",
+"hanja": "行爲",
+"definition": "사람이 의지를 가지고 하는 짓.",
+"example": "호객 행위.",
+"note": "'행위'는 긍정문과 부정문 모두에 사용됨('행각'은 주로 부정적 의미)."
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 1,
+"definition": "시간이나 세월이 지나가다.",
+"example": "오랜 시간이 흐르다.",
+"note": "흐르다01 [1]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 2,
+"definition": "걸치거나 두른 것이 미끄러지거나 처지다.",
+"example": "체육복 바지가 흘러 버렸다.",
+"note": "흐르다01 [1]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 1,
+"definition": "【…으로】 액체 따위가 낮은 곳으로 내려가거나 넘쳐서 떨어지다.",
+"example": "물은 높은 데서 낮은 데로 흐른다.",
+"note": "흐르다01 [2]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 2,
+"definition": "【…으로】 어떤 한 방향으로 치우쳐 쏠리다.",
+"example": "이야기가 엉뚱한 방향으로 흐르고 있다.",
+"note": "흐르다01 [2]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 1,
+"definition": "【…에】 공중이나 물 위에 떠서 미끄러지듯이 움직이다.",
+"example": "하늘에 흐르는 구름.",
+"note": "흐르다01 [3]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 2,
+"definition": "【…에】 기운이나 상태 따위가 겉으로 드러나다.",
+"example": "옷차림에 촌티가 흐르다.",
+"note": "흐르다01 [3]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 3,
+"definition": "【…에】 윤기, 광택 따위가 번지르르하게 나다.",
+"example": "잎사귀에 윤기가 흐르다.",
+"note": "흐르다01 [3]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 4,
+"definition": "【…에】 빛, 소리, 향기 따위가 부드럽게 퍼지다.",
+"example": "밤하늘에 흐르는 달빛.",
+"note": "흐르다01 [3]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 5,
+"definition": "【…에서】 피, 땀, 눈물 따위가 몸 밖으로 넘쳐서 떨어지다.",
+"example": "온몸에 땀이 흐르다.",
+"note": "흐르다01 [3]"
+},
+{
+"category": "다의어",
+"term": "흐르다",
+"sense": 6,
+"definition": "【…에】 전기나 가스 따위가 선이나 관을 통하여 지나가다.",
+"example": "이 전신주에는 고압 전류가 흘러 매우 위험하다.",
+"note": "흐르다01 [3]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 1,
+"definition": "【…이】 새로운 신분이나 지위를 가지다.",
+"example": "커서 의사가 되고 싶다.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 2,
+"definition": "【…으로】 다른 것으로 바뀌거나 변하다.",
+"example": "얼음이 물이 되다. / 저 사람은 전혀 다른 사람이 됐다.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 3,
+"definition": "【…이】 어떤 때나 시기, 상태에 이르다.",
+"example": "이제는 계절이 봄이 되었다.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 4,
+"definition": "【…이】 일정한 수량에 차거나 이르다.",
+"example": "이 안에 찬성하는 사람이 50명이 되었다.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 5,
+"definition": "【…이】 어떤 대상의 수량, 요금 따위가 얼마이거나 장소가 어디이다.",
+"example": "요금이 만 원이 되겠습니다. / 내릴 곳은 서울역이 되겠습니다.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 6,
+"definition": "【…이】 사람으로서의 품격과 덕을 갖추다.",
+"example": "그는 제대로 된 사람이다. / 그런 행동을 한 것은 그가 인격이 된 사람이라는 증거이다.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 7,
+"definition": "【…이】 어떠한 심리적 상태에 놓이다.",
+"example": "마음속으로 무척 걱정이 되었다. / 그 말을 들으니 안심이 되는구나.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 8,
+"definition": "【…에게 …이】【(…과) …이】 어떤 사람과 어떤 관계를 맺고 있다.",
+"example": "이 사람은 제 아우가 됩니다. / 저놈은 내게 원수가 된다.",
+"note": "되다01 「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 1,
+"definition": "【…으로】 어떤 재료나 성분으로 이루어지다.",
+"example": "나무로 된 책상. / 철사로 된 그물망. / 사면이 온통 유리창으로 된 집.",
+"note": "되다01 「동사」 [2]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 2,
+"definition": "【…으로】 어떤 형태나 구조로 이루어지다.",
+"example": "타원형으로 된 탁자. / 방 세 개로 된 집. / 열두 마당으로 된 창극.",
+"note": "되다01 「동사」 [2]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 3,
+"definition": "【…으로】 문서나 서류에 어떤 사람이나 조직의 이름이 쓰이다.",
+"example": "전 시민의 이름으로 된 청원서. / 정부의 명의로 된 항의서.",
+"note": "되다01 「동사」 [2]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 1,
+"definition": "【-게】 어떤 사물이나 현상이 생겨나거나 만들어지다.",
+"example": "밥이 맛있게 되다. / 이제 밥이 다 됐다. / 맞춘 옷이 이제 됐다.",
+"note": "되다01 「동사」 [3] ('-게' 대신에 '잘, 적당히, 원하는 대로' 따위의 부사나 부사어가 사용되기도 한다.)"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 2,
+"definition": "【-게】 일이 잘 이루어지다.",
+"example": "일이 깔끔하게 되다. / 요즘은 사업이 그럭저럭 되고 있다.",
+"note": "되다01 「동사」 [3]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 3,
+"definition": "【-게】 작물 따위가 잘 자라다.",
+"example": "곡식이 알차게 되다. / 이 고장은 땅이 기름져 작물이 풍성하게 된다.",
+"note": "되다01 「동사」 [3]"
+},
+{
+"category": "다의어",
+"term": "되다",
+"sense": 4,
+"definition": "【-게】 어떤 사물이 제 기능을 다 하거나 수명이 다하다.",
+"example": "기계가 못 쓰게 되다. / 배터리가 다 되다.",
+"note": "되다01 「동사」 [3]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 1,
+"definition": "【…을】 눈으로 대상의 존재나 형태적 특징을 알다.",
+"example": "잡지에서 난생처음 보는 단어를 발견하였다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 2,
+"definition": "【…을】 눈으로 대상을 즐기거나 감상하다.",
+"example": "영화를 보다. / 그는 텔레비전을 보다가 잠이 들었다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 3,
+"definition": "【…을】 책이나 신문 따위를 읽다.",
+"example": "신문을 보다. / 여가 시간에는 책을 보는 습관을 들이는 것이 좋다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 4,
+"definition": "【…을】 대상의 내용이나 상태를 알기 위하여 살피다.",
+"example": "시계를 보다. / 현미경을 보다. / 거울을 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 5,
+"definition": "【…을】 일정한 목적 아래 만나다.",
+"example": "맞선을 보다. / 나 좀 잠깐 볼 수 있을까?",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 6,
+"definition": "【…을】 맡아서 보살피거나 지키다.",
+"example": "그녀는 아이를 봐 줄 사람을 구하였다. / 소년은 집을 보다가 잠이 들었다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 7,
+"definition": "【…을】 상대편의 형편 따위를 헤아리다.",
+"example": "너를 보아 내가 참아야지. / 그의 사정을 보니 딱하게 되었다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 8,
+"definition": "【…을】 점 따위로 운수를 알아보다.",
+"example": "사주를 보다. / 궁합을 보다. / 관상을 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 9,
+"definition": "【…을】 ('시험'을 뜻하는 목적어와 함께 쓰여) 자신의 실력이 나타나도록 치르다.",
+"example": "시험 잘 봤니?",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 10,
+"definition": "【…을】 어떤 일을 맡아 하다.",
+"example": "사무를 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 11,
+"definition": "【…을】 어떤 결과나 관계를 맺기에 이르다.",
+"example": "끝장을 보다. / 결말을 보다. / 합의를 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 12,
+"definition": "【…을】 음식상이나 잠자리 따위를 채비하다.",
+"example": "그는 술상을 보느라 바쁘다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 13,
+"definition": "【…을】 (완곡한 표현으로) 대소변을 누다.",
+"example": "대변을 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 14,
+"definition": "【…을】 어떤 관계의 사람을 얻거나 맞다.",
+"example": "며느리를 보다. / 그는 늦게나마 손자를 보게 되었다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 15,
+"definition": "【…을】 부도덕한 이성 관계를 갖다.",
+"example": "시앗을 보다. / 샛서방을 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 16,
+"definition": "【…을】 어떤 일을 당하거나 겪거나 얻어 가지다.",
+"example": "이익을 보다. / 손해를 보면서 물건을 팔 사람은 없다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 17,
+"definition": "【…을】 의사가 환자를 진찰하다.",
+"example": "원장님은 오전에만 환자를 보십니다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 18,
+"definition": "【…을】 신문, 잡지 따위를 구독하다.",
+"example": "보던 신문을 끊고 다른 신문으로 바꾸다. / 잡지 보는 거 있어요?",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 19,
+"definition": "【…을】 음식 맛이나 간을 알기 위하여 시험 삼아 조금 먹다.",
+"example": "찌개 맛 좀 봐 주세요. / 장맛을 보면 그 집의 음식 솜씨를 알 수 있다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 20,
+"definition": "【…을】 남의 결점 따위를 들추어 말하다.",
+"example": "다른 사람의 흉을 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 21,
+"definition": "【…을】 남의 결점이나 약점 따위를 발견하다.",
+"example": "남의 단점을 보기는 쉬우나 자기의 단점을 보기는 어렵다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 22,
+"definition": "【…을】 기회, 때, 시기 따위를 살피다.",
+"example": "기회를 봐서 부모님께 말씀드리는 게 좋겠다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 23,
+"definition": "【…을】 땅, 집, 물건 따위를 사기 위하여 살피다.",
+"example": "집을 보러 다니다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 24,
+"definition": "【…을】 ('장' 또는 '시장'과 같은 목적어와 함께 쓰여) 물건을 팔거나 사다.",
+"example": "시장을 보다.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 25,
+"definition": "【…을】 (주로 '보고' 꼴로 쓰여) 고려의 대상이나 판단의 기초로 삼다.",
+"example": "너를 보고 하는 말이 아니야.",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 26,
+"definition": "【…을】 (주로 '보고' 꼴로 쓰여) 무엇을 바라거나 의지하다.",
+"example": "사람을 보고 결혼해야지 재산을 보고 결혼해서야 되겠니?",
+"note": "보다01 [Ⅰ]「동사」 [1]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"definition": "【(…과)】【…을】 사람을 만나다.",
+"example": "학교를 졸업한 이후에 어제 처음으로 그녀와 서로 보게 되었다.",
+"note": "보다01 [Ⅰ]「동사」 [2]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"definition": "【…을 …으로】【…을 -게】【…을 -고】【…으로】【-고】 대상을 평가하다.",
+"example": "어쩐지 그의 행동을 실수로 보아 줄 수가 없었다.",
+"note": "보다01 [Ⅰ]「동사」 [3]"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 1,
+"definition": "(동사 뒤에서 '-어 보다' 구성으로 쓰여) 어떤 행동을 시험 삼아 함을 나타내는 말.",
+"example": "먹어 보다. / 입어 보다. / 말을 들어 보다. / 꼼꼼히 따져 보다.",
+"note": "보다01 [Ⅱ]「보조 동사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 2,
+"definition": "(동사 뒤에서 '-어 보다' 구성으로 쓰여) 어떤 일을 경험함을 나타내는 말.",
+"example": "이런 일을 당해 보지 않은 사람은 내 심정을 모른다.",
+"note": "보다01 [Ⅱ]「보조 동사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 3,
+"definition": "(동사 뒤에서 '-고 보니', '-고 보면' 구성으로 쓰여) 앞말이 뜻하는 행동을 하고 난 후에 뒷말이 뜻하는 사실을 새로 깨닫게 되거나, 뒷말이 뜻하는 상태로 됨을 나타내는 말.",
+"example": "마구 때리고 보니 아무리 악인이지만 너무했다는 생각이 들었다.",
+"note": "보다01 [Ⅱ]「보조 동사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 4,
+"definition": "(동사 뒤에서 '-다(가) 보니', '-다(가) 보면' 구성으로 쓰여) 앞말이 뜻하는 행동을 하는 과정에서 뒷말이 뜻하는 사실을 새로 깨닫게 되거나, 뒷말이 뜻하는 상태로 됨을 나타내는 말.",
+"example": "오래 살다 보니 이런 좋은 일도 있네.",
+"note": "보다01 [Ⅱ]「보조 동사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 1,
+"definition": "(동사나 형용사, '이다' 뒤에서 '-은가/는가/나 보다' 구성으로 쓰여) 앞말이 뜻하는 행동이나 상태를 추측하거나 어렴풋이 인식하고 있음을 나타내는 말.",
+"example": "식구들이 모두 집에 돌아왔나 보다. / 열차가 도착했나 보다.",
+"note": "보다01 [Ⅲ]「보조 형용사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 2,
+"definition": "(동사 뒤에서 '-을까 보다' 구성으로 쓰여) 앞말이 뜻하는 행동을 할 의도를 가지고 있음을 나타내는 말.",
+"example": "외국으로 떠나 버릴까 보다. / 한 대 때릴까 보다.",
+"note": "보다01 [Ⅲ]「보조 형용사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 3,
+"definition": "(동사나 형용사, '이다' 뒤에서 '-을까 봐', '-을까 봐서' 구성으로 쓰여) 앞말이 뜻하는 상황이 될 것 같아 걱정하거나 두려워함을 나타내는 말.",
+"example": "야단맞을까 봐 얘기도 못 꺼냈어. / 추울까 봐서 하루 종일 집 안에만 있었다. / 강도일까 봐 문을 열지 않았다.",
+"note": "보다01 [Ⅲ]「보조 형용사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 4,
+"definition": "(형용사나 '이다' 뒤에서 '-고 보다' 구성으로 쓰여) 앞말이 뜻하는 상황이나 상태가 다른 것보다 우선임을 나타내는 말.",
+"example": "무엇보다 건강하고 볼 일이다.",
+"note": "보다01 [Ⅲ]「보조 형용사」"
+},
+{
+"category": "다의어",
+"term": "보다",
+"sense": 5,
+"definition": "(형용사나 '이다' 뒤에서 '-다 보니', '-고 보니' 구성으로 쓰여) 앞말이 뜻하는 상태가 뒷말의 이유나 원인이 됨을 나타내는 말.",
+"example": "돌이 워낙 무겁다 보니 혼자서 들 수가 없었다.",
+"note": "보다01 [Ⅲ]「보조 형용사」"
+},
+{
+"category": "혼동 어휘",
+"term": "대다",
+"definition": "차, 배 따위의 탈것을 멈추어 서게 하다.",
+"example": "그는 어제 집 앞에 차를 대다가 접촉 사고를 냈다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 데다"
+},
+{
+"category": "혼동 어휘",
+"term": "데다",
+"definition": "불이나 뜨거운 기운으로 말미암아 살이 상하다. 또는 그렇게 하다.",
+"example": "끓는 물에 손을 데었다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 대다"
+},
+{
+"category": "혼동 어휘",
+"term": "들리다",
+"definition": "병에 걸리다.",
+"example": "그는 심한 폐렴에 들렸다.",
+"note": "들리다01; 학습TIP 혼동하기 쉬운 단어: 들이다/들르다"
+},
+{
+"category": "혼동 어휘",
+"term": "들리다",
+"definition": "'듣다01'의 피동사.",
+"example": "전화가 고장이 났는지 잘 들리지 않는다.",
+"note": "들리다03; 학습TIP 혼동하기 쉬운 단어: 들이다/들르다"
+},
+{
+"category": "혼동 어휘",
+"term": "들이다",
+"definition": "집 안에서 부릴 사람을 고용하다.",
+"example": "손님이 많아져서 우리는 새로 일꾼을 가게에 들였다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 들리다/들르다"
+},
+{
+"category": "혼동 어휘",
+"term": "들르다",
+"definition": "지나는 길에 잠깐 들어가 머무르다.",
+"example": "그는 퇴근길에 문구점에 들러 아이들 선물을 샀다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 들리다/들이다"
+},
+{
+"category": "혼동 어휘",
+"term": "때다",
+"definition": "아궁이 따위에 불을 지피어 타게 하다.",
+"example": "아궁이에 장작을 때다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 떼다"
+},
+{
+"category": "혼동 어휘",
+"term": "떼다",
+"definition": "붙어 있거나 잇닿은 것을 떨어지게 하다.",
+"example": "벽에서 벽보를 떼다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 때다"
+},
+{
+"category": "혼동 어휘",
+"term": "낫다",
+"definition": "병이나 상처 따위가 고쳐져 본래대로 되다.",
+"example": "그는 가져온 약을 다 먹은 후에야 감기가 나았다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 나다/낳다"
+},
+{
+"category": "혼동 어휘",
+"term": "나다",
+"definition": "인물이 배출되다.",
+"example": "우리 고장에서는 예로부터 큰 선비가 많이 났다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 낫다/낳다"
+},
+{
+"category": "혼동 어휘",
+"term": "낳다",
+"definition": "어떤 결과를 이루거나 가져오다.",
+"example": "소문이 소문을 낳아 상황이 점점 악화되고 있었다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 낫다/나다"
+},
+{
+"category": "혼동 어휘",
+"term": "새다",
+"definition": "어떤 소리가 일정 범위에서 빠져나가거나 바깥으로 소리가 들리다.",
+"example": "바로 옆방에서 시끄러운 노랫소리가 새어 나온다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 세다"
+},
+{
+"category": "혼동 어휘",
+"term": "세다",
+"definition": "머리카락이나 수염 따위의 털이 희어지다.",
+"example": "머리가 허옇게 세다.",
+"note": "학습TIP 혼동하기 쉬운 단어: 새다"
+}
+];
+
+window.EXAM_QUESTIONS = [
+{
+"category": "고유어",
+"question": "밑줄 친 고유어의 의미로 적절하지 않은 것은?",
+"choices": [
+"땅에 웅숭그리고 시적시적 ‹노량›으로 땅만 판다. → 어정어정 놀면서 느릿느릿.",
+"끙끙 앓는 소리를 내며 이틀 밤낮을 ‹내처› 잠만 잤다. → 어떤 일 끝에 더 나아가.",
+"아내는 남편의 입에서 얼음이 깨물리는 소리가 참으로 ‹재겹게› 들렸다. → 몹시 지겹게.",
+"장마 통에 집을 잃고 ‹깜냥›엔 비를 피해 오길 잘했다고 안심하는 성싶었다. → 스스로 일을 헤아림.",
+"정말 접시처럼 발랑 ‹되바라진› 애구나, 못쓰겠어. → 어린 나이에 어수룩한 데가 없고 얄밉도록 지나치게 똑똑한."
+],
+"answer": 1,
+"explanation": "'내처'는 '어떤 일 끝에 더 나아가'(예: 기다린 김에 내처 저녁때까지 기다리기로 마음먹었다.) 외에 '줄곧 한결같이'라는 의미가 있다. ②에서 '내처'는 후자의 의미이다."
+},
+{
+"category": "고유어",
+"question": "'서로 우열이나 승부를 가리다.'라는 의미의 고유어는?",
+"choices": [
+"맞갑다",
+"맞걸다",
+"맞갖다",
+"맞매다",
+"맞앉다"
+],
+"answer": 0,
+"explanation": "맞걸다: 양쪽으로 걸칠 수 있도록 마주 걸다. 맞갖다: 마음이나 입맛에 꼭 맞다. 맞매다: 논이나 밭을 마지막으로 매다. 맞앉다: 서로 상대하여 마주 앉다."
+},
+{
+"category": "고유어",
+"question": "밑줄 친 고유어의 쓰임이 적절하지 않은 것은?",
+"choices": [
+"그는 선생님 앞에서 ‹사뭇› 술을 마셨다.",
+"‹설멍한› 바지를 입고 나타난 그는 숨통이 막혀 보였다.",
+"그는 ‹실팍한› 몸집인데도 쌀 한 가마를 제대로 못 옮겼다.",
+"소설가가 되겠다던 현이 드디어 어떤 ‹싹수›를 보이기 시작하였다.",
+"할머니는 사과 값으로 만 원을 내고 ‹우수리›로 천 원을 거슬러 받았다."
+],
+"answer": 1,
+"explanation": "'설멍하다'는 '옷이 몸에 맞지 않고 짧다.'라는 의미이다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 밑줄 친 부분의 띄어쓰기가 바른 것은?",
+"choices": [
+"내가 아는 ‹데로› 설명해 보겠다.",
+"너를 만난 ‹지› 벌써 3년이 지났다.",
+"그가 화를 ‹낼만도› 하다.",
+"가방에 지갑 ‹뿐›이다."
+],
+"answer": 1,
+"explanation": "시간의 경과를 나타내는 '지'는 의존 명사이므로 띄어 쓴다(만난 지). '아는 대로'(관형어 뒤 의존 명사 '대로'), '낼 만도 하다'(보조 용언 '만하다' 사이에 조사 '도'가 끼면 띄어 씀), '지갑뿐'(체언 뒤 조사 '뿐')이 바르다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 모두 바른 것은?",
+"choices": [
+"케익, 쥬스",
+"슈퍼마켓, 플루트",
+"리더쉽, 워크샵",
+"초콜렛, 앰뷸런스"
+],
+"answer": 1,
+"explanation": "'슈퍼마켓', '플루트'가 바른 표기이다. 케이크·주스, 리더십·워크숍, 초콜릿·앰뷸런스가 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 어휘의 쓰임이 적절하지 않은 것은?",
+"choices": [
+"그는 너무 ‹어쭙잖은› 변명을 늘어놓았다.",
+"친구가 ‹오랜만에› 찾아왔다.",
+"그녀는 ‹금새› 사랑에 빠졌다.",
+"‹며칠› 동안 ‹핼쑥해진› 얼굴이었다."
+],
+"answer": 2,
+"explanation": "'지금 바로'를 뜻하는 '금시에'의 준말은 '금세'이다. '금새'는 '물건의 값'을 뜻하는 다른 말이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷 표기가 올바른 것은?",
+"choices": [
+"초점",
+"나뭇잎",
+"개수",
+"모두 맞음"
+],
+"answer": 1,
+"explanation": "'나뭇잎'은 순우리말 합성어로 'ㄴ' 소리가 덧나므로 사이시옷을 적는다. 초점(焦點)과 개수(個數)는 한자어끼리의 결합이므로 사이시옷을 쓰지 않는다."
+},
+{
+"category": "로마자 표기",
+"question": "다음 중 로마자 표기가 올바른 것은?",
+"choices": [
+"신라 - Sinra",
+"압구정 - Apkkujeong",
+"왕십리 - Wangsimni",
+"낙동강 - Naktonggang"
+],
+"answer": 2,
+"explanation": "왕십리는 자음 동화를 반영하여 [왕심니] → Wangsimni로 적는다. 신라는 [실라] → Silla, 된소리되기는 반영하지 않으므로 압구정 Apgujeong, 낙동강 Nakdonggang이다."
+},
+{
+"category": "한자 성어",
+"question": "다음 중 사자성어의 뜻풀이가 바르지 않은 것은?",
+"choices": [
+"결초보은 - 은혜를 잊지 않고 갚음",
+"교각살우 - 뿔을 고치려다 소를 죽임",
+"토사구팽 - 사냥이 끝나면 사냥개를 삶아 먹음",
+"견강부회 - 옛것을 익혀 새것을 앎"
+],
+"answer": 3,
+"explanation": "'견강부회'는 이치에 맞지 않는 말을 억지로 끌어 붙여 자기에게 유리하게 함을 뜻한다. 옛것을 익혀 새것을 앎은 '온고지신'이다."
+},
+{
+"category": "고유어",
+"question": "다음 중 고유어의 뜻이 올바르게 짝지어진 것은?",
+"choices": [
+"시나브로 - 모르는 사이에 조금씩",
+"안다미로 - 부족하게",
+"바투 - 멀리 떨어져서",
+"가멸다 - 가난하다"
+],
+"answer": 0,
+"explanation": "안다미로는 '담은 것이 그릇에 넘치도록 많이', 바투는 '두 대상의 사이가 썩 가깝게', 가멸다는 '재산이나 자원이 넉넉하고 많다'는 뜻이다."
+},
+{
+"category": "국어문화",
+"question": "다음 중 남북한 언어의 차이점에 대한 설명으로 옳지 않은 것은?",
+"choices": [
+"북한은 두음법칙을 인정하지 않는다.",
+"북한은 사이시옷을 사용하지 않는다.",
+"북한 사전에서 'ㅇ'은 자음 순서 맨 마지막에 위치한다.",
+"북한은 모든 한자어를 고유어로 바꾸어 사용한다."
+],
+"answer": 3,
+"explanation": "북한도 모든 한자어를 고유어로 바꾸어 쓰지는 않으며, 많은 한자어가 그대로 쓰인다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 잘못된 것은?",
+"choices": [
+"열 내지 스물",
+"김 철수",
+"두시 삼십분 오초",
+"제1과"
+],
+"answer": 1,
+"explanation": "성과 이름은 붙여 쓰므로 '김철수'가 맞다. '내지'는 띄어 쓰며, '두시 삼십분 오초'처럼 순서를 나타내는 단위 명사는 수와 붙여 쓸 수 있고, '제1과'도 바르다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 본용언과 보조 용언의 띄어쓰기가 바른 것은?",
+"choices": [
+"강물에 떠내려가버렸다.",
+"책을 읽어도보아라.",
+"도와 달라.",
+"예뻐 지다."
+],
+"answer": 2,
+"explanation": "'도와 달라'는 본용언과 보조 용언이므로 띄어 쓰는 것이 원칙이다(붙여 씀도 허용). 앞말이 긴 합성 동사이면 붙여 쓸 수 없으므로 '떠내려가 버렸다', 앞말에 조사가 붙으면 '읽어도 보아라', '-어지다'는 붙여 써서 '예뻐지다'가 맞다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법이 올바른 문장은?",
+"choices": [
+"며칠 동안 비가 내렸다.",
+"육계장을 맛있게 먹었다.",
+"설겆이를 끝냈다.",
+"안절부절하는 모습이다."
+],
+"answer": 0,
+"explanation": "'며칠'이 맞다. '육개장', '설거지', '안절부절못하다'가 올바른 표기이다."
+},
+{
+"category": "한자 성어",
+"question": "다음 중 괄호 안에 들어갈 말로 가장 적절한 것은?",
+"passage": "이치에 맞지 않는 말을 억지로 끌어 붙이는 것을 (    )(이)라고 한다.",
+"choices": [
+"견강부회",
+"동병상련",
+"새옹지마",
+"토사구팽"
+],
+"answer": 0,
+"explanation": "이치에 맞지 않는 말을 억지로 끌어 붙여 자기에게 유리하게 하는 것을 '견강부회(牽强附會)'라고 한다."
+},
+{
+"category": "국어문화",
+"question": "다음 중 순화어가 올바르게 연결되지 않은 것은?",
+"choices": [
+"네티즌 - 누리꾼",
+"리플 - 댓글",
+"마스터키 - 만능열쇠",
+"가이드라인 - 보고서"
+],
+"answer": 3,
+"explanation": "가이드라인은 '지침'으로 순화하는 것이 적절하다."
+},
+{
+"category": "맞춤법",
+"question": "다음 문장에서 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"이 문서는 이것으로 ‹가름하겠습니다›.",
+"두 사람의 승패를 ‹갈음하기› 어렵다.",
+"밭에 ‹거름›을 주었다.",
+"그녀는 ‹거름›이 매우 느리다."
+],
+"answer": 2,
+"explanation": "대신하는 것은 '갈음', 승패를 정하는 것은 '가름', 비료는 '거름', 발을 옮기는 동작은 '걸음'이다. 따라서 '밭에 거름을 주었다'가 바르다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 '로서'와 '로써'의 쓰임이 바르지 않은 것은?",
+"choices": [
+"학생으로서 본분을 다해라.",
+"칼로써 과일을 깎다.",
+"눈물로써 호소했다.",
+"친구로써 충고한다."
+],
+"answer": 3,
+"explanation": "'로서'는 지위·신분·자격, '로써'는 도구·수단·재료를 나타낸다. 친구는 자격이므로 '친구로서'가 맞다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 단어의 쓰임이 바르지 않은 것은?",
+"choices": [
+"내일은 ‹반드시› 비가 올 것이다.",
+"고개를 ‹반드시› 들고 걸어라.",
+"그는 ‹반드시› 약속을 지킨다.",
+"모자챙을 ‹반듯이› 펴라."
+],
+"answer": 1,
+"explanation": "'반드시'는 '틀림없이', '반듯이'는 '모양이 비뚤어지지 않고 바르게'의 뜻이다. 고개를 똑바로 드는 것이므로 '반듯이'가 맞다."
+},
+{
+"category": "속담",
+"question": "다음 중 속담과 그 의미가 바르게 연결된 것은?",
+"choices": [
+"도둑이 제 발 저린다 - 지은 죄가 있어 마음이 조마조마함",
+"마른하늘에 날벼락 - 좋은 일이 생김",
+"언 발에 오줌 누기 - 근본적인 해결책",
+"구슬이 서 말이라도 꿰어야 보배다 - 무엇이든 많으면 좋음"
+],
+"answer": 0,
+"explanation": "'마른하늘에 날벼락'은 뜻밖의 재난, '언 발에 오줌 누기'는 효력이 오래가지 못하는 임시변통, '구슬이 서 말이라도 꿰어야 보배다'는 쓸모 있게 만들어야 값어치가 있다는 뜻이다."
+},
+{
+"category": "관용구",
+"question": "다음 중 신체 관용구의 뜻이 바른 것은?",
+"choices": [
+"귀가 얇다 - 청력이 약하다",
+"입이 짧다 - 식탐이 많다",
+"코가 납작해지다 - 기가 죽다",
+"눈이 맵다 - 시력이 나쁘다"
+],
+"answer": 2,
+"explanation": "귀가 얇다(남의 말을 쉽게 받아들임), 입이 짧다(음식을 가리거나 적게 먹음), 눈이 맵다(성격이 앙칼지다, 눈썰미가 있다)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 허용되지 않는 것은?",
+"choices": [
+"아는 척을 한다 (원칙) / 아는척을한다 (허용)",
+"불이 꺼져 간다 (원칙) / 불이 꺼져간다 (허용)",
+"대한 중학교 (원칙) / 대한중학교 (허용)",
+"만성 골수성 백혈병 (원칙) / 만성골수성백혈병 (허용)"
+],
+"answer": 0,
+"explanation": "본용언과 보조 용언 사이에 조사가 들어간 경우(아는 척을 한다)는 반드시 띄어 써야 하며 붙여 씀이 허용되지 않는다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어로만 짝지어진 것은?",
+"choices": [
+"오랜만에 - 단촐하다",
+"단출하다 - 안절부절하다",
+"어쭙잖다 - 안절부절못하다",
+"오랫만에 - 어쭙잖다"
+],
+"answer": 2,
+"explanation": "오랜만에, 단출하다, 어쭙잖다, 안절부절못하다가 올바른 표기이다. 오랫만에·단촐하다·어줍잖다·안절부절하다는 틀린 말이다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"날씨가 추운 데 안으로 들어오세요.",
+"머리 아픈데 먹는 약",
+"서류를 검토한 바 이상이 없습니다.",
+"그가 사는 데가 어디지?"
+],
+"answer": 3,
+"explanation": "'데'가 장소·일·경우를 뜻하면 의존 명사이므로 띄어 쓴다(사는 데, 아픈 데). 상황을 제시하는 연결 어미 '-ㄴ데'는 붙여 쓴다(추운데)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"앞서 말한바와 같다.",
+"머리 아픈데 먹는 약",
+"날씨가 추운데 안으로 들어오세요.",
+"그가 사는데가 어디지?"
+],
+"answer": 2,
+"explanation": "'추운데'의 '-ㄴ데'는 뒤 절의 상황을 제시하는 연결 어미이므로 붙여 쓴다. 장소·일·경우의 의존 명사 '데'는 띄어 쓴다(사는 데가, 아픈 데 먹는 약)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"그가 사는데가 어디지?",
+"얼마나 부지런한 지 모른다.",
+"어찌할바를 모르겠다.",
+"머리 아픈 데 먹는 약"
+],
+"answer": 3,
+"explanation": "'경우'를 뜻하는 '데'는 의존 명사이므로 띄어 쓴다(아픈 데). 방법·일을 뜻하는 '바'도 의존 명사(어찌할 바), 막연한 의문의 '-ㄴ지'는 어미이므로 붙여 쓴다(부지런한지)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"앞서 말한바와 같다.",
+"서류를 검토한 바 이상이 없습니다.",
+"어찌할 바를 모르겠다.",
+"그를 만난지 3년이 지났다."
+],
+"answer": 2,
+"explanation": "방법·일을 뜻하는 '바'는 의존 명사이므로 띄어 쓴다(어찌할 바, 말한 바). 앞 내용을 제시하는 연결 어미 '-ㄴ바'는 붙여 쓴다(검토한바)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"어찌할바를 모르겠다.",
+"앞서 말한바와 같다.",
+"얼마나 부지런한 지 모른다.",
+"서류를 검토한바 이상이 없습니다."
+],
+"answer": 3,
+"explanation": "'검토한바'의 '-ㄴ바'는 뒤 절의 배경이 되는 상황을 제시하는 연결 어미이므로 붙여 쓴다. 의존 명사 '바'는 띄어 쓴다(어찌할 바, 말한 바와)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"서류를 검토한 바 이상이 없습니다.",
+"날씨가 추운 데 안으로 들어오세요.",
+"어찌할바를 모르겠다.",
+"앞서 말한 바와 같다."
+],
+"answer": 3,
+"explanation": "'말한 바'의 '바'는 '일'을 뜻하는 의존 명사이므로 띄어 쓴다. 연결 어미 '-ㄴ바', '-ㄴ데'는 붙여 쓴다(검토한바, 추운데)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"십 년만에 만났다.",
+"얼마나 부지런한 지 모른다.",
+"그를 만난 지 3년이 지났다.",
+"묵묵히 일할뿐이다."
+],
+"answer": 2,
+"explanation": "시간의 경과를 나타내는 '지'는 의존 명사이므로 띄어 쓴다(만난 지). 막연한 의문의 '-ㄴ지'는 어미이므로 붙여 쓴다(부지런한지)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"그를 만난지 3년이 지났다.",
+"아는대로 말해라.",
+"얼마나 부지런한지 모른다.",
+"세 번만에 합격했다."
+],
+"answer": 2,
+"explanation": "막연한 의문을 나타내는 '-ㄴ지'는 어미이므로 붙여 쓴다. 시간의 경과를 나타내는 '지', '만'과 관형어 뒤 '대로'는 의존 명사이므로 띄어 쓴다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"십 년 만에 만났다.",
+"너 만 사랑해.",
+"세 번만에 합격했다.",
+"형 만 한 아우 없다."
+],
+"answer": 0,
+"explanation": "시간의 경과나 횟수를 나타내는 '만'은 의존 명사이므로 띄어 쓴다(십 년 만에, 세 번 만에). 한정·비교의 '만'은 조사이므로 붙여 쓴다(너만, 형만)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"3일만에 끝냈다.",
+"너 만 사랑해.",
+"세 번 만에 합격했다.",
+"십 년만에 만났다."
+],
+"answer": 2,
+"explanation": "횟수·시간의 경과를 나타내는 '만'은 의존 명사이므로 띄어 쓴다(세 번 만에, 3일 만에). 한정의 조사 '만'은 붙여 쓴다(너만)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"십 년만에 만났다.",
+"너 만 사랑해.",
+"형만한 아우 없다.",
+"형만 한 아우 없다."
+],
+"answer": 3,
+"explanation": "비교의 '만'은 조사이므로 체언에 붙여 쓰고, 뒤의 '하다'는 동사이므로 띄어 쓴다(형만 한). 시간 경과의 '만'은 띄어 쓴다(십 년 만에)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"형 만 한 아우 없다.",
+"한 달만에 돌아왔다.",
+"세 번만에 합격했다.",
+"너만 사랑해."
+],
+"answer": 3,
+"explanation": "한정의 '만'은 조사이므로 붙여 쓴다(너만). '지'와 '만'은 시간의 경과를 나타낼 때만 의존 명사로 띄어 쓴다(세 번 만에, 한 달 만에)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바르지 않은 것은?",
+"choices": [
+"고향을 떠난 지 오래다.",
+"3일 만에 끝냈다.",
+"세 번만에 합격했다.",
+"한 달 만에 돌아왔다."
+],
+"answer": 2,
+"explanation": "시간의 경과·횟수를 나타내는 '만', '지'는 의존 명사이므로 띄어 쓴다. '세 번 만에'가 맞다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"노력한만큼 얻는다.",
+"고향에 갔던차에 친구를 만났다.",
+"가진 것은 돈 뿐이다.",
+"묵묵히 일할 뿐이다."
+],
+"answer": 3,
+"explanation": "관형어 뒤의 '뿐'은 의존 명사이므로 띄어 쓴다(일할 뿐). 체언 뒤의 '뿐'은 조사이므로 붙여 쓴다(돈뿐)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"가진 것은 돈뿐이다.",
+"묵묵히 일할뿐이다.",
+"나도 너 만큼 할 수 있어.",
+"법 대로 합시다."
+],
+"answer": 0,
+"explanation": "체언 뒤의 '뿐'은 조사이므로 붙여 쓴다(돈뿐). 관형어 뒤의 '뿐'은 의존 명사이므로 띄어 쓴다(일할 뿐)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"묵묵히 일할뿐이다.",
+"아는 대로 말해라.",
+"노력한만큼 얻는다.",
+"법 대로 합시다."
+],
+"answer": 1,
+"explanation": "관형어 뒤의 '대로'는 의존 명사이므로 띄어 쓴다(아는 대로). 체언 뒤의 '대로'는 조사이므로 붙여 쓴다(법대로)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"아는대로 말해라.",
+"가진 것은 돈 뿐이다.",
+"나도 너 만큼 할 수 있어.",
+"법대로 합시다."
+],
+"answer": 3,
+"explanation": "체언 뒤의 '대로'는 조사이므로 붙여 쓴다(법대로). 관형어 뒤의 '대로'는 의존 명사이므로 띄어 쓴다(아는 대로)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"나도 너 만큼 할 수 있어.",
+"묵묵히 일할뿐이다.",
+"노력한 만큼 얻는다.",
+"아는대로 말해라."
+],
+"answer": 2,
+"explanation": "관형어 뒤의 '만큼'은 의존 명사이므로 띄어 쓴다(노력한 만큼). 체언 뒤의 '만큼'은 조사이므로 붙여 쓴다(너만큼)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"그를 만난지 3년이 지났다.",
+"법 대로 합시다.",
+"노력한만큼 얻는다.",
+"나도 너만큼 할 수 있어."
+],
+"answer": 3,
+"explanation": "체언 뒤의 '만큼'은 조사이므로 붙여 쓴다(너만큼). 관형어 뒤의 '만큼'은 의존 명사이므로 띄어 쓴다(노력한 만큼)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"고향에 갔던 차에 친구를 만났다.",
+"고향에 갔던차에 친구를 만났다.",
+"연수 차 해외에 다녀왔다.",
+"인사 차 들렀다."
+],
+"answer": 0,
+"explanation": "'어떠한 일을 하던 기회나 순간'을 뜻하는 '차'는 의존 명사이므로 띄어 쓴다(갔던 차에). '목적'을 뜻하는 '-차'는 접미사이므로 붙여 쓴다(연수차, 인사차)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바르지 않은 것은?",
+"choices": [
+"인사 차 들렀다.",
+"고향에 갔던 차에 친구를 만났다.",
+"제1차 세계 대전",
+"연수차 해외에 다녀왔다."
+],
+"answer": 0,
+"explanation": "'목적'을 뜻하는 '-차(次)'는 접미사이므로 붙여 쓴다(인사차, 연수차). 관형어 뒤의 의존 명사 '차'는 띄어 쓰며(갔던 차에), 아라비아 숫자 뒤의 '차'는 붙여 쓸 수 있다(제1차)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바르지 않은 것은?",
+"choices": [
+"강물에 떠내려가버렸다.",
+"책을 읽어도 보아라.",
+"불이 꺼져간다.",
+"불이 꺼져 간다."
+],
+"answer": 0,
+"explanation": "보조 용언은 띄어 씀이 원칙이고 붙여 씀도 허용된다(꺼져 간다/꺼져간다). 그러나 앞말이 합성 동사인 경우(떠내려가 버렸다)나 앞말에 조사가 붙은 경우(읽어도 보아라)는 붙여 쓸 수 없다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"잘 아는척을한다.",
+"강물에 떠내려가버렸다.",
+"책을 읽어도보아라.",
+"잘 아는 척을 한다."
+],
+"answer": 3,
+"explanation": "본용언과 보조 용언 사이에 조사가 들어가면 반드시 띄어 쓴다(아는 척을 한다, 읽어도 보아라). 앞말이 합성 동사이면 붙여 쓰지 않는다(떠내려가 버렸다)."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"꿈이 이루어 지다.",
+"책을 읽어도보아라.",
+"꿈이 이루어지다.",
+"얼굴이 예뻐 지다."
+],
+"answer": 2,
+"explanation": "'-어지다'는 앞말에 붙여 써서 피동이나 상태 변화를 나타낸다(이루어지다, 예뻐지다). 띄어 쓰면 틀린다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기가 바른 것은?",
+"choices": [
+"잘 아는척을한다.",
+"얼굴이 날로 예뻐진다.",
+"꿈이 이루어 졌다.",
+"강물에 떠내려가버렸다."
+],
+"answer": 1,
+"explanation": "'-어지다'는 붙여 쓴다(예뻐지다, 이루어지다). 조사가 끼어든 '아는 척을 한다', 합성 동사 뒤의 '떠내려가 버렸다'는 띄어 써야 한다."
+},
+{
+"category": "띄어쓰기",
+"question": "'도와 달라'의 띄어쓰기에 대한 설명으로 옳은 것은?",
+"choices": [
+"보조 용언이 합성 동사의 형태이므로 반드시 붙여 써야 한다.",
+"'-어지다'와 같은 성격이므로 반드시 붙여 써야 한다.",
+"본용언과 보조 용언이므로 띄어 쓰는 것이 원칙이며, '도와달라'로 붙여 쓰는 것도 허용된다.",
+"앞말에 조사가 붙었으므로 반드시 띄어 써야 한다."
+],
+"answer": 2,
+"explanation": "'-아/-어' 뒤에 오는 보조 용언 '달다'는 띄어 쓰는 것이 원칙이고 붙여 쓰는 것도 허용된다(한글 맞춤법 제47항). '도와 달라/도와달라' 모두 맞다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기 '원칙'에 따라 쓴 것은?",
+"choices": [
+"만성골수성백혈병",
+"대한중학교",
+"한국대학교 사범대학",
+"한국 대학교 사범 대학"
+],
+"answer": 3,
+"explanation": "성명 이외의 고유 명사와 전문 용어는 단어별로 띄어 씀이 원칙이다(한국 대학교 사범 대학, 대한 중학교, 만성 골수성 백혈병). 단위별로 붙여 쓰는 것(한국대학교 사범대학, 대한중학교, 만성골수성백혈병)은 허용이다."
+},
+{
+"category": "띄어쓰기",
+"question": "다음 중 띄어쓰기 '허용' 규정에 따라 붙여 쓴 것이 아닌 것은?",
+"choices": [
+"대한중학교",
+"불이 꺼져간다.",
+"대한 중학교",
+"만성골수성백혈병"
+],
+"answer": 2,
+"explanation": "'대한 중학교'는 단어별로 띄어 쓴 원칙 표기이다. '대한중학교', '만성골수성백혈병', '꺼져간다'는 붙여 씀을 허용한 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"친구‹로써› 충고한다.",
+"칼‹로서› 과일을 깎다.",
+"학생‹으로서› 본분을 다해라.",
+"눈물‹로서› 호소했다."
+],
+"answer": 2,
+"explanation": "'로서'는 지위·신분·자격, '로써'는 도구·수단·재료를 나타낸다. 학생은 자격이므로 '학생으로서'가 맞다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"칼‹로써› 과일을 깎다.",
+"학생‹으로써› 본분을 다해라.",
+"칼‹으로써› 과일을 깎다.",
+"친구‹로써› 충고한다."
+],
+"answer": 0,
+"explanation": "도구를 나타내므로 '로써'를 쓰며, 'ㄹ' 받침 뒤에는 '-으로써'가 아닌 '로써'가 붙는다(칼로써)."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"사과‹던지› 배‹던지› 먹어라.",
+"어찌나 ‹춥던지› 손이 얼었다.",
+"얼마나 ‹부지런한 지› 모른다.",
+"어찌나 ‹춥든지› 손이 얼었다."
+],
+"answer": 1,
+"explanation": "과거 회상의 '-던지'와 선택의 '-든지'를 구별한다. 지난 일을 회상하므로 '춥던지'가 맞다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"사과‹든지› 배‹든지› 먹어라.",
+"학생‹으로써› 본분을 다해라.",
+"사과‹던지› 배‹던지› 먹어라.",
+"어찌나 ‹춥든지› 손이 얼었다."
+],
+"answer": 0,
+"explanation": "선택을 나타낼 때는 '-든지'를 쓴다(사과든지 배든지). '-던지'는 과거 회상이다(어찌나 춥던지)."
+},
+{
+"category": "맞춤법",
+"question": "'부딪히다'에 대한 설명으로 옳은 것은?",
+"choices": [
+"'부딪다'의 피동사로, 가만히 있다가 당하는 경우에 쓴다.",
+"'부딪다'를 강조하여 이르는 말로, 주체가 능동적으로 가서 닿는 경우에 쓴다.",
+"'부딪치다'의 비표준어이다.",
+"'부딪치다'의 사동사이다."
+],
+"answer": 0,
+"explanation": "'부딪치다'는 '부딪다'의 강세어로 능동(자전거가 차에 부딪치다), '부딪히다'는 피동으로 당하는 경우(배가 암초에 부딪히다)에 쓴다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"약속은 ‹반듯이› 지켜라.",
+"모자챙을 ‹반드시› 펴라.",
+"고개를 ‹반듯이› 들어라.",
+"그는 ‹반듯이› 약속을 지킨다."
+],
+"answer": 2,
+"explanation": "'반듯이'는 '비뚤어지지 않고 똑바르게', '반드시'는 '틀림없이'의 뜻이다. 고개를 똑바로 드는 것이므로 '반듯이'가 맞다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"약속은 ‹반듯이› 지켜라.",
+"고개를 ‹반드시› 들어라.",
+"약속은 ‹반드시› 지켜라.",
+"모자챙을 ‹반드시› 펴라."
+],
+"answer": 2,
+"explanation": "'틀림없이'의 뜻이므로 '반드시'가 맞다. 모양이 똑바른 것은 '반듯이'이다(고개를 반듯이 들어라)."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"신용카드로 대금을 ‹결재›했다.",
+"부장님께 서류 ‹결제›를 받았다.",
+"카드 ‹결재› 금액을 확인했다.",
+"신용카드로 대금을 ‹결제›했다."
+],
+"answer": 3,
+"explanation": "결제(決濟)는 대금을 주고받아 거래를 끝내는 것, 결재(決裁)는 윗사람이 안건을 승인하는 것이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"신용카드 ‹결재›가 완료되었다.",
+"부장님께 서류 ‹결재›를 올렸다.",
+"부장님께 서류 ‹결제›를 받았다.",
+"대금을 현금으로 ‹결재›했다."
+],
+"answer": 1,
+"explanation": "서류 승인은 결재(決裁, 裁: 마를 재), 대금 지불은 결제(決濟, 濟: 건널 제)이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"불필요한 낭비를 ‹지양›해야 한다.",
+"불필요한 낭비를 ‹지향›해야 한다.",
+"우리는 평화를 ‹지양›한다.",
+"평화 ‹지양›의 외교 노선"
+],
+"answer": 0,
+"explanation": "지양(止揚)은 어떤 것을 하지 않거나 피하는 것(낭비 지양), 지향(志向)은 어떤 목표로 뜻이 쏠려 향하는 것(평화 지향)이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"낭비를 ‹지향›합시다.",
+"우리는 평화를 ‹지향›한다.",
+"과소비 ‹지향› 캠페인",
+"평화 ‹지양›의 외교 노선"
+],
+"answer": 1,
+"explanation": "추구하는 목표에는 '지향(志向)', 피해야 할 것에는 '지양(止揚)'을 쓴다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"밭에 ‹걸음›을 주었다.",
+"이것으로 인사에 ‹가름›합니다.",
+"승패를 ‹갈음›하기 어렵다.",
+"이것으로 인사에 ‹갈음›합니다."
+],
+"answer": 3,
+"explanation": "'갈음'은 다른 것으로 바꾸어 대신함, '가름'은 쪼개어 나누거나 승부를 정함이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"그는 ‹거름›이 빠르다.",
+"이것으로 인사에 ‹가름›합니다.",
+"승패를 ‹가름›하기 어렵다.",
+"승패를 ‹갈음›하기 어렵다."
+],
+"answer": 2,
+"explanation": "승부·등수를 정하는 것은 '가름', 다른 것으로 대신하는 것은 '갈음'이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"그는 ‹거름›이 빠르다.",
+"밭에 ‹걸음›을 주다.",
+"밭에 ‹거름›을 주다.",
+"이것으로 인사에 ‹가름›합니다."
+],
+"answer": 2,
+"explanation": "'거름'은 비료, '걸음'은 두 발을 번갈아 옮기는 동작이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"승패를 ‹갈음›하기 어렵다.",
+"그는 ‹거름›이 빠르다.",
+"밭에 ‹걸음›을 주다.",
+"그는 ‹걸음›이 빠르다."
+],
+"answer": 3,
+"explanation": "발을 옮기는 동작은 '걸음', 비료는 '거름'이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"두 사람이 입을 ‹맞혔다›.",
+"퀴즈의 정답을 ‹맞혔다›.",
+"시험이 끝나고 친구와 답안을 ‹맞혀› 보았다.",
+"퀴즈의 정답을 ‹맞췄다›."
+],
+"answer": 1,
+"explanation": "'맞히다'는 문제의 정답을 골라내거나 과녁에 적중시키는 것, '맞추다'는 둘 이상을 대조하거나 서로 닿게 하는 것이다(답안을 맞추다, 입을 맞추다)."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"화살로 과녁을 ‹맞췄다›.",
+"시험이 끝나고 친구와 답안을 ‹맞추어› 보았다.",
+"두 사람이 입을 ‹맞혔다›.",
+"퀴즈의 정답을 ‹맞췄다›."
+],
+"answer": 1,
+"explanation": "서로 대조하는 것은 '맞추다'(답안을 맞추다), 정답을 고르거나 과녁에 적중하는 것은 '맞히다'(정답을 맞히다, 과녁을 맞히다)이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"재산을 ‹늘이다›.",
+"고무줄을 ‹늘이다›.",
+"시험 시간을 ‹늘이다›.",
+"고무줄을 ‹늘리다›."
+],
+"answer": 1,
+"explanation": "'늘이다'는 본디보다 길게 하는 것(고무줄을 늘이다), '늘리다'는 수량·부피·시간 따위를 많게 하는 것(재산을 늘리다)이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 밑줄 친 부분의 쓰임이 바른 것은?",
+"choices": [
+"몸무게를 ‹늘이다›.",
+"재산을 ‹늘이다›.",
+"고무줄을 ‹늘리다›.",
+"재산을 ‹늘리다›."
+],
+"answer": 3,
+"explanation": "수량·부피·시간을 많게 하는 것은 '늘리다', 길이를 길게 하는 것은 '늘이다'이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"구렛나루",
+"설겆이",
+"구레나룻",
+"오뚜기"
+],
+"answer": 2,
+"explanation": "'구레나룻'(이)가 바른 표기이다. '구렛나루'는 틀린 표기이며, '설거지', '오뚝이'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"희안하다",
+"눈곱",
+"눈꼽",
+"육계장"
+],
+"answer": 1,
+"explanation": "'눈곱'(이)가 바른 표기이다. '눈꼽'는 틀린 표기이며, '육개장', '희한하다'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"몇 일",
+"찌게",
+"안절부절하다",
+"며칠"
+],
+"answer": 3,
+"explanation": "'며칠'(이)가 바른 표기이다. '몇 일'는 틀린 표기이며, '찌개', '안절부절못하다'가 바른 형태이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"단촐하다",
+"설겆이",
+"어줍잖다",
+"설거지"
+],
+"answer": 3,
+"explanation": "'설거지'(이)가 바른 표기이다. '설겆이'는 틀린 표기이며, '어쭙잖다', '단출하다'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"육계장",
+"널판지",
+"오뚜기",
+"육개장"
+],
+"answer": 3,
+"explanation": "'육개장'(이)가 바른 표기이다. '육계장'는 틀린 표기이며, '오뚝이', '널빤지'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"찌개",
+"오랫만에",
+"희안하다",
+"찌게"
+],
+"answer": 0,
+"explanation": "'찌개'(이)가 바른 표기이다. '찌게'는 틀린 표기이며, '희한하다', '오랜만에'가 바른 형태이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"어쭙잖다",
+"안절부절하다",
+"오랜동안",
+"어줍잖다"
+],
+"answer": 0,
+"explanation": "'어쭙잖다'(이)가 바른 표기이다. '어줍잖다'는 틀린 표기이며, '안절부절못하다', '오랫동안'가 바른 형태이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"금새",
+"오뚝이",
+"단촐하다",
+"오뚜기"
+],
+"answer": 1,
+"explanation": "'오뚝이'(이)가 바른 표기이다. '오뚜기'는 틀린 표기이며, '단출하다', '금세'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"희한하다",
+"요컨데",
+"희안하다",
+"널판지"
+],
+"answer": 0,
+"explanation": "'희한하다'(이)가 바른 표기이다. '희안하다'는 틀린 표기이며, '널빤지', '요컨대'가 바른 형태이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"안절부절못하다",
+"안절부절하다",
+"오랫만에",
+"헬쓱하다"
+],
+"answer": 0,
+"explanation": "'안절부절못하다'(이)가 바른 표기이다. '안절부절하다'는 틀린 표기이며, '오랜만에', '핼쑥하다'가 바른 형태이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"단촐하다",
+"오랜동안",
+"얼키고설키다",
+"단출하다"
+],
+"answer": 3,
+"explanation": "'단출하다'(이)가 바른 표기이다. '단촐하다'는 틀린 표기이며, '오랫동안', '얽히고설키다'가 바른 형태이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"금새",
+"산통을 께다",
+"널판지",
+"널빤지"
+],
+"answer": 3,
+"explanation": "'널빤지'(이)가 바른 표기이다. '널판지'는 틀린 표기이며, '금세', '산통을 깨다'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"빈털털이",
+"오랜만에",
+"요컨데",
+"오랫만에"
+],
+"answer": 1,
+"explanation": "'오랜만에'(이)가 바른 표기이다. '오랫만에'는 틀린 표기이며, '요컨대', '빈털터리'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"오랜동안",
+"헬쓱하다",
+"구렛나루",
+"오랫동안"
+],
+"answer": 3,
+"explanation": "'오랫동안'(이)가 바른 표기이다. '오랜동안'는 틀린 표기이며, '핼쑥하다', '구레나룻'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"눈꼽",
+"얼키고설키다",
+"금세",
+"금새"
+],
+"answer": 2,
+"explanation": "'금세'(이)가 바른 표기이다. '금새'는 틀린 표기이며, '얽히고설키다', '눈곱'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"요컨데",
+"몇 일",
+"요컨대",
+"산통을 께다"
+],
+"answer": 2,
+"explanation": "'요컨대'(이)가 바른 표기이다. '요컨데'는 틀린 표기이며, '산통을 깨다', '며칠'가 바른 형태이다."
+},
+{
+"category": "표준어",
+"question": "다음 중 표준어인 것은?",
+"choices": [
+"핼쑥하다",
+"헬쓱하다",
+"설겆이",
+"빈털털이"
+],
+"answer": 0,
+"explanation": "'핼쑥하다'(이)가 바른 표기이다. '헬쓱하다'는 틀린 표기이며, '빈털터리', '설거지'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"육계장",
+"얽히고설키다",
+"구렛나루",
+"얼키고설키다"
+],
+"answer": 1,
+"explanation": "'얽히고설키다'(이)가 바른 표기이다. '얼키고설키다'는 틀린 표기이며, '구레나룻', '육개장'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"눈꼽",
+"산통을 께다",
+"산통을 깨다",
+"찌게"
+],
+"answer": 2,
+"explanation": "'산통을 깨다'(이)가 바른 표기이다. '산통을 께다'는 틀린 표기이며, '눈곱', '찌개'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 맞춤법에 맞는 표기는?",
+"choices": [
+"빈털털이",
+"몇 일",
+"빈털터리",
+"어줍잖다"
+],
+"answer": 2,
+"explanation": "'빈털터리'(이)가 바른 표기이다. '빈털털이'는 틀린 표기이며, '며칠', '어쭙잖다'가 바른 형태이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"오랫동안",
+"찌개",
+"안절부절못하다",
+"구렛나루"
+],
+"answer": 3,
+"explanation": "'구렛나루'는 틀린 표기로, '구레나룻'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"몇 일",
+"요컨대",
+"오뚝이",
+"널빤지"
+],
+"answer": 0,
+"explanation": "'몇 일'는 틀린 표기로, '며칠'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"안절부절못하다",
+"육계장",
+"오랫동안",
+"얽히고설키다"
+],
+"answer": 1,
+"explanation": "'육계장'는 틀린 표기로, '육개장'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"요컨대",
+"널빤지",
+"빈털터리",
+"어줍잖다"
+],
+"answer": 3,
+"explanation": "'어줍잖다'는 틀린 표기로, '어쭙잖다'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"오랫동안",
+"눈곱",
+"희안하다",
+"얽히고설키다"
+],
+"answer": 2,
+"explanation": "'희안하다'는 틀린 표기로, '희한하다'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"빈털터리",
+"설거지",
+"단촐하다",
+"요컨대"
+],
+"answer": 2,
+"explanation": "'단촐하다'는 틀린 표기로, '단출하다'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"눈곱",
+"오랫만에",
+"찌개",
+"얽히고설키다"
+],
+"answer": 1,
+"explanation": "'오랫만에'는 틀린 표기로, '오랜만에'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"오뚝이",
+"금새",
+"빈털터리",
+"설거지"
+],
+"answer": 1,
+"explanation": "'금새'는 틀린 표기로, '금세'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"찌개",
+"안절부절못하다",
+"눈곱",
+"헬쓱하다"
+],
+"answer": 3,
+"explanation": "'헬쓱하다'는 틀린 표기로, '핼쑥하다'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 표기가 바르지 않은 것은?",
+"choices": [
+"설거지",
+"널빤지",
+"오뚝이",
+"산통을 께다"
+],
+"answer": 3,
+"explanation": "'산통을 께다'는 틀린 표기로, '산통을 깨다'(으)로 적어야 한다. 나머지는 모두 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷 표기가 바른 것은?",
+"choices": [
+"촛점",
+"댓가",
+"갯수",
+"귓밥"
+],
+"answer": 3,
+"explanation": "'귓밥(귀+밥)'은 순우리말 합성어로 뒷말이 된소리로 나므로 사이시옷을 적는다. 초점(焦點)·대가(代價)·개수(個數)는 한자어끼리의 결합이므로 사이시옷을 적지 않는다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷 표기가 바른 것은?",
+"choices": [
+"나뭇가지",
+"선지국",
+"최대값",
+"귀밥"
+],
+"answer": 0,
+"explanation": "'나뭇가지(나무+가지)'는 순우리말 합성어이고 뒷말이 된소리로 나므로 사이시옷을 적는다. 최댓값, 선짓국, 귓밥이 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷 표기가 바른 것은?",
+"choices": [
+"촛점",
+"선짓국",
+"갯수",
+"나무가지"
+],
+"answer": 1,
+"explanation": "'선짓국(선지+국)'은 순우리말 합성어로 뒷말이 된소리로 나므로 사이시옷을 적는다. 나뭇가지, 초점, 개수가 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷 표기가 바른 것은?",
+"choices": [
+"귀밥",
+"최댓값",
+"나무가지",
+"댓가"
+],
+"answer": 1,
+"explanation": "'최댓값(최대+값)'은 한자어와 고유어의 합성어로 뒷말이 된소리로 나므로 사이시옷을 적는다. 대가, 귓밥, 나뭇가지가 바른 표기이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷을 잘못 적은 것은?",
+"choices": [
+"댓가",
+"셋방",
+"곳간",
+"횟수"
+],
+"answer": 0,
+"explanation": "한자어끼리의 합성어에는 사이시옷을 적지 않으므로 '대가(代價)'가 맞다. 예외적으로 곳간·셋방·숫자·찻간·툇간·횟수 6개 한자어에만 사이시옷을 적는다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷을 적는 예외적 한자어가 아닌 것은?",
+"choices": [
+"초점(焦點)",
+"툇간(退間)",
+"곳간(庫間)",
+"셋방(貰房)"
+],
+"answer": 0,
+"explanation": "사이시옷을 적는 한자어는 곳간(庫間), 셋방(貰房), 숫자(數字), 찻간(車間), 툇간(退間), 횟수(回數) 6개뿐이다."
+},
+{
+"category": "맞춤법",
+"question": "다음 중 사이시옷을 적는 예외적 한자어가 아닌 것은?",
+"choices": [
+"횟수(回數)",
+"숫자(數字)",
+"개수(個數)",
+"찻간(車間)"
+],
+"answer": 2,
+"explanation": "한자어끼리의 합성어 중 사이시옷을 적는 것은 곳간·셋방·숫자·찻간·툇간·횟수 6개뿐이다. '개수'는 [개쑤]로 발음되어도 사이시옷을 적지 않는다."
+},
+{
+"category": "맞춤법",
+"question": "사이시옷 표기 조건에 대한 설명으로 옳지 않은 것은?",
+"choices": [
+"앞말이 모음으로 끝나고 뒷말 첫소리가 된소리로 나거나 'ㄴ' 소리가 덧나야 한다.",
+"순우리말이 하나 이상 포함되어야 한다.",
+"한자어끼리의 합성어에도 원칙적으로 사이시옷을 적는다.",
+"명사와 명사로 이루어진 합성어여야 한다."
+],
+"answer": 2,
+"explanation": "한자어끼리의 합성어에는 사이시옷을 적지 않는다(초점, 대가, 개수). 단, 곳간·셋방·숫자·찻간·툇간·횟수는 예외이다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"케익",
+"리더쉽",
+"케이크",
+"앙케이트"
+],
+"answer": 2,
+"explanation": "'케이크'(이)가 바른 표기이다('케익'×). 나머지는 '앙케트', '리더십'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"쥬스",
+"주스",
+"팜플렛",
+"악세사리"
+],
+"answer": 1,
+"explanation": "'주스'(이)가 바른 표기이다('쥬스'×). 나머지는 '팸플릿', '액세서리'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"초콜렛",
+"메세지",
+"플룻",
+"초콜릿"
+],
+"answer": 3,
+"explanation": "'초콜릿'(이)가 바른 표기이다('초콜렛'×). 나머지는 '플루트', '메시지'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"바베큐",
+"컨셉",
+"슈퍼마켓",
+"슈퍼마켙"
+],
+"answer": 2,
+"explanation": "'슈퍼마켓'(이)가 바른 표기이다('슈퍼마켙'×). 나머지는 '콘셉트', '바비큐'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"워크샵",
+"앙케트",
+"프로포즈",
+"앙케이트"
+],
+"answer": 1,
+"explanation": "'앙케트'(이)가 바른 표기이다('앙케이트'×). 나머지는 '워크숍', '프러포즈'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"컴플렉스",
+"팸플릿",
+"리더쉽",
+"팜플렛"
+],
+"answer": 1,
+"explanation": "'팸플릿'(이)가 바른 표기이다('팜플렛'×). 나머지는 '리더십', '콤플렉스'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"엠뷸런스",
+"악세사리",
+"플룻",
+"플루트"
+],
+"answer": 3,
+"explanation": "'플루트'(이)가 바른 표기이다('플룻'×). 나머지는 '액세서리', '앰뷸런스'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"뱃지",
+"컨셉",
+"콘셉트",
+"메세지"
+],
+"answer": 2,
+"explanation": "'콘셉트'(이)가 바른 표기이다('컨셉'×). 나머지는 '메시지', '배지'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"워크숍",
+"바베큐",
+"비지니스",
+"워크샵"
+],
+"answer": 0,
+"explanation": "'워크숍'(이)가 바른 표기이다('워크샵'×). 나머지는 '바비큐', '비즈니스'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"리더십",
+"컨덴서",
+"프로포즈",
+"리더쉽"
+],
+"answer": 0,
+"explanation": "'리더십'(이)가 바른 표기이다('리더쉽'×). 나머지는 '프러포즈', '콘덴서'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"컴플렉스",
+"액세서리",
+"악세사리",
+"케익"
+],
+"answer": 1,
+"explanation": "'액세서리'(이)가 바른 표기이다('악세사리'×). 나머지는 '콤플렉스', '케이크'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"엠뷸런스",
+"쥬스",
+"메세지",
+"메시지"
+],
+"answer": 3,
+"explanation": "'메시지'(이)가 바른 표기이다('메세지'×). 나머지는 '앰뷸런스', '주스'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"바베큐",
+"초콜렛",
+"뱃지",
+"바비큐"
+],
+"answer": 3,
+"explanation": "'바비큐'(이)가 바른 표기이다('바베큐'×). 나머지는 '배지', '초콜릿'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"슈퍼마켙",
+"프로포즈",
+"프러포즈",
+"비지니스"
+],
+"answer": 2,
+"explanation": "'프러포즈'(이)가 바른 표기이다('프로포즈'×). 나머지는 '비즈니스', '슈퍼마켓'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"컨덴서",
+"컴플렉스",
+"앙케이트",
+"콤플렉스"
+],
+"answer": 3,
+"explanation": "'콤플렉스'(이)가 바른 표기이다('컴플렉스'×). 나머지는 '콘덴서', '앙케트'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"팜플렛",
+"엠뷸런스",
+"앰뷸런스",
+"케익"
+],
+"answer": 2,
+"explanation": "'앰뷸런스'(이)가 바른 표기이다('엠뷸런스'×). 나머지는 '케이크', '팸플릿'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"뱃지",
+"배지",
+"플룻",
+"쥬스"
+],
+"answer": 1,
+"explanation": "'배지'(이)가 바른 표기이다('뱃지'×). 나머지는 '주스', '플루트'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"비지니스",
+"비즈니스",
+"컨셉",
+"초콜렛"
+],
+"answer": 1,
+"explanation": "'비즈니스'(이)가 바른 표기이다('비지니스'×). 나머지는 '초콜릿', '콘셉트'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바른 것은?",
+"choices": [
+"슈퍼마켙",
+"콘덴서",
+"워크샵",
+"컨덴서"
+],
+"answer": 1,
+"explanation": "'콘덴서'(이)가 바른 표기이다('컨덴서'×). 나머지는 '슈퍼마켓', '워크숍'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"앙케트",
+"콤플렉스",
+"리더십",
+"쥬스"
+],
+"answer": 3,
+"explanation": "'쥬스'는 틀린 표기로, '주스'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"배지",
+"슈퍼마켙",
+"플루트",
+"메시지"
+],
+"answer": 1,
+"explanation": "'슈퍼마켙'는 틀린 표기로, '슈퍼마켓'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"콘덴서",
+"워크숍",
+"팜플렛",
+"프러포즈"
+],
+"answer": 2,
+"explanation": "'팜플렛'는 틀린 표기로, '팸플릿'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"앰뷸런스",
+"컨셉",
+"액세서리",
+"주스"
+],
+"answer": 1,
+"explanation": "'컨셉'는 틀린 표기로, '콘셉트'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"슈퍼마켓",
+"바비큐",
+"비즈니스",
+"리더쉽"
+],
+"answer": 3,
+"explanation": "'리더쉽'는 틀린 표기로, '리더십'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"콤플렉스",
+"팸플릿",
+"메세지",
+"케이크"
+],
+"answer": 2,
+"explanation": "'메세지'는 틀린 표기로, '메시지'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"콘셉트",
+"배지",
+"프로포즈",
+"초콜릿"
+],
+"answer": 2,
+"explanation": "'프로포즈'는 틀린 표기로, '프러포즈'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"엠뷸런스",
+"리더십",
+"앙케트",
+"콘덴서"
+],
+"answer": 0,
+"explanation": "'엠뷸런스'는 틀린 표기로, '앰뷸런스'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"주스",
+"비지니스",
+"플루트",
+"메시지"
+],
+"answer": 1,
+"explanation": "'비지니스'는 틀린 표기로, '비즈니스'(으)로 적어야 한다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"알레르기",
+"초콜릿",
+"케이크",
+"케잌"
+],
+"answer": 3,
+"explanation": "외래어의 받침에는 'ㄱ, ㄴ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ'만 쓰므로 '케잌'은 틀리며 '케이크'로 적는다."
+},
+{
+"category": "외래어 표기",
+"question": "다음 중 외래어 표기가 바르지 않은 것은?",
+"choices": [
+"메시지",
+"팸플릿",
+"알레르기",
+"쵸콜릿"
+],
+"answer": 3,
+"explanation": "'ㅈ, ㅊ' 뒤에서는 이중 모음 'ㅛ, ㅠ' 등을 쓰지 않으므로 '쵸콜릿'은 틀리고 '초콜릿'이 맞다(쥬스→주스도 같은 원리)."
+},
+{
+"category": "외래어 표기",
+"question": "외래어 표기의 기본 원칙에 대한 설명으로 옳지 않은 것은?",
+"choices": [
+"파열음 표기에는 된소리를 쓰지 않는 것을 원칙으로 한다.",
+"받침에는 'ㄱ, ㄴ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ'만을 쓴다.",
+"받침에는 'ㄷ'을 쓸 수 있으며, '슈퍼마켙'처럼 'ㅌ'도 쓸 수 있다.",
+"'껌', '삐라'처럼 관용을 인정해 된소리를 쓰는 예외가 있다."
+],
+"answer": 2,
+"explanation": "외래어의 받침에는 'ㄱ, ㄴ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ'만 쓰므로 'ㄷ, ㅌ' 받침은 쓰지 않는다(슈퍼마켓)."
+},
+{
+"category": "로마자 표기",
+"question": "'신라'의 로마자 표기로 바른 것은?",
+"choices": [
+"Shilla",
+"Silla",
+"Sinla",
+"Sinra"
+],
+"answer": 1,
+"explanation": "신라 → Silla. 로마자 표기는 표준 발음에 따르되, 자음 동화([실라])를 반영한다."
+},
+{
+"category": "로마자 표기",
+"question": "'백마'의 로마자 표기로 바른 것은?",
+"choices": [
+"Baekma",
+"Paengma",
+"Baengma",
+"Baegma"
+],
+"answer": 2,
+"explanation": "백마 → Baengma. 로마자 표기는 표준 발음에 따르되, 자음 동화([뱅마])를 반영한다."
+},
+{
+"category": "로마자 표기",
+"question": "'종로'의 로마자 표기로 바른 것은?",
+"choices": [
+"Chongno",
+"Jonglo",
+"Jongro",
+"Jongno"
+],
+"answer": 3,
+"explanation": "종로 → Jongno. 로마자 표기는 표준 발음에 따르되, 자음 동화([종노])를 반영한다."
+},
+{
+"category": "로마자 표기",
+"question": "'왕십리'의 로마자 표기로 바른 것은?",
+"choices": [
+"Wangsibri",
+"Wangsimri",
+"Wangsimni",
+"Wangsipri"
+],
+"answer": 2,
+"explanation": "왕십리 → Wangsimni. 로마자 표기는 표준 발음에 따르되, 자음 동화([왕심니])를 반영한다."
+},
+{
+"category": "로마자 표기",
+"question": "'해돋이'의 로마자 표기로 바른 것은?",
+"choices": [
+"haedoti",
+"haedoji",
+"haedochi",
+"haedodi"
+],
+"answer": 1,
+"explanation": "해돋이 → haedoji. 로마자 표기는 표준 발음에 따르되, 구개음화([해도지])를 반영한다."
+},
+{
+"category": "로마자 표기",
+"question": "'맞히다'의 로마자 표기로 바른 것은?",
+"choices": [
+"machida",
+"machhida",
+"majhida",
+"matida"
+],
+"answer": 0,
+"explanation": "맞히다 → machida. 로마자 표기는 표준 발음에 따르되, 'ㅈ'과 'ㅎ'이 합쳐 거센소리가 되는 현상([마치다])을 반영한다."
+},
+{
+"category": "로마자 표기",
+"question": "'압구정'의 로마자 표기로 바른 것은?",
+"choices": [
+"Apkkujeong",
+"Apgujeong",
+"Abgujeong",
+"Apgujung"
+],
+"answer": 1,
+"explanation": "압구정 → Apgujeong. 로마자 표기는 표준 발음에 따르되, 된소리되기([압꾸정])는 반영하지 않는다."
+},
+{
+"category": "로마자 표기",
+"question": "'낙동강'의 로마자 표기로 바른 것은?",
+"choices": [
+"Naktonggang",
+"Nagdonggang",
+"Nakdonggang",
+"Nakddonggang"
+],
+"answer": 2,
+"explanation": "낙동강 → Nakdonggang. 로마자 표기는 표준 발음에 따르되, 된소리되기([낙똥강])는 반영하지 않는다."
+},
+{
+"category": "로마자 표기",
+"question": "'팔당'의 로마자 표기로 바른 것은?",
+"choices": [
+"Paltang",
+"Palttang",
+"Paldang",
+"Phaldang"
+],
+"answer": 2,
+"explanation": "팔당 → Paldang. 로마자 표기는 표준 발음에 따르되, 된소리되기([팔땅])는 반영하지 않는다."
+},
+{
+"category": "로마자 표기",
+"question": "'광희문'의 로마자 표기로 바른 것은?",
+"choices": [
+"Kwanghuimun",
+"Gwanghuemun",
+"Gwanghuimun",
+"Gwanghimun"
+],
+"answer": 2,
+"explanation": "광희문 → Gwanghuimun. 로마자 표기는 표준 발음에 따르되, 'ㅢ'는 'ㅣ'로 소리 나더라도 ui로 적는다."
+},
+{
+"category": "로마자 표기",
+"question": "'여의도'의 로마자 표기로 바른 것은?",
+"choices": [
+"Yeoeuido",
+"Yeouido",
+"Yeoido",
+"Yeouedo"
+],
+"answer": 1,
+"explanation": "여의도 → Yeouido. 로마자 표기는 표준 발음에 따르되, 'ㅢ'는 'ㅣ'로 소리 나더라도 ui로 적는다."
+},
+{
+"category": "로마자 표기",
+"question": "다음 중 로마자 표기에 반영하지 않는 음운 변동은?",
+"choices": [
+"'ㄱ, ㄷ, ㅂ, ㅈ'과 'ㅎ'의 축약(용언)",
+"구개음화",
+"된소리되기",
+"자음 동화"
+],
+"answer": 2,
+"explanation": "자음 동화(신라 Silla), 구개음화(해돋이 haedoji), 용언의 거센소리되기(맞히다 machida)는 반영하지만, 된소리되기는 반영하지 않는다(압구정 Apgujeong, 낙동강 Nakdonggang)."
+},
+{
+"category": "로마자 표기",
+"question": "다음 중 로마자 표기가 바르지 않은 것은?",
+"choices": [
+"팔당 - Palttang",
+"해돋이 - haedoji",
+"종로 - Jongno",
+"여의도 - Yeouido"
+],
+"answer": 0,
+"explanation": "된소리되기는 표기에 반영하지 않으므로 팔당[팔땅]은 Paldang으로 적는다."
+},
+{
+"category": "로마자 표기",
+"question": "다음 중 로마자 표기가 바르지 않은 것은?",
+"choices": [
+"맞히다 - machida",
+"왕십리 - Wangsimni",
+"백마 - Baengma",
+"광희문 - Gwanghimun"
+],
+"answer": 3,
+"explanation": "'ㅢ'는 'ㅣ'로 소리 나더라도 ui로 적으므로 광희문은 Gwanghuimun이다."
+},
+{
+"category": "표준 발음",
+"question": "다음 중 표준 발음이 바른 것은?",
+"choices": [
+"신라[실라]",
+"종로[종로]",
+"왕십리[왕십리]",
+"백마[백마]"
+],
+"answer": 0,
+"explanation": "'ㄴ'은 'ㄹ'의 앞뒤에서 [ㄹ]로 발음한다(신라[실라]). 종로[종노], 왕십리[왕심니], 백마[뱅마]로 발음한다."
+},
+{
+"category": "표준 발음",
+"question": "다음 중 표준 발음이 바른 것은?",
+"choices": [
+"해돋이[해도디]",
+"신라[신나]",
+"압구정[압구정]",
+"왕십리[왕심니]"
+],
+"answer": 3,
+"explanation": "왕십리는 비음화로 [왕심니]로 발음한다. 신라[실라], 해돋이[해도지](구개음화), 압구정[압꾸정](된소리되기)이 바르다."
+},
+{
+"category": "표준 발음",
+"question": "다음 중 표준 발음이 바른 것은?",
+"choices": [
+"낙동강[낙똥강]",
+"종로[존노]",
+"백마[백마]",
+"맞히다[마티다]"
+],
+"answer": 0,
+"explanation": "받침 'ㄱ' 뒤의 'ㄷ'은 된소리로 발음한다(낙동강[낙똥강]). 맞히다[마치다], 백마[뱅마], 종로[종노]가 바르다."
+},
+{
+"category": "표준 발음",
+"question": "다음 중 표준 발음이 바르지 않은 것은?",
+"choices": [
+"여의도[여이도]",
+"광희문[광히문]",
+"팔당[팔땅]",
+"해돋이[해도디]"
+],
+"answer": 3,
+"explanation": "받침 'ㄷ'이 모음 'ㅣ'와 결합하면 [ㅈ]으로 발음하므로(구개음화) 해돋이[해도지]가 맞다. 자음 뒤 'ㅢ'는 [ㅣ]로(광희문[광히문]), 첫음절 이외의 '의'는 [ㅣ]로도 발음할 수 있다(여의도[여이도])."
+},
+{
+"category": "국어문화",
+"question": "다음 중 북한 문화어의 특징에 해당하는 것은?",
+"choices": [
+"'노동'을 '로동'으로 적는다.",
+"'나뭇잎'처럼 사이시옷을 적는다.",
+"자모 순서에서 된소리를 해당 예사소리 바로 뒤에 둔다.",
+"'여자'처럼 두음 법칙을 적용한다."
+],
+"answer": 0,
+"explanation": "북한 문화어는 두음 법칙을 인정하지 않고(로동, 녀자, 리발소), 사이시옷을 쓰지 않으며(나무잎, 차잔, 초불), 된소리와 'ㅇ'을 자음 순서 맨 뒤에 둔다."
+},
+{
+"category": "국어문화",
+"question": "다음 중 북한 문화어 표기끼리 짝지어진 것은?",
+"choices": [
+"이발소 – 초불",
+"리발소 – 초불",
+"리발소 – 촛불",
+"이발소 – 촛불"
+],
+"answer": 1,
+"explanation": "북한은 두음 법칙을 적용하지 않고(리발소), 사이시옷을 쓰지 않는다(초불). 남한 표준어는 이발소, 촛불이다."
+},
+{
+"category": "국어문화",
+"question": "다음 중 남한 표준어 표기가 아닌 것은?",
+"choices": [
+"노동",
+"녀자",
+"찻잔",
+"나뭇잎"
+],
+"answer": 1,
+"explanation": "남한은 두음 법칙을 인정하므로 '여자'로 적는다. '녀자'는 북한 문화어 표기이다. 북한은 '차잔', '나무잎'처럼 사이시옷도 쓰지 않는다."
+},
+{
+"category": "국어문화",
+"question": "북한의 자음 순서에서 맨 마지막에 놓이는 것은?",
+"choices": [
+"ㄲ",
+"ㅎ",
+"ㅇ",
+"ㅉ"
+],
+"answer": 2,
+"explanation": "북한의 자음 순서는 ㄱ…ㅎ 다음에 ㄲ, ㄸ, ㅃ, ㅆ, ㅉ를 두고 'ㅇ'을 맨 뒤에 둔다. 남한은 ㅎ이 마지막이다."
+},
+{
+"category": "국어문화",
+"question": "'네티즌'을 다듬은 말로 알맞은 것은?",
+"choices": [
+"댓글",
+"만능열쇠",
+"지침",
+"누리꾼"
+],
+"answer": 3,
+"explanation": "네티즌 → 누리꾼, 리플 → 댓글, 가이드라인 → 지침, 마스터키 → 만능열쇠."
+},
+{
+"category": "국어문화",
+"question": "다음 중 외래어와 다듬은 말의 연결이 바르지 않은 것은?",
+"choices": [
+"브리핑 – 요약 보고",
+"바우처 – 지침",
+"리플 – 댓글",
+"마스터키 – 만능열쇠"
+],
+"answer": 1,
+"explanation": "바우처는 '이용권'으로, 가이드라인은 '지침'으로 다듬어 쓴다."
+},
+{
+"category": "국어문화",
+"question": "'노하우'를 다듬은 말로 알맞은 것은?",
+"choices": [
+"비법",
+"이용권",
+"누리꾼",
+"요약 보고"
+],
+"answer": 0,
+"explanation": "노하우 → 비법, 기술. 바우처 → 이용권, 브리핑 → 보고·요약 보고."
+},
+{
+"category": "국어문화",
+"question": "'가이드라인'을 다듬은 말로 알맞은 것은?",
+"choices": [
+"댓글",
+"보고",
+"비법",
+"지침"
+],
+"answer": 3,
+"explanation": "가이드라인 → 지침. 브리핑 → 보고, 노하우 → 비법, 리플 → 댓글."
+},
+{
+"category": "국어문화",
+"question": "'바우처'를 다듬은 말로 알맞은 것은?",
+"choices": [
+"이용권",
+"지침",
+"만능열쇠",
+"누리꾼"
+],
+"answer": 0,
+"explanation": "바우처 → 이용권, 할인권."
+},
+{
+"category": "혼동 어휘",
+"question": "다음 빈칸에 공통적으로 들어갈 단어로 가장 적절한 것은?",
+"passage": "• 홍보 부족 때문인지 사람들의 (    )이/가 너무 적었다.\n• 경수는 그 공론에 (    )하지 않으려고 다른 곳을 쳐다보고 있었다.\n• 주희는 축제에 (    )하는 사람들과 어울리기 위해 공원으로 달려왔다.",
+"choices": [
+"참석",
+"참여",
+"참가",
+"참견",
+"참관"
+],
+"answer": 1,
+"explanation": "'참여(參與)'는 어떤 일에 끼어들어 관계함을 뜻하므로 세 문장에 공통으로 들어갈 수 있다."
+}
+];
