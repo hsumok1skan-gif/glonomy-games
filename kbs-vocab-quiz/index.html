@@ -35,6 +35,20 @@
 
         <div class="today" id="todayStats"></div>
 
+        <div class="review-box" id="reviewBox">
+          <div>
+            <strong id="reviewTitle"></strong>
+            <p id="reviewDesc" class="muted"></p>
+          </div>
+          <button type="button" class="primary-button" id="reviewButton">복습 시작</button>
+        </div>
+
+        <details class="panel progress-panel" id="progressPanel">
+          <summary>범위별 진도 <span class="muted" id="progressSummary"></span></summary>
+          <div id="progressList" class="progress-list"></div>
+          <p class="muted small">익힘 = 날짜를 바꿔 가며 3번 이상 맞혀서 복습 간격이 1주를 넘긴 것</p>
+        </details>
+
         <div class="panel setting-box">
           <div class="setting-group">
             <div class="setting-head">
@@ -64,10 +78,14 @@
             </div>
           </div>
 
-          <label class="toggle" for="weakFirst">
-            <input type="checkbox" id="weakFirst">
-            <span>틀렸던 문제 먼저 내기</span>
-          </label>
+          <div class="setting-group">
+            <strong>출제 순서</strong>
+            <div class="seg" id="orderButtons">
+              <button type="button" data-value="smart" class="selected">복습 우선</button>
+              <button type="button" data-value="new">안 본 것</button>
+              <button type="button" data-value="random">완전 랜덤</button>
+            </div>
+          </div>
 
           <button id="startButton" class="primary-button" type="button">문제 풀기 시작</button>
         </div>
@@ -85,6 +103,7 @@
           <p class="question-meta">
             <span id="questionCategory" class="tag"></span>
             <span id="questionType" class="question-type"></span>
+            <button type="button" class="star-button" id="questionStar" aria-pressed="false">☆ 단어장</button>
           </p>
           <h2 id="questionText"></h2>
           <div id="questionPassage" class="passage hidden"></div>
@@ -108,7 +127,7 @@
           </div>
           <button id="homeButton" class="link-button" type="button">처음 화면으로</button>
         </article>
-        <div id="resultList" class="result-list"></div>
+        <div id="resultList" class="entry-list"></div>
       </section>
 
       <!-- ② 암기 카드 -->
@@ -123,6 +142,7 @@
             <span class="card-back hidden" id="cardBack"></span>
             <span class="card-hint" id="cardHint">눌러서 뜻 보기</span>
           </button>
+          <button type="button" class="star-button card-star" id="cardStar" aria-pressed="false">☆ 단어장</button>
         </div>
 
         <div class="card-actions">
@@ -135,13 +155,16 @@
         </label>
       </section>
 
-      <!-- ③ 오답노트 -->
+      <!-- ③ 내 노트: 오답노트 + 단어장 -->
       <section id="wrongScreen" class="view hidden">
-        <p class="eyebrow">오답노트</p>
-        <h1 class="small-h1">틀린 것만 모았어요</h1>
+        <p class="eyebrow">내 노트</p>
+        <div class="seg note-seg" id="noteTabs">
+          <button type="button" data-value="wrong" class="selected">오답노트 <b id="noteWrongCount"></b></button>
+          <button type="button" data-value="star">단어장 <b id="noteStarCount"></b></button>
+        </div>
         <p class="muted" id="wrongSummary"></p>
         <div class="row-buttons">
-          <button type="button" class="primary-button" id="wrongQuizButton">오답 문제 풀기</button>
+          <button type="button" class="primary-button" id="wrongQuizButton">이 목록으로 문제 풀기</button>
           <button type="button" class="ghost-button" id="wrongClearButton">비우기</button>
         </div>
         <div id="wrongList" class="entry-list"></div>
@@ -161,7 +184,7 @@
     <nav class="tabbar" id="tabbar">
       <button type="button" data-tab="quiz" class="active"><span class="tab-ico">문</span>문제</button>
       <button type="button" data-tab="card"><span class="tab-ico">카</span>카드</button>
-      <button type="button" data-tab="wrong"><span class="tab-ico">오</span>오답<b id="wrongBadge" class="badge hidden"></b></button>
+      <button type="button" data-tab="wrong"><span class="tab-ico">노</span>노트<b id="wrongBadge" class="badge hidden"></b></button>
       <button type="button" data-tab="dict"><span class="tab-ico">사</span>사전</button>
     </nav>
   </div>
