@@ -549,3 +549,96 @@ i.done { background: var(--green); }
   .review-box { flex-direction: column; align-items: stretch; }
   .prog-row { grid-template-columns: 6.8em 1fr auto; }
 }
+
+/* ── 홈: 목표 카드 ── */
+.goal-card {
+  display: grid;
+  gap: 14px;
+  margin: 14px 0 12px;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--line));
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--blue) 22%, transparent), transparent 55%),
+    var(--panel);
+}
+.goal-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.goal-top > div:first-child { min-width: 0; }
+.goal-label { margin: 0; color: var(--blue); font-size: 13px; font-weight: 900; }
+.goal-dday {
+  margin: 2px 0 0;
+  font-size: clamp(28px, 9vw, 40px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.goal-plan { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+
+.ring {
+  --p: 0;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--panel) 78%, transparent 80%),
+    conic-gradient(var(--yellow) calc(var(--p) * 1%), var(--soft) 0);
+  font-weight: 900;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.ring small { font-size: 11px; color: var(--muted); font-weight: 700; }
+
+.goal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.goal-actions .primary-button { min-height: 50px; padding: 10px 8px; font-size: 15px; }
+.primary-button.alt { background: var(--blue); color: var(--blue-ink); }
+.primary-button[disabled] { opacity: 0.45; cursor: default; }
+
+/* 접는 패널 */
+.fold { margin-bottom: 10px; padding: 0; overflow: hidden; }
+.fold > summary {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 15px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: "▾"; margin-left: auto; color: var(--muted); transition: transform .2s; }
+.fold[open] > summary::after { transform: rotate(180deg); }
+.fold > summary .muted { font-weight: 500; font-size: 12.5px; }
+.fold-body { padding: 0 18px 18px; display: grid; gap: 16px; }
+.fold-body.setting-box { padding-top: 2px; }
+.fold .progress-list { margin-top: 0; }
+
+.field { display: grid; gap: 8px; font-size: 14px; font-weight: 700; }
+.field input[type="date"] {
+  min-height: 46px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--soft);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+}
+.seg-wrap { grid-auto-flow: row; grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); }
+
+/* 홈 화면 여백 정리 */
+#startScreen .today { margin-bottom: 12px; }
+.today div { padding: 10px 12px; }
+.today b { font-size: 20px; }
+
+@media (max-width: 380px) {
+  .goal-card { padding: 16px; }
+  .ring { width: 66px; height: 66px; font-size: 17px; }
+  .today span { font-size: 11px; }
+  .seg button { font-size: 13px; }
+}
+.goal-card.no-review .goal-actions { grid-template-columns: 1fr; }

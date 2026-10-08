@@ -467,6 +467,7 @@
       settings.groups = next;
       persistSettings();
       drawStartChips();
+      drawSettingSummary();
     });
   }
 
@@ -476,6 +477,26 @@
 
   const dueItems = () => ALL.filter(x => isDue(x.id));
 
+  /* ───────────── 목표 ───────────── */
+  store.goal ||= { date: "", grade: "", daily: 40 };
+  const goal = store.goal;
+  const GRADE_NOTE = {
+    "1": "1급은 전 범위를 고르게, 특히 어법·다의어 정답률을 90% 이상으로 끌어올리는 게 관건이에요.",
+    "2+": "2+급이면 전 범위를 한 바퀴 돌고, 틀린 것 위주로 두 번째 바퀴를 도는 계획이 좋아요.",
+    "2-": "2-급이면 고유어·한자어·관용 표현을 먼저 다지고 어법을 붙이세요.",
+    "3+": "3+급이면 빈출 고유어·한자어와 속담·한자 성어부터 확실히 하세요.",
+    "3-": "3-급이면 고유어·한자어와 맞춤법(어법) 기본부터 차근차근 하세요.",
+    "4+": "4+급이면 하루 20문제씩 꾸준히, 오답노트 복습을 거르지 않는 게 먼저예요."
+  };
+
+  function streakDays() {
+    let n = 0;
+    let d = TODAY();
+    if (!(store.days[String(d)] && store.days[String(d)].solved)) d -= 1;
+    while (store.days[String(d)] && store.days[String(d)].solved) { n++; d--; }
+    return n;
+  }
+
   function drawToday() {
     const d = store.days[todayKey()] || { solved: 0, correct: 0 };
     const rate = d.solved ? Math.round((d.correct / d.solved) * 100) + "%" : "–";
@@ -483,21 +504,54 @@
     $("todayStats").innerHTML = `
       <div><b>${d.solved}</b><span>오늘 푼 문제</span></div>
       <div><b>${rate}</b><span>오늘 정답률</span></div>
-      <div><b>${due}</b><span>복습할 것</span></div>`;
+      <div><b>${streakDays()}일</b><span>연속 학습</span></div>`;
 
-    const seenAny = Object.keys(store.srs).length;
-    if (due) {
-      $("reviewTitle").textContent = `오늘 복습할 것 ${due}개`;
-      $("reviewDesc").textContent = "틀렸거나 복습 날짜가 된 것만 모았어요. 먼저 풀고 새 문제로 넘어가세요.";
-      $("reviewButton").classList.remove("hidden");
-    } else {
-      $("reviewTitle").textContent = seenAny ? "오늘 복습은 끝났어요" : "첫 문제를 풀어 보세요";
-      $("reviewDesc").textContent = seenAny
-        ? "맞힌 것은 1일 → 3일 → 1주 → 2주 → 한 달 간격으로 다시 나옵니다."
-        : "푼 문제는 맞히면 간격을 늘려, 틀리면 다음 날 다시 나옵니다.";
-      $("reviewButton").classList.add("hidden");
+    // 목표 카드
+    const daily = goal.daily || 40;
+    const pct = Math.min(100, Math.round((d.solved / daily) * 100));
+    $("goalRing").style.setProperty("--p", pct);
+    $("goalRingText").innerHTML = `${d.solved}<small>/${daily}</small>`;
+    const seen = ALL.filter(x => store.srs[x.id]).length;
+    const unseen = ALL.length - seen;
+    let label = goal.grade ? `목표 ${goal.grade}급` : "목표를 정해 보세요";
+    let dday = "시험일 미정";
+    let plan;
+    if (goal.date) {
+      const left = dayNum(new Date(goal.date + "T00:00:00")) - TODAY();
+      dday = left > 0 ? `D-${left}` : left === 0 ? "D-day" : "시험이 지났어요";
+      if (left > 0) {
+        const studyDays = Math.max(left - 3, 1); // 마지막 3일은 복습만
+        const perDay = Math.ceil(unseen / studyDays);
+        plan = unseen
+          ? `안 본 ${unseen.toLocaleString()}개를 시험 3일 전까지 보려면 하루 새 문제 ${perDay}개 + 복습이면 돼요.`
+          : "전 범위를 한 번씩 다 봤어요. 이제 복습과 오답노트에 집중하세요.";
+      }
     }
+    if (!plan) plan = goal.date ? "남은 기간엔 오답노트와 단어장 위주로 보세요." : "아래 ‘목표 설정’에서 시험일을 넣으면 하루 분량을 계산해 드려요.";
+    $("goalLabel").textContent = label;
+    $("goalDday").textContent = dday;
+    $("goalPlan").textContent = pct >= 100 ? `오늘 목표 달성! ${plan}` : plan;
+
+    $("reviewButton").textContent = `복습 ${due}개`;
+    $("reviewButton").classList.toggle("hidden", !due);
+    $("goalCard").classList.toggle("no-review", !due);
+    $("startButton").textContent = `새 문제 ${settings.count}개`;
+
+    $("goalSummary").textContent = [goal.date ? goal.date.replace(/-/g, ".") : "", goal.grade ? goal.grade + "급" : "", `하루 ${daily}문제`].filter(Boolean).join(" · ");
+    $("examDate").value = goal.date || "";
+    setSeg("gradeButtons", goal.grade);
+    setSeg("dailyButtons", daily);
+    $("gradeNote").textContent = (goal.grade ? GRADE_NOTE[goal.grade] + " " : "") +
+      "등급은 KBS가 전체 성적 분포로 정하기 때문에 공식 ‘등급별 어휘 목록’은 없어요.";
+    drawSettingSummary();
     drawProgress();
+  }
+
+  function drawSettingSummary() {
+    const all = settings.groups.length === GROUPS.length;
+    const modeName = { mix: "섞어서", def: "뜻 맞히기", term: "단어 맞히기", blank: "빈칸" }[settings.mode];
+    const orderName = { smart: "복습 우선", new: "안 본 것", random: "랜덤" }[settings.order];
+    $("settingSummary").textContent = `${all ? "전체" : settings.groups.length + "개 범위"} · ${modeName} · ${orderName}`;
   }
 
   function drawProgress() {
@@ -874,8 +928,19 @@
       settings[key] = cast(b.dataset.value);
       setSeg(id, settings[key]);
       persistSettings();
+      drawToday();
     }));
   });
+
+  $("examDate").addEventListener("change", e => { goal.date = e.target.value; save(); drawToday(); });
+  document.querySelectorAll("#gradeButtons button").forEach(b => b.addEventListener("click", () => {
+    goal.grade = goal.grade === b.dataset.value ? "" : b.dataset.value;
+    save(); drawToday();
+  }));
+  document.querySelectorAll("#dailyButtons button").forEach(b => b.addEventListener("click", () => {
+    goal.daily = Number(b.dataset.value);
+    save(); drawToday();
+  }));
 
   $("startButton").addEventListener("click", () => startQuiz());
   $("reviewButton").addEventListener("click", () => {

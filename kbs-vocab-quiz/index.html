@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=3">
 </head>
 
 <body>
@@ -28,67 +28,108 @@
 
     <main class="container">
 
-      <!-- ① 문제 풀기 -->
+      <!-- ① 홈: 목표 · 오늘 할 일 · 설정 -->
       <section id="startScreen" class="view">
-        <p class="eyebrow">KBS 한국어능력시험 · 어휘·어법</p>
-        <h1>오늘 몇 개<br>외우고 갈까요?</h1>
+
+        <article class="goal-card" id="goalCard">
+          <div class="goal-top">
+            <div>
+              <p class="goal-label" id="goalLabel">목표를 정해 보세요</p>
+              <p class="goal-dday" id="goalDday">KBS 한국어능력시험</p>
+            </div>
+            <div class="ring" id="goalRing" style="--p:0">
+              <span id="goalRingText">0</span>
+            </div>
+          </div>
+          <p class="goal-plan" id="goalPlan"></p>
+          <div class="goal-actions">
+            <button type="button" class="primary-button" id="reviewButton">복습 시작</button>
+            <button type="button" class="primary-button alt" id="startButton">새 문제 20개</button>
+          </div>
+        </article>
 
         <div class="today" id="todayStats"></div>
 
-        <div class="review-box" id="reviewBox">
-          <div>
-            <strong id="reviewTitle"></strong>
-            <p id="reviewDesc" class="muted"></p>
+        <details class="panel fold" id="goalPanel">
+          <summary>목표 설정 <span class="muted" id="goalSummary"></span></summary>
+          <div class="fold-body">
+            <label class="field" for="examDate">
+              <span>시험일</span>
+              <input type="date" id="examDate">
+            </label>
+            <div class="field">
+              <span>목표 등급</span>
+              <div class="seg seg-wrap" id="gradeButtons">
+                <button type="button" data-value="1">1급</button>
+                <button type="button" data-value="2+">2+</button>
+                <button type="button" data-value="2-">2-</button>
+                <button type="button" data-value="3+">3+</button>
+                <button type="button" data-value="3-">3-</button>
+                <button type="button" data-value="4+">4+</button>
+              </div>
+            </div>
+            <div class="field">
+              <span>하루 목표 문제 수</span>
+              <div class="seg" id="dailyButtons">
+                <button type="button" data-value="20">20</button>
+                <button type="button" data-value="40">40</button>
+                <button type="button" data-value="60">60</button>
+                <button type="button" data-value="100">100</button>
+              </div>
+            </div>
+            <p class="muted small" id="gradeNote"></p>
           </div>
-          <button type="button" class="primary-button" id="reviewButton">복습 시작</button>
-        </div>
-
-        <details class="panel progress-panel" id="progressPanel">
-          <summary>범위별 진도 <span class="muted" id="progressSummary"></span></summary>
-          <div id="progressList" class="progress-list"></div>
-          <p class="muted small">익힘 = 날짜를 바꿔 가며 3번 이상 맞혀서 복습 간격이 1주를 넘긴 것</p>
         </details>
 
-        <div class="panel setting-box">
-          <div class="setting-group">
-            <div class="setting-head">
-              <strong>출제 범위</strong>
-              <button type="button" class="link-button" id="allCategories">전체 선택</button>
-            </div>
-            <div class="chip-group" id="categoryButtons"></div>
+        <details class="panel fold" id="progressPanel">
+          <summary>범위별 진도 <span class="muted" id="progressSummary"></span></summary>
+          <div class="fold-body">
+            <div id="progressList" class="progress-list"></div>
+            <p class="muted small">익힘 = 다른 날 3번 이상 맞혀 복습 간격이 1주를 넘긴 것</p>
           </div>
+        </details>
 
-          <div class="setting-group">
-            <strong>문항 수</strong>
-            <div class="seg" id="countButtons">
-              <button type="button" data-value="10">10</button>
-              <button type="button" data-value="20" class="selected">20</button>
-              <button type="button" data-value="50">50</button>
-              <button type="button" data-value="100">100</button>
+        <details class="panel fold" id="settingPanel">
+          <summary>출제 설정 <span class="muted" id="settingSummary"></span></summary>
+          <div class="fold-body setting-box">
+            <div class="setting-group">
+              <div class="setting-head">
+                <strong>출제 범위</strong>
+                <button type="button" class="link-button" id="allCategories">전체 선택</button>
+              </div>
+              <div class="chip-group" id="categoryButtons"></div>
+            </div>
+
+            <div class="setting-group">
+              <strong>문항 수</strong>
+              <div class="seg" id="countButtons">
+                <button type="button" data-value="10">10</button>
+                <button type="button" data-value="20" class="selected">20</button>
+                <button type="button" data-value="50">50</button>
+                <button type="button" data-value="100">100</button>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <strong>문제 유형</strong>
+              <div class="seg seg-wrap" id="modeButtons">
+                <button type="button" data-value="mix" class="selected">섞어서</button>
+                <button type="button" data-value="def">뜻 맞히기</button>
+                <button type="button" data-value="term">단어 맞히기</button>
+                <button type="button" data-value="blank">빈칸</button>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <strong>출제 순서</strong>
+              <div class="seg" id="orderButtons">
+                <button type="button" data-value="smart" class="selected">복습 우선</button>
+                <button type="button" data-value="new">안 본 것</button>
+                <button type="button" data-value="random">랜덤</button>
+              </div>
             </div>
           </div>
-
-          <div class="setting-group">
-            <strong>문제 유형</strong>
-            <div class="seg" id="modeButtons">
-              <button type="button" data-value="mix" class="selected">섞어서</button>
-              <button type="button" data-value="def">뜻 맞히기</button>
-              <button type="button" data-value="term">단어 맞히기</button>
-              <button type="button" data-value="blank">빈칸</button>
-            </div>
-          </div>
-
-          <div class="setting-group">
-            <strong>출제 순서</strong>
-            <div class="seg" id="orderButtons">
-              <button type="button" data-value="smart" class="selected">복습 우선</button>
-              <button type="button" data-value="new">안 본 것</button>
-              <button type="button" data-value="random">완전 랜덤</button>
-            </div>
-          </div>
-
-          <button id="startButton" class="primary-button" type="button">문제 풀기 시작</button>
-        </div>
+        </details>
       </section>
 
       <!-- 문제 화면 -->
@@ -190,7 +231,7 @@
   </div>
   <!--APP-END-->
 
-  <script src="./questions.js"></script>
-  <script src="./game.js"></script>
+  <script src="./questions.js?v=3"></script>
+  <script src="./game.js?v=3"></script>
 </body>
 </html>
