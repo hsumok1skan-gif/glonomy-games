@@ -79,7 +79,7 @@
       top: env(safe-area-inset-top, 0px);
       z-index: 5;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 4px;
       padding: 4px;
       margin-bottom: 14px;
@@ -91,6 +91,8 @@
     }
     .tabs button {
       min-height: 40px;
+      padding: 0 2px;
+      white-space: nowrap;
       border: 0;
       border-radius: 10px;
       background: transparent;
@@ -132,6 +134,8 @@
     .b-game { background: linear-gradient(135deg, #c4b5fd, #7c3aed); color: #fff; }
     .b-fun { background: linear-gradient(135deg, #fde68a, #f59e0b); }
     .b-fun2 { background: linear-gradient(135deg, #fecdd3, #fb7185); }
+    .b-draft { background: linear-gradient(135deg, #fdba74, #c2410c); color: #fff; font-size: 14px; }
+    .k-draft { color: #fdba74; }
 
     .body { display: block; min-width: 0; }
     .kind { display: block; font-size: 11.5px; font-weight: 900; letter-spacing: 0.02em; }
@@ -208,6 +212,7 @@
       <button type="button" data-filter="study">학습</button>
       <button type="button" data-filter="game">게임</button>
       <button type="button" data-filter="fun">병맛</button>
+      <button type="button" data-filter="draft">후보</button>
     </nav>
 
     <main class="list" id="list">
@@ -252,6 +257,17 @@
         </span>
         <span class="go" aria-hidden="true">→</span>
       </a>
+      <p class="group-label" id="draftLabel">후보 · 다듬는 중</p>
+
+      <a class="item" data-cat="draft" href="./forge-box-game/index.html">
+        <span class="badge b-draft">+25</span>
+        <span class="body">
+          <span class="kind k-draft">후보 · 강화 게임</span>
+          <h3>+25까지만 하고 끕니다</h3>
+          <span class="desc">상자를 열고 장비를 강화하세요. 딱 +25까지만 하고 끌 수 있을지.</span>
+        </span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
     </main>
 
     <footer>
@@ -263,12 +279,12 @@
     (() => {
       const tabs = document.querySelectorAll("#tabs button");
       const items = document.querySelectorAll("#list .item");
-      const funLabel = document.getElementById("funLabel");
+      const labels = [document.getElementById("funLabel"), document.getElementById("draftLabel")];
 
       function apply(filter) {
         tabs.forEach(t => t.classList.toggle("active", t.dataset.filter === filter));
         items.forEach(it => { it.hidden = filter !== "all" && it.dataset.cat !== filter; });
-        funLabel.hidden = filter !== "all";
+        labels.forEach(l => { l.hidden = filter !== "all"; });
         try { localStorage.setItem("glonomy-tab", filter); } catch (e) {}
       }
 
@@ -276,7 +292,7 @@
 
       let saved = "all";
       try { saved = localStorage.getItem("glonomy-tab") || "all"; } catch (e) {}
-      apply(["all", "study", "game", "fun"].includes(saved) ? saved : "all");
+      apply(["all", "study", "game", "fun", "draft"].includes(saved) ? saved : "all");
     })();
   </script>
 </body>
