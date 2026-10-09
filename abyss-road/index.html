@@ -119,7 +119,7 @@ img.icore.art{position:absolute;width:34px;height:46px;margin:-44px 0 0 -17px;ob
 .iwork svg{width:24px;height:24px;fill:currentColor} .iwork b{position:absolute;left:50%;top:-12px;transform:translateX(-50%);font:600 9px var(--f-ui);color:var(--gold);white-space:nowrap}
 @keyframes dig{from{transform:rotate(-10deg)}to{transform:rotate(8deg) translateY(-2px)}}
 body.guiding button:not(.ghi):not(.gsk):not([data-a^=talk]){opacity:.32;filter:grayscale(.6)}body.guiding:not(.gfree) .iroom:not(.ghi),body.guiding .ighost:not(.ghi){opacity:.45}
-#guide.fold{padding:4px 6px;top:calc(var(--it) + 92px);left:auto;right:calc(var(--ir) + 200px);transform:none}#guide.fold .gsk{margin:0}
+#guide.fold{padding:4px 6px;top:calc(var(--it) + 92px);left:auto;right:calc(var(--ir) + 200px);transform:none}#guide.fold .gsk{margin:0}#guide.fold{padding:0;background:transparent;border:0;box-shadow:none}.gsk.gmin{width:30px;height:30px;border-radius:50%;padding:0;font:700 14px var(--f-ui);display:grid;place-items:center}
 #guide{position:absolute;left:50%;top:calc(var(--it) + 92px);transform:translateX(-50%);z-index:22;display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:12px;max-width:calc(100% - 32px);
   background:color-mix(in srgb,var(--abyss) 88%,transparent);border:1px solid var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 15%,transparent);pointer-events:none;font:500 13px var(--f-ui);color:var(--bone)}
 #guide .gq{font:700 11px var(--f-ui);color:var(--gold);white-space:nowrap} #guide b{font-weight:600}
@@ -380,7 +380,7 @@ body.short .hc{width:62px;height:70px}body.short .hc svg{width:22px;height:22px}
 #modal.dark{background:var(--abyss)}
 .sheet{width:100%;max-width:760px;max-height:100%;overflow:hidden;background:var(--rock);border:1px solid var(--line);border-radius:14px;padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px}
 .mh{flex:none;display:flex;gap:12px;align-items:center;justify-content:space-between}
-.mb{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;overscroll-behavior:contain;display:grid;gap:10px;align-content:start}#drawer{touch-action:pan-y;overflow:hidden}#drawer .mb{padding-right:2px}#drawer .mb .rows,#drawer .mb .row,#drawer .mb .mc{max-width:100%;min-width:0}
+.mb{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;overscroll-behavior:contain;display:grid;gap:10px;align-content:start}#drawer{touch-action:pan-y;overflow:hidden}#drawer .mb{padding-right:0;overflow-x:clip}#drawer .mb>*,#drawer .mh,#drawer .tabs,#drawer .acts{min-width:0;max-width:100%;box-sizing:border-box}#drawer .mh,#drawer .tabs{flex-wrap:wrap}body.rot .mb,body.rot #drawer{touch-action:pan-x}#drawer .mb .rows,#drawer .mb .row,#drawer .mb .mc{max-width:100%;min-width:0}
 .x{flex:none;width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--stone-2);font-size:17px;line-height:1;display:grid;place-items:center}
 .sheet>.acts{flex:none;max-width:none}
 #modal.dark .sheet{background:none;border:0;text-align:center;gap:18px;max-width:460px}
@@ -415,6 +415,11 @@ div.row{cursor:default}
 .dots i{width:6px;height:6px;border-radius:50%;background:var(--line)}
 .dots i.on{background:var(--bone)}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
+.gch{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:560px){.gch{grid-template-columns:1fr}}
+.gcol{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--stone);display:grid;gap:4px;min-width:0}.gcol.ruby{border-color:color-mix(in srgb,var(--ruby,#e0607a) 50%,var(--line))}
+.gcol h3{margin:0;font:600 14px var(--f-display);display:flex;justify-content:space-between;align-items:baseline}.gcol h3 small{font:500 11px var(--f-ui);color:var(--dim)}
+.gcol .d{font-size:11px;color:var(--dim)}.gcol .acts{max-width:none;justify-content:flex-start;flex-wrap:wrap;margin-top:2px;padding:0;border:0}
+.gdet summary{cursor:pointer;color:var(--dim);font-size:12px;padding:4px 0}.gdet{display:grid;gap:6px}
 .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .slot{min-height:56px;border:1px dashed var(--line);border-radius:10px;display:grid;place-items:center;color:var(--dim);font-size:12px}
 .pick:not(.wt){border-color:var(--gold)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 35%,transparent)}
@@ -539,7 +544,7 @@ function guideTick(){const G=$('#guide'),st=GSTEP();document.body.classList.togg
   if(!st.done()&&st.back&&st.back()&&S.guide>0){S.guide--;return guideTick()}
   if(st.done()){if(st.end)st.end();S.guide++;const nx=GUIDE[S.guide];if(nx&&nx.start)nx.start();if(S.guide>=GUIDE.length){S.guide=-1;say([{w:'me',t:'세 층. 바깥. 원정. 더는 가르쳐 줄 것이 없다.'},{w:'me',t:'이제부터는 전부 내가 정한다.'}])}return}
   const sel=typeof st.sel==='function'?st.sel():st.sel,el=document.querySelector(sel);if(st.multi){gEls=[...document.querySelectorAll(sel)];gEls.forEach(e=>e.classList.add('ghi'))}if(el!==gEl){if(gEl)gEl.classList.remove('ghi');if(el)el.classList.add('ghi');gEl=el}else if(el&&!el.classList.contains('ghi'))el.classList.add('ghi');
-  G.hidden=false;const free=st.allow==='*';if(S.gShown!==S.guide){S.gShown=S.guide;S.gT=S.t;S.gFold=false}if(free&&!S.gFold&&S.t-S.gT>8)S.gFold=true;G.classList.toggle('fold',!!(free&&S.gFold));put('guide',free&&S.gFold?`<button class="gsk" data-a="g-open">퀘스트 ${S.guide+1}/${GUIDE.length} ▸</button>`:`<span class="gq">${S.guide+1}/${GUIDE.length}</span><b>${st.t}</b>${free?'<button class="gsk" data-a="g-fold">접기</button>':''}`)}
+  const free=st.allow==='*';if(free&&(modal||drawerOn())){if(!G.hidden){G.hidden=true;cache.guide=''}return}G.hidden=false;if(S.gShown!==S.guide){S.gShown=S.guide;S.gT=S.t;S.gFold=false}if(free&&!S.gFold&&S.t-S.gT>8)S.gFold=true;G.classList.toggle('fold',!!(free&&S.gFold));put('guide',free&&S.gFold?`<button class="gsk gmin" data-a="g-open" aria-label="퀘스트">?</button>`:`<span class="gq">${S.guide+1}/${GUIDE.length}</span><b>${st.t}</b>${free?'<button class="gsk" data-a="g-fold">접기</button>':''}`)}
 function gNudge(){const G=$('#guide');if(G){G.classList.remove('nudge');void G.offsetWidth;G.classList.add('nudge')}}
 function tip(k,lines){if(!S)return;S.tips=S.tips||{};if(S.tips[k])return;if(GSTEP()&&S.guide<13)return;S.tips[k]=1;say(lines)}
 let AUTOTALK=null,TESTGUIDE=false;
@@ -558,13 +563,13 @@ const tutN={warrior:'덩치 큰 생명체',archer:'활을 든 생명체',guide:'
 const SCN={
   wake:()=>[{w:'me',t:'……'},{w:'me',t:'…여긴 어디지?'},{w:'me',t:'몸이 없다. 그런데 보인다. 높은 곳에서 아래를 내려다보듯이.'},
     {w:'me',t:'따뜻한 것이 있다. 저것과 나는 이어져 있다.',focus:'core'},{w:'me',t:'저게 깨지면… 나도 끝이다. 그런 느낌이 든다.'},{w:'me',t:'옆에 방이 하나 더 있다. 가 보자.'},{fn:()=>log('옆방을 눌러 살펴본다.','mana')}],
-  sigil:()=>[{w:'me',t:'바닥에서 뭔가 빛이 난다.'},{w:'me',t:'무늬…? 한번 만져볼까?',ch:[{t:'만져 본다',fn:()=>{const sr=sigilRoom();if(sr&&sr.sigil){S.sel.room=sr.id;handle('sigil')}}},{t:'조금 더 둘러본다'}]}],
+  sigil:()=>[{w:'me',t:'바닥에서 뭔가 빛이 난다.'},{w:'me',t:'무늬…? 한번 만져볼까?',ch:[{t:'만져 본다',fn:()=>{const sr=sigilRoom();if(sr&&sr.sigil){selRoom(sr.id,true);handle('sigil')}}},{t:'조금 더 둘러본다'}]}],
   firstmon:()=>[{w:'bone',t:'……달그락.'},{w:'me',t:'뼈…? 움직인다. 나를 보고 있다.'},{w:'bone',t:'달그락, 달그락.'},{w:'me',t:'너도 방금 태어났구나.'},{w:'me',t:'…같이 있자. 이곳엔 우리 둘뿐이니까.'}],
   omen:()=>[{w:'me',t:'…어디서 기척이 느껴진다.'},{w:'me',t:'바람이 들어오던 벽 쪽이다. 무언가가 온다. 셋.',focus:'ent'}],
   tutIn:()=>[{w:'warrior',n:tutN.warrior,t:'여기가 새로 생겼다는 던전이야? 생각보다 코딱지만 하네.'},{w:'archer',n:tutN.archer,t:'작아도 던전은 던전이야. 코어만 깨면 셋이서 한 달은 먹고 산다고.'},
     {w:'guide',n:tutN.guide,t:'저, 저기… 진짜 들어가요? 뭔가… 저희를 보고 있는 것 같은데…'},{w:'warrior',n:tutN.warrior,t:'겁먹긴. 갓 생긴 던전엔 쥐새끼 한두 마리가 전부야. 넌 뒤에서 짐이나 들어.'},
     {w:'me',t:'소리가 난다. 알아들을 수는 없는데… 뜻은 전해진다.'},{w:'me',t:'저것들은 저 따뜻한 것을 노린다.'}],
-  tutFight:()=>[{w:'bone',t:'달그락!'},{w:'me',t:'해골 병사가 앞을 막아선다. 싸움은 저 아이가 알아서 한다.'},{w:'me',t:'…아니, 내 정신을 실을 수도 있을 것 같다. 「빙의」하면 내가 직접 움직인다.'}],
+  tutFight:()=>[{w:'bone',t:'달그락!'},{w:'me',t:'해골 병사가 앞을 막아선다. 지금은 저 아이가 알아서 싸운다.'},{w:'me',t:'던전이 내 것이 되면, 싸우는 방에 들어가 내가 직접 지휘할 수 있다.'}],
   egg:()=>[{w:'me',t:'조용해졌다. 쓰러진 것들 사이에서… 저건 뭐지?',focus:'sigil'},{w:'me',t:'알이다. 따뜻하다. 안에서 무언가가 뛴다.'},
     {w:'me',t:'어떻게 할까.',ch:[{t:'먹는다 — 곧바로 강해진다',fn:()=>handle('egg-eat')},{t:'판다 — 골드 80',fn:()=>handle('egg-sell')},{t:'품는다 — 무엇이 나올지 본다',fn:()=>handle('egg-keep')}]}],
   stage2:()=>[{w:'clerk',t:'남쪽에 새로 생긴 던전 말인데요, 안에서 쓸 만한 게 나온다는 보고가 들어왔어요.'},{w:'warrior',n:'술 취한 모험가',t:'거기 들어갔다가 살아 나온 놈이 있다며?'},
@@ -1005,7 +1010,8 @@ function spawnWave(){S.wave++;S.inv=true;repNew();S.rumor=Math.max(0,S.rumor-1);
   if(lead){S.sv.next=S.wave+6;log('베인이 돌아왔다. 이번에는 숨지 않는다.','bad');say([{w:'guide',n:svName(),t:pick(['몇 번을 들어왔는지 알아? 네 방, 네 함정, 네 아이들… 전부 외웠어.','이번엔 도망 안 쳐. 끝을 보러 왔어.','기억나? 방 세 칸짜리였지. 이번엔 내가 끝낸다.'])},{w:'me',t:'…베인. 이제는 겁쟁이가 아니다.'}])}
   if(!S.out.on&&!drawerOn()&&!modal){const er=entRoom();if(er){S.sel.unit=null;selRoom(er.id,false);fitAll(true)}}
   S.waveMax=rnd(T.wave[0],T.wave[1]);S.waveT=S.waveMax}
-function arrive(G){const first=G.from===null;{const pr=G.from&&S.rooms[G.from],nr=S.rooms[G.to];G.slowed=!!(pr&&pr.terr==='mire'&&!pr.disarmed&&nr&&nr.terr==='spike'&&!nr.disarmed)}{const r0=S.rooms[G.to];const rg=G.members.map(id=>S.units[id]).find(u=>u&&u.type==='rogue');if(r0&&r0.terr&&!r0.disarmed&&rg&&!G.tut&&Math.random()<.5){r0.disarmed=true;if(G)G.seen.terr++;log(`도적이 ${TERR[r0.terr].n}을 알아보고 해체했다.`,'torch');roomFloat(r0.id,'해체','bad')}}if(!G.tut)G.members.forEach(id=>S.units[id]&&dex('h',S.units[id].type));G.room=G.to;G.state='in';G.timer=G.retreat?.5:S.rooms[G.to]&&S.rooms[G.to].hall?.5:G.ad&&G.ad.scout?3.2:2;G.visited.push(G.room);
+function camFollow(G){if(!S||S.out.on||drawerOn()||modal||TALK||S.cmd||S.phase!=='play')return;const g=GSTEP();if(g&&g.id==='rest')return;const tut=!!(g&&S.guide<13);if(!tut&&Object.keys(S.groups).length!==1)return;const r=S.rooms[G.room];if(!r||zoomed===r.id)return;S.sel.unit=null;selRoom(r.id,true)}
+function arrive(G){const first=G.from===null;{const pr=G.from&&S.rooms[G.from],nr=S.rooms[G.to];G.slowed=!!(pr&&pr.terr==='mire'&&!pr.disarmed&&nr&&nr.terr==='spike'&&!nr.disarmed)}{const r0=S.rooms[G.to];const rg=G.members.map(id=>S.units[id]).find(u=>u&&u.type==='rogue');if(r0&&r0.terr&&!r0.disarmed&&rg&&!G.tut&&Math.random()<.5){r0.disarmed=true;if(G)G.seen.terr++;log(`도적이 ${TERR[r0.terr].n}을 알아보고 해체했다.`,'torch');roomFloat(r0.id,'해체','bad')}}if(!G.tut)G.members.forEach(id=>S.units[id]&&dex('h',S.units[id].type));G.room=G.to;G.state='in';camFollow(G);G.timer=G.retreat?.5:S.rooms[G.to]&&S.rooms[G.to].hall?.5:G.ad&&G.ad.scout?3.2:2;G.visited.push(G.room);
   const r=S.rooms[G.room];G.members.forEach(id=>{const u=S.units[id];u.room=G.room;u.gauge=rnd(0,40)});
   if(first)log(G.tut?'낯선 생명체 3개체가 영역에 침입했습니다.':`침입자 ${G.members.length}명이 들어왔다.`,'torch');if(first&&G.tut)say('tutIn');
   if(r.terr==='mire'&&!r.disarmed){humsIn(r.id).filter(h=>h.g===G.id).forEach(h=>{h.poi={n:3,d:terrDmg(h,3+S.lvl)}});if(first||Math.random()<.3)log(`${rname(r)}의 독늪에 발이 빠졌다.`,'mana')}
@@ -1022,7 +1028,7 @@ function arrive(G){const first=G.from===null;{const pr=G.from&&S.rooms[G.from],n
       const amb=monsIn(r.id),hs_=humsIn(r.id).filter(h=>h.g===G.id),readit=hs_.some(h=>h.type==='sapper')&&Math.random()<.4&&!(r.terr==='dark'&&!r.disarmed);if(amb.length&&hs_.length&&readit){log('공병이 그림자 속 기척을 먼저 읽었다. 기습이 들통났다.','bad');roomFloat(r.id,'들켰다','bad')}if(amb.length&&hs_.length&&!readit){S.stat.ambush=(S.stat.ambush||0)+1;log(`뚜껑이 열리는 순간, 그림자에 숨어 있던 ${amb.length>1?'것들이':J(amb[0].name,'이','가')} 덮쳤다.`,'mana');roomFloat(r.id,'기습!','good');
         for(const m of amb){const t=pick(humsIn(r.id).filter(h=>h.g===G.id));if(!t)break;lunge(m);hit(m,t,1.6*(1+.3*((m.tr&&m.tr.k)||0))*(pasOf(m)==='ambusher'?1.6:1),'기습');m.gauge=60;if(S.phase==='over')return}}}}
   if(G.tIn==null)G.tIn=S.t;{const sn=G.members.map(id=>S.units[id]).find(u=>u&&u.sneak);if(sn&&S.t-G.tIn>=25&&(G.visited.length>=3||G.retreat||G.members.filter(id=>S.units[id]).length<G.init))slip(sn)}
-  if(G.tut&&monsIn(r.id).length){selRoom(r.id);S.sel.unit=monsIn(r.id)[0].id;if(!S.tut.ft){S.tut.ft=1;say('tutFight')}}}
+  if(G.tut&&monsIn(r.id).length){selRoom(r.id,true);S.sel.unit=monsIn(r.id)[0].id;if(!S.tut.ft){S.tut.ft=1;say('tutFight')}}}
 /* 침입자는 지도를 모른다. 문틈으로 보이는 것만 보고 다음 방을 고른다 */
 function pickRoom(G,r,un){const ch=G.loot?[]:Object.values(S.rooms).filter(x=>x.kind==='chest'&&x.chest>0),dd=ch.length?distFrom(ch):null,bold=G.members.length>=4,ad=G.ad||{},dv=k=>dd&&dd[k]!=null?dd[k]:99;
   const w=un.map(id=>{const o=S.rooms[id];let v=1;
@@ -1446,7 +1452,7 @@ function handle(a,el){const prevM=modal;if(S&&S.phase==='tut'&&!TUTOK.includes(a
     case'place':if(S.phase==='tut'&&S.tut.step==='wake')break;{const id=d.d&&S.rooms[d.d]?d.d:S.sel.room;modal={k:'place',room:id,pick:null,all:false};S.sel.unit=null;zoomed=id}break;
     case'pl-tab':modal.all=d.d==='all';modal.pick=null;break;
     case'pl-room':if(d.d==='all'){modal.all=true;break}modal.room=d.d;modal.all=false;selRoom(d.d,true);break;
-    case'pl-pick':modal.pick=modal.pick===d.d?null:d.d;break;
+    case'pl-pick':{modal.pick=modal.pick===d.d?null:d.d;const pu=S.units[modal.pick];if(pu&&!S.out.on){const rid=S.rooms[pu.room]?pu.room:(!modal.all&&S.rooms[modal.room]?modal.room:null);if(rid){const keep=modal;S.sel.unit=null;selRoom(rid,true);modal=keep}}break}
     case'pl-put':{const t=S.units[modal.pick],R=S.rooms[modal.room];if(place(t,R)){log(`${J(t.name,'을','를')} ${rname(R)}에 세웠다.`,'mana');modal.pick=null}break}
     case'pl-out':case'unplace':{const t=a==='pl-out'?S.units[modal.pick]:tu;if(unplace(t)){log(`${J(t.name,'을','를')} 보관함으로 물렸다.`);if(modal)modal.pick=null}break}
     case'release':{const t=S.units[modal&&modal.pick];if(!t||t.room!=='store')break;['eq','rel'].forEach(sl=>{const it=t[sl]&&itemOf(t[sl]);if(it)it.on=null});delete S.units[t.id];const v=t.star||1;S.soul+=v;S.bone+=1;modal.pick=null;log(`${J(t.name,'을','를')} 어둠으로 돌려보냈다. 소울 ${v}, 뼈조각 1.`);break}
@@ -1617,7 +1623,7 @@ const PJ=(x,y)=>[(x-y)*IK+OX,(x+y)*IH+OY],RC=r=>PJ(r.x*C+C/2,r.y*C+C/2),f1=n=>Ma
 function fitAll(anim){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;const add=(gx,gy)=>{for(const[a,b]of[[0,0],[1,0],[1,1],[0,1]]){const[p,q]=PJ((gx+a)*C,(gy+b)*C);x0=Math.min(x0,p);x1=Math.max(x1,p);y0=Math.min(y0,q);y1=Math.max(y1,q)}};
   floorRooms().forEach(r=>{add(r.x,r.y);const gt=gateOf(r);if(gt)add(gt.x,gt.y)});if(x0>x1)add(7,5);y0-=50;
   const v=viewRect(),bw=x1-x0+40,bh=y1-y0+30;cam.z=clamp(Math.min(v.w/bw,v.h/bh),.3,1.9);cam.x=(x0+x1)/2;cam.y=(y0+y1)/2;zoomed=null;applyCam(anim)}
-function focusRoom(r,anim){const v=viewRect(),[cx,cy]=RC(r),fz=S&&S.phase==='play'&&inFight(r.id);cam.z=clamp(fz?Math.min(v.h/(RS*.55),v.w/(RS*1.0)):Math.min(v.h/(RS*1.02),v.w/(RS*1.96)),.6,4.5);cam.x=cx;cam.y=cy-12;zoomed=r.id;applyCam(anim)}
+function focusRoom(r,anim){const v=viewRect(),[cx,cy]=RC(r),fz=S&&S.phase==='play';cam.z=clamp(fz?Math.min(v.h/(RS*.55),v.w/(RS*1.0)):Math.min(v.h/(RS*1.02),v.w/(RS*1.96)),.6,4.5);cam.x=cx;cam.y=cy-12;zoomed=r.id;applyCam(anim)}
 function zoomAt(p,z,base){base=base||cam;const t0=camT(base),wx=(p.x-t0.tx)/base.z,wy=(p.y-t0.ty)/base.z,v=viewRect();z=clamp(z,.25,3.4);
   cam.z=z;cam.x=(v.l+v.w/2-(p.x-wx*z))/z;cam.y=(v.t+v.h/2-(p.y-wy*z))/z;zoomed=null;applyCam(false)}
 function zoomBy(k){const v=viewRect();zoomAt({x:v.l+v.w/2,y:v.t+v.h/2},cam.z*k);applyCam(true)}
@@ -1807,7 +1813,7 @@ function barHTML(){const r=S.rooms[S.sel.room],u=S.units[S.sel.unit],P=S.poss,pu
     <div class="acts">${B('p-atk','공격',{off:!P.await,cls:P.await&&!P.pend?'hot':'',sub:'적을 눌러도 된다'})}${B('p-skill',d.sk,{off:!P.await||pu.cd>0,sub:pu.cd>0?pu.cd+'번 뒤':d.tgt?'대상 선택':'즉시'})}${B('p-guard','방어',{off:!P.await,sub:'피해 절반'})}${B('unposs','빙의를 푼다')}</div>`}
   if(u&&u.side==='m'){const d=MON[u.type],f=inFight(u.room),cd=S.t<S.possCd,ot=u.order&&S.units[u.order],out=u.room==='out';
     return`<p class="info"><b>${u.name}${stars(u)}</b>${f&&ot?`<br><span class="d">명령: ${hn(ot)}부터 친다.</span>`:''}</p>
-    <div class="acts">${B('poss','빙의',{cls:'mana'+(f&&S.phase==='tut'?' hot':''),off:!f||cd||S.mana<10,sub:cd?'추스르는 중':f?`−${possDrain(u).toFixed(1)}/초`:'싸울 때만'})}${ot?B('clear-order','명령 해제'):''}${B('train','육성',{off:S.soul<trainCost(u)||u.lvl>=lvlCap(u),sub:u.lvl>=lvlCap(u)?'한계':`소울 ${trainCost(u)}`})}${out?'':B('fuse','융합',{off:(u.star||1)>=5||f||!mons().some(x=>fuseOk(u,x)),sub:(u.star||1)>=5?'★5':`짝 ${mons().filter(x=>fuseOk(u,x)).length}`})}${canEvo(u)?B('evo','진화',{cls:'hot',d:u.id}):''}${S.rooms[u.room]&&S.phase==='play'?B('boss',u.boss?'보스 해임':'보스 임명',{cls:u.boss?'':'',sub:u.boss?'B'+S.rooms[u.room].f+' 보스':'+30%'}):''}${B('tac','노림수',{sub:TAC[u.tac==='front'?'tank':u.tac==='back'?'ranged':u.tac]||'기본'})}${B('front','앞으로',{off:monsIn(u.room)[0].id===u.id})}${out?'':B('unplace','물린다',{off:f,sub:'보관함'})}</div>`}
+    <div class="acts">${ot?B('clear-order','명령 해제'):''}${B('train','육성',{off:S.soul<trainCost(u)||u.lvl>=lvlCap(u),sub:u.lvl>=lvlCap(u)?'한계':`소울 ${trainCost(u)}`})}${out?'':B('fuse','융합',{off:(u.star||1)>=5||f||!mons().some(x=>fuseOk(u,x)),sub:(u.star||1)>=5?'★5':`짝 ${mons().filter(x=>fuseOk(u,x)).length}`})}${canEvo(u)?B('evo','진화',{cls:'hot',d:u.id}):''}${S.rooms[u.room]&&S.phase==='play'?B('boss',u.boss?'보스 해임':'보스 임명',{cls:u.boss?'':'',sub:u.boss?'B'+S.rooms[u.room].f+' 보스':'+30%'}):''}${B('tac','노림수',{sub:TAC[u.tac==='front'?'tank':u.tac==='back'?'ranged':u.tac]||'기본'})}${B('front','앞으로',{off:monsIn(u.room)[0].id===u.id})}${out?'':B('unplace','물린다',{off:f,sub:'보관함'})}</div>`}
   if(u){const d={...HUM[u.type],d:(u.rk>=0?`모험가 ${HRK[u.rk]}급 · `:'')+HUM[u.type].d+(HROLE[u.type]?` · 역할: ${TAC[HROLE[u.type]]}`:'')},ad=Object.keys(adOf(u)).filter(k=>adOf(u)[k]).map(k=>ADAPT[k][0]);return`<p class="info"><b>${hn(u)}</b></p>`}
   if(S.out.on)return outBarHTML();
   if(fightView()&&r.id===zoomed)return`<p class="info"><b>${rname(r)} · 싸움 중</b><br><span class="d">내 몬스터를 누르면 지휘한다. 방 바깥을 누르면 빠져나온다.</span></p><div class="acts">${B('auto',S.auto?'자동 · 지휘로':'지휘 중 · 자동으로',{cls:S.auto?'':'torch'})}${B('zfit','전투에서 나간다')}</div>`;
@@ -1836,14 +1842,13 @@ let SORT=0;try{SORT=+localStorage.getItem('abyssroad.sort')||0}catch(e){}const S
 const grI=u=>GRN.indexOf(grOf(u.type));
 const srt=l=>l.slice().sort([(a,b)=>grI(b)-grI(a)||(b.star||1)-(a.star||1)||b.lvl-a.lvl||a.n0-b.n0,(a,b)=>(b.star||1)-(a.star||1)||b.lvl-a.lvl||a.n0-b.n0,(a,b)=>b.lvl-a.lvl||(b.star||1)-(a.star||1)||a.n0-b.n0,(a,b)=>a.name.localeCompare(b.name,'ko')||(b.star||1)-(a.star||1)||b.lvl-a.lvl,(a,b)=>b.n0-a.n0][SORT%SN.length]);
 const sortB=()=>`<button class="chip sortb" data-a="sort">정렬 · ${SN[SORT%SN.length]}</button>`;
-const GACHA=()=>`<p>불러낸 것은 코어 곁 보관함에 머물고, 「배치」로 방에 세운다. 별은 융합으로만 ★5까지 오른다. 보관함 ${stored().length}/${storeCap()}</p>
-      <h3 class="sec">골드 소환<small>${CI('gold')} ${S.gold} · 주로 N 등급 · 언제나 ★1</small></h3>
-      <div class="kv">${Object.entries(GOLDT).map(([g,w])=>`<span>${grB0(g)}</span><b>${w}%</b>`).join('')}</div>
-      <div class="acts" style="justify-content:flex-start;max-width:none">${B('pull-g','1회',{d:'1',off:(S.stat.pullG?S.gold<GCOST:false)||stored().length+1>storeCap(),sub:S.stat.pullG?'골드 '+GCOST:'처음은 무료'})}${B('pull-g','10회',{d:'10',off:S.gold<GCOST*9||stored().length+10>storeCap(),sub:'골드 '+GCOST*9})}</div>
-      <h3 class="sec">루비 소환<small>${CI('ruby')} ${S.ruby} · 모든 등급 · ★1~★3</small></h3>
-      <div class="kv">${Object.entries(RUBYT).map(([g,w])=>`<span>${grB0(g)} ${Object.keys(MGR).filter(k=>MGR[k]===g&&POOL[k]).map(k=>MON[k].n).join(', ')}</span><b>${w}%</b>`).join('')}<span>별</span><b>★1 85% · ★2 13% · ★3 2%</b></div>
-      <p>뽑기로는 ★3까지만 나온다. ★4·★5는 융합으로 올린다. 10회는 SR 이상이나 ★2 이상을 하나 보장한다.${S.out.seen?` 내 땅의 ${J(MON[BIO[S.biome].mon].n,'이','가')} 더 잘 나온다.`:''}</p>`,
-  GACHAB=()=>B('pull','루비 1회',{d:'1',cls:'ruby',off:S.ruby<10||stored().length+1>storeCap(),sub:'루비 10'})+B('pull','루비 10회',{d:'10',cls:'ruby',off:S.ruby<90||stored().length+10>storeCap(),sub:'루비 90'});
+const GACHA=()=>`<div class="gch"><div class="gcol"><h3>골드 소환<small>${CI('gold')} ${S.gold}</small></h3><span class="d">주로 N 등급 · 언제나 ★1</span><div class="acts">${B('pull-g','1회',{d:'1',off:(S.stat.pullG?S.gold<GCOST:false)||stored().length+1>storeCap(),sub:S.stat.pullG?'골드 '+GCOST:'처음은 무료'})}${B('pull-g','10회',{d:'10',off:S.gold<GCOST*9||stored().length+10>storeCap(),sub:'골드 '+GCOST*9})}</div></div>
+      <div class="gcol ruby"><h3>루비 소환<small>${CI('ruby')} ${S.ruby}</small></h3><span class="d">모든 등급 · ★1~★3</span><div class="acts">${B('pull','1회',{d:'1',cls:'ruby',off:S.ruby<10||stored().length+1>storeCap(),sub:'루비 10'})}${B('pull','10회',{d:'10',cls:'ruby',off:S.ruby<90||stored().length+10>storeCap(),sub:'루비 90'})}</div></div></div>
+      <p class="d">보관함 ${stored().length}/${storeCap()} · 불러낸 것은 보관함에 머물고 「배치」로 방에 세운다. 10회는 SR 이상이나 ★2 이상을 하나 보장한다.</p>
+      <details class="gdet"><summary>확률 보기</summary><h3 class="sec">골드</h3><div class="kv">${Object.entries(GOLDT).map(([g,w])=>`<span>${grB0(g)}</span><b>${w}%</b>`).join('')}</div>
+      <h3 class="sec">루비</h3><div class="kv">${Object.entries(RUBYT).map(([g,w])=>`<span>${grB0(g)} ${Object.keys(MGR).filter(k=>MGR[k]===g&&POOL[k]).map(k=>MON[k].n).join(', ')}</span><b>${w}%</b>`).join('')}<span>별</span><b>★1 85% · ★2 13% · ★3 2%</b></div>
+      <p>뽑기로는 ★3까지만 나온다. ★4·★5는 융합으로 올린다.${S.out.seen?` 내 땅의 ${J(MON[BIO[S.biome].mon].n,'이','가')} 더 잘 나온다.`:''}</p></details>`,
+  GACHAB=()=>'';
 const R=(a,g,t,d,off)=>`<button class="row" data-a="${a}"${off?' disabled':''}><svg viewBox="0 0 40 40"><use href="#g-${g}"/></svg><span class="t"><b>${t}</b><span>${d}</span></span><span class="c"></span></button>`;
 const sheet=(title,body,acts,x=true)=>`<div class="sheet"><div class="mh">${modal&&modal.back?'<button class="x bk" data-a="close" aria-label="뒤로">‹</button>':''}<h2>${title}</h2>${x?'<button class="x" data-a="'+(modal&&modal.back?'close-all':'close')+'" aria-label="닫기">✕</button>':''}</div><div class="mb">${body}</div>${acts?`<div class="acts">${acts}</div>`:''}</div>`;
 function drawerHTML(){const m=modal,all=m.all,R_=S.rooms[m.room]||S.rooms[S.sel.room],pk=S.units[m.pick];
@@ -1970,7 +1975,7 @@ function modalHTML(){const m=modal,r=S.rooms[S.sel.room];
       const rows=ps.map((u,i)=>{const d=MON[u.type];return`<div class="row prow"><svg viewBox="0 0 40 40"><use href="#g-${u.type}"/></svg><span class="t"><b>${i+1}. ${u.name}${stars(u)} Lv ${u.lvl}</b><span>체력 ${Math.ceil(u.hp)}/${u.maxHp} · 공격 ${u.atk} · ${d.go?'동행':'한 걸음마다 −6%'}</span><span>${d.sk} — ${d.skd}</span></span>
         <span class="pa">${B('p-up','앞으로',{d:u.id,off:i===0})}${B('p-down','뒤로',{d:u.id,off:i===ps.length-1})}${B('tac','노림수',{d:u.id,sub:TAC[u.tac]||'기본'})}${B('p-home','돌려보낸다',{d:u.id,off:ps.length<2||!!O.fight,sub:n.d?5*n.d+'초 걸림':'바로'})}</span></div>`}).join('');
       const pool=home&&ps.length<3?mons().filter(u=>u.room==='store'||(S.rooms[u.room]&&!humsIn(u.room).length)):[];
-      return sheet('일행 편성',`<p>위에서부터 앞줄이다. 앞줄이 먼저 맞는다. 노림수는 빙의하지 않았을 때 누구를 먼저 칠지 정한다.${home?'':' 새 몬스터를 들이려면 던전 입구로 돌아와야 한다.'}</p><div class="rows one">${rows}</div>${pool.length?`<h3 class="sec">던전에서 더 데려온다<small>${ps.length}/3</small></h3><div class="rows">${pool.map(u=>card(u,'p-add',false,u.room==='store'?'보관함':rname(S.rooms[u.room],1))).join('')}</div>`:''}`)}
+      return sheet('일행 편성',`<p>위에서부터 앞줄이다. 앞줄이 먼저 맞는다. 노림수는 자동 전투일 때 누구를 먼저 칠지 정한다.${home?'':' 새 몬스터를 들이려면 던전 입구로 돌아와야 한다.'}</p><div class="rows one">${rows}</div>${pool.length?`<h3 class="sec">던전에서 더 데려온다<small>${ps.length}/3</small></h3><div class="rows">${pool.map(u=>card(u,'p-add',false,u.room==='store'?'보관함':rname(S.rooms[u.room],1))).join('')}</div>`:''}`)}
     case'roster':{const ms=mons().slice().sort((a,b)=>(b.star||1)-(a.star||1)||b.lvl-a.lvl);
       return sheet('권속',`<p>거느린 몬스터 전부. 세운 몬스터 ${field().length}/${monCap()}, 보관함 ${stored().length}/${storeCap()}. 누르면 그 몬스터에게 간다.</p><div class="rows">${ms.map(u=>{const at=S.rooms[u.room]?rname(S.rooms[u.room]):u.room==='out'?'바깥':u.room==='store'?'보관함':'돌아오는 중',ok=u.room==='store'||(S.rooms[u.room]&&!S.out.on);
         return card(u,'goto',false,at+(mons().some(x=>fuseOk(u,x))?' · 융합 가능':'')).replace('<button',ok?'<button':'<button disabled')}).join('')}</div>`)}
@@ -2023,7 +2028,7 @@ function modalHTML(){const m=modal,r=S.rooms[S.sel.room];
 const COARSE=()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}};
 function goLandscape(){const el=document.documentElement,lock=()=>{try{const o=screen.orientation;if(o&&o.lock)return o.lock('landscape').then(layout,()=>{})}catch(e){}};
   try{if(!document.fullscreenElement&&el.requestFullscreen){const r=el.requestFullscreen({navigationUI:'hide'});if(r&&r.then){r.then(lock,lock);return}}}catch(e){}lock()}
-function layout(){const b=document.body,W=b.clientWidth,H=b.clientHeight,R=$('#rot'),coarse=COARSE(),rot=coarse&&H>W;
+function layout(){const b=document.body,W=b.clientWidth,H=b.clientHeight,R=$('#rot'),coarse=COARSE(),rot=coarse&&H>W;b.classList.toggle('rot',rot);
   let aw=rot?H:W,ah=rot?W:H,sc=1,ty=0;
   if(!rot){if(aw<680){sc=aw/680;aw=680;ah=H/sc}if(ah>aw*.72){const full=ah;ah=Math.round(aw*.72);ty=(full-ah)*sc/2}}
   R.style.width=aw+'px';R.style.height=ah+'px';R.style.transform=rot?`translate(${W}px,0) rotate(90deg)`:`translate(0,${ty}px) scale(${sc})`;
