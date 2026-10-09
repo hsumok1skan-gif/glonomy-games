@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap">
-  <link rel="stylesheet" href="./style.css?v=3">
+  <link rel="stylesheet" href="./style.css?v=4">
 </head>
 
 <body>
@@ -120,6 +120,11 @@
               </div>
             </div>
 
+            <label class="toggle" for="examOnly">
+              <input type="checkbox" id="examOnly">
+              <span>기출 단어만 내기 <small class="muted">최신 6회분 기출 분석표에 나온 말·기출 유형 문항</small></span>
+            </label>
+
             <div class="setting-group">
               <strong>출제 순서</strong>
               <div class="seg" id="orderButtons">
@@ -202,7 +207,16 @@
         <div class="seg note-seg" id="noteTabs">
           <button type="button" data-value="wrong" class="selected">오답노트 <b id="noteWrongCount"></b></button>
           <button type="button" data-value="star">단어장 <b id="noteStarCount"></b></button>
+          <button type="button" data-value="mine">내 단어 <b id="noteMineCount"></b></button>
         </div>
+        <form class="panel mine-form hidden" id="mineForm" autocomplete="off">
+          <strong>강의에서 나온 단어 넣기</strong>
+          <input type="text" id="mineTerm" placeholder="단어 (예: 곰살궂다)" maxlength="40">
+          <input type="text" id="mineDef" placeholder="뜻 (예: 성질이 부드럽고 친절하다)" maxlength="160">
+          <input type="text" id="mineEx" placeholder="예문 (없어도 돼요)" maxlength="200">
+          <button type="submit" class="primary-button">내 단어에 넣기</button>
+          <p class="muted small" id="mineMsg"></p>
+        </form>
         <p class="muted" id="wrongSummary"></p>
         <div class="row-buttons">
           <button type="button" class="primary-button" id="wrongQuizButton">이 목록으로 문제 풀기</button>
@@ -231,7 +245,7 @@
   </div>
   <!--APP-END-->
 
-  <script src="./questions.js?v=3"></script>
-  <script src="./game.js?v=3"></script>
+  <script src="./questions.js?v=4"></script>
+  <script src="./game.js?v=4"></script>
 </body>
 </html>

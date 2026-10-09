@@ -13,8 +13,10 @@
     { key: "한자 성어", cats: ["한자 성어"] },
     { key: "속담", cats: ["속담"] },
     { key: "관용구", cats: ["관용구"] },
-    { key: "다의어", cats: ["다의어"] },
-    { key: "어법", cats: ["맞춤법", "띄어쓰기", "표준어", "표준 발음", "외래어 표기", "로마자 표기", "어법", "국어문화"] }
+    { key: "다의어·관계", cats: ["다의어", "어휘 관계"] },
+    { key: "순화어", cats: ["순화어"] },
+    { key: "어법", cats: ["맞춤법", "띄어쓰기", "표준어", "표준 발음", "외래어 표기", "로마자 표기", "어법", "국어문화"] },
+    { key: "내 단어", cats: ["내 단어"] }
   ];
   const GROUP_OF = {};
   GROUPS.forEach(g => g.cats.forEach(c => { GROUP_OF[c] = g.key; }));
@@ -22,7 +24,8 @@
   // 보기 후보가 모자랄 때 함께 쓰는 이웃 범위
   const NEIGHBOR = {
     "한자 성어": ["속담", "관용구"], "속담": ["한자 성어", "관용구"], "관용구": ["속담", "한자 성어"],
-    "혼동·동음이의": ["한자어"], "한자어": ["혼동·동음이의"], "고유어": [], "다의어": ["고유어"]
+    "혼동·동음이의": ["한자어"], "한자어": ["혼동·동음이의"], "고유어": [], "다의어·관계": ["고유어"], "순화어": [],
+    "내 단어": ["고유어", "한자어", "혼동·동음이의", "한자 성어", "속담", "관용구"]
   };
 
   function hash(str) {
@@ -62,7 +65,16 @@
 
   const wordsOf = t => t.replace(/\[[^\]]*\]|\([^)]*\)/g, "").split(/\s+/).filter(w => w.length >= 1);
 
-  VOCAB.forEach(v => {
+  // 내가 직접 넣은 단어 (이 기기 브라우저에 저장)
+  let MINE = [];
+  try {
+    const saved = JSON.parse(localStorage.getItem("kbs-vocab-v2") || "null");
+    MINE = (saved && Array.isArray(saved.mine)) ? saved.mine : [];
+  } catch (e) { MINE = []; }
+  const mineToVocab = m => ({ category: "내 단어", term: m.term, definition: m.definition, example: m.example || "", mineId: m.id });
+  MINE.forEach(m => VOCAB.push(mineToVocab(m)));
+
+  function prepVocab(v) {
     v.kind = "vocab";
     v.group = groupOf(v.category);
     v.id = "v" + hash(v.category + "|" + v.term + "|" + v.definition);
@@ -74,7 +86,9 @@
     v._words = new Set(wordsOf(v.term));
     v._rel = new Set([c, ...(v.related || []).map(r => cleanTerm(r.replace(/^[=≒↔]\s*/, "")))]);
     v._anti = (v.related || []).some(r => /^↔/.test(r));
-  });
+    if (v.mineId) v.id = "m" + v.mineId;
+  }
+  VOCAB.forEach(prepVocab);
   EXAMS.forEach(q => {
     q.kind = "exam";
     q.group = groupOf(q.category);
@@ -85,12 +99,28 @@
 
   const byTerm = new Map();
   const byGroup = new Map();
-  VOCAB.forEach(v => {
+  function indexVocab(v) {
     if (!byTerm.has(v.term)) byTerm.set(v.term, []);
     byTerm.get(v.term).push(v);
     if (!byGroup.has(v.group)) byGroup.set(v.group, []);
     byGroup.get(v.group).push(v);
-  });
+  }
+  VOCAB.forEach(indexVocab);
+
+  function addVocabRuntime(v) {
+    prepVocab(v);
+    VOCAB.push(v);
+    ALL.push(v);
+    BY_ID.set(v.id, v);
+    indexVocab(v);
+  }
+  function removeVocabRuntime(v) {
+    const drop = arr => { const i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); };
+    drop(VOCAB); drop(ALL);
+    BY_ID.delete(v.id);
+    drop(byTerm.get(v.term) || []);
+    drop(byGroup.get(v.group) || []);
+  }
 
   function jaccard(a, b) {
     if (!a.size || !b.size) return 0;
@@ -109,6 +139,10 @@
     // 같은 표현을 '='로 함께 가리키면 같은 뜻 묶음
     for (const r of a._rel) if (r !== a._clean && b._rel.has(r)) return true;
     if (jaccard(a._big, b._big) >= 0.42) return true;
+    // 짧은 뜻(순화어 등)이 다른 뜻 안에 통째로 들어 있으면 같은 뜻으로 봄 (예: 적다 ⊂ 보태 적다)
+    const da = a.definition.replace(/[\s.]/g, ""), db = b.definition.replace(/[\s.]/g, "");
+    const [sh, lo] = da.length <= db.length ? [da, db] : [db, da];
+    if (sh.length <= 8 && lo.includes(sh)) return true;
     // 짧은 뜻풀이가 긴 뜻풀이에 거의 다 들어 있으면 같은 뜻
     let n = 0;
     a._big.forEach(x => { if (b._big.has(x)) n++; });
@@ -126,7 +160,7 @@
     if (Math.abs(a._clean.length - b._clean.length) <= 1) s += 0.6;
     const d = jaccard(a._big, b._big);
     s += Math.min(d, 0.35) * 9; // 뜻이 비슷한 영역
-    if (a.group !== "고유어" && a.group !== "다의어") s += jaccard(a._words, b._words) * 3; // 속담·관용구는 같은 낱말
+    if (a.group !== "고유어" && a.group !== "다의어·관계") s += jaccard(a._words, b._words) * 3; // 속담·관용구는 같은 낱말
     if (a.hanja && b.hanja && a.hanja !== b.hanja) {
       const ha = new Set([...a.hanja].filter(ch => /[一-鿿]/.test(ch)));
       const hb = new Set([...b.hanja].filter(ch => /[一-鿿]/.test(ch)));
@@ -142,7 +176,7 @@
     const consider = list => list.forEach(v => {
       if (v === item || v.term === item.term) return;
       if (sameMeaning(item, v)) return;
-      if (field === "term" && item.group === "다의어" && v.group === "다의어") return;
+      if (field === "term" && item.group === "다의어·관계" && v.group === "다의어·관계") return;
       candidates.push(v);
     });
     consider(base);
@@ -176,6 +210,7 @@
   } catch (e) { /* 저장소를 못 쓰면 이번 접속 동안만 기억 */ }
   store.srs ||= {};
   store.star ||= {};
+  store.mine ||= [];
 
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) { /* 무시 */ }
@@ -253,6 +288,12 @@
   function esc(s) {
     return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
+  // 받침 유무에 맞춘 조사 (을/를)
+  function eulReul(word) {
+    const ch = [...word.replace(/[^가-힣]/g, "")].pop();
+    if (!ch) return "을(를)";
+    return (ch.charCodeAt(0) - 0xac00) % 28 ? "을" : "를";
+  }
   const rich = s => esc(s).replace(/‹([^›]*)›/g, "<u>$1</u>");
   const hasHanja = h => h && /[一-鿿]/.test(h);
 
@@ -319,7 +360,7 @@
   };
 
   function canBlank(v) {
-    if (!v.example || v.group === "다의어") return false;
+    if (!v.example || v.group === "다의어·관계" || v.group === "순화어") return false;
     if (/\(|\s/.test(v.term) && v.group !== "관용구") return false;
     return splitExamples(v.example).some(s => findWord(s, v.term));
   }
@@ -335,7 +376,7 @@
   function possibleTypes(v, wanted) {
     const types = [];
     const senseOk = v.example && senseSiblings(v).length >= 2 && splitExamples(v.example).some(s => findWord(s, v.term));
-    if (v.group === "다의어") {
+    if (v.group === "다의어·관계") {
       types.push(senseOk ? "sense" : "def");
       return types;
     }
@@ -354,13 +395,14 @@
     const q = { item: v, type, category: v.category, choiceIsTerm: false };
     const n = CHOICE_COUNT - 1;
 
+    const purified = v.group === "순화어";
     if (type === "def") {
-      q.prompt = `<span class="word">${esc(v.term)}</span>${hanja ? ` <span class="hanja">${esc(hanja)}</span>` : ""}<br>의 뜻으로 가장 알맞은 것은?`;
+      q.prompt = `<span class="word">${esc(v.term)}</span>${hanja ? ` <span class="hanja">${esc(hanja)}</span>` : ""}<br>${purified ? `${eulReul(v.term)} 다듬은 말로 알맞은 것은?` : "의 뜻으로 가장 알맞은 것은?"}`;
       q.answer = v.definition;
       q.choices = shuffle([v.definition, ...pickDistractors(v, "definition", n)]);
     } else if (type === "term" || type === "blank") {
       if (type === "term") {
-        q.prompt = "다음 뜻을 가진 말은?";
+        q.prompt = purified ? "다음과 같이 다듬은 원래 말은?" : "다음 뜻을 가진 말은?";
         q.passage = esc(v.definition);
       } else {
         const sentence = pick(splitExamples(v.example).filter(s => findWord(s, v.term)));
@@ -395,7 +437,7 @@
       q.choices = shuffle([hanja, ...sib.slice(0, n)]);
       q.choiceIsTerm = true;
     }
-    q.typeLabel = TYPE_LABEL[type];
+    q.typeLabel = TYPE_LABEL[type] + (v.exam && v.exam.length ? " · 기출" : "");
     return q;
   }
 
@@ -415,6 +457,14 @@
     store.settings || {}
   );
   if (settings.weak !== undefined) { delete settings.weak; }
+  // 범위 이름이 바뀐 이전 설정 정리 (다의어 → 다의어·관계, 새 범위 순화어·내 단어 포함)
+  if (!settings.v4) {
+    settings.groups = GROUPS.map(g => g.key);
+    settings.v4 = true;
+  }
+  settings.groups = settings.groups.map(g => g === "다의어" ? "다의어·관계" : g).filter(g => GROUPS.some(x => x.key === g));
+  if (!settings.groups.length) settings.groups = GROUPS.map(g => g.key);
+  if (settings.examOnly === undefined) settings.examOnly = false;
 
   let questions = [];
   let currentIndex = 0;
@@ -551,7 +601,7 @@
     const all = settings.groups.length === GROUPS.length;
     const modeName = { mix: "섞어서", def: "뜻 맞히기", term: "단어 맞히기", blank: "빈칸" }[settings.mode];
     const orderName = { smart: "복습 우선", new: "안 본 것", random: "랜덤" }[settings.order];
-    $("settingSummary").textContent = `${all ? "전체" : settings.groups.length + "개 범위"} · ${modeName} · ${orderName}`;
+    $("settingSummary").textContent = `${settings.examOnly ? "기출만 · " : ""}${all ? "전체" : settings.groups.length + "개 범위"} · ${modeName} · ${orderName}`;
   }
 
   function drawProgress() {
@@ -585,12 +635,19 @@
     return [...due, ...fresh, ...rest].slice(0, n);
   }
 
+  // 실제 기출에 나온 단어(6회분 기출 분석표)와 기출 유형 문항
+  const isExamItem = x => x.kind === "vocab" ? !!(x.exam && x.exam.length) : x.category === "어휘 관계";
+
   function startQuiz(customItems, wanted) {
     let items;
     if (customItems) {
       items = shuffle(customItems);
     } else {
       let source = ALL.filter(x => settings.groups.includes(x.group));
+      if (settings.examOnly) {
+        const only = source.filter(isExamItem);
+        if (only.length) source = only;
+      }
       if (settings.mode !== "mix") {
         source = source.filter(x => x.kind === "vocab");
         if (settings.mode === "blank") source = source.filter(canBlank);
@@ -652,6 +709,7 @@
     if (v.example) html += `<p>예) ${splitExamples(v.example).map(s => highlight(s, v.term)).join(" / ")}</p>`;
     if (v.related && v.related.length) html += `<p>비슷한·반대 표현: ${esc(v.related.join(", "))}</p>`;
     if (v.note) html += `<p>참고: ${esc(v.note)}</p>`;
+    if (v.exam && v.exam.length) html += `<p class="exam-line">기출: ${esc(v.exam.join(", "))}</p>`;
     return html;
   }
 
@@ -731,7 +789,7 @@
     const w = store.wrong[x.id];
     const star = `<button type="button" class="star-button${store.star[x.id] ? " on" : ""}" data-star="${x.id}">${store.star[x.id] ? "★" : "☆"}</button>`;
     const foot = withRemove
-      ? `<div class="entry-foot"><span>${withRemove === "wrong" ? `틀린 횟수 ${w ? w.n : 0}회 · 다른 날 2번 맞히면 빠져요` : "단어장에 담은 말"}</span><button type="button" class="link-button" data-remove="${x.id}">빼기</button></div>`
+      ? `<div class="entry-foot"><span>${withRemove === "wrong" ? `틀린 횟수 ${w ? w.n : 0}회 · 다른 날 2번 맞히면 빠져요` : withRemove === "mine" ? "내가 넣은 단어" : "단어장에 담은 말"}</span><button type="button" class="link-button" data-remove="${x.id}">빼기</button></div>`
       : "";
     if (x.kind === "exam") {
       return `<article class="entry">
@@ -746,7 +804,7 @@
     return `<article class="entry">
       <div class="entry-head">
         <span class="entry-term">${esc(x.term)}</span>${hanja}${x.sense ? `<span class="entry-hanja">뜻 ${x.sense}</span>` : ""}
-        <span class="entry-cat">${esc(x.category)}</span>${star}
+        <span class="entry-cat">${x.exam && x.exam.length ? '<b class="exam-badge">기출</b> ' : ""}${esc(x.category)}</span>${star}
       </div>
       <p class="entry-def">${esc(x.definition)}</p>
       ${x.example ? `<p class="entry-ex">${splitExamples(x.example).map(s => highlight(s, x.term)).join(" / ")}</p>` : ""}
@@ -782,16 +840,27 @@
       .map(([id]) => BY_ID.get(id));
   }
 
+  const mineItems = () => VOCAB.filter(v => v.mineId).sort((a, b) => b.mineId.localeCompare(a.mineId));
+  const noteItems = () => noteTab === "wrong" ? wrongItems() : noteTab === "star" ? starItems() : mineItems();
+
   function drawWrong() {
-    const items = noteTab === "wrong" ? wrongItems() : starItems();
+    const items = noteItems();
     $("noteWrongCount").textContent = wrongItems().length;
     $("noteStarCount").textContent = starItems().length;
+    $("noteMineCount").textContent = mineItems().length;
     setSeg("noteTabs", noteTab);
-    $("wrongSummary").textContent = items.length
-      ? (noteTab === "wrong" ? `${items.length}개. 많이 틀린 순서입니다.` : `${items.length}개. 최근에 담은 순서입니다.`)
-      : (noteTab === "wrong"
-        ? "아직 틀린 문제가 없어요. 문제를 풀면 틀린 것이 여기에 모입니다."
-        : "문제·카드·사전에서 ☆을 누르면 여기에 모입니다. 시험 직전에 볼 말을 담아 두세요.");
+    $("mineForm").classList.toggle("hidden", noteTab !== "mine");
+    const empty = {
+      wrong: "아직 틀린 문제가 없어요. 문제를 풀면 틀린 것이 여기에 모입니다.",
+      star: "문제·카드·사전에서 ☆을 누르면 여기에 모입니다. 시험 직전에 볼 말을 담아 두세요.",
+      mine: "강의에서 나온 모르는 단어를 위에 적어 두면 퀴즈·카드·복습에 같이 나옵니다."
+    };
+    const has = {
+      wrong: `${items.length}개. 많이 틀린 순서입니다.`,
+      star: `${items.length}개. 최근에 담은 순서입니다.`,
+      mine: `${items.length}개. 문제를 풀 때 ‘내 단어’ 범위로도 나옵니다.`
+    };
+    $("wrongSummary").textContent = items.length ? has[noteTab] : empty[noteTab];
     $("wrongQuizButton").disabled = !items.length;
     $("wrongClearButton").textContent = "비우기";
     wrongConfirm = false;
@@ -815,6 +884,7 @@
     let pool;
     if (cardGroups[0] === "★단어장") pool = starItems().filter(x => x.kind === "vocab");
     else if (cardGroups[0] === "오답") pool = wrongItems().filter(x => x.kind === "vocab");
+    else if (cardGroups[0] === "기출") pool = VOCAB.filter(v => v.exam && v.exam.length);
     else pool = VOCAB.filter(v => !cardGroups.length || cardGroups.includes(v.group));
     if (!pool.length) pool = VOCAB;
     // 복습할 카드가 먼저
@@ -868,7 +938,8 @@
       drawCard();
     }, false, [
       { key: "★단어장", label: "★ 단어장", n: starItems().filter(x => x.kind === "vocab").length },
-      { key: "오답", label: "오답", n: wrongItems().filter(x => x.kind === "vocab").length }
+      { key: "오답", label: "오답", n: wrongItems().filter(x => x.kind === "vocab").length },
+      { key: "기출", label: "기출", n: VOCAB.filter(v => v.exam && v.exam.length).length }
     ]);
   }
 
@@ -908,7 +979,7 @@
   /* ───────────── 탭 ───────────── */
   function openTab(tab) {
     document.querySelectorAll("#tabbar button").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
-    if (tab === "quiz") { drawToday(); changeScreen("startScreen"); }
+    if (tab === "quiz") { drawStartChips(); drawToday(); changeScreen("startScreen"); }
     if (tab === "card") { drawCardChips(); changeScreen("cardScreen"); drawCard(); }
     if (tab === "wrong") { drawWrong(); changeScreen("wrongScreen"); }
     if (tab === "dict") { changeScreen("dictScreen"); drawDict(); }
@@ -941,6 +1012,12 @@
     goal.daily = Number(b.dataset.value);
     save(); drawToday();
   }));
+
+  $("examOnly").addEventListener("change", e => {
+    settings.examOnly = e.target.checked;
+    persistSettings();
+    drawSettingSummary();
+  });
 
   $("startButton").addEventListener("click", () => startQuiz());
   $("reviewButton").addEventListener("click", () => {
@@ -981,8 +1058,27 @@
     noteTab = b.dataset.value;
     drawWrong();
   }));
+  $("mineForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const term = $("mineTerm").value.trim();
+    const definition = $("mineDef").value.trim();
+    const example = $("mineEx").value.trim();
+    if (!term || !definition) {
+      $("mineMsg").textContent = "단어와 뜻을 둘 다 적어 주세요.";
+      return;
+    }
+    const m = { id: Date.now().toString(36), term, definition, example };
+    store.mine.push(m);
+    save();
+    addVocabRuntime(mineToVocab(m));
+    $("mineTerm").value = ""; $("mineDef").value = ""; $("mineEx").value = "";
+    $("mineMsg").textContent = `‘${term}’${eulReul(term)} 넣었어요.`;
+    $("mineTerm").focus();
+    drawWrong();
+  });
+
   $("wrongQuizButton").addEventListener("click", () => {
-    const items = noteTab === "wrong" ? wrongItems() : starItems();
+    const items = noteItems();
     if (items.length) startQuiz(items.slice(0, 50));
   });
   $("wrongClearButton").addEventListener("click", () => {
@@ -992,7 +1088,8 @@
       return;
     }
     if (noteTab === "wrong") store.wrong = {};
-    else store.star = {};
+    else if (noteTab === "star") store.star = {};
+    else { mineItems().forEach(removeVocabRuntime); store.mine = []; }
     save();
     updateBadge();
     drawWrong();
@@ -1001,7 +1098,12 @@
     const id = e.target.dataset && e.target.dataset.remove;
     if (!id) return;
     if (noteTab === "wrong") delete store.wrong[id];
-    else delete store.star[id];
+    else if (noteTab === "star") delete store.star[id];
+    else {
+      const v = BY_ID.get(id);
+      if (v) removeVocabRuntime(v);
+      store.mine = store.mine.filter(m => "m" + m.id !== id);
+    }
     save();
     updateBadge();
     drawWrong();
@@ -1035,6 +1137,7 @@
   setSeg("countButtons", settings.count);
   setSeg("modeButtons", settings.mode);
   setSeg("orderButtons", settings.order);
+  $("examOnly").checked = !!settings.examOnly;
   drawStartChips();
   drawToday();
   updateBadge();

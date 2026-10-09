@@ -642,3 +642,24 @@ i.done { background: var(--green); }
   .seg button { font-size: 13px; }
 }
 .goal-card.no-review .goal-actions { grid-template-columns: 1fr; }
+
+/* 기출 표시 */
+.exam-badge { display: inline-block; padding: 1px 6px; border-radius: 6px; background: var(--yellow); color: var(--yellow-ink); font-size: 10.5px; font-weight: 900; }
+.explanation .exam-line { font-weight: 800; }
+.toggle small { display: block; font-size: 12px; font-weight: 500; }
+
+/* 내 단어 입력 */
+.mine-form { display: grid; gap: 10px; margin: 0 0 12px; padding: 16px; }
+.mine-form input {
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--soft);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+}
+.mine-form .small { margin: 0; min-height: 1em; }
+.note-seg { grid-auto-flow: column; }
+.note-seg button { font-size: 13px; }
