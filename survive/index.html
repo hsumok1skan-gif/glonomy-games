@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0c0c0b">
-<meta name="description" content="나는 여기까지 — 무령시, 틈이 열린 날부터 스무 날. 다크 텍스트 로그라이크.">
-<title>나는 여기까지</title>
+<meta name="description" content="살아남아야 한다 — 다시 균열이 열리고, 괴물들이 도시를 짓밟았다. 그로부터 두 달. 다크 텍스트 로그라이크.">
+<title>살아남아야 한다</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -27,112 +27,121 @@
   --sans: system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 }
 * { box-sizing: border-box; }
-html { color-scheme: dark; }
+html { color-scheme: dark; height: 100%; }
 body {
-  margin: 0; background: #0c0c0b; background: var(--bg); color: var(--ink);
-  font-family: var(--serif); font-size: 17px; line-height: 1.85; word-break: keep-all; overflow-wrap: anywhere;
-  -webkit-text-size-adjust: 100%; min-height: 100vh; min-height: 100dvh;
+  margin: 0; background: #0c0c0b; background: var(--bg); color: var(--ink); height: 100%;
+  font-family: var(--serif); font-size: 17px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere;
+  -webkit-text-size-adjust: 100%; overscroll-behavior: none;
 }
-button, input { font: inherit; color: inherit; }
-button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
 
-#app { max-width: 620px; margin: 0 auto; padding: 0 16px 56px; }
+/* 화면 하나가 곧 한 장. 바깥은 움직이지 않고, 글이 쌓이는 자리만 위아래로 움직인다. */
+#app { height: 100vh; height: 100dvh; max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; padding: 0 16px; overflow: hidden; }
+.page { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; animation: rise 0.3s ease-out; }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .page, .sheet, .entry.new { animation: none !important; } }
 
 /* ---------------------------------------------------------------- 머리 */
-.top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 0 10px; font-family: var(--sans); font-size: 13px; color: var(--dim); }
-.top .when { color: var(--bone); letter-spacing: 0.02em; }
+.hud { flex: none; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 0 9px; font-family: var(--sans); font-size: 13px; color: var(--dim); }
+.top .when { color: var(--bone); }
 .top .when b { font-weight: 600; }
+.top .when i { font-style: normal; color: var(--faint); }
 .top .tools { display: flex; gap: 6px; }
 .tool { background: none; border: 1px solid var(--line); border-radius: 3px; padding: 7px 11px; font-family: var(--sans); font-size: 13px; color: var(--ink); line-height: 1.2; }
 .tool:hover { border-color: var(--faint); }
 .tool .n { color: var(--dim); margin-left: 4px; }
 .tool.full .n { color: var(--bad); }
-
-.vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; padding: 10px 0 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: var(--sans); font-size: 12px; color: var(--dim); }
+.vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 18px; padding: 9px 0 10px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: var(--sans); font-size: 12px; color: var(--dim); }
 .vital { display: flex; align-items: center; gap: 8px; }
 .vital .k { width: 2.4em; flex: none; }
 .pips { display: flex; gap: 2px; flex: 1; }
-.pip { height: 7px; flex: 1; background: var(--line); border-radius: 1px; }
+.pip { height: 6px; flex: 1; background: var(--line); border-radius: 1px; }
 .pip.on { background: var(--ink); }
 .vital.low .pip.on { background: var(--bad); }
 .vital.ero .pip.on { background: #7d6ea8; }
-.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0 0; font-family: var(--sans); font-size: 12px; }
-.tag { border: 1px solid var(--line); color: var(--dim); padding: 1px 8px; border-radius: 2px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 7px 0 0; font-family: var(--sans); font-size: 12px; }
+.tag { border: 1px solid var(--line); color: var(--dim); padding: 0 8px; border-radius: 2px; }
 .tag.bad { color: var(--bad); border-color: var(--rust-dim); }
 
-/* ---------------------------------------------------------------- 글 */
-.scene { padding: 22px 0 6px; animation: rise 0.35s ease-out; }
-@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .scene, .sheet { animation: none !important; } }
-.place { font-family: var(--sans); font-size: 12px; letter-spacing: 0.18em; color: var(--rust); margin: 0 0 10px; }
-.who { font-family: var(--sans); font-size: 12px; color: var(--dim); margin: -4px 0 12px; }
-.text { margin: 0 0 14px; color: var(--bone); font-size: 18px; line-height: 1.95; }
-.text.small { font-size: 16px; color: var(--ink); }
-.fx { list-style: none; margin: 0 0 16px; padding: 0; font-family: var(--sans); font-size: 13px; color: var(--dim); display: flex; flex-direction: column; gap: 3px; }
-.fx li { padding-left: 12px; border-left: 2px solid var(--line); }
-.fx .minus { color: var(--bad); border-color: var(--rust-dim); }
-.fx .plus { color: var(--good); }
-.fx .get { color: var(--ink); }
-.fx .say { font-family: var(--serif); font-size: 14px; }
+/* ---------------------------------------------------------------- 쌓이는 글 */
+.log { flex: 1; min-height: 0; overflow-y: auto; position: relative; padding: 16px 0 28px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.entry { margin: 0 0 12px; }
+.entry.old { opacity: 0.62; }
+.entry.new { animation: rise 0.35s ease-out; }
+.place { font-family: var(--sans); font-size: 12px; letter-spacing: 0.18em; color: var(--rust); margin: 4px 0 8px; }
+.text { color: var(--bone); font-size: 18px; line-height: 1.95; }
+.text.move { color: var(--ink); }
+.pick { font-size: 15.5px; color: var(--dim); padding-left: 12px; border-left: 2px solid var(--rust-dim); margin: 16px 0 12px; }
+.note { font-size: 15.5px; color: var(--ink); }
+.fxl { font-family: var(--sans); font-size: 12.5px; color: var(--dim); margin-top: -4px; }
+.fxl .minus { color: var(--bad); } .fxl .plus { color: var(--good); } .fxl .get { color: var(--ink); }
+.time { display: flex; align-items: center; gap: 10px; font-family: var(--sans); font-size: 11.5px; letter-spacing: 0.16em; color: var(--faint); margin: 22px 0 14px; }
+.time::before, .time::after { content: ''; height: 1px; background: var(--line); flex: 1; }
 
-.group { font-family: var(--sans); font-size: 11px; letter-spacing: 0.2em; color: var(--faint); margin: 20px 0 8px; }
-.choices { display: flex; flex-direction: column; gap: 8px; }
-.choice { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; text-align: left; width: 100%;
-  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--faint); border-radius: 2px; padding: 12px 14px; line-height: 1.5; }
+/* ---------------------------------------------------------------- 고를 것 */
+.dock { flex: none; max-height: 56vh; max-height: 56dvh; overflow-y: auto; border-top: 1px solid var(--line); padding: 10px 0 14px; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+.group { font-family: var(--sans); font-size: 11px; letter-spacing: 0.2em; color: var(--faint); margin: 10px 0 6px; }
+.choices { display: flex; flex-direction: column; gap: 6px; }
+.choices.two { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.choices + .choices { margin-top: 6px; }
+.choice { display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left; width: 100%; min-height: 44px;
+  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--faint); border-radius: 2px; padding: 8px 12px; line-height: 1.4; }
 .choice:hover:not(:disabled) { border-left-color: var(--rust); background: var(--panel-2); }
 .choice:active:not(:disabled) { background: #22201c; }
-.choice .l { display: block; color: var(--bone); }
-.choice .s { display: block; font-family: var(--sans); font-size: 12.5px; color: var(--dim); margin-top: 2px; }
+.choice .l { display: block; color: var(--bone); font-size: 16px; }
+.choice .s { display: block; font-family: var(--sans); font-size: 12px; color: var(--dim); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.choice > span:first-child { min-width: 0; }
 .choice .o { flex: none; font-family: var(--sans); font-size: 12.5px; white-space: nowrap; }
-.choice:disabled { cursor: default; opacity: 0.55; border-left-color: var(--line); }
+.choice:disabled { cursor: default; opacity: 0.5; border-left-color: var(--line); }
 .choice.go { border-left-color: #4a4841; }
+.choice.main { border-left-color: var(--rust); }
 .o.o1 { color: var(--good); } .o.o2 { color: #a9aa88; } .o.o3 { color: var(--warn); } .o.o4 { color: #c88a62; } .o.o5 { color: var(--bad); }
-.kbd { font-family: var(--sans); font-size: 11px; color: var(--faint); margin-right: 8px; }
 
-/* ---------------------------------------------------------------- 첫 화면 · 사람 고르기 */
-.title { padding: 16vh 0 24px; text-align: left; }
-.title h1 { font-size: 40px; line-height: 1.25; font-weight: 600; color: var(--bone); margin: 0 0 14px; letter-spacing: -0.01em; }
+/* ---------------------------------------------------------------- 첫 화면 */
+.title { justify-content: center; padding: 0 0 8vh; }
+.title h1 { font-size: 42px; line-height: 1.22; font-weight: 600; color: var(--bone); margin: 0 0 18px; letter-spacing: -0.01em; }
 .title h1 span { color: var(--rust); }
-.title p { margin: 0 0 6px; color: var(--dim); font-size: 16px; }
-.title .count { font-family: var(--sans); font-size: 12.5px; color: var(--faint); margin-top: 26px; }
-.menu { display: flex; flex-direction: column; gap: 8px; margin-top: 22px; }
-.home { display: inline-block; margin-top: 34px; font-family: var(--sans); font-size: 12.5px; color: var(--faint); text-decoration: none; border-bottom: 1px solid var(--line); }
+.title p { margin: 0 0 4px; color: var(--dim); font-size: 16.5px; }
+.menu { display: flex; flex-direction: column; gap: 8px; margin-top: 30px; }
+.menu .choice { min-height: 52px; }
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 22px; font-family: var(--sans); font-size: 12.5px; color: var(--faint); }
+.link { background: none; border: 0; border-bottom: 1px solid var(--faint); padding: 2px 0; font-family: var(--sans); font-size: 14px; color: var(--ink); }
+.link:hover { color: var(--bone); border-color: var(--rust); }
+.home { display: inline-block; margin-top: 26px; font-family: var(--sans); font-size: 12.5px; color: var(--faint); text-decoration: none; }
 .home:hover { color: var(--dim); }
 
-.steps { display: flex; gap: 4px; padding: 18px 0 0; }
+/* ---------------------------------------------------------------- 사람 고르기: 한 화면에 다섯 개까지, 밀어 내리는 일 없이 */
+.create { padding: 14px 0 18px; }
+.steps { display: flex; gap: 4px; flex: none; }
 .steps i { height: 2px; flex: 1; background: var(--line); }
 .steps i.on { background: var(--rust); }
-.ask { font-size: 22px; font-weight: 600; color: var(--bone); margin: 22px 0 4px; line-height: 1.5; }
-.ask-sub { color: var(--dim); font-size: 15px; margin: 0 0 16px; }
-.opt { display: block; width: 100%; text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: 2px; padding: 12px 14px; line-height: 1.55; }
-.opt:hover:not(:disabled) { background: var(--panel-2); }
+.ask { font-size: 23px; font-weight: 600; color: var(--bone); margin: 26px 0 4px; line-height: 1.45; flex: none; }
+.ask-sub { font-family: var(--sans); color: var(--dim); font-size: 12.5px; margin: 0 0 16px; min-height: 1.4em; flex: none; }
+.opts { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
+.opt { display: flex; flex-direction: column; justify-content: center; width: 100%; flex: 1; max-height: 78px; min-height: 48px; text-align: left;
+  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--faint); border-radius: 2px; padding: 6px 14px; line-height: 1.4; }
+.opt:hover:not(:disabled) { background: var(--panel-2); border-left-color: var(--rust); }
 .opt.on { border-color: var(--rust); background: #1d1512; }
-.opt:disabled { opacity: 0.45; cursor: default; }
-.opt b { display: block; color: var(--bone); font-weight: 600; }
-.opt span { display: block; color: var(--dim); font-size: 15px; }
-.opt em { display: block; font-style: normal; font-family: var(--sans); font-size: 12px; color: var(--faint); margin-top: 3px; }
-.name-in { width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 2px; padding: 12px 14px; font-size: 18px; color: var(--bone); }
-.name-in::placeholder { color: var(--faint); }
-.nav { display: flex; gap: 8px; margin-top: 18px; }
+.opt:disabled { opacity: 0.4; cursor: default; }
+.opt b { display: block; color: var(--bone); font-weight: 600; font-size: 18px; }
+.opt em { display: block; font-style: normal; font-family: var(--sans); font-size: 12px; color: var(--dim); margin-top: 1px; }
+.opt.mbti b { font-family: var(--sans); letter-spacing: 0.22em; font-size: 19px; }
+.nav { display: flex; gap: 8px; margin-top: 14px; flex: none; }
 .btn { flex: 1; background: var(--rust); border: 1px solid var(--rust); color: #14100e; font-weight: 600; border-radius: 2px; padding: 12px 14px; }
-.btn:hover:not(:disabled) { background: #c96549; }
-.btn:disabled { opacity: 0.4; cursor: default; }
-.btn.ghost { background: none; border-color: var(--line); color: var(--ink); font-weight: 400; flex: 0 0 auto; }
+.btn:hover { background: #c96549; }
+.btn.ghost { background: none; border-color: var(--line); color: var(--dim); font-weight: 400; flex: 0 0 auto; font-family: var(--sans); font-size: 14px; }
 .btn.ghost:hover { border-color: var(--faint); background: none; }
-.sum { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
-.sum li { display: flex; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--line); }
-.sum .k { flex: 0 0 4.2em; font-family: var(--sans); font-size: 12.5px; color: var(--dim); padding-top: 4px; }
-.sum .v { color: var(--bone); }
-.sum .v small { display: block; color: var(--dim); font-size: 14.5px; }
 
 /* ---------------------------------------------------------------- 결말 */
-.end { padding: 12vh 0 0; }
+.end { justify-content: center; padding: 20px 0 6vh; }
 .end .kind { font-family: var(--sans); font-size: 12px; letter-spacing: 0.24em; color: var(--rust); }
 .end .kind.alive { color: var(--good); }
-.end h2 { font-size: 32px; font-weight: 600; color: var(--bone); margin: 8px 0 18px; line-height: 1.35; }
-.end .epitaph { font-family: var(--sans); font-size: 13px; color: var(--dim); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 22px; }
-.end .new { font-family: var(--sans); font-size: 12.5px; color: var(--warn); margin-top: 6px; }
+.end h2 { font-size: 32px; font-weight: 600; color: var(--bone); margin: 8px 0 16px; line-height: 1.35; }
+.end .text { margin: 0; }
+.end .epitaph { font-family: var(--sans); font-size: 13px; color: var(--dim); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 20px; }
+.end .new { color: var(--warn); margin-top: 4px; }
 
 /* ---------------------------------------------------------------- 가방 · 수첩 */
 .veil { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 10; }
@@ -171,11 +180,12 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .wipe button { background: none; border: 0; border-bottom: 1px solid var(--line); padding: 0; color: var(--dim); font-size: 12.5px; }
 .wipe button.sure { color: var(--bad); border-color: var(--rust-dim); }
 
-@media (max-width: 380px) {
+@media (max-width: 380px), (max-height: 700px) {
   body { font-size: 16px; }
-  .text { font-size: 17px; }
-  .title h1 { font-size: 34px; }
-  .vitals { gap: 6px 12px; }
+  .text { font-size: 17px; line-height: 1.85; }
+  .title h1 { font-size: 36px; }
+  .ask { font-size: 21px; margin-top: 18px; }
+  .vitals { gap: 5px 12px; }
 }
 </style>
 </head>
@@ -183,7 +193,7 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 <div id="app"></div>
 <script>
 /* ============================================================================================
-   나는 여기까지 — 바탕 자료 (사람 만들기 · 물건 · 유물 · 장소 · 사람 · 세력 · 결말)
+   살아남아야 한다 — 바탕 자료 (사람 만들기 · 물건 · 유물 · 장소 · 사람 · 세력 · 결말)
    이 파일은 "자료"다. 규칙은 engine.js가 읽는다. 문장은 전부 '나는'의 과거형, 남이 나를 부를 때는 '당신'.
    ============================================================================================ */
 const DAYS = 20;                       // 스무 날. 그 뒤는 '남은 사람'의 결말.
@@ -194,48 +204,70 @@ const POCKET = 6;                      // 주머니 칸(바지 넷, 겉옷 둘).
 const STATS = ['str', 'agi', 'con', 'luck', 'wit'];   // 힘 · 민첩 · 체력 · 운 · 지식
 
 const AGES = [
-  { id: 'a20', name: '스물 몇', line: '몸은 빨랐고, 아는 것은 적었다.', mod: { agi: 1, con: 1, wit: -1 } },
-  { id: 'a30', name: '서른 몇', line: '힘은 아직 남아 있었다.', mod: { str: 1 } },
-  { id: 'a40', name: '마흔 몇', line: '무릎은 예전 같지 않았고, 대신 사람을 볼 줄 알았다.', mod: { wit: 1, luck: 1, agi: -1 } },
-  { id: 'a50', name: '쉰을 넘겼다', line: '빨리 걷지는 못했다. 이 동네가 어떻게 생겼는지는 알았다.', mod: { wit: 2, luck: 1, str: -1, agi: -1, con: -1 } },
+  { id: 'a20', name: '20대', mod: { agi: 1, con: 1, wit: -1 } },
+  { id: 'a30', name: '30대', mod: { str: 1 } },
+  { id: 'a40', name: '40대', mod: { wit: 1, luck: 1, agi: -1 } },
+  { id: 'a50', name: '50대', mod: { wit: 2, luck: 1, str: -1, agi: -1, con: -1 } },
 ];
 
+/* 그전의 나. 나이에 맞는 것 가운데 다섯 개만 무작위로 보인다. 원하는 것이 안 나오면 어쩔 수 없다. */
 const JOBS = [
-  { id: 'carer', name: '요양보호사', line: '사람 몸을 들고 닦고 눕히는 일을 했다.', mod: { con: 1, wit: 1 }, items: ['bandage'] },
-  { id: 'rider', name: '배달 기사', line: '이 도시의 골목을 번지수로 외우고 있었다.', mod: { agi: 2 }, items: ['water'] },
-  { id: 'keeper', name: '고시원 총무', line: '남의 방 열쇠를 허리에 차고 사는 일이었다.', mod: { wit: 1, luck: 1 }, items: ['keys'] },
-  { id: 'mechanic', name: '정비사', line: '고장 난 것을 보면 손이 먼저 나갔다.', mod: { str: 1, wit: 1 }, items: ['wrench'] },
-  { id: 'nurse', name: '간호조무사', line: '피를 보고 놀라지 않는 법은 배워 두었다.', mod: { wit: 2 }, items: ['antiseptic'] },
-  { id: 'loader', name: '택배 상하차', line: '밤새 상자를 던지고 받는 일이었다.', mod: { str: 2 }, items: ['tape'] },
-  { id: 'clerk', name: '편의점 야간', line: '새벽 세 시에 오는 손님의 얼굴을 읽을 줄 알았다.', mod: { luck: 1, agi: 1 }, items: ['choco', 'lighter'] },
-  { id: 'teacher', name: '중학교 교사', line: '서른 명을 한 번에 조용히 시키는 목소리가 있었다.', mod: { wit: 1, con: 1 }, items: ['flashlight'] },
-  { id: 'jobless', name: '취업 준비생', line: '가진 것도 잃을 것도 많지 않았다.', mod: { luck: 2 }, items: ['ramen'] },
-  { id: 'veteran', name: '막 전역한 사람', line: '몸은 아직 새벽 여섯 시에 눈을 떴다.', mod: { str: 1, con: 1 }, items: ['knife'] },
+  // 20대에게만 나오는 것
+  { id: 'student',   name: '대학생',           ages: ['a20'], mod: { wit: 1, luck: 1 }, items: ['choco'] },
+  { id: 'athlete',   name: '운동선수 지망생',   ages: ['a20'], mod: { str: 1, con: 1 }, items: ['water'] },
+  { id: 'runner',    name: '러닝이 취미',       ages: ['a20'], mod: { con: 2 }, items: ['water'] },
+  { id: 'gym',       name: '헬스가 취미',       ages: ['a20'], mod: { str: 2 }, items: ['choco'] },
+  { id: 'climber',   name: '클라이밍이 취미',   ages: ['a20'], mod: { agi: 1, str: 1 }, items: ['rope'] },
+  { id: 'hiker',     name: '등산이 취미',       ages: ['a20'], mod: { con: 1, wit: 1 }, items: ['flashlight'] },
+  { id: 'jobless',   name: '취업 준비생',       ages: ['a20'], mod: { luck: 2 }, items: ['ramen'] },
+  { id: 'veteran',   name: '막 전역한 사람',    ages: ['a20'], mod: { str: 1, con: 1 }, items: ['knife'] },
+  // 일
+  { id: 'rider',     name: '배달 기사',         ages: ['a20', 'a30'], mod: { agi: 2 }, items: ['water'] },
+  { id: 'clerk',     name: '편의점 야간',       ages: ['a20', 'a30'], mod: { luck: 1, agi: 1 }, items: ['choco', 'lighter'] },
+  { id: 'loader',    name: '택배 상하차',       ages: ['a20', 'a30'], mod: { str: 2 }, items: ['tape'] },
+  { id: 'nurse',     name: '간호조무사',        ages: ['a20', 'a30', 'a40'], mod: { wit: 2 }, items: ['antiseptic'] },
+  { id: 'keeper',    name: '고시원 총무',       ages: ['a30', 'a40'], mod: { wit: 1, luck: 1 }, items: ['keys'] },
+  { id: 'office',    name: '회사원',            ages: ['a30', 'a40'], mod: { wit: 1, luck: 1 }, items: ['cigarette'] },
+  { id: 'fire',      name: '소방관',            ages: ['a30', 'a40'], mod: { str: 1, con: 1 }, items: ['rope'] },
+  { id: 'cook',      name: '요리사',            ages: ['a30', 'a40', 'a50'], mod: { agi: 1, wit: 1 }, items: ['knife'] },
+  { id: 'mechanic',  name: '정비사',            ages: ['a30', 'a40', 'a50'], mod: { str: 1, wit: 1 }, items: ['wrench'] },
+  { id: 'teacher',   name: '중학교 교사',       ages: ['a30', 'a40', 'a50'], mod: { wit: 1, con: 1 }, items: ['flashlight'] },
+  { id: 'electric',  name: '전기 기사',         ages: ['a30', 'a40', 'a50'], mod: { wit: 1, agi: 1 }, items: ['battery'] },
+  { id: 'pharma',    name: '약사',              ages: ['a30', 'a40', 'a50'], mod: { wit: 2 }, items: ['painkiller'] },
+  { id: 'home',      name: '전업주부',          ages: ['a30', 'a40', 'a50'], mod: { wit: 1, luck: 1 }, items: ['rice'] },
+  { id: 'carer',     name: '요양보호사',        ages: ['a40', 'a50'], mod: { con: 1, wit: 1 }, items: ['bandage'] },
+  { id: 'builder',   name: '건설 일용직',       ages: ['a40', 'a50'], mod: { str: 2 }, items: ['rope'] },
+  { id: 'taxi',      name: '택시 기사',         ages: ['a40', 'a50'], mod: { wit: 1, luck: 1 }, items: ['lighter'] },
+  { id: 'seller',    name: '시장 상인',         ages: ['a40', 'a50'], mod: { wit: 1, luck: 1 }, items: ['ecobag', 'rice'] },
+  { id: 'guard',     name: '경비원',            ages: ['a40', 'a50'], mod: { con: 1, luck: 1 }, items: ['flashlight'] },
+  { id: 'cleaner',   name: '청소 노동자',       ages: ['a50'], mod: { con: 2 }, items: ['tape'] },
+  { id: 'retired',   name: '퇴직자',            ages: ['a50'], mod: { wit: 2 }, items: ['painkiller'] },
 ];
 
 const ORIGINS = [
-  { id: 'old', name: '구시가지 토박이', line: '시장 사람 절반은 내 이름을 알았다.', mod: {}, start: 'alley', rep: { market: 1 } },
-  { id: 'new', name: '신도시 아파트', line: '이사 온 지 삼 년, 옆집 사람 이름은 몰랐다.', mod: {}, start: 'apt', rep: { apt: 1 } },
-  { id: 'out', name: '타지에서 온 사람', line: '이 도시에 온 지 한 달이었다. 아는 길은 역에서 숙소까지뿐이었다.', mod: { luck: 1 }, start: 'station', rep: {} },
-  { id: 'river', name: '강변 주택가', line: '창문을 열면 강이 보였다. 그날은 다른 것이 먼저 보였다.', mod: { wit: 1 }, start: 'river', rep: {}, ero: 1 },
+  { id: 'old',   name: '구시가지 토박이',   mod: {}, start: 'alley', rep: { market: 1 } },
+  { id: 'new',   name: '신도시 아파트',     mod: {}, start: 'apt', rep: { apt: 1 } },
+  { id: 'out',   name: '타지에서 온 사람',  mod: { luck: 1 }, start: 'station', rep: {} },
+  { id: 'river', name: '강변 주택가',       mod: { wit: 1 }, start: 'river', rep: {}, ero: 1 },
 ];
 
-const TEMPERS = [
-  { id: 'careful', name: '조심스럽다', line: '문을 열기 전에 귀부터 대는 사람이었다.', mod: { agi: 1 }, tag: 'careful' },
-  { id: 'hasty', name: '성급하다', line: '생각보다 발이 먼저 나가는 사람이었다.', mod: { str: 1, wit: -1 }, tag: 'hasty' },
-  { id: 'steady', name: '무던하다', line: '웬만한 일에는 밥맛이 떨어지지 않았다.', mod: { con: 1 }, tag: 'steady' },
-  { id: 'wary', name: '의심이 많다', line: '남이 주는 것은 일단 냄새부터 맡았다.', mod: { wit: 1, luck: -1 }, tag: 'wary' },
-];
+/* 성격은 MBTI로 고른다. 열여섯 가운데 다섯 개만 무작위로 보인다. 글자마다 숨은 효과가 있고, 화면에는 나오지 않는다.
+   E 말로 푸는 일 / I 숨는 일 · S 체력 / N 지식 · T 힘 / F 운 · J 정신 / P 민첩 */
+const MBTI = ['ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'];
+const TEMPERS = [{ id: 'careful' }, { id: 'hasty' }, { id: 'steady' }, { id: 'wary' }];   // 사건의 조건(req.temper)이 읽는 꼬리표. MBTI에서 정해진다.
 
-/* 결함: 하나는 반드시 고른다. 나에게 마이너스가 되는 것. */
+/* 결함: 두 달 동안 얻은 것. 하나는 반드시 고른다. 다섯 개만 무작위로 보인다. */
 const FLAWS = [
-  { id: 'arm', name: '팔을 다쳤다', line: '그날 아침, 무너지는 것을 팔로 받았다. 왼팔은 어깨 위로 올라가지 않았다.', mod: { str: -2 } },
-  { id: 'leg', name: '다리를 전다', line: '오래된 일이었다. 뛰면 왼쪽 무릎이 한 박자 늦었다.', mod: { agi: -2 } },
-  { id: 'lung', name: '숨이 짧다', line: '흡입기는 집에 있었고, 집은 이제 없었다.', mod: { con: -2 } },
-  { id: 'loss', name: '누군가를 잃었다', line: '그날 아침에 한 사람을 잃었다. 누구인지는 적지 않겠다.', mod: {}, mindMax: 8, mind: -2 },
-  { id: 'eyes', name: '안경이 깨졌다', line: '세상은 두 걸음 밖에서부터 번져 보였다.', mod: { wit: -1, luck: -1 } },
-  { id: 'drink', name: '술을 끊는 중이었다', line: '끊은 지 사십일 일째였다. 숫자는 매일 세고 있었다.', mod: { con: -1 }, mind: -1 },
-  { id: 'debt', name: '빚이 있다', line: '시장 사람들은 내 얼굴과 내 빚을 같이 기억했다.', mod: { luck: -1 }, rep: { market: -2 } },
+  { id: 'arm',    name: '팔을 다쳤다',         line: '보름 전, 무너지는 것을 팔로 받았다. 왼팔은 아직 어깨 위로 올라가지 않았다.', mod: { str: -2 } },
+  { id: 'leg',    name: '다리를 다쳤다',       line: '첫 주에 계단에서 굴렀다. 뛰면 왼쪽 무릎이 한 박자 늦었다.', mod: { agi: -2 } },
+  { id: 'lung',   name: '숨이 짧아졌다',       line: '흡입기는 한 달 전에 비었다. 계단 두 층이면 숨이 찼다.', mod: { con: -2 } },
+  { id: 'loss',   name: '가족을 잃었다',       line: '첫 주에 가족을 잃었다. 누구인지는 적지 않겠다.', mod: {}, mindMax: 8, mind: -2 },
+  { id: 'eyes',   name: '안경이 깨졌다',       line: '안경은 삼 주 전에 깨졌다. 세상은 두 걸음 밖에서부터 번져 보였다.', mod: { wit: -1, luck: -1 } },
+  { id: 'drink',  name: '술을 끊는 중이었다',  line: '끊은 지 사십일 일째였다. 숫자는 매일 세고 있었다.', mod: { con: -1 }, mind: -1 },
+  { id: 'ear',    name: '한쪽 귀가 먹었다',    line: '가까이서 무언가 터진 뒤로 왼쪽 귀는 물속에 있는 것 같았다.', mod: { agi: -1, luck: -1 } },
+  { id: 'sleep',  name: '잠을 못 잤다',        line: '두 달 동안 두 시간 넘게 이어서 잔 날이 없었다.', mod: { wit: -1 }, mindMax: 9, mind: -1 },
+  { id: 'thin',   name: '많이 말랐다',         line: '허리띠 구멍을 세 칸 줄였다. 일어설 때마다 눈앞이 잠깐씩 캄캄해졌다.', mod: { str: -1, con: -1 } },
+  { id: 'finger', name: '손가락을 잃었다',     line: '오른손 손가락 둘은 한 달 전 셔터 밑에 두고 왔다.', mod: { str: -1, agi: -1 } },
 ];
 
 /* -------------------------------------------------------------------------------------------- 물건
@@ -276,25 +308,25 @@ const ITEMS = {
    한 번 얻으면 다음 판부터 계속 고를 수 있다. 시작할 때 주머니 칸만큼만 들고 간다.
    fx는 engine.js의 relic() 자리에서 읽는다. */
 const RELICS = {
-  watch:   { name: '멈춘 손목시계', vol: 1, base: true, text: '일곱 시 사십 분에서 멈춰 있었다. 그날 아침의 시각이었다.', fx: '하루에 한 번, 틀어진 일을 한 번 더 해 본다.' },
-  whistle: { name: '녹슨 호루라기', vol: 1, base: true, text: '불면 소리가 났다. 소리가 나면 무언가 그쪽을 봤다.', fx: '달아날 때 한 발 앞선다.' },
-  dogtag:  { name: '이름 모를 군번줄', vol: 1, text: '이름 자리가 갈려 있었다. 번호는 남아 있었다.', fx: '하루에 한 번, 정신이 깎이는 것을 한 칸 덜어 준다.', hint: '누군가의 마지막 부탁을 들어주면.' },
-  matches: { name: '젖지 않는 성냥', vol: 1, text: '물에 빠졌다 나왔는데도 그어졌다. 이유는 알 수 없었다.', fx: '밤에도 낮처럼 움직인다.', hint: '강을 건너려던 사람들이 남긴 것.' },
-  denture: { name: '누군가의 틀니', vol: 1, text: '컵에 담긴 채로 발견했다. 버리려다 주머니에 넣었다.', fx: '운이 조금 따른다.', hint: '요양원의 빈 침대 옆.' },
-  halfkey: { name: '반쪽 열쇠', vol: 1, text: '부러진 열쇠의 손잡이 쪽. 나머지 반은 어느 문 안에 있을 것이었다.', fx: '잠긴 것 앞에서 손이 덜 떨린다.', hint: '고시원 맨 끝 방.' },
-  loupe:   { name: '금 간 돋보기', vol: 1, text: '시계방 주인이 쓰던 것. 금 사이로 보면 작은 것이 두 개로 보였다.', fx: '뒤질 때 하나를 더 찾는다.', hint: '시장 안쪽, 셔터가 반쯤 내려간 가게.' },
-  bell:    { name: '요양원 호출 벨', vol: 2, text: '누르면 4층 어딘가에서 울리던 것. 지금은 손안에서만 울렸다.', fx: '사람과 말로 푸는 일이 조금 쉬워진다.', hint: '여섯 명을 끝까지 지키면.' },
-  photo:   { name: '모르는 가족사진', vol: 1, text: '네 사람이 웃고 있었다. 아는 얼굴은 없었다. 그래도 버리지 못했다.', fx: '아침마다 정신을 조금 추스른다.', hint: '무너진 집의 냉장고 문.' },
-  nail:    { name: '검은 손톱', vol: 1, text: '내 것이었다. 빠진 자리에 새것이 났는데, 그것도 검었다.', fx: '돌을 삼켜도 덜 변한다.', hint: '사람이 아니게 된 뒤에야.' },
-  ledger:  { name: '외상 장부', vol: 2, text: '정육점 장부. 이름 옆에 금액, 금액 옆에 줄. 줄이 그어지지 않은 이름이 많았다.', fx: '시장 사람들이 처음부터 나를 달리 본다.', hint: '시장의 빚을 대신 갚으면.' },
-  rosary:  { name: '끊어진 묵주', vol: 1, text: '알이 쉰아홉 개여야 하는데 쉰한 개였다.', fx: '성당 사람들이 처음부터 문을 열어 준다.', hint: '성당에서 마지막 날까지.' },
-  helmet:  { name: '금 간 헬멧', vol: 2, text: '배달통 옆에 떨어져 있었다. 안쪽 스펀지에 땀 냄새가 남아 있었다.', fx: '하루에 한 번, 몸이 다치는 것을 한 칸 덜어 준다.', hint: '도로 한가운데 쓰러진 오토바이.' },
+  watch:   { name: '멈춘 손목시계', vol: 1, wear: '멈춘 손목시계를 찼다.', base: true, text: '일곱 시 사십 분에서 멈춰 있었다. 그날 아침의 시각이었다.', fx: '하루에 한 번, 틀어진 일을 한 번 더 해 본다.' },
+  whistle: { name: '녹슨 호루라기', vol: 1, wear: '녹슨 호루라기를 목에 걸었다.', base: true, text: '불면 소리가 났다. 소리가 나면 무언가 그쪽을 봤다.', fx: '달아날 때 한 발 앞선다.' },
+  dogtag:  { name: '이름 모를 군번줄', vol: 1, wear: '이름 모를 군번줄을 목에 걸었다.', text: '이름 자리가 갈려 있었다. 번호는 남아 있었다.', fx: '하루에 한 번, 정신이 깎이는 것을 한 칸 덜어 준다.', hint: '누군가의 마지막 부탁을 들어주면.' },
+  matches: { name: '젖지 않는 성냥', vol: 1, wear: '젖지 않는 성냥을 안주머니에 넣었다.', text: '물에 빠졌다 나왔는데도 그어졌다. 이유는 알 수 없었다.', fx: '밤에도 낮처럼 움직인다.', hint: '강을 건너려던 사람들이 남긴 것.' },
+  denture: { name: '누군가의 틀니', vol: 1, wear: '누군가의 틀니를 주머니에 넣었다.', text: '컵에 담긴 채로 발견했다. 버리려다 주머니에 넣었다.', fx: '운이 조금 따른다.', hint: '요양원의 빈 침대 옆.' },
+  halfkey: { name: '반쪽 열쇠', vol: 1, wear: '반쪽 열쇠를 신발 끈에 꿰었다.', text: '부러진 열쇠의 손잡이 쪽. 나머지 반은 어느 문 안에 있을 것이었다.', fx: '잠긴 것 앞에서 손이 덜 떨린다.', hint: '고시원 맨 끝 방.' },
+  loupe:   { name: '금 간 돋보기', vol: 1, wear: '금 간 돋보기를 윗주머니에 꽂았다.', text: '시계방 주인이 쓰던 것. 금 사이로 보면 작은 것이 두 개로 보였다.', fx: '뒤질 때 하나를 더 찾는다.', hint: '시장 안쪽, 셔터가 반쯤 내려간 가게.' },
+  bell:    { name: '요양원 호출 벨', vol: 2, wear: '요양원 호출 벨을 허리에 찼다.', text: '누르면 4층 어딘가에서 울리던 것. 지금은 손안에서만 울렸다.', fx: '사람과 말로 푸는 일이 조금 쉬워진다.', hint: '여섯 명을 끝까지 지키면.' },
+  photo:   { name: '모르는 가족사진', vol: 1, wear: '모르는 가족사진을 가슴께에 넣었다.', text: '네 사람이 웃고 있었다. 아는 얼굴은 없었다. 그래도 버리지 못했다.', fx: '아침마다 정신을 조금 추스른다.', hint: '무너진 집의 냉장고 문.' },
+  nail:    { name: '검은 손톱', vol: 1, wear: '검은 손톱을 장갑으로 가렸다.', text: '내 것이었다. 빠진 자리에 새것이 났는데, 그것도 검었다.', fx: '돌을 삼켜도 덜 변한다.', hint: '사람이 아니게 된 뒤에야.' },
+  ledger:  { name: '외상 장부', vol: 2, wear: '외상 장부를 허리춤에 끼웠다.', text: '정육점 장부. 이름 옆에 금액, 금액 옆에 줄. 줄이 그어지지 않은 이름이 많았다.', fx: '시장 사람들이 처음부터 나를 달리 본다.', hint: '시장의 빚을 대신 갚으면.' },
+  rosary:  { name: '끊어진 묵주', vol: 1, wear: '끊어진 묵주를 손목에 감았다.', text: '알이 쉰아홉 개여야 하는데 쉰한 개였다.', fx: '성당 사람들이 처음부터 문을 열어 준다.', hint: '성당에서 마지막 날까지.' },
+  helmet:  { name: '금 간 헬멧', vol: 2, wear: '금 간 헬멧을 썼다.', text: '배달통 옆에 떨어져 있었다. 안쪽 스펀지에 땀 냄새가 남아 있었다.', fx: '하루에 한 번, 몸이 다치는 것을 한 칸 덜어 준다.', hint: '도로 한가운데 쓰러진 오토바이.' },
 };
 
 /* -------------------------------------------------------------------------------------------- 세력 */
 const FACTIONS = {
   market: { name: '시장 상인회', text: '중앙시장 셔터 안쪽에 모인 사람들. 물건에는 값이 있고, 값은 그들이 정했다.' },
-  church: { name: '성당 사람들', text: '무령성당 지하 식당에 모인 사람들. 묻지 않고 한 그릇을 줬다. 두 그릇째에는 물었다.' },
+  church: { name: '성당 사람들', text: '성당 지하 식당에 모인 사람들. 묻지 않고 한 그릇을 줬다. 두 그릇째에는 물었다.' },
   apt:    { name: '한빛아파트 자치회', text: '정문에 차를 세워 막은 단지. 주민과 주민 아닌 사람을 가르는 줄이 있었다.' },
 };
 
@@ -304,7 +336,7 @@ const PEOPLE = {
   gwak:   { name: '곽 씨', role: '시장 정육점 주인 · 상인회장', fac: 'market', text: '앞치마에 묻은 것이 소 피인지 다른 피인지 구별되지 않는 남자.' },
   agnes:  { name: '아녜스 수녀', role: '성당 지하 식당', fac: 'church', text: '국자를 든 손이 떨리지 않는 사람. 솥 앞에서는 누구에게도 이름을 묻지 않았다.' },
   chan:   { name: '찬', role: '초등학교 4학년', fac: null, text: '책가방을 앞으로 멘 아이. 가방 안에는 실내화와, 열어 보지 않은 것이 들어 있었다.' },
-  yun:    { name: '윤 간호사', role: '무령병원 3층', fac: null, text: '사흘째 같은 근무복을 입은 사람. 약장 열쇠를 목에 걸고 있었다.' },
+  yun:    { name: '윤 간호사', role: '시립병원 3층', fac: null, text: '두 달째 같은 근무복을 입은 사람. 약장 열쇠를 목에 걸고 있었다.' },
   heo:    { name: '허 사장', role: '한빛아파트 동대표', fac: 'apt', text: '골프채를 지팡이처럼 짚고 다니는 남자. 말끝마다 "우리 주민"이 붙었다.' },
   radio:  { name: '라디오', role: '떠돌이', fac: null, text: '이름을 대지 않아서 들고 다니는 물건으로 불렀다. 무엇이든 무엇으로 바꿔 줬다.' },
   gitae:  { name: '기태', role: '다리를 다친 청년', fac: null, text: '야구 방망이에 기대 서 있던 스물몇 살. 웃을 때 눈은 웃지 않았다.' },
@@ -343,7 +375,7 @@ const PLACES = {
     loot: { can: 3, rice: 2, soju: 2, cigarette: 2, knife: 1, ecobag: 2, battery: 1, pads: 1, lighter: 1 },
   },
   church: {
-    name: '무령성당', danger: 0.25, safe: 0.8, searches: 1,
+    name: '성당', danger: 0.25, safe: 0.8, searches: 1,
     text: ['언덕 위의 벽돌 건물이었다. 마당의 성모상 앞에 신발이 여러 켤레 놓여 있었다. 주인이 돌아온 신발은 없어 보였다.',
            '지하 식당 쪽 창에서 김이 올라왔다. 문 앞에는 "한 사람 한 그릇"이라고 적힌 종이가 붙어 있었다.'],
     night: '성당 창문은 안쪽에서 담요로 가려져 있었다. 틈으로 촛불 하나가 보였다.',
@@ -359,7 +391,7 @@ const PLACES = {
     loot: { ramen: 4, rice: 2, choco: 1, painkiller: 1, battery: 2, flashlight: 1, backpack: 1, cigarette: 1, can: 1 },
   },
   hospital: {
-    name: '무령병원', danger: 0.6, safe: 0.3, searches: 3,
+    name: '시립병원', danger: 0.6, safe: 0.3, searches: 3,
     text: ['응급실 자동문은 반쯤 열린 채 멈춰 있었다. 바닥에 끌린 자국이 안쪽으로 나 있었고, 밖으로 나온 자국은 없었다.',
            '로비 의자에 번호표가 흩어져 있었다. 전광판은 꺼져 있었다. 마지막 번호가 몇 번이었는지는 알 수 없었다.'],
     night: '병원은 밤에 소리가 났다. 침대 바퀴 소리였다. 미는 사람의 발소리는 들리지 않았다.',
@@ -375,7 +407,7 @@ const PLACES = {
     loot: { bandage: 2, water: 2, rice: 2, painkiller: 2, formula: 1, antiseptic: 1 },
   },
   school: {
-    name: '무령초등학교', danger: 0.4, safe: 0.6, searches: 3,
+    name: '초등학교', danger: 0.4, safe: 0.6, searches: 3,
     text: ['운동장에 줄넘기가 떨어져 있었다. 체육관 문 앞에는 신발이 줄지어 놓여 있었고, 안에서는 소리가 나지 않았다.',
            '급식실 셔터는 내려가 있었다. 복도 게시판에 "이번 주 급식"이 붙어 있었다. 그 주는 끝나지 않았다.'],
     night: '교실 하나에 불빛이 있었다. 손전등 불빛이었고, 책상 높이에서 움직였다.',
@@ -407,7 +439,7 @@ const PLACES = {
     loot: { tape: 3, rope: 2, crowbar: 2, wrench: 1, battery: 2, can: 2, water: 1, backpack: 1 },
   },
   station: {
-    name: '무령역', danger: 0.45, safe: 0.4, searches: 3,
+    name: '기차역', danger: 0.45, safe: 0.4, searches: 3,
     text: ['광장의 시계탑은 일곱 시 사십 분에 멈춰 있었다. 대합실 전광판에는 "지연"이라는 글자만 남아 있었다.',
            '승강장에 열차 한 대가 문을 연 채 서 있었다. 객차 안의 짐들은 선반 위에 그대로였다.'],
     night: '대합실 의자에 사람들이 누워 있었다. 숨을 쉬는 사람과 쉬지 않는 사람이 섞여 있었다.',
@@ -419,15 +451,15 @@ const PLACES = {
     text: ['강물은 평소와 같은 속도로 흘렀다. 둔치 운동기구에 누군가 옷을 걸어 두었다. 다리 쪽에서 연기가 올랐다.',
            '갈대밭이 한 방향으로 누워 있었다. 무언가 강에서 올라와 그 위를 지나간 것 같았다.'],
     night: '강 건너편에 불빛이 있었다. 깜빡이는 간격이 일정했다. 신호 같기도 했고, 아닌 것 같기도 했다.',
-    exits: [{ to: 'station', dir: '동쪽으로', hint: '역 광장.' }, { to: 'carehome', dir: '계단 위로', hint: '요양원.' }, { to: 'bridge', dir: '다리 쪽으로', hint: '무령대교. 차들이 엉켜 있었다.' }, { to: 'cross', dir: '강변 도로로', hint: '사거리 쪽.' }],
+    exits: [{ to: 'station', dir: '동쪽으로', hint: '역 광장.' }, { to: 'carehome', dir: '계단 위로', hint: '요양원.' }, { to: 'bridge', dir: '다리 쪽으로', hint: '대교. 차들이 엉켜 있었다.' }, { to: 'cross', dir: '강변 도로로', hint: '사거리 쪽.' }],
     loot: { rope: 2, water: 1, lighter: 1, cigarette: 1, stone: 1, tape: 1 },
   },
   bridge: {
-    name: '무령대교', danger: 0.6, safe: 0.15, searches: 2,
+    name: '대교', danger: 0.6, safe: 0.15, searches: 2,
     text: ['다리 위에는 차들이 두 줄로 엉켜 있었다. 문이 열린 차도 있었고, 안에서 잠긴 차도 있었다. 다리 한가운데는 보이지 않았다.',
            '난간에 신발들이 가지런히 놓여 있었다. 다리 중간쯤에서 아스팔트가 한 뼘 내려앉아 있었다.'],
     night: '다리 위의 차 한 대에서 비상등이 깜빡였다. 며칠째 깜빡이는 것인지는 알 수 없었다.',
-    exits: [{ to: 'river', dir: '둔치로 돌아간다', hint: '강변.' }],
+    exits: [{ to: 'river', dir: '둔치 쪽으로', hint: '강변.' }],
     loot: { water: 2, can: 1, backpack: 1, battery: 1, cigarette: 1, choco: 1, flashlight: 1 },
   },
   ramp: {
@@ -440,9 +472,9 @@ const PLACES = {
   },
   cross: {
     name: '사거리', danger: 0.75, safe: 0.05, searches: 1,
-    text: ['사거리 한가운데의 공기가 세로로 갈라져 있었다. 갈라진 틈은 색이 없었다. 보고 있으면 눈이 그쪽으로 초점을 맞추지 못했다.',
+    text: ['사거리 한가운데의 공기가 세로로 갈라져 있었다. 갈라진 균열은 색이 없었다. 보고 있으면 눈이 그쪽으로 초점을 맞추지 못했다.',
            '신호등은 네 방향 모두 빨간불에 멈춰 있었다. 횡단보도 위에 가방과 신발과 유모차가 건너던 방향 그대로 놓여 있었다.'],
-    night: '틈은 밤에 더 넓어 보였다. 틈 가장자리에서 아스팔트가 숨을 쉬듯 오르내렸다.',
+    night: '균열은 밤에 더 넓어 보였다. 균열 가장자리에서 아스팔트가 숨을 쉬듯 오르내렸다.',
     exits: [{ to: 'alley', dir: '골목으로', hint: '구시가지.' }, { to: 'school', dir: '학교 쪽으로', hint: '초등학교 정문.' }, { to: 'river', dir: '강변 도로로', hint: '둔치.' }],
     loot: { stone: 4, backpack: 1, water: 1 },
   },
@@ -473,9 +505,9 @@ const ENDINGS = {
   m_night:    { kind: 'dead', title: '밖에서 부르는 소리', hint: '밤에, 혼자, 바닥난 채로.', text: '밤마다 밖에서 누가 불렀다. 아는 목소리였다. 그날 밤에는 대답을 했고, 문을 열었다. 목소리는 문 앞에 서 있었다. 목소리만 서 있었다.' },
   // ---- 침식
   e_mirror:   { kind: 'dead', title: '거울', hint: '돌을 너무 많이 삼키면.', relic: 'nail', text: '거울 속의 눈은 더 깜빡이지 않았다. 배는 고프지 않았다. 손톱은 전부 검었다. 밤이 되자 건물을 나섰고, 어디로 가야 하는지는 누가 알려 주지 않아도 알았다.' },
-  e_rift:     { kind: 'dead', title: '틈', hint: '변한 몸으로 사거리에 서면.', text: '틈은 가까이서 보면 색이 있었다. 사람의 눈으로는 볼 수 없던 색이었다. 나는 이제 그것을 볼 수 있었고, 그 안에서 무언가 나를 알아봤다. 걸어 들어가는 데 망설임은 없었다.' },
+  e_rift:     { kind: 'dead', title: '균열', hint: '변한 몸으로 사거리에 서면.', text: '균열은 가까이서 보면 색이 있었다. 사람의 눈으로는 볼 수 없던 색이었다. 나는 이제 그것을 볼 수 있었고, 그 안에서 무언가 나를 알아봤다. 걸어 들어가는 데 망설임은 없었다.' },
   // ---- 살아남음
-  a_alone:    { kind: 'alive', title: '혼자 남은 사람', hint: '스무 날을, 누구에게도 속하지 않고.', text: '스무 날이 지났다. 틈은 닫히지 않았고, 아무도 오지 않았다. 나는 살아 있었다. 살아 있다는 것을 말해 줄 사람은 없었다. 스물한 번째 아침에도 물통을 들고 나갔다.' },
+  a_alone:    { kind: 'alive', title: '혼자 남은 사람', hint: '스무 날을, 누구에게도 속하지 않고.', text: '스무 날이 지났다. 균열은 닫히지 않았고, 아무도 오지 않았다. 나는 살아 있었다. 살아 있다는 것을 말해 줄 사람은 없었다. 스물한 번째 아침에도 물통을 들고 나갔다.' },
   a_church:   { kind: 'alive', title: '한 사람 한 그릇', hint: '성당 사람들과 끝까지.', relic: 'rosary', text: '스무 날째에도 솥에는 김이 올랐다. 줄은 처음의 반으로 줄어 있었다. 아녜스 수녀는 여전히 이름을 묻지 않았다. 나는 국자를 받아 들었고, 그날부터 솥 뒤에 섰다.' },
   a_market:   { kind: 'alive', title: '장부의 이름', hint: '시장의 셈 안으로 들어가면.', text: '곽 씨는 장부에 내 이름을 적었다. 이름 옆에 금액은 없었다. 그것이 무슨 뜻인지는 시장 사람이면 다 알았다. 그날부터 나는 좌판 벽 안쪽에서 잤고, 바깥을 보는 쪽에 섰다.' },
   a_apt:      { kind: 'alive', title: '우리 주민', hint: '아파트의 줄 안쪽에 서면.', text: '허 사장은 내 손목에 노란 끈을 묶어 줬다. 주민의 표시였다. 그날 저녁 정문에서 한 가족을 돌려보내는 일을 맡았다. 아이가 뒤를 돌아봤다. 나는 끈을 묶은 쪽 손으로 문을 잠갔다.' },
@@ -493,21 +525,20 @@ const ENDINGS = {
    고른 것에 따라 달라지는 도입. {name} 같은 자리는 엔진이 채운다. */
 const PROLOGUE = {
   common: [
-    '그날 아침 일곱 시 사십 분, 무령시 사거리 한가운데의 공기가 갈라졌다.',
-    '처음에는 사고인 줄 알았다. 신호등이 꺼졌고, 차들이 멈췄고, 사람들이 휴대전화를 들어 올렸다. 그다음에 틈에서 그것들이 나왔다.',
-    '전화는 그날 오후부터 걸리지 않았다. 전기는 사흘을 버티지 못했다. 나라가 무엇을 하고 있는지는 아무도 몰랐다. 아는 것은 하나였다. 아무도 오지 않았다.',
+    '다시 균열이 열리고, 괴물들이 도시를 짓밟았다. 그로부터 두 달이 지났다.',
+    '전화는 첫날 오후부터 걸리지 않았다. 전기는 사흘을 버티지 못했다. 구하러 온다던 사람들은 오지 않았다. 두 달을 오지 않았으면 앞으로도 오지 않는 것이었다.',
   ],
   origin: {
-    old:   '나는 구시가지에서 나고 자랐다. 우리 집은 골목 안쪽 이층집이었는데, 그것 하나가 지붕을 밟고 지나간 뒤로는 이층이 없었다. 나는 무너진 대문 앞에 서 있었다.',
-    new:   '나는 한빛아파트 7동에 살았다. 엘리베이터는 14층에서 멈췄고, 계단으로 내려오는 동안 몇 층에서 문 두드리는 소리를 들었다. 열어 주지 않았다. 단지 마당에 서서 그 층을 올려다봤다.',
-    out:   '나는 이 도시 사람이 아니었다. 역 앞 숙소는 첫날 불이 났고, 캐리어는 그 안에 있었다. 가진 것은 입은 옷과 주머니에 든 것뿐이었다. 역 광장에 서 있었다.',
-    river: '나는 강변 주택가에 살았다. 창문을 열면 강이 보이는 집이었다. 그날 아침에는 강보다 먼저, 사거리 쪽 하늘이 보였다. 너무 오래 봤다. 그 뒤로 눈 안쪽에 무언가 남았다.',
+    old:   '나는 구시가지에서 나고 자랐다. 이층이 내려앉은 우리 집 아래층에서 두 달을 버텼다. 찬장은 어제 바닥을 보였다.',
+    new:   '나는 한빛아파트 7동에 살았다. 두 달 동안 현관문을 연 것은 열 번이 되지 않았다. 베란다에 받아 둔 물은 어제 떨어졌다.',
+    out:   '나는 이 도시 사람이 아니었다. 출장으로 사흘을 묵으러 왔다가 두 달째였다. 역 대합실 구석이 내 자리였고, 가방에 든 것은 어제 다 먹었다.',
+    river: '나는 강변 주택가에 살았다. 창문을 열면 강이 보이는 집이었다. 두 달 동안 창밖을 너무 오래 봤다. 그 뒤로 눈 안쪽에 무언가 남았다.',
   },
-  last: '살아야 했다. 왜인지는 나중에 생각하기로 했다.',
+  last: '먹을 것은 어제 떨어졌다. 문을 나섰다. 살아남아야 했다.',
 };
 
 const EVENTS = [];
-/* 묶음 A: 구시가지 골목 · 중앙시장 · 무령역 */
+/* 묶음 A: 구시가지 골목 · 중앙시장 · 기차역 */
 
 /* ------------------------------------------------------------------ 중앙시장: 곽 씨와 상인회 */
 EVENTS.push({
@@ -523,7 +554,7 @@ EVENTS.push({
     { label: '골목 안쪽 이층집이라고 댄다', req: { origin: 'old' }, hideIfLocked: true,
       ok: { text: '남자가 벽 위로 얼굴을 올렸다. 정육점 곽 씨였다. "지붕 나간 집." 곽 씨는 내 얼굴과 내 뒤의 골목을 번갈아 봤다. "아는 얼굴이라고 그냥은 안 돼. 담배, 건전지, 분유. 세모 친 대문은 아직 안 걷은 집이야."',
             fx: { flags: ['market_errand'], rel: { gwak: 2 }, learn: [{ who: 'gwak', note: '아는 얼굴이라고 값을 깎아 주지 않는다' }] } } },
-    { label: '외상값 얘기를 먼저 꺼낸다', req: { flaw: 'debt' }, hideIfLocked: true,
+    { label: '외상값 얘기를 먼저 꺼낸다', req: { origin: 'old' }, hideIfLocked: true,
       ok: { text: '벽 너머가 조용해졌다. 좌판 하나가 손바닥만큼 밀렸고, 틈으로 곽 씨의 눈이 보였다. "장부는 정육점에 있어. 그건 그거고, 들어오려면 따로 들고 와. 담배, 건전지, 분유."',
             fx: { flags: ['market_errand'], rel: { gwak: 1 }, learn: [{ who: 'gwak', note: '외상 장부는 정육점 도마 위에 있다' }] } } },
   ],
@@ -605,7 +636,7 @@ EVENTS.push({
 
 EVENTS.push({
   id: 'mk_debt_ledger', on: 'hub', where: ['market'], label: '외상값을 치르러 간다', npc: 'gwak', once: false,
-  req: { flaw: 'debt', met: 'gwak', notFlag: 'debt_paid' },
+  req: { origin: 'old', met: 'gwak', notFlag: 'debt_paid' },
   text: '셔터는 무릎 높이까지만 올라가 있었다. 곽 씨는 정육점 도마 위에 장부를 펴고 내 이름을 손톱으로 눌렀다. 이름 옆에 금액이 있었고, 금액 위에 줄은 없었다. "돈은 이제 종이야. 물건으로 쳐."',
   choices: [
     { label: '생리대를 도마에 올린다', req: { item: 'pads' }, use: 'pads',
@@ -745,7 +776,7 @@ EVENTS.push({
   ],
 });
 
-/* ------------------------------------------------------------------ 무령역 */
+/* ------------------------------------------------------------------ 기차역 */
 EVENTS.push({
   id: 'st_waiting', on: 'arrive', where: ['station'], when: { dayMin: 3 },
   text: '대합실 의자는 세 칸에 한 사람씩 차 있었다. 다들 가방을 베고 누워 있었다. 전광판 아래 누운 사람은 가슴이 오르내리지 않았고, 가방끈은 그 사람 손목에 두 번 감겨 있었다.',
@@ -826,9 +857,9 @@ EVENTS.push({
   ],
 });
 
-/* 묶음 B: 무령성당 · 무령초등학교 · 은빛요양원 */
+/* 묶음 B: 성당 · 초등학교 · 은빛요양원 */
 
-/* ------------------------------------------------------------------------------------ 무령성당 */
+/* ------------------------------------------------------------------------------------ 성당 */
 EVENTS.push({
   id: 'ch_first_bowl', on: 'hub', where: ['church'], label: '지하 식당 줄에 선다', npc: 'agnes',
   text: '지하로 내려가는 계단 입구에 플라스틱 대야가 놓여 있었다. 대야 안에는 식칼 두 자루와 망치와 반 토막 난 골프채가 들어 있었다. 계단 아래에서는 열 몇 사람이 벽을 따라 줄을 서 있었고, 줄 끝의 솥 앞에서 수녀 한 사람이 국자를 들고 있었다.',
@@ -947,7 +978,7 @@ EVENTS.push({
   ],
 });
 
-/* ------------------------------------------------------------------------------------ 무령초등학교 · 찬 */
+/* ------------------------------------------------------------------------------------ 초등학교 · 찬 */
 EVENTS.push({
   id: 'sc_light', on: 'arrive', where: ['school'], npc: 'chan', req: { notMet: 'chan' }, when: { phase: ['저녁', '밤'] }, weight: 3,
   text: '2층 복도 끝 교실에 불빛이 있었다. 불빛은 책상 높이에서 칠판 쪽으로 갔다가 돌아왔다. 문패에는 4학년 2반이라고 적혀 있었다. 내 발소리가 복도에 울리자 불빛이 꺼졌다.',
@@ -1175,9 +1206,9 @@ EVENTS.push({
   ],
 });
 
-/* 묶음 C: 무령병원 · 고시원 건물 · 한빛아파트 */
+/* 묶음 C: 시립병원 · 고시원 건물 · 한빛아파트 */
 
-/* ------------------------------------------------------------------ 무령병원 · 윤 간호사 */
+/* ------------------------------------------------------------------ 시립병원 · 윤 간호사 */
 EVENTS.push({
   id: 'hp_yun_first', on: 'hub', where: ['hospital'], label: '3층으로 올라간다', npc: 'yun', req: { notMet: 'yun' },
   text: '계단참마다 휠체어가 접혀 있었다. 3층 간호사실에는 양초 하나가 켜져 있었고, 근무복을 입은 여자가 주사기를 한 줄로 늘어놓고 세고 있었다. 이름표에는 윤이라고 적혀 있었고, 목에는 열쇠가 걸려 있었다. 여자는 세던 것을 끝까지 세고 나서 고개를 들었다. "어디가 안 좋아요, 아니면 뭘 가져왔어요."',
@@ -1251,7 +1282,7 @@ EVENTS.push({
   ],
 });
 
-/* ------------------------------------------------------------------ 무령병원 · 그것들 */
+/* ------------------------------------------------------------------ 시립병원 · 그것들 */
 EVENTS.push({
   id: 'hp_er_ceiling', on: 'arrive', where: ['hospital'], thing: 'scraper', when: { dayMin: 2 },
   text: '응급실 천장의 판이 한 줄로 떨어져 있었다. 빈 자리로 보이는 배관에는 다섯 줄이 나란히 나 있었다. 발끝에 쟁반이 채였다. 쟁반이 타일 위를 미끄러지는 동안, 천장 안쪽에서 무언가 그 소리가 멈추는 곳까지 따라갔다.',
@@ -1678,23 +1709,23 @@ EVENTS.push({
 
 EVENTS.push({
   id: 'cr_stones', on: 'search', where: ['cross'], once: false,
-  text: '틈 가장자리의 아스팔트에 작은 것들이 박혀 있었다. 손톱만 했고, 자갈과는 빛을 받는 쪽이 달랐다. 가까운 것은 세 걸음 앞에, 먼 것은 틈 바로 밑에 있었다. 세 걸음 안쪽부터는 귀가 먹먹했다.',
+  text: '균열 가장자리의 아스팔트에 작은 것들이 박혀 있었다. 손톱만 했고, 자갈과는 빛을 받는 쪽이 달랐다. 가까운 것은 세 걸음 앞에, 먼 것은 균열 바로 밑에 있었다. 세 걸음 안쪽부터는 귀가 먹먹했다.',
   choices: [
     { label: '가까운 것 하나를 줍는다',
       ok:  { text: '허리를 굽히는 동안 귀에서 소리가 빠져나갔다. 돌은 따뜻하지도 차갑지도 않았다. 세 걸음 물러나자 소리가 돌아왔다. 왼쪽 귀는 조금 늦게 돌아왔다.', fx: { items: ['stone'], ero: 1 } } },
-    { label: '틈 밑의 것까지 줍는다', check: { stat: 'con', dc: 6 },
+    { label: '균열 밑의 것까지 줍는다', check: { stat: 'con', dc: 6 },
       ok:  { text: '아스팔트가 발밑에서 오르내렸다. 그 박자에 맞춰 걸어 들어가 둘을 집었다. 나올 때는 박자를 놓쳐 무릎을 짚었다. 손안의 둘은 서로 붙으려는 것처럼 굴렀다.', fx: { items: ['stone', 'stone'], ero: 1, mind: -1 } },
-      bad: { text: '틈 밑에서 무릎이 접혔다. 얼마나 그러고 있었는지는 알 수 없었다. 일어났을 때 손에 하나가 쥐여 있었다. 주운 기억은 없었다.', fx: { items: ['stone'], ero: 2, mind: -1 } } },
+      bad: { text: '균열 밑에서 무릎이 접혔다. 얼마나 그러고 있었는지는 알 수 없었다. 일어났을 때 손에 하나가 쥐여 있었다. 주운 기억은 없었다.', fx: { items: ['stone'], ero: 2, mind: -1 } } },
     { label: '주머니에 손을 넣고 물러난다',
       ok:  { text: '손을 주머니에 넣고 뒷걸음으로 나왔다. 귀는 금방 뚫렸다. 박힌 것들을 눈으로만 세었다. 열아홉이었고, 다시 세니 스물이었다.', fx: {} } },
   ],
 });
 
 EVENTS.push({
-  id: 'cr_rift', on: 'hub', where: ['cross'], label: '틈을 똑바로 본다', once: false, req: { eroMin: 7 },
-  text: '오늘은 눈이 틈에 초점을 맞췄다. 갈라진 안쪽에 색이 있었다. 아는 이름이 없는 색이었고, 그 옆에서 신호등의 빨강은 회색으로 보였다. 손톱 밑이 그쪽으로 당겼다.',
+  id: 'cr_rift', on: 'hub', where: ['cross'], label: '균열을 똑바로 본다', once: false, req: { eroMin: 7 },
+  text: '오늘은 눈이 균열에 초점을 맞췄다. 갈라진 안쪽에 색이 있었다. 아는 이름이 없는 색이었고, 그 옆에서 신호등의 빨강은 회색으로 보였다. 손톱 밑이 그쪽으로 당겼다.',
   choices: [
-    { label: '틈 쪽으로 걷는다',
+    { label: '균열 쪽으로 걷는다',
       ok:  { text: '', fx: { end: 'e_rift' } } },
     { label: '신호등만 보며 물러난다', check: { stat: 'wit', dc: 5 },
       ok:  { text: '빨간불 네 개를 차례로 봤다. 넷째를 볼 때쯤 손톱 밑이 놓였다. 모퉁이는 뒤를 보지 않고 돌았다.', fx: { mind: -1 } },
@@ -2354,7 +2385,7 @@ EVENTS.push({
 });
 
 /* ============================================================================================
-   나는 여기까지 — 규칙 (화면과 무관한 부분: 자동 플레이 검사도 이 파일을 그대로 돌린다)
+   살아남아야 한다 — 규칙 (화면과 무관한 부분: 자동 플레이 검사도 이 파일을 그대로 돌린다)
    상태는 S = { run, meta }. run은 이번 판, meta는 판을 넘어 남는 것(유물 · 수첩 · 결말 · 지난 사람들).
    화면은 Game.view(S)로 지금 보여 줄 것을 받고, Game.choose(S, key)로 고른 것을 알린다.
    ============================================================================================ */
@@ -2387,12 +2418,22 @@ const Game = (() => {
   }
 
   /* ------------------------------------------------------------------------------------------ 사람 만들기 */
+  function mbtiMod(id) {                   // 글자마다 숨은 효과. 화면에는 나오지 않는다.
+    const t = String(id || 'ISFJ');
+    const mod = {};
+    mod[t[1] === 'S' ? 'con' : 'wit'] = 1;
+    mod[t[2] === 'T' ? 'str' : 'luck'] = 1;
+    if (t[3] === 'P') mod.agi = 1;
+    return { mod, mind: t[3] === 'J' ? 1 : 0, talk: t[0] === 'E', hide: t[0] === 'I',
+             tag: t[0] === 'I' ? (t[3] === 'J' ? 'careful' : 'wary') : (t[3] === 'J' ? 'steady' : 'hasty') };
+  }
   function statsFor(sel) {
     const s = { str: 4, agi: 4, con: 4, luck: 4, wit: 4 };
-    for (const [table, id] of [[AGES, sel.age], [JOBS, sel.job], [ORIGINS, sel.origin], [TEMPERS, sel.temper], [FLAWS, sel.flaw]]) {
+    for (const [table, id] of [[AGES, sel.age], [JOBS, sel.job], [ORIGINS, sel.origin], [FLAWS, sel.flaw]]) {
       const row = table.find(r => r.id === id);
       for (const [k, v] of Object.entries((row && row.mod) || {})) s[k] += v;
     }
+    for (const [k, v] of Object.entries(mbtiMod(sel.mbti).mod)) s[k] += v;
     for (const k of STATS) s[k] = clamp(s[k], 1, 9);
     return s;
   }
@@ -2402,11 +2443,11 @@ const Game = (() => {
   }
   function newRun(sel, meta) {
     const job = JOBS.find(j => j.id === sel.job), origin = ORIGINS.find(o => o.id === sel.origin), flaw = FLAWS.find(f => f.id === sel.flaw);
-    const stats = statsFor(sel);
+    const stats = statsFor(sel), mb = mbtiMod(sel.mbti);
     const mindMax = flaw.mindMax || 10;
     const run = {
-      name: (sel.name || '').trim().slice(0, 12) || '이름 없는 사람', age: sel.age, job: sel.job, origin: sel.origin, temper: sel.temper, flaw: sel.flaw,
-      stats, hp: clamp(6 + Math.round(stats.con / 2), 1, 10), mind: clamp(8 + (flaw.mind || 0), 1, mindMax), mindMax, full: 6, ero: origin.ero || 0,
+      age: sel.age, job: sel.job, origin: sel.origin, mbti: sel.mbti, temper: mb.tag, talk: mb.talk, hide: mb.hide, flaw: sel.flaw,
+      stats, hp: clamp(6 + Math.round(stats.con / 2), 1, 10), mind: clamp(8 + (flaw.mind || 0) + mb.mind, 1, mindMax), mindMax, full: 5, ero: origin.ero || 0,
       day: 1, phase: 1, place: origin.start, flags: {}, rep: { market: 0, church: 0, apt: 0 }, rel: {}, met: {}, inv: job.items.slice(),
       relics: list(sel.relics).filter(r => meta.relics.includes(r)), seen: {}, searched: {}, visited: {}, lastHarm: '', daily: {}, ending: '',
       steps: 0, learned: 0, scene: { t: 'prologue', i: 0 },
@@ -2419,6 +2460,18 @@ const Game = (() => {
     meta.runs += 1;
     run.no = meta.runs;
     return run;
+  }
+
+  /* 사람을 만들 때 보이는 것: 전부가 아니라 다섯 개씩만. 원하는 것이 안 나오면 어쩔 수 없다. */
+  function sample(arr, n) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a.slice(0, n);
+  }
+  function roll(meta) {
+    const jobs = {};
+    for (const a of AGES) jobs[a.id] = sample(JOBS.filter(j => j.ages.includes(a.id)).map(j => j.id), 5);
+    return { jobs, mbti: sample(MBTI, 5), flaws: sample(FLAWS.map(f => f.id), 5), relics: sample(meta.relics, 5) };
   }
 
   /* ------------------------------------------------------------------------------------------ 가방 */
@@ -2474,11 +2527,11 @@ const Game = (() => {
     const run = S.run;
     if (!check) return 1;
     let s = run.stats[check.stat] || 4;
-    if (check.weapon) s += weaponOf(run) + (run.temper === 'hasty' ? 1 : 0);
+    if (check.weapon) s += weaponOf(run);
     if (check.flee && has(run, 'whistle', true)) s += 1.5;
-    if (check.hide && run.temper === 'careful') s += 1;
+    if (check.hide && run.hide) s += 1;
     if (check.lock) s += (has(run, 'halfkey', true) ? 2 : 0) + (has(run, 'keys') ? 1 : 0);
-    if (check.talk) s += (has(run, 'bell', true) ? 1 : 0) - (run.temper === 'hasty' ? 1 : 0);
+    if (check.talk) s += (has(run, 'bell', true) ? 1 : 0) + (run.talk ? 1 : 0);
     if (check.npc) s += (run.rel[check.npc] || 0) * 0.5;
     if (check.fac) s += (run.rep[check.fac] || 0) * 0.5;
     if (run.phase === 3 && check.stat !== 'luck' && !has(run, 'matches', true) && !run.inv.some(i => ITEMS[i].light)) s -= 1;
@@ -2617,7 +2670,7 @@ const Game = (() => {
     meta.endings[run.ending].n += 1;
     let relic = '';
     if (end.relic && !meta.relics.includes(end.relic)) { meta.relics.push(end.relic); relic = end.relic; }
-    meta.graves.unshift({ name: run.name, job: JOBS.find(j => j.id === run.job).name, day: Math.min(run.day, DAYS), end: run.ending, alive: end.kind === 'alive' });
+    meta.graves.unshift({ no: run.no, age: AGES.find(a => a.id === run.age).name, job: JOBS.find(j => j.id === run.job).name, day: Math.min(run.day, DAYS), end: run.ending, alive: end.kind === 'alive' });
     meta.graves = meta.graves.slice(0, 60);
     run.scene = { t: 'ending', id: run.ending, first, relic, learned: run.learned };
   }
@@ -2739,7 +2792,7 @@ const Game = (() => {
     const run = S.run, sc = run.scene;
     if (sc.t === 'prologue') {
       const pages = PROLOGUE.common.concat([PROLOGUE.origin[run.origin], FLAWS.find(f => f.id === run.flaw).line + ' ' + PROLOGUE.last]);
-      return { t: 'prologue', text: pages[sc.i], choices: [{ key: 'next', label: sc.i < pages.length - 1 ? '…' : '걷기 시작한다' }], last: sc.i >= pages.length - 1 };
+      return { t: 'prologue', text: pages[sc.i], choices: [{ key: 'next', label: sc.i < pages.length - 1 ? '…' : '걷는다' }], last: sc.i >= pages.length - 1 };
     }
     if (sc.t === 'hub') {
       const place = PLACES[run.place];
@@ -2764,7 +2817,7 @@ const Game = (() => {
                                       choices: run.inv.filter(i => ITEMS[i].vol > 0).map((i, k) => ({ key: 'leave:' + k, label: ITEMS[i].name + '을(를) 두고 간다', sub: ITEMS[i].vol + '칸' })) };
     if (sc.t === 'ending') {
       const end = ENDINGS[sc.id];
-      return { t: 'ending', end, id: sc.id, first: sc.first, relic: sc.relic, learned: sc.learned, epitaph: `${Math.min(run.day, DAYS)}일째. ${run.name}. ${JOBS.find(j => j.id === run.job).name}.`,
+      return { t: 'ending', end, id: sc.id, first: sc.first, relic: sc.relic, learned: sc.learned, epitaph: `${run.no}번째 사람 · ${AGES.find(a => a.id === run.age).name} · ${JOBS.find(j => j.id === run.job).name} · ${Math.min(run.day, DAYS)}일째`,
                choices: [{ key: 'again', label: '다른 사람으로 다시' }] };
     }
     return { t: 'none', choices: [] };
@@ -2773,7 +2826,7 @@ const Game = (() => {
     const run = S.run, sc = run.scene;
     run.steps += 1;
     if (sc.t === 'prologue') {
-      const pages = PROLOGUE.common.length + 2;
+      const pages = PROLOGUE.common.length + 2;   // 공통 + 살던 곳 + 결함과 마지막 줄
       if (sc.i < pages - 1) sc.i += 1; else { arriveMark(S); toHub(S, ''); }
       return;
     }
@@ -2803,14 +2856,16 @@ const Game = (() => {
     }
   }
 
-  return { random: Math.random, newMeta, fixMeta, newRun, statsFor, startVolume, view, choose, useItem, leave, recheck, capacity, load, chance, oddsWord, has, VITAL, lastDay, candidates };
+  return { random: Math.random, newMeta, fixMeta, roll, newRun, statsFor, startVolume, view, choose, useItem, leave, recheck, capacity, load, chance, oddsWord, has, VITAL, lastDay, candidates };
 })();
 
 /* ============================================================================================
-   나는 여기까지 — 화면. 규칙은 engine.js(Game)에 있고, 여기는 보여 주고 고른 것을 전하는 일만 한다.
+   살아남아야 한다 — 화면. 규칙은 engine.js(Game)에 있고, 여기는 보여 주고 고른 것을 전하는 일만 한다.
+   걷는 화면은 세 칸이다: 머리(날 · 몸) / 쌓이는 글(이 칸만 위아래로 움직인다) / 고를 것.
+   글은 같은 곳에 있는 동안 계속 아래로 쌓이고, 다른 곳으로 걸음을 옮기면 비워진다.
    ============================================================================================ */
 (() => {
-  const KEY = 'yeogikkaji.v1';
+  const KEY = 'salanama.v1';
   const app = document.getElementById('app');
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   // "통조림이(가)" → "통조림이", "생수을(를)" → "생수를"
@@ -2821,9 +2876,10 @@ const Game = (() => {
   const T = s => esc(josa(s));
   const byId = (table, id) => table.find(r => r.id === id);
 
-  let S = { meta: Game.newMeta(), run: null };
-  const ui = { screen: 'title', overlay: '', tab: 'people', step: 0, sel: blankSel(), toast: [], wipe: 0 };
-  function blankSel() { return { name: '', age: '', job: '', origin: '', temper: '', flaw: '', relics: [] }; }
+  // S는 통째로 저장된다: 남는 것(meta) · 이번 사람(run) · 쌓인 글(log) · 고르던 중인 사람(draft)
+  let S = fresh();
+  function fresh() { return { meta: Game.newMeta(), run: null, log: [], mark: 0, hub: '', stamp: 0, draft: null }; }
+  const ui = { screen: 'title', overlay: '', tab: 'people', toast: [], wipe: 0, jump: false };
 
   /* ------------------------------------------------------------------------------------------ 저장 */
   function loadSave() {
@@ -2831,47 +2887,120 @@ const Game = (() => {
       const raw = localStorage.getItem(KEY);
       if (!raw) return;
       const d = JSON.parse(raw);
-      if (d && d.meta) { S.meta = Game.fixMeta(d.meta); S.run = d.run || null; }
+      if (!d || !d.meta) return;
+      S = Object.assign(fresh(), d);
+      S.meta = Game.fixMeta(S.meta);
       if (S.run) Game.view(S);                       // 옛 저장이 지금 판과 안 맞으면 여기서 걸린다
-    } catch (e) { S.run = null; }
+    } catch (e) { S.run = null; S.log = []; }
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 저장이 막힌 곳에서는 이번 창에서만 이어진다 */ } }
 
-  /* ------------------------------------------------------------------------------------------ 조각 */
-  function fxLines(out) {
-    const rows = [];
+  /* ------------------------------------------------------------------------------------------ 쌓이는 글 */
+  const push = e => { S.log.push(e); if (S.log.length > 90) { S.log.splice(0, S.log.length - 90); S.mark = Math.max(0, S.mark - 1); } };
+  const clearLog = () => { S.log = []; S.mark = 0; S.hub = ''; };
+  const ARRIVE = ['걷는 사이에 날이 밝았다.', '닿았을 때는 한낮이었다.', '닿았을 때는 해가 기울고 있었다.', '닿았을 때는 이미 어두웠다.'];
+  function dayMark() {
+    const run = S.run;
+    if (S.stamp && run.day !== S.stamp) push({ k: 'time', t: `${Math.min(run.day, DAYS)}일째` });
+    S.stamp = run.day;
+  }
+  function absorb() {                                  // 지금 장면이 하는 말을 글 끝에 붙인다. 결과는 읽고 나면 곧바로 다음으로 넘어간다.
+    for (let guard = 0; guard < 8; guard++) {
+      const run = S.run, v = Game.view(S);
+      if (v.t === 'prologue') { push({ k: 'p', t: v.text }); return; }
+      if (v.t === 'hub') {
+        dayMark();
+        if (v.pre.length) push({ k: 'fx', out: v.pre });
+        if (!S.log.some(e => e.k === 'place')) push({ k: 'place', t: v.title });
+        if (S.hub !== v.text) { push({ k: 'p', t: v.text }); S.hub = v.text; }
+        return;
+      }
+      if (v.t === 'event') {
+        dayMark();
+        if (v.pre.length) push({ k: 'fx', out: v.pre });
+        if (!S.log.some(e => e.k === 'place')) push({ k: 'place', t: v.title });
+        push({ k: 'p', t: v.text });
+        return;
+      }
+      if (v.t === 'result') {
+        if (v.text) push({ k: 'p', t: v.text });
+        if (v.out.length) push({ k: 'fx', out: v.out });
+        if (run.ending) return;                        // 마지막 글은 읽고 나서 넘긴다
+        Game.choose(S, 'next');
+        continue;
+      }
+      if (v.t === 'overflow') {
+        const last = S.log[S.log.length - 1];
+        if (!last || last.t !== v.text) push({ k: 'p', t: v.text });
+        return;
+      }
+      return;
+    }
+  }
+  function act(key) {
+    const run = S.run, v = Game.view(S), c = v.choices.find(x => x.key === key);
+    if (!c || c.locked) return;
+    const from = run.place, going = key.startsWith('go:');
+    S.mark = S.log.length;
+    if (!going && (v.t === 'hub' || v.t === 'event' || v.t === 'overflow')) push({ k: 'pick', t: c.label });
+    Game.choose(S, key);
+    if (going) {                                       // 다른 곳으로: 앞의 글은 거기 두고 간다
+      clearLog();
+      push({ k: 'p', move: 1, t: `${PLACES[from].name}을(를) 나와 ${c.label} 걸음을 옮겼다. ${ARRIVE[run.phase]}` });
+      push({ k: 'place', t: PLACES[run.place].name });
+    } else if (run.place !== from) clearLog();         // 일에 휩쓸려 다른 곳에 와 있다
+    absorb();
+    ui.jump = true;
+    save();
+  }
+
+  function fxParts(out) {
+    const say = [], chips = [];
     for (const o of out || []) {
-      if (typeof o === 'string') rows.push(`<li class="say">${T(o)}</li>`);
+      if (typeof o === 'string') say.push(o);
       else if (o.vital) {
         const good = o.vital === 'ero' ? o.d < 0 : o.d > 0;
-        rows.push(`<li class="${good ? 'plus' : 'minus'}">${Game.VITAL[o.vital]} ${o.d > 0 ? '+' : '−'}${Math.abs(o.d)}</li>`);
-      } else if (o.got) rows.push(`<li class="get">얻었다 · ${esc(ITEMS[o.got].name)}</li>`);
-      else if (o.lost) rows.push(`<li>없어졌다 · ${esc(ITEMS[o.lost].name)}</li>`);
-      else if (o.learned) rows.push(`<li class="get">수첩에 적었다 · ${esc(o.learned)}</li>`);
-      else if (o.relic) rows.push(`<li class="plus">유물 · ${esc(RELICS[o.relic].name)} — 다음 사람부터 들고 갈 수 있다</li>`);
+        chips.push(`<span class="${good ? 'plus' : 'minus'}">${Game.VITAL[o.vital]} ${o.d > 0 ? '+' : '−'}${Math.abs(o.d)}</span>`);
+      } else if (o.got) chips.push(`<span class="get">${esc(ITEMS[o.got].name)}을(를) 얻었다</span>`);
+      else if (o.lost) chips.push(`${esc(ITEMS[o.lost].name)}이(가) 없어졌다`);
+      else if (o.learned) chips.push(`<span class="get">수첩에 적었다: ${esc(o.learned)}</span>`);
+      else if (o.relic) chips.push(`<span class="plus">유물 ${esc(RELICS[o.relic].name)}을(를) 얻었다</span>`);
     }
-    return rows.length ? `<ul class="fx">${rows.join('')}</ul>` : '';
+    return { say, chips: chips.map(josa) };
   }
+  function entryHtml(e, i) {
+    const cls = 'entry ' + (i < S.mark ? 'old' : 'new');
+    if (e.k === 'place') return `<p class="${cls} place">${esc(e.t)}</p>`;
+    if (e.k === 'time') return `<p class="${cls} time">${esc(e.t)}</p>`;
+    if (e.k === 'pick') return `<p class="${cls} pick">${T(e.t)}</p>`;
+    if (e.k === 'fx') {
+      const { say, chips } = fxParts(e.out);
+      return (say.length ? `<p class="${cls} note">${T(say.join(' '))}</p>` : '') + (chips.length ? `<p class="${cls} fxl">${chips.join(' · ')}</p>` : '');
+    }
+    return `<p class="${cls} text${e.move ? ' move' : ''}">${T(e.t)}</p>`;
+  }
+
+  /* ------------------------------------------------------------------------------------------ 조각 */
   const ODDS = { '될 것 같다': 'o1', '해볼 만하다': 'o2', '반반이다': 'o3', '위험하다': 'o4', '거의 안 된다': 'o5' };
-  function choiceBtn(c, i, cls) {
-    const sub = c.locked ? c.reason : [c.sub, c.uses ? c.uses + '을(를) 쓴다' : ''].filter(Boolean).join(' · ');
+  function choiceBtn(c, cls, sub) {
+    if (sub == null) sub = c.locked ? c.reason : [c.sub, c.uses ? c.uses + '을(를) 쓴다' : ''].filter(Boolean).join(' · ');
     return `<button class="choice ${cls || ''}" data-act="choose" data-key="${esc(c.key)}" ${c.locked ? 'disabled' : ''}>
-      <span><span class="l"><span class="kbd">${i + 1}</span>${T(c.label)}</span>${sub ? `<span class="s">${T(sub)}</span>` : ''}</span>
+      <span><span class="l">${T(c.label)}</span>${sub ? `<span class="s">${T(sub)}</span>` : ''}</span>
       ${c.odds ? `<span class="o ${ODDS[c.odds] || ''}">${esc(c.odds)}</span>` : ''}</button>`;
   }
   function pips(k, v, max, cls) {
     let h = '';
     for (let i = 0; i < max; i++) h += `<i class="pip${i < v ? ' on' : ''}"></i>`;
-    return `<div class="vital ${cls || ''}" title="${k} ${v}/${max}"><span class="k">${k}</span><span class="pips" role="img" aria-label="${k} ${v}/${max}">${h}</span></div>`;
+    return `<div class="vital ${cls || ''}"><span class="k">${k}</span><span class="pips" role="img" aria-label="${k} ${v}/${max}">${h}</span></div>`;
   }
   const STATUS = [['infected', '상처가 곪았다', 1], ['with_chan', '찬이 따라온다'], ['dog_follows', '개가 따라온다'], ['with_radio', '스무 날째에 남쪽으로'],
                   ['church_member', '성당 솥 뒤에 선다'], ['market_member', '시장 장부에 이름이 있다'], ['apt_member', '노란 끈을 찼다'],
                   ['carehome_keeper', '요양원 근무표에 이름이 있다'], ['hospital_staff', '3층 근무'], ['boat_patched', '배를 때워 두었다']];
-  function header() {
+  function hud() {
     const run = S.run, cap = Game.capacity(run), load = Game.load(run);
     const tags = STATUS.filter(([f]) => run.flags[f]).map(([, t, bad]) => `<span class="tag${bad ? ' bad' : ''}">${t}</span>`).join('');
-    return `<div class="top">
-        <span class="when"><b>${Math.min(run.day, DAYS)}일째</b> · ${PHASES[run.phase]} <span style="color:var(--faint)">/ ${DAYS}일</span></span>
+    return `<div class="hud"><div class="top">
+        <span class="when"><b>${Math.min(run.day, DAYS)}일째</b> · ${PHASES[run.phase]} <i>/ ${DAYS}일</i></span>
         <span class="tools">
           <button class="tool${load >= cap ? ' full' : ''}" data-act="open" data-what="bag">가방<span class="n">${load}/${cap}</span></button>
           <button class="tool" data-act="open" data-what="book">수첩</button>
@@ -2880,128 +3009,91 @@ const Game = (() => {
       <div class="vitals">
         ${pips('몸', run.hp, 10, run.hp <= 3 ? 'low' : '')}${pips('배', run.full, 10, run.full <= 2 ? 'low' : '')}
         ${pips('정신', run.mind, run.mindMax, run.mind <= 3 ? 'low' : '')}${run.ero > 0 ? pips('침식', run.ero, 10, 'ero') : '<div></div>'}
-      </div>${tags ? `<div class="tags">${tags}</div>` : ''}`;
+      </div>${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
   }
 
   /* ------------------------------------------------------------------------------------------ 첫 화면 */
   function titleScreen() {
     const seen = Object.keys(S.meta.endings).length, total = Object.keys(ENDINGS).length;
     const live = S.run && S.run.scene && S.run.scene.t !== 'ending';
-    return `<div class="title scene">
-      <h1>나는<br><span>여기까지</span></h1>
-      <p>무령시, 사거리에 틈이 열린 날부터 스무 날.</p>
-      <p>구하러 오는 사람은 없다. 고를 수 있는 것은 누구로 시작하느냐뿐이다.</p>
+    return `<div class="page title">
+      <h1>살아남아야<br><span>한다</span></h1>
+      <p>다시 균열이 열리고, 괴물들이 도시를 짓밟았다.</p>
+      <p>그로부터 두 달.</p>
       <div class="menu">
-        ${live ? `<button class="choice" data-act="continue"><span><span class="l">이어서 걷는다</span><span class="s">${esc(S.run.name)} · ${Math.min(S.run.day, DAYS)}일째 ${PHASES[S.run.phase]} · ${esc(PLACES[S.run.place].name)}</span></span></button>` : ''}
-        <button class="choice" data-act="new"><span><span class="l">${live ? '다른 사람으로 처음부터' : '시작한다'}</span>${live ? '<span class="s">지금 걷던 사람은 거기서 끝난다.</span>' : ''}</span></button>
-        <button class="choice go" data-act="open" data-what="book"><span><span class="l">수첩을 편다</span><span class="s">만난 사람, 주운 것, 본 결말.</span></span></button>
+        ${live ? `<button class="choice main" data-act="continue"><span><span class="l">이어서 걷는다</span><span class="s">${Math.min(S.run.day, DAYS)}일째 ${PHASES[S.run.phase]} · ${esc(PLACES[S.run.place].name)}</span></span></button>` : ''}
+        <button class="choice ${live ? '' : 'main'}" data-act="new"><span><span class="l">${live ? '다른 사람으로 침낭에서 나온다' : '침낭에서 나온다'}</span></span></button>
       </div>
-      <p class="count">결말 ${seen}/${total} · 유물 ${S.meta.relics.length}/${Object.keys(RELICS).length} · 지나간 사람 ${S.meta.graves.length}명</p>
+      <div class="foot"><button class="link" data-act="open" data-what="book">수첩</button><span>결말 ${seen}/${total} · 유물 ${S.meta.relics.length}/${Object.keys(RELICS).length}</span></div>
       <a class="home" href="../index.html">← GLONOMY Games</a>
     </div>`;
   }
 
-  /* ------------------------------------------------------------------------------------------ 사람 고르기 */
-  const STEPS = [
-    { k: 'name' },
-    { k: 'age', ask: '나는 몇 살이었나.', table: () => AGES },
-    { k: 'job', ask: '무슨 일을 하고 있었나.', table: () => JOBS },
-    { k: 'origin', ask: '어디에 살았나.', sub: '그날 아침 내가 서 있던 곳이 된다.', table: () => ORIGINS },
-    { k: 'temper', ask: '나는 어떤 사람이었나.', table: () => TEMPERS },
-    { k: 'flaw', ask: '무엇이 나를 붙잡고 있었나.', sub: '하나는 반드시 고른다. 끝까지 따라온다.', table: () => FLAWS },
-    { k: 'relics' },
-    { k: 'confirm' },
-  ];
-  const relicRoom = () => POCKET - Game.startVolume(ui.sel);
-  const relicUsed = () => ui.sel.relics.reduce((n, r) => n + RELICS[r].vol, 0);
-  function stepDone(st) {
-    if (st.k === 'name' || st.k === 'relics' || st.k === 'confirm') return true;
-    return !!ui.sel[st.k];
-  }
+  /* ------------------------------------------------------------------------------------------ 사람 고르기
+     보이는 것은 다섯 개까지. 무엇이 나올지는 침낭에서 나올 때 한 번 정해지고, 되돌아가도 바뀌지 않는다. */
+  const STEPS = ['age', 'job', 'origin', 'mbti', 'flaw', 'relics'];
+  const relicRoom = () => POCKET - Game.startVolume(S.draft.sel);
+  const relicUsed = () => S.draft.sel.relics.reduce((n, r) => n + RELICS[r].vol, 0);
   function createScreen() {
-    const st = STEPS[ui.step], sel = ui.sel;
-    let body = '';
-    if (st.k === 'name') {
-      body = `<h2 class="ask">내 이름은.</h2><p class="ask-sub">적지 않아도 된다. 이름 없이 끝난 사람도 많았다.</p>
-        <input class="name-in" id="name" maxlength="12" placeholder="이름" value="${esc(sel.name)}" autocomplete="off">`;
-    } else if (st.table) {
-      body = `<h2 class="ask">${st.ask}</h2>${st.sub ? `<p class="ask-sub">${st.sub}</p>` : '<p class="ask-sub">&nbsp;</p>'}<div class="choices">` +
-        st.table().map(r => {
-          let extra = '';
-          if (st.k === 'job') extra = `<em>주머니에: ${r.items.map(i => ITEMS[i].name).join(', ')}</em>`;
-          if (st.k === 'origin') extra = `<em>시작: ${PLACES[r.start].name}</em>`;
-          return `<button class="opt${sel[st.k] === r.id ? ' on' : ''}" data-act="pick" data-k="${st.k}" data-id="${r.id}"><b>${esc(r.name)}</b><span>${esc(r.line)}</span>${extra}</button>`;
-        }).join('') + '</div>';
-    } else if (st.k === 'relics') {
+    const d = S.draft, sel = d.sel, st = STEPS[d.step];
+    const opt = (k, id, name, extra, cls) => `<button class="opt ${cls || ''}${sel[k] === id ? ' on' : ''}" data-act="pick" data-k="${k}" data-id="${id}"><b>${esc(name)}</b>${extra ? `<em>${esc(extra)}</em>` : ''}</button>`;
+    let ask = '', sub = '', opts = '', nav = '';
+    if (st === 'age') { ask = '나는'; opts = AGES.map(a => opt('age', a.id, a.name)).join(''); }
+    else if (st === 'job') {
+      ask = '그전의 나는';
+      opts = d.roll.jobs[sel.age].map(id => { const j = byId(JOBS, id); return opt('job', id, j.name, '주머니: ' + j.items.map(i => ITEMS[i].name).join(', ')); }).join('');
+    } else if (st === 'origin') {
+      ask = '어디에 살았나';
+      opts = ORIGINS.map(o => opt('origin', o.id, o.name, '시작: ' + PLACES[o.start].name)).join('');
+    } else if (st === 'mbti') { ask = '나의 MBTI는'; opts = d.roll.mbti.map(id => opt('mbti', id, id, '', 'mbti')).join(''); }
+    else if (st === 'flaw') { ask = '두 달 동안 나는'; opts = d.roll.flaws.map(id => opt('flaw', id, byId(FLAWS, id).name)).join(''); }
+    else {
       const room = relicRoom(), used = relicUsed();
-      body = `<h2 class="ask">주머니에 무엇을 넣고 나섰나.</h2>
-        <p class="ask-sub">먼저 간 사람들이 남긴 것. 한 번 얻은 것은 다음 사람도 들고 갈 수 있다. 셋까지, 주머니 칸 안에서. 넣은 만큼 주울 자리는 준다. (${used}/${room}칸)</p><div class="choices">` +
-        S.meta.relics.map(id => {
-          const r = RELICS[id], on = sel.relics.includes(id);
-          const blocked = !on && (sel.relics.length >= 3 || used + r.vol > room);
-          return `<button class="opt${on ? ' on' : ''}" data-act="relic" data-id="${id}" ${blocked ? 'disabled' : ''}><b>${esc(r.name)}</b><span>${esc(r.text)}</span><em>${esc(r.fx)} · ${r.vol}칸</em></button>`;
-        }).join('') + '</div>';
-    } else {
-      const job = byId(JOBS, sel.job), origin = byId(ORIGINS, sel.origin);
-      const row = (k, name, line) => `<li><span class="k">${k}</span><span class="v">${esc(name)}<small>${esc(line)}</small></span></li>`;
-      body = `<h2 class="ask">${sel.name.trim() ? esc(sel.name.trim()) + '.' : '이름 없는 사람.'}</h2><p class="ask-sub">이 사람으로 걷는다. 끝나면 돌아오지 않는다.</p><ul class="sum">` +
-        row('나이', byId(AGES, sel.age).name, byId(AGES, sel.age).line) + row('하던 일', job.name, job.line) + row('살던 곳', origin.name, origin.line) +
-        row('성격', byId(TEMPERS, sel.temper).name, byId(TEMPERS, sel.temper).line) + row('결함', byId(FLAWS, sel.flaw).name, byId(FLAWS, sel.flaw).line) +
-        row('주머니', job.items.map(i => ITEMS[i].name).concat(sel.relics.map(r => RELICS[r].name)).join(', '), `여섯 칸 중 ${Game.startVolume(sel) + relicUsed()}칸이 찼다.`) + '</ul>';
+      ask = '침낭에서 나온 나는<br>오늘도 어김없이';
+      sub = `셋까지. 지닌 만큼 주머니가 준다. (${used}/${room}칸)`;
+      opts = d.roll.relics.filter(id => S.meta.relics.includes(id)).map(id => {
+        const r = RELICS[id], on = sel.relics.includes(id), blocked = !on && (sel.relics.length >= 3 || used + r.vol > room);
+        return `<button class="opt${on ? ' on' : ''}" data-act="relic" data-id="${id}" ${blocked ? 'disabled' : ''}><b>${esc(r.wear)}</b><em>${esc(r.fx)}</em></button>`;
+      }).join('');
+      nav = '<button class="btn" data-act="begin">문을 나선다</button>';
     }
-    const last = ui.step === STEPS.length - 1;
-    return `<div class="steps">${STEPS.map((s, i) => `<i class="${i <= ui.step ? 'on' : ''}"></i>`).join('')}</div>
-      <div class="scene">${body}
-        <div class="nav">
-          <button class="btn ghost" data-act="back">${ui.step === 0 ? '처음으로' : '앞으로'}</button>
-          ${ui.step === 0 ? '<button class="btn ghost" data-act="anyone">아무나</button>' : ''}
-          <button class="btn" data-act="${last ? 'begin' : 'fwd'}" ${stepDone(st) ? '' : 'disabled'}>${last ? '걷기 시작한다' : '다음'}</button>
-        </div>
-      </div>`;
-  }
-  function trimRelics() {                              // 직업을 바꿔 주머니가 줄었으면 넘치는 유물을 뺀다
-    while (relicUsed() > relicRoom() && ui.sel.relics.length) ui.sel.relics.pop();
+    return `<div class="page create">
+      <div class="steps">${STEPS.map((s, i) => `<i class="${i <= d.step ? 'on' : ''}"></i>`).join('')}</div>
+      <h2 class="ask">${ask}</h2><p class="ask-sub">${sub}</p>
+      <div class="opts">${opts}</div>
+      <div class="nav"><button class="btn ghost" data-act="back">뒤로</button>${nav}</div>
+    </div>`;
   }
 
   /* ------------------------------------------------------------------------------------------ 걷는 화면 */
+  function dock(v) {
+    if (v.t !== 'hub') return `<div class="choices">${v.choices.map(c => choiceBtn(c)).join('')}</div>`;
+    const run = S.run, acts = v.choices.filter(c => c.kind === 'act'), dos = v.choices.filter(c => c.kind === 'do'), gos = v.choices.filter(c => c.kind === 'go');
+    const goSub = c => {
+      const e = PLACES[run.place].exits.find(x => 'go:' + x.to === c.key);
+      return S.meta.places[e.to] ? PLACES[e.to].name : e.hint.split('.')[0] + '.';
+    };
+    return (acts.length ? `<div class="choices">${acts.map(c => choiceBtn(c, 'main')).join('')}</div>` : '') +
+      `<div class="choices two">${dos.map(c => choiceBtn(c)).join('')}</div>` +
+      `<p class="group">가는 길</p><div class="choices two">${gos.map(c => choiceBtn(c, 'go', goSub(c))).join('')}</div>`;
+  }
   function gameScreen() {
-    const v = Game.view(S), run = S.run;
+    const v = Game.view(S);
     if (v.t === 'ending') return endScreen(v);
-    let h = header() + '<div class="scene">';
-    if (v.t === 'prologue') {
-      h += `<p class="place">그날</p><p class="text">${T(v.text)}</p><div class="choices">${v.choices.map((c, i) => choiceBtn(c, i)).join('')}</div>`;
-    } else if (v.t === 'hub') {
-      const act = v.choices.filter(c => c.kind !== 'go'), go = v.choices.filter(c => c.kind === 'go');
-      h += `<p class="place">${esc(v.title)}</p>${fxLines(v.pre)}<p class="text">${T(v.text)}</p>`;
-      h += `<p class="group">여기서</p><div class="choices">${act.map((c, i) => choiceBtn(c, i)).join('')}</div>`;
-      h += `<p class="group">가는 길</p><div class="choices">${go.map((c, i) => choiceBtn(c, act.length + i, 'go')).join('')}</div>`;
-    } else if (v.t === 'event') {
-      h += `<p class="place">${esc(v.title)}</p>${v.who && run.met[Object.keys(PEOPLE).find(k => PEOPLE[k] === v.who)] ? `<p class="who">${esc(v.who.name)} · ${esc(v.who.role)}</p>` : ''}
-        ${fxLines(v.pre)}<p class="text">${T(v.text)}</p><div class="choices">${v.choices.map((c, i) => choiceBtn(c, i)).join('')}</div>`;
-    } else if (v.t === 'result') {
-      h += `<p class="text">${T(v.text)}</p>${fxLines(v.out)}<div class="choices">${v.choices.map((c, i) => choiceBtn(c, i)).join('')}</div>`;
-    } else if (v.t === 'overflow') {
-      h += `<p class="place">주머니</p><p class="text">${T(v.text)}</p><p class="text small">${v.over}칸이 넘쳤다. 가방을 열어 먹거나 써서 자리를 내도 됐다.</p>
-        <div class="choices">${v.choices.map((c, i) => choiceBtn(c, i)).join('')}</div>`;
-    }
-    return h + '</div>';
+    return hud() + `<div class="log" id="log">${S.log.map(entryHtml).join('')}</div><div class="dock">${dock(v)}</div>`;
   }
   function endScreen(v) {
     const alive = v.end.kind === 'alive';
-    return `<div class="end scene">
-      <div class="kind${alive ? ' alive' : ''}">${alive ? '살아남았다' : '여기까지'}</div>
+    return `<div class="page end">
+      <div class="kind${alive ? ' alive' : ''}">${alive ? '살아남았다' : '살아남지 못했다'}</div>
       <h2>${esc(v.end.title)}</h2>
       <p class="text">${T(v.end.text)}</p>
       <div class="epitaph">${esc(v.epitaph)}
         ${v.first ? '<div class="new">처음 본 결말. 수첩에 적혔다.</div>' : ''}
         ${v.relic ? `<div class="new">유물을 남겼다 · ${esc(RELICS[v.relic].name)}</div>` : ''}
-        ${v.learned ? `<div>이 사람이 수첩에 남긴 줄 · ${v.learned}</div>` : ''}
       </div>
-      <div class="menu">
-        <button class="choice" data-act="again"><span class="l">다른 사람으로 다시</span></button>
-        <button class="choice go" data-act="open" data-what="book"><span class="l">수첩을 편다</span></button>
-        <button class="choice go" data-act="title"><span class="l">처음 화면으로</span></button>
-      </div>
+      <div class="menu"><button class="choice main" data-act="new"><span class="l">다른 사람으로 침낭에서 나온다</span></button></div>
+      <div class="foot"><button class="link" data-act="open" data-what="book">수첩</button><button class="link" data-act="title">처음 화면</button></div>
     </div>`;
   }
 
@@ -3017,6 +3109,7 @@ const Game = (() => {
     if (u.cure) parts.push('곪은 상처를 잡는다');
     return parts.join(' · ');
   }
+  const useVerb = id => ITEMS[id].kind === '먹을 것' ? '먹었다' : ITEMS[id].kind === '돌' ? '삼켰다' : '썼다';
   function bagSheet() {
     const run = S.run, counts = {};
     for (const i of run.inv) counts[i] = (counts[i] || 0) + 1;
@@ -3065,7 +3158,7 @@ const Game = (() => {
         : '<div class="row unknown"><h4>아직 줍지 못한 것</h4></div>').join('');
     } else if (ui.tab === 'relics') {
       const ids = Object.keys(RELICS);
-      body = `<div class="meta" style="padding-top:12px">${m.relics.length}/${ids.length} · 한 번 얻으면 다음 사람부터 들고 갈 수 있다.</div>` + ids.map(id => m.relics.includes(id)
+      body = `<div class="meta" style="padding-top:12px">${m.relics.length}/${ids.length} · 한 번 얻으면 다음 사람부터 지닐 수 있다.</div>` + ids.map(id => m.relics.includes(id)
         ? `<div class="row"><h4>${esc(RELICS[id].name)}<small>${RELICS[id].vol}칸</small></h4><p>${esc(RELICS[id].text)}</p><div class="meta">${esc(RELICS[id].fx)}</div></div>`
         : `<div class="row unknown"><h4>아직 얻지 못한 것</h4><p>${esc(RELICS[id].hint || '')}</p></div>`).join('');
     } else if (ui.tab === 'endings') {
@@ -3073,10 +3166,10 @@ const Game = (() => {
       const block = kind => ids.filter(id => ENDINGS[id].kind === kind).map(id => m.endings[id]
         ? `<div class="row"><h4>${esc(ENDINGS[id].title)}<small>${m.endings[id].n}번 · 처음은 ${m.endings[id].first}번째 사람</small></h4><p>${esc(ENDINGS[id].text)}</p></div>`
         : `<div class="row unknown"><h4>아직 보지 못한 결말</h4><p>${esc(ENDINGS[id].hint)}</p></div>`).join('');
-      body = `<div class="meta" style="padding-top:12px">${seen.length}/${ids.length}</div><p class="sub-head">살아남은 끝</p>${block('alive')}<p class="sub-head">여기까지였던 끝</p>${block('dead')}`;
+      body = `<div class="meta" style="padding-top:12px">${seen.length}/${ids.length}</div><p class="sub-head">살아남은 끝</p>${block('alive')}<p class="sub-head">살아남지 못한 끝</p>${block('dead')}`;
     } else {
-      body = m.graves.length ? m.graves.map(g => `<div class="row"><h4>${esc(g.name)}<small>${esc(g.job)} · ${g.day}일째</small></h4>
-        <p>${g.alive ? '살아남았다' : '여기까지'} — ${esc((ENDINGS[g.end] || {}).title || '')}</p></div>`).join('') : '<p class="empty">아직 아무도 지나가지 않았다.</p>';
+      body = m.graves.length ? m.graves.map(g => `<div class="row"><h4>${g.no ? g.no + '번째 사람' : '사람'}<small>${esc(g.age || '')} · ${esc(g.job)} · ${g.day}일째</small></h4>
+        <p>${g.alive ? '살아남았다' : '살아남지 못했다'} — ${esc((ENDINGS[g.end] || {}).title || '')}</p></div>`).join('') : '<p class="empty">아직 아무도 지나가지 않았다.</p>';
       body += `<p class="wipe">${ui.wipe ? '수첩과 유물과 결말이 전부 사라진다. <button class="sure" data-act="wipe2">정말 지운다</button> · <button data-act="wipe0">그만둔다</button>'
         : '<button data-act="wipe1">기록을 전부 지운다</button>'}</p>`;
     }
@@ -3089,68 +3182,96 @@ const Game = (() => {
   }
 
   /* ------------------------------------------------------------------------------------------ 그리기 */
-  function render(keepScroll) {
-    const y = keepScroll ? (document.querySelector('.sheet-body') || {}).scrollTop : 0;
+  function render() {
+    const oldLog = document.getElementById('log'), logY = oldLog ? oldLog.scrollTop : null;
+    const oldSheet = document.querySelector('.sheet-body'), sheetY = oldSheet ? oldSheet.scrollTop : 0;
     let h = ui.screen === 'title' ? titleScreen() : ui.screen === 'create' ? createScreen() : gameScreen();
     if (ui.overlay === 'bag' && S.run) h += bagSheet();
     if (ui.overlay === 'book') h += bookSheet();
     app.innerHTML = h;
-    document.body.style.overflow = ui.overlay ? 'hidden' : '';
-    if (keepScroll && y) { const b = document.querySelector('.sheet-body'); if (b) b.scrollTop = y; }
-    else if (!ui.overlay) window.scrollTo(0, 0);
+    const log = document.getElementById('log');
+    if (log) {
+      const first = log.querySelector('.entry.new');
+      if (ui.jump || logY == null) {                   // 새 글의 첫 줄이 보이게: 짧으면 맨 아래, 길면 그 줄을 맨 위에
+        const bottom = log.scrollHeight - log.clientHeight;
+        log.scrollTop = first ? Math.min(Math.max(0, first.offsetTop - 10), bottom) : bottom;
+      } else log.scrollTop = logY;
+    }
+    if (ui.overlay && sheetY && ui.keep) { const b = document.querySelector('.sheet-body'); if (b) b.scrollTop = sheetY; }
+    ui.jump = false; ui.keep = false;
   }
 
   /* ------------------------------------------------------------------------------------------ 누른 것 */
   const ACT = {
-    new() { ui.sel = blankSel(); ui.step = 0; ui.screen = 'create'; },
-    continue() { ui.screen = 'game'; },
+    new() {
+      if (!S.draft) S.draft = { roll: Game.roll(S.meta), sel: { age: '', job: '', origin: '', mbti: '', flaw: '', relics: [] }, step: 0 };
+      ui.screen = 'create'; ui.overlay = ''; save();
+    },
+    continue() { ui.screen = 'game'; ui.jump = true; },
     title() { ui.screen = 'title'; },
-    again() { S.run = null; save(); ACT.new(); },
     open(d) { ui.overlay = d.what; ui.toast = []; ui.wipe = 0; },
     close() { ui.overlay = ''; },
     tab(d) { ui.tab = d.k; ui.wipe = 0; },
-    pick(d) { ui.sel[d.k] = d.id; if (d.k === 'job') trimRelics(); if (ui.step < STEPS.length - 1) ui.step += 1; },
-    relic(d) { const k = ui.sel.relics.indexOf(d.id); if (k >= 0) ui.sel.relics.splice(k, 1); else ui.sel.relics.push(d.id); },
-    back() { if (ui.step === 0) ui.screen = 'title'; else ui.step -= 1; },
-    fwd() { ui.step += 1; },
-    anyone() {
-      const pick = t => t[Math.floor(Math.random() * t.length)].id;
-      ui.sel = Object.assign(blankSel(), { name: ui.sel.name, age: pick(AGES), job: pick(JOBS), origin: pick(ORIGINS), temper: pick(TEMPERS), flaw: pick(FLAWS) });
-      ui.step = STEPS.length - 2;
+    pick(d) {
+      const dr = S.draft;
+      if (d.k === 'age' && dr.sel.age !== d.id) dr.sel.job = '';
+      dr.sel[d.k] = d.id;
+      if (d.k === 'job') while (relicUsed() > relicRoom() && dr.sel.relics.length) dr.sel.relics.pop();
+      dr.step = Math.min(dr.step + 1, STEPS.length - 1);
+      save();
     },
-    begin() { S.run = Game.newRun(ui.sel, S.meta); ui.screen = 'game'; save(); },
-    choose(d) { Game.choose(S, d.key); save(); },
+    relic(d) { const r = S.draft.sel.relics, k = r.indexOf(d.id); if (k >= 0) r.splice(k, 1); else r.push(d.id); save(); },
+    back() { if (S.draft.step === 0) ui.screen = 'title'; else S.draft.step -= 1; save(); },
+    begin() {
+      const sel = S.draft.sel;
+      if (!sel.age || !sel.job || !sel.origin || !sel.mbti || !sel.flaw) { S.draft.step = STEPS.findIndex(k => !sel[k]); return; }
+      S.run = Game.newRun(sel, S.meta);
+      S.draft = null; clearLog(); S.stamp = 0;
+      absorb(); ui.screen = 'game'; ui.jump = true; save();
+    },
+    choose(d) { act(d.key); },
     use(d) {
-      const name = ITEMS[d.id].name, out = Game.useItem(S, d.id);
+      const was = S.run.scene.t, name = ITEMS[d.id].name, verb = useVerb(d.id), out = Game.useItem(S, d.id);
       if (!out) return;
-      ui.toast = [josa(name + '을(를) 썼다.')].concat(out.map(o => typeof o === 'string' ? o : o.vital ? `${Game.VITAL[o.vital]} ${o.d > 0 ? '+' : '−'}${Math.abs(o.d)}` : '').filter(Boolean));
-      Game.recheck(S); save();
+      const line = josa(`${name}을(를) ${verb}.`);
+      ui.toast = [line].concat(out.map(o => typeof o === 'string' ? o : o.vital ? `${Game.VITAL[o.vital]} ${o.d > 0 ? '+' : '−'}${Math.abs(o.d)}` : '').filter(Boolean));
+      S.mark = S.log.length;
+      push({ k: 'pick', t: line }); if (out.length) push({ k: 'fx', out });
+      Game.recheck(S);
+      if (was === 'overflow' && S.run.scene.t !== 'overflow') absorb();
       if (S.run.scene.t === 'ending') ui.overlay = '';
+      ui.jump = true; ui.keep = true; save();
     },
-    drop(d) { if (Game.leave(S, d.id)) { ui.toast = [josa(ITEMS[d.id].name + '을(를) 두고 왔다.')]; Game.recheck(S); save(); } },
-    wipe1() { ui.wipe = 1; }, wipe0() { ui.wipe = 0; },
-    wipe2() { S = { meta: Game.newMeta(), run: null }; save(); ui.wipe = 0; ui.overlay = ''; ui.screen = 'title'; },
+    drop(d) {
+      const was = S.run.scene.t;
+      if (!Game.leave(S, d.id)) return;
+      ui.toast = [josa(ITEMS[d.id].name + '을(를) 두고 왔다.')];
+      Game.recheck(S);
+      if (was === 'overflow' && S.run.scene.t !== 'overflow') absorb();
+      ui.keep = true; save();
+    },
+    wipe1() { ui.wipe = 1; ui.keep = true; }, wipe0() { ui.wipe = 0; ui.keep = true; },
+    wipe2() { S = fresh(); save(); ui.wipe = 0; ui.overlay = ''; ui.screen = 'title'; },
   };
   app.addEventListener('click', e => {
     const el = e.target.closest('[data-act]');
     if (!el || el.disabled) return;
-    const act = el.dataset.act;
-    if (!ACT[act]) return;
-    if (ui.screen === 'create') { const n = document.getElementById('name'); if (n) ui.sel.name = n.value; }
-    ACT[act](el.dataset);
-    render(!!ui.overlay && ['use', 'drop', 'wipe1', 'wipe0'].includes(act));
+    const fn = ACT[el.dataset.act];
+    if (!fn) return;
+    fn(el.dataset);
+    render();
   });
   document.addEventListener('keydown', e => {
-    if (e.target && e.target.tagName === 'INPUT') { if (e.key === 'Enter') { ui.sel.name = e.target.value; ACT.fwd(); render(); } return; }
     if (e.key === 'Escape' && ui.overlay) { ui.overlay = ''; render(); return; }
     if (ui.overlay || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (ui.screen === 'game' && /^[1-9]$/.test(e.key)) {
-      const b = app.querySelectorAll('.scene .choice')[+e.key - 1];
-      if (b && !b.disabled) b.click();
+    if (/^[1-9]$/.test(e.key)) {
+      const b = app.querySelectorAll('.dock .choice:not([disabled]), .opts .opt:not([disabled])')[+e.key - 1];
+      if (b) b.click();
     }
   });
 
   loadSave();
+  if (S.run && !S.log.length && S.run.scene.t !== 'ending') absorb();
   render();
 })();
 
