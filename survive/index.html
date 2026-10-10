@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0c0c0b">
 <meta name="description" content="살아남아야 한다 — 균열이 열리고, 괴물들이 도시를 짓밟았다. 그로부터 두 달. 다크 텍스트 로그라이크.">
 <title>살아남아야 한다</title>
@@ -37,7 +37,9 @@ body {
   -webkit-text-size-adjust: 100%; overscroll-behavior: none;
   position: fixed; inset: 0; overflow: hidden;   /* 화면 전체는 움직이지 않는다. 움직이는 것은 글 칸 · 가방 · 수첩뿐 */
 }
-button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+html, body, #app { touch-action: pan-y; }   /* 핀치 확대 · 두 번 눌러 확대를 막는다 */
+.page, .sheet-body, .dock { overflow-x: hidden; }
+button { touch-action: manipulation; font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
 
 /* 화면 하나가 곧 한 장. 바깥은 움직이지 않고, 글이 쌓이는 자리만 위아래로 움직인다. */
@@ -69,7 +71,7 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .tag.bad { color: var(--bad); border-color: var(--rust-dim); }
 
 /* ---------------------------------------------------------------- 쌓이는 글 */
-.log { flex: 1; min-height: 0; overflow-y: auto; position: relative; padding: 16px 0 28px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.log { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; touch-action: pan-y; position: relative; padding: 16px 0 28px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 .entry { margin: 0 0 12px; }
 .entry.old { opacity: 0.62; }
 .entry.new { animation: rise 0.35s ease-out; }
@@ -212,14 +214,14 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .page.end { overflow-y: auto; }   /* 결말 글이 길면 그 글만 움직인다 */
 
 /* ---------------------------------------------------------------- 그림 */
-.pic { margin: 2px -16px 12px; height: 30vh; height: 30dvh; max-height: 300px; overflow: hidden; }
+.pic { margin: 2px 0 12px; height: 30vh; height: 30dvh; max-height: 300px; overflow: hidden; }
 .pic img { display: block; width: 100%; height: 100%; object-fit: cover;
   -webkit-mask-image: radial-gradient(ellipse 80% 76% at 50% 50%, #000 70%, transparent 100%); mask-image: radial-gradient(ellipse 80% 76% at 50% 50%, #000 70%, transparent 100%); }
 .pic.night img { filter: brightness(0.78); }
 .pic.tall { height: 46vh; height: 46dvh; max-height: 440px; }
 .pic.tall img { object-fit: contain; }
 .entry.old.pic { opacity: 0.8; }
-.endpic { display: block; width: calc(100% + 32px); margin: 0 -16px 14px; max-height: 34vh; object-fit: cover; flex: none;
+.endpic { display: block; width: 100%; margin: 0 0 14px; max-height: 34vh; object-fit: cover; flex: none;
   -webkit-mask-image: radial-gradient(ellipse 80% 78% at 50% 50%, #000 68%, transparent 100%); mask-image: radial-gradient(ellipse 80% 78% at 50% 50%, #000 68%, transparent 100%); }
 .page.end:has(.endpic) { justify-content: flex-start; padding-top: 8px; }
 .rowpic { display: block; width: 100%; max-height: 300px; object-fit: cover; margin: 4px 0 10px; border-radius: 2px; }
@@ -5026,6 +5028,11 @@ const Game = (() => {
     }
   });
 
+  // 핀치 확대를 막는다(iOS 사파리는 viewport 설정을 무시하므로 손가락 두 개 움직임을 직접 막는다)
+  for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  let lastTap = 0;
+  document.addEventListener('touchend', e => { const now = Date.now(); if (now - lastTap < 320 && !e.target.closest('button')) e.preventDefault(); lastTap = now; }, { passive: false });
   loadSave();
   if (S.run && !S.log.length && S.run.scene.t !== 'ending') absorb();
   render();
