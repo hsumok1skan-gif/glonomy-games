@@ -758,6 +758,19 @@ const PLACES = {
 };
 
 /* 모자를 눌러쓴 여자가 지내는 곳. 판마다 이 가운데 한 곳으로 정해진다. 그곳에 가면 입구에 흔적이 보인다. */
+/* -------------------------------------------------------------------------------------------- 뒤질 때 나오는 것
+   흔한 물건은 어디서든 나온다. 자리마다 적힌 loot는 "그 자리에서 더 잘 나오는 것"이다.
+   특별한 물건은 정해진 곳에서만 나오고, 그곳의 어느 자리에서 나올지는 그때그때 다르다. */
+const LOOT_COMMON = { can: 1, ramen: 1, rice: 1, choco: 1, water: 1.4, bandage: 0.7, painkiller: 0.7, antiseptic: 0.5, lighter: 0.6, tape: 0.8, rope: 0.6,
+  battery: 0.7, cigarette: 0.7, soju: 0.5, cloth: 0.8, scrap: 0.8, flashlight: 0.3, pads: 0.4, ecobag: 0.3, knife: 0.25, backpack: 0.25 };
+const LOOT_SPECIAL = {
+  antibiotic: ['hospital', 'carehome', 'cross'], insulin: ['hospital', 'carehome'], formula: ['carehome', 'mart', 'apt', 'cross'],
+  crowbar: ['depot', 'market', 'mart', 'apt'], wrench: ['depot', 'ramp', 'apt', 'bridge'], bat: ['school', 'apt'],
+  seeds: ['apt', 'mart', 'alley', 'depot', 'ramp'], keys: ['gosiwon', 'mart', 'depot', 'station', 'bridge', 'ramp', 'alley'], stone: ['cross', 'river'],
+};
+const LOOT_SPOT_WEIGHT = 3;      // 자리에 적힌 것은 흔한 것보다 세 배 잘 나온다
+const LOOT_SPECIAL_WEIGHT = 1.2; // 특별한 것은 그곳 어느 자리에서나 이만큼
+
 const HIDEOUTS = ['alley', 'gosiwon', 'hospital', 'carehome', 'school', 'apt', 'mart', 'depot', 'station'];
 const HIDEOUT_SIGN = '건물 입구 안쪽에는 누군가 낚싯줄을 발목 높이로 쳐 놓았다.';
 
@@ -3831,6 +3844,17 @@ const Game = (() => {
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
   const list = v => v == null ? [] : Array.isArray(v) ? v : [v];
   const pick = arr => arr[Math.floor(rnd() * arr.length)];
+  function lootTable(placeId, spot) {      // 흔한 것 + 그 자리에서 잘 나오는 것 + 그곳에서만 나오는 것
+    const place = PLACES[placeId], w = {};
+    const add = (id, n) => { w[id] = (w[id] || 0) + n; };
+    for (const [id, n] of Object.entries(LOOT_COMMON)) add(id, n);
+    for (const [id, n] of Object.entries((spot && spot.loot) || place.loot)) {
+      if (!LOOT_SPECIAL[id]) add(id, n * LOOT_SPOT_WEIGHT);
+      else if (LOOT_SPECIAL[id].includes(placeId)) add(id, n * 1.5);   // 특별한 것도 그 자리에서 조금 더
+    }
+    for (const [id, homes] of Object.entries(LOOT_SPECIAL)) if (homes.includes(placeId)) add(id, id === 'stone' && placeId === 'cross' ? 4 : LOOT_SPECIAL_WEIGHT);
+    return Object.entries(w);
+  }
   function weighted(pairs) {              // [[value, weight], ...]
     const total = pairs.reduce((s, p) => s + p[1], 0);
     let r = rnd() * total;
@@ -4187,7 +4211,8 @@ const Game = (() => {
     if (n && rnd() < 0.15 + (luck - 4) * 0.04) n += 1;
     if (n && has(run, 'loupe', true) && rnd() < 0.5) n += 1;
     const got = [];
-    for (let i = 0; i < n; i++) got.push(weighted(Object.entries(spot.loot || place.loot)));
+    const table = lootTable(run.place, spot);
+    for (let i = 0; i < n; i++) got.push(weighted(table));
     for (const id of got) { give(S, id); out.push({ got: id }); }
     const names = got.map(id => ITEMS[id].name).join(', ');
     result(S, got.length ? pick(spot.room ? FOUND_ROOM : FOUND_OPEN).replace('{items}', names) : pick(SEARCH_NONE), out);
@@ -4507,7 +4532,7 @@ const Game = (() => {
     }
   }
 
-  return { random: Math.random, newMeta, fixMeta, roll, newRun, statsFor, startVolume, view, choose, useItem, leave, recheck, capacity, load, chance, oddsWord, has, VITAL, homeOf, candidates, weaponOf, baseSafe, count };
+  return { random: Math.random, lootTable, newMeta, fixMeta, roll, newRun, statsFor, startVolume, view, choose, useItem, leave, recheck, capacity, load, chance, oddsWord, has, VITAL, homeOf, candidates, weaponOf, baseSafe, count };
 })();
 
 /* ============================================================================================
