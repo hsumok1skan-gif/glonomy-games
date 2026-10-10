@@ -210,11 +210,73 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
   .mini:hover { border-color: var(--faint); }
 }
 .page.end { overflow-y: auto; }   /* 결말 글이 길면 그 글만 움직인다 */
+
+/* ---------------------------------------------------------------- 그림 */
+.pic { margin: 2px -16px 12px; height: 30vh; height: 30dvh; max-height: 300px; overflow: hidden; }
+.pic img { display: block; width: 100%; height: 100%; object-fit: cover;
+  -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 50%, #000 58%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 50%, #000 58%, transparent 100%); }
+.pic.night img { filter: brightness(0.5); }
+.pic.tall { height: 46vh; height: 46dvh; max-height: 440px; }
+.pic.tall img { object-fit: contain; }
+.entry.old.pic { opacity: 0.45; }
+.endpic { display: block; width: calc(100% + 32px); margin: 0 -16px 14px; max-height: 34vh; object-fit: cover; flex: none;
+  -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%); }
+.page.end:has(.endpic) { justify-content: flex-start; padding-top: 8px; }
+.rowpic { display: block; width: 100%; max-height: 300px; object-fit: cover; margin: 4px 0 10px; border-radius: 2px; }
+.rowpic.tall { max-height: 380px; object-fit: contain; background: #000; }
+/* 첫 화면: 그림 위로 제목, 아래로 고를 것 */
+.title.has-bg { position: relative; justify-content: space-between; padding: 7vh 0 3vh; }
+.title-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.62; z-index: 0; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); }
+.title .head, .title .bottom { position: relative; z-index: 1; }
+.title .bottom { background: linear-gradient(to bottom, transparent, var(--bg) 26%); padding-top: 26px; }
+.title.has-bg .menu { margin-top: 0; }
+.title h1.logo { margin: 0 0 14px; }
+.title h1.logo img { display: block; width: min(86%, 380px); height: auto; }
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+const IMG = {"ch_alone": "img/ch_alone.webp",
+"ch_apt": "img/ch_apt.webp",
+"ch_base": "img/ch_base.webp",
+"ch_carehome": "img/ch_carehome.webp",
+"ch_church": "img/ch_church.webp",
+"ch_hospital": "img/ch_hospital.webp",
+"ch_leader": "img/ch_leader.webp",
+"ch_market": "img/ch_market.webp",
+"ch_raider": "img/ch_raider.webp",
+"end_awaken": "img/end_awaken.webp",
+"end_body": "img/end_body.webp",
+"end_crawler": "img/end_crawler.webp",
+"end_erosion": "img/end_erosion.webp",
+"end_mind": "img/end_mind.webp",
+"end_people": "img/end_people.webp",
+"end_ramp": "img/end_ramp.webp",
+"end_scraper": "img/end_scraper.webp",
+"end_stander": "img/end_stander.webp",
+"haesu": "img/haesu.webp",
+"logo": "img/logo.webp",
+"place_alley": "img/place_alley.webp",
+"place_apt": "img/place_apt.webp",
+"place_bridge": "img/place_bridge.webp",
+"place_carehome": "img/place_carehome.webp",
+"place_church": "img/place_church.webp",
+"place_cross": "img/place_cross.webp",
+"place_depot": "img/place_depot.webp",
+"place_gosiwon": "img/place_gosiwon.webp",
+"place_hospital": "img/place_hospital.webp",
+"place_market": "img/place_market.webp",
+"place_mart": "img/place_mart.webp",
+"place_ramp": "img/place_ramp.webp",
+"place_river": "img/place_river.webp",
+"place_school": "img/place_school.webp",
+"place_station": "img/place_station.webp",
+"thing_crawler": "img/thing_crawler.webp",
+"thing_scraper": "img/thing_scraper.webp",
+"thing_stander": "img/thing_stander.webp",
+"title": "img/title.webp"};
 /* ============================================================================================
    살아남아야 한다 — 바탕 자료 (사람 만들기 · 물건 · 유물 · 장소 · 사람 · 세력 · 결말)
    이 파일은 "자료"다. 규칙은 engine.js가 읽는다. 문장은 전부 '나는'의 과거형, 남이 나를 부를 때는 '당신'.
@@ -4474,6 +4536,17 @@ const Game = (() => {
   }
   const byId = (table, id) => table.find(r => r.id === id);
 
+  /* 그림. IMG(빌드가 넣는다)에 있는 것만 보인다 — 아직 없는 그림 자리는 글만 나온다. */
+  const PIC = id => (typeof IMG !== 'undefined' && IMG[id]) || '';
+  const CH_PIC = { a_alone: 'ch_alone', a_nobody: 'ch_alone', a_changed: 'ch_alone', a_church: 'ch_church', a_market: 'ch_market', a_apt: 'ch_apt',
+    a_carehome: 'ch_carehome', a_hospital: 'ch_hospital', a_base: 'ch_base', a_leader: 'ch_leader', a_raider: 'ch_raider' };
+  const END_PIC = { d_hunger: 'end_body', d_wound: 'end_body', d_cold: 'end_body', d_water: 'end_body', d_fire: 'end_body', d_fall: 'end_body', d_river: 'end_body',
+    d_scraper: 'end_scraper', d_crawler: 'end_crawler', d_stander: 'end_stander',
+    d_mob: 'end_people', d_robbed: 'end_people', d_gitae: 'end_people', d_apt: 'end_people', d_bounty: 'end_people',
+    m_door: 'end_mind', m_loss: 'end_mind', m_count: 'end_mind', m_night: 'end_mind', e_mirror: 'end_erosion', e_rift: 'end_erosion',
+    a_ramp: 'end_ramp', a_ramp_chan: 'end_ramp', a_radio: 'end_ramp', a_river: 'end_river', a_awaken: 'end_awaken' };
+  const EV_PIC = { hs_armband: 'haesu' };   // 사건 글 위에 한 번 보이는 그림
+
   // S는 통째로 저장된다: 남는 것(meta) · 이번 사람(run) · 쌓인 글(log) · 고르던 중인 사람(draft)
   let S = fresh();
   function fresh() { return { meta: Game.newMeta(), run: null, log: [], mark: 0, hub: '', stamp: 0, draft: null, opt: { pace: 1 } }; }
@@ -4503,6 +4576,13 @@ const Game = (() => {
     if (S.stamp && run.day !== S.stamp) push({ k: 'time', t: `${run.day}일째` });
     S.stamp = run.day;
   }
+  function placeHead(v) {                             // 새로 닿은 곳: (이번 사람이 처음 온 곳이면) 그림 → 장소 이름
+    if (S.log.some(e => e.k === 'place')) return;
+    const run = S.run, id = 'place_' + run.place;
+    run.pics = run.pics || {};
+    if (PIC(id) && !run.pics[run.place]) { run.pics[run.place] = 1; push({ k: 'img', src: id, night: run.phase === 3 ? 1 : 0 }); }
+    push({ k: 'place', t: v.title });
+  }
   function absorb() {                                  // 지금 장면이 하는 말을 글 끝에 붙인다. 결과는 읽고 나면 곧바로 다음으로 넘어간다.
     for (let guard = 0; guard < 8; guard++) {
       const run = S.run, v = Game.view(S);
@@ -4511,14 +4591,16 @@ const Game = (() => {
         dayMark();
         if (run.steps <= 6 && !S.log.some(e => e.move)) { const o = ORIGINS.find(x => x.id === run.origin); if (o && o.exit) push({ k: 'p', move: 1, t: o.exit }); }   // 문을 나서는 첫 걸음
         if (v.pre.length) push({ k: 'fx', out: v.pre });
-        if (!S.log.some(e => e.k === 'place')) push({ k: 'place', t: v.title });
+        placeHead(v);
         if (S.hub !== v.text) { push({ k: 'p', t: v.text }); S.hub = v.text; }
         return;
       }
       if (v.t === 'event') {
         dayMark();
         if (v.pre.length) push({ k: 'fx', out: v.pre });
-        if (!S.log.some(e => e.k === 'place')) push({ k: 'place', t: v.title });
+        placeHead(v);
+        const ep = EV_PIC[run.scene.id];
+        if (ep && PIC(ep)) { push({ k: 'img', src: ep, tall: 1 }); S.meta.pics = S.meta.pics || {}; S.meta.pics[ep] = 1; }   // 수첩에도 그때부터 보인다
         push({ k: 'p', t: v.text });
         return;
       }
@@ -4580,6 +4662,7 @@ const Game = (() => {
   }
   function entryHtml(e, i) {
     const cls = 'entry ' + (i < S.mark ? 'old' : 'new');
+    if (e.k === 'img') return PIC(e.src) ? `<figure class="${cls} pic${e.night ? ' night' : ''}${e.tall ? ' tall' : ''}"><img src="${PIC(e.src)}" alt=""></figure>` : '';
     if (e.k === 'place') return `<p class="${cls} place">${esc(e.t)}</p>`;
     if (e.k === 'time') return `<p class="${cls} time">${esc(e.t)}</p>`;
     if (e.k === 'pick') return `<p class="${cls} pick">${T(e.t)}</p>`;
@@ -4630,16 +4713,21 @@ const Game = (() => {
   function titleScreen() {
     const seen = Object.keys(S.meta.endings).length, total = Object.keys(ENDINGS).length;
     const live = S.run && S.run.scene && S.run.scene.t !== 'ending';
-    return `<div class="page title">
-      <h1>살아남아야<br><span>한다</span></h1>
+    const bg = PIC('title'), logo = PIC('logo');
+    return `<div class="page title${bg ? ' has-bg' : ''}">${bg ? `<img class="title-bg" src="${bg}" alt="">` : ''}
+      <div class="head">
+      ${logo ? `<h1 class="logo"><img src="${logo}" alt="살아남아야 한다"></h1>` : '<h1>살아남아야<br><span>한다</span></h1>'}
       <p>다시 균열이 열리고, 괴물들이 도시를 짓밟았다.</p>
       <p>그로부터 두 달.</p>
+      </div>
+      <div class="bottom">
       <div class="menu">
         ${live ? `<button class="choice main" data-act="continue"><span><span class="l">이어서 걷는다</span><span class="s">${S.run.day}일째 ${PHASES[S.run.phase]} · ${esc(PLACES[S.run.place].name)}</span></span></button>` : ''}
         <button class="choice ${live ? '' : 'main'}" data-act="new"><span><span class="l">${live ? '다른 사람으로 침낭에서 나온다' : '침낭에서 나온다'}</span></span></button>
       </div>
       <div class="foot"><span><button class="link" data-act="open" data-what="book">수첩</button><button class="link pace" data-act="pace">${S.opt.pace ? '글: 한 줄씩' : '글: 한꺼번에'}</button></span><span>결말 ${seen}/${total} · 유물 ${S.meta.relics.length}/${Object.keys(RELICS).length}</span></div>
       <a class="home" href="../index.html">← GLONOMY Games</a>
+      </div>
     </div>`;
   }
 
@@ -4690,7 +4778,8 @@ const Game = (() => {
     return rows(v.choices);
   }
   function chapterScreen(v) {
-    return `<div class="page end">
+    const pic = PIC(CH_PIC[S.run.scene.id]);
+    return `<div class="page end">${pic ? `<img class="endpic" src="${pic}" alt="">` : ''}
       <div class="kind alive">이정표</div>
       <h2>${esc(v.end.title)}</h2>
       <p class="text">${T(v.end.text)}</p>
@@ -4707,8 +4796,8 @@ const Game = (() => {
     return hud() + `<div class="log" id="log">${S.log.map(entryHtml).join('')}</div><div class="dock">${dock(v)}</div>`;
   }
   function endScreen(v) {
-    const alive = v.end.kind !== 'dead';
-    return `<div class="page end">
+    const alive = v.end.kind !== 'dead', pic = PIC(END_PIC[S.run.ending]);
+    return `<div class="page end">${pic ? `<img class="endpic" src="${pic}" alt="">` : ''}
       <div class="kind${alive ? ' alive' : ''}">${alive ? '도시를 떠났다' : '살아남지 못했다'}</div>
       <h2>${esc(v.end.title)}</h2>
       <p class="text">${T(v.end.text)}</p>
@@ -4761,7 +4850,7 @@ const Game = (() => {
         if (!rec || !rec.first) return '<div class="row unknown"><h4>아직 만나지 못한 사람</h4></div>';
         const lines = rec.likes.map(l => `<li class="like">${esc(l)}</li>`).concat(rec.dislikes.map(l => `<li class="dislike">${esc(l)}</li>`), rec.notes.map(l => `<li class="note">${esc(l)}</li>`)).join('');
         const now = run && run.met[id] && run.scene.t !== 'ending' ? ` · 이번에는 ${run.met[id]}일째에 만났다` : '';
-        return `<div class="row"><h4>${esc(p.name)}<small>${esc(p.role)}</small></h4><p>${esc(p.text)}</p>
+        return `<div class="row">${PIC(id) && (m.pics || {})[id] ? `<img class="rowpic tall" src="${PIC(id)}" alt="">` : ''}<h4>${esc(p.name)}<small>${esc(p.role)}</small></h4><p>${esc(p.text)}</p>
           <div class="meta">처음 만난 날: ${rec.first.run}번째 사람의 ${rec.first.day}일째 · 만난 사람 ${rec.n}명${now}</div>
           ${lines ? `<ul class="notes">${lines}</ul>` : '<div class="meta">아직 아는 것이 없다. 내가 한 일에 어떻게 구는지 봐야 한다.</div>'}</div>`;
       }).join('');
@@ -4773,7 +4862,7 @@ const Game = (() => {
       }).join('');
     } else if (ui.tab === 'things') {
       body = Object.keys(THINGS).map(id => m.things[id]
-        ? `<div class="row"><h4>${esc(THINGS[id].name)}<small>${m.things[id]}번 마주쳤다</small></h4><p>${esc(THINGS[id].text)}</p></div>`
+        ? `<div class="row">${PIC('thing_' + id) ? `<img class="rowpic" src="${PIC('thing_' + id)}" alt="">` : ''}<h4>${esc(THINGS[id].name)}<small>${m.things[id]}번 마주쳤다</small></h4><p>${esc(THINGS[id].text)}</p></div>`
         : '<div class="row unknown"><h4>아직 보지 못한 것</h4></div>').join('');
     } else if (ui.tab === 'items') {
       const ids = Object.keys(ITEMS), got = ids.filter(id => m.items[id]);
@@ -4822,12 +4911,12 @@ const Game = (() => {
     if (r.bottom > box.bottom - 12) log.scrollTo({ top: log.scrollTop + (r.bottom - box.bottom) + 28, behavior: 'smooth' });
     if (reveal.k >= reveal.units.length) { reveal.timer = setTimeout(revealStop, 250); return; }
     const len = (u.textContent || '').length;
-    reveal.timer = setTimeout(revealStep, Math.min(1500, Math.max(550, 300 + len * 20)));
+    reveal.timer = setTimeout(revealStep, u.classList.contains('pic') ? 1100 : Math.min(1500, Math.max(550, 300 + len * 20)));
   }
   function revealStart() {
     const log = document.getElementById('log');
     if (!log) return;
-    const units = [...log.querySelectorAll('.entry.new.place, .entry.new.time, .entry.new .sn, .entry.new.fxl')];
+    const units = [...log.querySelectorAll('.entry.new.pic, .entry.new.place, .entry.new.time, .entry.new .sn, .entry.new.fxl')];
     if (units.length < 2) return;
     for (const u of units) u.classList.add('hid');
     reveal.units = units; reveal.k = 0; reveal.on = true;
