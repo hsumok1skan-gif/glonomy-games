@@ -290,7 +290,7 @@ const IMG = {"ch_alone": "img/ch_alone.webp?v=e5faf95e",
    ============================================================================================ */
 const DAYS = 20;                       // 스무 날째 아침은 하나의 고비다(떠날 사람은 떠나고, 남은 사람은 제 자리를 돌아본다). 그 뒤로도 삶은 이어진다.
 const PHASES = ['아침', '낮', '저녁', '밤'];
-const POCKET = 6;                      // 주머니 칸(바지 넷, 겉옷 둘). 가방을 얻으면 늘어난다. 유물도 이 칸을 쓴다.
+const POCKET = 6;                      // 주머니 칸(바지 넷, 겉옷 둘). 가방을 얻으면 늘어난다. 중요한 물품(유물)은 칸을 쓰지 않는다.
 
 /* 숨은 능력치: 화면에 숫자로 나오지 않는다. 판정의 "될 것 같다 / 위험하다"로만 드러난다. */
 const STATS = ['str', 'agi', 'con', 'luck', 'wit'];   // 힘 · 민첩 · 체력 · 운 · 지식
@@ -3915,7 +3915,7 @@ const Game = (() => {
   /* ------------------------------------------------------------------------------------------ 가방 */
   function has(run, id, relic) { return relic ? run.relics.includes(id) : run.inv.includes(id); }
   function capacity(run) { return POCKET + Math.max(0, ...run.inv.map(i => ITEMS[i].cap || 0)); }
-  function load(run) { return run.inv.reduce((n, i) => n + ITEMS[i].vol, 0) + run.relics.reduce((n, r) => n + RELICS[r].vol, 0); }
+  function load(run) { return run.inv.reduce((n, i) => n + ITEMS[i].vol, 0); }   // 중요한 물품은 가방 칸을 쓰지 않는다
   function weaponOf(run) { return Math.max(0, ...run.inv.map(i => ITEMS[i].weapon || 0)); }
   function drop(run, id) { const k = run.inv.indexOf(id); if (k >= 0) run.inv.splice(k, 1); return k >= 0; }
   function give(S, id) { S.run.inv.push(id); S.meta.items[id] = true; }
@@ -4662,7 +4662,7 @@ const Game = (() => {
       } else if (o.got) chips.push(`<b class="item">${esc(ITEMS[o.got].name)}</b>을(를) 얻었다`);
       else if (o.lost) chips.push(`<b class="item">${esc(ITEMS[o.lost].name)}</b>이(가) 없어졌다`);
       else if (o.learned) chips.push(`<span class="get">수첩에 적었다: ${esc(o.learned)}</span>`);
-      else if (o.relic) chips.push(`유물 <b class="item">${esc(RELICS[o.relic].name)}</b>을(를) 얻었다`);
+      else if (o.relic) chips.push(`중요한 물품 <b class="item">${esc(RELICS[o.relic].name)}</b>을(를) 얻었다`);
       else if (o.infamy) chips.push(`<span class="minus">${o.infamy >= 3 ? '쫓기는 몸이 되었다' : '소문이 날 일을 했다'}</span>`);
     }
     return { say, chips: chips.map(c => josa(c.replace(/([가-힣])<\/b>(이\(가\)|을\(를\))/g, (m, ch, j) => ch + '</b>' + josa(ch + j).slice(1)))) };
@@ -4737,7 +4737,7 @@ const Game = (() => {
         ${live ? `<button class="choice main" data-act="continue"><span><span class="l">이어서 걷는다</span><span class="s">${S.run.day}일째 ${PHASES[S.run.phase]} · ${esc(PLACES[S.run.place].name)}</span></span></button>` : ''}
         <button class="choice ${live ? '' : 'main'}" data-act="new"><span><span class="l">${live ? '다른 사람으로 침낭에서 나온다' : '침낭에서 나온다'}</span></span></button>
       </div>
-      <div class="foot"><span><button class="link" data-act="open" data-what="book">수첩</button><button class="link pace" data-act="pace">${S.opt.pace ? '글: 한 줄씩' : '글: 한꺼번에'}</button></span><span>결말 ${seen}/${total} · 유물 ${S.meta.relics.length}/${Object.keys(RELICS).length}</span></div>
+      <div class="foot"><span><button class="link" data-act="open" data-what="book">수첩</button><button class="link pace" data-act="pace">${S.opt.pace ? '글: 한 줄씩' : '글: 한꺼번에'}</button></span><span>결말 ${seen}/${total} · 중요한 물품 ${S.meta.relics.length}/${Object.keys(RELICS).length}</span></div>
       <a class="home" href="../index.html">← GLONOMY Games</a>
       </div>
     </div>`;
@@ -4796,7 +4796,7 @@ const Game = (() => {
       <h2>${esc(v.end.title)}</h2>
       <p class="text">${T(v.end.text)}</p>
       <div class="epitaph">${v.first ? '<div class="new">처음 닿은 이정표. 수첩에 적혔다.</div>' : '수첩에 이미 적힌 이정표였다.'}
-        ${v.relic ? `<div class="new">유물을 얻었다 · ${esc(RELICS[v.relic].name)}</div>` : ''}
+        ${v.relic ? `<div class="new">중요한 물품을 얻었다 · ${esc(RELICS[v.relic].name)}</div>` : ''}
       </div>
       <div class="menu"><button class="choice main" data-act="choose" data-key="next"><span class="l">계속 걷는다</span></button></div>
     </div>`;
@@ -4815,7 +4815,7 @@ const Game = (() => {
       <p class="text">${T(v.end.text)}</p>
       <div class="epitaph">${esc(v.epitaph)}
         ${v.first ? '<div class="new">처음 본 결말. 수첩에 적혔다.</div>' : ''}
-        ${v.relic ? `<div class="new">유물을 남겼다 · ${esc(RELICS[v.relic].name)}</div>` : ''}
+        ${v.relic ? `<div class="new">중요한 물품을 남겼다 · ${esc(RELICS[v.relic].name)}</div>` : ''}
       </div>
       <div class="menu"><button class="choice main" data-act="new"><span class="l">다른 사람으로 침낭에서 나온다</span></button></div>
       <div class="foot"><button class="link" data-act="open" data-what="book">수첩</button><button class="link" data-act="title">처음 화면</button></div>
@@ -4845,14 +4845,14 @@ const Game = (() => {
         <p>${esc(it.text)}</p>${hint ? `<div class="meta">${hint}</div>` : ''}
         ${live ? `<div class="acts">${it.use ? `<button class="mini use" data-act="use" data-id="${id}">쓴다</button>` : ''}<button class="mini" data-act="drop" data-id="${id}">버린다</button></div>` : ''}</div>`;
     }).join('');
-    const relics = run.relics.map(id => `<div class="row"><h4>${esc(RELICS[id].name)}<small>유물 · ${RELICS[id].vol}칸</small></h4><p>${esc(RELICS[id].text)}</p><div class="meta">${esc(RELICS[id].fx)}</div></div>`).join('');
+    const relics = run.relics.map(id => `<div class="row"><h4>${esc(RELICS[id].name)}<small>중요한 물품</small></h4><p>${esc(RELICS[id].text)}</p><div class="meta">${esc(RELICS[id].fx)}</div></div>`).join('');
     return sheet(`가방<span class="cap">${Game.load(run)} / ${Game.capacity(run)}칸</span>`, '',
       (ui.toast.length ? `<div class="toast">${ui.toast.map(esc).join('<br>')}</div>` : '') +
-      (items || '<p class="empty">주머니에는 아무것도 없었다.</p>') + (relics ? '<p class="sub-head">유물</p>' + relics : ''));
+      (items || '<p class="empty">주머니에는 아무것도 없었다.</p>') + (relics ? '<p class="sub-head">중요한 물품</p>' + relics : ''));
   }
 
   /* ------------------------------------------------------------------------------------------ 수첩 */
-  const TABS = [['people', '사람'], ['facs', '세력'], ['things', '그것들'], ['items', '물건'], ['relics', '유물'], ['endings', '결말'], ['graves', '지나간 사람']];
+  const TABS = [['people', '사람'], ['facs', '세력'], ['things', '그것들'], ['items', '물건'], ['relics', '중요한 물품'], ['endings', '결말'], ['graves', '지나간 사람']];
   function bookSheet() {
     const m = S.meta, run = S.run;
     let body = '';
@@ -4884,7 +4884,7 @@ const Game = (() => {
     } else if (ui.tab === 'relics') {
       const ids = Object.keys(RELICS);
       body = `<div class="meta" style="padding-top:12px">${m.relics.length}/${ids.length} · 한 번 얻으면 다음 사람부터 지닐 수 있다.</div>` + ids.map(id => m.relics.includes(id)
-        ? `<div class="row"><h4>${esc(RELICS[id].name)}<small>${RELICS[id].vol}칸</small></h4><p>${esc(RELICS[id].text)}</p><div class="meta">${esc(RELICS[id].fx)}</div></div>`
+        ? `<div class="row"><h4>${esc(RELICS[id].name)}</h4><p>${esc(RELICS[id].text)}</p><div class="meta">${esc(RELICS[id].fx)}</div></div>`
         : `<div class="row unknown"><h4>아직 얻지 못한 것</h4><p>${esc(RELICS[id].hint || '')}</p></div>`).join('');
     } else if (ui.tab === 'endings') {
       const ids = Object.keys(ENDINGS), seen = ids.filter(id => m.endings[id]);
@@ -4895,7 +4895,7 @@ const Game = (() => {
     } else {
       body = m.graves.length ? m.graves.map(g => `<div class="row"><h4>${g.no ? g.no + '번째 사람' : '사람'}<small>${esc(g.age || '')} · ${esc(g.job)} · ${g.day}일째</small></h4>
         <p>${g.alive ? '도시를 떠났다' : '살아남지 못했다'} — ${esc((ENDINGS[g.end] || {}).title || '')}</p></div>`).join('') : '<p class="empty">아직 아무도 지나가지 않았다.</p>';
-      body += `<p class="wipe">${ui.wipe ? '수첩과 유물과 결말이 전부 사라진다. <button class="sure" data-act="wipe2">정말 지운다</button> · <button data-act="wipe0">그만둔다</button>'
+      body += `<p class="wipe">${ui.wipe ? '수첩과 중요한 물품과 결말이 전부 사라진다. <button class="sure" data-act="wipe2">정말 지운다</button> · <button data-act="wipe0">그만둔다</button>'
         : '<button data-act="wipe1">기록을 전부 지운다</button>'}</p>`;
     }
     const tabs = `<div class="tabs" role="tablist">${TABS.map(([k, n]) => `<button class="tab${ui.tab === k ? ' on' : ''}" role="tab" aria-selected="${ui.tab === k}" data-act="tab" data-k="${k}">${n}</button>`).join('')}</div>`;
