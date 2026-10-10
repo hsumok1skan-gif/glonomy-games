@@ -27,18 +27,19 @@
   --sans: system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 }
 * { box-sizing: border-box; }
-html { color-scheme: dark; height: 100%; }
+html { color-scheme: dark; height: 100%; overflow: hidden; overscroll-behavior: none; }
 body {
   margin: 0; background: #0c0c0b; background: var(--bg); color: var(--ink); height: 100%;
   font-family: var(--serif); font-size: 17px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere;
   -webkit-text-size-adjust: 100%; overscroll-behavior: none;
+  position: fixed; inset: 0; overflow: hidden;   /* 화면 전체는 움직이지 않는다. 움직이는 것은 글 칸 · 가방 · 수첩뿐 */
 }
 button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
 
 /* 화면 하나가 곧 한 장. 바깥은 움직이지 않고, 글이 쌓이는 자리만 위아래로 움직인다. */
 #app { height: 100vh; height: 100dvh; max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; padding: 0 16px; overflow: hidden; }
-.page { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; animation: rise 0.3s ease-out; }
+.page { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; animation: rise 0.3s ease-out; }
 @keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .page, .sheet, .entry.new { animation: none !important; } }
 
@@ -50,7 +51,6 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .top .when i { font-style: normal; color: var(--faint); }
 .top .tools { display: flex; gap: 6px; }
 .tool { background: none; border: 1px solid var(--line); border-radius: 3px; padding: 7px 11px; font-family: var(--sans); font-size: 13px; color: var(--ink); line-height: 1.2; }
-.tool:hover { border-color: var(--faint); }
 .tool .n { color: var(--dim); margin-left: 4px; }
 .tool.full .n { color: var(--bad); }
 .vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 18px; padding: 9px 0 10px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: var(--sans); font-size: 12px; color: var(--dim); }
@@ -88,7 +88,6 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .choices + .choices { margin-top: 6px; }
 .choice { display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left; width: 100%; min-height: 44px;
   background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--faint); border-radius: 2px; padding: 8px 12px; line-height: 1.4; }
-.choice:hover:not(:disabled) { border-left-color: var(--rust); background: var(--panel-2); }
 .choice:active:not(:disabled) { background: #22201c; }
 .choice .l { display: block; color: var(--bone); font-size: 16px; }
 .choice .s { display: block; font-family: var(--sans); font-size: 12px; color: var(--dim); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -108,9 +107,7 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .menu .choice { min-height: 52px; }
 .foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 22px; font-family: var(--sans); font-size: 12.5px; color: var(--faint); }
 .link { background: none; border: 0; border-bottom: 1px solid var(--faint); padding: 2px 0; font-family: var(--sans); font-size: 14px; color: var(--ink); }
-.link:hover { color: var(--bone); border-color: var(--rust); }
 .home { display: inline-block; margin-top: 26px; font-family: var(--sans); font-size: 12.5px; color: var(--faint); text-decoration: none; }
-.home:hover { color: var(--dim); }
 
 /* ---------------------------------------------------------------- 사람 고르기: 한 화면에 다섯 개까지, 밀어 내리는 일 없이 */
 .create { padding: 14px 0 18px; }
@@ -122,7 +119,6 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .opts { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
 .opt { display: flex; flex-direction: column; justify-content: center; width: 100%; flex: 1; max-height: 96px; min-height: 0; overflow: hidden; text-align: left;
   background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--faint); border-radius: 2px; padding: 6px 14px; line-height: 1.4; }
-.opt:hover:not(:disabled) { background: var(--panel-2); border-left-color: var(--rust); }
 .opt.on { border-color: var(--rust); background: #1f1e1a; }
 .opt:disabled { opacity: 0.4; cursor: default; }
 .opt b { display: block; color: var(--bone); font-weight: 600; font-size: 17.5px; }
@@ -131,10 +127,8 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .opt.mbti b { font-family: var(--sans); letter-spacing: 0.2em; font-size: 17px; }
 .nav { display: flex; gap: 8px; margin-top: 14px; flex: none; }
 .btn { flex: 1; background: var(--rust); border: 1px solid var(--rust); color: #12110f; font-weight: 600; border-radius: 2px; padding: 12px 14px; }
-.btn:hover { background: #efe9d8; }
 .btn:disabled { opacity: 0.35; cursor: default; }
 .btn.ghost { background: none; border-color: var(--line); color: var(--dim); font-weight: 400; flex: 0 0 auto; font-family: var(--sans); font-size: 14px; }
-.btn.ghost:hover { border-color: var(--faint); background: none; }
 
 /* ---------------------------------------------------------------- 결말 */
 .end { justify-content: center; padding: 20px 0 6vh; }
@@ -167,7 +161,6 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .row.unknown p { color: var(--faint); }
 .row .acts { display: flex; gap: 6px; margin-top: 9px; }
 .mini { background: none; border: 1px solid var(--line); border-radius: 2px; padding: 6px 12px; font-family: var(--sans); font-size: 13px; color: var(--ink); line-height: 1.3; }
-.mini:hover { border-color: var(--faint); }
 .mini.use { border-color: var(--rust-dim); color: var(--bone); }
 .notes { list-style: none; margin: 8px 0 0; padding: 0; font-size: 15px; line-height: 1.65; }
 .notes li { padding-left: 4.6em; position: relative; margin-top: 2px; }
@@ -191,6 +184,19 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
   .opts { gap: 6px; }
   .vitals { gap: 5px 12px; }
 }
+
+/* 마우스가 있는 기기에서만 hover 강조 — 손가락으로 누른 자리가 다음 화면에서 눌린 채 보이지 않게 */
+@media (hover: hover) and (pointer: fine) {
+  .tool:hover { border-color: var(--faint); }
+  .choice:hover:not(:disabled) { border-left-color: var(--rust); background: var(--panel-2); }
+  .link:hover { color: var(--bone); border-color: var(--rust); }
+  .home:hover { color: var(--dim); }
+  .opt:hover:not(:disabled) { background: var(--panel-2); border-left-color: var(--rust); }
+  .btn:hover { background: #efe9d8; }
+  .btn.ghost:hover { border-color: var(--faint); background: none; }
+  .mini:hover { border-color: var(--faint); }
+}
+.page.end { overflow-y: auto; }   /* 결말 글이 길면 그 글만 움직인다 */
 </style>
 </head>
 <body>
@@ -349,13 +355,13 @@ const ITEMS = {
 };
 
 /* -------------------------------------------------------------------------------------------- 아지트
-   내 자리를 만들 수 있는 곳과, 거기서 만들 수 있는 것. 재료는 가방이나 상자에서 쓴다. */
+   내 아지트를 만들 수 있는 곳과, 거기서 만들 수 있는 것. 재료는 가방이나 상자에서 쓴다. */
 const BASE_SITES = {
-  gosiwon: { name: '고시원 2층의 빈 방', claim: '2층 복도 끝의 빈 방을 골랐다. 창이 하나뿐이고 문은 안에서 잠겼다. 침대를 문 쪽으로 끌어다 놓고 책상을 창 밑에 붙였다. 그러고 나니 방이 내 것처럼 보였다.' },
-  apt:     { name: '한빛아파트의 빈집', claim: '5층의 문이 열린 집을 골랐다. 거실 창으로 단지가 내려다보였고, 베란다에는 화분이 줄지어 있었다. 현관문의 걸쇠를 고쳐 걸고 나니 두 달 만에 문 안쪽에 선 기분이었다.' },
-  school:  { name: '초등학교 교실', claim: '2층 끝 교실을 골랐다. 책상을 쌓아 문을 막고, 사물함을 창 밑으로 옮겼다. 칠판에 남아 있던 당번 이름은 지우지 않았다.' },
-  depot:   { name: '물류 창고 2층 사무실', claim: '철계단 위의 사무실을 골랐다. 유리창으로 창고 바닥 전체가 내려다보였고, 계단은 하나뿐이었다. 책상을 계단 입구로 밀어 놓았다.' },
-  river:   { name: '강변의 텐트', claim: '주저앉은 텐트 가운데 뼈대가 성한 것을 하나 골라 다시 세웠다. 강물 소리가 가까웠고, 그만큼 다른 소리도 가까웠다.' },
+  gosiwon: { name: '고시원 2층의 빈 방', find: '2층 복도 끝 방의 문이 반쯤 열려 있었다. 창이 하나뿐인 좁은 방이었지만, 문에는 안에서 거는 걸쇠 자리가 남아 있었다. 한 사람이 겨우 누울 만한 크기였고, 그만큼 지키기도 쉬워 보였다.', inside: '방 안에는 누군가 오래 지낸 흔적이 남아 있었다. 바닥에 개어 둔 모포와 빈 생수병 여러 개, 그리고 벽에 볼펜으로 그어 놓은 날짜 줄이 보였다. 줄은 서른 몇 개에서 끊겨 있었다. 방 주인은 돌아오지 않은 지 한참 된 것 같았다.', leftover: ['cloth'], keepText: '모포를 찢어 천 조각으로 쓰고, 빈 병들은 복도에 내놓았다. 벽의 날짜 줄은 지우지 않았다.', leaveText: '모포와 빈 병들을 방 한구석에 가지런히 모아 두었다. 벽의 날짜 줄은 그대로 두었다.', claim: '2층 복도 끝의 빈 방을 골랐다. 창이 하나뿐이고 문은 안에서 잠겼다. 침대를 문 쪽으로 끌어다 놓고 책상을 창 밑에 붙였다. 그러고 나니 방이 내 것처럼 보였다.' },
+  apt:     { name: '한빛아파트의 빈집', find: '5층 복도에 현관문이 반쯤 열린 집이 하나 있었다. 문틈으로 들여다보니 거실 창 너머로 단지 전체가 내려다보였다. 현관의 걸쇠는 부러져 있었지만, 문짝은 멀쩡했다.', inside: '거실에는 싸다 만 여행 가방이 입을 벌리고 있었고, 식탁에는 네 사람 몫의 수저가 먼지를 뒤집어쓴 채 놓여 있었다. 냉장고 문에는 아이가 크레파스로 그린 그림이 붙어 있었다. 이 집 사람들은 짐을 다 싸지도 못하고 떠난 모양이었다.', leftover: ['cloth'], keepText: '여행 가방에서 옷가지를 꺼내 천 조각으로 찢었다. 냉장고의 그림은 떼지 않았다.', leaveText: '여행 가방의 지퍼를 닫아 작은방에 들여놓고, 식탁의 수저는 서랍에 넣었다.', claim: '5층의 문이 열린 집을 골랐다. 거실 창으로 단지가 내려다보였고, 베란다에는 화분이 줄지어 있었다. 현관문의 걸쇠를 고쳐 걸고 나니 두 달 만에 문 안쪽에 선 기분이었다.' },
+  school:  { name: '초등학교 교실', find: '2층 끝 교실은 복도에서 가장 멀었고, 창밖으로 운동장과 교문이 한눈에 보였다. 교실 문은 미닫이였고, 안쪽에 막대를 걸 수 있는 홈이 파여 있었다.', inside: '교실 뒤편에는 대피했던 사람들이 깔고 잤을 은박 돗자리가 남아 있었다. 칠판 구석에는 그날의 당번 이름이 그대로 적혀 있었고, 사물함마다 아이들의 실내화가 한 켤레씩 들어 있었다.', leftover: ['cloth'], keepText: '돗자리 밑의 담요를 찢어 천 조각을 만들고, 나머지는 복도로 끌어냈다. 칠판의 이름은 지우지 않았다.', leaveText: '돗자리와 담요를 교실 뒤편에 개어 쌓았다. 사물함의 실내화는 건드리지 않았다.', claim: '2층 끝 교실을 골랐다. 책상을 쌓아 문을 막고, 사물함을 창 밑으로 옮겼다. 칠판에 남아 있던 당번 이름은 지우지 않았다.' },
+  depot:   { name: '물류 창고 2층 사무실', find: '창고 2층의 사무실은 철계단 하나로만 올라갈 수 있었다. 유리창 너머로 창고 바닥 전체가 내려다보였다. 계단만 막으면 누가 오든 먼저 볼 수 있을 것 같았다.', inside: '책상마다 송장 뭉치와 말라붙은 믹스커피 잔이 놓여 있었다. 벽의 근무표에는 두 달 전의 이름들이 적혀 있었고, 소파에는 누군가 쓰던 담요가 구겨져 있었다.', leftover: ['scrap'], keepText: '부서진 의자에서 쇠다리를 뽑아 고철로 묶어 두고, 송장 뭉치는 불쏘시개로 쓰려고 한쪽에 쌓았다.', leaveText: '송장 뭉치와 커피 잔을 책상 서랍에 쓸어 넣고 담요는 소파에 반듯하게 펴 두었다.', claim: '철계단 위의 사무실을 골랐다. 유리창으로 창고 바닥 전체가 내려다보였고, 계단은 하나뿐이었다. 책상을 계단 입구로 밀어 놓았다.' },
+  river:   { name: '강변의 텐트', find: '잔디밭에 주저앉은 텐트들 가운데 뼈대가 성한 것이 하나 있었다. 둔치 매점의 벽을 등지고 있어서 바람을 덜 탔고, 강까지는 스무 걸음이었다.', inside: '텐트 안에는 침낭 하나와 녹슨 버너, 아이의 그림책이 흩어져 있었다. 지퍼는 안쪽에서 열려 있었다. 텐트 주인이 어디로 갔는지 알려 주는 것은 아무것도 없었다.', leftover: ['scrap'], keepText: '녹슨 버너를 뜯어 고철로 챙기고, 그림책은 침낭 밑에 넣어 두었다.', leaveText: '그림책과 버너를 텐트 구석에 모아 두고 침낭만 털어서 폈다.', secure: '이대로는 잘 수 없었다. 텐트 천 한 겹으로는 아무것도 막을 수 없었다. 둘레에 고철로 울타리를 두르고 입구를 테이프로 여며야 했는데, 고철 두 개와 박스 테이프 하나는 있어야 했다.', secureLabel: '울타리를 두르고 입구를 여민다', claim: '주저앉은 텐트 가운데 뼈대가 성한 것을 하나 골라 다시 세웠다. 강물 소리가 가까웠고, 그만큼 다른 소리도 가까웠다.' },
 };
 const BUILDS = {
   garden: { name: '텃밭', needs: { seeds: 1, scrap: 1 }, text: '화분과 스티로폼 상자에 흙을 담고 씨앗을 묻는다. 물을 주면 며칠 뒤 푸성귀가 난다.', done: '흙을 담은 상자를 창가에 줄지어 놓고 씨앗을 묻었다. 손톱 밑에 흙이 끼었다. 오랜만에 손톱 밑에 낀 것이 흙이었다.' },
@@ -422,7 +428,7 @@ const THINGS = {
 const PLACES = {
   alley: {
     name: '구시가지 골목', danger: 0.45, safe: 0.4,
-    text: ['집과 집 사이로 사람 하나가 겨우 지날 만한 골목이 나타났다. 머리 위 빨랫줄에는 두 달 전에 넌 옷들이 빳빳하게 말라붙은 채 걸려 있었고, 발밑에는 깨진 기왓장이 흩어져 있었다.',
+    text: ['집과 집 사이로 사람 하나가 겨우 지날 만한 골목이 나타났다. 축축한 시멘트 냄새와 함께, 어느 집에선가 오래 묵은 쓰레기 냄새가 바람을 타고 왔다. 머리 위 빨랫줄에는 두 달 전에 넌 옷들이 빳빳하게 말라붙은 채 걸려 있었다.',
            '골목은 한낮에도 어두웠다. 대문마다 누군가 분필로 세모나 동그라미를 그려 놓았는데, 무슨 뜻인지는 알 수 없었다.'],
     night: '골목에는 불빛이 하나도 없었다. 어느 집 처마에서 고인 빗물이 한 방울씩 떨어지는 소리만 들렸다.',
     look: '대문이 열린 이층집 한 채가 눈에 들어왔다. 모퉁이에는 유리문이 깨진 구멍가게가 있었고, 바깥 계단은 옥상으로 이어져 있었다.',
@@ -440,7 +446,7 @@ const PLACES = {
   },
   market: {
     name: '중앙시장', danger: 0.4, safe: 0.5,
-    text: ['시장 입구에 들어서자 아케이드 지붕 아래로 셔터 수백 개가 내려가 있는 것이 보였다. 생선 가게 좌판에는 말라붙은 비늘만 남아 있었고, 바닥에는 밟혀 터진 과일 상자들이 흩어져 있었다.',
+    text: ['시장 입구에 들어서자 생선 비린내가 먼저 코를 찔렀다. 두 달이 지났으니 비린내가 남아 있을 리 없다는 생각이 들었지만, 냄새는 아케이드 지붕 아래에 고여 빠져나가지 못한 것 같았다. 셔터 수백 개가 내려간 길 위로 밟혀 터진 과일 상자들이 흩어져 있었다.',
            '시장 한가운데에는 좌판을 엎어 쌓아 올린 벽이 있었다. 벽 너머에서 누군가 이쪽을 지켜보고 있었다.'],
     night: '시장 안쪽에서 드럼통 불이 하나 타고 있었다. 불가에 둘러앉은 사람들은 누구도 이쪽으로 등을 보이지 않았다.',
     look: '천막을 덮어쓴 좌판 골목이 길게 이어져 있었다. 셔터가 반쯤 올라간 가게가 몇 곳 보였고, 공중화장실 옆에는 자물쇠가 뜯긴 창고가 있었다.',
@@ -458,7 +464,7 @@ const PLACES = {
   },
   church: {
     name: '성당', danger: 0.25, safe: 0.8,
-    text: ['언덕을 오르자 붉은 벽돌의 성당이 나타났다. 마당의 성모상 앞에는 신발이 여러 켤레 놓여 있었는데, 주인이 찾아간 것 같은 신발은 하나도 없었다.',
+    text: ['언덕을 오르자 붉은 벽돌의 성당이 나타났다. 바람결에 무언가를 끓이는 냄새가 실려 왔는데, 냄새를 맡자마자 배 속이 먼저 반응했다. 마당의 성모상 앞에는 신발이 여러 켤레 놓여 있었고, 주인이 찾아간 것 같은 신발은 하나도 없었다.',
            '지하 식당 쪽 창에서 김이 피어올랐다. 문 앞에는 "한 사람 한 그릇"이라고 적힌 종이가 붙어 있었다.'],
     night: '성당 창문은 안쪽에서 담요로 가려져 있었다. 담요 사이로 촛불 하나가 흔들리는 것이 보였다.',
     look: '본당과 지하 식당에는 사람들이 있었다. 마당 건너편의 사제관만 문이 열린 채 비어 있었다.',
@@ -471,7 +477,7 @@ const PLACES = {
   },
   gosiwon: {
     name: '고시원 건물', danger: 0.45, safe: 0.55,
-    text: ['4층짜리 고시원 건물 앞에 섰다. 유리문을 밀고 들어가자 복도 양쪽으로 번호가 붙은 문이 스물두 개 늘어서 있었고, 그중 몇 개는 안에서 잠겨 있었다.',
+    text: ['고시원 건물의 유리문을 밀고 들어서자 눅눅한 공기가 얼굴에 달라붙었다. 복도 양쪽으로 번호가 붙은 문이 스물두 개 늘어서 있었고, 어디선가 물방울 떨어지는 소리가 규칙적으로 들렸다. 그중 몇 개의 문은 안에서 잠겨 있었다.',
            '공용 주방 싱크대에는 라면 냄비가 그대로 놓여 있었다. 말라붙은 국물 위로 하얀 곰팡이가 피어 있었다.'],
     night: '복도는 손을 뻗어도 끝이 보이지 않을 만큼 어두웠다. 어느 방에선가 누가 돌아눕는 소리가 났다가 그쳤다.',
     look: '2층에는 문이 열린 방이 여럿 있었다. 복도 중간은 공용 주방이었고, 계단은 4층 복도 끝까지 이어져 있었다.',
@@ -488,7 +494,7 @@ const PLACES = {
   },
   hospital: {
     name: '시립병원', danger: 0.6, safe: 0.3,
-    text: ['병원의 응급실 자동문은 반쯤 열린 채 멈춰 있었다. 그 틈으로 들어서자 바닥에 무언가 끌려 들어간 자국이 안쪽으로 길게 나 있는 것이 보였다. 밖으로 나온 자국은 없었다.',
+    text: ['반쯤 열린 채 멈춘 자동문 틈으로 병원에 들어섰다. 옅게 깔린 약품 냄새가 났다. 아니, 그것도 착각일지 모른다는 생각이 들었다. 두 달이면 약 냄새보다 다른 냄새가 먼저 밸 시간이었다. 바닥에는 무언가 끌려 들어간 자국이 안쪽으로 길게 나 있었다.',
            '로비 의자 사이에는 번호표가 흩어져 있었다. 접수 창구의 유리에는 안쪽에서 찍힌 손자국이 남아 있었다.'],
     night: '밤의 병원에서는 침대 바퀴 구르는 소리가 났다. 침대를 미는 사람의 발소리는 들리지 않았다.',
     look: '응급실 안쪽은 침대마다 커튼이 쳐진 채였다. 로비 옆 원내 약국은 셔터가 내려가 있었고, 비상계단은 지하로 이어져 있었다.',
@@ -505,7 +511,7 @@ const PLACES = {
   },
   carehome: {
     name: '은빛요양원', danger: 0.35, safe: 0.6,
-    text: ['요양원 건물이 가까워지자 4층 창문에 누군가 수건을 묶어 내걸어 둔 것이 보였다. 수건은 비바람에 색이 바랜 채 그대로 매달려 있었고, 현관에는 접힌 휠체어들이 쌓여 있었다.',
+    text: ['요양원 현관에 들어서자 소독약과 오래된 이불이 섞인 냄새가 났다. 이 건물만큼은 아직 누군가 매일 걸레질을 하는 것 같았다. 현관에는 접힌 휠체어들이 쌓여 있었고, 위층 어딘가에서 희미하게 사람 소리가 들렸다.',
            '현관에는 접힌 휠체어들이 쌓여 있었다. 엘리베이터는 2층과 3층 사이에 멈춰 선 채였다.'],
     night: '4층에서 벨 소리가 났다. 한 번 울리고, 한참 있다가 다시 한 번 울렸다.',
     look: '2층과 3층은 침대가 모두 비어 있었다. 1층 복도 끝에는 조리실 문이 열려 있었다.',
@@ -520,7 +526,7 @@ const PLACES = {
   },
   school: {
     name: '초등학교', danger: 0.4, safe: 0.6,
-    text: ['교문을 지나자 운동장 한가운데 떨어진 줄넘기가 보였다. 체육관 문 앞에는 신발들이 줄지어 놓여 있었지만, 안에서는 아무 소리도 나지 않았다.',
+    text: ['교문을 지나자 텅 빈 운동장이 눈앞에 펼쳐졌다. 모래 위로 바람이 지나가는 소리밖에 들리지 않았다. 운동장 한가운데에는 줄넘기 하나가 떨어져 있었고, 체육관 문 앞에는 신발들이 줄지어 놓여 있었다.',
            '급식실 셔터는 내려가 있었다. 복도 게시판에는 "이번 주 급식"이 아직 붙어 있었다. 그 주는 끝내 끝나지 않았다.'],
     night: '교실 한 곳에서 불빛이 새어 나왔다. 손전등 불빛이었고, 책상 높이에서 천천히 움직였다.',
     look: '복도를 따라 교실 문들이 열려 있었다. 1층 끝에는 보건실이 있었고, 운동장 건너편으로 체육관이 보였다.',
@@ -537,7 +543,7 @@ const PLACES = {
   },
   apt: {
     name: '한빛아파트', danger: 0.35, safe: 0.5,
-    text: ['큰길 끝에서 아파트 단지의 높은 동들이 나타났다. 정문은 주민들이 세워 놓은 승용차 3대로 막혀 있었고, 경비원이 떠난 경비실 유리에는 "외부인 출입 금지 — 자치회"라고 적힌 종이가 붙어 있었다.',
+    text: ['큰길 끝에서 아파트 단지의 높은 동들이 나타났다. 몇몇 베란다에는 빨래가 널려 있었고, 어느 창에선가 밥 짓는 연기가 가늘게 올라왔다. 정문은 주민들이 세워 놓은 승용차 3대로 막혀 있었고, 경비원이 떠난 경비실 유리에는 "외부인 출입 금지 — 자치회"라고 적힌 종이가 붙어 있었다.',
            '놀이터의 그네가 바람도 없이 흔들리고 있었다. 12층 어딘가에서 이불 터는 소리가 났다.'],
     night: '단지의 창문은 하나같이 어두웠다. 어두운 창마다 누군가 서서 내려다보는 것 같았다.',
     look: '현관문이 열린 채 버려진 집이 몇 층에 보였다. 단지 입구의 상가는 유리가 깨져 있었고, 지하 주차장 입구는 차단기가 올라간 채였다.',
@@ -554,7 +560,7 @@ const PLACES = {
   },
   mart: {
     name: '대형마트', danger: 0.65, safe: 0.25,
-    text: ['주차장을 가로질러 가자 대형마트의 자동문이 안쪽에서 바깥쪽으로 깨져 있는 것이 보였다. 입구에는 카트 수십 대가 서로 엉킨 채 쓰러져 있어서, 그 사이를 비집고 들어가야 했다.',
+    text: ['깨진 자동문을 넘어 대형마트 안으로 들어서자, 상한 것들이 한데 썩어 가는 냄새가 숨을 막았다. 숨을 입으로만 쉬며 눈이 어둠에 익기를 기다렸다. 입구에는 카트 수십 대가 엉킨 채 쓰러져 있었고, 그 너머 진열대들은 어둠 속으로 길게 이어졌다.',
            '1층 식품 매장은 썩는 냄새로 가득했다. 통로에 쏟아진 밀가루 위에는 발자국이 찍혀 있었는데, 발가락이 너무 많았다.'],
     night: '마트 안은 제 손도 보이지 않을 만큼 캄캄했다. 그 어둠 속에서 무언가 진열대를 하나씩 넘어뜨리고 있었다.',
     look: '식품 매장의 진열대는 절반쯤 쓰러져 있었다. 계단 밑에는 직원 탈의실이, 고객센터 뒤에는 사무실이 있었다. 지하 창고로 내려가는 화물 통로도 열려 있었다.',
@@ -573,7 +579,7 @@ const PLACES = {
   },
   depot: {
     name: '물류 창고', danger: 0.5, safe: 0.45,
-    text: ['하역장 통로를 지나자 물류 창고의 넓은 바닥이 펼쳐졌다. 컨베이어 벨트 위에는 상자들이 멈춰 선 그대로 놓여 있었고, 송장에 적힌 주소는 대부분 이 도시였다.',
+    text: ['하역장 통로를 지나자 물류 창고의 넓은 바닥이 펼쳐졌다. 천장이 높아서 내 발소리가 한 박자 늦게 되돌아왔다. 컨베이어 벨트 위에는 상자들이 멈춰 선 그대로 놓여 있었고, 송장에 적힌 주소는 대부분 이 도시였다.',
            '지게차 한 대가 기둥을 들이받은 채 서 있었다. 운전석은 비어 있었는데, 안전벨트는 채워진 채였다.'],
     night: '창고 지붕 위로 무언가 걸어 다녔다. 발소리는 네 개였다가 여섯 개가 되곤 했다.',
     look: '분류 벨트에는 뜯기지 않은 상자가 아직 남아 있었다. 2층에는 유리창이 달린 사무실이 있었고, 한쪽 구석에는 지하 저장고로 내려가는 철계단이 있었다.',
@@ -590,7 +596,7 @@ const PLACES = {
   },
   station: {
     name: '기차역', danger: 0.45, safe: 0.4,
-    text: ['광장에 들어서자 일곱 시 사십 분에 멈춘 시계탑이 먼저 눈에 들어왔다. 대합실 유리문에는 사람을 찾는 종이들이 겹겹이 붙어 있었고, 전광판은 꺼진 지 오래였다.',
+    text: ['광장에 들어서자 일곱 시 사십 분에 멈춘 시계탑이 먼저 눈에 들어왔다. 대합실 쪽에서 사람들이 낮게 웅성거리는 소리가 들렸다가, 내 발소리가 가까워지자 뚝 그쳤다. 유리문에는 사람을 찾는 종이들이 겹겹이 붙어 있었다.',
            '승강장에는 열차 한 대가 문을 연 채 서 있었다. 객차 선반 위의 짐들은 두 달 전 그대로였다.'],
     night: '대합실 의자마다 사람들이 누워 있었다. 누군가는 옅은 숨소리에 맞춰 어깨가 들썩였고, 누군가는 숨소리조차 내지 않았다.',
     look: '계단 아래 승강장에는 열차 한 대가 서 있었다. 광장 건너편에는 역 앞 상가가 보였고, 대합실 구석에는 지하 수하물 보관소로 내려가는 계단이 있었다.',
@@ -607,7 +613,7 @@ const PLACES = {
   },
   river: {
     name: '강변 둔치', danger: 0.5, safe: 0.3,
-    text: ['계단을 내려가자 강변 둔치가 나타났다. 강물은 예전과 다름없는 속도로 흘렀고, 둔치의 운동기구에는 누군가 걸어 둔 옷이 바람에 흔들렸다. 다리 쪽에서는 연기가 피어올랐다.',
+    text: ['계단을 내려가자 강변 둔치가 나타났다. 물비린내가 바람에 실려 왔고, 강물은 예전과 다름없는 속도로 흘렀다. 둔치의 운동기구에는 누군가 걸어 둔 옷이 바람에 흔들렸고, 다리 쪽에서는 연기가 피어올랐다.',
            '갈대밭이 한 방향으로 누워 있었다. 무언가 강에서 올라와 그 위를 지나간 듯했다.'],
     night: '강 건너편에 불빛이 하나 있었다. 일정한 간격으로 깜빡였는데, 신호 같기도 했고 아닌 것 같기도 했다.',
     look: '자전거 도로 옆에 둔치 매점이 셔터를 내린 채 서 있었다. 잔디밭에는 버려진 텐트 몇 동이 주저앉아 있었다.',
@@ -622,7 +628,7 @@ const PLACES = {
   },
   bridge: {
     name: '대교', danger: 0.6, safe: 0.15,
-    text: ['다리 위로 올라서자 차들이 두 줄로 엉켜 서 있는 것이 보였다. 문이 열린 차도 있었고, 안에서 잠긴 차도 있었다. 다리 한가운데는 차들에 가려 보이지 않았다.',
+    text: ['다리 위로 올라서자 강바람이 옷 속으로 파고들었다. 차들이 두 줄로 엉켜 서 있었는데, 문이 열린 차도 있었고 안에서 잠긴 차도 있었다. 다리 한가운데는 차들에 가려 보이지 않았다.',
            '난간 아래에는 신발들이 가지런히 놓여 있었다. 다리 중간쯤에서는 아스팔트가 한 뼘쯤 내려앉아 있었다.'],
     night: '다리 위에는 강바람 소리뿐이었다. 차창마다 달빛이 비쳐서, 차 안에 누가 앉아 있는 것처럼 보였다.',
     look: '문이 열린 차들이 다리 입구 쪽에 몰려 있었다. 난간 옆에는 관리 초소가 하나 서 있었다.',
@@ -637,7 +643,7 @@ const PLACES = {
   },
   ramp: {
     name: '고속도로 나들목', danger: 0.55, safe: 0.2,
-    text: ['도로 끝에서 고속도로 나들목이 나타났다. 요금소 차단기는 전부 올라가 있었고, 진입로에는 도시를 빠져나가려던 차들이 세 겹으로 서 있었다. 맨 앞줄의 차들은 뒤집혀 있었다.',
+    text: ['도로 끝에서 고속도로 나들목이 나타났다. 휘발유와 타 버린 고무 냄새가 아직도 아스팔트에 배어 있었다. 요금소 차단기는 전부 올라가 있었고, 진입로에는 도시를 빠져나가려던 차들이 세 겹으로 서 있었다.',
            '표지판에는 "서울 142km"라고 적혀 있었다. 그 아래에는 누군가 스프레이로 무언가를 덧썼다가 지운 자국이 있었다.'],
     night: '진입로 저편에 불빛이 줄지어 있었다. 차 불빛처럼 보였지만, 아무리 지켜봐도 움직이지 않았다.',
     look: '진입로에는 트렁크가 열린 차들이 줄지어 있었다. 요금소 옆 사무실은 문이 뜯겨 나가 있었다.',
@@ -652,7 +658,7 @@ const PLACES = {
   },
   cross: {
     name: '사거리', danger: 0.75, safe: 0.05,
-    text: ['사거리에 가까워질수록 귀가 먹먹해졌다. 한가운데에 이르자 공기가 세로로 갈라져 있는 것이 보였다. 균열에는 색이 없었고, 들여다보고 있으면 눈이 좀처럼 초점을 맞추지 못했다.',
+    text: ['사거리에 가까워질수록 귀가 먹먹해졌다. 공기에서 쇠 맛이 났고, 침을 삼켜도 귀는 뚫리지 않았다. 한가운데에 이르자 공기가 세로로 갈라져 있는 것이 보였다. 균열에는 색이 없었고, 들여다보고 있으면 눈이 좀처럼 초점을 맞추지 못했다.',
            '신호등은 네 방향 모두 꺼져 있었다. 횡단보도 위에는 가방과 신발과 유모차가, 건너던 방향 그대로 놓여 있었다.'],
     night: '균열은 밤에 더 넓어 보였다. 가장자리의 아스팔트가 숨을 쉬듯 천천히 오르내렸다.',
     look: '균열 가장자리의 아스팔트에 무언가 박혀 반짝였다. 그 밖에는 손댈 만한 것이 보이지 않았다.',
@@ -713,8 +719,8 @@ const ENDINGS = {
   a_changed:  { kind: 'life', title: '아직 사람', hint: '몸이 반쯤 변한 채로 스무 날을 넘기면.', text: '침낭에서 나온 지 스무 날이 지났다. 손톱 세 개가 검게 변해 있었고, 불빛 하나 없는 곳에서도 벽에 적힌 글자가 읽혔다. 길에서 마주친 사람들은 내 손과 눈을 보고는 말없이 길 가장자리로 비켜섰다. 그래도 나는 여전히 끼니때가 되면 배가 고팠고 밤이 되면 추웠다. 나는 그 두 가지를 들어, 아직은 사람이라고 치기로 했다.' },
   a_nobody:   { kind: 'life', title: '아무도 믿지 않았다', hint: '모두에게 등을 돌린 채 스무 날을 넘기면.', text: '침낭에서 나온 지 스무 날이 지났다. 그동안 시장도 성당도 아파트도 나를 안으로 들이지 않았고, 나도 그 어느 곳에 들어가고 싶지 않았다. 내가 옳았는지 틀렸는지는 알 수 없었는데, 틀렸다고 말해 줄 만한 사람을 곁에 한 명도 남겨 두지 않았기 때문이었다. 스무 날째 밤에도 나는 문을 등지고 앉아 혼자 밤을 보냈다.' },
   a_awaken:   { kind: 'leave', title: '완장', hint: '아무에게도 정체를 밝히지 않는 사람과 끝까지 걸으면.', text: '완장을 왼팔에 차고 매듭을 당기는 순간, 몸 안쪽 깊은 곳에서 무언가 켜지는 것 같았다. 두 달 동안 떨리던 손이 멎었고, 골목 저편에서 벽을 타는 것들의 소리가 하나하나 갈라져 들렸다. 여자가 그것들 앞에서 왜 그토록 정확했는지를 나는 그제야 몸으로 알았다. 며칠 뒤 길에서 만난 사람에게서, 괴물을 전문으로 처리하는 군 조직이 도시 바깥 어딘가에 남아 있다는 소문을 들었다. 나는 완장을 소매로 덮고 그쪽으로 걸음을 옮겼다.' },
-  a_base:     { kind: 'life', title: '내 자리', hint: '빈 방 하나를 내 것으로 삼으면.', text: '문을 안에서 잠그고 나니, 두 달 만에 처음으로 등 뒤를 보지 않아도 되는 자리가 생겼다. 창가에 흙을 담은 상자를 놓을 수 있었고, 바닥에 상자를 두고 주운 것을 넣어 둘 수 있었다. 아침에 눈을 떴을 때 어디로 가야 할지 생각하지 않아도 되는 날이 처음으로 왔다. 이제 지켜야 할 것이 생긴 셈이었다.' },
-  a_leader:   { kind: 'life', title: '내 사람들', hint: '내 자리에 사람 셋이 모이면.', text: '아침에 눈을 뜨면 방 안에 나 말고도 숨소리가 있었다. 한 사람은 덫을 보러 나갔고, 한 사람은 물을 거르고 있었고, 한 사람은 아직 자고 있었다. 그들은 나에게 무엇을 할지 물었고, 나는 대답해야 했다. 이 방의 식량이 며칠 치인지를 세는 것은 이제 내 몫이었다.' },
+  a_base:     { kind: 'life', title: '내 아지트', hint: '빈 방을 찾아 문과 창을 막고 첫 밤을 넘기면.', text: '문을 안에서 잠그고 나니, 두 달 만에 처음으로 등 뒤를 보지 않아도 되는 자리가 생겼다. 창가에 흙을 담은 상자를 놓을 수 있었고, 바닥에 상자를 두고 주운 것을 넣어 둘 수 있었다. 아침에 눈을 떴을 때 어디로 가야 할지 생각하지 않아도 되는 날이 처음으로 왔다. 이제 지켜야 할 것이 생긴 셈이었다.' },
+  a_leader:   { kind: 'life', title: '내 사람들', hint: '내 아지트에 사람 셋이 모이면.', text: '아침에 눈을 뜨면 방 안에 나 말고도 숨소리가 있었다. 한 사람은 덫을 보러 나갔고, 한 사람은 물을 거르고 있었고, 한 사람은 아직 자고 있었다. 그들은 나에게 무엇을 할지 물었고, 나는 대답해야 했다. 이 방의 식량이 며칠 치인지를 세는 것은 이제 내 몫이었다.' },
   a_raider:   { kind: 'life', title: '길 위의 무리', hint: '쫓기는 몸으로 떠돌이들 틈에 끼면.', text: '그들은 내 이름을 묻지 않았고, 내가 무슨 짓을 하고 왔는지도 묻지 않았다. 요금소 지붕 밑에서 나눠 준 담요는 누군가에게서 벗겨 온 것이었다. 다음 날 아침 우리는 다섯이서 시장 쪽으로 내려갔다. 앞장선 남자가 말했다. "오늘은 당신이 먼저 들어가." 나는 손에 든 것을 고쳐 쥐었다.' },
   d_bounty:   { kind: 'dead', title: '벽에 붙은 얼굴', hint: '쫓기는 몸으로 너무 오래 돌아다니면.', text: '경비실 유리에도, 시장 셔터에도, 성당 마당의 성모상에도 내 얼굴이 붙어 있었다. 그림은 서툴렀지만 옷 색깔과 흉터는 정확했다. 밤에 나를 찾아온 사람들은 셋이었고, 그중 하나는 내가 가진 것을 빼앗은 적 있는 사람이었다. 그는 미안하다고 하지 않았다.' },
 };
@@ -3504,11 +3510,11 @@ EVENTS.push({
   ],
 });
 
-/* 묶음 K: 내 자리(아지트)에서 벌어지는 일 — 내 것을 지키는 긴장. 사람을 들이는 일은 먹을 것과 밤의 안전을 맞바꾸는 일이다. */
+/* 묶음 K: 내 아지트(아지트)에서 벌어지는 일 — 내 것을 지키는 긴장. 사람을 들이는 일은 먹을 것과 밤의 안전을 맞바꾸는 일이다. */
 
 EVENTS.push({
   id: 'bs_guest_hurt', on: 'arrive', where: ['gosiwon', 'apt', 'school', 'depot', 'river'], req: { base: true }, when: { dayMin: 2 },
-  text: '내 자리로 돌아와 보니 문 앞에 남자 하나가 벽에 기대 서 있었다. 바지 한쪽이 무릎 아래로 검게 젖어 있었고, 젖은 자리에서는 쉰내가 났다. 남자는 나를 보더니 벽에서 등을 떼지 않은 채 말했다. "당신 자리인 거 알아요. 하룻밤만요."',
+  text: '내 아지트로 돌아와 보니 문 앞에 남자 하나가 벽에 기대 서 있었다. 바지 한쪽이 무릎 아래로 검게 젖어 있었고, 젖은 자리에서는 쉰내가 났다. 남자는 나를 보더니 벽에서 등을 떼지 않은 채 말했다. "당신 자리인 거 알아요. 하룻밤만요."',
   choices: [
     { label: '붕대로 다리를 싸매고 들인다', req: { item: 'bandage' }, use: 'bandage',
       ok: { text: '남자를 안으로 끌어들여 바닥에 앉히고 바짓단을 걷었다. 정강이에 난 상처를 붕대로 단단히 조여 감자 남자는 이를 악물고 소리를 참았다. 남자는 전에 공사장에서 일했다며, 철근과 양철로 창을 막는 것쯤은 혼자서도 할 수 있다고 했다. 그날 밤 상자의 통조림이 하나 줄었다.', fx: { people: '다리를 저는 남자' } } },
@@ -3609,7 +3615,7 @@ EVENTS.push({
 
 EVENTS.push({
   id: 'bs_rain', on: 'arrive', where: ['gosiwon', 'apt', 'school', 'depot', 'river'], req: { base: true }, when: { dayMin: 3 }, once: false,
-  text: '내 자리에 돌아왔을 때 빗줄기가 창을 때리기 시작했다. 처마에서 떨어지는 물이 창틀을 타고 줄을 그었고, 바닥에 놓아 둔 빈 통 안으로 한 방울씩 들어가 소리를 냈다. 두 달 만에 처음 보는 비였다.',
+  text: '내 아지트에 돌아왔을 때 빗줄기가 창을 때리기 시작했다. 처마에서 떨어지는 물이 창틀을 타고 줄을 그었고, 바닥에 놓아 둔 빈 통 안으로 한 방울씩 들어가 소리를 냈다. 두 달 만에 처음 보는 비였다.',
   choices: [
     { label: '빈 통을 창밖에 내놓고 받는다',
       ok: { text: '빈 통과 깡통을 창밖으로 밀어 내놓고 처마 물이 떨어지는 자리에 맞췄다. 두 시간쯤 지나자 통마다 물이 차 넘쳤고, 나는 그것을 빈 생수병 두 개에 옮겨 담았다. 물은 흐렸지만 끓이면 마실 수 있을 것이다. 병 두 개를 상자 안에 눕혀 놓았다.', fx: { items: ['water', 'water'] } } },
@@ -3678,6 +3684,24 @@ EVENTS.push({
   ],
 });
 
+/* 아지트에서 맞는 첫 밤: 문과 창을 막고 나서 처음 자는 밤에 반드시 겪는다. 이 밤을 넘겨야 아지트가 아지트다. */
+EVENTS.push({
+  id: 'bs_first_night', on: 'night', where: ['gosiwon', 'apt', 'school', 'depot', 'river'], thing: 'scraper', weight: 5,
+  req: { base: true, flag: 'base_first' },
+  text: '아지트에서 맞는 첫 밤이었다. 자정이 지나자 막아 둔 문 너머에서 무언가 바닥을 긁으며 지나가는 소리가 났다. 소리는 문 앞에서 멈췄다. 테이프로 붙여 둔 막음이 바람도 없이 한 번 떨렸다.',
+  choices: [
+    { label: '숨죽이고 지나가기를 기다린다', check: { stat: 'agi', dc: 5, hide: true },
+      ok:  { text: '나는 모포를 머리끝까지 덮고 숨을 아주 길게 나누어 쉬었다. 한참 뒤에 소리는 다른 쪽으로 멀어졌다. 날이 밝아 나가 보니 막음 바깥쪽에 다섯 줄 자국이 새로 나 있었다. 막음은 버텼고, 그것으로 이 방은 내 아지트가 되었다.', fx: { unflag: ['base_first'], mind: -1 } },
+      bad: { text: '숨을 참다가 기침이 터져 나왔다. 그 순간 막음이 안쪽으로 크게 휘었고, 테이프가 뜯어지는 소리가 났다. 나는 등으로 막음을 밀며 날이 샐 때까지 버텼고, 아침에 보니 어깨에 시퍼런 멍이 들어 있었다. 그래도 그것은 끝내 들어오지 못했다.', fx: { unflag: ['base_first'], hp: -2, harm: 'scraper', mind: -1 } } },
+    { label: '막음 앞을 몸으로 버틴다', check: { stat: 'str', dc: 6, bold: true },
+      ok:  { text: '나는 막음에 어깨를 대고 두 발로 바닥을 버텼다. 막음이 두 번 밀렸다가 멈췄고, 새벽이 올 때까지 소리는 다시 나지 않았다. 아침에 나는 막음 위에 테이프를 한 겹 더 감았다. 그것으로 이 방은 내 아지트가 되었다.', fx: { unflag: ['base_first'], mind: -1 } },
+      bad: { text: '막음을 미는 힘은 생각보다 셌다. 벌어진 틈으로 들어온 무언가가 내 팔뚝을 긁고 빠져나갔다. 막음을 다시 밀어 붙이는 데 남은 힘을 다 썼다. 아침에 팔을 싸매면서 보니, 그래도 막음은 제자리에 있었다.', fx: { unflag: ['base_first'], hp: -2, harm: 'scraper' } } },
+    { label: '뒤쪽으로 빠져나가 밤을 넘긴다',
+      ok: { text: '나는 막음 반대편을 뜯고 밖으로 빠져나가, 옆 건물 계단참에 쪼그려 앉아 밤을 넘겼다. 아침에 돌아와 보니 방 안은 그대로였지만, 뜯고 나온 쪽은 다시 막아야 했다. 첫 밤을 그렇게 넘긴 방도 내 아지트이긴 했다.', fx: { unflag: ['base_first'], mind: -2, full: -1 } } },
+  ],
+});
+
+
 /* ============================================================================================
    살아남아야 한다 — 규칙 (화면과 무관한 부분: 자동 플레이 검사도 이 파일을 그대로 돌린다)
    상태는 S = { run, meta }. run은 이번 판, meta는 판을 넘어 남는 것(유물 · 수첩 · 결말 · 지난 사람들).
@@ -3696,7 +3720,7 @@ const Game = (() => {
   }
   const HARM_END = { scraper: 'd_scraper', crawler: 'd_crawler', stander: 'd_stander', mob: 'd_mob', robbed: 'd_robbed', fall: 'd_fall',
                      fire: 'd_fire', river: 'd_river', water: 'd_water', gitae: 'd_gitae', apt: 'd_apt', cold: 'd_cold', wound: 'd_wound', hunger: 'd_hunger' };
-  const VITAL = { hp: '몸', full: '배', mind: '정신', ero: '침식' };
+  const VITAL = { hp: '체력', full: '허기', mind: '정신', ero: '침식' };
 
   /* ------------------------------------------------------------------------------------------ 남는 것 */
   function newMeta() {
@@ -3891,7 +3915,7 @@ const Game = (() => {
     if (fx.relic && !S.meta.relics.includes(fx.relic)) { S.meta.relics.push(fx.relic); out.push({ relic: fx.relic }); }
     if (fx.infamy) { run.infamy = clamp(run.infamy + fx.infamy, 0, 9); if (fx.infamy > 0) out.push({ infamy: run.infamy }); }
     if (fx.people && run.base) {
-      if (typeof fx.people === 'string') { if (run.base.people.length < 4) { run.base.people.push({ name: fx.people, hungry: 0 }); out.push(fx.people + '이(가) 내 자리에 머물게 되었다.'); } }
+      if (typeof fx.people === 'string') { if (run.base.people.length < 4) { run.base.people.push({ name: fx.people, hungry: 0 }); out.push(fx.people + '이(가) 내 아지트에 머물게 되었다.'); } }
       else if (fx.people < 0 && run.base.people.length) { const p = run.base.people.pop(); out.push(p.name + '이(가) 떠났다.'); }
       if (run.base.people.length >= 3) openChapter(S, 'a_leader');
     }
@@ -4010,6 +4034,7 @@ const Game = (() => {
   const SEARCH_NONE = ['뒤질 만한 곳은 다 뒤졌지만, 쓸 만한 것은 하나도 나오지 않았다.', '누군가 먼저 다녀간 자리였다. 손이 갈 만한 곳은 전부 비어 있었다.'];
   const QUIET_NIGHT = ['문을 등지고 앉아 밤을 보냈다. 몇 번을 깼지만, 깰 때마다 아무 일도 없었다.', '옷을 전부 껴입고 누웠다. 새벽에 한 번 무슨 소리가 났지만, 다시 나지는 않았다.',
                        '눈을 감았다 뜨니 바깥이 밝아 있었다. 꿈도 꾸지 않고 잔 것은 오랜만이었다.'];
+  const CLAIM_SECURE = '이대로는 잘 수 없었다. 문은 안에서 잠기지 않았고, 창틀에는 유리 조각만 남아 있었다. 문과 창을 막으려면 고철 두 개와 박스 테이프 하나는 있어야 했다.';
   const HOME_NIGHT = ['제 자리라고 부를 만한 곳에서 자는 밤이었다. 아침에는 내 몫으로 남겨 둔 한 그릇이 있었다.', '문 안쪽에서 자는 것은 오랜만이었다. 아침에 누군가 내 머리맡에 식은 밥 한 그릇을 놓고 갔다.'];
   const REST = ['벽에 기대앉아 숨을 골랐다. 떨리던 손은 한참 뒤에야 멎었다.', '신발을 벗고 부은 발을 주물렀다. 다시 신발을 신고 일어서기까지 한참이 걸렸다.'];
 
@@ -4055,7 +4080,7 @@ const Game = (() => {
     const home = homeOf(run) === run.place, atBase = !!(run.base && run.base.place === run.place);
     const safe = home ? 0.9 : atBase ? baseSafe(run) : clamp(place.safe + (run.flags.depot_shutter && run.place === 'depot' ? 0.3 : 0), 0, 0.95);
     if (run.phase < 3) { run.phase = 3; hunger(S, out); verdict(S); if (run.ending) { result(S, '', out); return; } }
-    const ev = draw(S, 'night', 1 - safe);
+    const ev = atBase && run.flags.base_first ? eventById('bs_first_night') : draw(S, 'night', 1 - safe);
     if (ev) { fire(S, ev); run.scene.night = 1; return; }
     morning(S, out, safe);
     if (home) { change(S, 'full', Math.max(2, 5 - run.full), out); result(S, pick(HOME_NIGHT), out); return; }   // 제 자리가 있는 사람은 굶지는 않는다
@@ -4122,19 +4147,43 @@ const Game = (() => {
     for (let k = 0; k < n; k++) { if (!drop(run, id)) { const j = run.base.store.indexOf(id); if (j >= 0) run.base.store.splice(j, 1); } }
   }
   function baseSafe(run) { const b = run.base; return clamp(0.3 + b.wall * 0.15 + b.people.length * 0.05, 0.3, 0.9); }
+  /* 아지트는 그냥 생기지 않는다: 빈 방을 찾고 → 들어가 치우고 → 문과 창을 막고(고철 2 · 박스 테이프 1) → 첫 밤을 넘긴다. */
+  const CLAIM_NEEDS = { scrap: 2, tape: 1 };
+  const claimReady = run => Object.entries(CLAIM_NEEDS).every(([it, n]) => count(run, it) >= n);
   function claimBase(S) {
     const run = S.run, out = [];
     pass(S, 1, out);
     if (run.ending) { result(S, '', out); return; }
-    run.base = { place: run.place, day: run.day, store: [], garden: 0, grow: 0, watered: 0, trap: 0, filter: 0, stove: 0, wall: 0, people: [], did: {}, note: '' };
-    openChapter(S, 'a_base');
-    result(S, BASE_SITES[run.place].claim, out);
+    if (run.claim && run.claim.place === run.place && run.claim.step === 'secure') { run.scene = { t: 'claim', step: 'secure', pre: out }; return; }   // 봐 둔 방으로 돌아왔다
+    run.claim = { place: run.place, step: 'find' };
+    run.scene = { t: 'claim', step: 'find', pre: out };
+  }
+  function claimChoose(S, key) {
+    const run = S.run, site = BASE_SITES[run.place], out = [];
+    const step = run.scene.step;
+    if (key === 'back') { if (step === 'secure') run.claim.step = 'secure'; else run.claim = null; toHub(S, ''); return; }
+    if (step === 'find') { run.scene = { t: 'claim', step: 'inside' }; return; }
+    if (step === 'inside') {
+      if (key === 'c:keep') { for (const it of site.leftover || []) { give(S, it); out.push({ got: it }); } change(S, 'mind', -1, out); }
+      run.claim.step = 'secure';
+      run.scene = { t: 'claim', step: 'secure', pre: out, line: key === 'c:keep' ? site.keepText : site.leaveText };
+      return;
+    }
+    if (step === 'secure' && key === 'c:secure' && claimReady(run)) {
+      for (const [it, n] of Object.entries(CLAIM_NEEDS)) { spend(run, it, n); for (let k = 0; k < n; k++) out.push({ lost: it }); }
+      pass(S, 1, out);
+      if (run.ending) { result(S, '', out); return; }
+      run.base = { place: run.place, day: run.day, store: [], garden: 0, grow: 0, watered: 0, trap: 0, trapDay: 0, filter: 0, stove: 0, wall: 1, people: [], did: {}, note: '' };
+      run.flags.base_first = 1; run.claim = null;
+      openChapter(S, 'a_base');
+      result(S, site.claim + ' 문과 창은 막았지만, 이 방에서 밤을 넘겨 본 적은 아직 없었다.', out);
+    }
   }
   function baseActions(S) {
     const run = S.run, b = run.base, out = [], today = b.did[run.day] || {};
     if (b.garden && !today.water && b.watered !== run.day) out.push({ key: 'b:water', label: '텃밭에 물을 준다', sub: count(run, 'water') ? '생수 한 병이 든다' : '물이 없다', locked: !count(run, 'water'), kind: 'act' });
     if (b.garden && b.grow >= 4) out.push({ key: 'b:harvest', label: '푸성귀를 거둔다', kind: 'act' });
-    if (b.trap && !today.trap) out.push({ key: 'b:trap', label: '덫을 살핀다', sub: `덫 ${b.trap}개`, kind: 'act' });
+    if (b.trap && !today.trap) out.push({ key: 'b:trap', label: '덫을 살핀다', sub: run.day > (b.trapDay || 0) ? `덫 ${b.trap}개` : '놓은 지 하루는 지나야 한다', locked: run.day <= (b.trapDay || 0), reason: '놓은 지 하루는 지나야 한다', kind: 'act' });
     if (b.filter && !today.filter) out.push({ key: 'b:filter', label: '물을 거른다', kind: 'act' });
     if (b.stove && count(run, 'meat') && count(run, 'lighter')) out.push({ key: 'b:cook', label: '고기를 굽는다', sub: '고기 하나가 든다', kind: 'act' });
     out.push({ key: 'b:build', label: '무언가를 만든다', kind: 'act' });
@@ -4151,8 +4200,9 @@ const Game = (() => {
     if (k === 'water') { spend(run, 'water', 1); out.push({ lost: 'water' }); b.watered = run.day; did(run, 'water'); result(S, '생수 한 병을 상자마다 조금씩 나눠 부었다. 흙이 물을 빨아들이는 소리가 났다. 떡잎은 어제보다 조금 더 벌어져 있었다.', out); return; }
     if (k === 'harvest') { b.grow = 0; const n = 2 + (b.people.length ? 1 : 0); for (let i = 0; i < n; i++) { give(S, 'veg'); out.push({ got: 'veg' }); } result(S, '상추와 열무를 뿌리째 뽑아 흙을 털었다. 손바닥 두 개를 포갠 만큼이었다. 빈 자리에는 남은 씨앗을 다시 묻었다.', out); return; }
     if (k === 'trap') {
+      if (run.day <= (b.trapDay || 0)) { toHub(S, ''); return; }
       did(run, 'trap'); let got = 0, broke = 0;
-      for (let i = 0; i < b.trap; i++) { if (rnd() < 0.35 + b.people.length * 0.08) { give(S, 'meat'); out.push({ got: 'meat' }); got++; } else if (rnd() < 0.1) { b.trap--; broke++; } }
+      for (let i = 0; i < b.trap; i++) { if (rnd() < 0.65) { give(S, 'meat'); out.push({ got: 'meat' }); got++; } else if (rnd() < 0.1) { b.trap--; broke++; } }
       const line = got ? `덫 가운데 ${got}개에 무언가 걸려 있었다. 아직 따뜻했다. 벽 쪽으로 돌아앉아 손질했다.` : '덫은 전부 비어 있었다. 미끼로 놓은 것만 사라지고 없었다.';
       result(S, line + (broke ? ` 올무 ${broke}개는 끊어져 있어서 다시 쓸 수 없었다.` : ''), out); return;
     }
@@ -4167,6 +4217,7 @@ const Game = (() => {
     if (run.ending) { result(S, '', out); return; }
     b[id] = (b[id] || 0) + 1;
     if (id === 'garden') { b.grow = 0; b.watered = run.day; }
+    if (id === 'trap') b.trapDay = run.day;
     result(S, spec.done, out);
   }
   function takeOut(S, k) { const run = S.run, id = run.base.store[k]; if (id == null || load(run) + ITEMS[id].vol > capacity(run)) return; run.base.store.splice(k, 1); run.inv.push(id); }
@@ -4186,9 +4237,12 @@ const Game = (() => {
   function hubChoices(S) {
     const run = S.run, place = PLACES[run.place], out = [];
     for (const ev of candidates(S, 'hub')) out.push({ key: 'ev:' + ev.id, label: ev.label, kind: 'act' });
-    if (!run.base && BASE_SITES[run.place] && !homeOf(run) && run.phase < 3) out.push({ key: 'claim', label: '여기를 내 자리로 삼는다', sub: BASE_SITES[run.place].name, kind: 'act' });
+    if (!run.base && BASE_SITES[run.place] && !homeOf(run) && run.phase < 3) {
+      const back = run.claim && run.claim.place === run.place && run.claim.step === 'secure';
+      out.push({ key: 'claim', label: back ? '봐 둔 방의 문과 창을 막는다' : '머물 만한 빈 방을 찾는다', sub: back ? '고철 2 · 박스 테이프 1이 든다' : BASE_SITES[run.place].name, kind: 'act' });
+    }
     if (run.base && run.base.place === run.place) for (const b of baseActions(S)) out.push(b);
-    out.push({ key: 'look', label: '이곳을 둘러본다', sub: spotsLeft(run).length ? '' : '더 뒤질 곳은 없다.', kind: 'do' });
+    for (const sp of spotsLeft(run)) out.push({ key: 'spot:' + sp.id, label: sp.go, kind: 'spot' });
     if (run.phase >= 2) out.push({ key: 'sleep', label: '여기서 밤을 보낸다', sub: place.safe >= 0.6 ? '눈을 붙일 만한 곳이다.' : place.safe >= 0.35 ? '깊이 잠들 곳은 못 된다.' : '잠을 잘 곳이 아니다.', kind: 'do' });
     else out.push({ key: 'rest', label: '잠깐 쉰다', sub: '한나절이 지나간다.', kind: 'do' });
     out.push({ key: 'leave', label: '이곳을 떠난다', kind: 'do' });
@@ -4210,6 +4264,8 @@ const Game = (() => {
       let text = run.phase === 3 ? place.night : place.text[((run.visited[run.place] || 1) - 1) % place.text.length];
       const f = run.flags;
       if (run.place === run.hideout && run.phase !== 3 && !f.hs_gone && !f.with_haesu && !f.hs_buried) text += ' ' + HIDEOUT_SIGN;
+      const left = spotsLeft(run).length, all = place.spots.length;
+      text += ' ' + (left === all ? place.look : left ? '아직 들여다보지 않은 곳이 남아 있었다.' : '눈에 띄는 곳은 이미 다 뒤진 뒤였다.');
       return { t: 'hub', title: place.name, text, line: sc.line, pre: sc.pre || [], choices: hubChoices(S) };
     }
     if (sc.t === 'build') {
@@ -4233,6 +4289,15 @@ const Game = (() => {
       const choices = place.spots.map(sp => ({ key: 'spot:' + sp.id, label: sp.go, locked: !!run.spots[spotKey(run, sp.id)], reason: '이미 뒤진 곳이다' }));
       choices.push({ key: 'back', label: '그만 둘러본다' });
       return { t: 'look', title: place.name, text: left.length ? place.look : '눈에 띄는 곳은 이미 다 뒤진 뒤였다. 더 뒤질 만한 곳은 남아 있지 않았다.', choices };
+    }
+    if (sc.t === 'claim') {
+      const site = BASE_SITES[run.place];
+      if (sc.step === 'find') return { t: 'claim', title: site.name, text: site.find, pre: sc.pre || [], choices: [{ key: 'c:in', label: '안으로 들어가 살핀다' }, { key: 'back', label: '그만둔다' }] };
+      if (sc.step === 'inside') return { t: 'claim', title: site.name, text: site.inside, choices: [{ key: 'c:keep', label: '쓸 만한 것을 추리고 치운다' }, { key: 'c:leave', label: '남은 물건은 한쪽에 모아 둔다' }] };
+      const ready = claimReady(run);
+      return { t: 'claim', title: site.name, text: (sc.line ? sc.line + ' ' : '') + (site.secure || CLAIM_SECURE), pre: sc.pre || [],
+               choices: [{ key: 'c:secure', label: site.secureLabel || '문과 창을 막는다', locked: !ready, sub: '고철 2 · 박스 테이프 1', reason: '고철 2 · 박스 테이프 1이 있어야 한다' },
+                         { key: 'back', label: '재료를 구해서 다시 온다' }] };
     }
     if (sc.t === 'spot') {
       const sp = spotOf(run, sc.id);
@@ -4282,6 +4347,7 @@ const Game = (() => {
     if (sc.t === 'hub') {
       if (key === 'look') { run.scene = { t: 'look' }; return; }
       if (key === 'claim') return claimBase(S);
+      if (key.startsWith('spot:') && !run.spots[spotKey(run, key.slice(5))]) { run.scene = { t: 'spot', id: key.slice(5) }; return; }
       if (key.startsWith('b:')) return baseAct(S, key.slice(2));
       if (key === 'leave') { run.scene = { t: 'leave' }; return; }
       if (key === 'sleep') return sleep(S);
@@ -4296,6 +4362,7 @@ const Game = (() => {
       else if (key === 'back') toHub(S, '');
       return;
     }
+    if (sc.t === 'claim') return claimChoose(S, key);
     if (sc.t === 'spot') { if (key === 'search') return search(S, sc.id); return toHub(S, ''); }
     if (sc.t === 'leave') { if (key.startsWith('go:')) return move(S, key.slice(3)); return toHub(S, ''); }
     if (sc.t === 'event') {
@@ -4391,7 +4458,7 @@ const Game = (() => {
         Game.choose(S, 'next');
         continue;
       }
-      if (v.t === 'look' || v.t === 'spot' || v.t === 'leave') { if (v.text) push({ k: 'p', t: v.text }); return; }
+      if (v.t === 'look' || v.t === 'spot' || v.t === 'leave' || v.t === 'claim') { if (v.pre && v.pre.length) push({ k: 'fx', out: v.pre }); if (v.text) push({ k: 'p', t: v.text }); return; }
       if (v.t === 'chapter') { push({ k: 'time', t: v.end.title }); push({ k: 'p', t: v.end.text }); return; }
       if (v.t === 'build' || v.t === 'box') { const last = S.log[S.log.length - 1]; if (!last || last.t !== v.text) push({ k: 'p', t: v.text }); return; }
       if (v.t === 'overflow') {
@@ -4419,13 +4486,17 @@ const Game = (() => {
     save();
   }
 
+  function vitalText(o) {                       // 허기는 배가 찰수록 줄어든다
+    const d = o.vital === 'full' ? -o.d : o.d;
+    return `${Game.VITAL[o.vital]} ${d > 0 ? '+' : '−'}${Math.abs(d)}`;
+  }
   function fxParts(out) {
     const say = [], chips = [];
     for (const o of out || []) {
       if (typeof o === 'string') say.push(o);
       else if (o.vital) {
         const good = o.vital === 'ero' ? o.d < 0 : o.d > 0;
-        chips.push(`<span class="${good ? 'plus' : 'minus'}">${Game.VITAL[o.vital]} ${o.d > 0 ? '+' : '−'}${Math.abs(o.d)}</span>`);
+        chips.push(`<span class="${good ? 'plus' : 'minus'}">${vitalText(o)}</span>`);
       } else if (o.got) chips.push(`<span class="get">${esc(ITEMS[o.got].name)}을(를) 얻었다</span>`);
       else if (o.lost) chips.push(`${esc(ITEMS[o.lost].name)}이(가) 없어졌다`);
       else if (o.learned) chips.push(`<span class="get">수첩에 적었다: ${esc(o.learned)}</span>`);
@@ -4467,7 +4538,7 @@ const Game = (() => {
     let tags = STATUS.filter(([f]) => run.flags[f]).map(([, t, bad]) => `<span class="tag${bad ? ' bad' : ''}">${t}</span>`).join('');
     const w = run.inv.filter(i => ITEMS[i].weapon).sort((a, b) => ITEMS[b].weapon - ITEMS[a].weapon)[0];
     if (w) tags += `<span class="tag">손에: ${esc(ITEMS[w].name)}</span>`;
-    if (run.base) tags += `<span class="tag">내 자리: ${esc(PLACES[run.base.place].name)}${run.base.people.length ? ' · ' + run.base.people.length + '명' : ''}</span>`;
+    if (run.base) tags += `<span class="tag">내 아지트: ${esc(PLACES[run.base.place].name)}${run.base.people.length ? ' · ' + run.base.people.length + '명' : ''}</span>`;
     if (run.infamy >= 3) tags += '<span class="tag bad">쫓기는 몸</span>'; else if (run.infamy >= 1) tags += '<span class="tag">소문이 돈다</span>';
     return `<div class="hud"><div class="top">
         <span class="when"><b>${run.day}일째</b> · ${PHASES[run.phase]}</span>
@@ -4477,7 +4548,7 @@ const Game = (() => {
         </span>
       </div>
       <div class="vitals">
-        ${pips('몸', run.hp, 10, run.hp <= 3 ? 'low' : '')}${pips('배', run.full, 10, run.full <= 2 ? 'low' : '')}
+        ${pips('체력', run.hp, 10, run.hp <= 3 ? 'low' : '')}${pips('허기', 10 - run.full, 10, run.full <= 2 ? 'low' : '')}
         ${pips('정신', run.mind, run.mindMax, run.mind <= 3 ? 'low' : '')}${run.ero > 0 ? pips('침식', run.ero, 10, 'ero') : '<div></div>'}
       </div>${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
   }
@@ -4535,8 +4606,8 @@ const Game = (() => {
   function dock(v) {
     const run = S.run, rows = list => `<div class="choices">${list.map(c => choiceBtn(c, c.kind === 'act' ? 'main' : '')).join('')}</div>`;
     if (v.t === 'hub') {
-      const acts = v.choices.filter(c => c.kind === 'act'), dos = v.choices.filter(c => c.kind === 'do');
-      return (acts.length ? rows(acts) : '') + rows(dos.slice(0, 1)) + `<div class="choices two">${dos.slice(1).map(c => choiceBtn(c)).join('')}</div>`;
+      const acts = v.choices.filter(c => c.kind === 'act'), spots = v.choices.filter(c => c.kind === 'spot'), dos = v.choices.filter(c => c.kind === 'do');
+      return (acts.length ? rows(acts) : '') + (spots.length ? `<p class="group">어디를 살펴볼까</p>` + rows(spots) : '') + `<div class="choices two">${dos.map(c => choiceBtn(c)).join('')}</div>`;
     }
     if (v.t === 'leave') {
       const gos = v.choices.filter(c => c.kind === 'go'), rest = v.choices.filter(c => c.kind !== 'go');
@@ -4582,8 +4653,8 @@ const Game = (() => {
     const u = ITEMS[id].use;
     if (!u) return '';
     const parts = [];
-    if (u.full) parts.push('배 +' + u.full);
-    if (u.hp) parts.push('몸 ' + (u.hp > 0 ? '+' : '−') + Math.abs(u.hp));
+    if (u.full) parts.push('허기 −' + u.full);
+    if (u.hp) parts.push('체력 ' + (u.hp > 0 ? '+' : '−') + Math.abs(u.hp));
     if (u.mind) parts.push('정신 +' + u.mind);
     if (u.ero) parts.push('침식 +' + u.ero);
     if (u.cure) parts.push('곪은 상처를 잡는다');
@@ -4669,6 +4740,7 @@ const Game = (() => {
     if (ui.overlay === 'bag' && S.run) h += bagSheet();
     if (ui.overlay === 'book') h += bookSheet();
     app.innerHTML = h;
+    if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
     const log = document.getElementById('log');
     if (log) {
       const first = log.querySelector('.entry.new');
@@ -4714,7 +4786,7 @@ const Game = (() => {
       const was = S.run.scene.t, name = ITEMS[d.id].name, verb = useVerb(d.id), out = Game.useItem(S, d.id);
       if (!out) return;
       const line = josa(`${name}을(를) ${verb}.`);
-      ui.toast = [line].concat(out.map(o => typeof o === 'string' ? o : o.vital ? `${Game.VITAL[o.vital]} ${o.d > 0 ? '+' : '−'}${Math.abs(o.d)}` : '').filter(Boolean));
+      ui.toast = [line].concat(out.map(o => typeof o === 'string' ? o : o.vital ? vitalText(o) : '').filter(Boolean));
       S.mark = S.log.length;
       push({ k: 'pick', t: line }); if (out.length) push({ k: 'fx', out });
       Game.recheck(S);
