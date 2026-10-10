@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0c0c0b">
-<meta name="description" content="살아남아야 한다 — 다시 균열이 열리고, 괴물들이 도시를 짓밟았다. 그로부터 두 달. 다크 텍스트 로그라이크.">
+<meta name="description" content="살아남아야 한다 — 균열이 열리고, 괴물들이 도시를 짓밟았다. 그로부터 두 달. 다크 텍스트 로그라이크.">
 <title>살아남아야 한다</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -225,14 +225,19 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .rowpic { display: block; width: 100%; max-height: 300px; object-fit: cover; margin: 4px 0 10px; border-radius: 2px; }
 .rowpic.tall { max-height: 380px; object-fit: contain; background: #000; }
 /* 첫 화면: 그림 위로 제목, 아래로 고를 것 */
-.title.has-bg { position: relative; justify-content: space-between; padding: 7vh 0 3vh; }
+.title.has-bg { position: relative; justify-content: space-between; padding: 1.5vh 16px 3vh; margin: 0 -16px; }
 .title-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.95; z-index: 0; pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); }
 .title .head, .title .bottom { position: relative; z-index: 1; }
 .title .bottom { background: linear-gradient(to bottom, transparent, var(--bg) 26%); padding-top: 26px; }
 .title.has-bg .menu { margin-top: 0; }
-.title h1.logo { margin: 0 0 14px; }
+.title h1.logo { margin: 0 0 6px; }
 .title h1.logo img { display: block; width: 100%; max-width: 560px; height: auto; margin-left: -2%; }
+/* 첫 화면 문장: 그림의 검은 하늘 가운데에 두고, 건물과 겹쳐도 읽히게 그림자를 깐다 */
+.title.has-bg .head p { text-align: center; color: var(--bone); font-size: 15.5px; margin: 0 0 2px;
+  text-shadow: 0 0 6px #000, 0 0 12px #000, 0 0 18px #000, 0 1px 2px #000; }
+.title.has-bg .title-bg { top: 10vh; height: calc(100% - 10vh); left: 0; width: 100%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 58%, transparent 97%); mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 58%, transparent 97%); }
 </style>
 </head>
 <body>
@@ -4717,7 +4722,7 @@ const Game = (() => {
     return `<div class="page title${bg ? ' has-bg' : ''}">${bg ? `<img class="title-bg" src="${bg}" alt="">` : ''}
       <div class="head">
       ${logo ? `<h1 class="logo"><img src="${logo}" alt="살아남아야 한다"></h1>` : '<h1>살아남아야<br><span>한다</span></h1>'}
-      <p>다시 균열이 열리고, 괴물들이 도시를 짓밟았다.</p>
+      <p>균열이 열리고, 괴물들이 도시를 짓밟았다.</p>
       <p>그로부터 두 달.</p>
       </div>
       <div class="bottom">
