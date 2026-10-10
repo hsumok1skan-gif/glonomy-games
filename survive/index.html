@@ -214,19 +214,19 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 /* ---------------------------------------------------------------- 그림 */
 .pic { margin: 2px -16px 12px; height: 30vh; height: 30dvh; max-height: 300px; overflow: hidden; }
 .pic img { display: block; width: 100%; height: 100%; object-fit: cover;
-  -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 50%, #000 58%, transparent 100%); mask-image: radial-gradient(ellipse 72% 68% at 50% 50%, #000 58%, transparent 100%); }
-.pic.night img { filter: brightness(0.5); }
+  -webkit-mask-image: radial-gradient(ellipse 80% 76% at 50% 50%, #000 70%, transparent 100%); mask-image: radial-gradient(ellipse 80% 76% at 50% 50%, #000 70%, transparent 100%); }
+.pic.night img { filter: brightness(0.78); }
 .pic.tall { height: 46vh; height: 46dvh; max-height: 440px; }
 .pic.tall img { object-fit: contain; }
-.entry.old.pic { opacity: 0.45; }
+.entry.old.pic { opacity: 0.8; }
 .endpic { display: block; width: calc(100% + 32px); margin: 0 -16px 14px; max-height: 34vh; object-fit: cover; flex: none;
-  -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%); }
+  -webkit-mask-image: radial-gradient(ellipse 80% 78% at 50% 50%, #000 68%, transparent 100%); mask-image: radial-gradient(ellipse 80% 78% at 50% 50%, #000 68%, transparent 100%); }
 .page.end:has(.endpic) { justify-content: flex-start; padding-top: 8px; }
 .rowpic { display: block; width: 100%; max-height: 300px; object-fit: cover; margin: 4px 0 10px; border-radius: 2px; }
 .rowpic.tall { max-height: 380px; object-fit: contain; background: #000; }
 /* 첫 화면: 그림 위로 제목, 아래로 고를 것 */
 .title.has-bg { position: relative; justify-content: space-between; padding: 7vh 0 3vh; }
-.title-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.62; z-index: 0; pointer-events: none;
+.title-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 70%; opacity: 0.95; z-index: 0; pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); }
 .title .head, .title .bottom { position: relative; z-index: 1; }
 .title .bottom { background: linear-gradient(to bottom, transparent, var(--bg) 26%); padding-top: 26px; }
@@ -238,45 +238,45 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 <body>
 <div id="app"></div>
 <script>
-const IMG = {"ch_alone": "img/ch_alone.webp",
-"ch_apt": "img/ch_apt.webp",
-"ch_base": "img/ch_base.webp",
-"ch_carehome": "img/ch_carehome.webp",
-"ch_church": "img/ch_church.webp",
-"ch_hospital": "img/ch_hospital.webp",
-"ch_leader": "img/ch_leader.webp",
-"ch_market": "img/ch_market.webp",
-"ch_raider": "img/ch_raider.webp",
-"end_awaken": "img/end_awaken.webp",
-"end_body": "img/end_body.webp",
-"end_crawler": "img/end_crawler.webp",
-"end_erosion": "img/end_erosion.webp",
-"end_mind": "img/end_mind.webp",
-"end_people": "img/end_people.webp",
-"end_ramp": "img/end_ramp.webp",
-"end_scraper": "img/end_scraper.webp",
-"end_stander": "img/end_stander.webp",
-"haesu": "img/haesu.webp",
-"logo": "img/logo.webp",
-"place_alley": "img/place_alley.webp",
-"place_apt": "img/place_apt.webp",
-"place_bridge": "img/place_bridge.webp",
-"place_carehome": "img/place_carehome.webp",
-"place_church": "img/place_church.webp",
-"place_cross": "img/place_cross.webp",
-"place_depot": "img/place_depot.webp",
-"place_gosiwon": "img/place_gosiwon.webp",
-"place_hospital": "img/place_hospital.webp",
-"place_market": "img/place_market.webp",
-"place_mart": "img/place_mart.webp",
-"place_ramp": "img/place_ramp.webp",
-"place_river": "img/place_river.webp",
-"place_school": "img/place_school.webp",
-"place_station": "img/place_station.webp",
-"thing_crawler": "img/thing_crawler.webp",
-"thing_scraper": "img/thing_scraper.webp",
-"thing_stander": "img/thing_stander.webp",
-"title": "img/title.webp"};
+const IMG = {"ch_alone": "img/ch_alone.webp?v=e5faf95e",
+"ch_apt": "img/ch_apt.webp?v=d574ec26",
+"ch_base": "img/ch_base.webp?v=ce67f1b2",
+"ch_carehome": "img/ch_carehome.webp?v=b07dc452",
+"ch_church": "img/ch_church.webp?v=c4452e91",
+"ch_hospital": "img/ch_hospital.webp?v=8288f969",
+"ch_leader": "img/ch_leader.webp?v=c5fd2322",
+"ch_market": "img/ch_market.webp?v=c44dc228",
+"ch_raider": "img/ch_raider.webp?v=f152a454",
+"end_awaken": "img/end_awaken.webp?v=863f61e5",
+"end_body": "img/end_body.webp?v=83506eab",
+"end_crawler": "img/end_crawler.webp?v=86c70249",
+"end_erosion": "img/end_erosion.webp?v=7cbbb3f3",
+"end_mind": "img/end_mind.webp?v=11af76ec",
+"end_people": "img/end_people.webp?v=cc6b141e",
+"end_ramp": "img/end_ramp.webp?v=5b926e9e",
+"end_scraper": "img/end_scraper.webp?v=abb76c68",
+"end_stander": "img/end_stander.webp?v=8f46bb39",
+"haesu": "img/haesu.webp?v=cbf7be5e",
+"logo": "img/logo.webp?v=48e0cea0",
+"place_alley": "img/place_alley.webp?v=1b416cae",
+"place_apt": "img/place_apt.webp?v=cf444b59",
+"place_bridge": "img/place_bridge.webp?v=0e300cae",
+"place_carehome": "img/place_carehome.webp?v=ef5eb45d",
+"place_church": "img/place_church.webp?v=824706e1",
+"place_cross": "img/place_cross.webp?v=945756f2",
+"place_depot": "img/place_depot.webp?v=0423099a",
+"place_gosiwon": "img/place_gosiwon.webp?v=68cb18e4",
+"place_hospital": "img/place_hospital.webp?v=c12cb22e",
+"place_market": "img/place_market.webp?v=f5122ee8",
+"place_mart": "img/place_mart.webp?v=b5ff5b32",
+"place_ramp": "img/place_ramp.webp?v=64b8ed49",
+"place_river": "img/place_river.webp?v=f6f48656",
+"place_school": "img/place_school.webp?v=25d98845",
+"place_station": "img/place_station.webp?v=641eb725",
+"thing_crawler": "img/thing_crawler.webp?v=6ad2df4f",
+"thing_scraper": "img/thing_scraper.webp?v=14945a7a",
+"thing_stander": "img/thing_stander.webp?v=2b97bf87",
+"title": "img/title.webp?v=5ef47b8f"};
 /* ============================================================================================
    살아남아야 한다 — 바탕 자료 (사람 만들기 · 물건 · 유물 · 장소 · 사람 · 세력 · 결말)
    이 파일은 "자료"다. 규칙은 engine.js가 읽는다. 문장은 전부 '나는'의 과거형, 남이 나를 부를 때는 '당신'.
