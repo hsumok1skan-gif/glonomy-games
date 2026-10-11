@@ -781,6 +781,23 @@ body.pgon #nav{transform:translate(-50%,140%)!important;opacity:0;pointer-events
  .mcen.scn::before{background:linear-gradient(90deg,#000b,transparent 38%),linear-gradient(180deg,transparent 72%,#000d),var(--ib) 48% 9%/135% auto no-repeat}
  .mcen.hasill:not(.scn)::before{background:radial-gradient(70% 90% at 50% 45%,transparent,#0009),var(--ic) 46% 6%/auto 190% no-repeat}
 }
+
+/* ── v70 상세 그림: 머리 안 잘리게, 가장자리 페이드 ── */
+.mcen.scn::before,.mcen.scn.scn::before{background:var(--ib) 50% 30%/cover no-repeat!important;filter:blur(18px) brightness(.45) saturate(1.2);inset:-30px}
+.mcen.hasill .mfig{visibility:visible!important;position:absolute;inset:0;z-index:0;display:block}
+.mcen.hasill .mfig .ill{--sc:1.12;position:absolute;left:50%;transform:translateX(-50%);height:calc(var(--sc) * 100%)!important;width:auto!important;aspect-ratio:2/3;
+ top:calc(clamp(0, (var(--sc) * var(--ty,0) - .03) / (var(--sc) - 1), 1) * (1 - var(--sc)) * 100%);
+ background-image:var(--ib,var(--ic));background-repeat:no-repeat;background-size:100% 100%;background-position:0 0;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent),linear-gradient(180deg,#000 80%,transparent 98%);-webkit-mask-composite:source-in;
+ mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent),linear-gradient(180deg,#000 80%,transparent 98%);mask-composite:intersect}
+.mcen.hasill:not(.scn)::before{background:radial-gradient(60% 60% at 50% 55%,color-mix(in srgb,var(--gc) 26%,transparent),transparent)!important}
+.mcen.hasill .radar,.mcen.hasill .mstat{z-index:2}
+.mcen.hasill .mstat{color:#ddd;text-shadow:0 1px 2px #000,0 0 6px #000,0 0 10px #000}
+.mcen.hasill .radar{filter:drop-shadow(0 0 4px #000)}
+@media (max-height:480px){.mcen.hasill .mfig .ill{--sc:1.3}}
+/* 대사창 초상: 잘린 티 안 나게 가장자리를 녹인다 */
+#talk .tp .ill{-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 96%),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);-webkit-mask-composite:source-in;
+ mask-image:linear-gradient(180deg,#000 55%,transparent 96%),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-composite:intersect}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -854,7 +871,7 @@ body.pgon #nav{transform:translate(-50%,140%)!important;opacity:0;pointer-events
   <div id="toast" hidden></div>
 </div>
 
-<script id="ill-data">window.ABYSS_ILL=Object.assign(window.ABYSS_ILL||{},{archer:{c:"art/archer_c.webp"},basil:{b:"art/basil_b.webp",c:"art/basil_c.webp",f:[0.45, 0.1]},bat:{b:"art/bat_b.webp",c:"art/bat_c.webp",f:[0.55, 0.27]},bone:{b:"art/bone_b.webp",c:"art/bone_c.webp"},centi:{b:"art/centi_b.webp",c:"art/centi_c.webp",f:[0.45, 0.1]},doppel:{b:"art/doppel_b.webp",c:"art/doppel_c.webp",f:[0.37, 0.1]},drake:{b:"art/drake_b.webp",c:"art/drake_c.webp",f:[0.58, 0.12]},eel:{b:"art/eel_b.webp",c:"art/eel_c.webp",f:[0.7, 0.17]},foe_torben:{b:"art/foe_torben_b.webp",c:"art/foe_torben_c.webp"},frost:{b:"art/frost_b.webp",c:"art/frost_c.webp",f:[0.43, 0.1]},ghoul:{b:"art/ghoul_b.webp",c:"art/ghoul_c.webp",f:[0.3, 0.15]},golem:{b:"art/golem_b.webp",c:"art/golem_c.webp",f:[0.47, 0.1]},guide_2:{c:"art/guide_2_c.webp"},guide_3:{c:"art/guide_3_c.webp"},guide:{c:"art/guide_c.webp"},hound:{b:"art/hound_b.webp",c:"art/hound_c.webp",f:[0.8, 0.2]},imp:{c:"art/imp_c.webp",f:[0.48, 0.17]},imp_glee:{c:"art/imp_glee_c.webp",f:[0.48, 0.17]},imp_panic:{c:"art/imp_panic_c.webp",f:[0.48, 0.17]},lich:{b:"art/lich_b.webp",c:"art/lich_c.webp",f:[0.52, 0.1]},mantis:{b:"art/mantis_b.webp",c:"art/mantis_c.webp",f:[0.49, 0.09]},moss:{b:"art/moss_b.webp",c:"art/moss_c.webp",f:[0.42, 0.13]},newt:{b:"art/newt_b.webp",c:"art/newt_c.webp",f:[0.33, 0.46]},pup:{b:"art/pup_b.webp",c:"art/pup_c.webp",f:[0.45, 0.32]},scorp:{b:"art/scorp_b.webp",c:"art/scorp_c.webp",f:[0.52, 0.47]},shade:{b:"art/shade_b.webp",c:"art/shade_c.webp",f:[0.5, 0.13]},slime:{b:"art/slime_b.webp",c:"art/slime_c.webp",f:[0.45, 0.12]},spider:{b:"art/spider_b.webp",c:"art/spider_c.webp",f:[0.53, 0.42]},toad:{b:"art/toad_b.webp",c:"art/toad_c.webp",f:[0.6, 0.12]},troll:{b:"art/troll_b.webp",c:"art/troll_c.webp",f:[0.58, 0.18]},warrior:{c:"art/warrior_c.webp"},wisp:{b:"art/wisp_b.webp",c:"art/wisp_c.webp",f:[0.38, 0.3]},wolf:{b:"art/wolf_b.webp",c:"art/wolf_c.webp",f:[0.78, 0.1]},yeti:{b:"art/yeti_b.webp",c:"art/yeti_c.webp",f:[0.47, 0.14]}});</script>
+<script id="ill-data">window.ABYSS_ILL=Object.assign(window.ABYSS_ILL||{},{archer:{c:"art/archer_c.webp",t:0.014},basil:{b:"art/basil_b.webp",c:"art/basil_c.webp",f:[0.45, 0.1],t:0.006},bat:{b:"art/bat_b.webp",c:"art/bat_c.webp",f:[0.55, 0.27],t:0.006},bone:{b:"art/bone_b.webp",c:"art/bone_c.webp",t:0.043},centi:{b:"art/centi_b.webp",c:"art/centi_c.webp",f:[0.45, 0.1],t:0.007},doppel:{b:"art/doppel_b.webp",c:"art/doppel_c.webp",f:[0.37, 0.1],t:0.017},drake:{b:"art/drake_b.webp",c:"art/drake_c.webp",f:[0.58, 0.12],t:0.007},eel:{b:"art/eel_b.webp",c:"art/eel_c.webp",f:[0.7, 0.17],t:0.03},foe_torben:{b:"art/foe_torben_b.webp",c:"art/foe_torben_c.webp",t:0.007},frost:{b:"art/frost_b.webp",c:"art/frost_c.webp",f:[0.43, 0.1],t:0.002},ghoul:{b:"art/ghoul_b.webp",c:"art/ghoul_c.webp",f:[0.3, 0.15],t:0.057},golem:{b:"art/golem_b.webp",c:"art/golem_c.webp",f:[0.47, 0.1],t:0.002},guide_2:{c:"art/guide_2_c.webp",t:0.018},guide_3:{c:"art/guide_3_c.webp",t:0.008},guide:{c:"art/guide_c.webp",t:0.036},hound:{b:"art/hound_b.webp",c:"art/hound_c.webp",f:[0.8, 0.2],t:0.042},imp:{c:"art/imp_c.webp",f:[0.48, 0.17],t:0.046},imp_glee:{c:"art/imp_glee_c.webp",f:[0.48, 0.17],t:0.043},imp_panic:{c:"art/imp_panic_c.webp",f:[0.48, 0.17],t:0.036},lich:{b:"art/lich_b.webp",c:"art/lich_c.webp",f:[0.52, 0.1],t:0.004},mantis:{b:"art/mantis_b.webp",c:"art/mantis_c.webp",f:[0.49, 0.09],t:0.004},moss:{b:"art/moss_b.webp",c:"art/moss_c.webp",f:[0.42, 0.13],t:0.011},newt:{b:"art/newt_b.webp",c:"art/newt_c.webp",f:[0.33, 0.46],t:0.026},pup:{b:"art/pup_b.webp",c:"art/pup_c.webp",f:[0.45, 0.32],t:0.042},scorp:{b:"art/scorp_b.webp",c:"art/scorp_c.webp",f:[0.52, 0.47],t:0.021},shade:{b:"art/shade_b.webp",c:"art/shade_c.webp",f:[0.5, 0.13],t:0.018},slime:{b:"art/slime_b.webp",c:"art/slime_c.webp",f:[0.45, 0.12],t:0.021},spider:{b:"art/spider_b.webp",c:"art/spider_c.webp",f:[0.53, 0.42],t:0.021},toad:{b:"art/toad_b.webp",c:"art/toad_c.webp",f:[0.6, 0.12],t:0.1},troll:{b:"art/troll_b.webp",c:"art/troll_c.webp",f:[0.58, 0.18],t:0.029},warrior:{c:"art/warrior_c.webp",t:0.011},wisp:{b:"art/wisp_b.webp",c:"art/wisp_c.webp",f:[0.38, 0.3],t:0.008},wolf:{b:"art/wolf_b.webp",c:"art/wolf_c.webp",f:[0.78, 0.1],t:0.025},yeti:{b:"art/yeti_b.webp",c:"art/yeti_c.webp",f:[0.47, 0.14],t:0.029}});</script>
 <script>
 (()=>{'use strict';
 const GW=15,GH=11,C=232,RS=216,SAVE='abyssroad.save.v1',REC='abyssroad.rec.v1',STORE_CAP=40;
@@ -867,7 +884,7 @@ const J=(w,a,b)=>{const c=w.charCodeAt(w.length-1);return w+((c>=0xAC00&&c<=0xD7
 const ART=Object.assign({},window.ABYSS_ART||{});
 const gly=(k,sym,vb)=>ART[k]?`<img class="art" src="${ART[k]}" alt="">`:`<svg viewBox="${vb||'0 0 40 40'}"><use href="#g-${sym}"/></svg>`;
 const ILL=Object.assign({},window.ABYSS_ILL||{});
-(function(){let css='';for(const k in ILL){const I=ILL[k];css+=`.ilk-${k}{--ic:url("${I.c}")${I.b?`;--ib:url("${I.b}")`:''}${I.f?`;--fx:${I.f[0]};--fy:${I.f[1]}`:''}}`}const st=document.createElement('style');st.textContent=css;document.head.appendChild(st)})();
+(function(){let css='';for(const k in ILL){const I=ILL[k];css+=`.ilk-${k}{--ic:url("${I.c}")${I.b?`;--ib:url("${I.b}")`:''}${I.f?`;--fx:${I.f[0]};--fy:${I.f[1]}`:''}${I.t!=null?`;--ty:${I.t}`:''}}`}const st=document.createElement('style');st.textContent=css;document.head.appendChild(st)})();
 const illK=u=>{if(!u)return null;const ks=[];if(u.fk)ks.push('foe_'+u.fk);if(u.nk)ks.push('nm_'+u.nk);if(u.shiny)ks.push(u.type+'_s');if(u.evo)ks.push(u.type+'_'+u.evo);ks.push(u.type);return ks.find(k=>ILL[k])||null};
 const ill=(k,mode,fb)=>k&&ILL[k]?`<span class="ill ill-${mode} ilk-${k}"></span>`:fb;
 const unitArt=u=>u.side==='m'?(u.shiny&&ART['m_'+u.type+'_s']?'m_'+u.type+'_s':u.evo&&ART['m_'+u.type+'_'+u.evo]?'m_'+u.type+'_'+u.evo:'m_'+u.type):'h_'+u.type;
