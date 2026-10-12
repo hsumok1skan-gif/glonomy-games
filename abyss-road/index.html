@@ -2038,7 +2038,7 @@ function pull(n){const cost=n===10?90:10;if(S.ruby<cost||stored().length+n>store
   if(n===10&&!got.some(id=>S.units[id].star>=2||GRN.indexOf(grOf(S.units[id].type))>=2)){const u=S.units[got[9]];delete S.units[u.id];got[9]=mkMon(rollOfGrade('SR'),'store',rollStar()).id}
   log(`심연이 대답했다. ${n}마리가 보관함에 들어왔다.`,'mana');sfx('pull');return{ids:got,nw}}
 function whyPlace(u,r){if(!u||!r)return'방을 고른다';if(u.inj)return`부상 중이다. ${Math.ceil(u.inj)}초 뒤에 세울 수 있다`;if(r.hall)return'통로에는 세울 수 없다';if(r.build)return'아직 짓는 중이다';if(humsIn(r.id).length)return'침입자가 있는 방이다';if(u.room===r.id)return'이미 이 방에 있다';
-  if(monsIn(r.id).length>=3)return'한 방에는 셋까지';if(r.kind==='chest'&&monsIn(r.id).length>=2)return'보물방에 숨을 자리는 둘뿐이다';if(sizeIn(r.id)+MON[u.type].size>r.cap)return`수용력이 모자란다 (${sizeIn(r.id)}/${r.cap})`;
+  if(monsIn(r.id).length>=3)return'공간이 부족하다';if(r.kind==='chest'&&monsIn(r.id).length>=2)return'보물방에 숨을 자리는 둘뿐이다';if(sizeIn(r.id)+MON[u.type].size>r.cap)return'공간이 부족하다';
   if(u.room==='store'&&field().length>=monCap())return`코어가 세울 수 있는 건 ${monCap()}마리까지`;
   if(S.rooms[u.room]&&humsIn(u.room).length)return'지금 있는 방에 침입자가 있다';return''}
 function place(u,r){if(whyPlace(u,r))return false;u.room=r.id;u.slot=S.nid++;u.gauge=0;u.order=null;return true}
@@ -2363,7 +2363,7 @@ function tapWorld(target){if(S&&S.dm&&!S.mvR&&!modal&&!TALK&&!fightView()){const
      if(t&&t.side==='m'&&S.rooms[t.room]&&(!pk||S.rooms[pk.room])){m.pick=t.id;m.to=null;m.room=t.room;selRoom(t.room,true);render();return}
      if(pk&&S.rooms[pk.room]){m.pick=null}
      else if(pk&&pk.room==='store'){const why=whyPlace(pk,R_);
-       if(why){toast(why+(monsIn(id).length?' · 방 안의 몬스터를 누르면 배치를 풀 수 있다':''));m.pick=null;m.to=null;m.room=id;selRoom(id,true);render();return}}}
+       if(why){toast(why);m.pick=null;m.to=null;m.room=id;selRoom(id,true);render();return}}}
     m.to=id;m.room=id;selRoom(id,true);render();return}
   if(w==='unplace'){handle('unplace',el);return}
   if(w==='fix'){if(!el.classList.contains('off'))handle('fix-one',el);else toast('재료가 모자란다 · '+el.querySelector('small').textContent);render();return}
