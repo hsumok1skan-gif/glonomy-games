@@ -353,7 +353,11 @@ rect.ghi,.ighost.ghi{stroke:var(--gold)!important;stroke-width:4!important;strok
 #hud .hb.core .meter i{background:var(--life)}#hud .hb.core.low .meter i{background:var(--blood)}
 #hud .hb em{font-style:normal;color:var(--bone)}
 #rot #spy{top:calc(var(--it) + 38px)}
-#rot #ucard{top:calc(var(--it) + 38px)!important}
+#rot #ucard{top:calc(var(--it) + 38px)!important;bottom:auto!important;height:auto!important;max-height:calc(100% - var(--it) - var(--ib) - 44px);overflow-y:auto}
+#rot #ucard .uslots{margin-top:6px}
+#ucard .uacts{display:grid;gap:4px;margin-top:6px}#ucard .uacts p{margin:0;font-size:10.5px;color:var(--torch)}
+#ucard .uacts>div{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+#ucard .uacts .b{min-height:32px;padding:3px 4px;font-size:11.5px;border-radius:8px;justify-content:center;text-align:center;width:auto}#ucard .uacts .b small{font-size:9px}
 body.dr-on #hud,body.dr-on #log,body.dr-on #spy{visibility:hidden}
 #rot #spyb{width:auto;justify-items:start;padding:0 8px 0 0}#rot #spyb .eta{left:0;right:8px}
 #spyp .spacc{font:500 9.5px var(--f-ui);color:var(--dim);text-shadow:var(--ts)}
@@ -1130,7 +1134,7 @@ const GUIDE=[
     start:()=>{say([{w:'me',t:'…저 아이가 쓰러진다.'},{w:'imp',t:'주인님! 몬스터는 쓰러지면 마나로 흩어집니다.'},{w:'imp',t:'하지만 던전에 휴식처를 만들어 두면, 체력이 다한 몬스터가 흩어지지 않고 휴식처로 실려 가 회복할 수 있습니다.'},{w:'imp',t:'회복을 마친 몬스터는 다시 배치해서 싸울 수 있습니다.'},{w:'imp',t:'지시를 내려 주시면 제가 지금 바로 휴식처를 짓겠습니다! 제가 방금 판 방이 비어 있습니다.'}]);const e=S.rooms[S.tutRoom]||emptyRoom();fitAll(true);if(e)selRoom(e.id,false)},
     done:()=>Object.values(S.rooms).some(r=>r.kind==='rest'),end:()=>{S.dm=false;S.dmT=null;modal=null;const u=S.units[S.tutU];if(u&&S.rooms[u.room]){u.room='store';u.inj=25;u.hp=1;u.slot=0;S.tutHold=null;log(`${J(u.name,'이','가')} 휴식처로 실려 갔다. 25초면 일어난다.`,'mana');say([{w:'imp',t:'지었습니다! 저 아이도 실려 왔습니다. 숨은 붙어 있습니다. 25초면 다시 일어납니다.'},{w:'me',t:'침입자들이 다음 방으로 간다. 해골 병사가 있는 방이다.'}])}}},
   {id:'enter',t:'해골 병사의 방이다. 방을 누르면 들어간다',allow:'*',wave:true,sel:()=>{const u=mons().find(x=>x.type==='bone'&&S.rooms[x.room]);return u?`g[data-id="${u.room}"] .iroom`:'#nothing'},done:()=>!!cmdRoom()||(S.stat.cmd||0)>=1},
-  {id:'cmd',t:'해골 병사의 차례다. 「공격」을 누르고 적을 고른다',allow:'*',wave:true,sel:'#bar [data-a=c-atk]',back:()=>{const b=mons().find(x=>x.type==='bone'&&S.rooms[x.room]);return !!b&&zoomed!==b.room&&!!Object.keys(S.groups).length},done:()=>(S.stat.cmd||0)>=1||!Object.keys(S.groups).length},
+  {id:'cmd',t:'해골 병사의 차례다. 「공격」을 누르고 적을 고른다',allow:'*',wave:true,sel:'#ucard [data-a=c-atk]',back:()=>{const b=mons().find(x=>x.type==='bone'&&S.rooms[x.room]);return !!b&&zoomed!==b.room&&!!Object.keys(S.groups).length},done:()=>(S.stat.cmd||0)>=1||!Object.keys(S.groups).length},
   {id:'repel',t:'남은 침입자를 쓰러뜨린다. 차례마다 직접 고르거나 「자동 전투」',allow:'*',wave:true,done:()=>(S.stat.repel||0)>=1,
     end:()=>{addPouch('쓰러진 모험가',{tut:1});say([{w:'imp',t:'이겼습니다, 주인님!'},{w:'imp',t:'쓰러진 모험가의 품에서 이런 걸 주웠습니다. 모험가의 주머니입니다. 가방에 넣어 두었습니다.'}])}},
   {id:'pbag',t:'하단 「보관함」을 연다',sel:'#nav [data-a=bag]',allow:['bag'],done:()=>!!(modal&&modal.k==='bag')||(S.stat.pouch||0)>=1},
@@ -2659,24 +2663,26 @@ function bannerHTML(){const r=S.rooms[S.sel.room],ms=monsIn(r.id),al=alertRoom()
   return`${al?`<div class="ns"><button class="tab hot${inFight(al.id)?' fightgo':''}" data-a="alert">${inFight(al.id)?'⚔ 전투 방으로 · ':'침입 ▸ '}${rname(al)}</button></div>`:''}${rw?`<div class="ns"><span class="tab hot">토벌대 접근 · ${Math.ceil(S.waveT)}초</span></div>`:''}`}
 function slotHTML(u,slot){const d=unitItem(u,slot),lab=slot==='eq'?'무기·갑옷':'장신구',ic=d?(ART['i_'+itemOf(u[slot]).k]?`<img class="art" src="${ART['i_'+itemOf(u[slot]).k]}" alt="">`:`<svg viewBox="0 0 40 40"><use href="#g-${d.sym}"/></svg>`):`<svg viewBox="0 0 40 40"><use href="#g-${slot==='eq'?'knight':'core'}"/></svg>`;
   return`<button class="uslot${d?'':' empty'}" data-a="equip" data-d="${slot}" title="${d?d.n+' — '+d.d:lab+' 자리 · 눌러서 고른다'}"><span class="ic" style="--ic:${d?GR[d.g].c:'var(--dim)'}">${ic}</span><span class="tx">${d?`<b>${d.n}</b><small>${d.d}</small>`:`<b>${lab} 자리</b><small>${(S.bag||[]).filter(b=>ITEMS[b.k].k===SLOTK[slot]&&!b.on).length?'가진 것이 있다. 눌러서 장착':'비어 있다'}</small>`}</span><span class="tag">${lab}</span></button>`}
+function ucActs(u){if(S.cmd&&S.cmd.u===u.id&&S.units[S.cmd.u]){const c=u,d=MON[c.type],C=S.cmd,foes=tgts(c.room);
+    return`<div class="uacts cmd"><p>${C.pend?'노릴 적을 누른다':'내 차례 · 적을 누르면 바로 친다'}</p><div>${B('c-atk','공격',{cls:C.pend==='atk'?'hot':'mana',sub:foes.length>1?'적을 고른다':'바로'})}${B('c-skill',d.sk,{off:c.cd>0,cls:C.pend==='skill'?'hot':'',sub:c.cd>0?c.cd+'번 뒤':d.tgt?'대상 선택':'즉시'})}${B('c-guard','방어',{sub:'피해 절반'})}${B('c-pass','알아서',{sub:'이번 턴만'})}${B('auto','자동 전투',{sub:'지휘 그만'})}</div></div>`}
+  const d=MON[u.type],f=inFight(u.room),ot=u.order&&S.units[u.order],out=u.room==='out';if(S.phase!=='play'&&f)return'';
+  return`<div class="uacts">${f&&ot?`<p>명령: ${hn(ot)}부터 친다</p>`:''}<div>${ot?B('clear-order','명령 해제'):''}${B('train','육성',{off:S.soul<trainCost(u)||u.lvl>=lvlCap(u),sub:u.lvl>=lvlCap(u)?'한계':`소울 ${trainCost(u)}`})}${out?'':B('fuse','융합',{off:(u.star||1)>=5||f||!mons().some(x=>fuseOk(u,x)),sub:(u.star||1)>=5?'★5':`짝 ${mons().filter(x=>fuseOk(u,x)).length}`})}${canEvo(u)?B('evo','진화',{cls:'hot',d:u.id}):''}${S.rooms[u.room]&&S.phase==='play'?B('boss',u.boss?'보스 해임':'보스 임명',{cls:u.boss?'':'',sub:u.boss?'B'+S.rooms[u.room].f+' 보스':'+30%'}):''}${B('tac','노림수',{sub:TAC[u.tac==='front'?'tank':u.tac==='back'?'ranged':u.tac]||'기본'})}${B('front','앞으로',{off:monsIn(u.room)[0].id===u.id})}</div></div>`}
 function ucardHTML(){const u=S.units[S.sel.unit];if(!u||S.out.on||drawerOn()||TALK)return'';const m=u.side==='m',d=m?MON[u.type]:HUM[u.type],pc=u.shiny?'#f0cf6a':m?'var(--mana)':'var(--torch)';
   const ik=illK(u),por=`<div class="por${ik?' hasill':''}" style="--pc:${pc}">${ill(ik,'uc',gly(unitArt(u),u.type))}</div>`;
   if(m){const el=elOf(u),tk=themeK(u),ps=pasOf(u),tr=(()=>{const t=u.tr||{};const x=Object.keys(TRN).filter(k=>t[k]).map(k=>({a:'공',d:'방',s:'속',k:'습'})[k]+t[k]).join(' ');return x||'—'})();
     return`<div class="top">${por}<div class="meta"><div class="nm"><span style="overflow:hidden;text-overflow:ellipsis">${u.name}${stars(u)}</span>${u.shiny?'<span class="shb">✦ 이로치</span>':grB(u.type)}</div><div class="ln">Lv <b>${u.lvl}/${lvlCap(u)}</b>${u.boss?' · <b>보스</b>':''}${u.inj?` · <b style="color:var(--torch)">부상 ${Math.ceil(u.inj)}초</b>`:''}</div><div class="ln">속성 <b>${el?EL[el].n:'무속성'}</b> · ${d.role}</div><div class="ln">특성 <b>${ps?PAS[ps][0]:'—'}</b>${(()=>{const L=relList(u);if(!L.length)return'';const b=L.filter(x=>x.t==='bond').length,f=L.length-b;return` · 관계 <b>${b?'유대 '+b:''}${b&&f?' ':''}${f?'<span style="color:var(--torch)">불화 '+f+'</span>':''}</b>`})()}</div><div class="ln sk">${d.sk}</div><div class="hp"><span class="meter uchp"><i></i><b></b></span></div></div></div>
     <div class="kv"><span>공격<b>${u.atk}</b></span><span>속도<b>${u.spd}</b></span><span>육성<b>${tr}</b></span><span>테마<b>${tk?'+'+Math.round(tk*100)+'%':'—'}</b></span></div>
-    <div class="uslots">${slotHTML(u,'eq')}${slotHTML(u,'rel')}</div>`}
+    ${S.cmd&&S.cmd.u===u.id?'':`<div class="uslots">${slotHTML(u,'eq')}${slotHTML(u,'rel')}</div>`}${ucActs(u)}`}
   const ad=Object.keys(adOf(u)).filter(k=>adOf(u)[k]).map(k=>ADAPT[k][0]);
   return`<div class="top">${por}<div class="meta"><div class="nm"><span style="overflow:hidden;text-overflow:ellipsis">${hn(u)}</span>${u.named?'<span class="shb" style="background:linear-gradient(90deg,#ffd0a0,var(--torch))">이름난 자</span>':''}</div><div class="ln">${u.rk>=0?'모험가 <b>'+HRK[u.rk]+'급</b>':'<b>침입자</b>'}</div><div class="ln">${d.n}${HROLE[u.type]?' · '+TAC[HROLE[u.type]]:''}</div><div class="ln">${ad.length?'대비 <b style="color:var(--torch)">'+ad.join(', ')+'</b>':'대비 <b>—</b>'}</div><div class="hp h"><span class="meter uchp"><i></i><b></b></span></div></div></div>
     <div class="kv"><span>공격<b>${u.atk}</b></span><span>속도<b>${u.spd}</b></span><span>체력<b>${Math.ceil(u.hp)}/${u.maxHp}</b></span><span></span></div>
     <div class="ln" style="white-space:normal">${S.phase==='tut'?'무엇인지 모른다. 내 영역에 들어왔다.':d.d}</div>`}
 function barHTML(){const r=S.rooms[S.sel.room],u=S.units[S.sel.unit],P=S.poss,pu=P&&S.units[P.u];if(S.dm&&!S.out.on&&!fightView()&&!S.cmd)return dmBar(r);if(!S.cmd&&!S.out.on&&u&&u.side==='m'&&S.rooms[u.room]&&inFight(u.room)&&S.phase!=='play')return'';if(fightView()&&!S.cmd&&!S.out.on&&r&&r.id===zoomed)return`<div class="acts">${B('auto',S.auto?'직접 지휘':'자동 전투',{cls:S.auto?'mana':'torch',sub:S.auto?'지금 자동':'지금 지휘 중'})}${B('zfit','전투에서 나간다')}</div>`;
   if(S.kmove&&S.rooms[S.kmove])return`<p class="info"><b>${KINDC[S.rooms[S.kmove].kind].n} 옮기기</b><br><span class="d">던전에서 시설 없는 빈 방을 누른다.</span></p><div class="acts">${B('kmove-x','그만둔다')}</div>`;
-  if(S.cmd&&S.units[S.cmd.u]&&!pu){const c=S.units[S.cmd.u],d=MON[c.type],C=S.cmd,foes=tgts(c.room);
-    return`<p class="info"><b>${c.name}</b>의 차례<br><span class="d">${C.pend?'노릴 적을 누른다.':'이 방의 시간은 멈췄다. 적을 누르면 바로 친다.'}</span></p>
-    <div class="acts">${B('c-atk','공격',{cls:C.pend==='atk'?'hot':'mana',sub:foes.length>1?'적을 고른다':'바로'})}${B('c-skill',d.sk,{off:c.cd>0,cls:C.pend==='skill'?'hot':'',sub:c.cd>0?c.cd+'번 뒤':d.tgt?'대상 선택':'즉시'})}${B('c-guard','방어',{sub:'피해 절반'})}${B('c-pass','알아서',{sub:'이번 턴만'})}${B('auto','자동 전투',{sub:'지휘 그만'})}</div>`}
-  if(u&&u.side==='m'){const d=MON[u.type],f=inFight(u.room),cd=S.t<S.possCd,ot=u.order&&S.units[u.order],out=u.room==='out';
-    return`<p class="info"><b>${u.name}${stars(u)}</b>${f&&ot?`<br><span class="d">명령: ${hn(ot)}부터 친다.</span>`:''}</p>
-    <div class="acts">${ot?B('clear-order','명령 해제'):''}${B('train','육성',{off:S.soul<trainCost(u)||u.lvl>=lvlCap(u),sub:u.lvl>=lvlCap(u)?'한계':`소울 ${trainCost(u)}`})}${out?'':B('fuse','융합',{off:(u.star||1)>=5||f||!mons().some(x=>fuseOk(u,x)),sub:(u.star||1)>=5?'★5':`짝 ${mons().filter(x=>fuseOk(u,x)).length}`})}${canEvo(u)?B('evo','진화',{cls:'hot',d:u.id}):''}${S.rooms[u.room]&&S.phase==='play'?B('boss',u.boss?'보스 해임':'보스 임명',{cls:u.boss?'':'',sub:u.boss?'B'+S.rooms[u.room].f+' 보스':'+30%'}):''}${B('tac','노림수',{sub:TAC[u.tac==='front'?'tank':u.tac==='back'?'ranged':u.tac]||'기본'})}${B('front','앞으로',{off:monsIn(u.room)[0].id===u.id})}</div>`}
+  if(S.cmd&&S.units[S.cmd.u]&&!pu){
+    return''}
+  if(u&&u.side==='m'){
+    return''}
   if(u){const d={...HUM[u.type],d:(u.rk>=0?`모험가 ${HRK[u.rk]}급 · `:'')+HUM[u.type].d+(HROLE[u.type]?` · 역할: ${TAC[HROLE[u.type]]}`:'')},ad=Object.keys(adOf(u)).filter(k=>adOf(u)[k]).map(k=>ADAPT[k][0]);return`<p class="info"><b>${hn(u)}</b></p>`}
   if(S.out.on)return outBarHTML();
   if(fightView()&&r.id===zoomed)return`<p class="info"><b>${rname(r)} · 싸움 중</b><br><span class="d">내 몬스터를 누르면 지휘한다. 방 바깥을 누르면 빠져나온다.</span></p><div class="acts">${B('auto',S.auto?'직접 지휘':'자동 전투',{cls:S.auto?'mana':'torch',sub:S.auto?'지금 자동':'지금 지휘 중'})}${B('zfit','전투에서 나간다')}</div>`;
