@@ -2358,14 +2358,12 @@ function tapWorld(target){if(S&&S.dm&&!S.mvR&&!modal&&!TALK&&!fightView()){const
     if(!w0){if(S.dmT==='dig')S.dmT=null;else if(S.dmR&&zoomed){S.dmR=null;fitAll(true)}else{S.dm=false;S.dmR=null}render();return}}if(S&&S.kmove){const el0=target&&target.closest&&target.closest('[data-w=room]');if(el0)kindMove(el0.dataset.id);else{S.kmove=null;log('옮기기를 그만뒀다.')}render();return}const el=target&&target.closest&&target.closest('[data-w]'),w=el&&el.dataset.w;if(TALK){const L=TALK.q[TALK.i];if(L&&!L.ch){talkNext();render()}return}
   if(drawerOn()&&w==='put'){handle('pl-put',el);return}
   if(drawerOn()&&(w==='unit'||w==='room')){const m=modal,t=w==='unit'?S.units[el.dataset.id]:null,id=t?t.room:el.dataset.id,R_=S.rooms[id];if(!R_){render();return}
-    {let pk=S.units[m.pick];if(!pk&&m.swapFor&&t&&t.side==='m'&&t.room===id&&S.units[m.swapFor]&&S.units[m.swapFor].room==='store')pk=S.units[m.swapFor];m.swapFor=null;if(pk&&S.rooms[pk.room]){m.pick=null}
+    {const pk=S.units[m.pick];
+     /* 방에 서 있는 몬스터를 누르면 그 몬스터를 고르고, 머리 위에 「배치 해제」가 뜬다 */
+     if(t&&t.side==='m'&&S.rooms[t.room]&&(!pk||S.rooms[pk.room])){m.pick=t.id;m.to=null;m.room=t.room;selRoom(t.room,true);render();return}
+     if(pk&&S.rooms[pk.room]){m.pick=null}
      else if(pk&&pk.room==='store'){const why=whyPlace(pk,R_);
-       if(why&&t&&t.side==='m'&&t.room===id&&!humsIn(id).length&&!R_.build&&!R_.hall&&!pk.inj){
-         /* 꽉 찬 방의 몬스터를 누르면 맞바꾼다 */
-         const tn=t.name;t.room='store';t.order=null;t.guard=t.taunt=false;const w2=whyPlace(pk,R_);
-         if(!w2&&place(pk,R_)){log(`${J(tn,'을','를')} 보관함으로 물리고 ${J(pk.name,'을','를')} ${rname(R_)}에 세웠다.`,'mana');toast(`${tn} ↔ ${pk.name} 맞바꿨다.`);m.pick=null;m.to=null;selRoom(id,true);render();return}
-         t.room=id;toast(w2||'맞바꿀 수 없다.');m.pick=null;m.to=null;selRoom(id,true);render();return}
-       if(why){toast(why+(monsIn(id).length?' · 방 안의 몬스터를 누르면 맞바꾼다':''));m.to=null;m.room=id;selRoom(id,true);m.swapFor=pk.id;m.pick=null;render();return}}}
+       if(why){toast(why+(monsIn(id).length?' · 방 안의 몬스터를 누르면 배치를 풀 수 있다':''));m.pick=null;m.to=null;m.room=id;selRoom(id,true);render();return}}}
     m.to=id;m.room=id;selRoom(id,true);render();return}
   if(w==='unplace'){handle('unplace',el);return}
   if(w==='fix'){if(!el.classList.contains('off'))handle('fix-one',el);else toast('재료가 모자란다 · '+el.querySelector('small').textContent);render();return}
@@ -2501,6 +2499,8 @@ function worldDraw(){const sel=S.rooms[S.sel.room];if(!sel)return;const FXA=S.ph
     const A=a.f===F?a:b,B_=b.f===F?b:a,p=G.prog,[mx,my]=PJ((A.x+(B_.x-A.x)*p)*C+C/2,(A.y+(B_.y-A.y)*p)*C+C/2);sp+=`<div class="mv" style="left:${f1(mx)}px;top:${f1(my-14)}px">${G.members.length}</div>`}
   {const m=modal;if(drawerOn()&&m.pick&&m.to&&S.rooms[m.to]&&S.rooms[m.to].f===F&&S.units[m.pick]&&S.units[m.pick].room==='store'){const R=S.rooms[m.to],pu=S.units[m.pick],[cx,cy]=RC(R),n=Math.min(2,monsIn(R.id).filter(x=>x.id!==pu.id).length),[ox,oy]=MOFF[n],w=pu.room===R.id?'이미 이 방에 있다':whyPlace(pu,R);
       sp+=`<span class="ighu" style="left:${f1(cx+ox)}px;top:${f1(cy+oy)}px;z-index:${Math.round(cy+oy)}">${gly(unitArt(pu),pu.type)}</span><button class="iput${w?' off':''}" data-w="put" style="left:${f1(cx+ox)}px;top:${f1(cy+oy-44)}px">${w||'배치하기'}<small>수용 ${sizeIn(R.id)}/${R.cap} · ${monsIn(R.id).length}/3</small></button>`}
+    {const pu=m&&drawerOn()&&S.units[m.pick];if(pu&&S.rooms[pu.room]&&S.rooms[pu.room].f===F){const R=S.rooms[pu.room],[cx,cy]=RC(R),L=monOrder(R.id),i=Math.max(0,L.indexOf(pu)),[ox,oy]=MOFF[Math.min(2,i)],busy=humsIn(R.id).length>0;
+      sp+=`<button class="iput up${busy?' off':''}" data-w="unplace" data-d="${pu.id}" style="left:${f1(cx+ox)}px;top:${f1(cy+oy-46)}px">${busy?'싸우는 중':'배치 해제'}<small>${pu.name}</small></button>`}}
     const su=S.units[S.sel.unit];if(!drawerOn()&&!modal&&su&&su.side==='m'&&S.rooms[su.room]&&S.rooms[su.room].f===F&&!inFight(su.room)&&!S.dm&&S.phase==='play'){const R=S.rooms[su.room],[cx,cy]=RC(R),L=monOrder(R.id),i=Math.max(0,L.indexOf(su)),[ox,oy]=MOFF[Math.min(2,i)];sp+=`<button class="iput up" data-w="unplace" style="left:${f1(cx+ox)}px;top:${f1(cy+oy-46)}px">보관함으로</button>`}}
   put('wsta',sp);
   const ords=new Set(field().map(x=>x.order).filter(Boolean)),box=$('#wspr'),keep=new Set();
@@ -2891,7 +2891,7 @@ const SND={on:true,ctx:null,bg:null,last:{}};try{SND.on=localStorage.getItem('ab
 function actx(){if(!SND.on)return null;try{if(!SND.ctx){SND.ctx=new(window.AudioContext||window.webkitAudioContext)();sndLoad(SND.ctx)}if(SND.ctx.state==='suspended')SND.ctx.resume()}catch(e){return null}return SND.ctx}
 function tone(c,f,d,type,v,f2,at){const t=c.currentTime+(at||0),o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(Math.max(20,f2),t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v||.1,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(c.destination);o.start(t);o.stop(t+d+.02)}
 function noise(c,d,v,fc,at){const t=c.currentTime+(at||0),n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=(Math.random()*2-1)*(1-i/n);const s_=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s_.buffer=b;f.type='bandpass';f.frequency.value=fc||800;f.Q.value=.9;g.gain.value=v||.2;s_.connect(f).connect(g).connect(c.destination);s_.start(t)}
-function sfx(k){const c=actx();if(!c)return;const now=performance.now(),gap={hit:55,crit:90,kill:80,ui:40,thud:160,coin:120}[k]||60;if(now-(SND.last[k]||0)<gap)return;SND.last[k]=now;if(k==='hit'&&Math.random()<.5&&sbuf(c,'slash'))return;if(sbuf(c,k))return;
+function sfx(k){const c=actx();if(!c)return;const now=performance.now(),gap={hit:55,crit:90,kill:80,ui:40,thud:900,coin:120}[k]||60;if(now-(SND.last[k]||0)<gap)return;SND.last[k]=now;if(k==='hit'&&Math.random()<.5&&sbuf(c,'slash'))return;if(sbuf(c,k))return;
   switch(k){case'hit':noise(c,.07,.22,1100);tone(c,170,.07,'square',.035,90);break;
     case'crit':noise(c,.12,.32,700);tone(c,120,.16,'sawtooth',.06,45);tone(c,900,.05,'square',.03,600);break;
     case'kill':tone(c,240,.38,'sawtooth',.06,50);noise(c,.28,.22,420);break;
@@ -2929,8 +2929,8 @@ function bgm(){const c=actx();if(!c||SND.bg)return;try{
     while(next<now+.35){const t=next,bar=Math.floor(step/8),e=step%8,ch=CH[bar%4];
       if(e===0)ch.forEach((m,i)=>pad(m+(i?12:0),t,beat*4,.016));
       if(e%2===0&&Math.random()<.28)bell(BL[Math.floor(Math.random()*BL.length)]+(Math.random()<.3?12:0),t,.022);
-      kick(t,e===0||e===4?.38:0.0001);if(e===6&&bar%2)tom(t,50,.2);if(e===7)tom(t,45,.16);
-      hat(t,e%2?.03:.05);bass(ch[0]-12+(e===3||e===7?7:0),t,beat*.45,.06);if(e===0&&bar%2===1)str(ch[2]+12,t,beat*3.5,.02);
+      if(e===0&&bar%2===0)kick(t,.26);
+      str(ch[e%2?1:2]+12,t,beat*.42,.012);bass(ch[0]-12,t,beat*.45,.045);if(e===0)str(ch[0]+24,t,beat*3.6,.014);
       next+=beat/2;step++}},100);
   SND.bg={iv,M}}catch(e){}}
 function sndSet(on){SND.on=on;try{localStorage.setItem('abyssroad.snd',on?'1':'0')}catch(e){}if(!on&&SND.bg){try{clearInterval(SND.bg.iv);SND.bg.M.gain.setTargetAtTime(0,SND.ctx.currentTime,.2);const M=SND.bg.M;setTimeout(()=>{try{M.disconnect()}catch(e){}},1500)}catch(e){}SND.bg=null}if(on)bgm()}
