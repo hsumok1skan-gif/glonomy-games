@@ -136,6 +136,8 @@
     .b-fun2 { background: linear-gradient(135deg, #fecdd3, #fb7185); }
     .b-draft { background: linear-gradient(135deg, #fdba74, #c2410c); color: #fff; font-size: 14px; }
     .k-draft { color: #fdba74; }
+    .b-sns { background: linear-gradient(135deg, #facc15, #f97316 55%, #ec4899); color: #0b1020; font-size: 16px; }
+    .k-sns { color: #f9a8d4; }
 
     .body { display: block; min-width: 0; }
     .kind { display: block; font-size: 11.5px; font-weight: 900; letter-spacing: 0.02em; }
@@ -211,8 +213,8 @@
       <button type="button" data-filter="all" class="active">전체</button>
       <button type="button" data-filter="study">학습</button>
       <button type="button" data-filter="game">게임</button>
-      <button type="button" data-filter="fun">병맛</button>
       <button type="button" data-filter="draft">후보</button>
+      <button type="button" data-filter="sns">SNS</button>
     </nav>
 
     <main class="list" id="list">
@@ -256,27 +258,6 @@
         <span class="go" aria-hidden="true">→</span>
       </a>
 
-      <p class="group-label" id="funLabel">병맛 미니게임</p>
-
-      <a class="item" data-cat="fun" href="./boss-kakao-dodge/index.html">
-        <span class="badge b-fun">야근</span>
-        <span class="body">
-          <span class="kind k-fun">병맛 · 카톡에서 살아남기</span>
-          <h3>잘못 읽으면 야근이다</h3>
-          <span class="desc">상사 카톡은 피하고 애인 카톡은 받는 회피 게임. 하나는 야근, 하나는 밤샘 사과.</span>
-        </span>
-        <span class="go" aria-hidden="true">→</span>
-      </a>
-
-      <a class="item" data-cat="fun" href="./mohongjangdm/index.html">
-        <span class="badge b-fun2">3사</span>
-        <span class="body">
-          <span class="kind k-fun">병맛 · 청춘 방어</span>
-          <h3>모홍장님, 저는 대학생인데요</h3>
-          <span class="desc">평온한 대학생활을 위협하는 3사 입교 권유를 피해 캠퍼스 라이프를 지켜 내세요.</span>
-        </span>
-        <span class="go" aria-hidden="true">→</span>
-      </a>
       <p class="group-label" id="draftLabel">후보 · 다듬는 중</p>
 
       <a class="item" data-cat="draft" href="./forge-box-game/index.html">
@@ -285,6 +266,38 @@
           <span class="kind k-draft">후보 · 강화 게임</span>
           <h3>+25까지만 하고 끕니다</h3>
           <span class="desc">상자를 열고 장비를 강화하세요. 딱 +25까지만 하고 끌 수 있을지.</span>
+        </span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+
+      <a class="item" data-cat="draft" href="./boss-kakao-dodge/index.html">
+        <span class="badge b-fun">야근</span>
+        <span class="body">
+          <span class="kind k-draft">후보 · 병맛 · 카톡에서 살아남기</span>
+          <h3>잘못 읽으면 야근이다</h3>
+          <span class="desc">상사 카톡은 피하고 애인 카톡은 받는 회피 게임. 하나는 야근, 하나는 밤샘 사과.</span>
+        </span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+
+      <a class="item" data-cat="draft" href="./mohongjangdm/index.html">
+        <span class="badge b-fun2">3사</span>
+        <span class="body">
+          <span class="kind k-draft">후보 · 병맛 · 청춘 방어</span>
+          <h3>모홍장님, 저는 대학생인데요</h3>
+          <span class="desc">평온한 대학생활을 위협하는 3사 입교 권유를 피해 캠퍼스 라이프를 지켜 내세요.</span>
+        </span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+
+      <p class="group-label" id="snsLabel">SNS · 콘텐츠</p>
+
+      <a class="item" data-cat="sns" href="./fx-tips/index.html">
+        <span class="badge b-sns">FX</span>
+        <span class="body">
+          <span class="kind k-sns">SNS · 게임 이펙트 TIP</span>
+          <h3>게임 이펙트 TIP</h3>
+          <span class="desc">모든 게임을 맛도리로 만드는 이펙트 모음. 효과를 하나씩 켜 보며 차이를 보고, 코드도 그대로 가져가세요.</span>
         </span>
         <span class="go" aria-hidden="true">→</span>
       </a>
@@ -299,7 +312,7 @@
     (() => {
       const tabs = document.querySelectorAll("#tabs button");
       const items = document.querySelectorAll("#list .item");
-      const labels = [document.getElementById("funLabel"), document.getElementById("draftLabel")];
+      const labels = [document.getElementById("draftLabel"), document.getElementById("snsLabel")];
 
       function apply(filter) {
         tabs.forEach(t => t.classList.toggle("active", t.dataset.filter === filter));
@@ -312,7 +325,7 @@
 
       let saved = "all";
       try { saved = localStorage.getItem("glonomy-tab") || "all"; } catch (e) {}
-      apply(["all", "study", "game", "fun", "draft"].includes(saved) ? saved : "all");
+      apply(["all", "study", "game", "draft", "sns"].includes(saved) ? saved : "all");
     })();
   </script>
 </body>
