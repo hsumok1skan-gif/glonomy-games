@@ -314,6 +314,30 @@
       x.fillStyle = mixc(light, dark, 0.93);
       x.beginPath(); for (let k = 0; k < n; k++) { const v = pt(k, rTop, topY); x[k ? "lineTo" : "moveTo"](v[0], v[1]); } x.closePath(); x.fill(); x.stroke();
     }
+    // 크리스털: 육각 기둥 + 위아래 피라미드. 면마다 명암, 반투명, 밝은 모서리
+    function facetCrystal(x, cx, topY, botY, r, capH, n, ry, light, dark) {
+      const off = Math.PI / n, y0 = topY + capH, y1 = botY - capH;
+      const ring = (k, y) => { const a = k * TAU / n + off; return [cx + Math.cos(a) * r, y + Math.sin(a) * ry]; };
+      const poly = (pts, fill) => { x.fillStyle = fill; x.beginPath(); pts.forEach((v, i) => x[i ? "lineTo" : "moveTo"](v[0], v[1])); x.closePath(); x.fill(); x.stroke(); };
+      x.lineJoin = "round"; x.lineWidth = 1.4; x.strokeStyle = `rgba(${light.join(",")},0.55)`;
+      x.globalAlpha = 0.9;
+      for (let k = 0; k < n; k++) {
+        const mid = (k + 0.5) * TAU / n + off;
+        if (Math.sin(mid) <= 0) continue;
+        const side = Math.max(0, Math.min(1, 0.55 - 0.5 * Math.cos(mid) + 0.12 * Math.sin(mid)));
+        poly([ring(k, y0), ring(k + 1, y0), ring(k + 1, y1), ring(k, y1)], mixc(light, dark, side * 0.85));
+        poly([[cx, topY], ring(k, y0), ring(k + 1, y0)], mixc(light, dark, Math.min(1, side * 0.7 + 0.32)));
+        poly([[cx, botY], ring(k, y1), ring(k + 1, y1)], mixc(light, dark, side * 0.5));
+      }
+      x.globalAlpha = 1;
+      // 안쪽 빛 한 줄과 왼쪽 모서리 반사
+      const g = x.createLinearGradient(cx - r * 0.3, 0, cx + r * 0.1, 0);
+      g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(0.5, "rgba(255,255,255,0.35)"); g.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = g; x.fillRect(cx - r * 0.3, y0 + 6, r * 0.4, y1 - y0 - 12);
+      x.strokeStyle = "rgba(255,255,255,0.9)"; x.lineWidth = 2;
+      const L = ring(n / 2 - 0.5 + 0.5, y0);
+      x.beginPath(); x.moveTo(cx, topY + 3); x.lineTo(cx - r * 0.86, y0); x.lineTo(cx - r * 0.86, y1); x.stroke();
+    }
     function facetTop(x, cx, cy, r, n, light, dark) {
       x.lineJoin = "round"; x.strokeStyle = "rgba(20,20,24,0.25)"; x.lineWidth = 1.4;
       for (let k = 0; k < n; k++) {
@@ -332,10 +356,13 @@
     }
     function makeSprites() {
       const S = {
-        // 주인공: 키 큰 팔각 원통 (면마다 다른 명암)
-        hero: mk(170, 260, x => facetCyl(x, 85, 34, 228, 62, 74, 8, 24, [246, 246, 244], [92, 94, 100])),
-        // 적: 낮고 뚱뚱한 팔각 원통
-        foe: mk(300, 190, x => facetCyl(x, 150, 40, 156, 120, 132, 8, 30, [255, 178, 160], [150, 52, 60])),
+        // 주인공: 위아래가 뾰족한 육각 크리스털 (맑은 얼음색, 서 있음)
+        hero: mk(170, 260, x => facetCrystal(x, 85, 6, 254, 64, 58, 6, 18, [236, 246, 255], [58, 82, 118])),
+        // 적: 누워 있는 붉은 크리스털
+        foe: mk(300, 190, x => {
+          const t = mk(190, 300, y => facetCrystal(y, 95, 6, 294, 74, 64, 6, 22, [255, 140, 156], [92, 8, 34]));
+          x.translate(0, 190); x.rotate(-Math.PI / 2); x.drawImage(t, 0, 0);
+        }),
         // 총
         gun: mk(240, 140, x => {
           x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
@@ -380,9 +407,9 @@
           x.fillStyle = "rgba(255,255,255,0.5)"; x.beginPath(); x.ellipse(40, 34, 12, 7, -0.6, 0, TAU); x.fill();
         }),
       };
-      // 위에서 본 주인공·적: 팔각형 윗면 (면마다 명암)
-      S.heroTop = mk(140, 140, x => { x.fillStyle = "#3a3f4b"; x.fillRect(70, 62, 70, 16); facetTop(x, 64, 70, 54, 8, [246, 246, 244], [92, 94, 100]); });
-      S.foeTop = mk(130, 130, x => facetTop(x, 65, 65, 56, 8, [255, 178, 160], [150, 52, 60]));
+      // 위에서 본 주인공·적: 육각 크리스털 꼭대기
+      S.heroTop = mk(140, 140, x => { x.fillStyle = "#3a3f4b"; x.fillRect(70, 62, 70, 16); facetTop(x, 64, 70, 54, 6, [236, 246, 255], [58, 82, 118]); });
+      S.foeTop = mk(130, 130, x => facetTop(x, 65, 65, 56, 6, [255, 140, 156], [92, 8, 34]));
       for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
       return Promise.resolve();
     }
