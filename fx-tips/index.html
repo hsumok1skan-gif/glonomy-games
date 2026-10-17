@@ -298,12 +298,25 @@
       x.fillStyle = lg(x, X, 0, X + W * 0.25, 0, [[0, "rgba(255,255,255,0.35)"], [1, "rgba(255,255,255,0)"]]); x.fillRect(X, Y, W * 0.25, H);
       x.restore();
     }
+    // 3D 느낌의 둥근 마디: 왼쪽 위에서 빛, 아래쪽 그늘, 작은 반사광
+    function seg(x, cx, cy, rx, ry, [light, base, dark]) {
+      const g = x.createRadialGradient(cx - rx * 0.35, cy - ry * 0.45, Math.min(rx, ry) * 0.1, cx, cy, Math.max(rx, ry) * 1.05);
+      g.addColorStop(0, light); g.addColorStop(0.55, base); g.addColorStop(1, dark);
+      x.fillStyle = g; x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, TAU); x.fill();
+      x.fillStyle = "rgba(255,255,255,0.55)"; x.beginPath(); x.ellipse(cx - rx * 0.38, cy - ry * 0.5, rx * 0.22, ry * 0.12, -0.5, 0, TAU); x.fill();
+    }
     function makeSprites() {
       const S = {
-        // 주인공: 아무것도 없는 막대 하나
-        hero: mk(140, 260, x => { x.fillStyle = "#e7e9ee"; x.beginPath(); x.roundRect(0, 0, 140, 260, 22); x.fill(); }),
-        // 적: 낮고 넓은 블록 하나
-        foe: mk(300, 190, x => { x.fillStyle = "#f2706b"; x.beginPath(); x.roundRect(0, 0, 300, 190, 26); x.fill(); }),
+        // 주인공: 서 있는 애벌레 (마디 4개, 얼굴 없음, 살짝 앞으로 숙임)
+        hero: mk(170, 260, x => {
+          const P = ["#fffaf0", "#efe4c8", "#b7a47e"];
+          seg(x, 80, 212, 66, 46, P); seg(x, 84, 168, 60, 44, P); seg(x, 92, 126, 55, 42, P); seg(x, 102, 82, 52, 46, P); seg(x, 112, 46, 44, 40, P);
+        }),
+        // 적: 기어가는 애벌레 (머리가 왼쪽, 살짝 들림)
+        foe: mk(300, 190, x => {
+          const P = ["#ddd0fa", "#9b7ad1", "#553a86"];
+          seg(x, 252, 146, 42, 34, P); seg(x, 196, 136, 52, 46, P); seg(x, 136, 126, 58, 56, P); seg(x, 72, 104, 60, 64, P);
+        }),
         // 총
         gun: mk(240, 140, x => {
           x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
@@ -348,12 +361,16 @@
           x.fillStyle = "rgba(255,255,255,0.5)"; x.beginPath(); x.ellipse(40, 34, 12, 7, -0.6, 0, TAU); x.fill();
         }),
       };
-      // 위에서 본 주인공·적: 원 하나 (주인공만 총구 방향 표시)
+      // 위에서 본 주인공·적: 마디가 보이는 둥근 몸 (주인공만 총구 방향 표시)
       S.heroTop = mk(140, 140, x => {
         x.fillStyle = "#3a3f4b"; x.fillRect(70, 62, 70, 16);
-        x.fillStyle = "#e7e9ee"; x.beginPath(); x.arc(64, 70, 52, 0, TAU); x.fill();
+        const P = ["#fffaf0", "#efe4c8", "#b7a47e"];
+        seg(x, 54, 70, 40, 40, P); seg(x, 72, 70, 44, 46, P);
       });
-      S.foeTop = mk(130, 130, x => { x.fillStyle = "#f2706b"; x.beginPath(); x.arc(65, 65, 54, 0, TAU); x.fill(); });
+      S.foeTop = mk(130, 130, x => {
+        const P = ["#ddd0fa", "#9b7ad1", "#553a86"];
+        seg(x, 82, 65, 40, 40, P); seg(x, 56, 65, 48, 50, P);
+      });
       for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
       return Promise.resolve();
     }
