@@ -245,12 +245,9 @@
       lin: t => t,
     };
 
-    /* ───────── 그림 ───────── */
-    const IMG_SRC = {
-      cat: "hold_huchu", gun: "it_pistol", rat: "rat_rat", crate: "ob_crate",
-      pine: "it_pinecone", churu: "food_churu", kibble: "food_kibble", fish: "food_mackerel",
-    };
+    /* ───────── 그림: 전부 코드로 그린 단순 도형 ───────── */
     const SPR = {};
+    const INK = "#0f172a";
     function tinted(src, color) {
       const c = document.createElement("canvas");
       c.width = src.width; c.height = src.height;
@@ -261,25 +258,82 @@
       x.fillRect(0, 0, c.width, c.height);
       return c;
     }
-    function loadImages() {
-      return Promise.all(Object.entries(IMG_SRC).map(([k, name]) => new Promise(res => {
-        const im = new Image();
-        im.onload = () => {
-          const c = document.createElement("canvas");
-          if (k === "cat") { c.width = im.width / 4; c.height = im.height; } // 4칸 시트의 첫 칸
-          else { c.width = im.width; c.height = im.height; }
-          c.getContext("2d").drawImage(im, 0, 0);
-          SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c") };
-          res();
-        };
-        im.onerror = () => {
-          const c = document.createElement("canvas"); c.width = c.height = 64;
-          const x = c.getContext("2d"); x.fillStyle = "#94a3b8"; x.beginPath(); x.arc(32, 32, 30, 0, TAU); x.fill();
-          SPR[k] = { c, white: tinted(c, "#fff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c") };
-          res();
-        };
-        im.src = "../sambundae/img/" + name + ".webp";
-      })));
+    function mk(w, h, draw) {
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      const x = c.getContext("2d"); x.lineJoin = "round"; x.lineCap = "round";
+      draw(x, w, h);
+      return c;
+    }
+    function rr(x, X, Y, W, H, R, fill, stroke = INK, lw = 10) {
+      x.beginPath(); x.roundRect(X, Y, W, H, R);
+      x.fillStyle = fill; x.fill();
+      if (stroke) { x.lineWidth = lw; x.strokeStyle = stroke; x.stroke(); }
+    }
+    function eye(x, cx, cy, r, look) {
+      x.fillStyle = "#fff"; x.beginPath(); x.ellipse(cx, cy, r * 0.8, r, 0, 0, Math.PI * 2); x.fill();
+      x.fillStyle = INK; x.beginPath(); x.arc(cx + look * r * 0.35, cy + r * 0.15, r * 0.45, 0, Math.PI * 2); x.fill();
+    }
+    function makeSprites() {
+      const S = {
+        // 주인공: 파란 네모 (오른쪽을 봄)
+        cat: mk(220, 260, x => {
+          rr(x, 10, 10, 200, 240, 64, "#38bdf8");
+          x.fillStyle = "rgba(255,255,255,0.28)"; x.beginPath(); x.ellipse(70, 60, 34, 20, -0.5, 0, Math.PI * 2); x.fill();
+          eye(x, 128, 100, 26, 1); eye(x, 180, 100, 26, 1);
+        }),
+        // 적: 분홍 덩어리 (왼쪽을 봄, 화난 눈썹)
+        rat: mk(300, 190, x => {
+          rr(x, 10, 30, 280, 150, 72, "#fb7185");
+          x.fillStyle = "rgba(255,255,255,0.25)"; x.beginPath(); x.ellipse(210, 66, 40, 16, 0.3, 0, Math.PI * 2); x.fill();
+          eye(x, 82, 100, 22, -1); eye(x, 134, 100, 22, -1);
+          x.strokeStyle = INK; x.lineWidth = 9;
+          x.beginPath(); x.moveTo(58, 66); x.lineTo(100, 78); x.moveTo(158, 66); x.lineTo(116, 78); x.stroke();
+        }),
+        // 총: 몸통 + 총열 + 손잡이
+        gun: mk(240, 140, x => {
+          rr(x, 50, 92, 46, 44, 10, "#1e293b", INK, 8);
+          rr(x, 40, 22, 120, 62, 14, "#475569", INK, 8);
+          rr(x, 140, 26, 94, 30, 8, "#334155", INK, 8);
+          x.fillStyle = "rgba(255,255,255,0.25)"; x.fillRect(52, 32, 90, 8);
+        }),
+        // 상자
+        crate: mk(200, 200, x => {
+          rr(x, 10, 10, 180, 180, 24, "#f59e0b");
+          rr(x, 10, 10, 180, 54, 24, "#fbbf24");
+          x.fillStyle = INK; x.font = "900 96px sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+          x.fillText("?", 100, 128);
+        }),
+        // 수류탄
+        pine: mk(120, 140, x => {
+          rr(x, 42, 8, 36, 30, 6, "#94a3b8", INK, 8);
+          x.beginPath(); x.arc(60, 84, 50, 0, Math.PI * 2); x.fillStyle = "#4d7c0f"; x.fill();
+          x.lineWidth = 9; x.strokeStyle = INK; x.stroke();
+          x.fillStyle = "rgba(255,255,255,0.3)"; x.beginPath(); x.ellipse(42, 66, 14, 9, -0.6, 0, Math.PI * 2); x.fill();
+        }),
+        // 동전
+        churu: mk(120, 120, x => {
+          x.beginPath(); x.arc(60, 60, 52, 0, Math.PI * 2); x.fillStyle = "#facc15"; x.fill();
+          x.lineWidth = 8; x.strokeStyle = INK; x.stroke();
+          x.beginPath(); x.arc(60, 60, 32, 0, Math.PI * 2); x.lineWidth = 7; x.strokeStyle = "#ca8a04"; x.stroke();
+          x.fillStyle = "rgba(255,255,255,0.55)"; x.beginPath(); x.ellipse(42, 38, 12, 7, -0.6, 0, Math.PI * 2); x.fill();
+        }),
+        // 보석
+        kibble: mk(120, 130, x => {
+          x.beginPath(); x.moveTo(60, 8); x.lineTo(110, 50); x.lineTo(60, 122); x.lineTo(10, 50); x.closePath();
+          x.fillStyle = "#22d3ee"; x.fill(); x.lineWidth = 8; x.strokeStyle = INK; x.stroke();
+          x.fillStyle = "rgba(255,255,255,0.45)"; x.beginPath(); x.moveTo(60, 18); x.lineTo(92, 48); x.lineTo(60, 48); x.closePath(); x.fill();
+        }),
+        // 하트
+        fish: mk(130, 120, x => {
+          x.beginPath(); x.moveTo(65, 108);
+          x.bezierCurveTo(10, 70, 6, 30, 36, 16); x.bezierCurveTo(52, 10, 62, 20, 65, 32);
+          x.bezierCurveTo(68, 20, 78, 10, 94, 16); x.bezierCurveTo(124, 30, 120, 70, 65, 108); x.closePath();
+          x.fillStyle = "#f43f5e"; x.fill(); x.lineWidth = 8; x.strokeStyle = INK; x.stroke();
+          x.fillStyle = "rgba(255,255,255,0.4)"; x.beginPath(); x.ellipse(40, 36, 11, 7, -0.6, 0, Math.PI * 2); x.fill();
+        }),
+      };
+      for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c") };
+      return Promise.resolve();
     }
 
     /* ───────── 소리 (파일 없이 합성) ───────── */
@@ -345,9 +399,9 @@
 
     /* ───────── 등장인물 ───────── */
     const ACTOR = {
-      cat: { spr: "cat", h: 150, flip: true, home: 120 },
-      rat: { spr: "rat", w: 200, home: 420, hp: 100 },
-      crate: { spr: "crate", h: 96, home: 420 },
+      cat: { spr: "cat", h: 140, home: 120 },
+      rat: { spr: "rat", w: 190, home: 420, hp: 100 },
+      crate: { spr: "crate", h: 90, home: 420 },
     };
 
     /* ───────── 엔진: 이펙트를 돌리는 작은 세계 ───────── */
@@ -679,7 +733,7 @@
     }
 
     /* ───────── 총·손 위치 ───────── */
-    const GUNW = 58;
+    const GUNW = 68;
     function gripPt(w) { const c = w.cat; return { x: c.x + c.ox + 28, y: G - 56 + (1 - c.sy) * 40 }; }
     function muzzle(w) {
       const g = w.gun, p = gripPt(w), gh = GUNW * SPR.gun.c.height / SPR.gun.c.width;
@@ -1470,7 +1524,7 @@
     document.addEventListener("keydown", e => { if (e.key === "Escape" && app.mode === "rec") exitRec(); });
 
     /* 시작 */
-    loadImages().then(() => {
+    makeSprites().then(() => {
       const hash = location.hash.slice(1);
       const idx = RECIPES.findIndex(r => r.id === hash);
       layout();
