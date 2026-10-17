@@ -300,29 +300,10 @@
     }
     function makeSprites() {
       const S = {
-        // 주인공: 둥근 기둥 + 연두색 바이저 (오른쪽을 봄)
-        hero: mk(220, 260, x => {
-          x.fillStyle = lg(x, 0, 14, 0, 246, [[0, "#f4f6fa"], [1, "#9aa5b8"]]);
-          x.beginPath(); x.roundRect(14, 22, 192, 224, 62); x.fill();
-          aoBottom(x, 14, 22, 192, 224, 62);
-          x.fillStyle = "#c6f432"; x.beginPath(); x.arc(84, 12, 8, 0, TAU); x.fill();
-          x.fillStyle = "#9aa5b8"; x.fillRect(81, 14, 6, 14);
-          x.fillStyle = lg(x, 0, 78, 0, 128, [[0, "#1a1f29"], [1, "#0b0e14"]]);
-          x.beginPath(); x.roundRect(92, 78, 120, 50, 25); x.fill();
-          glowBar(x, 112, 96, 78, 13, "#c6f432", 18);
-        }),
-        // 적: 낮은 돔 + 노란 눈 슬릿 (왼쪽을 봄)
-        foe: mk(300, 190, x => {
-          const body = () => { x.beginPath(); x.moveTo(14, 176); x.lineTo(14, 120); x.bezierCurveTo(14, 20, 286, 20, 286, 120); x.lineTo(286, 162); x.quadraticCurveTo(286, 176, 272, 176); x.closePath(); };
-          body(); x.fillStyle = lg(x, 0, 30, 0, 176, [[0, "#ff8f7a"], [1, "#c23450"]]); x.fill();
-          x.save(); body(); x.clip();
-          x.fillStyle = lg(x, 0, 120, 0, 176, [[0, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0.3)"]]); x.fillRect(0, 0, 300, 190);
-          x.fillStyle = rg(x, 200, 60, 0, 90, [[0, "rgba(255,255,255,0.35)"], [1, "rgba(255,255,255,0)"]]); x.fillRect(0, 0, 300, 190);
-          x.restore();
-          x.fillStyle = "#14090d"; x.beginPath(); x.roundRect(4, 86, 168, 42, 21); x.fill();
-          x.save(); x.translate(56, 106); x.rotate(0.16); glowBar(x, -26, -6, 52, 12, "#ffcf5a", 16); x.restore();
-          x.save(); x.translate(124, 106); x.rotate(-0.16); glowBar(x, -26, -6, 52, 12, "#ffcf5a", 16); x.restore();
-        }),
+        // 주인공: 아무것도 없는 막대 하나
+        hero: mk(140, 260, x => { x.fillStyle = "#e7e9ee"; x.beginPath(); x.roundRect(0, 0, 140, 260, 22); x.fill(); }),
+        // 적: 낮고 넓은 블록 하나
+        foe: mk(300, 190, x => { x.fillStyle = "#f2706b"; x.beginPath(); x.roundRect(0, 0, 300, 190, 26); x.fill(); }),
         // 총
         gun: mk(240, 140, x => {
           x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
@@ -367,20 +348,12 @@
           x.fillStyle = "rgba(255,255,255,0.5)"; x.beginPath(); x.ellipse(40, 34, 12, 7, -0.6, 0, TAU); x.fill();
         }),
       };
-      // 위에서 본 주인공·적 (오른쪽을 봄)
+      // 위에서 본 주인공·적: 원 하나 (주인공만 총구 방향 표시)
       S.heroTop = mk(140, 140, x => {
-        x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(96, 60, 42, 20, 6); x.fill();
-        x.fillStyle = rg(x, 70, 70, 6, 58, [[0, "#f4f6fa"], [1, "#8e9aae"]], 54, 50); x.beginPath(); x.arc(70, 70, 56, 0, TAU); x.fill();
-        x.fillStyle = "#0b0e14"; x.beginPath(); x.arc(70, 70, 44, -0.9, 0.9); x.arc(70, 70, 26, 0.9, -0.9, true); x.closePath(); x.fill();
-        x.save(); x.shadowColor = "#c6f432"; x.shadowBlur = 12; x.strokeStyle = "#c6f432"; x.lineWidth = 6; x.lineCap = "round";
-        x.beginPath(); x.arc(70, 70, 35, -0.6, 0.6); x.stroke(); x.restore();
+        x.fillStyle = "#3a3f4b"; x.fillRect(70, 62, 70, 16);
+        x.fillStyle = "#e7e9ee"; x.beginPath(); x.arc(64, 70, 52, 0, TAU); x.fill();
       });
-      S.foeTop = mk(130, 130, x => {
-        x.fillStyle = rg(x, 65, 65, 6, 56, [[0, "#ff9a85"], [1, "#b42d48"]], 80, 46); x.beginPath(); x.arc(65, 65, 54, 0, TAU); x.fill();
-        x.fillStyle = "#14090d"; x.beginPath(); x.arc(65, 65, 44, Math.PI - 0.9, Math.PI + 0.9); x.arc(65, 65, 24, Math.PI + 0.9, Math.PI - 0.9, true); x.closePath(); x.fill();
-        x.save(); x.shadowColor = "#ffcf5a"; x.shadowBlur = 10; x.fillStyle = "#ffcf5a";
-        x.beginPath(); x.arc(34, 50, 5, 0, TAU); x.arc(34, 80, 5, 0, TAU); x.fill(); x.restore();
-      });
+      S.foeTop = mk(130, 130, x => { x.fillStyle = "#f2706b"; x.beginPath(); x.arc(65, 65, 54, 0, TAU); x.fill(); });
       for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
       return Promise.resolve();
     }
