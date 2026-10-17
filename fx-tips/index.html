@@ -314,29 +314,31 @@
       x.fillStyle = mixc(light, dark, 0.93);
       x.beginPath(); for (let k = 0; k < n; k++) { const v = pt(k, rTop, topY); x[k ? "lineTo" : "moveTo"](v[0], v[1]); } x.closePath(); x.fill(); x.stroke();
     }
-    // 크리스털: 육각 기둥 + 위아래 피라미드. 면마다 명암, 반투명, 밝은 모서리
+    // 크리스털: 십각 기둥 + 위아래 두 단 피라미드. 면마다 명암, 반투명, 밝은 모서리
     function facetCrystal(x, cx, topY, botY, r, capH, n, ry, light, dark) {
-      const off = Math.PI / n, y0 = topY + capH, y1 = botY - capH;
-      const ring = (k, y) => { const a = k * TAU / n + off; return [cx + Math.cos(a) * r, y + Math.sin(a) * ry]; };
-      const poly = (pts, fill) => { x.fillStyle = fill; x.beginPath(); pts.forEach((v, i) => x[i ? "lineTo" : "moveTo"](v[0], v[1])); x.closePath(); x.fill(); x.stroke(); };
-      x.lineJoin = "round"; x.lineWidth = 1.4; x.strokeStyle = `rgba(${light.join(",")},0.55)`;
-      x.globalAlpha = 0.9;
+      const off = Math.PI / n, y0 = topY + capH, y1 = botY - capH, rA = r * 0.58;
+      const yA0 = topY + capH * 0.5, yA1 = botY - capH * 0.5;
+      const ring = (k, y, rr, tw = 0) => { const a = (k + tw) * TAU / n + off; return [cx + Math.cos(a) * rr, y + Math.sin(a) * ry * rr / r]; };
+      const poly = (pts, t) => { x.fillStyle = mixc(light, dark, Math.max(0, Math.min(1, t))); x.beginPath(); pts.forEach((v, i) => x[i ? "lineTo" : "moveTo"](v[0], v[1])); x.closePath(); x.fill(); x.stroke(); };
+      x.lineJoin = "round"; x.lineWidth = 1.2; x.strokeStyle = `rgba(${light.join(",")},0.5)`;
+      x.globalAlpha = 0.92;
       for (let k = 0; k < n; k++) {
         const mid = (k + 0.5) * TAU / n + off;
-        if (Math.sin(mid) <= 0) continue;
-        const side = Math.max(0, Math.min(1, 0.55 - 0.5 * Math.cos(mid) + 0.12 * Math.sin(mid)));
-        poly([ring(k, y0), ring(k + 1, y0), ring(k + 1, y1), ring(k, y1)], mixc(light, dark, side * 0.85));
-        poly([[cx, topY], ring(k, y0), ring(k + 1, y0)], mixc(light, dark, Math.min(1, side * 0.7 + 0.32)));
-        poly([[cx, botY], ring(k, y1), ring(k + 1, y1)], mixc(light, dark, side * 0.5));
+        if (Math.sin(mid) <= -0.05) continue;
+        const sd = 0.55 - 0.5 * Math.cos(mid) + 0.12 * Math.sin(mid) + (k % 2 ? 0.06 : -0.04);
+        poly([ring(k, y0, r), ring(k + 1, y0, r), ring(k + 1, y1, r), ring(k, y1, r)], sd * 0.85);
+        poly([ring(k, yA0, rA, 0.5), ring(k + 1, yA0, rA, 0.5), ring(k + 1, y0, r), ring(k, y0, r)], sd * 0.75 + 0.18);
+        poly([[cx, topY], ring(k, yA0, rA, 0.5), ring(k + 1, yA0, rA, 0.5)], sd * 0.6 + 0.36);
+        poly([ring(k, yA1, rA, 0.5), ring(k + 1, yA1, rA, 0.5), ring(k + 1, y1, r), ring(k, y1, r)], sd * 0.6 - 0.05);
+        poly([[cx, botY], ring(k, yA1, rA, 0.5), ring(k + 1, yA1, rA, 0.5)], sd * 0.45 - 0.1);
       }
       x.globalAlpha = 1;
-      // 안쪽 빛 한 줄과 왼쪽 모서리 반사
-      const g = x.createLinearGradient(cx - r * 0.3, 0, cx + r * 0.1, 0);
-      g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(0.5, "rgba(255,255,255,0.35)"); g.addColorStop(1, "rgba(255,255,255,0)");
-      x.fillStyle = g; x.fillRect(cx - r * 0.3, y0 + 6, r * 0.4, y1 - y0 - 12);
-      x.strokeStyle = "rgba(255,255,255,0.9)"; x.lineWidth = 2;
-      const L = ring(n / 2 - 0.5 + 0.5, y0);
-      x.beginPath(); x.moveTo(cx, topY + 3); x.lineTo(cx - r * 0.86, y0); x.lineTo(cx - r * 0.86, y1); x.stroke();
+      const g = x.createLinearGradient(cx - r * 0.35, 0, cx + r * 0.05, 0);
+      g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(0.5, "rgba(255,255,255,0.32)"); g.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = g; x.fillRect(cx - r * 0.35, y0 + 6, r * 0.4, y1 - y0 - 12);
+      x.strokeStyle = "rgba(255,255,255,0.9)"; x.lineWidth = 1.8;
+      const e0 = ring(n / 2 - 0.5, yA0, rA, 0.5), e1 = ring(n / 2 - 0.5, y0, r), e2 = ring(n / 2 - 0.5, y1, r);
+      x.beginPath(); x.moveTo(cx, topY + 2); x.lineTo(e0[0], e0[1]); x.lineTo(e1[0], e1[1]); x.lineTo(e2[0], e2[1]); x.stroke();
     }
     function facetTop(x, cx, cy, r, n, light, dark) {
       x.lineJoin = "round"; x.strokeStyle = "rgba(20,20,24,0.25)"; x.lineWidth = 1.4;
@@ -357,12 +359,9 @@
     function makeSprites() {
       const S = {
         // 주인공: 위아래가 뾰족한 육각 크리스털 (맑은 얼음색, 서 있음)
-        hero: mk(170, 260, x => facetCrystal(x, 85, 6, 254, 64, 58, 6, 18, [236, 246, 255], [58, 82, 118])),
-        // 적: 누워 있는 붉은 크리스털
-        foe: mk(300, 190, x => {
-          const t = mk(190, 300, y => facetCrystal(y, 95, 6, 294, 74, 64, 6, 22, [255, 140, 156], [92, 8, 34]));
-          x.translate(0, 190); x.rotate(-Math.PI / 2); x.drawImage(t, 0, 0);
-        }),
+        hero: mk(170, 260, x => facetCrystal(x, 85, 6, 254, 66, 66, 10, 18, [236, 246, 255], [58, 82, 118])),
+        // 적: 서 있는 붉은 크리스털 (더 굵고 낮음)
+        foe: mk(200, 250, x => facetCrystal(x, 100, 6, 244, 86, 64, 10, 22, [255, 140, 156], [92, 8, 34])),
         // 총
         gun: mk(240, 140, x => {
           x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
@@ -408,8 +407,8 @@
         }),
       };
       // 위에서 본 주인공·적: 육각 크리스털 꼭대기
-      S.heroTop = mk(140, 140, x => { x.fillStyle = "#3a3f4b"; x.fillRect(70, 62, 70, 16); facetTop(x, 64, 70, 54, 6, [236, 246, 255], [58, 82, 118]); });
-      S.foeTop = mk(130, 130, x => facetTop(x, 65, 65, 56, 6, [255, 140, 156], [92, 8, 34]));
+      S.heroTop = mk(140, 140, x => { x.fillStyle = "#3a3f4b"; x.fillRect(70, 62, 70, 16); facetTop(x, 64, 70, 54, 10, [236, 246, 255], [58, 82, 118]); });
+      S.foeTop = mk(130, 130, x => facetTop(x, 65, 65, 56, 10, [255, 140, 156], [92, 8, 34]));
       for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
       return Promise.resolve();
     }
@@ -502,7 +501,7 @@
     /* ───────── 등장인물 ───────── */
     const ACTOR = {
       hero: { spr: "hero", h: 140, home: 120 },
-      foe: { spr: "foe", w: 190, home: 420, hp: 100 },
+      foe: { spr: "foe", h: 150, home: 420, hp: 100 },
       crate: { spr: "crate", h: 90, home: 420 },
       heroTop: { spr: "heroTop", h: 54, home: 130, top: true },
       foeTop: { spr: "foeTop", h: 50, home: 450, top: true, hp: 30 },
@@ -1209,7 +1208,7 @@
           w.busy = true;
           const c = w.hero;
           const strike = () => {
-            const at = { x: c.x + 70, y: G - 60 }, r = w.foe;
+            const at = { x: c.x + c.w / 2 + 10, y: G - 60 }, r = w.foe;
             w.emit("swing", at);
             if (r.alive) {
               r.hp -= 25;
@@ -1219,7 +1218,7 @@
             }
             w.after(0.1, () => w.tween(c, { x: c.home }, 0.24, "inout", () => { w.busy = false; }));
           };
-          const dash = () => w.tween(c, { x: w.foe.x - 150 }, 0.09, "in", strike);
+          const dash = () => w.tween(c, { x: w.foe.x - w.foe.w / 2 - c.w / 2 - 6 }, 0.09, "in", strike);
           if (w.on("windup")) { w.emit("windup"); w.after(0.14, dash); } else dash();
         },
         drawHud(w, ctx) { drawBar(ctx, w.foe); },
@@ -1395,7 +1394,7 @@
           if (w.busy) return;
           w.busy = true;
           const r = w.foe, c = w.hero;
-          w.tween(r, { x: c.x + 150 }, 0.13, "in", () => {
+          w.tween(r, { x: c.x + c.w / 2 + r.w / 2 + 2 }, 0.13, "in", () => {
             c.hp -= 17;
             w.emit("hurt", c);
             if (c.hp <= 0) w.after(0.5, () => w.tween(c, { hp: 100 }, 0.5, "out"));
@@ -1539,7 +1538,7 @@
           const m = muzzle(w), pellets = [];
           for (let i = 0; i < 7; i++) {
             const b = { x: m.x, y: m.y, vx: 1500, vy: (i - 3) * 12, r: 2.5, color: "#cbd5e1" };
-            b.test = p => { const f = w.foe; return f.alive && p.x >= f.x - 85 && Math.abs(p.y - (f.gy - f.h / 2)) < f.h / 2; };
+            b.test = p => { const f = w.foe; return f.alive && p.x >= f.x - f.w / 2 - 6 && Math.abs(p.y - (f.gy - f.h / 2)) < f.h / 2; };
             b.onHit = () => { const f = w.foe; if (!f.alive) return; f.hp -= 6; w.emit("hit", { x: b.x, y: b.y }); if (f.hp <= 0) w.kill(f); };
             pellets.push(b);
           }
@@ -2180,7 +2179,7 @@
         title: { en: "Make RPG hits *land*", ko: "RPG 공격이 *꽂히게*" },
         intro: { en: "Attack. A bar gets shorter. *That's it.*", ko: "공격. 바가 줄어든다. *끝.*" },
         interval: 1.45, stepDur: 3.6,
-        setup(w) { w.hero = w.actor("hero", { home: 110, h: 120 }); w.foe = w.actor("foe", { home: 410, w: 230, hp: 300 }); w.turn = 0; },
+        setup(w) { w.hero = w.actor("hero", { home: 110, h: 120 }); w.foe = w.actor("foe", { home: 410, h: 196, hp: 300 }); w.turn = 0; },
         fire(w) {
           if (w.busy) return;
           w.busy = true; w.turn++;
