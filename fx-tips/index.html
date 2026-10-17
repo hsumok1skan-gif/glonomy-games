@@ -8,172 +8,172 @@
   <meta name="theme-color" content="#070a12" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     :root {
-      --bg: #070a12;
-      --panel: #111827;
-      --text: #f8fafc;
-      --muted: #a7b0c0;
-      --line: rgba(255, 255, 255, 0.11);
-      --soft: rgba(255, 255, 255, 0.05);
-      --yellow: #facc15;
+      --bg: #0b0c0f;
+      --panel: #131418;
+      --panel-2: #191a20;
+      --text: #f4f4f5;
+      --muted: #8b8d98;
+      --dim: #4b4d57;
+      --line: rgba(255, 255, 255, 0.09);
+      --acc: #c6f432;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
       color-scheme: dark;
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
-      background: radial-gradient(circle at 50% 0%, rgba(250, 204, 21, 0.08), transparent 40%), var(--bg);
-      color: var(--text);
-      word-break: keep-all;
-      -webkit-tap-highlight-color: transparent;
+      margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+      font-family: var(--sans); word-break: keep-all; -webkit-tap-highlight-color: transparent;
     }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; color: inherit; cursor: pointer; }
     .page { width: min(760px, 100%); margin: 0 auto; padding: 14px 16px calc(40px + env(safe-area-inset-bottom, 0px)); }
 
-    header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .back { color: var(--muted); font-size: 13px; font-weight: 700; padding: 6px 0; }
-    h1 { margin: 6px 0 2px; font-family: "Black Han Sans", sans-serif; font-weight: 400; font-size: 28px; letter-spacing: -0.01em; }
-    h1 em { font-style: normal; color: var(--yellow); }
-    .lead { margin: 0 0 14px; color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+    header { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    header .back { padding: 6px 0; }
+    header .ver { color: var(--dim); }
+    h1 { margin: 14px 0 4px; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+    h1 small { display: block; margin-bottom: 6px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--acc); }
+    .lead { margin: 0 0 16px; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
 
-    .recipes { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin: 0 -16px 12px; padding-left: 16px; padding-right: 16px; scrollbar-width: none; }
-    .recipes::-webkit-scrollbar { display: none; }
-    .rc {
-      flex: 0 0 auto; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line);
-      background: var(--soft); color: var(--muted); font-size: 13.5px; font-weight: 800; white-space: nowrap;
-    }
-    .rc b { color: var(--yellow); margin-right: 4px; }
-    .rc.active { background: var(--yellow); color: #0b1020; border-color: var(--yellow); }
-    .rc.active b { color: #0b1020; }
+    .recipes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--line); }
+    .rc { padding: 10px 10px 11px; border: 0; background: var(--panel); text-align: left; font-size: 13px; font-weight: 700; color: var(--muted); }
+    .rc b { display: block; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim); margin-bottom: 2px; }
+    .rc.active { background: var(--panel-2); color: var(--text); box-shadow: inset 0 -2px 0 var(--acc); }
+    .rc.active b { color: var(--acc); }
 
     .stage-wrap { display: flex; justify-content: center; }
     .stage {
       --u: 0.7px;
-      position: relative;
-      width: min(100%, 430px, calc((100vh - 150px) * 9 / 16));
-      aspect-ratio: 9 / 16;
-      border-radius: 22px;
-      overflow: hidden;
-      background: #0a0e1a;
-      border: 1px solid var(--line);
-      touch-action: manipulation;
-      user-select: none;
-      -webkit-user-select: none;
+      position: relative; width: min(100%, 430px, calc((100vh - 150px) * 9 / 16)); aspect-ratio: 9 / 16;
+      border-radius: 14px; overflow: hidden; background: var(--bg); border: 1px solid var(--line);
+      touch-action: manipulation; user-select: none; -webkit-user-select: none;
     }
     @supports (height: 100svh) { .stage { width: min(100%, 430px, calc((100svh - 150px) * 9 / 16)); } }
     .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-    .ov { position: absolute; inset: 0; pointer-events: none; text-align: center; }
-    .ov-top { position: absolute; left: 0; right: 0; top: calc(var(--u) * 56); }
-    .tag { font-size: calc(var(--u) * 17); font-weight: 900; letter-spacing: 0.22em; color: var(--yellow); opacity: 0.9; }
+    .ov { position: absolute; inset: 0; pointer-events: none; }
+    .ov .m { font-family: var(--mono); font-weight: 700; letter-spacing: 0.08em; }
+    .u { position: absolute; }
+
+    .hd { left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 30); display: flex; justify-content: space-between; font-size: calc(var(--u) * 15); color: var(--muted); }
+    .hd span:first-child { color: var(--acc); }
     #ovTitle {
-      margin: calc(var(--u) * 12) calc(var(--u) * 28) 0;
-      font-family: "Black Han Sans", sans-serif; font-weight: 400;
-      font-size: calc(var(--u) * 52); line-height: 1.12; color: #fff;
-      text-shadow: 0 calc(var(--u) * 4) 0 rgba(0, 0, 0, 0.45);
+      left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 62); margin: 0;
+      font-size: calc(var(--u) * 46); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; color: var(--text);
     }
-    #ovTitle em, #ovCap em, .cta em { font-style: normal; color: var(--yellow); }
-    .pill {
-      display: inline-flex; align-items: center; gap: calc(var(--u) * 10);
-      margin-top: calc(var(--u) * 22); padding: calc(var(--u) * 8) calc(var(--u) * 22) calc(var(--u) * 8) calc(var(--u) * 8);
-      border-radius: 999px; background: var(--yellow); color: #0b1020;
-      font-weight: 900; font-size: calc(var(--u) * 25); letter-spacing: -0.01em;
+    #ovTitle em { font-style: normal; color: var(--acc); }
+
+    .vh { font-size: calc(var(--u) * 13); color: var(--muted); }
+    .vh.tl { left: calc(var(--u) * 32); top: calc(var(--u) * 202); }
+    .vh.tl::before { content: ""; display: inline-block; width: calc(var(--u) * 8); height: calc(var(--u) * 8); margin-right: calc(var(--u) * 8); border-radius: 50%; background: #ef4444; vertical-align: middle; transform: translateY(-10%); }
+    .vh.tr { right: calc(var(--u) * 32); top: calc(var(--u) * 202); }
+    .vh.bl { left: calc(var(--u) * 32); top: calc(var(--u) * 524); }
+    .vh.br { right: calc(var(--u) * 32); top: calc(var(--u) * 524); }
+    .vh.hot { color: var(--acc); }
+
+    .cap { left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 574); }
+    .cap .k { font-size: calc(var(--u) * 15); color: var(--acc); margin-bottom: calc(var(--u) * 8); }
+    #ovCap { margin: 0; font-size: calc(var(--u) * 28); font-weight: 600; line-height: 1.35; letter-spacing: -0.015em; color: var(--text); }
+    #ovCap em { font-style: normal; color: var(--acc); }
+
+    .stack { left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 676); margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .stack li {
+      display: grid; grid-template-columns: calc(var(--u) * 40) 1fr auto calc(var(--u) * 48); align-items: center;
+      height: calc(var(--u) * 30); padding: 0 calc(var(--u) * 6); border-bottom: 1px solid var(--line);
+      font-size: calc(var(--u) * 17); color: var(--dim); transition: background .2s, color .2s;
     }
-    .pill b {
-      display: grid; place-items: center; width: calc(var(--u) * 38); height: calc(var(--u) * 38);
-      border-radius: 50%; background: #0b1020; color: var(--yellow); font-size: calc(var(--u) * 21);
-    }
-    .pill.plain { padding: calc(var(--u) * 8) calc(var(--u) * 22); }
-    .ov-bot { position: absolute; left: calc(var(--u) * 26); right: calc(var(--u) * 26); top: calc(var(--u) * 696); }
-    #ovCap {
-      margin: 0; font-weight: 900; font-size: calc(var(--u) * 35); line-height: 1.32; color: #fff;
-      text-shadow: 0 calc(var(--u) * 3) 0 rgba(0, 0, 0, 0.5);
-    }
-    .dots { position: absolute; left: 0; right: 0; top: calc(var(--u) * 866); display: flex; justify-content: center; gap: calc(var(--u) * 9); }
-    .dots i {
-      display: grid; place-items: center; width: calc(var(--u) * 26); height: calc(var(--u) * 26); border-radius: 50%;
-      border: calc(var(--u) * 2.5) solid rgba(250, 204, 21, 0.45); font-style: normal;
-      font-size: calc(var(--u) * 13); font-weight: 900; color: rgba(250, 204, 21, 0.6);
-    }
-    .dots i.on { background: rgba(250, 204, 21, 0.25); border-color: var(--yellow); color: var(--yellow); }
-    .dots i.cur { background: var(--yellow); color: #0b1020; transform: scale(1.18); }
-    .ov-lab {
-      position: absolute; display: none; left: calc(var(--u) * 70);
-      font-family: "Black Han Sans", sans-serif; font-size: calc(var(--u) * 26); letter-spacing: 0.06em;
-    }
-    .ov-lab.a { top: calc(var(--u) * 242); color: #94a3b8; }
-    .ov-lab.b { top: calc(var(--u) * 558); color: var(--yellow); }
-    .stage.split .ov-lab { display: block; }
-    .stage.split .ov-bot, .stage.split .dots, .stage.split .pill, .stage.cta-on .dots { display: none; }
+    .stack li i, .stack li em, .stack li s { font-family: var(--mono); font-style: normal; text-decoration: none; font-size: calc(var(--u) * 13); font-weight: 700; letter-spacing: 0.04em; }
+    .stack li b { font-weight: 600; }
+    .stack li em { padding-right: calc(var(--u) * 12); }
+    .stack li s { text-align: right; }
+    .stack li.on { color: var(--text); }
+    .stack li.on em { color: var(--muted); }
+    .stack li.on s { color: var(--acc); }
+    .stack li.cur { background: rgba(198, 244, 50, 0.09); box-shadow: inset calc(var(--u) * 3) 0 0 var(--acc); }
+    .stack li.cur i { color: var(--acc); }
+
+    .ab { display: none; font-size: calc(var(--u) * 14); left: calc(var(--u) * 32); }
+    .ab.a { top: calc(var(--u) * 202); color: var(--muted); }
+    .ab.b { top: calc(var(--u) * 522); color: var(--acc); }
+    .abnote { display: none; left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 838); font-size: calc(var(--u) * 26); font-weight: 600; line-height: 1.35; }
+    .abnote em { font-style: normal; color: var(--acc); }
+    .stage.split .ab, .stage.split .abnote { display: block; }
+    .stage.split .vh, .stage.split .cap, .stage.split .stack { display: none; }
+
     .cta {
-      position: absolute; inset: 0; display: grid; place-content: center; gap: calc(var(--u) * 18);
-      padding: 0 calc(var(--u) * 30); background: rgba(5, 7, 13, 0.74);
-      opacity: 0; transition: opacity 0.35s;
+      left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 572); height: calc(var(--u) * 344);
+      display: grid; align-content: center; gap: calc(var(--u) * 14); padding: 0 calc(var(--u) * 28);
+      border: 1px solid rgba(198, 244, 50, 0.45); border-radius: calc(var(--u) * 14); background: #0f110b;
+      opacity: 0; transition: opacity .35s;
     }
-    .cta.show { opacity: 1; }
-    .cta .q { font-family: "Black Han Sans", sans-serif; font-size: calc(var(--u) * 60); line-height: 1.1; }
-    .cta .c { font-weight: 900; font-size: calc(var(--u) * 36); line-height: 1.35; }
-    .cta .c em { display: inline-block; padding: 0 calc(var(--u) * 14); border-radius: calc(var(--u) * 10); background: var(--yellow); color: #0b1020; }
-    .cta .s { font-weight: 700; font-size: calc(var(--u) * 24); color: #cbd5e1; }
-    .hint { position: absolute; left: 0; right: 0; bottom: calc(var(--u) * 14); font-size: calc(var(--u) * 18); font-weight: 700; color: rgba(255, 255, 255, 0.35); }
-    .pop { animation: pop 0.32s cubic-bezier(.2, 1.4, .4, 1) both; }
-    @keyframes pop { from { opacity: 0; transform: translateY(calc(var(--u) * 14)) scale(0.94); } to { opacity: 1; transform: none; } }
+    .cta .t { font-size: calc(var(--u) * 15); color: var(--acc); }
+    .cta .q { font-size: calc(var(--u) * 54); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+    .cta .q em { font-style: normal; color: var(--acc); }
+    .cta .c { font-size: calc(var(--u) * 26); font-weight: 600; color: var(--text); line-height: 1.35; }
+    .cta .s { font-size: calc(var(--u) * 14); color: var(--muted); }
+    .stage.cta-on .cta { opacity: 1; }
+    .stage.cta-on .cap, .stage.cta-on .stack { opacity: 0; }
+
+    .ft { left: calc(var(--u) * 20); right: calc(var(--u) * 20); bottom: calc(var(--u) * 18); display: flex; justify-content: space-between; font-size: calc(var(--u) * 13); color: var(--dim); }
+    .pop { animation: pop .28s ease-out both; }
+    @keyframes pop { from { opacity: 0; transform: translateY(calc(var(--u) * 8)); } to { opacity: 1; transform: none; } }
 
     .ready {
       position: absolute; inset: 0; z-index: 3; display: none; place-content: center; gap: 12px; padding: 24px;
-      background: rgba(5, 7, 13, 0.94); text-align: center; font-weight: 800; line-height: 1.6;
+      background: rgba(11, 12, 15, 0.95); text-align: center; line-height: 1.6;
     }
-    .ready strong { font-size: 20px; color: var(--yellow); }
-    .ready span { color: var(--muted); font-size: 14px; }
+    .ready strong { font-size: 18px; }
+    .ready span { color: var(--muted); font-size: 13.5px; }
+    .ready code { font-family: var(--mono); color: var(--acc); font-size: 12px; letter-spacing: .1em; }
 
-    .ctrl { margin-top: 14px; display: grid; gap: 12px; }
-    .label { font-size: 12px; font-weight: 900; color: var(--muted); letter-spacing: 0.06em; margin: 0 2px -4px; }
-    .steps { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ctrl { margin-top: 14px; display: grid; gap: 10px; }
+    .label { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; margin: 6px 2px -2px; }
+    .steps { display: grid; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
     .chip {
-      padding: 8px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft);
-      color: var(--muted); font-size: 13px; font-weight: 800;
+      display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 6px; padding: 10px 12px;
+      border: 0; border-bottom: 1px solid var(--line); background: var(--panel); text-align: left; font-size: 14px; font-weight: 600; color: var(--dim);
     }
-    .chip.on { background: rgba(250, 204, 21, 0.14); border-color: rgba(250, 204, 21, 0.5); color: #fde68a; }
-    .chip.cur { background: var(--yellow); border-color: var(--yellow); color: #0b1020; }
-    .row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .btn {
-      padding: 11px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel);
-      font-size: 13.5px; font-weight: 800;
-    }
-    .btn.primary { background: var(--yellow); color: #0b1020; border-color: var(--yellow); flex: 1 1 100%; font-size: 15px; padding: 13px; }
+    .chip:last-child { border-bottom: 0; }
+    .chip i, .chip em { font-family: var(--mono); font-style: normal; font-size: 11.5px; font-weight: 700; }
+    .chip em { color: var(--dim); }
+    .chip.on { color: var(--text); }
+    .chip.on em { color: var(--muted); }
+    .chip.cur { background: var(--panel-2); color: var(--text); box-shadow: inset 3px 0 0 var(--acc); }
+    .chip.cur i { color: var(--acc); }
+    .row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .btn { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); font-size: 13px; font-weight: 700; }
+    .btn.primary { flex: 1 1 100%; padding: 13px; border-color: var(--acc); background: var(--acc); color: #10120a; font-size: 14.5px; font-weight: 800; }
     .btn[aria-pressed="false"] { color: var(--muted); }
-    .btn[aria-pressed="true"] { border-color: rgba(250, 204, 21, 0.5); }
+    .btn[aria-pressed="true"] { border-color: rgba(198, 244, 50, 0.5); color: var(--acc); }
 
-    .code { margin-top: 22px; }
+    .code { margin-top: 26px; }
     .code h2 { font-size: 17px; margin: 0 0 4px; }
-    .code p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .cs { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); margin-bottom: 10px; overflow: hidden; }
-    .cs-h { display: flex; align-items: center; gap: 8px; padding: 10px 12px; font-weight: 800; font-size: 14px; }
-    .cs-h b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--yellow); color: #0b1020; font-size: 12px; flex: none; }
+    .code p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .code p b { font-family: var(--mono); color: var(--text); font-weight: 700; }
+    .cs { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); margin-bottom: 8px; overflow: hidden; }
+    .cs-h { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-weight: 700; font-size: 14px; }
+    .cs-h b { font-family: var(--mono); font-size: 11.5px; color: var(--acc); flex: none; }
     .cs-h span { flex: 1; min-width: 0; }
-    .cs-h small { color: var(--muted); font-weight: 700; }
-    .copy { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--soft); font-size: 12px; font-weight: 800; flex: none; }
-    pre {
-      margin: 0; padding: 12px; overflow-x: auto; background: #0a0f1d; border-top: 1px solid var(--line);
-      font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #d6deeb;
-    }
+    .cs-h small { color: var(--muted); font-weight: 600; }
+    .copy { padding: 5px 9px; border-radius: 6px; border: 1px solid var(--line); background: transparent; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--muted); flex: none; }
+    pre { margin: 0; padding: 12px; overflow-x: auto; background: #0d0e11; border-top: 1px solid var(--line); font: 12px/1.6 var(--mono); color: #d4d4d8; }
     details.cs summary { list-style: none; cursor: pointer; }
     details.cs summary::-webkit-details-marker { display: none; }
     .toast {
       position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
-      padding: 10px 16px; border-radius: 999px; background: var(--yellow); color: #0b1020; font-weight: 900; font-size: 13px;
+      padding: 9px 14px; border-radius: 8px; background: var(--acc); color: #10120a; font-family: var(--mono); font-weight: 700; font-size: 12px;
       opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 60;
     }
     .toast.show { opacity: 1; }
 
     body.rec { overflow: hidden; }
-    body.rec .stage-wrap { position: fixed; inset: 0; z-index: 50; background: #05070d; align-items: center; }
+    body.rec .stage-wrap { position: fixed; inset: 0; z-index: 50; background: var(--bg); align-items: center; }
     body.rec .stage { width: min(100vw, calc(100vh * 9 / 16)); border-radius: 0; border: 0; }
     @supports (height: 100svh) { body.rec .stage { width: min(100vw, calc(100svh * 9 / 16)); } }
-    body.rec .hint { display: none; }
     body.rec.rec-ready .ready { display: grid; }
     @media (prefers-reduced-motion: reduce) { .pop { animation: none; } }
   </style>
@@ -181,10 +181,11 @@
 <body>
   <div class="page">
     <header>
-      <a class="back" href="../index.html">← GLONOMY Games</a>
+      <a class="back" href="../index.html">← GLONOMY</a>
+      <span class="ver">fx-tips / v2</span>
     </header>
-    <h1>게임 이펙트 <em>TIP</em></h1>
-    <p class="lead">모든 게임을 맛도리로 만드는 이펙트 모음. 효과를 하나씩 켜 보며 차이를 보고, 코드도 그대로 가져가세요.</p>
+    <h1><small>GAME FEEL LAB</small>게임 이펙트 TIP</h1>
+    <p class="lead">효과 없는 상태에서 시작해 레이어를 하나씩 쌓습니다. 무엇이 손맛을 만드는지 눈으로 확인하고, 코드는 그대로 가져가세요.</p>
 
     <nav class="recipes" id="recipes" aria-label="이펙트 종류"></nav>
 
@@ -192,19 +193,22 @@
       <div class="stage" id="stage">
         <canvas id="cv"></canvas>
         <div class="ov">
-          <div class="ov-top">
-            <div class="tag" id="ovTag"></div>
-            <h2 id="ovTitle"></h2>
-            <div class="pill" id="ovPill"></div>
-          </div>
-          <div class="ov-lab a">BEFORE</div>
-          <div class="ov-lab b">AFTER</div>
-          <div class="ov-bot"><p id="ovCap"></p></div>
-          <div class="dots" id="ovDots"></div>
-          <div class="cta" id="ovCta"></div>
-          <div class="hint" id="ovHint">화면을 탭하면 발사</div>
+          <div class="u hd m"><span>FX BREAKDOWN</span><span id="ovIdx"></span></div>
+          <h2 class="u" id="ovTitle"></h2>
+          <div class="u vh tl m">VIEWPORT</div>
+          <div class="u vh tr m" id="ovTime">TIME 1.00×</div>
+          <div class="u vh bl m" id="ovFrame">F 00000</div>
+          <div class="u vh br m" id="ovLayers">LAYERS 0/0</div>
+          <div class="u ab a m">A — NO FX</div>
+          <div class="u ab b m" id="ovAB">B — ALL LAYERS</div>
+          <div class="u abnote" id="ovABNote"></div>
+          <div class="u cap"><div class="k m" id="ovKey"></div><p id="ovCap"></p></div>
+          <ol class="u stack" id="ovStack"></ol>
+          <div class="u cta" id="ovCta"></div>
+          <div class="u ft m"><span>glonomy.com/fx-tips</span><span id="ovHint">TAP TO FIRE</span></div>
         </div>
         <div class="ready" id="ready">
+          <code>REC MODE</code>
           <strong>화면 녹화를 먼저 켜 주세요</strong>
           <span>준비되면 화면을 탭하세요. 처음부터 끝까지 자동으로 재생됩니다.<br />끝나면 한 번 더 탭해서 나갑니다.</span>
         </div>
@@ -213,21 +217,21 @@
 
     <section class="ctrl">
       <div class="row">
-        <button class="btn primary" id="recBtn" type="button">▶ 영상용 자동 재생 (녹화 모드)</button>
+        <button class="btn primary" id="recBtn" type="button">● 영상용 자동 재생 (녹화 모드)</button>
       </div>
-      <p class="label">효과 단계 — 누르면 그 단계까지 켜집니다</p>
+      <p class="label">LAYERS — 누르면 그 단계까지 켜집니다</p>
       <div class="steps" id="steps"></div>
       <div class="row">
         <button class="btn" id="autoBtn" type="button" aria-pressed="true">자동 발사</button>
         <button class="btn" id="soundBtn" type="button" aria-pressed="true">소리</button>
-        <button class="btn" id="splitBtn" type="button" aria-pressed="false">전/후 비교</button>
+        <button class="btn" id="splitBtn" type="button" aria-pressed="false">A/B 비교</button>
         <button class="btn" id="langBtn" type="button">자막: EN</button>
       </div>
     </section>
 
     <section class="code" id="code"></section>
   </div>
-  <div class="toast" id="toast">복사했어요</div>
+  <div class="toast" id="toast">COPIED</div>
 
   <script>
   (() => {
@@ -463,6 +467,7 @@
       }
 
       update(rdt) {
+        this.frames = (this.frames || 0) + 1;
         this.trauma = Math.max(0, this.trauma - rdt * 1.7);
         this.kx -= this.kx * Math.min(1, rdt * 12);
         this.flashA = Math.max(0, this.flashA - rdt * 6);
@@ -542,25 +547,22 @@
       }
 
       draw(ctx) {
-        const v = this.view;
+        const v = this.view, [rx, ry, rw, rh] = v.r;
         ctx.save();
+        ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
+        ctx.fillStyle = "#121318"; ctx.fillRect(rx, ry, rw, rh);
+        ctx.fillStyle = "rgba(255,255,255,0.045)";
+        for (let gx = rx + 25; gx < rx + rw; gx += 25) ctx.fillRect(gx, ry, 1, rh);
+        for (let gy = ry + 25; gy < ry + rh; gy += 25) ctx.fillRect(rx, gy, rw, 1);
         ctx.translate(v.x, v.y); ctx.scale(v.s, v.s);
-        if (v.clip) {
-          ctx.beginPath(); ctx.roundRect(0, 0, 540, 360, 26);
-          ctx.fillStyle = "rgba(255,255,255,0.035)"; ctx.fill();
-          ctx.strokeStyle = "rgba(255,255,255,0.10)"; ctx.lineWidth = 2; ctx.stroke();
-          ctx.clip();
-        }
         const tr = this.trauma * this.trauma;
         ctx.translate(270 + (Math.random() * 2 - 1) * tr * 24 + this.kx, 180 + (Math.random() * 2 - 1) * tr * 18);
         ctx.rotate((Math.random() * 2 - 1) * tr * 0.035);
         ctx.translate(-270, -180);
 
         // 바닥
-        const fg = ctx.createLinearGradient(0, G, 0, G + 90);
-        fg.addColorStop(0, "rgba(148,163,184,0.12)"); fg.addColorStop(1, "rgba(148,163,184,0)");
-        ctx.fillStyle = fg; ctx.fillRect(-80, G, 700, 90);
-        ctx.fillStyle = "rgba(255,255,255,0.13)"; ctx.fillRect(10, G - 1, 520, 2);
+        ctx.fillStyle = "rgba(255,255,255,0.025)"; ctx.fillRect(-80, G, 700, 120);
+        ctx.fillStyle = "rgba(255,255,255,0.22)"; ctx.fillRect(-80, G - 1, 700, 1.5);
 
         for (const p of this.parts) if (p.under) drawPart(ctx, p);
         for (const a of this.actors) drawShadow(ctx, a);
@@ -576,8 +578,8 @@
         // 화면 전체 효과 (번쩍임, 붉은 테두리)
         if (this.flashA > 0 || this.vig > 0) {
           ctx.save();
-          const r = v.clip ? { x: v.x, y: v.y, w: 540 * v.s, h: 360 * v.s } : { x: 0, y: 0, w: 540, h: 960 };
-          ctx.beginPath(); ctx.roundRect(r.x, r.y, r.w, r.h, v.clip ? 26 * v.s : 0); ctx.clip();
+          const r = { x: rx, y: ry, w: rw, h: rh };
+          ctx.beginPath(); ctx.rect(r.x, r.y, r.w, r.h); ctx.clip();
           if (this.flashA > 0) { ctx.fillStyle = `rgba(${this.flashC},${Math.min(1, this.flashA)})`; ctx.fillRect(r.x, r.y, r.w, r.h); }
           if (this.vig > 0) {
             const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
@@ -587,6 +589,17 @@
           }
           ctx.restore();
         }
+        // 뷰포트 테두리와 모서리 눈금
+        ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 1;
+        ctx.strokeRect(rx + 0.5, ry + 0.5, rw - 1, rh - 1);
+        ctx.strokeStyle = "rgba(255,255,255,0.55)"; ctx.lineWidth = 2;
+        const t = 14;
+        ctx.beginPath();
+        ctx.moveTo(rx, ry + t); ctx.lineTo(rx, ry); ctx.lineTo(rx + t, ry);
+        ctx.moveTo(rx + rw - t, ry); ctx.lineTo(rx + rw, ry); ctx.lineTo(rx + rw, ry + t);
+        ctx.moveTo(rx + rw, ry + rh - t); ctx.lineTo(rx + rw, ry + rh); ctx.lineTo(rx + rw - t, ry + rh);
+        ctx.moveTo(rx + t, ry + rh); ctx.lineTo(rx, ry + rh); ctx.lineTo(rx, ry + rh - t);
+        ctx.stroke();
       }
     }
 
@@ -650,7 +663,7 @@
           const pop = p.age < 0.12 ? 1.5 - (p.age / 0.12) * 0.5 : 1;
           ctx.save(); ctx.translate(p.x, p.y); ctx.scale(pop, pop);
           ctx.globalAlpha = Math.min(1, rem * 3);
-          ctx.font = `${p.size}px "Black Han Sans", sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.font = `800 ${p.size}px Pretendard, "Apple SD Gothic Neo", sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
           ctx.lineWidth = p.size * 0.18; ctx.strokeStyle = "rgba(10,12,20,0.9)"; ctx.lineJoin = "round";
           ctx.strokeText(p.text, 0, 0); ctx.fillStyle = p.color; ctx.fillText(p.text, 0, 0);
           ctx.restore(); break;
@@ -1052,7 +1065,7 @@
           const h = w.hud, c = SPR.churu.c, sc = 1 + h.bump * 0.45;
           ctx.save(); ctx.translate(h.x, h.y); ctx.scale(sc, sc);
           ctx.drawImage(c, -20, -20 * c.height / c.width, 40, 40 * c.height / c.width);
-          ctx.font = '34px "Black Han Sans", sans-serif'; ctx.textBaseline = "middle"; ctx.textAlign = "left";
+          ctx.font = '800 32px Pretendard, "Apple SD Gothic Neo", sans-serif'; ctx.textBaseline = "middle"; ctx.textAlign = "left";
           ctx.lineWidth = 6; ctx.strokeStyle = "rgba(10,12,20,0.9)"; ctx.lineJoin = "round";
           const t = String(Math.round(h.shown));
           ctx.strokeText(t, 28, 2); ctx.fillStyle = h.bump > 0.2 ? "#fde047" : "#fff"; ctx.fillText(t, 28, 2);
@@ -1261,7 +1274,15 @@
         ],
       },
     ];
-    RECIPES.forEach((R, i) => { R.no = i + 1; });
+    const PARAMS = {
+      gun: { muzzle: "1F · 70ms", recoil: "16px · ease-out", shell: "g 1400 · bounce .35", tracer: "len 70px", hit: "flash · squash .78", shake: "trauma .12", sound: "pitch ±8%", kill: "stop 160ms" },
+      magic: { charge: "360ms", core: "white + glow", trail: "embers / frame", burst: "ring + 18 sparks", hitstop: "stop 70ms", sound: "whoosh / boom", burn: "DoT 0.45s", numbers: "crit ×2" },
+      melee: { windup: "-28px · 130ms", arc: "160ms smear", hitstop: "stop 90ms", flash: "white + star", knock: "80px · spring 3.2", shake: "trauma .40", sound: "swish / thud" },
+      pickup: { pop: "arc + bounce", magnet: "ease-in curve", bump: "scale 1.45", sparkle: "out + in", sound: "+1 semitone", roll: "lerp ×6" },
+      hurt: { flash: "red 400ms", knock: "-34px · squash", bar: "lag 350ms", vignette: "edge .70", iframes: "blink 900ms", shake: "trauma .35 · 60ms", sound: "short / harsh" },
+      boom: { flash: "1 white frame", ring: "r 200 · 420ms", fire: "fire → smoke", debris: "16 chunks", shake: "trauma .90", slowmo: "0.20× · 500ms", scorch: "decal 6s", sound: "low + crack" },
+    };
+    RECIPES.forEach((R, i) => { R.no = i + 1; R.steps.forEach(st => { st.param = (PARAMS[R.id] || {})[st.id] || ""; }); });
 
     function arrive(w, it) {
       it.dead = true;
@@ -1272,12 +1293,14 @@
     /* ───────── 화면 / 앱 ───────── */
     const $ = id => document.getElementById(id);
     const stage = $("stage"), cv = $("cv"), ctx = cv.getContext("2d");
-    const VIEW_MAIN = { x: 0, y: 300, s: 1 };
-    const VIEW_A = { x: 48.6, y: 226, s: 0.82, clip: true };
-    const VIEW_B = { x: 48.6, y: 542, s: 0.82, clip: true };
+    const VIEW_MAIN = { x: 0, y: 186, s: 1, r: [20, 190, 500, 360] };
+    const VIEW_A = { x: 54, y: 184, s: 0.8, r: [20, 190, 500, 300] };
+    const VIEW_B = { x: 54, y: 504, s: 0.8, r: [20, 510, 500, 300] };
     const UI = {
-      ko: { cta: ["코드 받고 싶다면?", "댓글에 <em>FX</em> 남기면", "DM으로 코드 보내드려요 📩", "다음 게임 만들 때 쓰게 저장 🔖"], step: "단계" },
-      en: { cta: ["Want the code?", "Comment <em>FX</em> below", "and I'll DM it to you 📩", "Save this for your next game 🔖"], step: "STEP" },
+      ko: { cta: ["SOURCE CODE", "댓글에 <em>FX</em>", "레이어별 코드 전체를 DM으로 보내드려요.", "다음 게임 만들 때 쓰게 저장해 두세요."],
+            base: "BASELINE — 효과 없음", ab: n => `같은 장면, 같은 타이밍.<br>달라진 건 <em>레이어 ${n}개</em>뿐이에요.` },
+      en: { cta: ["SOURCE CODE", "Comment <em>FX</em>", "I'll DM you the full source, layer by layer.", "Save this for your next game."],
+            base: "BASELINE — NO FX", ab: n => `Same scene. Same timing.<br>The only difference: <em>${n} layers</em>.` },
     };
 
     const app = {
@@ -1302,34 +1325,41 @@
 
     let lastKey = "";
     function renderOverlay(seg) {
-      const r = R(), L = app.lang, N = r.steps.length;
-      $("ovTag").textContent = "GLONOMY · FX TIP #" + String(r.no).padStart(2, "0");
+      const r = R(), L = app.lang, N = r.steps.length, u = UI[L];
+      const pad = x => String(x).padStart(2, "0");
+      $("ovIdx").textContent = pad(r.no) + " / " + pad(RECIPES.length);
       $("ovTitle").innerHTML = fmt(r.title[L]);
-      const pill = $("ovPill"), cap = $("ovCap");
       stage.classList.toggle("split", seg.k === "split");
-      $("ovCta").classList.toggle("show", seg.k === "cta");
       stage.classList.toggle("cta-on", seg.k === "cta");
+      const n = seg.k === "intro" ? 0 : seg.k === "step" ? seg.n : N;
+      const key = $("ovKey"), cap = $("ovCap");
       if (seg.k === "step") {
-        const s = r.steps[seg.n - 1];
-        pill.className = "pill"; pill.style.visibility = "visible";
-        pill.innerHTML = `<b>${seg.n}</b>${fmt(s.name[L])}`;
-        cap.innerHTML = fmt(s.cap[L]);
-      } else if (seg.k === "split") {
-        pill.className = "pill plain"; pill.style.visibility = "visible";
-        pill.textContent = "BEFORE  →  AFTER";
-        cap.innerHTML = "";
-      } else if (seg.k === "cta") {
-        pill.style.visibility = "hidden"; cap.innerHTML = "";
-      } else {
-        pill.style.visibility = "hidden";
+        const st = r.steps[seg.n - 1];
+        key.textContent = `${pad(seg.n)}/${pad(N)} · ${plain(st.name[L]).toUpperCase()}`;
+        cap.innerHTML = fmt(st.cap[L]);
+      } else if (seg.k === "intro") {
+        key.textContent = u.base;
         cap.innerHTML = fmt(r.intro[L]);
       }
-      const n = seg.k === "intro" ? 0 : seg.k === "step" ? seg.n : N;
-      $("ovDots").innerHTML = r.steps.map((_, i) => `<i class="${i < n ? "on" : ""}${i + 1 === n && seg.k === "step" ? " cur" : ""}">${i + 1}</i>`).join("");
-      const c = UI[L].cta;
-      $("ovCta").innerHTML = `<div class="q">${c[0]}</div><div class="c">${c[1]}<br>${c[2]}</div><div class="s">${c[3]}</div>`;
-      const key = r.id + seg.k + seg.n + L;
-      if (key !== lastKey) { lastKey = key; repop(cap); repop(pill); }
+      $("ovStack").innerHTML = r.steps.map((st, i) => {
+        const on = i < n, cur = seg.k === "step" && i + 1 === n;
+        return `<li class="${on ? "on" : ""}${cur ? " cur" : ""}"><i>${pad(i + 1)}</i><b>${plain(st.name[L])}</b><em>${st.param || ""}</em><s>${on ? "ON" : "—"}</s></li>`;
+      }).join("");
+      $("ovLayers").textContent = `LAYERS ${n}/${N}`;
+      $("ovAB").textContent = `B — ALL ${N} LAYERS`;
+      $("ovABNote").innerHTML = u.ab(N);
+      $("ovCta").innerHTML = `<div class="t m">${u.cta[0]}</div><div class="q">${u.cta[1]}</div><div class="c">${u.cta[2]}</div><div class="s">${u.cta[3]}</div>`;
+      $("ovHint").textContent = app.mode === "rec" ? "" : "TAP TO FIRE";
+      const k = r.id + seg.k + seg.n + L;
+      if (k !== lastKey) { lastKey = k; repop(key); repop(cap); }
+    }
+    let hudT = "", hudF = "";
+    function updateHud() {
+      const w = app.worlds[app.worlds.length - 1]; if (!w) return;
+      const t = w.stopT > 0 ? "HITSTOP" : "TIME " + w.ts.toFixed(2) + "×";
+      if (t !== hudT) { hudT = t; const el = $("ovTime"); el.textContent = t; el.classList.toggle("hot", w.stopT > 0 || w.ts < 0.99); }
+      const f = "F " + String(w.frames || 0).padStart(5, "0");
+      if (f !== hudF) { hudF = f; $("ovFrame").textContent = f; }
     }
     function browseSeg() { return app.split ? { k: "split" } : app.n ? { k: "step", n: app.n } : { k: "intro", n: 0 }; }
 
@@ -1383,14 +1413,7 @@
 
     /* 배경 */
     function drawBg() {
-      const g = ctx.createLinearGradient(0, 0, 0, 960);
-      g.addColorStop(0, "#0b1020"); g.addColorStop(0.5, "#101a30"); g.addColorStop(1, "#090d18");
-      ctx.fillStyle = g; ctx.fillRect(0, 0, 540, 960);
-      const s = ctx.createRadialGradient(270, 500, 20, 270, 500, 330);
-      s.addColorStop(0, "rgba(120,150,220,0.12)"); s.addColorStop(1, "rgba(120,150,220,0)");
-      ctx.fillStyle = s; ctx.fillRect(0, 0, 540, 960);
-      ctx.fillStyle = "rgba(255,255,255,0.035)";
-      for (let y = 30; y < 960; y += 36) for (let x = 18 + ((y / 36) % 2) * 18; x < 540; x += 36) ctx.fillRect(x, y, 2, 2);
+      ctx.fillStyle = "#0b0c0f"; ctx.fillRect(0, 0, 540, 960);
     }
 
     /* 루프 */
@@ -1413,20 +1436,21 @@
       ctx.setTransform(k, 0, 0, k, 0, 0);
       drawBg();
       for (const w of app.worlds) w.draw(ctx);
+      updateHud();
       requestAnimationFrame(frame);
     }
 
     /* 조작부 */
     function renderRecipes() {
       $("recipes").innerHTML = RECIPES.map((r, i) =>
-        `<button type="button" class="rc${i === app.ri ? " active" : ""}" data-i="${i}"><b>${r.no}</b>${plain(r.title.ko)}</button>`).join("");
+        `<button type="button" class="rc${i === app.ri ? " active" : ""}" data-i="${i}"><b>${String(r.no).padStart(2, "0")} · ${r.id.toUpperCase()}</b>${plain(r.title.ko)}</button>`).join("");
     }
     function renderSteps() {
       const r = R();
-      const chips = [`<button type="button" class="chip${app.n === 0 ? " cur" : " on"}" data-n="0">0 · 효과 없음</button>`]
+      const chips = [`<button type="button" class="chip${app.n === 0 ? " cur" : " on"}" data-n="0"><i>00</i><span>효과 없음</span><em>BASELINE</em></button>`]
         .concat(r.steps.map((s, i) => {
           const n = i + 1, cls = n === app.n ? " cur" : n < app.n ? " on" : "";
-          return `<button type="button" class="chip${cls}" data-n="${n}">${n} · ${s.name.ko}</button>`;
+          return `<button type="button" class="chip${cls}" data-n="${n}"><i>${String(n).padStart(2, "0")}</i><span>${s.name.ko}</span><em>${s.param || ""}</em></button>`;
         }));
       $("steps").innerHTML = chips.join("");
       $("autoBtn").setAttribute("aria-pressed", app.auto);
@@ -1454,7 +1478,7 @@
       const r = R();
       const blocks = r.steps.map((s, i) => `
         <div class="cs">
-          <div class="cs-h"><b>${i + 1}</b><span>${s.name.ko} <small>· ${s.name.en}</small></span><button type="button" class="copy" data-copy="s${i}">복사</button></div>
+          <div class="cs-h"><b>${String(i + 1).padStart(2, "0")}</b><span>${s.name.ko} <small>· ${s.name.en}</small></span><button type="button" class="copy" data-copy="s${i}">복사</button></div>
           <pre>${fmt(stepCode(s, i)).replace(/<em>|<\/em>/g, "*")}</pre>
         </div>`).join("");
       $("code").innerHTML = `
@@ -1465,11 +1489,11 @@
           <button type="button" class="btn" data-copy="engine">엔진 코드 복사</button>
         </div>
         ${blocks}
-        <details class="cs"><summary class="cs-h"><b>⚙</b><span>엔진 (World) <small>· spawn·shake·hitstop 등</small></span></summary><pre>${fmt(engineCode()).replace(/<em>|<\/em>/g, "*")}</pre></details>`;
+        <details class="cs"><summary class="cs-h"><b>ENG</b><span>엔진 (World) <small>· spawn·shake·hitstop 등</small></span></summary><pre>${fmt(engineCode()).replace(/<em>|<\/em>/g, "*")}</pre></details>`;
     }
     function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1300); }
     function copyText(text) {
-      const done = () => toast("복사했어요");
+      const done = () => toast("COPIED");
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback());
       else fallback();
       function fallback() {
