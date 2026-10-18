@@ -369,7 +369,7 @@ function audioInit() {
       if (!C) return;
       const c = new C();
       AU.ctx = c;
-      AU.out = c.createGain(); AU.out.gain.value = 0.55;
+      AU.out = c.createGain(); AU.out.gain.value = 0.23; // voice-over safe default, lift as needed in CapCut
       const comp = c.createDynamicsCompressor();
       AU.out.connect(comp); comp.connect(c.destination);
       const n = c.sampleRate, b = c.createBuffer(1, n, n), d = b.getChannelData(0);
@@ -466,9 +466,14 @@ class World {
     R.setup(this);
   }
   setN(n) { this.n = n; this.steps = new Set(this.R.steps.slice(0, n).map(s => s.id)); }
-  on(id) { return this.steps.has(id); }
-  emit(ev, ...a) { if (this.bare) return; for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a); }
-  get sfx() { return this.muted || app.mute || !this.on("sound") ? NOSFX : SFX; }
+  on(id) { return id === "sound" || this.steps.has(id); }
+  // 소리는 단계가 아니라 처음(RAW)부터 늘 켜져 있음 — R.base에 들어 있는 소리 훅은 항상 실행
+  emit(ev, ...a) {
+    if (this.bare) return;
+    for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
+    for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
+  }
+  get sfx() { return this.muted || app.mute || this.bare ? NOSFX : SFX; }
 
   actor(key, o = {}) {
     const d = Object.assign({}, ACTOR[key], o), s = SPR[d.spr], ar = s.c.width / s.c.height;
@@ -1004,6 +1009,11 @@ function bloomEnd(ctx, rx, ry, rw, rh, a) {
 
 /* ───────── 레시피 등록소 ───────── */
 const RECIPES = [];
+// 레시피를 등록할 때 "소리" 단계를 빼서 R.base로 옮김 → 소리는 RAW부터 항상 나오고, 단계 목록에는 눈에 보이는 효과만 남음
+RECIPES.push = function (...rs) {
+  for (const r of rs) if (r && r.steps && !r.base) { r.base = r.steps.filter(s => s.id === "sound"); r.steps = r.steps.filter(s => s.id !== "sound"); }
+  return Array.prototype.push.apply(this, rs);
+};
 function arrive(w, it) {
   it.dead = true;
   w.hud.score += 15; w.combo++; w.comboT = 1;

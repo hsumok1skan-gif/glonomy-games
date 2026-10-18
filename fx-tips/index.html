@@ -205,6 +205,12 @@
     details.card > summary::-webkit-details-marker { display: none; }
     details.card > summary small { font-family: var(--ko); font-size: 12px; color: var(--muted); font-weight: 500; }
     details.card[open] > summary { margin-bottom: 12px; }
+    .fx-pack-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-top: 10px; }
+    .fx-pack { display: grid; align-content: start; gap: 5px; text-align:left; min-height: 74px; border-radius: 12px; padding: 12px; background:#24281b; box-shadow:inset 0 0 0 1px rgba(200,240,60,.19); }
+    .fx-pack b { color:#e6ffac; font:700 13px/1.2 var(--sans); }
+    .fx-pack span { color:#b0b5a2; font:500 11px/1.45 var(--ko); }
+    .fx-pack:focus-visible { outline:2px solid var(--acc); outline-offset:2px; }
+    @media(max-width:355px) { .fx-pack-list { grid-template-columns:1fr; } }
     .set { display: flex; gap: 6px; flex-wrap: wrap; }
     .set button { padding: 9px 13px; border-radius: 999px; background: var(--ink-3); font: 600 13px var(--ko); color: var(--muted); }
     .set button[aria-pressed="true"] { background: var(--acc); color: #141708; }
@@ -304,6 +310,12 @@
   </section>
 
   <section class="more" id="more">
+    <div class="card" id="fxPackCard">
+      <div class="hd2"><b>FX MIX · 3–5 in 1 Reel</b><span>원본은 유지하고 묶음 릴스 만들기</span></div>
+      <p class="note">시각적 변화가 작은 소재를 3~5개로 묶었습니다. 누르면 바로 9:16 녹화 준비 화면이 열리고 RAW → BEFORE/AFTER를 자동으로 연결합니다. 영어 자막·원본 코드 링크를 모두 유지합니다.</p>
+      <p class="note" id="fxPostCount"></p>
+      <div class="fx-pack-list" id="fxPacks"></div>
+    </div>
     <div class="card light">
       <h3 id="epK"></h3>
       <div class="big" id="epBig"></div>
@@ -324,7 +336,7 @@
     <details class="card" id="scriptCard" open>
       <summary>Voice script <small>녹음할 때 읽을 대본</small></summary>
       <p class="note">녹화 모드 영상의 자막과 똑같은 문장이에요. 시간에 맞춰 읽으면 자막과 목소리가 맞아요.</p>
-      <div class="row"><button class="mini" id="copyScript" type="button">대본 복사</button></div>
+      <div class="row"><button class="mini" id="copyScript" type="button">타임코드 대본 복사</button><button class="mini" id="copyTTS" type="button">CapCut AI 음성용 대본</button></div>
       <div class="script" id="script"></div>
     </details>
     <details class="card" id="codeCard">
@@ -360,33 +372,33 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261018m"></script>
-  <script src="export.js?v=20261018m"></script>
+  <script src="engine.js?v=20261019a"></script>
+  <script src="export.js?v=20261019a"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
-  <script src="recipes/core.js?v=20261018m"></script><script>tagFx("core")</script>
-  <script src="recipes/weapon.js?v=20261018m"></script><script>tagFx("weapon")</script>
-  <script src="recipes/combat.js?v=20261018m"></script><script>tagFx("combat")</script>
-  <script src="recipes/duel.js?v=20261018m"></script><script>tagFx("duel")</script>
-  <script src="recipes/horde.js?v=20261018m"></script><script>tagFx("horde")</script>
-  <script src="recipes/army.js?v=20261018m"></script><script>tagFx("army")</script>
-  <script src="recipes/fighting.js?v=20261018m"></script><script>tagFx("fighting")</script>
-  <script src="recipes/shooter.js?v=20261018m"></script><script>tagFx("shooter")</script>
-  <script src="recipes/action.js?v=20261018m"></script><script>tagFx("action")</script>
-  <script src="recipes/move.js?v=20261018m"></script><script>tagFx("move")</script>
-  <script src="recipes/rpg.js?v=20261018m"></script><script>tagFx("rpg")</script>
-  <script src="recipes/strategy.js?v=20261018m"></script><script>tagFx("strategy")</script>
-  <script src="recipes/sim.js?v=20261018m"></script><script>tagFx("sim")</script>
-  <script src="recipes/puzzle.js?v=20261018m"></script><script>tagFx("puzzle")</script>
-  <script src="recipes/racing.js?v=20261018m"></script><script>tagFx("racing")</script>
-  <script src="recipes/survival.js?v=20261018m"></script><script>tagFx("survival")</script>
-  <script src="recipes/casual.js?v=20261018m"></script><script>tagFx("casual")</script>
-  <script src="recipes/ui.js?v=20261018m"></script><script>tagFx("ui")</script>
-  <script src="recipes/env.js?v=20261018m"></script><script>tagFx("env")</script>
-  <script src="recipes/spotlight.js?v=20261018m"></script><script>tagFx("spotlight")</script>
-  <script src="recipes/spot-reward.js?v=20261018m"></script><script>tagFx("spot-reward")</script>
-  <script src="recipes/spot-combat.js?v=20261018m"></script><script>tagFx("spot-combat")</script>
-  <script src="recipes/spot-power.js?v=20261018m"></script><script>tagFx("spot-power")</script>
-  <script src="recipes/spot-casual.js?v=20261018m"></script><script>tagFx("spot-casual")</script>
+  <script src="recipes/core.js?v=20261019a"></script><script>tagFx("core")</script>
+  <script src="recipes/weapon.js?v=20261019a"></script><script>tagFx("weapon")</script>
+  <script src="recipes/combat.js?v=20261019a"></script><script>tagFx("combat")</script>
+  <script src="recipes/duel.js?v=20261019a"></script><script>tagFx("duel")</script>
+  <script src="recipes/horde.js?v=20261019a"></script><script>tagFx("horde")</script>
+  <script src="recipes/army.js?v=20261019a"></script><script>tagFx("army")</script>
+  <script src="recipes/fighting.js?v=20261019a"></script><script>tagFx("fighting")</script>
+  <script src="recipes/shooter.js?v=20261019a"></script><script>tagFx("shooter")</script>
+  <script src="recipes/action.js?v=20261019a"></script><script>tagFx("action")</script>
+  <script src="recipes/move.js?v=20261019a"></script><script>tagFx("move")</script>
+  <script src="recipes/rpg.js?v=20261019a"></script><script>tagFx("rpg")</script>
+  <script src="recipes/strategy.js?v=20261019a"></script><script>tagFx("strategy")</script>
+  <script src="recipes/sim.js?v=20261019a"></script><script>tagFx("sim")</script>
+  <script src="recipes/puzzle.js?v=20261019a"></script><script>tagFx("puzzle")</script>
+  <script src="recipes/racing.js?v=20261019a"></script><script>tagFx("racing")</script>
+  <script src="recipes/survival.js?v=20261019a"></script><script>tagFx("survival")</script>
+  <script src="recipes/casual.js?v=20261019a"></script><script>tagFx("casual")</script>
+  <script src="recipes/ui.js?v=20261019a"></script><script>tagFx("ui")</script>
+  <script src="recipes/env.js?v=20261019a"></script><script>tagFx("env")</script>
+  <script src="recipes/spotlight.js?v=20261019a"></script><script>tagFx("spotlight")</script>
+  <script src="recipes/spot-reward.js?v=20261019a"></script><script>tagFx("spot-reward")</script>
+  <script src="recipes/spot-combat.js?v=20261019a"></script><script>tagFx("spot-combat")</script>
+  <script src="recipes/spot-power.js?v=20261019a"></script><script>tagFx("spot-power")</script>
+  <script src="recipes/spot-casual.js?v=20261019a"></script><script>tagFx("spot-casual")</script>
   <script>
   (() => {
     "use strict";
@@ -436,6 +448,23 @@
     RECIPES.sort((a, b) => a.ep - b.ep);
     RECIPES.forEach((R, i) => { R.no = R.ep; });
     const TOTAL = RECIPES.length;
+    // FX_PACK_UPDATE_20261018_V1: all 539 original recipes stay available/searchable.
+    const PACKS = [{"id": "mix-ui-touch", "en": "Tiny UI, Big Feel", "ko": "작은 UI에도 손맛", "ids": ["ui-tabs", "ui-slider", "ui-tooltip", "ui-saved"]}, {"id": "mix-ui-signal", "en": "Micro Notifications", "ko": "작은 알림 3종", "ids": ["ui-toast", "ui-loading", "sim-badge"]}, {"id": "mix-army-clarity", "en": "Readable Battlefields", "ko": "전장의 가독성", "ids": ["army-colors", "army-ping", "army-numbers"]}, {"id": "mix-battle-hud", "en": "Combat HUD Polish", "ko": "전투 HUD 완성", "ids": ["shooter-ammo-shake", "shooter-killfeed", "fighting-red-health", "fighting-chip-damage"]}, {"id": "mix-rpg-hud", "en": "RPG Feedback Essentials", "ko": "RPG 정보 전달", "ids": ["rpg-mana", "rpg-equip", "rpg-turn-order", "rpg-cooldown"]}, {"id": "mix-strategy", "en": "Strategy Feedback", "ko": "전략게임 조작 손맛", "ids": ["strategy-hex", "strategy-range", "strategy-minimap", "army-move"]}, {"id": "mix-movement", "en": "Small Movement Details", "ko": "이동의 작은 차이", "ids": ["move-ladder", "move-platform", "move-dropthrough"]}, {"id": "mix-survival-status", "en": "Pressure & Limits", "ko": "자원 부족과 압박", "ids": ["survival-hunger", "survival-overweight", "sim-storage"]}, {"id": "mix-money", "en": "Make Numbers Move", "ko": "돈과 숫자의 손맛", "ids": ["sim-stock", "sim-bignum", "sim-income"]}, {"id": "mix-puzzle", "en": "Puzzle Micro Wins", "ko": "퍼즐의 작은 성공", "ids": ["puzzle-hint-glow", "puzzle-number-correct", "puzzle-jigsaw-snap", "puzzle-pair-match"]}, {"id": "mix-racing", "en": "Race HUD Payoff", "ko": "레이싱 기록의 보상", "ids": ["racing-lap-split", "racing-position", "racing-finish"]}];
+    const PACK_BY_ID = new Map(PACKS.flatMap(p => p.ids.map(id => [id, p])));
+    const USED = new Set();
+    const POSTS = [];
+    RECIPES.forEach(r => {
+      if (USED.has(r.id)) return;
+      const pack = PACK_BY_ID.get(r.id);
+      if (pack) {
+        for (const id of pack.ids) USED.add(id);
+        POSTS.push({ pack, r, ids: [...pack.ids] });
+      } else { USED.add(r.id); POSTS.push({ pack: null, r, ids: [r.id] }); }
+    });
+    const UPLOAD_TOTAL = POSTS.length;
+    const postFor = id => POSTS.find(p => p.ids.includes(id));
+    const isPostDone = p => p.ids.every(id => app.posted.has(id));
+
 
     /* ───────── 상태 ───────── */
     const $ = id => document.getElementById(id);
@@ -446,7 +475,7 @@
     const app = {
       ri: 0, group: store.get("group", "all"), cat: "all", q: "", n: 0, lang: store.get("lang", "en"), auto: true, mute: store.get("mute", false), split: false,
       mode: "browse", playing: false, ended: false, segs: [], si: 0, segT: 0, autoT: 0, worlds: [], capT: 0, shown: 40,
-      posted: new Set(store.get("posted", [])), cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-19"),
+      posted: new Set(store.get("posted", [])), pack: null, cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-19"),
     };
     window.app = app;
     // 처음 화면: 캐릭터만 서서 기다림
@@ -471,15 +500,15 @@
     function buildDates() {
       const days = CAD[app.cadence].days, [y, m, d] = app.start.split("-").map(Number);
       const t = new Date(y, m - 1, d); DATES = [];
-      while (DATES.length < TOTAL) { if (days.includes(t.getDay())) DATES.push(new Date(t)); t.setDate(t.getDate() + 1); }
+      while (DATES.length < UPLOAD_TOTAL) { if (days.includes(t.getDay())) DATES.push(new Date(t)); t.setDate(t.getDate() + 1); }
     }
-    const dateOf = r => DATES[r.ep - 1];
+    const dateOf = r => DATES[POSTS.indexOf(postFor(r.id))];
     const fmtD = d => `${d.getMonth() + 1}월 ${d.getDate()}일 (${DOWK[d.getDay()]})`;
     const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
     function todayIdx() {
       const now = new Date(); now.setHours(0, 0, 0, 0);
       const k = DATES.findIndex(d => d >= now);
-      return k < 0 ? TOTAL - 1 : k;
+      return k < 0 ? UPLOAD_TOTAL - 1 : k;
     }
 
 
@@ -494,6 +523,7 @@
       app.worlds = split ? [new World(R(), R().steps.length, VIEW_A, true, true), new World(R(), R().steps.length, VIEW_B)] : [new World(R(), n, VIEW_MAIN)];
     }
     function fireAll() { for (const w of app.worlds) w.R.fire(w); }
+
     const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
     const fmt = s => esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>");
     const plain = s => String(s).replace(/\*/g, "");
@@ -510,7 +540,7 @@
       const r = R();
       if (seg.k === "intro") return r.intro[L];
       if (seg.k === "step") return r.steps[seg.n - 1].cap[L];
-      if (seg.k === "split") return SPLIT[L](r.steps.length);
+      if (seg.k === "split") return app.pack ? r.title[L] : SPLIT[L](r.steps.length);
       return CTA[L].sub;
     }
     // 단어 단위 자막: *강조* 단어는 라임색
@@ -528,9 +558,9 @@
     let lastKey = "", subSpans = [], subSpans2 = [];
     function renderOverlay(seg) {
       const r = R(), L = app.mode === "rec" ? "en" : app.lang, N = r.steps.length, pad = x => String(x).padStart(2, "0");
-      $("ovIdx").textContent = r.ep ? `#${String(r.ep).padStart(3, "0")}` : `${TOTAL} effects`;
+      $("ovIdx").textContent = app.pack && app.mode === "rec" ? `FX MIX ${Math.min((seg.packPos ?? 0) + 1, app.pack.ids.length)}/${app.pack.ids.length}` : (postFor(r.id) ? `#${String(POSTS.indexOf(postFor(r.id)) + 1).padStart(3, "0")}` : `${TOTAL} effects`);
       $("ovView").textContent = (VIEWS[r.view] || VIEWS.side)[0];
-      $("ovTitle").innerHTML = fmt(r.title[L]);
+      $("ovTitle").innerHTML = app.pack && seg.k === "cta" ? `${app.pack.ids.length} <em>FX</em> in one reel` : fmt(r.title[L]);
       stage.classList.toggle("split", seg.k === "split");
       document.body.classList.toggle("splitv", seg.k === "split");
       stage.classList.toggle("cta-on", seg.k === "cta");
@@ -597,6 +627,22 @@
       let t = 0; segs.forEach(s => { s.t = t; t += s.dur; });
       return segs;
     }
+    // FX MIX: 효과마다 RAW 한 번 → 전후 비교(같은 타이밍) 한 번. 동작은 처음부터 끝까지 보여 주고 중간 단계는 코드로 대신함
+    function buildPackSegs(pack = app.pack) {
+      const segs = [];
+      pack.ids.forEach((id, packPos) => {
+        const rIndex = RECIPES.findIndex(r => r.id === id);
+        if (rIndex < 0) throw Error("Missing FX recipe: " + id);
+        const r = RECIPES[rIndex], iv = r.interval, tail = Math.min(2, Math.max(0.9, iv)), n = r.steps.length;
+        segs.push({ k: "intro", n: 0, rIndex, packPos, dur: 0.35 + tail, fires: [0.35] });
+        segs.push({ k: "split", n, rIndex, packPos, dur: 0.35 + iv + tail, fires: [0.35, 0.35 + iv] });
+      });
+      const tail = segs[segs.length - 1];
+      segs.push({ k: "cta", n: tail.n, rIndex: tail.rIndex, packPos: pack.ids.length, dur: 3.6, fires: [] });
+      let t = 0;
+      segs.forEach(s => { s.t = t; t += s.dur; });
+      return segs;
+    }
     function tickSegs(dt, onEnd) {
       const seg = app.segs[app.si];
       app.segT += dt;
@@ -613,6 +659,7 @@
       enterSeg(app.segs[0]);
     }
     function enterSeg(seg) {
+      if (app.pack && seg.rIndex != null) app.ri = seg.rIndex;
       // 단계가 바뀌면 장면을 새로 만들어 처음부터 보여 줌 (중간에 넘기지 않음)
       makeWorlds(seg.k === "split", seg.n);
       if (seg.k === "step") { const s = R().steps[seg.n - 1]; if (s.enter) s.enter(app.worlds[0]); }
@@ -629,13 +676,14 @@
     function beginPlayback() {
       document.body.classList.remove("rec-ready");
       audioInit();
-      app.segs = buildSegs(); app.si = 0; app.segT = 0; app.playing = true;
+      app.segs = app.pack ? buildPackSegs() : buildSegs(); app.si = 0; app.segT = 0; app.playing = true;
       enterSeg(app.segs[0]);
     }
     function exitRec() {
       app.mode = "browse"; app.playing = false; app.ended = false;
       document.body.classList.remove("recmode", "rec-ready");
       makeWorlds(app.split, app.n); lastKey = ""; renderOverlay(browseSeg());
+      renderPills(); renderMore(); renderScript(); renderCode(); markCurrent();
       layout();
     }
 
@@ -663,21 +711,28 @@
 
     const mmss = t => `${String(Math.floor(t / 60)).padStart(1, "0")}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
     function scriptLines(r = R()) {
-      return buildSegs(r).map(s => {
-        const label = s.k === "intro" ? "Raw" : s.k === "step" ? `Step ${s.n} · ${plain(r.steps[s.n - 1].name.en)}` : s.k === "split" ? "Before / After" : "Outro";
-        const save = app.ri; app.ri = RECIPES.indexOf(r);
+      return (app.pack ? buildPackSegs() : buildSegs(r)).map(s => {
+        const save = app.ri;
+        app.ri = s.rIndex != null ? s.rIndex : RECIPES.indexOf(r);
+        const current = R();
+        const label = s.k === "intro" ? (app.pack ? `FX ${s.packPos + 1} · RAW` : "Raw") : s.k === "step" ? `Step ${s.n} · ${plain(current.steps[s.n - 1].name.en)}` : s.k === "split" ? (app.pack ? `FX ${s.packPos + 1} · BEFORE / AFTER` : "Before / After") : "Outro";
         const en = plain(segText(s, "en")), ko = plain(segText(s, "ko"));
         app.ri = save;
         return { t: s.t, label, en, ko };
       });
     }
     function renderScript() {
-      const ls = scriptLines(), total = buildSegs().reduce((a, s) => a + s.dur, 0);
+      const ls = scriptLines(), total = (app.pack ? buildPackSegs() : buildSegs()).reduce((a, s) => a + s.dur, 0);
       $("script").innerHTML = ls.map(l => `<div class="line"><time>${mmss(l.t)}</time><div>${esc(l.en)}<small>${esc(l.label)} · ${esc(l.ko)}</small></div></div>`).join("")
         + `<div class="line"><time>${mmss(total)}</time><div><small>끝 · 영상 길이 약 ${Math.round(total)}초</small></div></div>`;
     }
     const scriptText = () => scriptLines().map(l => `[${mmss(l.t)}] ${l.en}`).join("\n");
+    const voiceOnlyText = () => scriptLines().map(l => l.en).join("\n");
     function postText(r = R()) {
+      if (app.pack) return `${app.pack.en} 🎮\n\n` + app.pack.ids.map((id, i) => {
+        const item = RECIPES.find(r => r.id === id);
+        return `${i + 1}. ${plain(item.title.en)}`;
+      }).join("\n") + `\n\n💬 Comment FX for the individual code links.\n#gamedev #indiedev #gamefeel #vfx`;
       const tags = ["#gamedev", "#indiedev", "#gamefeel", "#vfx", "#gamedesign", "#" + CATS[r.cat][0].split(/[\s·]+/)[0].toLowerCase()];
       return `${plain(r.title.en)} 🎮\n\n${plain(r.intro.en)}\n` + r.steps.map((s, i) => `${i + 1}. ${plain(s.name.en)} — ${plain(s.cap.en)}`).join("\n") + `\n\n💬 Comment "FX" and I'll DM you the full code.\n📌 Save this for your next game.\n\n${tags.join(" ")}`;
     }
@@ -700,7 +755,9 @@
       catch (e) { toast("파일을 만들지 못했어요"); }
     }
     const codeURL = r => `https://glonomy.com/fx-tips/code.html#${r.id}`;
-    const dmText = r => `Here's your code 👉 ${codeURL(r)}\nOpen it, tap "Download", and swap in your own art — the page shows exactly where.`;
+    const dmText = r => app.pack
+      ? `Here are the ${app.pack.ids.length} FX source links:\n` + app.pack.ids.map((id, i) => `${i + 1}. https://glonomy.com/fx-tips/code.html#${id}`).join("\n")
+      : `Here's your code 👉 ${codeURL(r)}\nOpen it, tap "Download", and swap in your own art — the page shows exactly where.`;
     const engineCode = () => "// 엔진: w.spawn / w.shake / w.hitstop / w.slowmo / w.flash / w.after / w.tween …\n" + dedent(World.toString());
     function renderCode() {
       const r = R();
@@ -711,9 +768,9 @@
     }
     function renderPlayerHead() {
       const r = R(), d = dateOf(r);
-      $("pEp").textContent = `#${String(r.ep).padStart(3, "0")} · ${CATS[r.cat][1]}`;
+      $("pEp").textContent = `#${String(POSTS.indexOf(postFor(r.id)) + 1).padStart(3, "0")} · ${CATS[r.cat][1]}`;
       $("pDate").textContent = `${fmtD(d)} 업로드`;
-      const done = app.posted.has(r.id);
+      const done = isPostDone(app.pack ? POSTS.find(p => p.pack === app.pack) : postFor(r.id));
       $("doneBtn").textContent = done ? "올림 ✓" : "올렸어요";
       $("doneBtn").classList.toggle("done", done);
     }
@@ -726,17 +783,19 @@
     /* ───────── 일정 화면 ───────── */
     function renderSched() {
       buildDates();
-      const last = DATES[TOTAL - 1], ti = todayIdx(), now = new Date(); now.setHours(0, 0, 0, 0);
-      $("schedSub").textContent = `${TOTAL}편 · ${CAD[app.cadence].ko}`;
-      $("planText").innerHTML = `${CAD[app.cadence].ko}, 오후 1시(한국 시간)에 한 편씩 올려요. 미국 동부는 자정, 서부는 전날 밤 9시라 영어권 사람들이 잠들기 전에 보는 시간이에요. 이대로면 <b>${last.getFullYear()}년 ${last.getMonth() + 1}월 ${last.getDate()}일</b>에 ${TOTAL}편을 다 올려요.`;
+      const last = DATES[UPLOAD_TOTAL - 1], ti = todayIdx(), now = new Date(); now.setHours(0, 0, 0, 0);
+      $("schedSub").textContent = `${UPLOAD_TOTAL}편 · 원본 ${TOTAL}개 보존 · ${CAD[app.cadence].ko}`;
+      $("planText").innerHTML = `${CAD[app.cadence].ko}, 오후 1시(한국 시간)에 한 편씩 올려요. 미국 동부는 자정, 서부는 전날 밤 9시라 영어권 사람들이 잠들기 전에 보는 시간이에요. 이대로면 <b>${last.getFullYear()}년 ${last.getMonth() + 1}월 ${last.getDate()}일</b>에 ${UPLOAD_TOTAL}편을 다 올려요. <b>원본 ${TOTAL}개는 모두 유지하며, 3~5개씩 묶은 FX MIX ${PACKS.length}편이 포함돼요.</b>`;
       $("cadence").innerHTML = Object.keys(CAD).map(k => `<button type="button" data-k="${k}" class="${app.cadence === k ? "on" : ""}">${CAD[k].ko}</button>`).join("");
       $("startDate").value = app.start;
       let html = "", mon = "";
-      RECIPES.forEach((r, i) => {
-        const d = DATES[i], m = `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
+      POSTS.forEach((post, i) => {
+        const r = post.r, d = DATES[i], m = `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
         if (m !== mon) { mon = m; html += `<div class="month">${m}</div>`; }
-        const done = app.posted.has(r.id);
-        html += `<button type="button" class="slot${i === ti && sameDay(d, now) ? " today" : ""}${done ? " done" : ""}" data-i="${i}"><span class="d"><b>${d.getDate()}</b><span>${DOWK[d.getDay()]}</span></span><span class="x"><b>${fmt(r.title.ko)}</b><small>#${String(r.ep).padStart(3, "0")} · ${CATS[r.cat][1]}</small></span><span class="mini">${done ? "올림" : "보기"}</span></button>`;
+        const done = isPostDone(post);
+        const title = post.pack ? post.pack.ko : r.title.ko;
+        const detail = post.pack ? `FX MIX · ${post.ids.length}개 효과 · 코드 전부 제공` : `#${String(i + 1).padStart(3,"0")} · ${CATS[r.cat][1]}`;
+        html += `<button type="button" class="slot${i === ti && sameDay(d, now) ? " today" : ""}${done ? " done" : ""}" data-i="${i}"><span class="d"><b>${d.getDate()}</b><span>${DOWK[d.getDay()]}</span></span><span class="x"><b>${fmt(title)}</b><small>${detail}</small></span><span class="mini">${done ? "올림" : "보기"}</span></button>`;
       });
       $("slots").innerHTML = html;
       const t = $("slots").querySelector(".slot.today") || $("slots").querySelectorAll(".slot")[ti];
@@ -860,15 +919,15 @@
     /* ───────── 자세히 (아래로 내리면) ───────── */
     function renderMore() {
       buildDates();
-      const r = RECIPES[app.ri], d = dateOf(r), done = app.posted.has(r.id), now = new Date(); now.setHours(0, 0, 0, 0);
+      const r = RECIPES[app.ri], d = dateOf(r), done = isPostDone(app.pack ? POSTS.find(p => p.pack === app.pack) : postFor(r.id)), now = new Date(); now.setHours(0, 0, 0, 0);
       $("epK").textContent = `${sameDay(d, now) ? "오늘 올릴 편" : "업로드 예정"} · ${fmtD(d)} 오후 1시`;
-      $("epBig").innerHTML = `#${String(r.ep).padStart(3, "0")}<small>/ ${TOTAL} · ${CATS[r.cat][1]}</small>`;
-      $("epT").innerHTML = fmt(r.title.ko);
+      $("epBig").innerHTML = `#${String(POSTS.indexOf(postFor(r.id)) + 1).padStart(3, "0")}<small>/ ${UPLOAD_TOTAL} · ${app.pack ? "FX MIX" : CATS[r.cat][1]}</small>`;
+      $("epT").innerHTML = app.pack ? `${app.pack.ko} (${app.pack.ids.length}개 모음)` : fmt(r.title.ko);
       $("doneBtn").textContent = done ? "올림 ✓" : "올렸어요";
       $("doneBtn").classList.toggle("done", done);
-      const p = app.posted.size;
-      $("progT").textContent = `${p} / ${TOTAL}편 올림`;
-      $("progB").style.width = (p / TOTAL) * 100 + "%";
+      const p = POSTS.filter(isPostDone).length;
+      $("progT").textContent = `${p} / ${UPLOAD_TOTAL}편 올림 · 전체 소스 ${TOTAL}개`;
+      $("progB").style.width = (p / UPLOAD_TOTAL) * 100 + "%";
       $("layers").innerHTML = `<div class="lay"><i>0</i><div><b>날것 그대로<small>RAW</small></b><p>${fmt(r.intro.ko)}</p></div></div>` +
         r.steps.map((s, i) => `<div class="lay"><i>${i + 1}</i><div><b>${esc(s.name.ko)}<small>${esc(s.param || "")}</small></b><p>${fmt(s.cap.ko)}</p></div></div>`).join("");
     }
@@ -887,13 +946,27 @@
     }
     function selectRecipe(i) {
       app.idle = false;
-      app.ri = i; app.n = 0; app.split = false;
+      app.ri = i; app.n = 0; app.split = false; app.pack = null;
       try { history.replaceState(null, "", "#" + R().id); } catch (e) {}
       lastKey = "";
       startDemo();
       renderPills(); renderMore(); renderScript(); renderCode(); markCurrent();
     }
 
+    function renderPackList() {
+      $("fxPacks").innerHTML = PACKS.map(p => `<button type="button" class="fx-pack" data-pack="${p.id}"><b>${p.en}</b><span>${p.ko} · ${p.ids.length} FX · ${Math.round(buildPackSegs(p).reduce((a, x) => a + x.dur, 0))}s</span></button>`).join("");
+      $("fxPostCount").textContent = `${UPLOAD_TOTAL} reels / ${TOTAL} effects preserved`;
+    }
+    function openPack(pack) {
+      if (!pack) return;
+      const idx = RECIPES.findIndex(r => r.id === pack.ids[0]);
+      if (idx < 0) return toast("FX MIX에 포함된 원본을 찾지 못했어요");
+      selectRecipe(idx);
+      app.pack = pack;
+      try { history.replaceState(null, "", location.pathname + "?mix=" + encodeURIComponent(pack.id)); } catch(e) {}
+      renderMore(); renderScript();
+      window.scrollTo(0, 0); startRec();
+    }
     /* ───────── 이벤트 ───────── */
     document.addEventListener("pointerdown", audioInit, { capture: true });
     $("pills").addEventListener("click", e => { const b = e.target.closest(".pill"); if (b) setN(+b.dataset.n); });
@@ -919,7 +992,13 @@
     $("dmBtn").addEventListener("click", () => copyText(dmText(RECIPES[app.ri]), "DM 문구를 복사했어요"));
     $("guideBtn").addEventListener("click", () => window.open(`code.html#${RECIPES[app.ri].id}`, "_blank"));
     $("copyScript").addEventListener("click", () => copyText(scriptText(), "대본을 복사했어요"));
-    $("doneBtn").addEventListener("click", () => { const id = R().id; app.posted.has(id) ? app.posted.delete(id) : app.posted.add(id); store.set("posted", [...app.posted]); renderMore(); });
+    $("copyTTS").addEventListener("click", () => copyText(voiceOnlyText(), "CapCut 음성 대본을 복사했어요"));
+    $("fxPacks").addEventListener("click", e => { const b = e.target.closest("[data-pack]"); if (b) openPack(PACKS.find(p => p.id === b.dataset.pack)); });
+    $("doneBtn").addEventListener("click", () => {
+      const ids = app.pack ? app.pack.ids : [R().id], allDone = ids.every(id => app.posted.has(id));
+      ids.forEach(id => allDone ? app.posted.delete(id) : app.posted.add(id));
+      store.set("posted", [...app.posted]); renderMore();
+    });
     $("code").addEventListener("click", e => {
       const b = e.target.closest("[data-copy]"); if (!b) return;
       const k = b.dataset.copy, r = R();
@@ -936,7 +1015,13 @@
     $("schedClose").addEventListener("click", () => { $("sched").classList.remove("open"); renderMore(); });
     $("cadence").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; app.cadence = b.dataset.k; store.set("cadence", app.cadence); renderSched(); });
     $("startDate").addEventListener("change", e => { if (e.target.value) { app.start = e.target.value; store.set("start", app.start); renderSched(); } });
-    $("slots").addEventListener("click", e => { const b = e.target.closest(".slot"); if (!b) return; $("sched").classList.remove("open"); app.demo = true; selectRecipe(+b.dataset.i); window.scrollTo({ top: 0, behavior: "smooth" }); });
+    $("slots").addEventListener("click", e => {
+      const b = e.target.closest(".slot"); if (!b) return;
+      $("sched").classList.remove("open");
+      const post = POSTS[+b.dataset.i]; if (!post) return;
+      if (post.pack) openPack(post.pack);
+      else { app.demo = true; selectRecipe(RECIPES.indexOf(post.r)); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    });
 
     stage.addEventListener("pointerdown", e => {
       e.preventDefault(); audioInit();
@@ -954,14 +1039,17 @@
       buildDates();
       const hash = location.hash.slice(1), idx = RECIPES.findIndex(r => r.id === hash);
       setSheetH(store.get("sheetH", Math.round(window.innerHeight * 0.42)));
-      renderTabs(); renderList();
-      if (idx >= 0) selectRecipe(idx); else { app.ri = todayIdx(); showIdle(); }
+      renderTabs(); renderList(); renderPackList();
+      const mix = PACKS.find(p => p.id === new URLSearchParams(location.search).get("mix"));
+      if (mix) openPack(mix);
+      else if (idx >= 0) selectRecipe(idx);
+      else { app.ri = RECIPES.indexOf(POSTS[todayIdx()].r); showIdle(); }
       layout();
       requestAnimationFrame(t => { last = t; frame(t); });
     });
 
     // 테스트용
-    window.__fx = { app, RECIPES, setN, selectRecipe, fireAll, startRec, beginPlayback, buildSegs, scriptText, postText, standaloneHTML };
+    window.__fx = { app, RECIPES, PACKS, POSTS, setN, selectRecipe, openPack, fireAll, startRec, beginPlayback, buildSegs, buildPackSegs, scriptText, voiceOnlyText, postText, standaloneHTML };
   })();
   </script>
 </body>
