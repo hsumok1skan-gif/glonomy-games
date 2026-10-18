@@ -22,17 +22,17 @@
   const mob = (w, n, o = {}) => {
     w.foes = [];
     for (let i = 0; i < n; i++) {
-      const f = w.actor("foeTop", { home: 0, gy: 0, h: o.h || 30, hp: o.hp || 10 });
+      const f = w.actor("foeTop", { home: 0, gy: 0, h: o.h || 36, hp: o.hp || 10 });
       f.kx = f.ky = 0; f.cd = 0; f.sp = rand(0.75, 1.25) * (o.sp || 40);
       w.foes.push(f);
     }
-    w.hero = w.actor("heroTop", { home: o.x || HX, gy: o.y || HY, h: o.hh || 46 });
+    w.hero = w.actor("heroTop", { home: o.x || HX, gy: o.y || HY, h: o.hh || 58 });
     w.foes.forEach(f => spot(w, f, false));
     return w.foes;
   };
   // 주인공 쪽으로 걷기 + 밀려난 속도 + 서로 밀어내기
   const chase = (w, dt, o = {}) => {
-    const h = w.hero, R = o.r == null ? 34 : o.r, sep = o.sep == null ? 22 : o.sep, F = w.foes;
+    const h = w.hero, R = o.r == null ? 34 : o.r, sep = o.sep == null ? 26 : o.sep, F = w.foes;
     for (const f of F) {
       if (f.alive && f.gone) { f.gone = false; spot(w, f, true); f.wait = f.delay || 0.001; }
       if (f.wait > 0) {
@@ -84,7 +84,7 @@
       setup(w) { mob(w, 32, { hp: 12, sp: 60 }); w.delay = 0; },
       fire(w) {
         const h = w.hero, R = 160;
-        w.delay = 0;
+        w.delay = 0; w.pz = 0.18;
         w.emit("pulse", h, R);
         for (const f of w.foes) {
           const d = dist(f, h.x, h.gy);
@@ -94,7 +94,12 @@
           if (w.delay) w.after(d * w.delay, hit); else hit();
         }
       },
-      update(w, dt) { chase(w, dt); },
+      update(w, dt) { chase(w, dt); w.pz = Math.max(0, (w.pz || 0) - dt); },
+      drawBack(w, ctx) {
+        if (!(w.pz > 0) || w.on("ring")) return;
+        ctx.strokeStyle = `rgba(200,200,200,${w.pz * 4})`; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(w.hero.x, w.hero.gy, 160, 0, TAU); ctx.stroke();
+      },
       steps: [
         {
           id: "ring", name: { en: "Shock Ring", ko: "충격 고리" }, param: "R 160px · 0.3s",
@@ -155,7 +160,7 @@
         const f = nearest(w, 1)[0], h = w.hero; if (!f) return;
         const a = Math.atan2(f.gy - h.gy, f.x - h.x);
         h.rot = a;
-        w.shoot({ x: h.x + Math.cos(a) * 26, y: h.gy + Math.sin(a) * 26, vx: Math.cos(a) * 1400, vy: Math.sin(a) * 1400, r: 3, color: "#e5e7eb", len: 22,
+        w.shoot({ x: h.x + Math.cos(a) * 26, y: h.gy + Math.sin(a) * 26, vx: Math.cos(a) * 900, vy: Math.sin(a) * 900, r: 4, color: "#e5e7eb", len: 26,
           test: p => Math.hypot(p.x - f.x, p.y - f.gy) < 16,
           onHit: () => {
             if (!live(f)) return;
@@ -197,8 +202,9 @@
           id: "link", name: { en: "Kill → Counter", ko: "처치 → 숫자로" }, param: "spark seeks HUD",
           cap: { en: "Send a *spark* from the kill to the number.", ko: "잡은 자리에서 숫자로 *불씨*가 날아가요." },
           chain(w, c, f) {
-            w.spawn({ type: "spark", seek: true, x: f.x, y: f.gy, tx: 270, ty: 64, life: 0.25, size: 3, color: "253,224,71" });
-            burst(w, f.x, f.gy, 5, "253,224,71");
+            w.spawn({ type: "spark", seek: true, x: f.x, y: f.gy, tx: 270, ty: 64, life: 0.25, size: 4, color: "253,224,71" });
+            w.spawn({ type: "ring", x: f.x, y: f.gy, size: 8, size1: 44, life: 0.3, w: 5, color: "253,224,71" });
+            burst(w, f.x, f.gy, 10, "253,224,71");
           },
         },
         {
@@ -404,7 +410,7 @@
           const a = o.a + i * TAU / o.n, b = { x: h.x + Math.cos(a) * o.r, y: h.gy + Math.sin(a) * o.r, a, cx: h.x, cy: h.gy, r: o.r };
           w.emit("drawBlade", ctx, b);
           ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(a + Math.PI / 2);
-          ctx.fillStyle = "#9ca3af"; ctx.fillRect(-10, -3, 20, 6); ctx.restore();
+          ctx.fillStyle = "#cbd5e1"; ctx.fillRect(-14, -4, 28, 8); ctx.restore();
         }
       },
       steps: [
@@ -538,7 +544,7 @@
       fire(w) {
         const f = nearest(w, 1)[0]; if (!f) return;
         w.hero.rot = Math.atan2(f.gy - w.hero.gy, f.x - w.hero.x);
-        w.spawn({ type: "slash", x: f.x, y: f.gy, ang: rand(-1, 1), len: 18, size: 4, life: 0.12, color: "255,255,255" });
+        w.spawn({ type: "slash", x: f.x, y: f.gy, ang: rand(-1, 1), len: 32, size: 6, life: 0.18, color: "255,255,255" });
         die(w, f, rand(0, 0.6));
         w.streak++;
         if (w.streak % 4) return;
@@ -628,7 +634,7 @@
         const hits = w.foes.filter(f => f.alive && !f.flying && f.x < 540).sort((a, b) => a.x - b.x);
         hits.forEach((f, i) => w.after((f.x - h.x) * w.delay, () => {
           if (!f.alive) return;
-          f.hp -= 12; w.emit("hit", f, i, y);
+          f.hp -= 12; f.ox += 12; w.emit("hit", f, i, y);
           if (f.hp <= 0) w.kill(f);
         }));
       },
@@ -1015,7 +1021,7 @@
           const a = p.a + i * TAU / n, x = h.x + Math.cos(a) * r, y = h.gy + Math.sin(a) * r;
           ctx.save(); ctx.translate(x, y); ctx.rotate(a + Math.PI / 2); ctx.scale(p.sc, p.sc);
           if (p.lv) { glow(ctx, 0, 0, 24, "103,232,249", 0.8); ctx.fillStyle = "#cffafe"; ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(0, -10); ctx.lineTo(20, 0); ctx.lineTo(0, 5); ctx.fill(); }
-          else { ctx.fillStyle = "#9ca3af"; ctx.fillRect(-9, -2.5, 18, 5); }
+          else { ctx.fillStyle = "#cbd5e1"; ctx.fillRect(-12, -3.5, 24, 7); }
           ctx.restore();
         }
       },
@@ -1267,9 +1273,9 @@
           },
         },
         {
-          id: "size", name: { en: "Bigger Body", ko: "더 큰 몸" }, param: "30 → 44px",
+          id: "size", name: { en: "Bigger Body", ko: "더 큰 몸" }, param: "36 → 54px",
           cap: { en: "Make them *bigger*. Size reads as danger.", ko: "*더 크게*. 크기가 곧 위험이에요." },
-          update(w) { for (const f of w.elites) f.w = f.h = 44; },
+          update(w) { for (const f of w.elites) f.w = f.h = 54; },
         },
         {
           id: "glow", name: { en: "Pulsing Glow", ko: "두근대는 빛" }, param: "3Hz under",
@@ -1321,16 +1327,16 @@
         w.atk = w.fz > 0 ? 0.07 : 0.35;
         const f = nearest(w, 1)[0], h = w.hero; if (!f) return;
         h.rot = Math.atan2(f.gy - h.gy, f.x - h.x);
-        w.spawn({ type: "slash", x: f.x, y: f.gy, ang: rand(-1.5, 1.5), len: 20, size: 4, life: 0.12, color: "255,255,255" });
+        w.spawn({ type: "slash", x: f.x, y: f.gy, ang: rand(-1.5, 1.5), len: 32, size: 6, life: 0.16, color: "255,255,255" });
         die(w, f, rand(0, 0.5));
         w.emit("slay", f);
       },
       drawBack(w, ctx) { if (w.fz > 0) w.emit("drawFz", ctx, w.hero, w.fz); },
       steps: [
         {
-          id: "tint", name: { en: "Blood Tint", ko: "붉은 화면" }, param: "red 14% + edges",
+          id: "tint", name: { en: "Blood Tint", ko: "붉은 화면" }, param: "red 7% + edges",
           cap: { en: "*Tint the world* red while it lasts.", ko: "광폭화 동안 *세상이 붉어요*." },
-          drawFz(w, ctx, h, t) { ctx.fillStyle = `rgba(239,68,68,${0.14 * Math.min(1, t * 3)})`; ctx.fillRect(0, 0, 540, 360); w.vignette(0.45); },
+          drawFz(w, ctx, h, t) { ctx.fillStyle = `rgba(239,68,68,${0.07 * Math.min(1, t * 3)})`; ctx.fillRect(0, 0, 540, 360); w.vignette(0.35); },
         },
         {
           id: "aura", name: { en: "Hero Aura", ko: "주인공 기운" }, param: "glow 60px · flicker",
@@ -1546,7 +1552,7 @@
         w.emit("cast", h);
         path.slice(1).forEach((f, i) => w.after(i * w.gap, () => {
           const a = path[i];
-          w.spawn({ type: "crack", x: a.x, y: a.gy, pts: [[0, 0], [f.x - a.x, f.gy - a.gy]], w: 1.5, life: 0.08, color: "200,230,255" });
+          w.spawn({ type: "crack", x: a.x, y: a.gy, pts: [[0, 0], [f.x - a.x, f.gy - a.gy]], w: 2.5, life: 0.16, color: "200,230,255" });
           w.hold = 0;
           w.emit("zap", a, f, i);
           w.after(w.hold, () => die(w, f, rand(0.2, 0.8)));
@@ -1883,7 +1889,7 @@
         for (const f of w.foes) {
           if (!live(f) || !f.out) continue;
           const a = Math.atan2(f.gy - h.gy, f.x - h.x), d = Math.hypot(f.x - h.x, f.gy - h.gy);
-          const p = { x: cl(h.x + Math.cos(a) * 400, 30, 510), y: cl(h.gy + Math.sin(a) * 400, 48, 312), a, d, s: 7, col: "248,113,113" };
+          const p = { x: cl(h.x + Math.cos(a) * 400, 30, 510), y: cl(h.gy + Math.sin(a) * 400, 48, 312), a, d, s: 10, col: "248,113,113" };
           w.emit("pip", p);
           w.emit("drawPip", ctx, p);
         }
@@ -1899,9 +1905,9 @@
           },
         },
         {
-          id: "near", name: { en: "Closer = Bigger", ko: "가까울수록 크게" }, param: "7 → 16px",
+          id: "near", name: { en: "Closer = Bigger", ko: "가까울수록 크게" }, param: "10 → 20px",
           cap: { en: "Closer enemies get *bigger, hotter* markers.", ko: "가까울수록 표시가 *크고 뜨겁게*." },
-          pip(w, p) { const k = cl(1 - (p.d - 260) / 220, 0, 1); p.s = 7 + 9 * k; p.col = k > 0.6 ? "254,226,226" : "248,113,113"; },
+          pip(w, p) { const k = cl(1 - (p.d - 260) / 220, 0, 1); p.s = 10 + 10 * k; p.col = k > 0.6 ? "254,226,226" : "248,113,113"; },
         },
         {
           id: "pulse", name: { en: "Pulse", ko: "두근두근" }, param: "±20% · 10Hz",
@@ -2080,7 +2086,7 @@
         const h = w.hero, fs = nearest(w, 8);
         fs.forEach((f, i) => w.after(i * 0.07, () => {
           h.rot = Math.atan2(f.gy - h.gy, f.x - h.x);
-          w.spawn({ type: "crack", x: h.x, y: h.gy, pts: [[0, 0], [f.x - h.x, f.gy - h.gy]], w: 2, life: 0.08, color: "255,240,200" });
+          w.spawn({ type: "crack", x: h.x, y: h.gy, pts: [[0, 0], [f.x - h.x, f.gy - h.gy]], w: 3, life: 0.16, color: "255,240,200" });
           if (i === fs.length - 1) w.emit("last", f, h);
           die(w, f, 99);
         }));
@@ -2158,7 +2164,7 @@
         let hits = 0;
         for (const f of w.foes) {
           if (!f.alive || f.flying || f.side !== w.dir || Math.abs(f.x - h.x) > 180) continue;
-          f.hp -= 1; hits++;
+          f.hp -= 1; hits++; f.ox += w.dir * 12;
           w.emit("hit", f, w.dir);
           if (f.hp <= 0) w.kill(f);
         }

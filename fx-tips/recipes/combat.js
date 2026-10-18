@@ -1285,14 +1285,14 @@
           id: "callout", name: { en: "Excess Callout", ko: "넘친 데미지 표시" }, param: "OVERKILL +240",
           cap: { en: "Show the *excess*: *OVERKILL +240*.", ko: "넘친 만큼 보여줘요: *OVERKILL +240*." },
           hit(w, at, over) {
-            popText(w, "OVERKILL", at.x + 40, at.y - 90, 36, "#f97316", { vy: -15, g: 0, life: 1.6 });
-            popText(w, "+" + over, at.x + 40, at.y - 56, 26, "#fca5a5", { vy: -15, g: 0, life: 1.6 });
+            popText(w, "OVERKILL", at.x - 10, at.y - 90, 36, "#f97316", { vy: -15, g: 0, life: 1.6 });
+            popText(w, "+" + over, at.x - 10, at.y - 56, 26, "#fca5a5", { vy: -15, g: 0, life: 1.6 });
           },
         },
         {
           id: "stop", name: { en: "Long Freeze", ko: "긴 멈춤" }, param: "200ms + zoom 12%",
           cap: { en: "Freeze *longer* than any normal kill.", ko: "보통 처치보다 *더 길게* 멈춰요." },
-          hit(w) { w.hitstop(0.2); w.zoomPunch(0.12); w.flash("255,255,255", 0.5); },
+          hit(w) { w.hitstop(0.2); w.zoomPunch(0.12); w.flash("255,255,255", 0.3); },
         },
         {
           id: "slash", name: { en: "Screen-wide Slash", ko: "화면 가르기" }, param: "len 300",
@@ -1379,10 +1379,10 @@
           kill(w) { w.lb = 1; },
         },
         {
-          id: "flash", name: { en: "Kill Flash", ko: "처치 섬광" }, param: "screen .6 + ring",
+          id: "flash", name: { en: "Kill Flash", ko: "처치 섬광" }, param: "screen .35 + ring",
           cap: { en: "One *white frame* and a *ring* to mark it.", ko: "*하얀 한 프레임*과 *고리* 하나." },
           kill(w, f) {
-            w.flash("255,255,255", 0.6);
+            w.flash("255,255,255", 0.35);
             w.spawn({ type: "ring", x: f.x - 20, y: G - 70, size: 10, size1: 140, life: 0.25, w: 10, color: "255,255,255" });
           },
         },
@@ -1413,7 +1413,7 @@
         const f = w.foe;
         f.alpha = 0;
         const appear = () => { f.alpha = 1; w.busy = false; w.emit("spawn", f); };
-        if (w.on("mark")) { w.emit("mark", f); w.after(0.5, appear); } else appear();
+        if (w.on("mark")) { w.emit("mark", f); w.after(0.5, appear); } else w.after(0.45, appear);
       },
       update(w, dt) { const p = w.portal; if (p && (p.t -= dt) <= 0) w.portal = null; },
       drawBack(w, ctx) {

@@ -125,6 +125,7 @@
         Object.assign(o, { x: 410, y: 150, s: 1, vib: 0, fly: false, alive: true, t: 0 });
         const absorb = () => {
           o.alive = false; o.fly = false;
+          if (!w.on("text")) w.spawn({ type: "text", x: tx + 70, y: ty - 30, text: "ATK +50", size: 14, color: "#dfe8ff", life: 1 });
           w.emit("absorb", h, tx, ty);
           w.after(1.5, () => { o.alive = true; o.x = 410; o.y = 150; o.s = 0; w.tween(o, { s: 1 }, 0.3, "back"); });
         };
@@ -511,7 +512,7 @@
           cap: { en: "Pop a big *+75*, then small *ticks*.", ko: "큰 *+75*, 이어서 작은 숫자 *톡톡*." },
           heal(w, h, x, y) {
             w.spawn({ type: "text", x: x + 90, y: y - 40, vy: -25, text: "+75", size: 40, color: "#5dff8a", life: 1.6 });
-            for (let i = 0; i < 4; i++) w.after(0.2 + i * 0.15, () => w.spawn({ type: "text", x: x + rand(-50, 50), y: y + rand(-40, 20), vy: -70, text: "+12", size: 16, color: "#b8ffcb", life: 0.8 }));
+            for (let i = 0; i < 4; i++) w.after(0.2 + i * 0.15, () => w.spawn({ type: "text", x: x - 66 - (i % 2) * 18, y: y + 24, vy: -80, text: "+12", size: 18, color: "#b8ffcb", life: 0.8 }));
           },
         },
         {

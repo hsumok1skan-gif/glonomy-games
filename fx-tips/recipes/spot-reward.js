@@ -1020,7 +1020,7 @@
             if (i < 2) return;
             w.flash("255,230,170", 0.25); w.zoomPunch(0.1);
             w.spawn({ type: "rays", under: true, x: s.x, y: s.y, n: 16, size: 50, size1: 280, vr: 0.7, life: 2, hold: true, color: "255,200,90" });
-            w.spawn({ type: "text", x: 270, y: 214, text: "PERFECT!", size: 30, color: "#ffd75a", life: 1.8 });
+            w.spawn({ type: "text", x: 270, y: 316, text: "PERFECT!", size: 32, color: "#ffd75a", life: 1.8 });
             stars(w, s.x, s.y, 18, ["255,230,120", "255,255,255", "255,170,80"]);
           },
         },

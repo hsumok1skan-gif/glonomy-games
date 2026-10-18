@@ -78,8 +78,10 @@
       fire(w) {
         const h = w.hero, f = w.foe, later = seq(w);
         w.dmg = null; w.respawn(f); f.sx = f.sy = 1;
-        w.tween(h, { ox: -24 }, 0.26, "out");
+        if (h.k0 == null) h.k0 = h.k;
+        h.k = h.k0; w.tween(h, { ox: -24 }, 0.26, "out");
         later(0.28, () => w.tween(h, { ox: 104 }, 0.13, "in", () => {
+          h.k = 4; // 찌른 자세를 잠깐 유지
           const d = (w.dmg = { v: "4,812", x: 376, y: 132, t: 0, scale: 1, big: false, sh: 0 });
           f.ox = 22; f.hp = 40;
           w.emit("crit", f, d);
@@ -279,6 +281,8 @@
         const h = w.hero, f = w.foe, s = w.sh, later = seq(w);
         Object.assign(s, { a: 1, hit: 0, crack: 0, wob: 0 });
         w.respawn(f); f.sx = f.sy = 1; w.stun = 0;
+        if (h.k0 == null) h.k0 = h.k;
+        h.k = h.k0;
         s.cracks = Array.from({ length: 8 }, (_, i) => {
           const pts = [[-s.r + 4, rand(-10, 10)]], a0 = -1.1 + i * 0.3;
           for (let k = 1; k < 7; k++) { const p = pts[k - 1]; pts.push([p[0] + Math.cos(a0) * 26 + rand(-6, 10), p[1] + Math.sin(a0) * 26 + rand(-10, 10)]); }
@@ -287,6 +291,7 @@
         w.tween(h, { ox: -26 }, 0.34, "out");
         later(0.36, () => w.tween(h, { ox: 88 }, 0.16, "in", () => {
           const x = s.cx - s.r + 4, y = s.cy;
+          h.k = 4;
           w.emit("strike", s, x, y);
           later(w.on("crack") ? 0.5 : 0.04, () => {
             if (w.on("shatter")) s.a = 0; else w.tween(s, { a: 0 }, 0.25, "in");
@@ -654,11 +659,11 @@
         w.respawn(f); f.sx = f.sy = 1;
         Object.assign(c, { n: 0, s: 1, sh: 0, gold: 0, t: 0 });
         for (let i = 0; i < 5; i++) later(0.1 + i * 0.16, () => {
-          c.n++; c.t = 0; h.ox = i % 2 ? 26 : 34; f.ox = 6;
+          c.n++; c.t = 0; h.ox = i % 2 ? 30 : 40; f.ox = 12;
           w.emit("hit", f, c.n, c);
         });
         later(1.0, () => {
-          c.n++; c.t = 0; h.ox = 46; f.ox = 14;
+          c.n++; c.t = 0; h.ox = 56; f.ox = 30;
           w.emit("finish", f, c);
           later(1.4, () => { if (f.flying) w.respawn(f); });
         });
@@ -672,7 +677,7 @@
         const c = w.cnt; if (!c.n || c.t > 1.8) return;
         const a = Math.min(1, (1.8 - c.t) * 3);
         ctx.save(); ctx.globalAlpha = a;
-        if (!w.on("counter")) label(ctx, `${c.n} HITS`, 432, 100, 13, "#ffffff");
+        if (!w.on("counter")) label(ctx, `${c.n} HITS`, 432, 100, 18, "#ffffff");
         else {
           const heat = Math.min(1, c.n / 6), x = 432 + rand(-c.sh, c.sh), y = 100 + rand(-c.sh, c.sh);
           const top = c.gold ? "#fffbe0" : "#ffffff", mid = c.gold ? "#ffd23a" : mixc([255, 230, 90], [255, 70, 40], 1 - heat);

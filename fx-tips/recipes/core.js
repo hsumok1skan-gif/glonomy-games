@@ -1177,7 +1177,7 @@ RECIPES.push(
         if (f.hp <= 0) w.after(0.7, () => { f.hp = f.maxHp; f.hpLag = f.maxHp; });
       };
       if (w.on("step")) w.emit("step", hit);
-      else { hit(); w.after(0.4, () => { w.busy = false; }); }
+      else { const h = w.hero; h.x = h.home + 60; hit(); w.foe.ox += 10; w.after(0.4, () => { h.x = h.home; w.busy = false; }); }
     },
     update(w) { if (!w.on("bar")) w.foe.hpLag = w.foe.hp; },
     drawHud(w, ctx) { drawBigBar(ctx, w.foe, w.on("bar")); },
@@ -1235,12 +1235,15 @@ RECIPES.push(
     intro: { en: "Level up. Did you even *notice*?", ko: "레벨업. *눈치*나 챘을까요?" },
     interval: 1.05, stepDur: 3.8,
     setup(w) { w.hero = w.actor("hero", { home: 270, h: 120 }); w.xp = { v: 60, shown: 60, lv: 4, flash: 0, over: false }; },
-    fire(w) { w.emit("gain", 20); if (!w.on("orbs")) addXp(w, 20); },
-    update(w, dt) { const x = w.xp; if (!w.on("fill")) { x.shown = x.v; x.over = false; } x.flash = Math.max(0, x.flash - dt * 3); },
+    fire(w) { w.emit("gain", 50); if (!w.on("orbs")) addXp(w, 50); },
+    update(w, dt) {
+      const x = w.xp;
+      if (x.lv0 !== x.lv) { if (x.lv0 && !w.on("text")) w.hero.oy = -30; x.lv0 = x.lv; } if (!w.on("fill")) { x.shown = x.v; x.over = false; } x.flash = Math.max(0, x.flash - dt * 3); },
     drawHud(w, ctx) {
       const x = w.xp, X = 80, Y = 322, W = 380, H = 12;
-      ctx.font = "700 13px 'JetBrains Mono', monospace"; ctx.textAlign = "left"; ctx.fillStyle = "#c6f432";
-      ctx.fillText("LV " + x.lv, X - 56, Y + 11);
+      ctx.font = "800 18px 'JetBrains Mono', monospace"; ctx.textAlign = "left"; ctx.fillStyle = "#c6f432";
+      ctx.fillText("LV " + x.lv, X - 60, Y + 13);
+      ctx.font = "700 13px 'JetBrains Mono', monospace";
       ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.beginPath(); ctx.roundRect(X - 3, Y - 3, W + 6, H + 6, 5); ctx.fill();
       ctx.fillStyle = "#38bdf8"; ctx.fillRect(X, Y, W * Math.max(0, x.shown) / 100, H);
       if (w.on("fill")) { ctx.fillStyle = "#fff"; ctx.fillRect(X + W * Math.max(0, x.shown) / 100 - 3, Y, 3, H); }
@@ -1286,7 +1289,7 @@ RECIPES.push(
         cap: { en: "A *pillar of light* and spinning *rays*.", ko: "*빛기둥*과 돌아가는 *광선*." },
         levelup(w) {
           w.spawn({ type: "beam", x: 270, y: G, size: 60, h: 420, life: 1, color: "198,244,50" });
-          w.spawn({ type: "rays", x: 270, y: G - 60, size: 170, n: 14, vr: 1.5, life: 1.2, color: "198,244,50" });
+          w.spawn({ type: "rays", under: true, x: 270, y: G - 60, size: 170, n: 14, vr: 1.5, life: 1.2, color: "198,244,50" });
         },
       },
       {
@@ -1321,13 +1324,13 @@ RECIPES.push(
       B[0][c + 2] = b; B[1][c + 2] = a;
       const pa = m3pos(1, c + 2), pb = m3pos(0, c + 2);
       a.tx = pa.x; a.ty = pa.y; b.tx = pb.x; b.ty = pb.y;
-      w.swapT = 0;
+      w.swapT = 0.2;
       w.emit("swap", a, b);
       if (!w.on("swap")) { a.x = a.tx; a.y = a.ty; b.x = b.tx; b.y = b.ty; }
       w.after(w.swapT, () => {
         const gems = [B[0][c], B[0][c + 1], B[0][c + 2]];
         w.combo = w.time - w.lastClear < 2.5 ? Math.min(8, w.combo + 1) : 1; w.lastClear = w.time;
-        w.score += 30 * w.combo; w.clearT = 0;
+        w.score += 30 * w.combo; w.clearT = 0.35;
         w.emit("clear", gems, w.combo);
         if (!w.on("pop")) gems.forEach(g => { g.sc = 0; });
         w.after(w.clearT, () => {
@@ -1512,7 +1515,7 @@ RECIPES.push(
     update(w, dt) {
       const B = w.B, k = Math.min(1, dt * 14);
       B.lit = Math.max(0, B.lit - dt * 4); B.sx += (1 - B.sx) * k; B.sy += (1 - B.sy) * k; B.bump = Math.max(0, B.bump - dt * 5);
-      if (!w.on("depth")) B.press = 0;
+      if (!w.on("depth")) B.press = B.lit > 0.6 ? 6 : 0;
     },
     drawFront(w, ctx) {
       const B = w.B, x = 270, y = 230;
@@ -1583,6 +1586,7 @@ RECIPES.push(
         C.open = true;
         w.emit("open", C);
         if (!w.on("lid")) C.lid = -1.9;
+        if (!w.on("item")) C.item = 1;
         w.after(1.8, () => { C.open = false; C.lid = 0; C.item = 0; w.busy = false; });
       };
       if (w.on("wiggle")) { w.emit("wiggle", C); w.after(0.45, open); } else open();
@@ -1619,7 +1623,7 @@ RECIPES.push(
       {
         id: "rays", name: { en: "Light Rays", ko: "빛줄기" }, param: "12 rays · spin",
         cap: { en: "*Light rays* spill out of the box.", ko: "상자 안에서 *빛*이 쏟아져요." },
-        open(w) { w.spawn({ type: "rays", x: 270, y: G - 80, size: 190, n: 12, vr: 0.9, life: 1.6, color: "253,224,71" }); w.spawn({ type: "glow", x: 270, y: G - 70, size: 120, size1: 60, life: 0.8, color: "253,224,71" }); },
+        open(w) { w.spawn({ type: "rays", under: true, x: 270, y: G - 80, size: 190, n: 12, vr: 0.9, life: 1.6, color: "253,224,71" }); w.spawn({ type: "glow", under: true, x: 270, y: G - 70, size: 120, size1: 60, life: 0.8, color: "253,224,71" }); },
       },
       {
         id: "coins", name: { en: "Coin Fountain", ko: "동전 분수" }, param: "10 coins · bounce",

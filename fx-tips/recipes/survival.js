@@ -1784,7 +1784,7 @@
         ctx.beginPath(); ctx.moveTo(-80, G); ctx.lineTo(80, G - 60); ctx.lineTo(200, G - 20); ctx.lineTo(330, G - 80); ctx.lineTo(620, G); ctx.closePath(); ctx.fill();
         soil(ctx);
         ctx.fillStyle = w.S.burn > 0 ? "#1c1917" : "#3f2a1d"; ctx.fillRect(404, G - 110, 12, 110);
-        ctx.fillStyle = w.S.burn > 0 ? "#292524" : "#14532d"; ctx.beginPath(); ctx.moveTo(370, G - 90); ctx.lineTo(410, G - 180); ctx.lineTo(450, G - 90); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = w.S.hit > 0 ? "#f8fafc" : w.S.burn > 0 ? "#292524" : "#14532d"; ctx.beginPath(); ctx.moveTo(370, G - 90); ctx.lineTo(410, G - 180); ctx.lineTo(450, G - 90); ctx.closePath(); ctx.fill();
       },
       setup(w) {
         w.hero = w.actor("hero", { home: 130 });
@@ -1792,11 +1792,12 @@
       },
       fire(w) {
         const b = { x: 410, top: -20, bot: G - 150 };
+        w.S.hit = 0.15;
         w.emit("strike", b);
         if (!w.on("bolt")) w.spawn({ type: "crack", x: b.x, y: b.top, pts: [[0, 0], [0, b.bot - b.top]], w: 5, life: 0.3, hold: true, add: false, color: "255,255,255" });
       },
       update(w, dt) {
-        const S = w.S; S.burn = Math.max(0, S.burn - dt * 0.4);
+        const S = w.S; S.burn = Math.max(0, S.burn - dt * 0.4); S.hit = Math.max(0, (S.hit || 0) - dt);
         if (Math.random() < dt * 40) w.spawn({ type: "spark", x: rand(-40, 620) + S.wind * 0.6, y: -20, vx: -S.wind, vy: 900, size: 1.4, life: 0.4, color: "186,200,220" });
       },
       steps: [

@@ -1,6 +1,8 @@
 "use strict";
 /* env — 환경·월드 반응 레시피 20편 */
 (() => {
+  // 먼지: 블룸에 하얗게 번지지 않도록 바닥 레이어(under)에 그림
+  const dirt = (w, x, y, n, dir = 0, col = "150,140,130") => { for (let i = 0; i < n; i++) w.spawn({ type: "smoke", under: true, x: x + rand(-10, 10), y: y - rand(0, 6), vx: (dir || (Math.random() < 0.5 ? -1 : 1)) * rand(40, 180), vy: rand(-60, -10), drag: 3, size: rand(4, 8), size1: rand(12, 20), life: rand(0.35, 0.6), color: col }); };
   // ───── 파일 전용 도우미 ─────
   const skyFill = (ctx, top, bot, y1 = G) => {
     const g = ctx.createLinearGradient(0, -60, 0, y1);
@@ -325,7 +327,7 @@
           cap: { en: "Show the *cold* on the character: breath puffs.", ko: "추위는 *캐릭터*로 보여줘요. 하얀 입김." },
           flurry(w) {
             const h = w.hero;
-            for (let i = 0; i < 3; i++) w.spawn({ type: "smoke", x: h.x + 34, y: G - 124, vx: rand(30, 70), vy: rand(-30, -10), drag: 1.5, size: 3, size1: rand(9, 13), life: rand(0.8, 1.1), alpha: 0.6, color: "230,240,255" });
+            for (let i = 0; i < 3; i++) w.spawn({ type: "smoke", under: true, x: h.x + 34, y: G - 124, vx: rand(30, 70), vy: rand(-30, -10), drag: 1.5, size: 3, size1: rand(9, 13), life: rand(0.8, 1.1), alpha: 0.6, color: "230,240,255" });
           },
         },
         {
@@ -408,7 +410,7 @@
           id: "dust", name: { en: "Ground Dust", ko: "흙먼지" }, param: "follows front",
           cap: { en: "Kick up *dust* right under the wave.", ko: "물결 바로 아래로 *흙먼지*." },
           gust(w) {
-            for (let i = 0; i < 8; i++) w.after(i * 0.1, () => w.spawn({ type: "smoke", x: -80 + i * 72, y: G - 6, vx: rand(200, 320), vy: rand(-40, -10), drag: 2, size: 6, size1: 22, life: 0.7, color: "160,150,120" }));
+            for (let i = 0; i < 8; i++) w.after(i * 0.1, () => w.spawn({ type: "smoke", under: true, x: -80 + i * 72, y: G - 6, vx: rand(200, 320), vy: rand(-40, -10), drag: 2, size: 6, size1: 22, life: 0.7, color: "160,150,120" }));
           },
         },
         {
@@ -514,15 +516,19 @@
       id: "env-ripple", cat: "env", view: "top",
       title: { en: "Make water *ripple*", ko: "물결을 *번지게*" },
       intro: { en: "A stone hits the pond. *Plop*. Gone.", ko: "돌이 연못에 퐁. 그리고 *끝*." },
-      interval: 0.8, stepDur: 3.6,
+      interval: 0.9, stepDur: 3.6,
       setup(w) {
         w.pads = [[120, 90], [420, 110], [330, 250], [150, 260], [460, 280], [250, 70]].map(([x, y]) => ({ x, y, ox: 0, oy: 0, rot: rand(0, TAU), r: rand(20, 28) }));
         w.rip = [];
       },
       fire(w) {
         const p = { x: rand(170, 380), y: rand(120, 230) };
-        w.spawn({ x: p.x, y: p.y, size: 7, size1: 0, life: 0.18, color: "140,140,150" });
-        w.emit("drop", p);
+        // 돌: 위에서 떨어지며 작아지다가 물에 닿음
+        w.spawn({ type: "circle", add: false, x: p.x - 30, y: p.y - 70, vx: 120, vy: 280, size: 22, size1: 10, life: 0.25, alpha: 1, color: "170,170,180" });
+        w.after(0.25, () => {
+          w.spawn({ type: "circle", add: false, x: p.x, y: p.y, size: 14, size1: 3, life: 0.35, color: "5,20,26" });
+          w.emit("drop", p);
+        });
       },
       drawFloor(w, ctx) {
         ctx.fillStyle = "#0f2a33"; ctx.fillRect(14, 14, 512, 332);
@@ -630,7 +636,7 @@
         {
           id: "foam", name: { en: "Foam", ko: "물거품" }, param: "40 puffs / s",
           cap: { en: "White *foam* boils where it hits the pool.", ko: "떨어지는 곳에 하얀 *거품*이 끓어요." },
-          update(w, dt) { if (Math.random() < dt * 40) w.spawn({ type: "smoke", x: rand(160, 220), y: G - 4, vx: rand(-90, 90), vy: rand(-40, -10), drag: 2, size: 5, size1: 15, life: 0.45, alpha: 0.7, color: "235,245,255" }); },
+          update(w, dt) { if (Math.random() < dt * 40) w.spawn({ type: "smoke", under: true, x: rand(160, 220), y: G - 4, vx: rand(-90, 90), vy: rand(-40, -10), drag: 2, size: 4, size1: 13, life: 0.4, alpha: 0.4, color: "225,238,250" }); },
         },
         {
           id: "spray", name: { en: "Spray", ko: "물보라" }, param: "25 drops / s",
@@ -644,7 +650,7 @@
         {
           id: "mist", name: { en: "Rising Mist", ko: "피어오르는 안개" }, param: "slow · 2.5s",
           cap: { en: "Big, slow *mist* clouds. They *drift* away.", ko: "크고 느린 *물안개*가 *흘러가요*." },
-          update(w, dt) { if (Math.random() < dt * 9) w.spawn({ type: "smoke", x: rand(150, 230), y: G - 10, vx: rand(10, 70), vy: rand(-50, -20), size: 20, size1: 70, life: 2.5, alpha: 0.22, color: "200,220,235" }); },
+          update(w, dt) { if (Math.random() < dt * 9) w.spawn({ type: "smoke", under: true, x: rand(150, 230), y: G - 10, vx: rand(10, 70), vy: rand(-50, -20), size: 20, size1: 70, life: 2.5, alpha: 0.12, color: "190,210,228" }); },
         },
         {
           id: "surge", name: { en: "Surge Burst", ko: "물살 터짐" }, param: "30 drops + shake",
@@ -652,7 +658,7 @@
           surge(w, p) {
             w.shake(0.2);
             for (let i = 0; i < 30; i++) w.spawn({ x: p.x + rand(-30, 30), y: G - 6, vx: rand(-320, 320), vy: rand(-560, -200), g: 1000, life: 0.8, size: rand(2, 4), color: "200,230,255" });
-            for (let i = 0; i < 3; i++) w.spawn({ type: "smoke", x: p.x + rand(-40, 40), y: G - 20, vx: rand(-60, 80), vy: rand(-90, -40), size: 30, size1: 80, life: 2, alpha: 0.3, color: "210,228,240" });
+            for (let i = 0; i < 3; i++) w.spawn({ type: "smoke", under: true, x: p.x + rand(-40, 40), y: G - 20, vx: rand(-60, 80), vy: rand(-90, -40), size: 30, size1: 80, life: 2, alpha: 0.16, color: "200,220,236" });
           },
         },
         {
@@ -752,7 +758,7 @@
         {
           id: "smoke", name: { en: "Dark Smoke", ko: "검은 연기" }, param: "3 puffs · 1.6s",
           cap: { en: "A wisp of *dark smoke* lingers after.", ko: "뒤에 *검은 연기*가 남아요." },
-          pop(w, p) { for (let i = 0; i < 3; i++) w.spawn({ type: "smoke", x: p.x + rand(-10, 10), y: p.y - 20, vx: rand(-20, 20), vy: rand(-70, -40), size: 6, size1: 24, life: 1.6, alpha: 0.6, color: "40,30,30" }); },
+          pop(w, p) { for (let i = 0; i < 3; i++) w.spawn({ type: "smoke", under: true, x: p.x + rand(-10, 10), y: p.y - 20, vx: rand(-20, 20), vy: rand(-70, -40), size: 6, size1: 24, life: 1.6, alpha: 0.6, color: "40,30,30" }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thick blorp",
@@ -773,9 +779,9 @@
         const x = rand(300, 460);
         w.spawn({ type: "glow", x: x + rand(-60, 60), y: 10, size: 90, life: 0.3, color: "140,130,220" });
         w.after(0.3, () => {
-          const s = { x, pts: [[x, -20], [x, G]], w: 2, color: "250,220,90" };
+          const s = { x, pts: [[x, -20], [x, G]], w: 5, color: "250,220,90" };
           w.emit("strike", s);
-          w.spawn({ type: "crack", x: 0, y: 0, pts: s.pts, w: s.w, life: 0.3, color: s.color, add: true });
+          w.spawn({ type: "crack", x: 0, y: 0, pts: s.pts, w: s.w, life: 0.4, hold: true, color: s.color, add: true });
         });
       },
       update(w, dt) { w.lit = Math.max(0, w.lit - dt * 2.2); },
@@ -790,7 +796,7 @@
         {
           id: "jag", name: { en: "Jagged Path", ko: "지그재그" }, param: "14 segments",
           cap: { en: "Lightning is never straight. *Zigzag* it.", ko: "번개는 곧지 않아요. *지그재그*로." },
-          strike(w, s) { s.pts = boltPath(s.x + rand(-60, 60), -20, s.x, G, 14, 22); s.w = 4; },
+          strike(w, s) { s.pts = boltPath(s.x + rand(-60, 60), -20, s.x, G, 14, 22); s.w = 5; },
         },
         {
           id: "branch", name: { en: "Branches", ko: "갈래" }, param: "3 forks",
@@ -810,7 +816,7 @@
         {
           id: "flash", name: { en: "Double Flash", ko: "두 번 번쩍" }, param: "0.8 → 0.5",
           cap: { en: "Flash the screen *twice*. Real bolts flicker.", ko: "화면을 *두 번* 번쩍. 진짜 번개는 깜빡여요." },
-          strike(w) { w.flash("210,215,255", 0.8); w.after(0.1, () => w.flash("210,215,255", 0.5)); },
+          strike(w) { w.flash("210,215,255", 0.55); w.after(0.1, () => w.flash("210,215,255", 0.35)); },
         },
         {
           id: "lit", name: { en: "World Lights Up", ko: "세상이 밝아짐" }, param: "sky + actors",
@@ -824,7 +830,7 @@
             sparks(w, s.x, G - 4, 18, "255,240,200", [200, 600], Math.PI, TAU);
             w.spawn({ type: "ring", flat: true, x: s.x, y: G, size: 10, size1: 110, life: 0.45, w: 6, color: "220,210,255" });
             w.spawn({ type: "ellipse", under: true, x: s.x, y: G + 2, size: 60, life: 3, hold: true, add: false, alpha: 0.8, color: "0,0,0" });
-            for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: s.x + rand(-20, 20), y: G - 10, vx: rand(-30, 30), vy: rand(-60, -30), size: 10, size1: 30, life: 1.4, color: "70,70,90" });
+            for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", under: true, x: s.x + rand(-20, 20), y: G - 10, vx: rand(-30, 30), vy: rand(-60, -30), size: 10, size1: 30, life: 1.4, color: "70,70,90" });
           },
         },
         {
@@ -899,7 +905,7 @@
           id: "wake", name: { en: "Wake Swirl", ko: "지나간 자리" }, param: "8 puffs",
           cap: { en: "Moving through fog *stirs it up*.", ko: "지나가면 안개가 *휘저어져요*." },
           dash(w, h) {
-            for (let i = 0; i < 8; i++) w.after(i * 0.07, () => w.spawn({ type: "smoke", x: h.x - (h.flip ? -30 : 30), y: G - rand(20, 90), vx: (h.flip ? 1 : -1) * rand(40, 100), vy: rand(-20, 10), drag: 1.5, size: 14, size1: 46, life: 1.6, alpha: 0.25, color: "190,198,210" }));
+            for (let i = 0; i < 8; i++) w.after(i * 0.07, () => w.spawn({ type: "smoke", under: true, x: h.x - (h.flip ? -30 : 30), y: G - rand(20, 90), vx: (h.flip ? 1 : -1) * rand(40, 100), vy: rand(-20, 10), drag: 1.5, size: 14, size1: 46, life: 1.6, alpha: 0.25, color: "190,198,210" }));
           },
         },
         {
@@ -1097,7 +1103,7 @@
         w.bricks.forEach((row, r) => row.forEach((on, c) => { if (on && c < 3) live.push({ r, c }); }));
         if (!live.length) return;
         const t = pick(live), ty = brickXY(t.c, t.r).y + WB.bh / 2;
-        const b = { x: 140, y: ty, vx: 1100, vy: 0, draw: (ctx, p) => { ctx.fillStyle = "#1f2937"; ctx.beginPath(); ctx.arc(p.x, p.y, 10, 0, TAU); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.beginPath(); ctx.arc(p.x - 3, p.y - 3, 3, 0, TAU); ctx.fill(); } };
+        const b = { x: 140, y: ty, vx: 700, vy: 0, draw: (ctx, p) => { ctx.fillStyle = "#94a3b8"; ctx.beginPath(); ctx.arc(p.x, p.y, 13, 0, TAU); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.beginPath(); ctx.arc(p.x - 3, p.y - 3, 3, 0, TAU); ctx.fill(); } };
         b.test = p => { const c = Math.floor((p.x - WB.x0) / WB.bw), r = Math.floor((G - p.y) / WB.bh); return c >= 0 && c < WB.cols && w.bricks[r] && w.bricks[r][c]; };
         b.onHit = p => {
           const gone = [];
@@ -1140,7 +1146,7 @@
         {
           id: "dust", name: { en: "Dust Cloud", ko: "먼지 구름" }, param: "8 puffs",
           cap: { en: "A *dust cloud* hides the exact moment. Good.", ko: "*먼지*가 순간을 덮어줘요. 그게 좋아요." },
-          hit(w, p) { for (let i = 0; i < 8; i++) w.spawn({ type: "smoke", x: p.x + rand(0, 40), y: p.y + rand(-20, 20), vx: rand(20, 160), vy: rand(-60, 20), drag: 2, size: 10, size1: rand(26, 40), life: rand(0.8, 1.3), color: "170,150,130" }); },
+          hit(w, p) { for (let i = 0; i < 8; i++) w.spawn({ type: "smoke", under: true, x: p.x + rand(0, 40), y: p.y + rand(-20, 20), vx: rand(20, 160), vy: rand(-60, 20), drag: 2, size: 10, size1: rand(26, 40), life: rand(0.8, 1.3), color: "170,150,130" }); },
         },
         {
           id: "gravity", name: { en: "Loose Bricks Fall", ko: "받침 없으면 추락" }, param: "check +120ms",
@@ -1181,7 +1187,7 @@
       fire(w) {
         const P = w.pane; if (!P.alive || w.busy) return;
         w.busy = true;
-        const rock = { x: 170, y: G - 90, vx: 900, vy: -60, g: 0, hitX: 360, draw: (ctx, p) => { ctx.fillStyle = "#6b7280"; ctx.beginPath(); ctx.arc(p.x, p.y, 7, 0, TAU); ctx.fill(); } };
+        const rock = { x: 170, y: G - 90, vx: 650, vy: -40, g: 0, hitX: 360, draw: (ctx, p) => { ctx.fillStyle = "#a8a29e"; ctx.beginPath(); ctx.arc(p.x, p.y, 11, 0, TAU); ctx.fill(); } };
         rock.onHit = p => {
           const smash = () => { P.alive = false; P.cracks = null; w.emit("smash", { x: p.x, y: p.y }); w.after(0.7, () => { P.alive = true; w.busy = false; }); };
           if (w.on("crack")) { w.emit("crack", { x: p.x, y: p.y }); w.after(0.1, smash); } else smash();
@@ -1301,7 +1307,7 @@
         {
           id: "dust", name: { en: "Dust Puff", ko: "먼지" }, param: "6 puffs",
           cap: { en: "A puff of *dust* where it stood.", ko: "있던 자리에 *먼지* 한 줌." },
-          break(w, c) { for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", x: c.x + rand(-40, 40), y: G - rand(10, 70), vx: rand(-60, 60), vy: rand(-60, -10), drag: 2, size: 12, size1: 34, life: 0.9, color: "170,150,120" }); },
+          break(w, c) { for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", under: true, x: c.x + rand(-40, 40), y: G - rand(10, 70), vx: rand(-60, 60), vy: rand(-60, -10), drag: 2, size: 12, size1: 34, life: 0.9, color: "170,150,120" }); },
         },
         {
           id: "loot", name: { en: "Loot Pop", ko: "보상 튀어나옴" }, param: "3 coins",
@@ -1401,7 +1407,7 @@
           id: "smoke", name: { en: "Smoke + Scorch", ko: "연기 + 그을음" }, param: "lingers 2s",
           cap: { en: "Leave a *row of smoke* and scorch marks.", ko: "*연기 줄*과 그을린 자국을 남겨요." },
           boom(w, p) {
-            w.after(0.1, () => { for (let i = 0; i < 5; i++) w.spawn({ type: "smoke", x: p.x + rand(-25, 25), y: p.y - rand(10, 50), vx: rand(-30, 30), vy: rand(-60, -25), size: 14, size1: 44, life: 2, color: "60,60,70" }); });
+            w.after(0.1, () => { for (let i = 0; i < 5; i++) w.spawn({ type: "smoke", under: true, x: p.x + rand(-25, 25), y: p.y - rand(10, 50), vx: rand(-30, 30), vy: rand(-60, -25), size: 14, size1: 44, life: 2, color: "60,60,70" }); });
             w.spawn({ type: "ellipse", under: true, x: p.x, y: G + 2, size: 50, life: 2.5, hold: true, add: false, alpha: 0.7, color: "10,8,6" });
           },
         },
@@ -1484,8 +1490,8 @@
           id: "dust", name: { en: "Dust Fall", ko: "먼지 우수수" }, param: "frame + floor",
           cap: { en: "Dust *falls* from the frame. Old house.", ko: "문틀에서 먼지가 *우수수*. 오래된 집이니까." },
           slam(w) {
-            for (let i = 0; i < 14; i++) w.spawn({ type: "smoke", x: rand(340, 420), y: G - 160, vx: rand(-20, 20), vy: rand(20, 90), g: 60, size: 2, size1: 6, life: 1.2, color: "200,190,170" });
-            dust(w, 380, G, 8, 0, "170,160,140");
+            for (let i = 0; i < 14; i++) w.spawn({ type: "smoke", under: true, x: rand(340, 420), y: G - 160, vx: rand(-20, 20), vy: rand(20, 90), g: 60, size: 2, size1: 6, life: 1.2, color: "200,190,170" });
+            dirt(w, 380, G, 8, 0, "170,160,140");
           },
         },
         {
@@ -1515,7 +1521,7 @@
         w.fl = { lean: 0, lv: 0, dim: 0, puff: 0 };
         w.fshape = 0; w.light = 0; w.shadow = 0;
       },
-      fire(w) { w.fl.puff = 1; w.emit("gust"); },
+      fire(w) { w.fl.puff = 1; w.fl.lv = 10; w.emit("gust"); },
       update(w, dt) {
         const F = w.fl;
         F.puff = Math.max(0, F.puff - dt * 4);
@@ -1539,7 +1545,7 @@
         const F = w.fl, x = 270, y = 142, t = w.time, f = flick(t) * (1 - F.dim);
         if (w.light) { add(ctx); glow(ctx, x, y - 10, (190 + f * 60) * (1 + F.puff * 0.3), "255,150,60", 0.35 + f * 0.25); glow(ctx, x, y - 14, 50, "255,210,140", 0.6); norm(ctx); }
         const s = 1 + F.puff * 0.4;
-        if (!w.fshape) { ctx.fillStyle = "#f97316"; ctx.beginPath(); ctx.moveTo(x - 10 * s, y); ctx.lineTo(x + 10 * s, y); ctx.lineTo(x, y - 34 * s); ctx.fill(); return; }
+        if (!w.fshape) { ctx.fillStyle = "#f97316"; ctx.beginPath(); ctx.moveTo(x - 12 * s, y); ctx.lineTo(x + 12 * s, y); ctx.lineTo(x + F.lean * 40, y - 40 * s); ctx.fill(); return; }
         const h = (38 + Math.sin(t * 17) * 5 + Math.sin(t * 31) * 3) * s * (1 - F.dim * 0.4), lean = F.lean * 1.1 + Math.sin(t * 9) * 0.08;
         add(ctx);
         flame(ctx, x, y, h * 1.15, 13, lean, "rgba(240,90,30,0.85)");
@@ -1571,12 +1577,12 @@
         {
           id: "gust", name: { en: "Gust Reaction", ko: "바람에 휘청" }, param: "lean spring + dim",
           cap: { en: "Wind *bends* the flame and the light *dips*.", ko: "바람에 불꽃이 *휘고*, 빛이 *잠깐 줄어요*." },
-          gust(w) { w.fl.lv = 14; w.fl.dim = 0.6; },
+          gust(w) { w.fl.lv = 16; w.fl.dim = 0.6; },
         },
         {
           id: "smoke", name: { en: "Thin Smoke", ko: "가는 연기" }, param: "6 / sec",
           cap: { en: "A thin line of *smoke* above the fire.", ko: "불 위로 가느다란 *연기*." },
-          update(w, dt) { if (Math.random() < dt * 6) w.spawn({ type: "smoke", x: 270 + w.fl.lean * 20, y: 100, vx: rand(-10, 10) + w.fl.lean * 60, vy: rand(-50, -30), size: 4, size1: 16, life: 1.6, alpha: 0.6, color: "60,55,55" }); },
+          update(w, dt) { if (Math.random() < dt * 6) w.spawn({ type: "smoke", under: true, x: 270 + w.fl.lean * 20, y: 100, vx: rand(-10, 10) + w.fl.lean * 60, vy: rand(-50, -30), size: 4, size1: 16, life: 1.6, alpha: 0.6, color: "60,55,55" }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + crackle",
@@ -1597,7 +1603,10 @@
         w.motes = Array.from({ length: 140 }, () => ({ x: rand(0, 540), y: rand(30, G), vx: rand(-6, 6), vy: rand(-4, 4), ph: rand(0, TAU) }));
         w.soft = 0; w.show = 0; w.beam = 0; w.twinkle = 0; w.pool = 0;
       },
-      fire(w) { const h = w.hero; h.sx = 1.12; h.sy = 0.86; w.emit("stomp", { x: h.x, y: G }); },
+      fire(w) {
+        const h = w.hero;
+        w.tween(h, { oy: -40 }, 0.18, "out", () => w.tween(h, { oy: 0 }, 0.14, "in", () => { h.sx = 1.2; h.sy = 0.8; w.emit("stomp", { x: h.x, y: G }); }));
+      },
       update(w, dt) {
         for (const m of w.motes) {
           m.vx += rand(-8, 8) * dt; m.vy += rand(-8, 8) * dt;
@@ -1662,7 +1671,7 @@
             for (const m of w.motes) { const d = Math.hypot(m.x - p.x, m.y - p.y); if (d < 140) { m.vx += (m.x - p.x) / d * 50; m.vy -= 60 * (1 - d / 140); } }
             for (let i = 0; i < 20; i++) w.motes.push({ x: p.x + rand(-40, 40), y: G - 4, vx: rand(-70, 70), vy: rand(-90, -30), ph: rand(0, TAU) });
             w.motes.splice(0, 20);
-            dust(w, p.x, G, 6, 0, "120,110,100");
+            dirt(w, p.x, G, 6, 0, "120,110,100");
           },
         },
         {
@@ -1717,7 +1726,7 @@
         {
           id: "prints", name: { en: "Prints", ko: "발자국" }, param: "1 decal / step",
           cap: { en: "Every step leaves a *mark*.", ko: "걸을 때마다 *자국*을 남겨요." },
-          step(w, s) { s.print = { x: s.x, y: s.y, rot: 0, len: 8, wd: 8, t: 0, life: 4, fade: false }; w.prints.push(s.print); },
+          step(w, s) { s.print = { x: s.x, y: s.y, rot: 0, len: 10, wd: 10, t: 0, life: 4, fade: false }; w.prints.push(s.print); },
         },
         {
           id: "feet", name: { en: "Left / Right", ko: "왼발 / 오른발" }, param: "±10px · foot shape",
@@ -1725,7 +1734,7 @@
           step(w, s) {
             const p = s.print, n = s.rot + Math.PI / 2;
             p.x += Math.cos(n) * 10 * s.side; p.y += Math.sin(n) * 10 * s.side;
-            p.rot = s.rot - Math.PI / 2; p.len = 9; p.wd = 5;
+            p.rot = s.rot - Math.PI / 2; p.len = 12; p.wd = 6.5;
           },
         },
         {
@@ -1743,7 +1752,7 @@
           cap: { en: "Kick a little *sand* back with each step.", ko: "걸을 때마다 *모래*가 살짝 튀어요." },
           step(w, s) {
             const bx = -Math.sin(s.rot), by = Math.cos(s.rot);
-            w.spawn({ type: "smoke", x: s.x, y: s.y, vx: bx * 40, vy: by * 40, drag: 3, size: 4, size1: 12, life: 0.5, color: "220,190,140" });
+            w.spawn({ type: "smoke", under: true, x: s.x, y: s.y, vx: bx * 40, vy: by * 40, drag: 3, size: 4, size1: 12, life: 0.5, color: "220,190,140" });
             for (let i = 0; i < 4; i++) w.spawn({ x: s.x, y: s.y, vx: bx * rand(60, 140) + rand(-40, 40), vy: by * rand(60, 140) + rand(-40, 40), drag: 6, size: 1.6, life: 0.4, color: "150,115,70" });
           },
         },
@@ -1775,6 +1784,7 @@
       },
       fire(w) {
         if (!w.on("rumble")) w.shake(0.35);
+        for (const b of w.boxes) { b.oy = -18; b.rot = 0.08; }
         w.emit("quake");
       },
       update(w, dt) {
@@ -1829,7 +1839,7 @@
         {
           id: "dust", name: { en: "Ground Dust", ko: "바닥 먼지" }, param: "along floor",
           cap: { en: "*Dust* rises all along the ground.", ko: "바닥 전체에서 *먼지*가 일어요." },
-          quake(w) { for (let i = 0; i < 12; i++) w.after(i * 0.06, () => w.spawn({ type: "smoke", x: rand(0, 540), y: G - 4, vx: rand(-40, 40), vy: rand(-40, -10), drag: 1.5, size: 8, size1: 28, life: 1.3, color: "130,120,110" })); },
+          quake(w) { for (let i = 0; i < 12; i++) w.after(i * 0.06, () => w.spawn({ type: "smoke", under: true, x: rand(0, 540), y: G - 4, vx: rand(-40, 40), vy: rand(-40, -10), drag: 1.5, size: 8, size1: 28, life: 1.3, color: "130,120,110" })); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "40Hz rumble",

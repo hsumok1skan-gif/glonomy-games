@@ -33,6 +33,7 @@
     w.spawn({ type: "star", x, y, size: 44 * s, life: 0.18, color: "255,255,255" });
     w.spawn({ type: "glow", x, y, size: 64 * s, size1: 12, life: 0.3, color: col });
     w.spawn({ type: "ring", x, y, size: 8, size1: 62 * s, life: 0.34, w: 7 * s, color: col });
+    for (let i = 0; i < 6 * s; i++) w.spawn({ type: "spark", x, y, vx: rand(-260, 260) * s, vy: rand(-320, -60) * s, g: 900, drag: 1.5, size: 2.5, life: rand(0.45, 0.7), color: col });
   };
   const pop = (w, text, x, y, size = 26, color = "#fff", life = 0.8) =>
     w.spawn({ type: "text", text, x, y, vy: -60, drag: 2.5, life, size, color });
@@ -102,7 +103,7 @@
   const cell = i => ({ x: 214 + (i % 3) * 96, y: 100 + Math.floor(i / 3) * 104 });
   // 장풍: glow 가 켜지면 하얀 핵 + 색 번짐
   const orb = (ctx, p) => {
-    if (!p.glow) { ctx.fillStyle = `rgb(${p.col})`; ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, TAU); ctx.fill(); return; }
+    if (!p.glow) { ctx.fillStyle = `rgb(${p.col})`; ctx.beginPath(); ctx.arc(p.x, p.y, 10, 0, TAU); ctx.fill(); return; }
     ctx.globalCompositeOperation = "lighter";
     glow(ctx, p.x, p.y, 32 * (1 + 0.15 * Math.sin(p.age * 40)), p.col, 1); glow(ctx, p.x, p.y, 13, "255,255,255", 0.9);
     ctx.globalCompositeOperation = "source-over";
@@ -139,6 +140,7 @@
         w.after(0.05, () => {
           const p = cp(w);
           hurt(w, w.foe, kind === "block" ? 2 : kind === "hit" ? 10 : 18);
+          w.foe.ox += kind === "block" ? 6 : 16;
           w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit(kind, p);
         });
@@ -442,7 +444,7 @@
         w.busy = true;
         const f = w.foe, h = w.hero;
         f.air = true; f.vy = -560; f.spiked = false;
-        w.tween(h, { oy: -120 }, 0.16, "out");
+        w.tween(h, { oy: -84 }, 0.16, "out");
         w.after(0.2, () => {
           f.vy = 1500; f.spiked = true; hurt(w, f, 14); f.flash = 1;
           const p = { x: f.x - 20, y: f.gy + f.oy - 90 };
@@ -559,7 +561,7 @@
         {
           id: "trail", name: { en: "Afterimage", ko: "잔상" }, param: "ghost / frame",
           cap: { en: "Leave *afterimages* along the arc.", ko: "궤적을 따라 *잔상*을 남겨요." },
-          update(w) { if (w.T.on && Math.random() < 0.6) ghost(w, w.foe, 0.22, "white", 0.35); },
+          update(w) { if (w.T.on && Math.random() < 0.5) ghost(w, w.foe, 0.2, "cyan", 0.22); },
         },
         {
           id: "slam", name: { en: "Slam Impact", ko: "메치기 충격" }, param: "ring + dust",
@@ -604,7 +606,7 @@
         w.after(w.on("freeze") ? 0.62 : 0.08, () => {
           w.tween(h, { x: f.x - 90 }, 0.08, "in", () => {
             const p = cp(w);
-            hurt(w, f, 30); f.flash = 1.4; f.ox += 70; f.k = 4;
+            hurt(w, f, 30); f.flash = 1.4; f.ox += 70; f.k = 4; h.ox = 34;
             w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
             w.emit("hit", p);
             w.after(0.35, () => w.tween(h, { x: h.home }, 0.3, "inout", () => { w.busy = false; }));
@@ -656,7 +658,7 @@
           id: "impact", name: { en: "Super Impact", ko: "필살 타격" }, param: "white frame + burst",
           cap: { en: "Land it with a *white frame* and a huge burst.", ko: "*하얀 한 프레임*과 큰 폭발로 마무리." },
           hit(w, p) {
-            w.flash("255,255,255", 0.85); burst(w, p.x, p.y, "198,244,50", 2.2);
+            w.flash("255,255,255", 0.55); burst(w, p.x, p.y, "198,244,50", 2.2);
             sparks(w, p.x, p.y, 22, "230,255,160", [300, 800]); w.hitstop(0.14); w.shake(0.55, 1);
           },
         },
@@ -983,7 +985,7 @@
         f.hp = f.hpLag = 22;
         w.tween(h, { x: f.x - 96 }, 0.07, "in", () => {
           const p = cp(w);
-          f.hp = 0; f.lagWait = 0.4; f.flash = 1;
+          f.hp = 0; f.lagWait = 0.4; f.flash = 1; h.ox = 34;
           w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("ko", p, f);
           if (!f.flying) w.tween(f, { rot: 1.35 }, 0.35, "in");
@@ -999,7 +1001,7 @@
         hud(w, ctx);
         if (w.koT <= 0) return;
         const k = 1 - w.koT / 1.4, sc = k < 0.08 ? 2.4 - k / 0.08 * 1.4 : 1;
-        big(ctx, "K.O.", 270, 168, 92, "#ef4444", sc, Math.min(1, w.koT / 0.2));
+        big(ctx, "K.O.", 270, 118, 80, "#ef4444", sc, Math.min(1, w.koT / 0.2));
       },
       steps: [
         {
@@ -1010,7 +1012,7 @@
         {
           id: "flash", name: { en: "White Out", ko: "하얗게" }, param: "flash .9 + burst",
           cap: { en: "*White out* the screen, a huge burst.", ko: "화면을 *하얗게*, 큰 폭발까지." },
-          ko(w, p) { w.flash("255,255,255", 0.9); burst(w, p.x, p.y, "255,90,90", 2.2); sparks(w, p.x, p.y, 20, "255,200,180", [300, 800]); },
+          ko(w, p) { w.flash("255,255,255", 0.55); burst(w, p.x, p.y, "255,90,90", 2.2); sparks(w, p.x, p.y, 20, "255,200,180", [300, 800]); },
         },
         {
           id: "fly", name: { en: "Send Flying", ko: "날려 버리기" }, param: "vx 520 · spin 8",
@@ -1337,7 +1339,7 @@
         const h = w.hero, f = w.foe;
         w.rise = true;
         w.emit("start", { x: h.x + 40, y: G - 60 });
-        w.tween(h, { oy: -150, x: h.home + 70 }, 0.24, "out", () => {
+        w.tween(h, { oy: -105, x: h.home + 70 }, 0.24, "out", () => {
           w.rise = false;
           w.tween(h, { oy: 0, x: h.home + 40 }, 0.3, "in", () => {
             w.emit("land", h);
@@ -1716,7 +1718,7 @@
           cap: { en: "Gold *rays* say: you can't touch me now.", ko: "금빛 *빛살* = 지금은 못 건드려요." },
           wake(w, p) {
             w.spawn({ type: "rays", x: p.x, y: p.y - 20, size: 170, life: 0.45, n: 12, vr: 3, color: "253,224,71", under: true });
-            w.spawn({ type: "glow", x: p.x, y: p.y - 20, size: 40, size1: 120, life: 0.4, color: "253,224,71" });
+            w.spawn({ type: "glow", under: true, x: p.x, y: p.y - 20, size: 40, size1: 120, life: 0.4, color: "253,224,71" });
           },
         },
         {
@@ -1730,7 +1732,7 @@
         {
           id: "impact", name: { en: "Heavy Impact", ko: "묵직한 타격" }, param: "burst + 120ms + shake",
           cap: { en: "The punish hits *hard*. Freeze and shake.", ko: "반격은 *세게*. 멈칫하고 흔들어요." },
-          hit(w, p) { burst(w, p.x, p.y, "255,190,60", 1.8); sparks(w, p.x, p.y, 18, "255,230,150", [260, 700], -2.4, -0.6); w.hitstop(0.12); w.shake(0.4); },
+          hit(w, p) { burst(w, p.x, p.y, "255,190,60", 1.3); sparks(w, p.x, p.y, 18, "255,230,150", [260, 700], -2.4, -0.6); w.hitstop(0.12); w.shake(0.4); },
         },
         {
           id: "label", name: { en: "REVERSAL!", ko: "REVERSAL!" }, param: "gold text",
@@ -2126,7 +2128,7 @@
         {
           id: "numbers", name: { en: "Split Numbers", ko: "나눠 보이는 숫자" }, param: "−10 lost · −14 red",
           cap: { en: "Show what's *lost* and what's *recoverable*.", ko: "*잃은 것*과 *되찾을 것*을 나눠 보여요." },
-          hurt(w, h, d, p) { pop(w, "-" + Math.round(d * 0.4), p.x - 10, p.y - 40, 22, "#fff", 0.7); pop(w, "-" + Math.round(d * 0.6), p.x + 26, p.y - 20, 18, "#f87171", 0.7); },
+          hurt(w, h, d, p) { pop(w, "-" + Math.round(d * 0.4), p.x - 14, p.y - 50, 30, "#fff", 0.9); pop(w, "-" + Math.round(d * 0.6), p.x + 30, p.y - 22, 26, "#f87171", 0.9); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hurt · soft tick",
@@ -2222,11 +2224,11 @@
       setup(w) { duel(w, { hx: 140, fx: 400 }); },
       fire(w) {
         const h = w.hero, f = w.foe;
-        const a = { x: h.x + 50, y: G - 80, vx: 520, vy: 0, col: "196,181,253", draw: orb };
-        const b = { x: f.x - 60, y: G - 80, vx: -520, vy: 0, col: "134,239,172", draw: orb };
+        const a = { x: h.x + 50, y: G - 80, vx: 300, vy: 0, col: "196,181,253", draw: orb };
+        const b = { x: f.x - 60, y: G - 80, vx: -300, vy: 0, col: "134,239,172", draw: orb };
         a.test = p => p.x >= b.x;
         a.onHit = () => { w.shots = w.shots.filter(s => s !== b); w.emit("clash", { x: (a.x + b.x) / 2, y: a.y }); };
-        h.ox = 16; f.ox = -16;
+        h.ox = 26; f.ox = -26;
         w.emit("launch", a, b);
         w.shoot(a); w.shoot(b);
       },
@@ -2248,6 +2250,8 @@
           cap: { en: "Burst in *both colors* where they meet.", ko: "만난 자리에서 *두 색*이 터져요." },
           clash(w, c) {
             w.spawn({ type: "star", x: c.x, y: c.y, size: 60, life: 0.18, color: "255,255,255" });
+            w.spawn({ type: "glow", under: true, x: c.x - 20, y: c.y, size: 90, size1: 40, life: 0.7, color: "167,139,250" });
+            w.spawn({ type: "glow", under: true, x: c.x + 20, y: c.y, size: 90, size1: 40, life: 0.7, color: "74,222,128" });
             sparks(w, c.x, c.y, 14, "196,181,253", [250, 650], Math.PI / 2, Math.PI * 1.5);
             sparks(w, c.x, c.y, 14, "134,239,172", [250, 650], -Math.PI / 2, Math.PI / 2);
           },

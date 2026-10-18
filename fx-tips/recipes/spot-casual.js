@@ -41,7 +41,7 @@
     const fy = -H - T + sink;
     const g = ctx.createLinearGradient(0, fy, 0, fy + H);
     g.addColorStop(0, "#e2ff6a"); g.addColorStop(1, "#8fcc14");
-    rr(ctx, -W / 2, fy, W, H, H / 2, T ? g : "#a9dc2a");
+    rr(ctx, -W / 2, fy, W, H, H / 2, T ? g : b.down ? "#7fae18" : "#a9dc2a");
     if (T) { ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.beginPath(); ctx.roundRect(-W / 2 + 30, fy + 9, W - 60, 13, 7); ctx.fill(); }
     ctx.fillStyle = "#1c3300";
     ctx.beginPath(); ctx.moveTo(-70, fy + H / 2 - 17); ctx.lineTo(-40, fy + H / 2); ctx.lineTo(-70, fy + H / 2 + 17); ctx.closePath(); ctx.fill();
@@ -314,7 +314,7 @@
     [2, 3, 4, 5].forEach(c => put(4, c, 0));
     put(4, 1, 2); put(4, 6, 3); put(4, 7, 1);
     put(5, 2, 1); put(5, 3, 3); put(5, 4, 2); put(5, 6, 4);
-    Object.assign(B, { gap: 0, shot: null });
+    Object.assign(B, { gap: 0, shot: null, tally: null });
   };
   const flyBubble = (ctx, p) => bubble(ctx, p.k, p.x, p.y, BR);
 
@@ -335,7 +335,7 @@
           w.spawn({ type: "ring", x: b.x + 52, y: b.y - 4, size: 6, size1: 24, life: 0.3, w: 3, color: "230,230,240" });
           b.down = 1; w.emit("press", b);
         });
-        w.after(0.44, () => { b.down = 0; w.emit("release", b); });
+        w.after(0.5, () => { b.down = 0; w.emit("release", b); });
       },
       update(w, dt) {
         const b = w.btn;
@@ -480,7 +480,7 @@
               w.spawn({ type: "slash", x, y: y + k * GS, ang: 0, len: 140, size: 8, life: 0.32, color: "90,200,255" });
               w.spawn({ type: "slash", x: x + k * GS, y: y - 18, ang: Math.PI / 2, len: 120, size: 8, life: 0.32, color: "220,110,255" });
             }
-            w.spawn({ type: "glow", under: true, x, y, size: 40, size1: 200, life: 0.7, color: "220,140,255" });
+            w.spawn({ type: "glow", under: true, x, y, size: 30, size1: 170, life: 0.6, color: "170,90,230" });
           },
         },
         {
@@ -496,7 +496,7 @@
           cap: { en: "Gems *fly off* the board and *spin*.", ko: "보석이 판 밖으로 *휙휙* 날아가요." },
           pop(w, cell, x, y) {
             w.shoot({ x, y, vx: (x - 270) * 3 + rand(-120, 120), vy: rand(-620, -320), g: 1500, vr: rand(-12, 12), c: cell.c, draw: flyGem });
-            sparks(w, x, y, 4, GEM_COL[cell.c]);
+            sparks(w, x, y, 2, GEM_COL[cell.c]);
           },
         },
         {
@@ -505,7 +505,7 @@
           boom(w, B, x, y) {
             w.after(0.22, () => w.spawn({ type: "text", x: 270, y: 176, text: "SUPER COMBO!", size: 38, color: "#ffe14a", life: 1.6 }));
             w.spawn({ type: "rays", under: true, x, y, n: 12, size: 80, size1: 320, vr: 0.7, life: 1.6, hold: true, color: "255,200,120" });
-            starBurst(w, x, y, 16, ["255,230,120", "255,200,90", "240,150,255"]);
+            starBurst(w, x, y, 12, ["255,230,120", "255,200,90", "240,150,255"]);
           },
         },
         {
@@ -949,7 +949,7 @@
             w.spawn({ type: "rays", under: true, x: 270, y: 176, n: 16, size: 100, size1: 360, vr: 0.5, life: 2, hold: true, color: "255,200,90" });
             w.spawn({ type: "glow", under: true, x: 270, y: 176, size: 80, size1: 180, life: 1.6, color: "255,120,160" });
             starBurst(w, 270, 176, 14, ["255,230,120", "255,255,255", "255,140,180"]);
-            confetti(w, 270, 160, 50);
+            confetti(w, 110, 310, 26, -2.1, -1.6); confetti(w, 430, 310, 26, -1.55, -1.05);
           },
         },
         {
@@ -1087,8 +1087,9 @@
       fire(w) {
         const B = w.bb; newBubbles(B);
         const [tx, ty] = bpos(5, 5);
-        B.shot = { x: 270, y: 296 };
-        w.after(0.25, () => w.tween(B.shot, { x: tx, y: ty }, 0.22, "lin", () => {
+        const shot = (B.shot = { x: 270, y: 296 }), gen = (B.gen = (B.gen || 0) + 1);
+        w.after(0.25, () => w.tween(shot, { x: tx, y: ty }, 0.22, "lin", () => {
+          if (B.gen !== gen) return;
           B.g[5][5] = { k: 0, s: 1 }; B.shot = null;
           w.emit("hit", B);
           const seen = new Set(["5,5"]), q = [[5, 5]], cl = [];
@@ -1109,7 +1110,10 @@
           });
         }));
       },
-      update(w, dt) { for (const row of w.bb.g) for (const b of row) if (b) b.s += (1 - b.s) * Math.min(1, dt * 10); },
+      update(w, dt) {
+        for (const row of w.bb.g) for (const b of row) if (b) b.s += (1 - b.s) * Math.min(1, dt * 10);
+        const T = w.bb.tally; if (T) { T.t += dt; T.s += (1 - T.s) * Math.min(1, dt * 14); if (T.t > 0.9) w.bb.tally = null; }
+      },
       drawFloor(w, ctx) {
         backdrop(ctx, 270, 170, "#6a4512", "#140c02");
         rr(ctx, 110, 40, 320, 230, 18, "rgba(20,12,4,0.55)", "rgba(255,210,140,0.35)", 3);
@@ -1124,6 +1128,13 @@
         rr(ctx, 0, -11, 40, 22, 6, "#c8b090"); ctx.restore();
         ctx.fillStyle = "#8a6a40"; ctx.beginPath(); ctx.arc(270, 318, 26, Math.PI, 0); ctx.fill();
         if (B.shot) bubble(ctx, 0, B.shot.x, B.shot.y, BR);
+        const T = B.tally;
+        if (T) {
+          ctx.save(); ctx.globalAlpha = Math.min(1, (0.9 - T.t) * 4); ctx.translate(T.x, T.y - T.t * 20); ctx.scale(T.s, T.s);
+          ctx.font = `900 ${18 + T.v / 10 * 1.6}px Pretendard, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.lineJoin = "round"; ctx.lineWidth = 5; ctx.strokeStyle = "#3a1c00"; ctx.strokeText(`+${T.v}`, 0, 0);
+          ctx.fillStyle = "#fff4d8"; ctx.fillText(`+${T.v}`, 0, 0); ctx.restore();
+        }
       },
       steps: [
         {
@@ -1144,7 +1155,7 @@
           id: "score", name: { en: "Score Climb", ko: "점수 오르기" }, param: "+10 ×n · grows",
           cap: { en: "Each pop scores *more* and pops *bigger*.", ko: "터질수록 점수가 *커지고* 글자도 *커져요*." },
           pop(w, B, x, y, i) {
-            w.spawn({ type: "text", x: x + (i % 2 ? 12 : -12), y: y - 6, vy: -170, drag: 2, text: `+${(i + 1) * 10}`, size: 13 + i * 1.4, color: "#fff4d8", life: 0.55 });
+            B.tally = { v: (i + 1) * 10, x, y: y - 24, s: 1.5, t: 0 }; // 한 자리에서 숫자만 커져요
           },
         },
         {

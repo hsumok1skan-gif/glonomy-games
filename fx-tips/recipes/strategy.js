@@ -1259,7 +1259,7 @@
         w.busy = true;
         const c = w.card, f = w.foe;
         if (f.hp <= 0) f.hp = 9;
-        const hit = () => { f.hp -= 3; f.hurt = true; w.emit("hit", f); };
+        const hit = () => { f.hp -= 3; f.hurt = true; f.oy -= 8; w.emit("hit", f); };
         const cast = () => {
           w.emit("cast", c);
           if (!w.on("lift")) c.alpha = 0;
@@ -1300,7 +1300,7 @@
           cap: { en: "The target *flashes*, *jolts*, shows the damage.", ko: "표적이 *번쩍*, *휘청*, 피해 숫자." },
           hit(w, f) {
             f.flash = 1; f.oy -= 18; f.ox += rand(-10, 10);
-            w.spawn({ type: "text", text: "−3", x: f.x + 64, y: f.y - 10, vy: -200, g: 420, life: 1.5, size: 42, color: "#f87171" });
+            w.spawn({ type: "text", text: "−3", x: f.x + 78, y: f.y - 20, vy: -200, g: 420, life: 1.5, size: 42, color: "#f87171" });
             sparks(w, f.x, f.y + 30, 14, "253,186,116", [150, 420]);
           },
         },
@@ -1513,7 +1513,7 @@
         const T = w.T, col = T.side ? "248,113,113" : "96,165,250", name = T.side ? "ENEMY TURN" : "YOUR TURN";
         if (T.dim > 0) { ctx.fillStyle = `rgba(0,0,0,${0.5 * T.dim})`; ctx.fillRect(0, 0, 540, 360); }
         if (T.edge > 0) { ctx.strokeStyle = `rgba(${col},${T.edge})`; ctx.lineWidth = 10; ctx.strokeRect(5, 5, 530, 350); }
-        label(ctx, name, 270, 22, 14, `rgba(${col},0.9)`, "center", "'JetBrains Mono', monospace", 700);
+        label(ctx, name, 270, 22, 20, `rgba(${col},0.95)`, "center", "'JetBrains Mono', monospace", 700);
         if (T.ba > 0) {
           ctx.save(); ctx.globalAlpha = T.ba; ctx.translate(T.bx, 0);
           ctx.fillStyle = `rgba(${col},0.85)`; ctx.beginPath(); ctx.moveTo(-40, 150); ctx.lineTo(600, 150); ctx.lineTo(580, 214); ctx.lineTo(-60, 214); ctx.closePath(); ctx.fill();
@@ -1917,8 +1917,8 @@
       fire(w) {
         const Q = w.Q;
         Q.done = false; Q.p = 0.7; Q.shown = 0.7; Q.toast = -60;
-        w.after(0.08, () => { Q.p = 1; w.emit("fill", Q); });
-        w.after(0.36, () => { Q.done = true; w.emit("done", Q); });
+        w.after(0.45, () => { Q.p = 1; w.emit("fill", Q); });
+        w.after(0.75, () => { Q.done = true; w.emit("done", Q); });
       },
       update(w, dt) { const Q = w.Q; Q.s += (1 - Q.s) * Math.min(1, dt * 8); if (!w.on("fill")) Q.shown = Q.p; },
       drawFront(w, ctx) {
@@ -1930,11 +1930,11 @@
         ctx.fillStyle = "rgba(255,255,255,0.1)"; ctx.beginPath(); ctx.roundRect(x, y, bw, 16, 8); ctx.fill();
         ctx.fillStyle = Q.done ? "#c6f432" : "#4ade80"; ctx.beginPath(); ctx.roundRect(x, y, bw * f, 16, 8); ctx.fill();
         if (Q.shine > -1 && Q.shine < 1.2) { ctx.save(); ctx.beginPath(); ctx.roundRect(x, y, bw * f, 16, 8); ctx.clip(); const sx = x + Q.shine * bw; const g = ctx.createLinearGradient(sx - 30, 0, sx + 30, 0); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(0.5, "rgba(255,255,255,0.8)"); g.addColorStop(1, "rgba(255,255,255,0)"); ctx.fillStyle = g; ctx.fillRect(sx - 30, y, 60, 16); ctx.restore(); }
-        label(ctx, Q.done ? "Done" : Math.round(f * 100) + "%", x + bw, 248, 14, "rgba(255,255,255,0.7)", "right");
+        label(ctx, Q.done ? "DONE" : Math.round(f * 100) + "%", x + bw, 248, 18, Q.done ? "#c6f432" : "rgba(255,255,255,0.75)", "right");
         if (Q.toast > -60) {
           ctx.save(); ctx.translate(270, Q.toast);
-          ctx.fillStyle = "rgba(20,24,16,0.95)"; ctx.strokeStyle = "#c6f432"; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(-120, -20, 240, 40, 10); ctx.fill(); ctx.stroke();
-          label(ctx, "RESEARCH COMPLETE", 0, 1, 16, "#c6f432");
+          ctx.fillStyle = "rgba(20,24,16,0.95)"; ctx.strokeStyle = "#c6f432"; ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(-160, -26, 320, 52, 12); ctx.fill(); ctx.stroke();
+          label(ctx, "RESEARCH COMPLETE", 0, 1, 22, "#c6f432");
           ctx.restore();
         }
       },
@@ -2072,7 +2072,7 @@
       fire(w) {
         const [x, y] = w.spots[w.k++ % w.spots.length], al = w.al;
         al.x = x; al.y = y; al.t = 0; al.id++;
-        w.spawn({ type: "circle", x, y, size: 6, life: 1.4, hold: true, color: "248,113,113", add: false });
+        w.spawn({ type: "circle", x, y, size: 11, life: 1.4, hold: true, color: "248,113,113", add: false });
         w.emit("alert", al);
       },
       update(w, dt) { w.al.t += dt; },
@@ -2328,7 +2328,7 @@
         };
         const to = { gx: B.gx, gy: B.gy };
         if (w.on("hop")) w.emit("hop", P, to, land);
-        else w.tween(P, to, 0.2, "inout", land);
+        else w.tween(P, to, 0.35, "inout", land);
       },
       update(w, dt) {
         const k = Math.min(1, dt * 10), P = w.Wp, a = P.arc;
@@ -2376,8 +2376,9 @@
           cap: { en: "A *ring* and *dust* on the square.", ko: "그 칸에 *고리*와 *먼지*." },
           capture(w, B) {
             const q = isoPt(B.gx + 0.5, B.gy + 0.5);
-            w.spawn({ type: "ring", flat: true, x: q.x, y: q.y, size: 18, size1: 90, life: 0.45, w: 7, color: "255,255,255" });
-            dust(w, q.x, q.y + 4, 8);
+            w.spawn({ type: "ring", flat: true, x: q.x, y: q.y, size: 18, size1: 110, life: 0.5, w: 8, color: "255,255,255" });
+            w.spawn({ type: "ellipse", under: true, x: q.x, y: q.y, size: 60, life: 1.4, hold: true, color: "253,224,71" });
+            dust(w, q.x, q.y + 4, 10);
             sparks(w, q.x, q.y - 30, 10, "255,240,200", [160, 380]);
           },
         },

@@ -1212,7 +1212,7 @@
         {
           id: "flash", name: { en: "SSR Flash", ko: "최고 등급 번쩍" }, param: "flash + shake",
           cap: { en: "Only the top tier *flashes the screen*.", ko: "*최고 등급*만 화면이 번쩍." },
-          reveal(w, P, R2) { if (P.r === 2) { w.flash(R2.rgb, 0.4); w.shake(0.4); w.spawn({ type: "text", text: "SSR!!", x: 270, y: 54, vy: -8, life: 1.4, size: 40, color: R2.col }); } },
+          reveal(w, P, R2) { if (P.r === 2) { w.flash("255,255,255", 0.2); w.shake(0.4); w.spawn({ type: "text", text: "SSR!!", x: 270, y: 54, vy: -8, life: 1.4, size: 40, color: R2.col }); } },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch by tier",

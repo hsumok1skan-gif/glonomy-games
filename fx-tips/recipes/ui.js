@@ -837,7 +837,7 @@
         {
           id: "rays", name: { en: "Light Rays", ko: "빛줄기" }, param: "10 rays · 0.6s",
           cap: { en: "*Rays* burst behind the box. It feels like a prize.", ko: "칸 뒤로 *빛줄기*. 상 받는 느낌이에요." },
-          claim(w, c, p) { w.spawn({ type: "rays", under: true, x: p.x, y: p.y, n: 10, size: 20, size1: 110, vr: 1.5, life: 0.6, color: "253,224,71" }); },
+          claim(w, c, p) { w.spawn({ type: "rays", x: p.x, y: p.y, n: 10, size: 20, size1: 110, vr: 1.5, life: 0.6, color: "253,224,71" }); },
         },
         {
           id: "fly", name: { en: "Coins Fly Home", ko: "동전이 지갑으로" }, param: "6 coins · 60ms gap",
@@ -1180,7 +1180,7 @@
           cap: { en: "Spending needs a *payoff*. The item *levels up* loudly.", ko: "쓴 만큼 *보상*이 보여야 해요. 레벨이 *팡*." },
           upgrade(w, S) {
             S.lsc = 1.3;
-            w.spawn({ type: "rays", under: true, x: 270, y: 150, n: 12, size: 30, size1: 130, vr: 1.2, life: 0.6, color: "198,244,50" });
+            w.spawn({ type: "rays", x: 270, y: 150, alpha: 0.7, n: 12, size: 30, size1: 130, vr: 1.2, life: 0.6, color: "198,244,50" });
             w.spawn({ type: "text", text: "Lv " + S.lv + "!", x: 270, y: 90, vy: -50, life: 0.8, size: 26, color: "#c6f432" });
           },
         },
@@ -1206,6 +1206,7 @@
         R.dots = 6; R.msg = 0; R.icon = 0;
         tapAt(w.T, 270, 250);
         w.after(0.12, () => { R.msg = 1; w.emit("fail", R); });
+        w.after(1.1, () => { R.msg = 0; R.icon = 0; R.dots = 6; });
       },
       update(w, dt) { const R = w.ER; tapTick(w.T, dt); R.sh = Math.max(0, R.sh - dt * 2.2); R.red = Math.max(0, R.red - dt * 0.9); },
       drawFront(w, ctx) {
@@ -1318,7 +1319,8 @@
           done(w) {
             w.after(0.5, () => {
               ring(w, 270, 160, 60, 150, "134,239,172", 0.5, 8);
-              sparks(w, 270, 160, 14, "187,247,208", [220, 520]);
+              sparks(w, 270, 160, 18, "187,247,208", [220, 560]);
+              for (let i = 0; i < 8; i++) w.spawn({ type: "star", x: 270 + rand(-110, 110), y: 160 + rand(-90, 70), size: rand(7, 13), life: rand(0.5, 0.9), color: "187,247,208" });
             });
           },
         },
@@ -1483,7 +1485,7 @@
           cap: { en: "The *rarity color* floods out behind the card.", ko: "카드 뒤로 *등급 색*이 퍼져요." },
           reveal(w, C) {
             w.tween(C, { aura: 1 }, 0.2, "out");
-            w.spawn({ type: "rays", under: true, x: 270, y: 180, n: 14, size: 40, size1: 200, vr: 0.8, life: 1.2, color: GEM_COL[C.rar], hold: true });
+            w.spawn({ type: "rays", x: 270, y: 180, n: 14, size: 40, size1: 200, vr: 0.8, life: 1.2, alpha: 0.6, color: GEM_COL[C.rar], hold: true });
           },
         },
         {
@@ -1788,7 +1790,7 @@
           cap: { en: "The *last star* gets the biggest moment.", ko: "*마지막 별*에 제일 큰 연출을." },
           star(w, s, i, x) {
             if (i < 2) return;
-            w.after(0.16, () => { w.shake(0.4); w.flash("255,240,180", 0.35); w.spawn({ type: "rays", under: true, x: 270, y: 168, n: 16, size: 40, size1: 230, vr: 1, life: 1.2, alpha: 0.7, color: "253,224,71", hold: true }); });
+            w.after(0.16, () => { w.shake(0.4); w.flash("255,240,180", 0.35); w.spawn({ type: "rays", x: 270, y: 168, n: 16, size: 40, size1: 230, vr: 1, life: 1.2, alpha: 0.5, color: "253,224,71", hold: true }); });
           },
         },
         {

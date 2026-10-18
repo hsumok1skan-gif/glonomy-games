@@ -1641,7 +1641,12 @@
         {
           id: "home", name: { en: "Right Spot Glow", ko: "제자리 표시" }, param: "lime border + glow",
           cap: { en: "In the *right spot*? Glow and keep a green border.", ko: "*제자리*에 오면 빛나고 초록 테두리가 남아요." },
-          home(w, t) { t.glow = 1; w.spawn({ type: "ring", x: t.x, y: t.y, size: 30, size1: 70, life: 0.4, w: 5, color: LIME }); },
+          home(w, t) {
+            t.glow = 1;
+            w.spawn({ type: "ring", x: t.x, y: t.y, size: 30, size1: 100, life: 0.45, w: 7, color: LIME });
+            sparks(w, t.x, t.y, 12, LIME, [160, 380]);
+            twinkle(w, t.x, t.y, 4, 40, "236,252,203");
+          },
         },
         {
           id: "count", name: { en: "Move Counter Bump", ko: "이동 수 톡" }, param: "scale 1.35",
@@ -1800,7 +1805,7 @@
         {
           id: "ripple", name: { en: "Corner Ripple", ko: "모서리 물결" }, param: "ring r 300",
           cap: { en: "A big *ripple* rolls from the corner.", ko: "모서리에서 큰 *물결 고리*가 굴러가요." },
-          fill(w, cells, k) { const p = ffPos(0, 0); w.spawn({ type: "ring", x: p.x, y: p.y, size: 10, size1: 300, life: 0.6, w: 8, color: PAL[k] }); },
+          fill(w, cells, k) { const p = ffPos(0, 0); w.spawn({ type: "ring", x: p.x, y: p.y, size: 10, size1: 230, life: 0.6, w: 10, color: PAL[k] }); },
         },
         {
           id: "button", name: { en: "Button Press", ko: "버튼 눌림" }, param: "squash + glow",
@@ -1810,7 +1815,7 @@
         {
           id: "count", name: { en: "Gain Count", ko: "늘어난 칸 수" }, param: "+N cells",
           cap: { en: "Tell them *how much* they grabbed.", ko: "*몇 칸*을 먹었는지 알려줘요." },
-          fill(w, cells, k, gain) { say(w, "+" + gain, FF.x0 + 60, FF.y0 + 40, 22 + Math.min(gain, 20), `rgb(${PAL[k]})`, 0.9); },
+          fill(w, cells, k, gain) { say(w, "+" + gain, FF.x0 + 60, FF.y0 + 40, 32 + Math.min(gain, 20), `rgb(${PAL[k]})`, 1.0); },
         },
         {
           id: "sound", name: { en: "Rolling Notes", ko: "굴러가는 음" }, param: "note / 2 steps",
@@ -2107,13 +2112,19 @@
       setup(w) { w.S = { G: mrBuild(), revT: 0 }; mrFlood(w.S.G, ...MR.click).forEach(m => { m.open = true; }); },
       fire(w) {
         const S = w.S;
-        S.G = mrBuild();
-        const list = mrFlood(S.G, ...MR.click);
-        S.revT = 0;
-        w.emit("reveal", list);
-        if (!S.revT) list.forEach(m => { m.open = true; });
+        S.G = mrBuild(); S.tap = 1;
+        w.after(0.3, () => {
+          const list = mrFlood(S.G, ...MR.click);
+          S.revT = 0;
+          w.emit("reveal", list);
+          if (!S.revT) list.forEach(m => { m.open = true; });
+        });
       },
-      drawFront(w, ctx) { mrDraw(ctx, w, w.S.G); },
+      update(w, dt) { decay(w.S, ["tap"], dt, 2.5); },
+      drawFront(w, ctx) {
+        mrDraw(ctx, w, w.S.G);
+        if (w.S.tap > 0) { const p = mrPos(...MR.click); ctx.globalAlpha = Math.min(1, w.S.tap * 2); ctx.fillStyle = "#fff"; ctx.strokeStyle = "#111"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x + 8, p.y + 10, 9, 0, TAU); ctx.fill(); ctx.stroke(); ctx.globalAlpha = 1; }
+      },
       steps: [
         {
           id: "cascade", name: { en: "Cascade", ko: "와르르 열림" }, param: "40ms / ring",
@@ -2220,11 +2231,14 @@
           if (!S.chainT) others.forEach(o => { o.open = true; });
           w.after(0.9, () => { w.busy = false; });
         };
-        if (w.on("tension")) { w.emit("arm", m); w.after(0.3, boom); } else boom();
+        S.tap = 1;
+        w.after(0.3, () => { if (w.on("tension")) { w.emit("arm", m); w.after(0.3, boom); } else boom(); });
       },
+      update(w, dt) { decay(w.S, ["tap"], dt, 2); },
       drawFront(w, ctx) {
         for (const m of w.S.G.flat()) if (m.hit) { const p = mrPos(m.r, m.c); ctx.fillStyle = "#dc2626"; ctx.fillRect(p.x - 14, p.y - 14, 28, 28); }
         mrDraw(ctx, w, w.S.G);
+        if (w.S.tap > 0) { const p = mrPos(2, 7); ctx.globalAlpha = Math.min(1, w.S.tap * 2); ctx.fillStyle = "#fff"; ctx.strokeStyle = "#111"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x + 8, p.y + 10, 9, 0, TAU); ctx.fill(); ctx.stroke(); ctx.globalAlpha = 1; }
       },
       steps: [
         {

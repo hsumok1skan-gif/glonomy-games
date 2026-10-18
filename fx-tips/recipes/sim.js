@@ -1093,7 +1093,7 @@
         { id: "spot", name: { en: "Spotlight", ko: "스포트라이트" }, param: "beam 600ms",
           cap: { en: "Give them a *spotlight* moment.", ko: "잠깐 *스포트라이트*를 비춰줘요." },
           hire(w, b) {
-            w.spawn({ type: "beam", x: b.x, y: b.y, size: 30, h: 300, life: 0.7, color: "255,250,210" });
+            w.spawn({ type: "beam", x: b.x, y: b.y, size: 22, h: 260, life: 0.6, color: "254,240,138" });
             w.spawn({ type: "ellipse", x: b.x, y: b.y, size: 40, life: 0.8, color: "255,250,210", under: true });
           } },
         { id: "tag", name: { en: "NEW! Tag", ko: "NEW! 꼬리표" }, param: "bobbing · 1.6s",
@@ -1175,7 +1175,9 @@
           out(w, it, b) {
             it.sc = 0;
             w.tween(it, { sc: 1 }, 0.3, "back");
-            w.spawn({ type: "star", x: b.x, y: 232, size: 26, life: 0.25, color: "255,255,255" });
+            w.spawn({ type: "star", x: b.x, y: 232, size: 40, life: 0.3, color: "255,255,255" });
+            w.spawn({ type: "ring", x: b.x, y: 232, size: 12, size1: 60, life: 0.35, w: 5, color: "198,244,50" });
+            sparks(w, b.x, 232, 8, "198,244,50", [150, 340]);
           } },
         { id: "ship", name: { en: "Ship to Stock", ko: "창고로 출고" }, param: "fly → counter · bump",
           cap: { en: "Finished goods *fly to the counter*.", ko: "완성품은 *숫자 칸*으로 날아가요." },
@@ -1378,7 +1380,7 @@
           cap: { en: "*Twinkles* linger a moment. Squeaky clean.", ko: "*반짝 별*이 잠깐 남아요. 뽀득뽀득." },
           clean(w, d) {
             const c = isoPt(d.gx + 0.5, d.gy + 0.5);
-            for (let i = 0; i < 4; i++) w.after(0.15 + i * 0.12, () => w.spawn({ type: "star", x: c.x + rand(-28, 28), y: c.y - rand(4, 30), size: rand(9, 15), life: 0.45, color: "255,255,255" }));
+            for (let i = 0; i < 6; i++) w.after(0.12 + i * 0.1, () => w.spawn({ type: "star", x: c.x + rand(-32, 32), y: c.y - rand(4, 40), size: rand(12, 20), life: 0.5, color: "224,250,255" }));
           } },
         { id: "meter", name: { en: "Clean Meter", ko: "청결도 바" }, param: "bump 1.3",
           cap: { en: "Each spot *bumps* the cleanliness bar.", ko: "닦을 때마다 청결도 바가 *톡*." },
@@ -1717,7 +1719,7 @@
             const T = w.T;
             if (!T.moving || Math.random() > 0.5) return;
             const p = isoPt(T.g - 0.9, 3.5);
-            w.spawn({ type: "smoke", x: p.x, y: p.y - 6, vx: rand(-60, -20), vy: rand(-50, -20), size: 4, size1: 14, life: 0.6, color: "180,180,190" });
+            w.spawn({ type: "smoke", x: p.x, y: p.y - 6, vx: rand(-60, -20), vy: rand(-50, -20), size: 4, size1: 11, life: 0.5, color: "120,120,132" });
           } },
         { id: "honk", name: { en: "Honk Bubble", ko: "빵빵 말풍선" }, param: "bubble + shop bounce",
           cap: { en: "*Honk!* The shop perks up.", ko: "*빵빵!* 가게가 들썩." },
@@ -1767,10 +1769,10 @@
         Pb.v = Math.min(1, Pb.v + 0.25); w.emit("hit", Pb);
         if (Pb.v >= 1) { Pb.done = true; w.after(0.35, () => w.emit("finish", Pb)); w.after(1.8, () => { Pb.v = Pb.h = 0; Pb.done = false; }); }
       },
-      update(w, dt) { const Pb = w.Pb; if (!w.on("rise")) Pb.h = Pb.v; Pb.wob = Math.max(0, Pb.wob - dt * 3); Pb.seg = Math.max(0, Pb.seg - dt * 4); Pb.wf = Math.max(0, Pb.wf - dt * 2.5); },
+      update(w, dt) { const Pb = w.Pb; if (!w.on("rise")) Pb.h = Pb.v; Pb.wob = Math.max(0, Pb.wob - dt * 3); Pb.seg = Math.max(0, Pb.seg - dt * 4); Pb.wf = Math.max(0, Pb.wf - dt * 4); },
       drawFront(w, ctx) {
         const Pb = w.Pb, x = 270, y = 236, wd = 150, top = at3("sim-bld", x, y, wd, 0, 164, 0).y, ch = (y - top + 6) * Pb.h;
-        ctx.save(); ctx.beginPath(); ctx.rect(x - 120, y - ch, 240, ch + 20); ctx.clip(); put(ctx, "sim-bld", x, y, wd, 1, 1, 1, "white", Pb.wf); ctx.restore();
+        ctx.save(); ctx.beginPath(); ctx.rect(x - 120, y - ch, 240, ch + 20); ctx.clip(); put(ctx, "sim-bld", x, y, wd, 1, 1, 1, "white", Pb.wf * 0.6); ctx.restore();
         if (Pb.h > 0.02) { const e = at3("sim-bld", x, y, wd, 0, 164 * Pb.h, 50); ctx.fillStyle = "rgba(255,255,255,0.5)"; ctx.fillRect(e.x - 50, y - ch - 1, 100, 2); }
         if (!Pb.gone) {
           const wb = Math.sin(w.time * 50) * 3 * Pb.wob, H = 172 * Math.max(Pb.h, 0.15) + 12;

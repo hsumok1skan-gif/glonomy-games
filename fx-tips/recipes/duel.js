@@ -305,7 +305,7 @@
         {
           id: "freeze", name: { en: "Freeze Frame", ko: "정지 화면" }, param: "stop 250ms",
           cap: { en: "*Stop everything* on the hit that crosses 50%.", ko: "50%를 넘기는 한 방에 *모두 정지*." },
-          phase(w, b) { w.hitstop(0.25); b.flash = 0.9; },
+          phase(w, b) { w.hitstop(0.25); b.flash = 0.55; },
         },
         {
           id: "lift", name: { en: "Lift & Shield", ko: "떠오르며 무적" }, param: "rise 40px · 1.2s",
@@ -1497,7 +1497,7 @@
         w.tween(h, { x: 290 }, 0.22, "in", () => {
           const p = { x: 318, y: G - 140 };
           h.sx = 0.8; h.sy = 1.25; w.tween(h, { oy: -40 }, 0.12, "out", () => w.tween(h, { oy: 0 }, 0.2, "in"));
-          b.flash = 0.8; w.emit("smash", p, b);
+          b.flash = 0.5; w.emit("smash", p, b);
           if (!w.on("launch")) b.ox += 30;
           w.after(1.3, () => w.tween(h, { x: h.home }, 0.4, "inout"));
         });
