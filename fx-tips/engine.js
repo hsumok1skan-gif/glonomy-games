@@ -218,7 +218,7 @@ const HUMAN = [ // 오른쪽을 보는 전투 자세. 단위: 가로 32 × 세�
   { a: [11, 15], b: [12.8, 19.2], r0: 1.05, r1: 0.9, z: 0 },
   { a: [13, 20], b: [13, 20], r0: 1.15, z: 0 },
   { a: [13.6, 21], b: [10.6, 29.6], r0: 2.0, r1: 1.55, z: 1 },
-  { a: [10.6, 29.6], b: [7.8, 38.2], r0: 1.45, r1: 1.05, z: 1 },
+  { a: [10.6, 29.6], b: [7.8, 38.2], r0: 1.6, r1: 1.15, z: 1 },
   { a: [6.8, 39.8], b: [10, 40.2], r0: 0.95, r1: 0.85, z: 1 },
   { a: [12.6, 9.9], b: [12.6, 9.9], r0: 1.6, z: 1.5 },
   { a: [15.2, 10.6], b: [15, 14.5], r0: 3.4, r1: 3.0, z: 2 },
@@ -227,7 +227,7 @@ const HUMAN = [ // 오른쪽을 보는 전투 자세. 단위: 가로 32 × 세�
   { a: [15.4, 6.8], b: [15.6, 8.6], r0: 1.2, r1: 1.3, z: 2 },
   { a: [15.6, 4.2], b: [15.6, 4.2], r0: 2.75, z: 3 },
   { a: [16, 21], b: [19.6, 29.5], r0: 2.1, r1: 1.6, z: 3 },
-  { a: [19.6, 29.5], b: [20.6, 38.6], r0: 1.5, r1: 1.1, z: 3 },
+  { a: [19.6, 29.5], b: [20.6, 38.6], r0: 1.65, r1: 1.2, z: 3 },
   { a: [20, 40], b: [23.6, 40.4], r0: 1.0, r1: 0.9, z: 3 },
   { a: [17.6, 9.8], b: [17.6, 9.8], r0: 1.75, z: 4 },
   { a: [17.8, 10], b: [21.5, 14.2], r0: 1.35, r1: 1.15, z: 4 },
@@ -240,48 +240,55 @@ const HUMAN_TOP = [ // 위에서 본 사람: 어깨 + 머리 + 앞으로 뻗은 
   { a: [12.6, 12], b: [12.6, 12], r0: 3.6, z: 2 },
 ];
 const BAYER8 = (() => { const m = [[0, 2], [3, 1]]; let b = m; for (let n = 2; n < 8; n *= 2) { const o = []; for (let y = 0; y < n * 2; y++) { o.push([]); for (let x = 0; x < n * 2; x++) o[y][x] = 4 * b[y % n][x % n] + m[(y / n) | 0][(x / n) | 0]; } b = o; } return b; })();
-function dustFig(parts, W, H, rgb, k = 3.4, seed0 = 7) {
-  const GW = Math.round(W * k), GH = Math.round(H * k), PAD = 10, cw = GW + PAD * 2, ch = GH + PAD * 2;
-  const Lx = -0.55, Ly = -0.62, Lz = 0.56;
-  const z = new Float32Array(cw * ch).fill(-1), lum = new Float32Array(cw * ch);
-  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
-    const px = (x - PAD + 0.5) / k, py = (y - PAD + 0.5) / k;
-    let bz = -1, bl = 0;
-    for (const p of parts) {
-      if (p.z < bz) continue;
-      const [ax, ay] = p.a, [bx, by] = p.b, dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
-      const t = L2 ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / L2)) : 0;
-      const r = p.r0 + ((p.r1 ?? p.r0) - p.r0) * t, ox = px - (ax + dx * t), oy = py - (ay + dy * t);
-      const d2 = (ox * ox + oy * oy) / (r * r);
-      if (d2 > 1) continue;
-      const nx = ox / r, ny = oy / r, nz = Math.sqrt(Math.max(0, 1 - d2));
-      const dif = Math.max(0, nx * Lx + ny * Ly + nz * Lz), rim = Math.pow(1 - nz, 3) * 0.55;
-      bz = p.z; bl = (0.06 + 0.92 * dif + rim) * (p.z < 2 ? 0.72 : 1);
-    }
-    z[y * cw + x] = bz; lum[y * cw + x] = bl;
-  }
+// 부위들을 매끈하게 녹여 붙인 한 덩어리(관절 이음매 없음) → 둥근 명암 → 1비트 디더링 + 가루
+function smin(a, b, k) { const h = Math.max(0, Math.min(1, 0.5 + 0.5 * (b - a) / k)); return b + (a - b) * h - k * h * (1 - h); }
+function dustSDF(GW, GH, field, rgb, seed0 = 7, opt = {}) {
+  const PAD = opt.pad ?? 10, cw = GW + PAD * 2, ch = GH + PAD * 2, D = new Float32Array(cw * ch), RR = new Float32Array(cw * ch), DK = new Float32Array(cw * ch);
+  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) { const f = field(x - PAD + 0.5, y - PAD + 0.5); D[y * cw + x] = f.d; RR[y * cw + x] = f.r; DK[y * cw + x] = f.dark || 1; }
+  const L = [-0.55, -0.62, 0.56], at = (x, y) => (x < 0 || y < 0 || x >= cw || y >= ch ? 9 : D[y * cw + x]);
   let seed = seed0; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const c = document.createElement("canvas"); c.width = cw * 2; c.height = ch * 2;
+  const c = document.createElement("canvas"), S = opt.dot || 2; c.width = cw * S; c.height = ch * S;
   const g = c.getContext("2d"); g.fillStyle = `rgb(${rgb.join(",")})`;
-  const at = (x, y) => (x < 0 || y < 0 || x >= cw || y >= ch ? -1 : z[y * cw + x]);
   for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
-    const zz = at(x, y);
-    if (zz < 0) {
-      // 몸 둘레 가루: 가까울수록 많이, 오른쪽 위로 조금 더 흩날림
-      let near = 99;
-      for (let r = 1; r <= 7 && near === 99; r++) for (let a = 0; a < 8; a++) { const ang = a * Math.PI / 4; if (at(Math.round(x + Math.cos(ang) * r), Math.round(y + Math.sin(ang) * r)) >= 0) { near = r; break; } }
-      if (near < 99 && rnd() < 0.32 * Math.exp(-near / 1.8)) g.fillRect(x * 2, y * 2, 2, 2);
+    const d = D[y * cw + x];
+    if (d > 0) {
+      if (d < 7 && rnd() < (opt.dust ?? 0.3) * Math.exp(-d / 1.8)) g.fillRect(x * S, y * S, S, S); // 가루
       continue;
     }
-    let v = lum[y * cw + x];
-    // 앞 부위 바로 뒤에 있는 칸은 그늘 (형태 구분)
-    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]]) if (at(x + dx, y + dy) >= zz + 1) { v *= 0.3; break; }
-    // 테두리는 바스러지게
-    const edge = at(x - 1, y) < 0 || at(x + 1, y) < 0 || at(x, y - 1) < 0 || at(x, y + 1) < 0;
-    if (edge && rnd() < 0.35) continue;
-    if (v > (BAYER8[y & 7][x & 7] + 0.5) / 64) g.fillRect(x * 2, y * 2, 2, 2);
+    const gx = at(x + 1, y) - at(x - 1, y), gy = at(x, y + 1) - at(x, y - 1), gl = Math.hypot(gx, gy) || 1;
+    const u = Math.max(0, Math.min(1, 1 + d / Math.max(1, RR[y * cw + x]))), nz = Math.sqrt(1 - u * u);
+    const nx = gx / gl * u, ny = gy / gl * u;
+    let v = (0.08 + 0.9 * Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]) + Math.pow(u, 4) * 0.45) * DK[y * cw + x];
+    if (d > -1.2 && rnd() < 0.3) continue; // 테두리는 바스러지게
+    if (v > (BAYER8[y & 7][x & 7] + 0.5) / 64) g.fillRect(x * S, y * S, S, S);
   }
   return c;
+}
+// 사람: 캡슐들을 부드럽게 합친 거리장
+function dustFig(parts, W, H, rgb, k = 3.4, seed0 = 7) {
+  const P = parts.map(p => ({ ...p, a: [p.a[0] * k, p.a[1] * k], b: [p.b[0] * k, p.b[1] * k], r0: p.r0 * k, r1: (p.r1 ?? p.r0) * k }));
+  return dustSDF(Math.round(W * k), Math.round(H * k), (px, py) => {
+    let d = 1e9, r = 1, best = 1e9, dark = 1;
+    for (const p of P) {
+      const [ax, ay] = p.a, [bx, by] = p.b, dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
+      const t = L2 ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / L2)) : 0;
+      const rad = p.r0 + (p.r1 - p.r0) * t, di = Math.hypot(px - ax - dx * t, py - ay - dy * t) - rad;
+      d = smin(d, di, 2.2 * k * 0.5);
+      if (di < best) { best = di; r = rad; dark = p.z < 2 ? 0.8 : 1; }
+    }
+    return { d, r, dark };
+  }, rgb, seed0);
+}
+// 총: 둥근 상자들을 합친 모양
+function sdBox(px, py, cx, cy, hw, hh, rad) { const qx = Math.abs(px - cx) - hw + rad, qy = Math.abs(py - cy) - hh + rad; return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - rad; }
+function dustGun() {
+  return dustSDF(120, 70, (x, y) => {
+    const body = sdBox(x, y, 52, 26, 33, 13, 4), barrel = sdBox(x, y, 94, 21, 24, 6, 2.5), top = sdBox(x, y, 48, 14, 26, 3, 2);
+    const gx = x - 32, gy = y - 50, rot = 0.28, grip = sdBox(gx * Math.cos(rot) - gy * Math.sin(rot) + 32, gx * Math.sin(rot) + gy * Math.cos(rot) + 50, 32, 50, 9, 15, 3);
+    const guard = Math.abs(Math.hypot(x - 48, y - 42) - 7) - 1.6;
+    let d = smin(smin(smin(body, barrel, 2), top, 2), grip, 3); d = Math.min(d, Math.max(guard, -(y - 38)));
+    return { d, r: 9, dark: barrel < body ? 0.92 : 1 };
+  }, [214, 218, 222], 5, { pad: 4, dust: 0.12 });
 }
 const DOT = { hero: [240, 236, 224], foe: [255, 112, 92] };
 function makeSprites() {
@@ -291,13 +298,7 @@ function makeSprites() {
     // 적: 로우폴리 고블린
     foe: (() => { const c = dustFig(HUMAN, 32, 44, DOT.foe, 3.4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })(),
     // 총
-    gun: ditherize(mk(240, 140, x => {
-      x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
-      x.fillStyle = lg(x, 0, 20, 0, 84, [[0, "#5b6476"], [1, "#2a2f3a"]]); x.beginPath(); x.roundRect(38, 20, 128, 64, 14); x.fill();
-      x.fillStyle = lg(x, 0, 26, 0, 56, [[0, "#3a414f"], [1, "#171a21"]]); x.beginPath(); x.roundRect(140, 26, 98, 30, 8); x.fill();
-      x.fillStyle = "#c6f432"; x.fillRect(50, 62, 100, 5);
-      x.fillStyle = "rgba(255,255,255,0.22)"; x.beginPath(); x.roundRect(46, 26, 112, 8, 4); x.fill();
-    }), [215, 220, 210], 5),
+    gun: dustGun(),
     // 상자
     crate: mk(200, 200, x => {
       x.fillStyle = lg(x, 0, 12, 0, 188, [[0, "#fcd34d"], [1, "#d97706"]]); x.beginPath(); x.roundRect(12, 12, 176, 176, 28); x.fill();
@@ -846,7 +847,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 
 /* ───────── 총·손 위치 ───────── */
 const GUNW = 68;
-function gripPt(w) { const c = w.hero; return { x: c.x + c.ox + c.w * 0.36, y: G - c.h * 0.52 * c.sy }; }
+function gripPt(w) { const c = w.hero; return { x: c.x + c.ox + c.w * 0.27, y: G - c.h * 0.62 * c.sy }; }
 function muzzle(w) {
   const g = w.gun, p = gripPt(w), gh = GUNW * SPR.gun.c.height / SPR.gun.c.width;
   const lx = 0.7 * GUNW - g.kick, ly = -0.44 * gh, c = Math.cos(g.rot), s = Math.sin(g.rot);
@@ -858,7 +859,7 @@ function drawGun(w, ctx) {
   ctx.drawImage(img, -0.28 * GUNW - g.kick, -0.72 * gh, GUNW, gh);
   ctx.restore();
 }
-function paw(w) { const c = w.hero; return { x: c.x + c.ox + c.w * 0.46, y: G - c.h * 0.56 }; }
+function paw(w) { const c = w.hero; return { x: c.x + c.ox + c.w * 0.3, y: G - c.h * 0.68 }; }
 
 /* ───────── 레시피용 도우미 ───────── */
 function gunSpring(w, dt) { const g = w.gun; g.kick -= g.kick * Math.min(1, dt * 16); g.rot -= g.rot * Math.min(1, dt * 12); }
