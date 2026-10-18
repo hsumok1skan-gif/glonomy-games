@@ -839,7 +839,7 @@
         const m = w.md;
         Object.assign(m, { vis: false, y: 0, vy: 0, fall: false, sx: 1, sy: 1, yaw: 0, shine: -1, ban: 0, onLand: null });
         const unlock = () => { m.ban = 1; w.emit("unlock", m); };
-        w.after(0.5, () => {
+        w.after(w.on("drop") ? 0.2 : 0.5, () => {
           m.vis = true;
           w.emit("show", m);
           if (m.fall) m.onLand = unlock;
