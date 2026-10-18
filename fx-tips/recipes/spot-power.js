@@ -420,7 +420,7 @@
           id: "frost", name: { en: "Ice Burst", ko: "얼음 폭발" }, param: "shards 18 · rays",
           cap: { en: "Burst *ice shards*, light *rays*, the element *name*.", ko: "*얼음 조각*, *빛줄기*, 속성 이름 *팡*." },
           enchant(w, s, x, y) {
-            shards(w, x, y, 18, ["200,245,255", "120,210,255", "255,255,255"], 292);
+            shards(w, x, y, 18, ["200,245,255", "120,210,255", "160,230,255"], 292);
             w.spawn({ type: "rays", under: true, x, y, n: 14, size: 60, size1: 240, vr: 0.6, life: 1.9, hold: true, color: "130,220,255" });
             w.spawn({ type: "text", x, y: 50, text: "❄ FROST +40", size: 26, color: "#9fe8ff", life: 1.9 });
             starBurst(w, x, y, 10, ["200,240,255", "200,170,255"]);
@@ -512,7 +512,7 @@
           cap: { en: "Pop a big *+75*, then small *ticks*.", ko: "큰 *+75*, 이어서 작은 숫자 *톡톡*." },
           heal(w, h, x, y) {
             w.spawn({ type: "text", x: x + 90, y: y - 40, vy: -25, text: "+75", size: 40, color: "#5dff8a", life: 1.6 });
-            for (let i = 0; i < 4; i++) w.after(0.2 + i * 0.15, () => w.spawn({ type: "text", x: x - 66 - (i % 2) * 18, y: y + 24, vy: -80, text: "+12", size: 18, color: "#b8ffcb", life: 0.8 }));
+            for (let i = 0; i < 4; i++) w.after(0.2 + i * 0.15, () => w.spawn({ type: "text", x: x - 64 - (i % 2) * 30, y: y + 30, vy: -150, text: "+12", size: 18, color: "#b8ffcb", life: 0.7 }));
           },
         },
         {
@@ -782,7 +782,7 @@
           cap: { en: "*Freeze* on contact. *Lightning* crackles.", ko: "부딪히는 순간 *멈칫*, *번개* 찌직." },
           merge(w, f, x, y) {
             w.hitstop(0.14); w.shake(0.55); w.flash("255,200,220", 0.25);
-            bolts(w, x, y, 8, ["255,140,160", "255,255,255", "190,150,255"], 24);
+            bolts(w, x, y, 8, ["255,140,160", "255,200,230", "190,150,255"], 24);
           },
         },
         {
@@ -790,7 +790,7 @@
           cap: { en: "The new gem *bursts* big, then *settles*.", ko: "새 보석이 *팡* 커졌다 *착* 자리 잡아요." },
           merge(w, f, x, y) {
             f.s = 1.5; w.tween(f, { s: 1 }, 0.5, "back");
-            w.spawn({ type: "ring", x, y, size: 40, size1: 190, life: 0.45, w: 12, color: "220,170,255" });
+            w.spawn({ type: "ring", x, y, size: 80, size1: 210, life: 0.45, w: 9, color: "200,140,255" });
           },
         },
         {

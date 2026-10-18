@@ -324,7 +324,7 @@
         S.speed += ((S.nitro > 0 ? 2.4 : 1) - S.speed) * Math.min(1, dt * 3);
         S.dist += 420 * S.speed * dt;
         S.tilt += (S.tiltT - S.tilt) * Math.min(1, dt * 7); S.tiltT = 0;
-        if (S.nitro > 0 && !S.pushT) S.pushT = 22;
+        if (S.nitro > 0 && !S.pushT) S.pushT = 34;
         S.push += (S.pushT - S.push) * Math.min(1, dt * 4); S.pushT = 0;
         c.rot = S.tilt; c.x = c.home + S.push;
       },
@@ -963,7 +963,7 @@
           cap: { en: "A *dust trail* that grows with speed.", ko: "속도만큼 커지는 *흙먼지 꼬리*." },
           update(w) {
             const S = w.S;
-            if (Math.random() < 0.3 * S.speed) w.spawn({ type: "smoke", x: S.rx, y: S.ry, vx: rand(-30, 30), vy: rand(-30, 30), drag: 1, size: 6, size1: 17 * S.speed, life: 0.8, color: "140,108,74" });
+            if (Math.random() < 0.3 * S.speed) w.spawn({ type: "smoke", x: S.rx, y: S.ry, vx: rand(-30, 30), vy: rand(-30, 30), drag: 1, size: 6, size1: 17 * S.speed, life: 0.8, color: "118,90,60" });
           },
         },
         {
@@ -1039,7 +1039,7 @@
           cap: { en: "Smoke *piles up* and rolls backward.", ko: "연기가 *쌓이면서* 뒤로 굴러가요." },
           update(w) {
             const S = w.S, c = w.car; if (S.burn <= 0) return;
-            w.spawn({ type: "smoke", x: c.x + c.ox - c.w * 0.25, y: G - 8, vx: rand(-220, -60), vy: rand(-80, -20), drag: 1.2, size: 8, size1: rand(22, 34) * (0.6 + S.t), life: rand(0.8, 1.2), color: "128,130,140" });
+            w.spawn({ type: "smoke", x: c.x + c.ox - c.w * 0.25, y: G - 8, vx: rand(-220, -60), vy: rand(-80, -20), drag: 1.2, size: 7, size1: rand(16, 26) * (0.6 + S.t), life: rand(0.7, 1.1), color: "92,94,104" });
           },
         },
         {
@@ -1518,7 +1518,7 @@
           cap: { en: "The *goal frame* rattles from the force.", ko: "충격에 *골대*까지 덜덜." },
           net(w) {
             w.S.rattle = 1;
-            for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: rand(340, 480), y: G - 154, vx: rand(-40, 40), vy: rand(10, 60), size: 4, size1: 12, life: 0.8, color: "220,225,230" });
+            for (let i = 0; i < 12; i++) w.spawn({ type: "chunk", x: rand(340, 480), y: G - 152, vx: rand(-60, 60), vy: rand(-80, 40), g: 700, vr: rand(-10, 10), size: rand(2, 3.5), life: 0.8, color: "226,232,240" });
           },
         },
         {
