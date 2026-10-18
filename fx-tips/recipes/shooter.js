@@ -845,13 +845,15 @@
       intro: { en: "Far target. Did that *land?*", ko: "멀리 있는 적. 방금 *맞았나요?*" },
       interval: 0.42, stepDur: 3.4,
       drawFloor: fpsRoom,
-      setup(w) { fpsSetup(w, [[0.15, 7.5]]); w.hm = { t: 0, red: 0 }; w.gap = 0; },
+      setup(w) { fpsSetup(w, [[0.1, 5.6]]); w.hm = { t: 0, red: 0 }; w.gap = 0; },
       fire(w) {
         const g = w.gobs[0]; if (!g.alive) return;
         const m = fpMuzzle(w), h = torso(g);
         w.fp.kick = 0.04; w.fp.rot = 0.03;
         w.emit("fire", m);
-        g.hp -= 25; w.emit("hit", h, g, 25);
+        g.hp -= 25; g.ox += 4;
+        w.spawn({ type: "circle", x: h.x, y: h.y, size: 7, life: 0.12, color: "255,255,255" });
+        w.emit("hit", h, g, 25);
         if (g.hp <= 0) w.kill(g);
       },
       update(w, dt) { fpsTick(w, dt); w.hm.t = Math.max(0, w.hm.t - dt * 2.5); w.hm.red = Math.max(0, w.hm.red - dt * 2); w.gap -= w.gap * Math.min(1, dt * 10); },
@@ -859,7 +861,7 @@
       drawHud(w, ctx) {
         xhair(ctx, 6 + w.gap);
         const t = w.hm.t, red = w.hm.red > 0;
-        if (t > 0) xMark(ctx, 270, HY, 7 + (1 - t) * 4 + (red ? 4 : 0), 16 + (red ? 8 : 0) + t * 4, red ? "#ef4444" : `rgba(255,255,255,${Math.min(1, t * 2)})`, red ? 4 : 3);
+        if (t > 0) xMark(ctx, 270, HY, 9 + (1 - t) * 5 + (red ? 5 : 0), 22 + (red ? 10 : 0) + t * 6, red ? "#ef4444" : `rgba(255,255,255,${Math.min(1, t * 2)})`, red ? 4 : 3);
       },
       steps: [
         {
@@ -904,13 +906,15 @@
       intro: { en: "Head or body. *Same* feeling.", ko: "머리든 몸이든 *똑같은* 느낌." },
       interval: 0.7, stepDur: 3.8,
       drawFloor: fpsRoom,
-      setup(w) { fpsSetup(w, [[0.05, 5.2]]); w.cnt = 0; w.hm = { t: 0, gold: false }; },
+      setup(w) { fpsSetup(w, [[0.05, 4.3]]); w.cnt = 0; w.hm = { t: 0, gold: false }; },
       fire(w) {
         const g = w.gobs[0]; if (!g.alive) return;
         w.cnt++; const head = w.cnt % 2 === 0, d = head ? 100 : 20;
         const h = head ? headPt(g) : torso(g);
         w.fp.kick = 0.05; w.fp.rot = 0.04;
-        g.hp -= d; w.emit(head ? "head" : "body", h, g, d);
+        g.hp -= d; g.ox += 4;
+        w.spawn({ type: "circle", x: h.x, y: h.y, size: 7, life: 0.12, color: "255,255,255" });
+        w.emit(head ? "head" : "body", h, g, d);
         if (g.hp <= 0) w.kill(g);
       },
       update(w, dt) { fpsTick(w, dt); w.hm.t = Math.max(0, w.hm.t - dt * 3); },
@@ -973,13 +977,15 @@
       interval: 0.45, stepDur: 3.6,
       drawFloor: fpsRoom,
       setup(w) {
-        fpsSetup(w, [[-0.1, 5.5]]); w.gobs[0].maxHp = w.gobs[0].hp = 60;
+        fpsSetup(w, [[-0.05, 4.4]]); w.gobs[0].maxHp = w.gobs[0].hp = 60;
         w.kmk = 0; w.score = 0; w.skulls = 0; w.skT = 0; w.rot = 0;
       },
       fire(w) {
         const g = w.gobs[0]; if (!g.alive) return;
         w.fp.kick = 0.05; w.fp.rot = 0.04;
-        g.hp -= 20; g.vib = 2;
+        g.hp -= 20; g.vib = 2; g.ox += 5;
+        const t = torso(g);
+        w.spawn({ type: "circle", x: t.x, y: t.y, size: 7, life: 0.12, color: "255,255,255" });
         if (g.hp <= 0) { w.kill(g); }
       },
       update(w, dt) { fpsTick(w, dt); w.kmk = Math.max(0, w.kmk - dt * 1.6); w.skT = Math.max(0, w.skT - dt * 3); w.rot += dt * 3; },
@@ -1967,11 +1973,11 @@
       fire(w) {
         const p = P3(w, 0.7, FLOOR + 0.3, 3.8);
         w.daze = 1; w.emit("boom", p);
-        w.spawn({ type: "glow", x: p.x, y: p.y, size: 60, size1: 20, life: 0.2, color: "255,180,90" });
+        w.spawn({ type: "circle", x: p.x, y: p.y - 20, size: 46, life: 0.25, color: "255,170,80" });
       },
       update(w, dt) {
         fpsTick(w, dt);
-        w.daze = Math.max(0, w.daze - dt * 0.4); w.wo = Math.max(0, w.wo - dt * 1.6);
+        w.daze = Math.max(0, w.daze - dt * 0.4); w.wo = Math.max(0, w.wo - dt * 3);
         w.muf = 0; w.ghost = 0;
       },
       drawFront(w, ctx) { drawFpGun(w, ctx); },
@@ -1992,9 +1998,9 @@
           },
         },
         {
-          id: "white", name: { en: "White-out", ko: "하얗게 날아감" }, param: "fade 0.8s",
+          id: "white", name: { en: "White-out", ko: "하얗게 날아감" }, param: "fade 0.3s",
           cap: { en: "Blow the screen *white*, fade back *slowly*.", ko: "화면을 *하얗게* 날리고, *천천히* 돌아와요." },
-          boom(w) { w.wo = 1; },
+          boom(w) { w.wo = 0.85; },
         },
         {
           id: "muffle", name: { en: "Muffled Vision", ko: "멍한 시야" }, param: "blur + gray × daze",
@@ -2677,9 +2683,9 @@
         gunSpring(w, dt);
         const b = w.bolt;
         if (b) {
-          b.x += 1300 * dt;
+          b.x += 950 * dt;
           const f = w.foes[b.next];
-          if (f && b.x >= f.x - 20) { b.next++; b.n++; w.emit("pierce", f, { x: f.x - 20, y: b.y }, b.n); }
+          if (f && b.x >= f.x - 20) { b.next++; b.n++; f.ox += 10; w.emit("pierce", f, { x: f.x - 20, y: b.y }, b.n); }
           if (b.x > 600) { w.emit("done", b); w.bolt = null; }
         }
         if (w.rail) w.rail.a -= dt * 1.6;
@@ -2913,4 +2919,21 @@
       ],
     },
   );
+  // 1인칭 레시피 공통: 총이 튀는 순간 총구에 맨 점 하나 + 반동 조금 더. 효과 없이도 "쐈다"가 보이게
+  const FPGUN = ["ads", "aim-assist", "ammo-shake", "damage-dir", "dryfire", "fp-shells", "headshot", "hitmarker", "killconfirm", "killfeed",
+    "low-health", "materials", "multikill", "muzzle-smoke", "recoil-climb", "reload", "ricochet", "suppression", "tracers"].map(n => "shooter-" + n);
+  for (const r of RECIPES) {
+    if (!FPGUN.includes(r.id) || r.popped) continue;
+    const up = r.update;
+    r.popped = true;
+    r.update = function (w, dt) {
+      if (w.fp && w.fp.kick > (w.fpK || 0) + 0.02) {
+        w.fp.kick *= 1.5;
+        const m = fpMuzzle(w);
+        w.spawn({ type: "circle", x: m.x, y: m.y, size: 9, life: 0.07, color: "255,236,190" });
+      }
+      if (up) up.call(this, w, dt);
+      w.fpK = w.fp ? w.fp.kick : 0;
+    };
+  }
 })();

@@ -373,7 +373,7 @@
           cap: { en: "Kick up *dust* along the whole front.", ko: "전선을 따라 *흙먼지*가 일어요." },
           clash(w, p) {
             w.spawn({ type: "ring", flat: true, x: p.x, y: p.y + 20, size: 6, size1: 44, life: 0.4, w: 4, color: "220,200,160" });
-            for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: p.x + rand(-16, 16), y: p.y + 14, vx: rand(-50, 50), vy: rand(-30, -8), drag: 1.5, size: rand(8, 12), size1: rand(22, 30), life: rand(1.6, 2.2), color: "170,160,140" });
+            for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: p.x + rand(-16, 16), y: p.y + 14, vx: rand(-50, 50), vy: rand(-30, -8), drag: 1.5, size: rand(6, 9), size1: rand(16, 22), life: rand(1.2, 1.6), color: "96,88,74" });
           },
         },
         {
@@ -810,7 +810,7 @@
         {
           id: "dust", name: { en: "Hoof Dust", ko: "말발굽 먼지" }, param: "puff per frame",
           cap: { en: "Leave a *dust trail* behind the hooves.", ko: "말발굽 뒤로 *흙먼지*를 남겨요." },
-          update(w) { for (const r of w.riders) if (r.run && Math.random() < 0.3) dust(w, r.x - 24, r.y, 1, -1, "150,138,115"); },
+          update(w) { for (const r of w.riders) if (r.run && Math.random() < 0.3) dust(w, r.x - 24, r.y, 1, -1, "96,88,74"); },
         },
         {
           id: "lines", name: { en: "Speed Lines", ko: "속도선" }, param: "streaks −700px/s",
@@ -1020,7 +1020,7 @@
           id: "dust", name: { en: "Dust Burst", ko: "흙먼지 폭발" }, param: "10 puffs · 1.2s",
           cap: { en: "A thick *dust cloud* hides the hole for a beat.", ko: "두꺼운 *먼지*가 잠깐 구멍을 가려요." },
           breach(w, p) {
-            for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: p.x + rand(-20, 50), y: p.y + rand(-30, 50), vx: rand(-40, 180), vy: rand(-50, 10), drag: 1.5, size: rand(12, 18), size1: rand(30, 44), life: rand(0.8, 1.2), color: "118,110,96" });
+            for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: p.x + rand(-20, 50), y: p.y + rand(-30, 50), vx: rand(-40, 180), vy: rand(-50, 10), drag: 1.5, size: rand(12, 18), size1: rand(30, 44), life: rand(0.8, 1.2), color: "86,80,70" });
           },
         },
         {
@@ -1497,7 +1497,7 @@
           id: "cloud", name: { en: "Rolling Cloud", ko: "뭉게 먼지" }, param: "big · 2.5s life",
           cap: { en: "Big, slow *clouds* that hang around.", ko: "크고 느린 *먼지구름*이 오래 머물러요." },
           blow(w, p) {
-            w.spawn({ type: "smoke", x: p.x + rand(-20, 20), y: p.y - rand(10, 30), vx: rand(-15, 15), vy: rand(-12, -4), size: rand(18, 26), size1: rand(46, 64), life: rand(2.2, 2.8), color: "130,120,98", alpha: 0.4 });
+            w.spawn({ type: "smoke", x: p.x + rand(-20, 20), y: p.y - rand(10, 30), vx: rand(-15, 15), vy: rand(-12, -4), size: rand(18, 26), size1: rand(46, 64), life: rand(2.2, 2.8), color: "100,92,76", alpha: 0.45 });
           },
         },
         {
