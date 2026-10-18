@@ -728,7 +728,7 @@
       buildDates();
       const last = DATES[TOTAL - 1], ti = todayIdx(), now = new Date(); now.setHours(0, 0, 0, 0);
       $("schedSub").textContent = `${TOTAL}편 · ${CAD[app.cadence].ko}`;
-      $("planText").innerHTML = `${CAD[app.cadence].ko}, 오전 9시(한국 시간)에 한 편씩 올려요. 미국 동부 기준 전날 저녁 8시라, 영어권 사람들이 많이 보는 시간대예요. 이대로면 <b>${last.getFullYear()}년 ${last.getMonth() + 1}월 ${last.getDate()}일</b>에 ${TOTAL}편을 다 올려요.`;
+      $("planText").innerHTML = `${CAD[app.cadence].ko}, 오후 1시(한국 시간)에 한 편씩 올려요. 미국 동부는 자정, 서부는 전날 밤 9시라 영어권 사람들이 잠들기 전에 보는 시간이에요. 이대로면 <b>${last.getFullYear()}년 ${last.getMonth() + 1}월 ${last.getDate()}일</b>에 ${TOTAL}편을 다 올려요.`;
       $("cadence").innerHTML = Object.keys(CAD).map(k => `<button type="button" data-k="${k}" class="${app.cadence === k ? "on" : ""}">${CAD[k].ko}</button>`).join("");
       $("startDate").value = app.start;
       let html = "", mon = "";
@@ -861,7 +861,7 @@
     function renderMore() {
       buildDates();
       const r = RECIPES[app.ri], d = dateOf(r), done = app.posted.has(r.id), now = new Date(); now.setHours(0, 0, 0, 0);
-      $("epK").textContent = `${sameDay(d, now) ? "오늘 올릴 편" : "업로드 예정"} · ${fmtD(d)} 오전 9시`;
+      $("epK").textContent = `${sameDay(d, now) ? "오늘 올릴 편" : "업로드 예정"} · ${fmtD(d)} 오후 1시`;
       $("epBig").innerHTML = `#${String(r.ep).padStart(3, "0")}<small>/ ${TOTAL} · ${CATS[r.cat][1]}</small>`;
       $("epT").innerHTML = fmt(r.title.ko);
       $("doneBtn").textContent = done ? "올림 ✓" : "올렸어요";
