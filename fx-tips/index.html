@@ -25,7 +25,7 @@
       color-scheme: dark;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--ink); }
+    html, body { margin: 0; background: var(--ink); overflow-x: hidden; overflow-x: clip; max-width: 100%; }
     body { color: var(--text); font-family: var(--sans); word-break: keep-all; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
     button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
     a { color: inherit; text-decoration: none; }
@@ -210,8 +210,8 @@
     .set button[aria-pressed="true"] { background: var(--acc); color: #141708; }
 
     /* 일정 */
-    .sched { position: fixed; inset: 0; z-index: 40; background: var(--ink); overflow-y: auto; transform: translateX(100%); transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
-    .sched.open { transform: none; }
+    .sched { position: fixed; inset: 0; z-index: 40; background: var(--ink); overflow-y: auto; overflow-x: hidden; transform: translateX(100%); visibility: hidden; transition: transform .35s cubic-bezier(.2, .8, .2, 1), visibility 0s .35s; }
+    .sched.open { transform: none; visibility: visible; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
     .pbar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px; background: linear-gradient(var(--ink) 70%, transparent); }
     .pbar .mid { text-align: center; }
     .pbar .mid b { display: block; font-size: 15px; font-weight: 600; }
@@ -360,33 +360,33 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261018k"></script>
-  <script src="export.js?v=20261018k"></script>
+  <script src="engine.js?v=20261018l"></script>
+  <script src="export.js?v=20261018l"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
-  <script src="recipes/core.js?v=20261018k"></script><script>tagFx("core")</script>
-  <script src="recipes/weapon.js?v=20261018k"></script><script>tagFx("weapon")</script>
-  <script src="recipes/combat.js?v=20261018k"></script><script>tagFx("combat")</script>
-  <script src="recipes/duel.js?v=20261018k"></script><script>tagFx("duel")</script>
-  <script src="recipes/horde.js?v=20261018k"></script><script>tagFx("horde")</script>
-  <script src="recipes/army.js?v=20261018k"></script><script>tagFx("army")</script>
-  <script src="recipes/fighting.js?v=20261018k"></script><script>tagFx("fighting")</script>
-  <script src="recipes/shooter.js?v=20261018k"></script><script>tagFx("shooter")</script>
-  <script src="recipes/action.js?v=20261018k"></script><script>tagFx("action")</script>
-  <script src="recipes/move.js?v=20261018k"></script><script>tagFx("move")</script>
-  <script src="recipes/rpg.js?v=20261018k"></script><script>tagFx("rpg")</script>
-  <script src="recipes/strategy.js?v=20261018k"></script><script>tagFx("strategy")</script>
-  <script src="recipes/sim.js?v=20261018k"></script><script>tagFx("sim")</script>
-  <script src="recipes/puzzle.js?v=20261018k"></script><script>tagFx("puzzle")</script>
-  <script src="recipes/racing.js?v=20261018k"></script><script>tagFx("racing")</script>
-  <script src="recipes/survival.js?v=20261018k"></script><script>tagFx("survival")</script>
-  <script src="recipes/casual.js?v=20261018k"></script><script>tagFx("casual")</script>
-  <script src="recipes/ui.js?v=20261018k"></script><script>tagFx("ui")</script>
-  <script src="recipes/env.js?v=20261018k"></script><script>tagFx("env")</script>
-  <script src="recipes/spotlight.js?v=20261018k"></script><script>tagFx("spotlight")</script>
-  <script src="recipes/spot-reward.js?v=20261018k"></script><script>tagFx("spot-reward")</script>
-  <script src="recipes/spot-combat.js?v=20261018k"></script><script>tagFx("spot-combat")</script>
-  <script src="recipes/spot-power.js?v=20261018k"></script><script>tagFx("spot-power")</script>
-  <script src="recipes/spot-casual.js?v=20261018k"></script><script>tagFx("spot-casual")</script>
+  <script src="recipes/core.js?v=20261018l"></script><script>tagFx("core")</script>
+  <script src="recipes/weapon.js?v=20261018l"></script><script>tagFx("weapon")</script>
+  <script src="recipes/combat.js?v=20261018l"></script><script>tagFx("combat")</script>
+  <script src="recipes/duel.js?v=20261018l"></script><script>tagFx("duel")</script>
+  <script src="recipes/horde.js?v=20261018l"></script><script>tagFx("horde")</script>
+  <script src="recipes/army.js?v=20261018l"></script><script>tagFx("army")</script>
+  <script src="recipes/fighting.js?v=20261018l"></script><script>tagFx("fighting")</script>
+  <script src="recipes/shooter.js?v=20261018l"></script><script>tagFx("shooter")</script>
+  <script src="recipes/action.js?v=20261018l"></script><script>tagFx("action")</script>
+  <script src="recipes/move.js?v=20261018l"></script><script>tagFx("move")</script>
+  <script src="recipes/rpg.js?v=20261018l"></script><script>tagFx("rpg")</script>
+  <script src="recipes/strategy.js?v=20261018l"></script><script>tagFx("strategy")</script>
+  <script src="recipes/sim.js?v=20261018l"></script><script>tagFx("sim")</script>
+  <script src="recipes/puzzle.js?v=20261018l"></script><script>tagFx("puzzle")</script>
+  <script src="recipes/racing.js?v=20261018l"></script><script>tagFx("racing")</script>
+  <script src="recipes/survival.js?v=20261018l"></script><script>tagFx("survival")</script>
+  <script src="recipes/casual.js?v=20261018l"></script><script>tagFx("casual")</script>
+  <script src="recipes/ui.js?v=20261018l"></script><script>tagFx("ui")</script>
+  <script src="recipes/env.js?v=20261018l"></script><script>tagFx("env")</script>
+  <script src="recipes/spotlight.js?v=20261018l"></script><script>tagFx("spotlight")</script>
+  <script src="recipes/spot-reward.js?v=20261018l"></script><script>tagFx("spot-reward")</script>
+  <script src="recipes/spot-combat.js?v=20261018l"></script><script>tagFx("spot-combat")</script>
+  <script src="recipes/spot-power.js?v=20261018l"></script><script>tagFx("spot-power")</script>
+  <script src="recipes/spot-casual.js?v=20261018l"></script><script>tagFx("spot-casual")</script>
   <script>
   (() => {
     "use strict";

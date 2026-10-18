@@ -14,7 +14,9 @@
     :root { --ink: #0b0c09; --ink-2: #13150f; --ink-3: #1b1e16; --text: #ece9de; --muted: #8d9081; --edge: rgba(236, 233, 222, 0.1); --acc: #c8f03c;
       --sans: "Outfit", "Pretendard", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, Menlo, monospace; color-scheme: dark; }
     * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--ink); color: var(--text); font: 15px/1.6 var(--sans); }
+    html, body { margin: 0; background: var(--ink); color: var(--text); font: 15px/1.6 var(--sans); overflow-x: hidden; overflow-x: clip; max-width: 100%; }
+    .wrap > * { max-width: 100%; }
+    pre, table { max-width: 100%; }
     body.ko { font-family: "Pretendard", var(--sans); }
     a { color: var(--acc); }
     button { font: inherit; color: inherit; cursor: pointer; }
@@ -76,33 +78,33 @@
   </div>
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261018k"></script>
-  <script src="export.js?v=20261018k"></script>
+  <script src="engine.js?v=20261018l"></script>
+  <script src="export.js?v=20261018l"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
-  <script src="recipes/core.js?v=20261018k"></script><script>tagFx("core")</script>
-  <script src="recipes/weapon.js?v=20261018k"></script><script>tagFx("weapon")</script>
-  <script src="recipes/combat.js?v=20261018k"></script><script>tagFx("combat")</script>
-  <script src="recipes/duel.js?v=20261018k"></script><script>tagFx("duel")</script>
-  <script src="recipes/horde.js?v=20261018k"></script><script>tagFx("horde")</script>
-  <script src="recipes/army.js?v=20261018k"></script><script>tagFx("army")</script>
-  <script src="recipes/fighting.js?v=20261018k"></script><script>tagFx("fighting")</script>
-  <script src="recipes/shooter.js?v=20261018k"></script><script>tagFx("shooter")</script>
-  <script src="recipes/action.js?v=20261018k"></script><script>tagFx("action")</script>
-  <script src="recipes/move.js?v=20261018k"></script><script>tagFx("move")</script>
-  <script src="recipes/rpg.js?v=20261018k"></script><script>tagFx("rpg")</script>
-  <script src="recipes/strategy.js?v=20261018k"></script><script>tagFx("strategy")</script>
-  <script src="recipes/sim.js?v=20261018k"></script><script>tagFx("sim")</script>
-  <script src="recipes/puzzle.js?v=20261018k"></script><script>tagFx("puzzle")</script>
-  <script src="recipes/racing.js?v=20261018k"></script><script>tagFx("racing")</script>
-  <script src="recipes/survival.js?v=20261018k"></script><script>tagFx("survival")</script>
-  <script src="recipes/casual.js?v=20261018k"></script><script>tagFx("casual")</script>
-  <script src="recipes/ui.js?v=20261018k"></script><script>tagFx("ui")</script>
-  <script src="recipes/env.js?v=20261018k"></script><script>tagFx("env")</script>
-  <script src="recipes/spotlight.js?v=20261018k"></script><script>tagFx("spotlight")</script>
-  <script src="recipes/spot-reward.js?v=20261018k"></script><script>tagFx("spot-reward")</script>
-  <script src="recipes/spot-combat.js?v=20261018k"></script><script>tagFx("spot-combat")</script>
-  <script src="recipes/spot-power.js?v=20261018k"></script><script>tagFx("spot-power")</script>
-  <script src="recipes/spot-casual.js?v=20261018k"></script><script>tagFx("spot-casual")</script>
+  <script src="recipes/core.js?v=20261018l"></script><script>tagFx("core")</script>
+  <script src="recipes/weapon.js?v=20261018l"></script><script>tagFx("weapon")</script>
+  <script src="recipes/combat.js?v=20261018l"></script><script>tagFx("combat")</script>
+  <script src="recipes/duel.js?v=20261018l"></script><script>tagFx("duel")</script>
+  <script src="recipes/horde.js?v=20261018l"></script><script>tagFx("horde")</script>
+  <script src="recipes/army.js?v=20261018l"></script><script>tagFx("army")</script>
+  <script src="recipes/fighting.js?v=20261018l"></script><script>tagFx("fighting")</script>
+  <script src="recipes/shooter.js?v=20261018l"></script><script>tagFx("shooter")</script>
+  <script src="recipes/action.js?v=20261018l"></script><script>tagFx("action")</script>
+  <script src="recipes/move.js?v=20261018l"></script><script>tagFx("move")</script>
+  <script src="recipes/rpg.js?v=20261018l"></script><script>tagFx("rpg")</script>
+  <script src="recipes/strategy.js?v=20261018l"></script><script>tagFx("strategy")</script>
+  <script src="recipes/sim.js?v=20261018l"></script><script>tagFx("sim")</script>
+  <script src="recipes/puzzle.js?v=20261018l"></script><script>tagFx("puzzle")</script>
+  <script src="recipes/racing.js?v=20261018l"></script><script>tagFx("racing")</script>
+  <script src="recipes/survival.js?v=20261018l"></script><script>tagFx("survival")</script>
+  <script src="recipes/casual.js?v=20261018l"></script><script>tagFx("casual")</script>
+  <script src="recipes/ui.js?v=20261018l"></script><script>tagFx("ui")</script>
+  <script src="recipes/env.js?v=20261018l"></script><script>tagFx("env")</script>
+  <script src="recipes/spotlight.js?v=20261018l"></script><script>tagFx("spotlight")</script>
+  <script src="recipes/spot-reward.js?v=20261018l"></script><script>tagFx("spot-reward")</script>
+  <script src="recipes/spot-combat.js?v=20261018l"></script><script>tagFx("spot-combat")</script>
+  <script src="recipes/spot-power.js?v=20261018l"></script><script>tagFx("spot-power")</script>
+  <script src="recipes/spot-casual.js?v=20261018l"></script><script>tagFx("spot-casual")</script>
   <script>
   (() => {
     "use strict";
