@@ -209,108 +209,87 @@ function ditherize(src, rgb, cell = 4) {
   return out;
 }
 
-/* 도트 캐릭터: 머리·몸통·팔다리를 둥근 막대(캡슐)로 세우고, 막대마다 입체 명암을 계산한 뒤
-   굵은 점(픽셀)으로 찍는다. 뒤쪽 팔다리는 조금 어둡게, 앞뒤가 겹치는 곳엔 한 칸 틈을 둬서 형태가 읽히게. */
-const FIG = {
-  // 우리 편: 오른쪽을 보고 앞팔을 뻗은 자세 (가로 32 × 세로 42칸)
-  hero: { W: 32, H: 42, parts: [
-    { a: [13, 12.5], b: [10.2, 17.5], r0: 1.7, r1: 1.5, z: 0 },          // 뒤팔 위
-    { a: [10.2, 17.5], b: [11.6, 21.6], r0: 1.5, r1: 1.4, z: 0 },        // 뒤팔 아래
-    { a: [11.8, 22], b: [11.8, 22], r0: 1.8, z: 0 },                     // 뒤 주먹
-    { a: [13.6, 21.5], b: [9.6, 29.5], r0: 2.5, r1: 2.1, z: 1 },         // 뒷다리 허벅지
-    { a: [9.6, 29.5], b: [6.6, 37.6], r0: 2.0, r1: 1.7, z: 1 },          // 뒷다리 정강이
-    { a: [5.6, 39.2], b: [9.2, 39.4], r0: 1.4, r1: 1.2, z: 1 },          // 뒷발
-    { a: [15.6, 12.8], b: [14.8, 21], r0: 5.1, r1: 3.8, z: 2 },          // 몸통
-    { a: [15.2, 8.6], b: [15.5, 11], r0: 1.6, r1: 1.8, z: 2 },           // 목
-    { a: [16.2, 22], b: [21, 29.2], r0: 2.7, r1: 2.3, z: 3 },            // 앞다리 허벅지
-    { a: [21, 29.2], b: [22.2, 37.6], r0: 2.2, r1: 1.8, z: 3 },          // 앞다리 정강이
-    { a: [21.8, 39.3], b: [26, 39.5], r0: 1.5, r1: 1.3, z: 3 },          // 앞발
-    { a: [15.2, 5], b: [15.2, 5], r0: 4.2, z: 4 },                       // 머리
-    { a: [17.6, 12.4], b: [22.4, 14.6], r0: 1.9, r1: 1.7, z: 5 },        // 앞팔 위
-    { a: [22.4, 14.6], b: [27.4, 13.8], r0: 1.6, r1: 1.5, z: 5 },        // 앞팔 아래
-    { a: [28.4, 13.8], b: [28.4, 13.8], r0: 2.1, z: 5 },                 // 앞 주먹
-  ] },
-  // 적: 왼쪽을 보고 몸을 웅크린 뿔 달린 덩치 (가로 36 × 세로 38칸)
-  foe: { W: 36, H: 38, parts: [
-    { a: [23.5, 15], b: [27, 21.5], r0: 2.3, r1: 2.0, z: 0 },            // 뒤팔 위
-    { a: [27, 21.5], b: [25.8, 27.5], r0: 2.0, r1: 1.8, z: 0 },          // 뒤팔 아래
-    { a: [25.6, 28.6], b: [25.6, 28.6], r0: 2.2, z: 0 },                 // 뒤 손
-    { a: [23, 25], b: [25.5, 30.5], r0: 3.0, r1: 2.6, z: 1 },            // 뒷다리
-    { a: [25.5, 30.5], b: [24.8, 35], r0: 2.5, r1: 2.3, z: 1 },
-    { a: [23, 36.4], b: [27.6, 36.4], r0: 1.6, r1: 1.4, z: 1 },
-    { a: [19.6, 13], b: [20.4, 23.5], r0: 7.4, r1: 6.4, z: 2 },          // 몸통 (불룩)
-    { a: [15.4, 25], b: [12.6, 30.5], r0: 3.1, r1: 2.7, z: 3 },          // 앞다리
-    { a: [12.6, 30.5], b: [13.2, 35], r0: 2.6, r1: 2.4, z: 3 },
-    { a: [10.4, 36.4], b: [15.2, 36.4], r0: 1.7, r1: 1.5, z: 3 },
-    { a: [11.6, 10.6], b: [11.6, 10.6], r0: 4.6, z: 4 },                 // 머리
-    { a: [9.8, 6.8], b: [6.6, 1.4], r0: 1.4, r1: 0.6, z: 4 },            // 뿔
-    { a: [14.4, 7], b: [16.8, 1.6], r0: 1.4, r1: 0.6, z: 4 },
-    { a: [15.2, 15.4], b: [9.6, 20.4], r0: 2.6, r1: 2.3, z: 5 },         // 앞팔 위
-    { a: [9.6, 20.4], b: [6.2, 25.6], r0: 2.3, r1: 2.0, z: 5 },          // 앞팔 아래
-    { a: [5.4, 27], b: [5.4, 27], r0: 2.5, z: 5 },                       // 앞 손
-  ] },
-  heroTop: { W: 22, H: 22, parts: [
-    { a: [5, 11], b: [17, 11], r0: 4.2, r1: 4.2, z: 0 },                 // 어깨
-    { a: [17.5, 10.5], b: [20.5, 10.2], r0: 1.6, r1: 1.6, z: 1 },        // 앞팔
-    { a: [11, 11], b: [11, 11], r0: 3.8, z: 2 },                         // 머리
-  ] },
-  foeTop: { W: 24, H: 24, parts: [
-    { a: [12, 12.5], b: [12, 12.5], r0: 7.6, z: 0 },                     // 등
-    { a: [6.4, 9], b: [3.4, 6], r0: 1.4, r1: 1.4, z: 1 },               // 팔
-    { a: [6.4, 16], b: [3.4, 19], r0: 1.4, r1: 1.4, z: 1 },
-    { a: [8, 12.5], b: [8, 12.5], r0: 4, z: 2 },                         // 머리
-    { a: [7, 9.4], b: [4.6, 4.6], r0: 1.2, r1: 0.5, z: 3 },             // 뿔
-    { a: [7, 15.6], b: [4.6, 20.4], r0: 1.2, r1: 0.5, z: 3 },
-  ] },
-};
-function figSprite(f, rgb, cell = 9) {
-  const { W, H, parts } = f, Lx = -0.5, Ly = -0.62, Lz = 0.6;
-  const id = new Int16Array(W * H).fill(-1), lum = new Float32Array(W * H);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const px = x + 0.5, py = y + 0.5;
-    let best = -1, bz = -1, bl = 0;
-    parts.forEach((p, k) => {
+/* 가루 도트 캐릭터: 사람 몸을 둥근 막대(캡슐) 여러 개로 세우고, 칸마다 부드러운 입체 명암을 계산한 뒤
+   1비트 디더링(점을 찍거나 비우거나)으로 바꾼다. 테두리는 바스러지고, 몸 둘레엔 가루가 흩날린다.
+   우리 편과 적은 같은 사람 형태, 색만 다르다. */
+const HUMAN = [ // 오른쪽을 보는 전투 자세. 단위: 가로 32 × 세로 44칸 기준
+  // z: 0 뒤팔, 1 뒷다리, 2 몸통, 3 머리·앞다리, 4 앞팔
+  { a: [12.6, 10], b: [11, 15], r0: 1.3, r1: 1.1, z: 0 },
+  { a: [11, 15], b: [12.8, 19.2], r0: 1.05, r1: 0.9, z: 0 },
+  { a: [13, 20], b: [13, 20], r0: 1.15, z: 0 },
+  { a: [13.6, 21], b: [10.6, 29.6], r0: 2.0, r1: 1.55, z: 1 },
+  { a: [10.6, 29.6], b: [7.8, 38.2], r0: 1.45, r1: 1.05, z: 1 },
+  { a: [6.8, 39.8], b: [10, 40.2], r0: 0.95, r1: 0.85, z: 1 },
+  { a: [12.6, 9.9], b: [12.6, 9.9], r0: 1.6, z: 1.5 },
+  { a: [15.2, 10.6], b: [15, 14.5], r0: 3.4, r1: 3.0, z: 2 },
+  { a: [15, 15], b: [14.8, 19], r0: 2.7, r1: 2.6, z: 2 },
+  { a: [14.8, 19.5], b: [14.8, 21.2], r0: 3.0, r1: 2.8, z: 2 },
+  { a: [15.4, 6.8], b: [15.6, 8.6], r0: 1.2, r1: 1.3, z: 2 },
+  { a: [15.6, 4.2], b: [15.6, 4.2], r0: 2.75, z: 3 },
+  { a: [16, 21], b: [19.6, 29.5], r0: 2.1, r1: 1.6, z: 3 },
+  { a: [19.6, 29.5], b: [20.6, 38.6], r0: 1.5, r1: 1.1, z: 3 },
+  { a: [20, 40], b: [23.6, 40.4], r0: 1.0, r1: 0.9, z: 3 },
+  { a: [17.6, 9.8], b: [17.6, 9.8], r0: 1.75, z: 4 },
+  { a: [17.8, 10], b: [21.5, 14.2], r0: 1.35, r1: 1.15, z: 4 },
+  { a: [21.5, 14.2], b: [26, 12.6], r0: 1.1, r1: 0.95, z: 4 },
+  { a: [27, 12.4], b: [27, 12.4], r0: 1.25, z: 4 },
+];
+const HUMAN_TOP = [ // 위에서 본 사람: 어깨 + 머리 + 앞으로 뻗은 팔 (가로 24 × 세로 24)
+  { a: [12, 5.5], b: [12, 18.5], r0: 4.2, r1: 4.2, z: 0 },
+  { a: [14, 15.5], b: [20.5, 14.5], r0: 1.4, r1: 1.2, z: 1 },
+  { a: [12.6, 12], b: [12.6, 12], r0: 3.6, z: 2 },
+];
+const BAYER8 = (() => { const m = [[0, 2], [3, 1]]; let b = m; for (let n = 2; n < 8; n *= 2) { const o = []; for (let y = 0; y < n * 2; y++) { o.push([]); for (let x = 0; x < n * 2; x++) o[y][x] = 4 * b[y % n][x % n] + m[(y / n) | 0][(x / n) | 0]; } b = o; } return b; })();
+function dustFig(parts, W, H, rgb, k = 3.4, seed0 = 7) {
+  const GW = Math.round(W * k), GH = Math.round(H * k), PAD = 10, cw = GW + PAD * 2, ch = GH + PAD * 2;
+  const Lx = -0.55, Ly = -0.62, Lz = 0.56;
+  const z = new Float32Array(cw * ch).fill(-1), lum = new Float32Array(cw * ch);
+  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
+    const px = (x - PAD + 0.5) / k, py = (y - PAD + 0.5) / k;
+    let bz = -1, bl = 0;
+    for (const p of parts) {
+      if (p.z < bz) continue;
       const [ax, ay] = p.a, [bx, by] = p.b, dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
       const t = L2 ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / L2)) : 0;
-      const cx = ax + dx * t, cy = ay + dy * t, r = p.r0 + ((p.r1 ?? p.r0) - p.r0) * t;
-      const ox = px - cx, oy = py - cy, d = Math.hypot(ox, oy) / r;
-      if (d > 1 || p.z < bz) return;
-      // 둥근 막대의 겉면 방향으로 빛을 계산 (왼쪽 위에서 비춤)
-      const nx = d ? ox / (r * 1) : 0, ny = d ? oy / (r * 1) : 0, nz = Math.sqrt(Math.max(0, 1 - nx * nx - ny * ny));
-      best = k; bz = p.z; bl = 0.42 + 0.66 * Math.max(0, nx * Lx + ny * Ly + nz * Lz);
-    });
-    id[y * W + x] = best; lum[y * W + x] = bl;
+      const r = p.r0 + ((p.r1 ?? p.r0) - p.r0) * t, ox = px - (ax + dx * t), oy = py - (ay + dy * t);
+      const d2 = (ox * ox + oy * oy) / (r * r);
+      if (d2 > 1) continue;
+      const nx = ox / r, ny = oy / r, nz = Math.sqrt(Math.max(0, 1 - d2));
+      const dif = Math.max(0, nx * Lx + ny * Ly + nz * Lz), rim = Math.pow(1 - nz, 3) * 0.55;
+      bz = p.z; bl = (0.06 + 0.92 * dif + rim) * (p.z < 2 ? 0.72 : 1);
+    }
+    z[y * cw + x] = bz; lum[y * cw + x] = bl;
   }
-  const c = document.createElement("canvas"); c.width = W * cell; c.height = H * cell;
-  const g = c.getContext("2d"), gap = Math.max(1, Math.round(cell * 0.14));
-  const zAt = (x, y) => (x < 0 || y < 0 || x >= W || y >= H || id[y * W + x] < 0 ? -1 : parts[id[y * W + x]].z);
-  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const k = id[y * W + x];
-    if (k < 0) {
-      // 가루: 몸 둘레에 흩어진 점
-      if ((zAt(x - 1, y) >= 0 || zAt(x + 1, y) >= 0 || zAt(x, y + 1) >= 0 || zAt(x, y - 1) >= 0) && rnd() < 0.05) {
-        g.fillStyle = `rgba(${rgb.join(",")},0.45)`; g.fillRect(x * cell, y * cell, cell - gap, cell - gap);
-      }
+  let seed = seed0; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const c = document.createElement("canvas"); c.width = cw * 2; c.height = ch * 2;
+  const g = c.getContext("2d"); g.fillStyle = `rgb(${rgb.join(",")})`;
+  const at = (x, y) => (x < 0 || y < 0 || x >= cw || y >= ch ? -1 : z[y * cw + x]);
+  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
+    const zz = at(x, y);
+    if (zz < 0) {
+      // 몸 둘레 가루: 가까울수록 많이, 오른쪽 위로 조금 더 흩날림
+      let near = 99;
+      for (let r = 1; r <= 7 && near === 99; r++) for (let a = 0; a < 8; a++) { const ang = a * Math.PI / 4; if (at(Math.round(x + Math.cos(ang) * r), Math.round(y + Math.sin(ang) * r)) >= 0) { near = r; break; } }
+      if (near < 99 && rnd() < 0.32 * Math.exp(-near / 1.8)) g.fillRect(x * 2, y * 2, 2, 2);
       continue;
     }
-    const z = parts[k].z;
-    // 뒤쪽 부위가 앞쪽 부위와 맞닿은 칸은 비워서 경계선을 만든다
-    if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => zAt(x + dx, y + dy) > z + 0.5 && Math.abs(zAt(x + dx, y + dy) - z) >= 1)) continue;
-    let v = lum[y * W + x] * (z <= 1 ? 0.78 : 1);
-    const tone = v > 0.88 ? 1 : v > 0.7 ? 0.86 : v > 0.54 ? 0.7 : 0.54;
-    g.fillStyle = `rgb(${rgb.map(q => Math.round(q * tone)).join(",")})`;
-    g.fillRect(x * cell, y * cell, cell - gap, cell - gap);
+    let v = lum[y * cw + x];
+    // 앞 부위 바로 뒤에 있는 칸은 그늘 (형태 구분)
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [2, 0], [-2, 0], [0, 2], [0, -2]]) if (at(x + dx, y + dy) >= zz + 1) { v *= 0.3; break; }
+    // 테두리는 바스러지게
+    const edge = at(x - 1, y) < 0 || at(x + 1, y) < 0 || at(x, y - 1) < 0 || at(x, y + 1) < 0;
+    if (edge && rnd() < 0.35) continue;
+    if (v > (BAYER8[y & 7][x & 7] + 0.5) / 64) g.fillRect(x * 2, y * 2, 2, 2);
   }
   return c;
 }
-const DOT = { hero: [236, 230, 212], foe: [178, 214, 120] };
+const DOT = { hero: [240, 236, 224], foe: [255, 112, 92] };
 function makeSprites() {
   const S = {
     // 주인공: 로우폴리 사람 (석고상 톤)
-    hero: figSprite(FIG.hero, DOT.hero),
+    hero: dustFig(HUMAN, 32, 44, DOT.hero),
     // 적: 로우폴리 고블린
-    foe: figSprite(FIG.foe, DOT.foe),
+    foe: (() => { const c = dustFig(HUMAN, 32, 44, DOT.foe, 3.4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })(),
     // 총
     gun: ditherize(mk(240, 140, x => {
       x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
@@ -356,8 +335,8 @@ function makeSprites() {
     }),
   };
   // 위에서 본 주인공·적: 같은 모델을 위에서 내려다봄
-  S.heroTop = figSprite(FIG.heroTop, DOT.hero, 8);
-  S.foeTop = figSprite(FIG.foeTop, DOT.foe, 8);
+  S.heroTop = dustFig(HUMAN_TOP, 24, 24, DOT.hero, 4);
+  S.foeTop = (() => { const c = dustFig(HUMAN_TOP, 24, 24, DOT.foe, 4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })();
   for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
   return Promise.resolve();
 }
@@ -811,7 +790,6 @@ function drawActor(ctx, a) {
   // 가만히 있어도 살짝 숨 쉬는 대기 동작
   const br = !a.top && a.alive && !a.flying ? Math.sin(performance.now() / 380 + a.home * 0.05) * 0.018 : 0;
   ctx.scale(a.sx * (1 - br * 0.5) * (a.flip ? -1 : 1), a.sy * (1 + br));
-  ctx.imageSmoothingEnabled = false;
   ctx.drawImage(a.s.c, -a.w / 2, top, a.w, a.h);
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
