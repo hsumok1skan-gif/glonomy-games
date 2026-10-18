@@ -175,20 +175,54 @@ function goblinModel() {
     pyr([[F * 48, 102, -9], [F * 48, 102, 9], [F * 48, 122, 9], [F * 48, 122, -9]], [F * 76, 104, 0]),
   ];
 }
+
+/* 도트(가루) 느낌: 그림을 굵은 점으로 나누고, 밝기에 따라 점을 찍거나 비움 (4×4 바이어 디더링) */
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+function ditherize(src, rgb, cell = 4) {
+  const W = src.width, H = src.height, gw = Math.ceil(W / cell), gh = Math.ceil(H / cell);
+  const d = src.getContext("2d").getImageData(0, 0, W, H).data;
+  const A = new Float32Array(gw * gh), L = new Float32Array(gw * gh);
+  for (let gy = 0; gy < gh; gy++) for (let gx = 0; gx < gw; gx++) {
+    let a = 0, l = 0, n = 0;
+    for (let y = gy * cell; y < Math.min(H, gy * cell + cell); y++) for (let x = gx * cell; x < Math.min(W, gx * cell + cell); x++) {
+      const i = (y * W + x) * 4, al = d[i + 3] / 255; a += al; l += al * (0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2]) / 255; n++;
+    }
+    A[gy * gw + gx] = a / n; L[gy * gw + gx] = a > 0 ? l / a : 0;
+  }
+  const out = document.createElement("canvas"); out.width = W; out.height = H;
+  const x = out.getContext("2d"), [r, g, b] = rgb;
+  const on = (gx, gy) => gx >= 0 && gy >= 0 && gx < gw && gy < gh && A[gy * gw + gx] > 0.45;
+  const px = (gx, gy, k) => { x.fillStyle = `rgb(${Math.round(r * k)},${Math.round(g * k)},${Math.round(b * k)})`; x.fillRect(gx * cell, gy * cell, cell, cell); };
+  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  for (let gy = 0; gy < gh; gy++) for (let gx = 0; gx < gw; gx++) {
+    if (!on(gx, gy)) {
+      // 가루: 몸 둘레에 흩날리는 점
+      let near = 0; for (let oy = -2; oy <= 2; oy++) for (let ox = -2; ox <= 2; ox++) if (on(gx + ox, gy + oy)) near++;
+      if (near && rnd() < 0.05) px(gx, gy, 0.75);
+      continue;
+    }
+    const edge = !on(gx - 1, gy) || !on(gx + 1, gy) || !on(gx, gy - 1) || !on(gx, gy + 1);
+    const lum = Math.max(0.06, Math.min(1, (L[gy * gw + gx] - 0.2) * 1.55)), th = (BAYER[(gy & 3) * 4 + (gx & 3)] + 0.5) / 16;
+    if (edge) px(gx, gy, 0.95);
+    else if (lum > th) px(gx, gy, 0.72 + 0.28 * lum);
+  }
+  return out;
+}
+const DOT = { hero: [242, 234, 214], foe: [188, 226, 140] };
 function makeSprites() {
   const S = {
     // 주인공: 로우폴리 사람 (석고상 톤)
-    hero: mk(170, 260, x => renderPoly(x, 170, 260, humanModel(), -0.72, 0.3, [246, 244, 240], [70, 70, 80])),
+    hero: ditherize(mk(170, 260, x => renderPoly(x, 170, 260, humanModel(), -0.72, 0.3, [246, 244, 240], [70, 70, 80])), DOT.hero, 5),
     // 적: 로우폴리 고블린
-    foe: mk(210, 210, x => renderPoly(x, 210, 210, goblinModel(), 0.62, 0.3, [150, 205, 95], [32, 56, 26])),
+    foe: ditherize(mk(210, 210, x => renderPoly(x, 210, 210, goblinModel(), 0.62, 0.3, [246, 244, 240], [40, 40, 44])), DOT.foe, 4),
     // 총
-    gun: mk(240, 140, x => {
+    gun: ditherize(mk(240, 140, x => {
       x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
       x.fillStyle = lg(x, 0, 20, 0, 84, [[0, "#5b6476"], [1, "#2a2f3a"]]); x.beginPath(); x.roundRect(38, 20, 128, 64, 14); x.fill();
       x.fillStyle = lg(x, 0, 26, 0, 56, [[0, "#3a414f"], [1, "#171a21"]]); x.beginPath(); x.roundRect(140, 26, 98, 30, 8); x.fill();
       x.fillStyle = "#c6f432"; x.fillRect(50, 62, 100, 5);
       x.fillStyle = "rgba(255,255,255,0.22)"; x.beginPath(); x.roundRect(46, 26, 112, 8, 4); x.fill();
-    }),
+    }), [215, 220, 210], 5),
     // 상자
     crate: mk(200, 200, x => {
       x.fillStyle = lg(x, 0, 12, 0, 188, [[0, "#fcd34d"], [1, "#d97706"]]); x.beginPath(); x.roundRect(12, 12, 176, 176, 28); x.fill();
@@ -226,8 +260,8 @@ function makeSprites() {
     }),
   };
   // 위에서 본 주인공·적: 같은 모델을 위에서 내려다봄
-  S.heroTop = mk(140, 140, x => renderPoly(x, 140, 140, humanModel(), 0, Math.PI / 2 - 0.001, [246, 244, 240], [70, 70, 80], 10));
-  S.foeTop = mk(130, 130, x => renderPoly(x, 130, 130, goblinModel(), 0, Math.PI / 2 - 0.001, [150, 205, 95], [32, 56, 26], 8));
+  S.heroTop = ditherize(mk(140, 140, x => renderPoly(x, 140, 140, humanModel(), 0, Math.PI / 2 - 0.001, [246, 244, 240], [70, 70, 80], 10)), DOT.hero, 3);
+  S.foeTop = ditherize(mk(130, 130, x => renderPoly(x, 130, 130, goblinModel(), 0, Math.PI / 2 - 0.001, [246, 244, 240], [40, 40, 44], 8)), DOT.foe, 3);
   for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
   return Promise.resolve();
 }
@@ -677,7 +711,9 @@ function drawActor(ctx, a) {
   const top = a.top ? -a.h / 2 : -a.h;
   if (a.top) ctx.rotate(a.rot);
   else if (a.rot) { ctx.translate(0, -a.h / 2); ctx.rotate(a.rot); ctx.translate(0, a.h / 2); }
-  ctx.scale(a.sx * (a.flip ? -1 : 1), a.sy);
+  // 가만히 있어도 살짝 숨 쉬는 대기 동작
+  const br = !a.top && a.alive && !a.flying ? Math.sin(performance.now() / 380 + a.home * 0.05) * 0.018 : 0;
+  ctx.scale(a.sx * (1 - br * 0.5) * (a.flip ? -1 : 1), a.sy * (1 + br));
   ctx.drawImage(a.s.c, -a.w / 2, top, a.w, a.h);
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
