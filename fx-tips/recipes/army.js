@@ -331,7 +331,7 @@
           u.x = u.hx; u.delay = 0;
           w.emit("charge", u);
           const dx = u.team === "b" ? 118 : -118;
-          w.after(u.delay, () => g === w.gen && w.tween(u, { x: u.hx + dx }, 0.18, "in", () => {
+          w.after(u.delay, () => g === w.gen && w.tween(u, { x: u.hx + dx }, 0.26, "in", () => {
             if (u.rank === 0 && u.team === "b") w.emit("clash", { x: u.x + 20, y: u.y - 20 });
           }));
         }
@@ -351,12 +351,12 @@
           charge(w, u) { u.delay = u.rank * 0.03 + rand(0, 0.07); },
         },
         {
-          id: "spark", name: { en: "Contact Sparks", ko: "부딪힘 불꽃" }, param: "star + 8 sparks",
+          id: "spark", name: { en: "Contact Sparks", ko: "부딪힘 불꽃" }, param: "star + 12 sparks",
           cap: { en: "Every row that meets *throws sparks*.", ko: "닿는 줄마다 *불꽃*이 튀어요." },
           clash(w, p) {
-            w.spawn({ type: "star", x: p.x, y: p.y, size: 34, life: 0.25, color: "255,255,255" });
-            w.spawn({ type: "glow", x: p.x, y: p.y, size: 40, size1: 10, life: 0.5, color: "255,190,90" });
-            for (let i = 0; i < 8; i++) w.spawn({ type: "spark", x: p.x, y: p.y, vx: rand(-300, 300), vy: rand(-360, 60), g: 900, drag: 2, life: rand(0.3, 0.55), size: 2.6, color: "255,220,150" });
+            w.spawn({ type: "star", x: p.x, y: p.y, size: 26, life: 0.16, color: "255,255,255" });
+            w.spawn({ type: "glow", x: p.x, y: p.y, size: 22, size1: 6, life: 0.3, under: true, color: "255,190,90" });
+            for (let i = 0; i < 12; i++) w.spawn({ type: "spark", x: p.x, y: p.y, vx: rand(-300, 300), vy: rand(-360, 60), g: 900, drag: 2, life: rand(0.3, 0.55), size: 2.6, color: "255,220,150" });
           },
         },
         {
@@ -791,7 +791,7 @@
         w.emit("ready");
         w.after(w.on("windup") ? 0.1 : 0, () => g === w.gen && w.riders.forEach((r, i) => {
           r.run = true;
-          w.tween(r, { x: 362 }, 0.15, "in", () => {
+          w.tween(r, { x: 362 }, 0.24, "in", () => {
             const row = w.inf.filter(u => u.row === i);
             for (const u of row) u.ox += 10;
             w.emit("impact", r, row);
@@ -810,7 +810,7 @@
         {
           id: "dust", name: { en: "Hoof Dust", ko: "말발굽 먼지" }, param: "puff per frame",
           cap: { en: "Leave a *dust trail* behind the hooves.", ko: "말발굽 뒤로 *흙먼지*를 남겨요." },
-          update(w) { for (const r of w.riders) if (r.run && Math.random() < 0.6) dust(w, r.x - 24, r.y, 1, -1, "190,175,150"); },
+          update(w) { for (const r of w.riders) if (r.run && Math.random() < 0.3) dust(w, r.x - 24, r.y, 1, -1, "150,138,115"); },
         },
         {
           id: "lines", name: { en: "Speed Lines", ko: "속도선" }, param: "streaks −700px/s",
@@ -959,7 +959,7 @@
         w.ram.x = 0; w.cracks = [];
         w.bricks.forEach(b => (b.alive = true));
         w.def.forEach(u => u.dead && reset(u));
-        const ram = done => w.tween(w.ram, { x: -30 }, 0.08, "out", () => w.tween(w.ram, { x: 18 }, 0.06, "in", () => {
+        const ram = done => w.tween(w.ram, { x: -30 }, 0.14, "out", () => w.tween(w.ram, { x: 18 }, 0.1, "in", () => {
           w.emit("hit", { x: 368, y: G - 30 });
           done();
         }));
@@ -1017,10 +1017,10 @@
           },
         },
         {
-          id: "dust", name: { en: "Dust Burst", ko: "흙먼지 폭발" }, param: "16 puffs · 1.4s",
+          id: "dust", name: { en: "Dust Burst", ko: "흙먼지 폭발" }, param: "10 puffs · 1.2s",
           cap: { en: "A thick *dust cloud* hides the hole for a beat.", ko: "두꺼운 *먼지*가 잠깐 구멍을 가려요." },
           breach(w, p) {
-            for (let i = 0; i < 16; i++) w.spawn({ type: "smoke", x: p.x + rand(-30, 40), y: p.y + rand(-50, 50), vx: rand(-60, 160), vy: rand(-60, 10), drag: 1.5, size: rand(14, 22), size1: rand(40, 60), life: rand(1, 1.5), color: "170,160,140" });
+            for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: p.x + rand(-20, 50), y: p.y + rand(-30, 50), vx: rand(-40, 180), vy: rand(-50, 10), drag: 1.5, size: rand(12, 18), size1: rand(30, 44), life: rand(0.8, 1.2), color: "118,110,96" });
           },
         },
         {
@@ -1055,7 +1055,7 @@
         const T = w.red.filter(u => u.x < 520).sort((a, b) => a.x - b.x).slice(0, 3);
         for (const u of T) {
           const s = nearest(w, u, o => o.team === "b");
-          fx(w, 0.08, ctx => { ctx.strokeStyle = "#e5e7eb"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(u.x, u.y); ctx.stroke(); });
+          fx(w, 0.16, ctx => { ctx.strokeStyle = "#e5e7eb"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(u.x, u.y); ctx.stroke(); });
           const c = U(w, "r", u.x, u.y, { top: true, h: 28, face: u.face, dead: true, born: w.time });
           w.emit("die", c);
           u.x = rand(530, 570);
@@ -1484,7 +1484,7 @@
         if (!w.haze) return;
         ctx.save(); ctx.translate(270, 262); ctx.scale(1, 0.32);
         const g = ctx.createRadialGradient(0, 0, 20, 0, 0, 220);
-        g.addColorStop(0, "rgba(170,155,125,0.5)"); g.addColorStop(0.6, "rgba(170,155,125,0.3)"); g.addColorStop(1, "rgba(170,155,125,0)");
+        g.addColorStop(0, "rgba(150,135,105,0.38)"); g.addColorStop(0.6, "rgba(150,135,105,0.22)"); g.addColorStop(1, "rgba(170,155,125,0)");
         ctx.fillStyle = g; ctx.fillRect(-240, -240, 480, 480); ctx.restore();
       },
       steps: [
@@ -1497,7 +1497,7 @@
           id: "cloud", name: { en: "Rolling Cloud", ko: "뭉게 먼지" }, param: "big · 2.5s life",
           cap: { en: "Big, slow *clouds* that hang around.", ko: "크고 느린 *먼지구름*이 오래 머물러요." },
           blow(w, p) {
-            w.spawn({ type: "smoke", x: p.x + rand(-20, 20), y: p.y - rand(10, 30), vx: rand(-15, 15), vy: rand(-12, -4), size: rand(18, 26), size1: rand(46, 64), life: rand(2.2, 2.8), color: "160,148,122", alpha: 0.55 });
+            w.spawn({ type: "smoke", x: p.x + rand(-20, 20), y: p.y - rand(10, 30), vx: rand(-15, 15), vy: rand(-12, -4), size: rand(18, 26), size1: rand(46, 64), life: rand(2.2, 2.8), color: "130,120,98", alpha: 0.4 });
           },
         },
         {

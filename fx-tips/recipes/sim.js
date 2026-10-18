@@ -586,7 +586,7 @@
       drawFront(w, ctx) {
         const B = w.B, x = 270 + Math.sin(w.time * 80) * B.wob * 4;
         if (B.glow > 0) { ctx.globalCompositeOperation = "lighter"; glow(ctx, 270, 200, 140, "198,244,50", B.glow * 0.35); ctx.globalCompositeOperation = "source-over"; }
-        put(ctx, "sim-up" + B.lv, x, 238, 135, B.sx, B.sy, 1, "white", B.glow);
+        put(ctx, "sim-up" + B.lv, x, 238, 135, B.sx, B.sy, 1, "white", B.glow * 0.55);
       },
       drawHud(w, ctx) {
         const B = w.B, s = 1 + B.badge * 0.8;
@@ -602,7 +602,7 @@
         { id: "dust", name: { en: "Dust Cover", ko: "먼지로 가리기" }, param: "14 puffs · ring",
           cap: { en: "A *dust cloud* hides the swap.", ko: "*먼지 구름*이 바뀌는 순간을 가려요." },
           up(w) {
-            for (let i = 0; i < 14; i++) { const a = rand(0, TAU); w.spawn({ type: "smoke", x: 270 + Math.cos(a) * 60, y: 205 + Math.sin(a) * 30, vx: Math.cos(a) * rand(60, 160), vy: Math.sin(a) * rand(30, 80) - 30, drag: 3, size: 14, size1: 30, life: 0.7, color: "215,210,200" }); }
+            for (let i = 0; i < 14; i++) { const a = rand(0, TAU); w.spawn({ type: "smoke", x: 270 + Math.cos(a) * 70, y: 215 + Math.sin(a) * 30, vx: Math.cos(a) * rand(80, 180), vy: Math.sin(a) * rand(30, 80) - 20, drag: 3, size: 10, size1: 22, life: 0.6, color: "150,144,136" }); }
             w.spawn({ type: "ring", flat: true, x: 270, y: 215, size: 40, size1: 150, life: 0.45, w: 6, color: "230,225,215" });
           } },
         { id: "beam", name: { en: "Light Beam", ko: "빛기둥" }, param: "beam + white flash",
@@ -764,7 +764,7 @@
           update(w) { if (w.S.spd > 1.5 && Math.random() < 0.7) w.spawn({ type: "spark", x: rand(-40, 200), y: rand(60, 330), vx: 1400, vy: 700, size: 1.6, life: 0.3, color: "200,230,255" }); } },
         { id: "trails", name: { en: "Motion Trails", ko: "잔상" }, param: "glow trail / frame",
           cap: { en: "Cars leave *trails* behind them.", ko: "차 뒤로 *잔상*이 남아요." },
-          update(w) { if (w.S.spd > 1.5 && w.carPts) for (const p of w.carPts) w.spawn({ type: "glow", x: p.x, y: p.y - 8, size: 12, size1: 2, life: 0.35, color: "160,210,255" }); } },
+          update(w) { if (w.S.spd > 1.5 && w.carPts) for (const p of w.carPts) w.spawn({ type: "glow", x: p.x, y: p.y - 8, size: 7, size1: 2, life: 0.3, color: "160,210,255" }); } },
         { id: "clock", name: { en: "Clock Blur", ko: "시곗바늘 잔상" }, param: "hand smear",
           cap: { en: "The clock hand *smears* as it spins.", ko: "시곗바늘이 *휘리릭* 번져요." },
           fast(w) { w.spawn({ type: "ring", x: 270, y: 46, size: 24, size1: 44, life: 0.3, w: 4, color: "255,255,255" }); } },
@@ -1020,7 +1020,7 @@
       drawFront(w, ctx) {
         for (const b of w.bs) if (b.s > 0.01) put(ctx, b.k, b.x + b.ox, b.y + b.oy, b.wd, b.s, b.s);
         const o = w.Pz.orb;
-        if (o > 0) { ctx.globalCompositeOperation = "lighter"; glow(ctx, 270, 170, 30 + o * 90, "216,180,254", 0.5 + o * 0.5); glow(ctx, 270, 170, 10 + o * 20, "255,255,255", 1); ctx.globalCompositeOperation = "source-over"; }
+        if (o > 0) { ctx.globalCompositeOperation = "lighter"; glow(ctx, 270, 170, 30 + o * 70, "216,180,254", 0.3 + o * 0.35); glow(ctx, 270, 170, 8 + o * 12, "255,255,255", 0.8); ctx.globalCompositeOperation = "source-over"; }
       },
       drawHud(w, ctx) { flyDraw(w, ctx); const Pz = w.Pz; wallet(ctx, 212, 26, `${Pz.stars}   ×${Pz.mult.toFixed(1)}`, Pz.bump, "pstar", 120); },
       steps: [
@@ -1039,7 +1039,7 @@
           prestige(w, Pz) { for (let i = 0; i < 6; i++) flyer(w, { k: "pstar", s: 26, x0: 270, y0: 190, x1: 212, y1: 26, delay: 0.4 + i * 0.06, end: () => { Pz.bump = 1; } }); } },
         { id: "mult", name: { en: "Multiplier Reveal", ko: "배율 공개" }, param: "48px text · 1.2s",
           cap: { en: "Show *what you gained*: the new multiplier.", ko: "*얻은 것*을 보여줘요. 새 배율!" },
-          prestige(w, Pz) { w.after(0.45, () => w.spawn({ type: "text", text: "×" + Pz.mult.toFixed(1) + " PROFIT", x: 270, y: 190, vy: -20, life: 1.3, size: 40, color: "#d8b4fe" })); } },
+          prestige(w, Pz) { w.after(0.45, () => w.spawn({ type: "text", text: "×" + Pz.mult.toFixed(1) + " PROFIT", x: 270, y: 110, vy: -14, life: 1.3, size: 40, color: "#d8b4fe" })); } },
         { id: "rebuild", name: { en: "Fresh Sprouts", ko: "새싹처럼 다시" }, param: "stagger 90ms · back",
           cap: { en: "Rebuild with *pops*. A fresh start feels fresh.", ko: "*톡톡* 다시 세워요. 새 출발은 상큼하게." },
           rebuild(w, b) { b.s = 0; w.after(rand(0, 0.35), () => w.tween(b, { s: 1 }, 0.35, "back")); } },

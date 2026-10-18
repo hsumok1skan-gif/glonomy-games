@@ -447,15 +447,15 @@
       interval: 0.5, stepDur: 3.6,
       setup(w) {
         w.hero = w.actor("hero", { home: 170 }); w.sw = { rot: 0.4 };
-        w.foe = w.actor("foe", { home: 370, hp: 999 }); w.foe.maxHp = 0;
+        w.foe = w.actor("foe", { home: 340, hp: 999 }); w.foe.maxHp = 0;
         w.ci = 0; w.cnt = { n: 0, bump: 0 };
       },
       fire(w) {
         const n = w.ci = (w.ci % 3) + 1, from = [-1.7, 0.8, -0.1][n - 1], to = [0.8, -1.7, 0][n - 1];
         w.sw.rot = from;
         w.emit("swing", n);
-        w.tween(w.sw, { rot: to }, 0.08, "in", () => {
-          const f = w.foe; f.ox += 6;
+        w.tween(w.sw, { rot: to }, 0.13, "in", () => {
+          const f = w.foe; f.ox += 14;
           w.emit("hit", { x: f.x - 50, y: G - 80 }, n);
           w.tween(w.sw, { rot: 0.4 }, 0.2);
         });
@@ -600,7 +600,7 @@
         if (w.busy) return;
         w.busy = true;
         const h = w.hero;
-        w.tween(h, { oy: -230 }, 0.18, "out", () => w.after(w.on("hang") ? 0.1 : 0, () => {
+        w.tween(h, { oy: -165 }, 0.18, "out", () => w.after(w.on("hang") ? 0.1 : 0, () => {
           w.emit("dive", h);
           w.tween(h, { oy: 0 }, 0.12, "in", () => {
             w.emit("impact", { x: h.x, y: G });
@@ -670,7 +670,7 @@
       interval: 0.9, stepDur: 3.6,
       setup(w) {
         w.hero = w.actor("heroTop", { home: 150, gy: 190 });
-        w.foes = [[380, 90], [440, 200], [350, 290]].map(([x, y]) => w.actor("foeTop", { home: x, gy: y }));
+        w.foes = [[380, 100], [450, 200], [350, 280]].map(([x, y]) => w.actor("foeTop", { home: x, gy: y, h: 76 }));
         w.ti = 0; w.ret = { x: 380, y: 90, sc: 1, spin: 0, show: false };
       },
       fire(w) {
@@ -692,8 +692,9 @@
           ctx.setLineDash([8, 8]); ctx.lineDashOffset = -w.time * 40; ctx.strokeStyle = "rgba(198,244,50,0.6)"; ctx.lineWidth = 2;
           ctx.beginPath(); ctx.moveTo(w.hero.x, w.hero.gy); ctx.lineTo(r.x, y); ctx.stroke(); ctx.setLineDash([]);
         }
-        ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(r.x, y, 6, 0, TAU); ctx.stroke();
+        ctx.strokeStyle = "rgba(255,255,255,0.85)"; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(r.x, y, 34, 0, TAU); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(r.x - 8, y); ctx.lineTo(r.x + 8, y); ctx.moveTo(r.x, y - 8); ctx.lineTo(r.x, y + 8); ctx.stroke();
         if (r.brackets) {
           const s = 44 * r.sc, L = 14;
           ctx.strokeStyle = "#c6f432"; ctx.lineWidth = 4;
@@ -711,7 +712,10 @@
         {
           id: "brackets", name: { en: "Snap Brackets", ko: "조여드는 괄호" }, param: "scale 2 → 1",
           cap: { en: "Brackets start *big* and *clamp in*.", ko: "괄호가 *크게* 나타나서 *착* 조여요." },
-          lock(w, t, r) { r.brackets = true; r.sc = 2; },
+          lock(w, t, r) {
+            r.brackets = true; r.sc = 2;
+            w.spawn({ type: "ring", x: t.x, y: t.gy, size: 110, size1: 40, life: 0.25, w: 5, color: "198,244,50" });
+          },
         },
         {
           id: "glide", name: { en: "Glide Over", ko: "미끄러지듯 이동" }, param: "lerp 12/s",
@@ -919,17 +923,17 @@
       interval: 0.6, stepDur: 4.0,
       setup(w) {
         ensureArt();
-        w.hero = w.actor("hero", { home: 200 }); w.sw = { rot: 0.4 };
-        w.foe = w.actor("action-knight", { home: 380 }); w.foe.maxHp = 0;
+        w.hero = w.actor("hero", { home: 225 }); w.sw = { rot: 0.4 };
+        w.foe = w.actor("action-knight", { home: 370 }); w.foe.maxHp = 0;
         w.ps = { v: 0, shown: 0, broken: 0 };
       },
       fire(w) {
         const p = w.ps, k = w.foe;
         if (p.broken > 0) return;
         w.sw.rot = -1.6;
-        w.tween(w.sw, { rot: 0.6 }, 0.08, "in", () => {
+        w.tween(w.sw, { rot: 0.6 }, 0.12, "in", () => {
           const at = { x: k.x - 40, y: G - 90 };
-          k.ox += 5; p.v = Math.min(100, p.v + 25);
+          k.ox += 12; p.v = Math.min(100, p.v + 25);
           w.emit("hit", at);
           if (p.v >= 100) { p.broken = 1.4; w.emit("break", { x: k.x, y: k.gy - k.h - 24 }, k); }
           w.tween(w.sw, { rot: 0.4 }, 0.15);
@@ -1012,7 +1016,7 @@
         if (fl.n <= 0) fl.n = 5;
         const drink = () => {
           const to = Math.min(100, h.hp + 40);
-          fl.n--; w.emit("drink", h, to);
+          fl.n--; fl.show = true; w.emit("drink", h, to);
           if (!w.on("fill")) h.hp = to;
           w.after(0.6, () => { fl.show = false; w.busy = false; });
         };
@@ -1207,7 +1211,7 @@
         {
           id: "trail", name: { en: "Dust Trail", ko: "먼지 꼬리" }, param: "low cloud · 1.2s",
           cap: { en: "Leave a *low cloud* hanging behind you.", ko: "뒤로 *낮은 먼지 구름*이 남아요." },
-          running(w, h, dt) { if (Math.random() < dt * 30) w.spawn({ type: "smoke", x: h.x - 30, y: G - rand(0, 14), vx: rand(-40, 10), vy: rand(-15, 0), drag: 1, size: rand(8, 12), size1: rand(22, 32), life: rand(0.9, 1.3), color: "180,170,155" }); },
+          running(w, h, dt) { if (Math.random() < dt * 30) w.spawn({ type: "smoke", x: h.x - 30, y: G - rand(0, 14), vx: rand(-40, 10), vy: rand(-15, 0), drag: 1, size: rand(8, 12), size1: rand(22, 32), life: rand(0.9, 1.3), color: "120,108,94", under: true }); },
         },
         {
           id: "lines", name: { en: "Speed Lines", ko: "속도선" }, param: "2 / frame",
@@ -1550,7 +1554,7 @@
         {
           id: "rays", name: { en: "Focus Lines", ko: "집중선" }, param: "24 rays",
           cap: { en: "Comic *focus lines* point at the hit.", ko: "만화 *집중선*이 한 점을 가리켜요." },
-          finish(w, at) { w.spawn({ type: "rays", x: at.x, y: at.y, n: 24, size: 360, life: 0.7, vr: 0.4, color: "255,255,255" }); },
+          finish(w, at) { w.spawn({ type: "rays", under: true, x: at.x, y: at.y, n: 24, size: 360, life: 0.7, vr: 0.4, alpha: 0.4, color: "255,236,200" }); },
         },
         {
           id: "send", name: { en: "Send Off", ko: "날려 보내기" }, param: "fly + spark burst",
@@ -1652,16 +1656,21 @@
       intro: { en: "Hit from any side. Same *flash* every time.", ko: "어느 쪽에서 맞든 *똑같이* 번쩍." },
       interval: 0.8, stepDur: 3.6,
       setup(w) {
-        w.foe = w.actor("foeTop", { home: 300, gy: 185, hp: 0 });
-        w.hero = w.actor("heroTop", { home: 180, gy: 185 });
+        w.foe = w.actor("foeTop", { home: 290, gy: 190, hp: 0, h: 84 });
+        w.hero = w.actor("heroTop", { home: 160, gy: 190, h: 84 });
         w.ai = 0; w.angs = [Math.PI, -Math.PI / 2, 0.3, Math.PI / 2 + 0.5, -2.4];
       },
       fire(w) {
         const f = w.foe, h = w.hero, a = w.angs[w.ai++ % w.angs.length], d = a + Math.PI;
-        h.x = h.home = f.x + Math.cos(a) * 120; h.gy = f.gy + Math.sin(a) * 120; h.rot = d;
-        h.ox = Math.cos(d) * 30; h.oy = Math.sin(d) * 30;
-        f.flash = 0.6;
-        w.emit("hit", { x: f.x + Math.cos(a) * 28, y: f.gy + Math.sin(a) * 28, d }, f);
+        h.x = h.home = f.x + Math.cos(a) * 130; h.gy = f.gy + Math.sin(a) * 130; h.rot = d;
+        h.ox = -Math.cos(d) * 30; h.oy = -Math.sin(d) * 30; h.k = 6;
+        w.after(0.08, () => {
+          h.ox = Math.cos(d) * 46; h.oy = Math.sin(d) * 46;
+          const p = { x: f.x + Math.cos(a) * 30, y: f.gy + Math.sin(a) * 30, d };
+          f.flash = 0.6;
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
+          w.emit("hit", p, f);
+        });
       },
       drawFloor(w, ctx) { ctx.strokeStyle = "rgba(255,255,255,0.18)"; ctx.lineWidth = 2; ctx.strokeRect(14, 40, 512, 290); },
       steps: [
@@ -1678,12 +1687,15 @@
         {
           id: "spray", name: { en: "Exit Spray", ko: "반대쪽으로 튐" }, param: "12 sparks · ±35°",
           cap: { en: "Sparks fly out the *far side*, along the hit.", ko: "불꽃은 *반대편*으로, 맞은 방향 따라." },
-          hit(w, h) { sparks(w, h.x, h.y, 12, "255,220,150", [250, 650], h.d - 0.6, h.d + 0.6); },
+          hit(w, h) {
+            w.spawn({ type: "star", x: h.x, y: h.y, size: 44, life: 0.16, color: "255,250,230" });
+            sparks(w, h.x, h.y, 16, "255,220,150", [250, 650], h.d - 0.6, h.d + 0.6);
+          },
         },
         {
           id: "arc", name: { en: "Side Indicator", ko: "맞은 쪽 표시" }, param: "red arc 0.8s",
           cap: { en: "Light up the *side* that took the hit.", ko: "맞은 *쪽*에 붉은 표시." },
-          hit(w, h, f) { const a = h.d + Math.PI; w.spawn({ type: "arc", x: f.x, y: f.gy, size: 48, life: 0.8, a0: a - 0.6, a1: a + 0.6, color: "248,113,113", hold: true }); },
+          hit(w, h, f) { const a = h.d + Math.PI; w.spawn({ type: "arc", x: f.x, y: f.gy, size: 62, life: 0.8, a0: a - 0.7, a1: a + 0.7, color: "248,113,113", hold: true }); },
         },
         {
           id: "skid", name: { en: "Skid Marks", ko: "끌린 자국" }, param: "2 marks · 3s",
@@ -1834,7 +1846,7 @@
         {
           id: "dust", name: { en: "Dust Wake", ko: "먼지 꼬리" }, param: "cloud behind",
           cap: { en: "A *dust wake* fans out behind you.", ko: "뒤로 *먼지 꼬리*가 퍼져요." },
-          sliding(w, h, dt) { if (Math.random() < dt * 40) w.spawn({ type: "smoke", x: h.x - 30, y: G - rand(0, 10), vx: rand(-80, 0), vy: rand(-40, -5), drag: 2, size: 8, size1: rand(20, 30), life: rand(0.5, 0.8), color: "190,180,165" }); },
+          sliding(w, h, dt) { if (Math.random() < dt * 40) w.spawn({ type: "smoke", x: h.x - 30, y: G - rand(0, 10), vx: rand(-80, 0), vy: rand(-40, -5), drag: 2, size: 8, size1: rand(20, 30), life: rand(0.5, 0.8), color: "120,108,94", under: true }); },
         },
         {
           id: "near", name: { en: "Near Miss", ko: "아슬아슬" }, param: "×0.35 · 300ms",
