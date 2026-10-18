@@ -362,8 +362,9 @@ const ACTOR = {
 
 /* ───────── 엔진: 이펙트를 돌리는 작은 세계 ───────── */
 class World {
-  constructor(R, n, view, muted) {
-    this.R = R; this.view = view; this.muted = !!muted;
+  // bare: 전후 비교용. 모든 단계의 "동작·타이밍"은 그대로 켜 두고, 이펙트(훅)만 끈 세계
+  constructor(R, n, view, muted, bare) {
+    this.R = R; this.view = view; this.muted = !!muted; this.bare = !!bare;
     this.parts = []; this.shots = []; this.timers = []; this.tweens = []; this.actors = [];
     this.trauma = 0; this.kx = 0; this.ky = 0; this.zoom = 0; this.cam = { x: 0, y: 0, tx: 0, ty: 0 }; this.stopT = 0; this.ts = 1; this.slowT = 0; this.slowDur = 1; this.slowTo = 1;
     this.flashA = 0; this.flashC = "255,255,255"; this.vig = 0; this.time = 0; this.busy = false;
@@ -372,7 +373,7 @@ class World {
   }
   setN(n) { this.n = n; this.steps = new Set(this.R.steps.slice(0, n).map(s => s.id)); }
   on(id) { return this.steps.has(id); }
-  emit(ev, ...a) { for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a); }
+  emit(ev, ...a) { if (this.bare) return; for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a); }
   get sfx() { return this.muted || app.mute || !this.on("sound") ? NOSFX : SFX; }
 
   actor(key, o = {}) {
@@ -545,7 +546,7 @@ class World {
     for (const p of this.parts) if (!p.under) drawPart(ctx, p);
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
     // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
-    const N = this.R.steps.length, glowA = N && this.n > 0 ? 0.9 * this.n / N : 0;
+    const N = this.R.steps.length, glowA = N && this.n > 0 && !this.bare ? 0.9 * this.n / N : 0;
     const gl = glowA > 0 ? bloomBegin(ctx, rx, ry, rw, rh) : null;
     if (gl) {
       for (const p of this.shots) drawShot(gl, p);

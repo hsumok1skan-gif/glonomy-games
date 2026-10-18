@@ -1446,7 +1446,7 @@
     {
       id: "shooter-materials", cat: "shooter", view: "3d",
       title: { en: "Give each material its *own impact*", ko: "재질마다 *다른 탄흔*" },
-      intro: { en: "Steel, wood, goblin. *Same grey dot.*", ko: "강철, 나무, 고블린. *같은 회색 점*." },
+      intro: { en: "Steel, wood, enemy. *Same grey dot.*", ko: "강철, 나무, 적. *같은 회색 점*." },
       interval: 0.45, stepDur: 4.0,
       drawFloor(w, ctx) {
         fpsRoom(w, ctx);
@@ -1489,7 +1489,7 @@
       steps: [
         {
           id: "decal", name: { en: "Material Decals", ko: "재질별 자국" }, param: "dent / hole / splat",
-          cap: { en: "Steel *dents*, wood *splinters*, goblin *splats*.", ko: "강철은 *찌그러지고*, 나무는 *쪼개지고*, 고블린은 *철퍽*." },
+          cap: { en: "Steel *dents*, wood *splinters*, enemy *splats*.", ko: "강철은 *찌그러지고*, 나무는 *쪼개지고*, 적은 *철퍽*." },
           impact(w, h, mat) {
             if (mat === "flesh") { const t = torso(h.g); w.decals.push({ mat, g: h.g, dx: (h.x - t.x) / h.g.h, dy: (h.y - t.y) / h.g.h }); }
             else w.decals.push({ mat, X: h.X, Y: h.Y, Z: h.Z, rot: rand(0, TAU) });
@@ -1497,7 +1497,7 @@
         },
         {
           id: "debris", name: { en: "Material Debris", ko: "재질별 파편" }, param: "sparks/chips/drops",
-          cap: { en: "Steel throws *sparks*, wood *chips*, goblin *drops*.", ko: "강철은 *불꽃*, 나무는 *조각*, 고블린은 *방울*." },
+          cap: { en: "Steel throws *sparks*, wood *chips*, enemy *drops*.", ko: "강철은 *불꽃*, 나무는 *조각*, 적은 *방울*." },
           impact(w, h, mat) {
             if (mat === "metal") sparks(w, h.x, h.y, 12, "255,214,120", [200, 600]);
             if (mat === "wood") for (let i = 0; i < 7; i++) w.spawn({ type: "chunk", x: h.x, y: h.y, vx: rand(-200, 200), vy: rand(-320, -80), g: 1300, vr: rand(-15, 15), life: 0.7, size: rand(3, 6), color: "146,84,20" });
@@ -1506,7 +1506,7 @@
         },
         {
           id: "puff", name: { en: "Impact Puff", ko: "충돌 먼지" }, param: "flash/dust/mist",
-          cap: { en: "Steel *flashes*, wood *dusts*, goblin *mists*.", ko: "강철은 *번쩍*, 나무는 *먼지*, 고블린은 *안개*." },
+          cap: { en: "Steel *flashes*, wood *dusts*, enemy *mists*.", ko: "강철은 *번쩍*, 나무는 *먼지*, 적은 *안개*." },
           impact(w, h, mat) {
             if (mat === "metal") w.spawn({ type: "star", x: h.x, y: h.y, size: 26, life: 0.08, color: "255,255,255" });
             else for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: h.x, y: h.y, vx: rand(-60, 60), vy: rand(-60, -10), drag: 3, size: 4, size1: 16, life: 0.5, color: mat === "wood" ? "214,180,130" : "132,204,22" });
@@ -1514,7 +1514,7 @@
         },
         {
           id: "react", name: { en: "Material Reaction", ko: "재질별 반응" }, param: "ring / jolt / flinch",
-          cap: { en: "Steel *rings*, the crate *jolts*, the goblin *flinches*.", ko: "강철은 *떨리고*, 상자는 *들썩*, 고블린은 *움찔*." },
+          cap: { en: "Steel *rings*, the crate *jolts*, the enemy *flinches*.", ko: "강철은 *떨리고*, 상자는 *들썩*, 적은 *움찔*." },
           impact(w, h, mat) {
             if (mat === "metal") w.plate = 1;
             if (mat === "wood") w.crate = 1;

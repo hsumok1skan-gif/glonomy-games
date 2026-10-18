@@ -152,8 +152,8 @@
         ctx.fillStyle = "#c6f432"; ctx.fillRect(x, 136, 230 * k, 4);
         label(ctx, "— BOSS —", x, 70, 14, "#c6f432", "left", "'JetBrains Mono', monospace", 700);
         ctx.save(); ctx.font = "900 34px Pretendard, sans-serif"; ctx.lineWidth = 7; ctx.strokeStyle = "rgba(8,10,16,0.9)"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
-        ctx.strokeText("GOBLIN", x, 96); ctx.strokeText("WARLORD", x, 122);
-        ctx.fillStyle = "#fff"; ctx.fillText("GOBLIN", x, 96); ctx.fillText("WARLORD", x, 122); ctx.restore();
+        ctx.strokeText("ENEMY", x, 96); ctx.strokeText("WARLORD", x, 122);
+        ctx.fillStyle = "#fff"; ctx.fillText("ENEMY", x, 96); ctx.fillText("WARLORD", x, 122); ctx.restore();
         label(ctx, "Lord of the Deep Pit", x, 154, 13, "rgba(255,255,255,0.65)", "left");
         ctx.globalAlpha = 1;
       },
@@ -227,7 +227,7 @@
         if (w.on("edge") && bar.v > 0 && bar.v < 1) { const ex = X + W * bar.v; glow(ctx, ex, Y + H / 2, 26, "255,230,200", 0.9); ctx.fillStyle = "#fff"; ctx.fillRect(ex - 3, Y - 3, 4, H + 6); }
         if (bar.flash > 0) { ctx.fillStyle = `rgba(255,255,255,${bar.flash})`; ctx.fillRect(X, Y, W, H); }
         ctx.restore();
-        const name = "GOBLIN WARLORD", n = w.on("name") ? Math.min(name.length, Math.floor(bar.nameT * 30)) : name.length;
+        const name = "DARK WARLORD", n = w.on("name") ? Math.min(name.length, Math.floor(bar.nameT * 30)) : name.length;
         label(ctx, name.slice(0, n), X, Y - 14, 15, "#fff", "left", "'JetBrains Mono', monospace", 800);
         if (w.on("name") && n < name.length) { ctx.fillStyle = "#c6f432"; ctx.fillRect(X + n * 9.1, Y - 22, 8, 15); }
       },
@@ -298,7 +298,7 @@
         }
       },
       drawHud(w, ctx) {
-        topBar(ctx, w.boss, { name: "GOBLIN WARLORD", col: w.ph > 0.5 ? "#f43f5e" : "#ef4444" });
+        topBar(ctx, w.boss, { name: "DARK WARLORD", col: w.ph > 0.5 ? "#f43f5e" : "#ef4444" });
         ctx.fillStyle = "#fff"; ctx.fillRect(268, 54, 3, 26);
       },
       steps: [
@@ -601,7 +601,7 @@
           for (const a of [w.hero, w.boss]) if (a.alpha > 0) ctx.drawImage(black(a.s === SPR.hero ? "hero" : "duel-boss"), a.x + a.ox - a.w / 2, a.gy + a.oy - a.h, a.w, a.h);
         }
         if (w.lb > 0) { ctx.fillStyle = "#000"; ctx.fillRect(-100, -100, 740, 100 + 44 * w.lb); ctx.fillRect(-100, 360 - 44 * w.lb, 740, 200); }
-        topBar(ctx, w.boss, { name: "GOBLIN WARLORD", y: 66 });
+        topBar(ctx, w.boss, { name: "DARK WARLORD", y: 66 });
       },
       steps: [
         {
@@ -674,7 +674,7 @@
       },
       drawFront(w, ctx) { heroSword(w, ctx); },
       drawHud(w, ctx) {
-        topBar(ctx, w.boss, { name: "GOBLIN WARLORD", lag: true });
+        topBar(ctx, w.boss, { name: "DARK WARLORD", lag: true });
         if (w.on("gauge")) {
           const p = w.post, X = 170, Y = 86, W = 200, full = w.down > 0;
           ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(X - 3, Y - 3, W + 6, 12);
@@ -760,7 +760,7 @@
           for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + w.time; ctx.beginPath(); ctx.arc(x, y, r, a, a + 0.9); ctx.stroke(); }
         }
       },
-      drawHud(w, ctx) { topBar(ctx, w.boss, { name: "GOBLIN WARLORD", lag: true }); },
+      drawHud(w, ctx) { topBar(ctx, w.boss, { name: "DARK WARLORD", lag: true }); },
       steps: [
         {
           id: "marker", name: { en: "Glowing Core", ko: "빛나는 약점" }, param: "pulse 8Hz + reticle",
@@ -822,7 +822,7 @@
         w.emit("die", b);
         if (!w.on("chain")) w.finish(b);
       },
-      drawHud(w, ctx) { topBar(ctx, w.boss, { name: "GOBLIN WARLORD", v: 0 }); },
+      drawHud(w, ctx) { topBar(ctx, w.boss, { name: "DARK WARLORD", v: 0 }); },
       steps: [
         {
           id: "chain", name: { en: "Chain Pops", ko: "연쇄 폭발" }, param: "8 pops · 120ms apart",
@@ -1249,7 +1249,7 @@
     {
       id: "duel-summon", cat: "duel", view: "top",
       title: { en: "Make boss summons *dramatic*", ko: "보스 *소환*을 극적으로" },
-      intro: { en: "Three goblins. *Just appeared.*", ko: "고블린 셋이 *그냥 생겼어요*." },
+      intro: { en: "Three enemies. *Just appeared.*", ko: "적 셋이 *그냥 생겼어요*." },
       interval: 2.3, stepDur: 4.0,
       setup(w) {
         art();
@@ -1951,7 +1951,7 @@
       },
       drawHud(w, ctx) {
         const B = w.B;
-        topBar(ctx, w.boss, { name: "GOBLIN WARLORD", v: B.v, col: B.col, under: B.under, y: 64 });
+        topBar(ctx, w.boss, { name: "DARK WARLORD", v: B.v, col: B.col, under: B.under, y: 64 });
         if (B.badge > 0) {
           const s = 1 + Math.max(0, B.badge - 0.7) * 2;
           ctx.save(); ctx.translate(452, 71); ctx.scale(s, s); rr(ctx, -16, -13, 32, 26, 6, "#a855f7");

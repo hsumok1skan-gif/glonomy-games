@@ -420,9 +420,13 @@
     const Q = queues.map(interleave);
     const ORDER = [];
     while (Q.some(q => q.length)) for (const q of Q) if (q.length) ORDER.push(q.shift());
-    // 맨 앞은 가장 화려한 두 편
-    for (const id of ["spot-death-pop", "spot-loot-reveal"].reverse()) { const k = ORDER.findIndex(r => r.id === id); if (k > 0) ORDER.unshift(ORDER.splice(k, 1)[0]); }
-    ORDER.forEach((r, i) => { r.ep = i + 1; });
+    // 첫 40편: 누구나 아는 기본기(총·칼·점프·타격…)와 한 대상을 크게 보여 주는 쇼케이스를 번갈아
+    const LAUNCH = ["gun", "melee", "jump", "boom", "hurt", "magic", "dash", "pickup", "shotgun", "death", "button", "bow", "levelup", "hammer", "speed", "chest", "twinstick", "match3", "rpg", "push"];
+    const CORE = RECIPES.filter(r => r.ord != null).sort((a, b) => (LAUNCH.indexOf(a.id) + 1 || 99) - (LAUNCH.indexOf(b.id) + 1 || 99));
+    const SHOW = ORDER.filter(isShow), FIRST = [];
+    for (let i = 0; i < Math.max(CORE.length, SHOW.length) && FIRST.length < 40; i++) { if (CORE[i]) FIRST.push(CORE[i]); if (SHOW[i]) FIRST.push(SHOW[i]); }
+    const FINAL = FIRST.concat(ORDER.filter(r => !FIRST.includes(r)));
+    FINAL.forEach((r, i) => { r.ep = i + 1; });
     RECIPES.sort((a, b) => a.ep - b.ep);
     RECIPES.forEach((R, i) => { R.no = R.ep; });
     const TOTAL = RECIPES.length;
@@ -481,7 +485,7 @@
     const WPS = 3.1; // 자막 속도(초당 단어)
 
     function makeWorlds(split, n) {
-      app.worlds = split ? [new World(R(), 0, VIEW_A, true), new World(R(), R().steps.length, VIEW_B)] : [new World(R(), n, VIEW_MAIN)];
+      app.worlds = split ? [new World(R(), R().steps.length, VIEW_A, true, true), new World(R(), R().steps.length, VIEW_B)] : [new World(R(), n, VIEW_MAIN)];
     }
     function fireAll() { for (const w of app.worlds) w.R.fire(w); }
     const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));

@@ -1329,10 +1329,10 @@
           ctx.fillStyle = g; ctx.fillRect(x - 50, 120, 100, 110); ctx.restore();
         }
         T(ctx, "QUEST", 140, 142, 12, "#94a3b8", "left", 700);
-        T(ctx, "Slay the Goblins", 140, 168, 20, "#fff", "left");
+        T(ctx, "Slay the Enemies", 140, 168, 20, "#fff", "left");
         panel(ctx, 140, 192, 22, 22, 5, Q.chk > 0 ? "#22c55e" : "#262b36", "rgba(255,255,255,0.35)", 2);
         w.emit("box", ctx, Q);
-        T(ctx, "Goblins defeated", 172, 203, 15, "#cbd5e1", "left", 600);
+        T(ctx, "Enemies defeated", 172, 203, 15, "#cbd5e1", "left", 600);
         ctx.save(); ctx.translate(390, 203); ctx.scale(1 + Q.bump * 0.6, 1 + Q.bump * 0.6);
         T(ctx, `${Q.p}/5`, 0, 0, 18, done ? "#c6f432" : "#fff", "right"); ctx.restore();
         if (done && !w.on("banner")) T(ctx, "Complete", 400, 142, 13, "#94a3b8", "right", 600);
@@ -1403,7 +1403,7 @@
       interval: 2.6, stepDur: 4.2,
       drawFloor() {},
       setup(w) {
-        w.LINES = ["Wait... did you hear *that*?", "The goblins are *coming*. Run!", "Take this sword. It's *yours* now."];
+        w.LINES = ["Wait... did you hear *that*?", "The enemies are *coming*. Run!", "Take this sword. It's *yours* now."];
         w.D = { i: -1, chars: [], shown: 0, last: 0, hold: 0, sc: 1 };
         w.next = () => {
           const D = w.D; D.i = (D.i + 1) % w.LINES.length;

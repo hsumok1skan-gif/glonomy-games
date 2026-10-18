@@ -203,12 +203,12 @@
           ctx.fillRect(-80, -80, 700, 80 + bh); ctx.fillRect(-80, 360 - bh, 700, 200);
         }
         const T = w.title; if (!T) return;
-        if (!w.on("slam")) { label(ctx, "GOBLIN WARLORD", 270, 304, 14, "#ffffff"); return; }
+        if (!w.on("slam")) { label(ctx, "DARK WARLORD", 270, 304, 14, "#ffffff"); return; }
         const a = Math.min(1, T.t * 6);
         ctx.save(); ctx.globalAlpha = a;
         ctx.save(); ctx.translate(270, 300); ctx.scale(T.s, T.s); ctx.transform(1, 0, -0.25, 1, 0, 0);
         rr(ctx, -170, -22, 340, 44, 4, "rgba(150,14,30,0.92)"); ctx.restore();
-        bigText(ctx, "GOBLIN WARLORD", 270, 299, 34, ["#ffffff", "#ffd2d2", "#ff6a6a"], "#2a0008", 0, T.s);
+        bigText(ctx, "DARK WARLORD", 270, 299, 34, ["#ffffff", "#ffd2d2", "#ff6a6a"], "#2a0008", 0, T.s);
         if (T.t > 0.3) label(ctx, "— LORD OF THE PIT —", 270, 330, 11, `rgba(255,190,190,${Math.min(1, (T.t - 0.3) * 4)})`);
         ctx.restore();
       },
@@ -968,7 +968,7 @@
     {
       id: "spot-combat-final-kill", cat: "duel", view: "3d",
       title: { en: "Make the final kill feel *cinematic*", ko: "마지막 일격을 *영화처럼*" },
-      intro: { en: "The final boss falls. Like *any* goblin.", ko: "최종 보스가 *아무* 고블린처럼 쓰러져요." },
+      intro: { en: "The final boss falls. Like *any* grunt.", ko: "최종 보스가 *아무* 적처럼 쓰러져요." },
       interval: 3.4, stepDur: 4.2,
       setup(w) {
         w.hero = w.actor("hero", { home: 170, h: 136 });

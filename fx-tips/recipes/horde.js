@@ -616,7 +616,7 @@
     {
       id: "horde-whip", cat: "horde", view: "side",
       title: { en: "Make a whip *mow the line*", ko: "채찍으로 한 줄을 *쓸어버리기*" },
-      intro: { en: "Seven goblins. One *invisible* whip.", ko: "고블린 일곱. 채찍은 *안 보여요*." },
+      intro: { en: "Seven enemies. One *invisible* whip.", ko: "적 일곱. 채찍은 *안 보여요*." },
       interval: 1.0, stepDur: 3.6,
       setup(w) {
         w.foes = [];
@@ -2012,7 +2012,7 @@
     {
       id: "horde-crowd", cat: "horde", view: "top",
       title: { en: "Make a crowd *push back*", ko: "적 무리가 *서로 밀치게*" },
-      intro: { en: "Forty goblins. One *green blob*.", ko: "고블린 마흔 마리가 *초록 덩어리* 하나." },
+      intro: { en: "Forty enemies. One *green blob*.", ko: "적 마흔 마리가 *초록 덩어리* 하나." },
       interval: 1.6, stepDur: 3.8,
       drawFloor: arena,
       setup(w) { mob(w, 40, { hp: 1, sp: 50 }); },
@@ -2243,7 +2243,7 @@
     {
       id: "horde-beam", cat: "horde", view: "side",
       title: { en: "Make a beam *pierce the line*", ko: "빔이 한 줄을 *꿰뚫게*" },
-      intro: { en: "A thin line. Seven goblins *blink out*.", ko: "가는 선 하나. 일곱 마리가 *쓱* 사라져요." },
+      intro: { en: "A thin line. Seven enemies *blink out*.", ko: "가는 선 하나. 일곱 마리가 *쓱* 사라져요." },
       interval: 1.4, stepDur: 3.8,
       setup(w) {
         w.foes = [];
@@ -2340,7 +2340,7 @@
     {
       id: "horde-wave-spawn", cat: "horde", view: "top",
       title: { en: "Make a new wave *arrive*", ko: "새 웨이브가 *들이닥치게*" },
-      intro: { en: "Twenty-four goblins. *Poof*, there.", ko: "고블린 스물넷이 *뿅* 하고 생겨요." },
+      intro: { en: "Twenty-four enemies. *Poof*, there.", ko: "적 스물넷이 *뿅* 하고 생겨요." },
       interval: 2.8, stepDur: 4.2,
       drawFloor: arena,
       setup(w) {
