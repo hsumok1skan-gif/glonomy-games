@@ -252,13 +252,15 @@ function dustSDF(GW, GH, field, rgb, seed0 = 7, opt = {}) {
   for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
     const d = D[y * cw + x];
     if (d > 0) {
-      if (d < 7 && rnd() < (opt.dust ?? 0.3) * Math.exp(-d / 1.8)) g.fillRect(x * S, y * S, S, S); // 가루
+      if (FX.style === "dust" && d < 7 && rnd() < (opt.dust ?? 0.3) * Math.exp(-d / 1.8)) g.fillRect(x * S, y * S, S, S); // 가루
       continue;
     }
     const gx = at(x + 1, y) - at(x - 1, y), gy = at(x, y + 1) - at(x, y - 1), gl = Math.hypot(gx, gy) || 1;
     const u = Math.max(0, Math.min(1, 1 + d / Math.max(1, RR[y * cw + x]))), nz = Math.sqrt(1 - u * u);
     const nx = gx / gl * u, ny = gy / gl * u;
     let v = (0.08 + 0.9 * Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]) + Math.pow(u, 4) * 0.45) * DK[y * cw + x];
+    if (FX.style === "smooth") { const k = Math.min(1.15, 0.28 + v * 0.8); g.fillStyle = `rgb(${rgb.map(q => Math.min(255, Math.round(q * k))).join(",")})`; g.fillRect(x * S, y * S, S, S); continue; }
+    if (FX.style === "flat") { g.fillStyle = `rgb(${rgb.map(q => Math.round(q * (DK[y * cw + x] < 1 ? 0.78 : 1))).join(",")})`; g.fillRect(x * S, y * S, S, S); continue; }
     if (d > -1.2 && rnd() < 0.3) continue; // 테두리는 바스러지게
     if (v > (BAYER8[y & 7][x & 7] + 0.5) / 64) g.fillRect(x * S, y * S, S, S);
   }
@@ -288,15 +290,31 @@ function dustGun() {
     const guard = Math.abs(Math.hypot(x - 48, y - 42) - 7) - 1.6;
     let d = smin(smin(smin(body, barrel, 2), top, 2), grip, 3); d = Math.min(d, Math.max(guard, -(y - 38)));
     return { d, r: 9, dark: barrel < body ? 0.92 : 1 };
-  }, [214, 218, 222], 5, { pad: 4, dust: 0.12 });
+  }, FX.colors.gun, 5, { pad: 4, dust: 0.12 });
 }
 const DOT = { hero: [240, 236, 224], foe: [255, 112, 92] };
+/* ───────── 내 그림·내 스타일로 바꾸기 (받아 간 사람이 고치는 곳) ─────────
+   FX.style  : "dust" 가루 도트(기본) | "smooth" 매끈한 입체 | "flat" 단색 실루엣
+   FX.colors : 우리 편·적·총 색 [r, g, b]
+   FX.images : 내 그림 파일 경로나 주소. 넣으면 위 스타일 대신 그 그림을 써요.
+               hero(오른쪽을 봄) · foe(왼쪽을 봄) · gun(오른쪽을 향함) · heroTop · foeTop(위에서 본 모습)
+               배경이 투명한 PNG, 발(바닥)이 그림 맨 아래에 닿게. 크기는 자유(비율만 유지돼요). */
+const FX = { style: "dust", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 218, 222] }, images: {} };
+function fxLoadImages() {
+  const keys = Object.keys(FX.images || {}).filter(k => FX.images[k]);
+  return Promise.all(keys.map(k => new Promise(res => {
+    const im = new Image(); im.crossOrigin = "anonymous";
+    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
+    im.onerror = () => { console.warn("FX: could not load image for", k, FX.images[k]); res(); };
+    im.src = FX.images[k];
+  })));
+}
 function makeSprites() {
   const S = {
     // 주인공: 로우폴리 사람 (석고상 톤)
-    hero: dustFig(HUMAN, 32, 44, DOT.hero),
+    hero: dustFig(HUMAN, 32, 44, FX.colors.hero),
     // 적: 로우폴리 고블린
-    foe: (() => { const c = dustFig(HUMAN, 32, 44, DOT.foe, 3.4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })(),
+    foe: (() => { const c = dustFig(HUMAN, 32, 44, FX.colors.foe, 3.4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })(),
     // 총
     gun: dustGun(),
     // 상자
@@ -336,10 +354,10 @@ function makeSprites() {
     }),
   };
   // 위에서 본 주인공·적: 같은 모델을 위에서 내려다봄
-  S.heroTop = dustFig(HUMAN_TOP, 24, 24, DOT.hero, 4);
-  S.foeTop = (() => { const c = dustFig(HUMAN_TOP, 24, 24, DOT.foe, 4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })();
+  S.heroTop = dustFig(HUMAN_TOP, 24, 24, FX.colors.hero, 4);
+  S.foeTop = (() => { const c = dustFig(HUMAN_TOP, 24, 24, FX.colors.foe, 4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })();
   for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
-  return Promise.resolve();
+  return fxLoadImages();
 }
 
 /* ───────── 소리 (파일 없이 합성) ───────── */

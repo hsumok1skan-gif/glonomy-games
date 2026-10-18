@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Get the code · FX Lab</title>
+  <meta name="description" content="Download a game-feel effect as one file, swap in your own art, and tune every layer." />
+  <meta name="theme-color" content="#0b0c09" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    :root { --ink: #0b0c09; --ink-2: #13150f; --ink-3: #1b1e16; --text: #ece9de; --muted: #8d9081; --edge: rgba(236, 233, 222, 0.1); --acc: #c8f03c;
+      --sans: "Outfit", "Pretendard", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, Menlo, monospace; color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--ink); color: var(--text); font: 15px/1.6 var(--sans); }
+    body.ko { font-family: "Pretendard", var(--sans); }
+    a { color: var(--acc); }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    .wrap { width: min(760px, 100%); margin: 0 auto; padding: 14px 16px 60px; }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); }
+    .top a { color: var(--muted); text-decoration: none; }
+    .lang { display: flex; gap: 4px; }
+    .lang button { padding: 5px 10px; border-radius: 999px; border: 1px solid var(--edge); background: none; color: var(--muted); font-size: 12px; }
+    .lang button.on { background: var(--acc); color: #141708; border-color: var(--acc); }
+    .eyebrow { margin: 22px 0 4px; font: 700 12px var(--mono); letter-spacing: .1em; color: var(--acc); }
+    h1 { margin: 0; font-size: clamp(28px, 7vw, 40px); line-height: 1.1; letter-spacing: -0.02em; }
+    h1 em { font-style: normal; color: var(--acc); }
+    .sub { margin: 8px 0 18px; color: var(--muted); }
+    .stage { border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--edge); background: #0b0c09; }
+    .stage canvas { display: block; width: 100%; aspect-ratio: 3 / 2; touch-action: manipulation; }
+    .layers { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-top: 1px solid var(--edge); background: var(--ink-2); }
+    .layers button { padding: 7px 11px; border-radius: 999px; border: 1px solid var(--edge); background: var(--ink-3); font-size: 13px; }
+    .layers button.on { background: var(--acc); color: #141708; border-color: var(--acc); }
+    h2 { margin: 34px 0 10px; font-size: 22px; letter-spacing: -0.01em; }
+    h2 small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+    .card { border-radius: 16px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--edge); padding: 16px; margin-top: 10px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .chip { padding: 8px 13px; border-radius: 999px; border: 1px solid var(--edge); background: var(--ink-3); font-size: 13.5px; }
+    .chip.on { background: var(--acc); color: #141708; border-color: var(--acc); }
+    label.f { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--edge); font-size: 14px; }
+    label.f:first-of-type { border-top: 0; }
+    label.f > span:last-child { min-width: 0; }
+    label.f small { display: block; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    input[type="color"] { width: 46px; height: 32px; border: 0; background: none; padding: 0; }
+    input[type="file"] { font-size: 12.5px; color: var(--muted); max-width: 100%; }
+    .big { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 56px; margin-top: 14px; border: 0; border-radius: 14px; background: var(--acc); color: #141708; font-size: 16px; font-weight: 700; }
+    .ghost { padding: 10px 14px; border-radius: 12px; border: 1px solid var(--edge); background: var(--ink-3); font-size: 13.5px; }
+    ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+    ol.steps li { counter-increment: s; position: relative; padding: 4px 0 12px 42px; }
+    ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 2px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(200, 240, 60, .15); color: var(--acc); font-weight: 700; font-size: 13px; }
+    pre { margin: 10px 0 0; padding: 14px; border-radius: 12px; background: #0d0e0b; box-shadow: inset 0 0 0 1px var(--edge); overflow-x: auto; font: 12.5px/1.6 var(--mono); color: #d6d8cc; }
+    code { font: 13px var(--mono); color: var(--acc); }
+    .note { color: var(--muted); font-size: 13.5px; }
+    .layer { border-top: 1px solid var(--edge); padding: 14px 0; }
+    .layer:first-child { border-top: 0; }
+    .layer .h { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+    .layer .h b { font-size: 16px; }
+    .layer .h span { font: 12px var(--mono); color: var(--muted); }
+    .layer p { margin: 4px 0 0; color: var(--muted); }
+    .layer p em { font-style: normal; color: var(--text); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    td, th { text-align: left; padding: 9px 8px; border-top: 1px solid var(--edge); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; font-size: 12.5px; }
+    td code { font-size: 12px; }
+    .toast { position: fixed; left: 50%; top: 16px; transform: translateX(-50%); padding: 10px 16px; border-radius: 999px; background: var(--acc); color: #141708; font-weight: 700; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 9; }
+    .toast.show { opacity: 1; }
+    .missing { padding: 60px 0; text-align: center; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top"><a href="./">← <span data-t="all">All effects</span></a><b style="color:var(--text)">FX Lab</b><div class="lang"><button type="button" data-l="en">EN</button><button type="button" data-l="ko">한국어</button></div></div>
+    <div id="page"></div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="engine.js?v=20261018k"></script>
+  <script src="export.js?v=20261018k"></script>
+  <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
+  <script src="recipes/core.js?v=20261018k"></script><script>tagFx("core")</script>
+  <script src="recipes/weapon.js?v=20261018k"></script><script>tagFx("weapon")</script>
+  <script src="recipes/combat.js?v=20261018k"></script><script>tagFx("combat")</script>
+  <script src="recipes/duel.js?v=20261018k"></script><script>tagFx("duel")</script>
+  <script src="recipes/horde.js?v=20261018k"></script><script>tagFx("horde")</script>
+  <script src="recipes/army.js?v=20261018k"></script><script>tagFx("army")</script>
+  <script src="recipes/fighting.js?v=20261018k"></script><script>tagFx("fighting")</script>
+  <script src="recipes/shooter.js?v=20261018k"></script><script>tagFx("shooter")</script>
+  <script src="recipes/action.js?v=20261018k"></script><script>tagFx("action")</script>
+  <script src="recipes/move.js?v=20261018k"></script><script>tagFx("move")</script>
+  <script src="recipes/rpg.js?v=20261018k"></script><script>tagFx("rpg")</script>
+  <script src="recipes/strategy.js?v=20261018k"></script><script>tagFx("strategy")</script>
+  <script src="recipes/sim.js?v=20261018k"></script><script>tagFx("sim")</script>
+  <script src="recipes/puzzle.js?v=20261018k"></script><script>tagFx("puzzle")</script>
+  <script src="recipes/racing.js?v=20261018k"></script><script>tagFx("racing")</script>
+  <script src="recipes/survival.js?v=20261018k"></script><script>tagFx("survival")</script>
+  <script src="recipes/casual.js?v=20261018k"></script><script>tagFx("casual")</script>
+  <script src="recipes/ui.js?v=20261018k"></script><script>tagFx("ui")</script>
+  <script src="recipes/env.js?v=20261018k"></script><script>tagFx("env")</script>
+  <script src="recipes/spotlight.js?v=20261018k"></script><script>tagFx("spotlight")</script>
+  <script src="recipes/spot-reward.js?v=20261018k"></script><script>tagFx("spot-reward")</script>
+  <script src="recipes/spot-combat.js?v=20261018k"></script><script>tagFx("spot-combat")</script>
+  <script src="recipes/spot-power.js?v=20261018k"></script><script>tagFx("spot-power")</script>
+  <script src="recipes/spot-casual.js?v=20261018k"></script><script>tagFx("spot-casual")</script>
+  <script>
+  (() => {
+    "use strict";
+    window.app = { mute: false };
+    // 편 번호 (사이트와 같은 순서)
+    const CATS = {
+      weapon: ["Weapons", "무기"], combat: ["Combat basics", "전투 기본"], duel: ["1 vs 1 · Boss", "1대1·보스"], horde: ["1 vs Many", "1대다수"],
+      army: ["Many vs Many", "다대다"], fighting: ["Fighting", "격투"], shooter: ["Shooter", "슈팅"], action: ["Action", "액션"], move: ["Movement", "이동·동작"],
+      survival: ["Survival", "생존·공포"], rpg: ["RPG", "RPG"], ui: ["UI · Reward", "UI·보상"], sim: ["Sim · Tycoon", "시뮬·경영"],
+      strategy: ["Strategy", "전략"], puzzle: ["Puzzle", "퍼즐"], racing: ["Racing · Sports", "레이싱·스포츠"], casual: ["Casual · Rhythm", "캐주얼·리듬"], env: ["World", "환경"],
+    };
+    const GROUPS = [
+      { id: "fight", en: "Combat", ko: "전투", cats: ["combat", "weapon", "duel", "horde", "army", "fighting"], g1: "#e3ff7a", g2: "#9cc22e", shape: "52% 48% 38% 62%", rot: "-12deg" },
+      { id: "act", en: "Action", ko: "액션·이동", cats: ["action", "shooter", "move", "survival"], g1: "#f5ffb5", g2: "#b6d84a", shape: "40% 60% 55% 45%", rot: "20deg" },
+      { id: "grow", en: "Rewards & UI", ko: "성장·보상·UI", cats: ["ui", "rpg", "sim"], g1: "#d4f75a", g2: "#6f8f1c", shape: "60% 40% 45% 55%", rot: "35deg" },
+      { id: "genre", en: "Genres", ko: "퍼즐·전략·스포츠", cats: ["puzzle", "strategy", "racing", "casual", "env"], g1: "#ebffa0", g2: "#87a827", shape: "45% 55% 60% 40%", rot: "-30deg" },
+    ];
+    const groupOf = c => GROUPS.find(g => g.cats.includes(c)) || GROUPS[0];
+    const VIEWS = { side: ["SIDE VIEW", "횡스크롤"], top: ["TOP-DOWN", "탑다운"], iso: ["ISOMETRIC", "쿼터뷰"], "3d": ["3D PERSPECTIVE", "3D"], ui: ["UI", "UI"] };
+
+    RECIPES.forEach((R, i) => { R._i = i; if (!CATS[R.cat]) R.cat = "combat"; R.steps.forEach(st => { st.param = st.param || ""; }); });
+
+    /* ───────── 업로드 순서: 쇼케이스 먼저, 묶음을 번갈아 ───────── */
+    const isShow = r => r.id.startsWith("spot-");
+    const queues = GROUPS.map(g => {
+      const rs = RECIPES.filter(r => g.cats.includes(r.cat));
+      const order = c => g.cats.indexOf(c);
+      return rs.sort((a, b) => (isShow(b) - isShow(a)) || ((a.ord ?? 999) - (b.ord ?? 999)) || (order(a.cat) - order(b.cat)) || (a._i - b._i));
+    });
+    // 같은 세부 분야가 연달아 나오지 않게 묶음 안에서도 분야를 번갈아 꺼냄
+    const interleave = list => {
+      const by = {}; list.forEach(r => (by[r.cat] = by[r.cat] || []).push(r));
+      const show = list.filter(isShow), rest = {}; Object.keys(by).forEach(k => (rest[k] = by[k].filter(r => !isShow(r))));
+      const out = [...show], keys = Object.keys(rest);
+      while (keys.some(k => rest[k].length)) for (const k of keys) if (rest[k].length) out.push(rest[k].shift());
+      return out;
+    };
+    const Q = queues.map(interleave);
+    const ORDER = [];
+    while (Q.some(q => q.length)) for (const q of Q) if (q.length) ORDER.push(q.shift());
+    // 첫 40편: 누구나 아는 기본기(총·칼·점프·타격…)와 한 대상을 크게 보여 주는 쇼케이스를 번갈아
+    const LAUNCH = ["gun", "melee", "jump", "boom", "hurt", "magic", "dash", "pickup", "shotgun", "death", "button", "bow", "levelup", "hammer", "speed", "chest", "twinstick", "match3", "rpg", "push"];
+    const CORE = RECIPES.filter(r => r.ord != null).sort((a, b) => (LAUNCH.indexOf(a.id) + 1 || 99) - (LAUNCH.indexOf(b.id) + 1 || 99));
+    const SHOW = ORDER.filter(isShow), FIRST = [];
+    for (let i = 0; i < Math.max(CORE.length, SHOW.length) && FIRST.length < 40; i++) { if (CORE[i]) FIRST.push(CORE[i]); if (SHOW[i]) FIRST.push(SHOW[i]); }
+    const FINAL = FIRST.concat(ORDER.filter(r => !FIRST.includes(r)));
+    FINAL.forEach((r, i) => { r.ep = i + 1; });
+    RECIPES.sort((a, b) => a.ep - b.ep);
+    RECIPES.forEach((R, i) => { R.no = R.ep; });
+    const TOTAL = RECIPES.length;
+
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    const fmt = s => esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>");
+    const plain = s => String(s).replace(/\*/g, "");
+    let L = "en";
+    try { L = localStorage.getItem("fxlab-guide-lang") || ((navigator.language || "").startsWith("ko") ? "ko" : "en"); } catch (e) {}
+
+    const T = {
+      all: ["All effects", "전체 이펙트"],
+      eyebrow: ["GET THE CODE", "코드 받기"],
+      sub: ["Tap the scene to fire. Pick a layer to see what each one adds.", "화면을 누르면 동작해요. 단계를 골라 하나씩 비교해 보세요."],
+      mine: ["Make it yours", "내 게임에 맞게 바꾸기"],
+      mineSub: ["Change the look here and watch the preview. The download keeps these settings.", "여기서 바꾸면 위 화면에 바로 보이고, 받는 파일에도 그대로 들어가요."],
+      style: ["Style", "스타일"],
+      styles: { dust: ["Grainy dots", "가루 도트"], smooth: ["Smooth 3D", "매끈한 입체"], flat: ["Flat silhouette", "단색 실루엣"] },
+      colors: ["Colors", "색"],
+      player: ["Player", "우리 편"], enemy: ["Enemy", "적"], gun: ["Gun", "총"],
+      art: ["Your own art", "내 그림 넣기"],
+      artNote: ["Transparent PNG · any size (ratio is kept) · feet touch the bottom edge.", "배경이 투명한 PNG · 크기 자유(비율 유지) · 발이 그림 맨 아래에 닿게."],
+      heroArt: ["Player image", "우리 편 그림"], heroArtS: ["facing right", "오른쪽을 봄"],
+      foeArt: ["Enemy image", "적 그림"], foeArtS: ["facing left", "왼쪽을 봄"],
+      gunArt: ["Gun image", "총 그림"], gunArtS: ["pointing right, grip bottom-left", "오른쪽을 향함, 손잡이는 왼쪽 아래"],
+      topArt: ["Top-down images", "위에서 본 그림"], topArtS: ["player / enemy seen from above", "우리 편 / 적을 위에서 본 모습"],
+      reset: ["Reset", "처음대로"],
+      dl: ["Download .html (with your settings)", ".html 파일 받기 (지금 설정 그대로)"],
+      copy: ["Copy all code", "코드 전체 복사"],
+      how: ["How to use", "쓰는 법"],
+      howSub: ["One file. No install. Works offline.", "파일 하나예요. 설치 없이, 인터넷 없이도 돌아가요."],
+      how1: ["Tap <b>Download</b>. You get <code>fx-ID.html</code>.", "<b>파일 받기</b>를 누르면 <code>fx-ID.html</code> 파일이 받아져요."],
+      how2: ["Open it in any browser (Chrome, Safari, Edge). It runs exactly like the preview.", "아무 브라우저(크롬·사파리·엣지)로 열면 위 화면과 똑같이 돌아가요."],
+      how3: ["To change anything, open the file in a text editor and find <code>★ EDIT HERE</code>. That's the only part you need to touch.", "바꾸고 싶으면 메모장 같은 편집기로 열고 <code>★ EDIT HERE</code>를 찾으세요. 거기만 고치면 돼요."],
+      how4: ["Using your own images? Put the PNG files in the same folder as the .html and write their names in <code>FX.images</code>.", "내 그림을 쓰려면 PNG 파일을 .html과 같은 폴더에 두고, <code>FX.images</code>에 파일 이름을 적으세요."],
+      edit: ["Where to edit", "고치는 곳"],
+      editSub: ["This block is at the bottom of the file. It updates as you change the settings above.", "파일 맨 아래에 있는 부분이에요. 위에서 설정을 바꾸면 여기도 같이 바뀌어요."],
+      props: ["Props like cards, chests or buttons are drawn inside the effect itself. To replace them, search the file for <code>drawFront</code> / <code>drawBack</code> of this effect and swap the drawing for <code>ctx.drawImage(yourImage, x, y, w, h)</code>.", "카드·상자·버튼 같은 소품은 이펙트 안에서 직접 그려요. 바꾸려면 파일에서 이 이펙트의 <code>drawFront</code> / <code>drawBack</code>을 찾아, 그리는 부분을 <code>ctx.drawImage(내그림, x, y, 너비, 높이)</code>로 바꾸면 돼요."],
+      tune: ["Tune each layer", "단계별로 손보기"],
+      tuneSub: ["Each layer is a few lines. Change the numbers to make it stronger or softer.", "단계마다 몇 줄짜리 코드예요. 숫자를 바꾸면 세지거나 약해져요."],
+      copyOne: ["Copy", "복사"],
+      when: ["When does each function run?", "함수는 언제 실행되나요?"],
+      whenRows: [
+        ["fire", "when the action starts (shot, swing, jump…)", "동작이 시작될 때 (쏠 때, 휘두를 때, 뛸 때…)"],
+        ["hit", "when it connects", "맞았을 때"],
+        ["kill", "when the target goes down", "상대가 쓰러질 때"],
+        ["update", "every frame while the layer is on", "그 단계가 켜져 있는 동안 매 프레임"],
+        ["enter", "once, when the layer is switched on", "그 단계를 켤 때 한 번"],
+        ["other names", "custom moments this effect announces with w.emit(\"name\")", "이 이펙트가 w.emit(\"이름\")으로 알리는 순간"],
+      ],
+      other: ["Using Unity, Godot or Unreal?", "유니티·고도·언리얼을 쓴다면"],
+      otherSub: ["The code is JavaScript, but every call maps to something your engine already has. Copy the numbers, not the syntax.", "코드는 자바스크립트지만, 함수마다 여러분 엔진에 이미 있는 기능과 짝이 있어요. 문법 말고 숫자를 가져가세요."],
+      mapRows: [
+        ["w.hitstop(0.09)", "freeze game time for 90 ms", "Time.timeScale = 0 → back to 1 after 0.09s (unscaled)", "Engine.time_scale = 0 → timer 0.09s"],
+        ["w.shake(0.35)", "camera shake, trauma 0–1, decays fast", "Cinemachine Impulse / offset camera by random × trauma²", "Camera2D.offset random × trauma²"],
+        ["w.kick(dx, dy)", "nudge the camera, springs back", "add offset, lerp to 0", "same"],
+        ["w.zoomPunch(0.07)", "zoom in 7 %, ease back", "orthographicSize / FOV pulse", "Camera2D.zoom tween"],
+        ["w.flash(\"255,255,255\", 0.5)", "full-screen color flash", "UI Image alpha 0.5 → 0", "ColorRect modulate.a tween"],
+        ["w.slowmo(0.3, 0.6)", "30 % speed, ease back over 0.6 s", "Time.timeScale curve", "Engine.time_scale tween"],
+        ["w.spawn({ type: … })", "one particle (spark, ring, glow, chunk…)", "ParticleSystem.Emit / VFX Graph", "GPUParticles2D / one-shot scene"],
+        ["actor.flash / tint / sx, sy", "white flash, red tint, squash & stretch", "material _FlashAmount, transform.localScale", "shader param, scale tween"],
+        ["w.sfx.hit(p)", "sound with pitch variation", "AudioSource.pitch = p; PlayOneShot", "AudioStreamPlayer.pitch_scale"],
+      ],
+      mapHead: ["Call", "What it does", "Unity", "Godot"],
+      foot: ["Made with FX Lab · more effects at", "FX Lab에서 만들었어요 · 다른 이펙트는"],
+      missing: ["This effect wasn't found. Pick one from the list.", "이펙트를 찾지 못했어요. 목록에서 골라 주세요."],
+      copied: ["Copied", "복사했어요"], dlDone: ["Downloaded — open it in a browser", "받았어요. 브라우저로 열어 보세요"],
+    };
+    const t = k => (Array.isArray(T[k]) ? T[k][L === "ko" ? 1 : 0] : k);
+
+    const id = decodeURIComponent(location.hash.slice(1));
+    const R = RECIPES.find(r => r.id === id);
+    const S = { style: "dust", colors: { hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }, images: {} };
+    let n = R ? R.steps.length : 0, w, cv, ctx, tm = 0, last = 0;
+
+    const hex = c => "#" + c.map(v => v.toString(16).padStart(2, "0")).join("");
+    const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+    function toast(m) { const x = $("toast"); x.textContent = m; x.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => x.classList.remove("show"), 1500); }
+    function copy(text) {
+      const done = () => toast(t("copied"));
+      const fb = () => { const a = document.createElement("textarea"); a.value = text; a.style.position = "fixed"; a.style.opacity = "0"; document.body.appendChild(a); a.select(); try { document.execCommand("copy"); done(); } catch (e) {} a.remove(); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fb); else fb();
+    }
+    function dedent(src) {
+      const lines = src.split("\n");
+      const ind = lines.slice(1).filter(l => l.trim()).reduce((m, l) => Math.min(m, l.match(/^\s*/)[0].length), 99);
+      return [lines[0]].concat(lines.slice(1).map(l => l.slice(Math.min(ind, l.match(/^\s*/)[0].length)))).join("\n");
+    }
+    const stepCode = (s, i) => `// LAYER ${i + 1} · ${s.name.en}\n// ${plain(s.cap.en)}\n` + Object.keys(s).filter(k => typeof s[k] === "function").map(k => dedent(s[k].toString())).join("\n\n");
+
+    function render() {
+      document.documentElement.lang = L; document.body.classList.toggle("ko", L === "ko");
+      document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("on", b.dataset.l === L));
+      document.querySelector('[data-t="all"]').textContent = t("all");
+      if (!R) { $("page").innerHTML = `<div class="missing">${t("missing")}<br><br><a href="./">FX Lab →</a></div>`; return; }
+      const top = R.view === "top";
+      $("page").innerHTML = `
+        <div class="eyebrow">${t("eyebrow")} · #${String(R.ep || "").padStart(3, "0")}</div>
+        <h1>${fmt(R.title[L])}</h1>
+        <p class="sub">${t("sub")}</p>
+        <div class="stage"><canvas id="cv"></canvas><div class="layers" id="layers"></div></div>
+
+        <h2>${t("mine")}<small>${t("mineSub")}</small></h2>
+        <div class="card">
+          <label class="f"><span>${t("style")}</span><span class="row" id="styles">${Object.keys(T.styles).map(k => `<button type="button" class="chip${S.style === k ? " on" : ""}" data-s="${k}">${T.styles[k][L === "ko" ? 1 : 0]}</button>`).join("")}</span></label>
+          <label class="f"><span>${t("colors")}</span><span class="row">
+            ${["hero", "foe", "gun"].map(k => `<span class="row" style="gap:6px"><input type="color" data-c="${k}" value="${hex(S.colors[k])}">${t(k === "hero" ? "player" : k === "foe" ? "enemy" : "gun")}</span>`).join("")}
+          </span></label>
+          <label class="f"><span>${t("art")}<small>${t("artNote")}</small></span><span></span></label>
+          <label class="f"><span>${t("heroArt")}<small>${t("heroArtS")}</small></span><input type="file" accept="image/png,image/webp,image/gif,image/jpeg" data-i="hero"></label>
+          <label class="f"><span>${t("foeArt")}<small>${t("foeArtS")}</small></span><input type="file" accept="image/png,image/webp,image/gif,image/jpeg" data-i="foe"></label>
+          <label class="f"><span>${t("gunArt")}<small>${t("gunArtS")}</small></span><input type="file" accept="image/png,image/webp,image/gif,image/jpeg" data-i="gun"></label>
+          ${top ? `<label class="f"><span>${t("topArt")}<small>${t("topArtS")}</small></span><span class="row"><input type="file" accept="image/*" data-i="heroTop"><input type="file" accept="image/*" data-i="foeTop"></span></label>` : ""}
+          <div class="row" style="margin-top:8px"><button type="button" class="ghost" id="reset">${t("reset")}</button></div>
+          <button type="button" class="big" id="dl">↓ ${t("dl")}</button>
+          <div class="row" style="margin-top:8px"><button type="button" class="ghost" id="copyAll">${t("copy")}</button></div>
+        </div>
+
+        <h2>${t("how")}<small>${t("howSub")}</small></h2>
+        <div class="card"><ol class="steps">
+          <li>${t("how1").replace("ID", esc(R.id))}</li><li>${t("how2")}</li><li>${t("how3")}</li><li>${t("how4")}</li>
+        </ol></div>
+
+        <h2>${t("edit")}<small>${t("editSub")}</small></h2>
+        <pre id="cfg"></pre>
+        <p class="note">${t("props")}</p>
+
+        <h2>${t("tune")}<small>${t("tuneSub")}</small></h2>
+        <div class="card">${R.steps.map((s, i) => `
+          <div class="layer"><div class="h"><b>${i + 1}. ${esc(L === "ko" ? s.name.ko : s.name.en)}</b><span>${esc(s.param || "")}</span></div>
+          <p>${fmt(s.cap[L])}</p><pre>${esc(stepCode(s, i))}</pre>
+          <div class="row" style="margin-top:8px"><button type="button" class="ghost" data-copy="${i}">${t("copyOne")}</button></div></div>`).join("")}
+        </div>
+
+        <h2>${t("when")}</h2>
+        <div class="card"><table>${T.whenRows.map(r => `<tr><td><code>${r[0]}</code></td><td>${L === "ko" ? r[2] : r[1]}</td></tr>`).join("")}</table></div>
+
+        <h2>${t("other")}<small>${t("otherSub")}</small></h2>
+        <div class="card" style="overflow-x:auto"><table><tr>${T.mapHead.map(h => `<th>${h}</th>`).join("")}</tr>${T.mapRows.map(r => `<tr><td><code>${esc(r[0])}</code></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</table></div>
+
+        <p class="note" style="margin-top:30px">${t("foot")} <a href="./">glonomy.com/fx-tips</a></p>`;
+      cv = $("cv"); ctx = cv.getContext("2d");
+      layers(); renderCfg();
+      cv.onpointerdown = () => { audioInit(); if (w) R.fire(w); };
+    }
+    function layers() {
+      $("layers").innerHTML = [0].concat(R.steps.map((s, i) => i + 1)).map(k => `<button type="button" class="${k === n ? "on" : ""}" data-n="${k}">${k ? k + " " + esc(L === "ko" ? R.steps[k - 1].name.ko : R.steps[k - 1].name.en) : "RAW"}</button>`).join("");
+    }
+    function renderCfg() { $("cfg").textContent = FXExport.config(R, { style: S.style, colors: S.colors, images: Object.fromEntries(Object.keys(S.images).map(k => [k, S.images[k].name])) }).trim(); }
+    function reset() { w = new World(R, n, { x: 0, y: 0, s: 1, r: [0, 0, 540, 360] }); const s = R.steps[n - 1]; if (s && s.enter) s.enter(w); tm = R.interval - 0.35; }
+    async function rebuild() {
+      FX.style = S.style; FX.colors = JSON.parse(JSON.stringify(S.colors));
+      FX.images = Object.fromEntries(Object.keys(S.images).map(k => [k, S.images[k].url]));
+      await makeSprites(); reset(); renderCfg();
+    }
+    function loop(now) {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now; frameNo++;
+      if (cv && w) {
+        const dpr = Math.min(devicePixelRatio || 1, 2.5), W = cv.clientWidth;
+        if (W && cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(W * dpr * 2 / 3); }
+        tm += dt; if (tm >= R.interval) { tm = 0; R.fire(w); }
+        w.update(dt);
+        const k = cv.width / 540; ctx.setTransform(k, 0, 0, k, 0, 0); ctx.fillStyle = "#0b0c09"; ctx.fillRect(0, 0, 540, 360); w.draw(ctx);
+      }
+      requestAnimationFrame(loop);
+    }
+    const fileURL = f => new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+
+    document.addEventListener("click", async e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.l) { L = b.dataset.l; try { localStorage.setItem("fxlab-guide-lang", L); } catch (er) {} render(); reset(); return; }
+      if (b.dataset.n != null) { n = +b.dataset.n; layers(); reset(); return; }
+      if (b.dataset.s) { S.style = b.dataset.s; document.querySelectorAll("#styles .chip").forEach(c => c.classList.toggle("on", c === b)); await rebuild(); return; }
+      if (b.dataset.copy != null) { copy(stepCode(R.steps[+b.dataset.copy], +b.dataset.copy)); return; }
+      if (b.id === "reset") { S.style = "dust"; S.colors = { hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }; S.images = {}; render(); await rebuild(); return; }
+      if (b.id === "dl") { const imgs = Object.fromEntries(Object.keys(S.images).map(k => [k, S.images[k].url])); await FXExport.download(R, "", () => toast(t("dlDone")), { style: S.style, colors: S.colors, images: imgs }); return; }
+      if (b.id === "copyAll") { copy(await FXExport.standaloneHTML(R, "", { style: S.style, colors: S.colors, images: Object.fromEntries(Object.keys(S.images).map(k => [k, S.images[k].url])) })); return; }
+    });
+    document.addEventListener("input", async e => {
+      const c = e.target.closest("input[type=color]"); if (c) { S.colors[c.dataset.c] = rgb(c.value); clearTimeout(rebuild.t); rebuild.t = setTimeout(rebuild, 120); }
+    });
+    document.addEventListener("change", async e => {
+      const f = e.target.closest("input[type=file]"); if (!f || !f.files[0]) return;
+      S.images[f.dataset.i] = { name: f.files[0].name, url: await fileURL(f.files[0]) }; await rebuild();
+    });
+    window.addEventListener("hashchange", () => location.reload());
+
+    render();
+    makeSprites().then(() => { if (R) reset(); requestAnimationFrame(t0 => { last = t0; loop(t0); }); });
+    window.__guide = { R, S, rebuild };
+  })();
+  </script>
+</body>
+</html>
