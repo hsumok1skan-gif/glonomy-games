@@ -208,13 +208,107 @@ function ditherize(src, rgb, cell = 4) {
   }
   return out;
 }
-const DOT = { hero: [242, 234, 214], foe: [188, 226, 140] };
+
+/* 손으로 찍은 도트 캐릭터: '#' 밝은 점, '+' 그늘 점. 점 사이에 틈을 둬서 가루처럼 보이게 */
+const PIX = {
+  hero: [
+    ".......####.........",
+    "......######........",
+    "......######........",
+    "......#####+........",
+    ".......####.........",
+    "........##..........",
+    ".....########.......",
+    "....##########......",
+    "....###########++#..",
+    "...####+#####.+++##.",
+    "...####+####...++##.",
+    "...###++####........",
+    "...###++####........",
+    "....#######.........",
+    "....###.####........",
+    "...####..####.......",
+    "...###....####......",
+    "..####.....###......",
+    "..###......####.....",
+    ".####.......###.....",
+    ".###........####....",
+    "####.........###....",
+    "###..........####...",
+  ],
+  foe: [
+    "...#........#.......",
+    "...##......##.......",
+    "....##.###.#........",
+    ".....######.........",
+    "....#######+........",
+    "....######++........",
+    ".....#####+.........",
+    "...##########.......",
+    "..############......",
+    ".##############.....",
+    "##.###########+#....",
+    "#..###########++#...",
+    "...####++#####.++...",
+    "...###++++####..#...",
+    "...###########..#...",
+    "....####..####......",
+    "....###....###......",
+    "...####....####.....",
+    "...###......###.....",
+    "..####......####....",
+  ],
+  heroTop: [
+    "....######....",
+    "..##########..",
+    ".####++++####.",
+    "####+####+####",
+    "###+######+###",
+    "###+######+###",
+    "####+####+####",
+    ".####++++####.",
+    "..##########..",
+    "....######....",
+  ],
+  foeTop: [
+    "#............#",
+    ".##.######.##.",
+    "..##########..",
+    ".####++++####.",
+    "####+####+####",
+    "###+######+###",
+    "####+####+####",
+    ".####++++####.",
+    "..##########..",
+    "....######....",
+  ],
+};
+function pixSprite(rows, rgb, cell = 10) {
+  const H = rows.length, W = rows[0].length;
+  const c = document.createElement("canvas"); c.width = W * cell; c.height = H * cell;
+  const x = c.getContext("2d"), [r, g, b] = rgb, gap = Math.max(1, Math.round(cell * 0.18));
+  const dot = (cx, cy, k) => { x.fillStyle = `rgb(${Math.round(r * k)},${Math.round(g * k)},${Math.round(b * k)})`; x.fillRect(cx * cell, cy * cell, cell - gap, cell - gap); };
+  let seed = 11; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const on = (i, j) => rows[j] && rows[j][i] && rows[j][i] !== ".";
+  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {
+    const ch = rows[j][i];
+    if (ch === "#") dot(i, j, 1);
+    else if (ch === "+") dot(i, j, 0.58);
+    else {
+      // 가루: 몸 가까이에 흩어진 점 몇 개
+      let near = 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (on(i + dx, j + dy)) near++;
+      if (near && rnd() < 0.06) dot(i, j, 0.45);
+    }
+  }
+  return c;
+}
+const DOT = { hero: [236, 230, 212], foe: [178, 214, 120] };
 function makeSprites() {
   const S = {
     // 주인공: 로우폴리 사람 (석고상 톤)
-    hero: ditherize(mk(170, 260, x => renderPoly(x, 170, 260, humanModel(), -0.72, 0.3, [246, 244, 240], [70, 70, 80])), DOT.hero, 5),
+    hero: pixSprite(PIX.hero, DOT.hero),
     // 적: 로우폴리 고블린
-    foe: ditherize(mk(210, 210, x => renderPoly(x, 210, 210, goblinModel(), 0.62, 0.3, [246, 244, 240], [40, 40, 44])), DOT.foe, 4),
+    foe: pixSprite(PIX.foe, DOT.foe),
     // 총
     gun: ditherize(mk(240, 140, x => {
       x.fillStyle = "#1c2028"; x.beginPath(); x.roundRect(52, 80, 42, 56, 10); x.fill();
@@ -260,8 +354,8 @@ function makeSprites() {
     }),
   };
   // 위에서 본 주인공·적: 같은 모델을 위에서 내려다봄
-  S.heroTop = ditherize(mk(140, 140, x => renderPoly(x, 140, 140, humanModel(), 0, Math.PI / 2 - 0.001, [246, 244, 240], [70, 70, 80], 10)), DOT.hero, 3);
-  S.foeTop = ditherize(mk(130, 130, x => renderPoly(x, 130, 130, goblinModel(), 0, Math.PI / 2 - 0.001, [246, 244, 240], [40, 40, 44], 8)), DOT.foe, 3);
+  S.heroTop = pixSprite(PIX.heroTop, DOT.hero, 10);
+  S.foeTop = pixSprite(PIX.foeTop, DOT.foe, 10);
   for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
   return Promise.resolve();
 }
@@ -715,6 +809,7 @@ function drawActor(ctx, a) {
   // 가만히 있어도 살짝 숨 쉬는 대기 동작
   const br = !a.top && a.alive && !a.flying ? Math.sin(performance.now() / 380 + a.home * 0.05) * 0.018 : 0;
   ctx.scale(a.sx * (1 - br * 0.5) * (a.flip ? -1 : 1), a.sy * (1 + br));
+  ctx.imageSmoothingEnabled = false;
   ctx.drawImage(a.s.c, -a.w / 2, top, a.w, a.h);
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
