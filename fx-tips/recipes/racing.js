@@ -165,7 +165,7 @@
         S.dist += 15 * dt;
         S.curve += ((S.drift > 0 ? S.dir * 1.3 : 0) - S.curve) * Math.min(1, dt * 3);
         S.ang += (S.angT - S.ang) * Math.min(1, dt * 8);
-        S.angT = S.drift > 0 ? -S.dir * 0.1 : 0;
+        S.angT = S.drift > 0 ? -S.dir * 0.18 : 0;
         S.px = S.ang * 40;
         if (S.drift > 0) { S.drift -= dt; S.charge += dt; if (S.drift <= 0) w.emit("release", S); }
       },
@@ -200,7 +200,7 @@
           update(w) {
             const S = w.S;
             S.spark = S.charge < 0.4 ? "110,180,255" : S.charge < 0.8 ? "255,160,60" : "255,100,220";
-            if (S.drift > 0) for (const p of rearWheels(S)) w.spawn({ type: "glow", x: p.x, y: p.y - 4, size: 22, size1: 8, life: 0.08, color: S.spark });
+            if (S.drift > 0) for (const p of rearWheels(S)) w.spawn({ type: "glow", x: p.x, y: p.y - 4, size: 13, size1: 5, life: 0.08, color: S.spark });
           },
         },
         {
@@ -324,6 +324,7 @@
         S.speed += ((S.nitro > 0 ? 2.4 : 1) - S.speed) * Math.min(1, dt * 3);
         S.dist += 420 * S.speed * dt;
         S.tilt += (S.tiltT - S.tilt) * Math.min(1, dt * 7); S.tiltT = 0;
+        if (S.nitro > 0 && !S.pushT) S.pushT = 22;
         S.push += (S.pushT - S.push) * Math.min(1, dt * 4); S.pushT = 0;
         c.rot = S.tilt; c.x = c.home + S.push;
       },
@@ -344,7 +345,7 @@
           update(w) {
             if (w.S.nitro <= 0) return;
             const c = w.car, x = c.x + c.ox - c.w * 0.41, y = G - 20 + c.rot * 60;
-            w.spawn({ type: "glow", x: x - 6, y, size: 18, size1: 6, life: 0.05, color: "200,235,255" });
+            w.spawn({ type: "glow", x: x - 6, y, size: 11, size1: 4, life: 0.05, color: "200,235,255" });
             w.spawn({ type: "spark", x, y, vx: rand(-900, -600), vy: rand(-20, 20), life: 0.12, size: 3, color: "120,190,255" });
           },
         },
@@ -359,7 +360,7 @@
           update(w, dt) {
             const S = w.S, c = w.car; if (S.nitro <= 0) return;
             S.gT -= dt; if (S.gT > 0) return; S.gT = 0.05;
-            w.spawn({ type: "ghost", img: c.s.cyan, x: c.x, y: G, w: c.w, h: c.h, vx: -620, life: 0.3, alpha0: 0.5, under: true });
+            w.spawn({ type: "ghost", img: c.s.cyan, x: c.x, y: G, w: c.w, h: c.h, vx: -620, life: 0.25, alpha0: 0.3, under: true });
           },
         },
         {
@@ -401,7 +402,7 @@
         S.t += dt;
         if (!S.hit) {
           me.x = me.home + (f.x - me.w * 0.81 + 4 - me.home) * E.in(Math.min(1, S.t / 0.24));
-          if (S.t >= 0.24) { S.hit = true; f.ox += 22; w.emit("crash", { x: me.x + me.w * 0.4, y: G - 30 }); }
+          if (S.t >= 0.24) { S.hit = true; f.ox += 40; w.emit("crash", { x: me.x + me.w * 0.4, y: G - 30 }); }
         } else if (S.t > 1.1) me.x += (me.home - me.x) * Math.min(1, dt * 5);
         for (const a of [me, f]) a.rot -= a.rot * Math.min(1, dt * 4);
       },
@@ -482,7 +483,7 @@
         {
           id: "flash", name: { en: "Photo Flash", ko: "사진 플래시" }, param: "white .8",
           cap: { en: "A white *camera flash*. The moment is captured.", ko: "*찰칵* 하얀 플래시. 순간이 박제돼요." },
-          finish(w) { w.flash("255,255,255", 0.8); },
+          finish(w) { w.flash("255,255,255", 0.45); },
         },
         {
           id: "text", name: { en: "FINISH Slam", ko: "FINISH 글자" }, param: "64px · 1.6s",
@@ -771,7 +772,7 @@
           id: "sling", name: { en: "Slingshot", ko: "새총처럼 튀기" }, param: "zoom 8% · flash",
           cap: { en: "Pull out and *slingshot*. Cash in the charge.", ko: "옆으로 빠지며 *새총처럼 쏙*." },
           sling(w) {
-            w.zoomPunch(0.08); w.flash("150,220,255", 0.4); w.kick(0, 10);
+            w.zoomPunch(0.08); w.flash("150,220,255", 0.22); w.kick(0, 10);
             sparks(w, 200, 300, 16, "200,235,255", [400, 900], Math.PI * 0.6, Math.PI * 1.4);
             pop(w, "SLINGSHOT", 270, 180, 34, "#bae6fd");
           },
@@ -962,7 +963,7 @@
           cap: { en: "A *dust trail* that grows with speed.", ko: "속도만큼 커지는 *흙먼지 꼬리*." },
           update(w) {
             const S = w.S;
-            if (Math.random() < 0.35 * S.speed) w.spawn({ type: "smoke", x: S.rx, y: S.ry, vx: rand(-30, 30), vy: rand(-30, 30), drag: 1, size: 8, size1: 26 * S.speed, life: 0.9, color: "176,140,100" });
+            if (Math.random() < 0.3 * S.speed) w.spawn({ type: "smoke", x: S.rx, y: S.ry, vx: rand(-30, 30), vy: rand(-30, 30), drag: 1, size: 6, size1: 17 * S.speed, life: 0.8, color: "140,108,74" });
           },
         },
         {
@@ -992,7 +993,7 @@
           cap: { en: "Floor it and the wheels *throw dirt* in a cone.", ko: "밟으면 바퀴가 흙을 *촤악* 뿌려요." },
           gas(w, S) {
             for (let i = 0; i < 18; i++) { const a = S.h + Math.PI + rand(-0.6, 0.6), v = rand(250, 600); w.spawn({ type: "chunk", x: S.rx, y: S.ry, vx: Math.cos(a) * v, vy: Math.sin(a) * v, floor: 3, vr: rand(-12, 12), life: 1.2, size: rand(3, 6), color: pick(["120,90,60", "150,116,80"]), hold: true }); }
-            w.spawn({ type: "smoke", x: S.rx, y: S.ry, size: 20, size1: 60, life: 0.8, color: "176,140,100" });
+            w.spawn({ type: "smoke", x: S.rx, y: S.ry, size: 16, size1: 40, life: 0.7, color: "140,108,74" });
           },
         },
         {
@@ -1038,7 +1039,7 @@
           cap: { en: "Smoke *piles up* and rolls backward.", ko: "연기가 *쌓이면서* 뒤로 굴러가요." },
           update(w) {
             const S = w.S, c = w.car; if (S.burn <= 0) return;
-            w.spawn({ type: "smoke", x: c.x + c.ox - c.w * 0.25, y: G - 8, vx: rand(-220, -60), vy: rand(-80, -20), drag: 1.2, size: 10, size1: rand(30, 50) * (0.6 + S.t), life: rand(0.8, 1.3), color: "200,202,210" });
+            w.spawn({ type: "smoke", x: c.x + c.ox - c.w * 0.25, y: G - 8, vx: rand(-220, -60), vy: rand(-80, -20), drag: 1.2, size: 8, size1: rand(22, 34) * (0.6 + S.t), life: rand(0.8, 1.2), color: "128,130,140" });
           },
         },
         {
@@ -1064,7 +1065,7 @@
           cap: { en: "The tire *glows hot* the longer it spins.", ko: "오래 돌수록 타이어가 *벌겋게*." },
           update(w) {
             const S = w.S, c = w.car; if (S.burn <= 0) return;
-            w.spawn({ type: "glow", x: c.x + c.ox - c.w * 0.25, y: G - 4, size: 10 + S.t * 22, life: 0.06, color: "255,120,40", alpha: Math.min(1, S.t) });
+            w.spawn({ type: "glow", x: c.x + c.ox - c.w * 0.25, y: G - 4, size: 8 + S.t * 12, life: 0.06, color: "255,120,40", alpha: Math.min(1, S.t) });
           },
         },
         {
@@ -1280,7 +1281,7 @@
         const S = w.S, c = w.car;
         if (S.ph === "drive") {
           c.x += 800 * dt;
-          if (c.x + c.w * 0.4 >= 466) { c.x = 466 - c.w * 0.4; S.ph = "hit"; S.vx = 0; S.vy = 0; S.spin = 0; w.emit("crash", { x: 466, y: G - 34 }); const id = S.id; w.after(1.5, () => { if (S.id === id) w.tween(c, { alpha: 0 }, 0.25, "lin", () => { if (S.id !== id) return; S.ph = "idle"; c.x = 200; c.oy = 0; c.rot = 0; c.alpha = 1; }); }); }
+          if (c.x + c.w * 0.4 >= 466) { c.x = 466 - c.w * 0.4; S.ph = "hit"; S.vx = 0; S.vy = 0; S.spin = 0; c.ox = -18; c.rot = -0.06; w.emit("crash", { x: 466, y: G - 34 }); const id = S.id; w.after(1.5, () => { if (S.id === id) w.tween(c, { alpha: 0 }, 0.25, "lin", () => { if (S.id !== id) return; S.ph = "idle"; c.x = 200; c.oy = 0; c.rot = 0; c.alpha = 1; }); }); }
         } else if (S.ph === "hit") {
           S.vy += 1500 * dt; c.x += S.vx * dt; c.oy += S.vy * dt; c.rot += S.spin * dt;
           if (c.oy > 0) {
@@ -1359,7 +1360,7 @@
         w.emit("load", S);
         const kick = () => {
           if (S.id !== id) return;
-          b.vx = 640; b.vy = -320; S.fly = true; w.hero.ox += 24; w.hero.rot = 0.12;
+          b.vx = 640; b.vy = -320; S.fly = true; w.hero.ox += 34; w.hero.rot = 0.22;
           w.emit("kick", { x: b.x - 6, y: b.y });
         };
         if (S.delay > 0) w.after(S.delay, kick); else kick();
@@ -1491,7 +1492,7 @@
           cap: { en: "The net *bulges* out where the ball hits.", ko: "공 맞은 자리가 *불룩* 튀어나와요." },
           net(w, h) {
             const S = w.S;
-            for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) S.v[r][c] += 900 * Math.exp(-((r - h.r) ** 2 + (c - 8) ** 2) / 6);
+            for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) S.v[r][c] += 1500 * Math.exp(-((r - h.r) ** 2 + (c - 8) ** 2) / 6);
           },
         },
         {
@@ -1502,7 +1503,10 @@
         {
           id: "squash", name: { en: "Ball Squash", ko: "공 찌그러짐" }, param: "0.6 × 1.4",
           cap: { en: "The ball *flattens* into the net.", ko: "공이 그물에 *납작* 박혀요." },
-          net(w) { w.S.ball.sx = 0.6; w.S.ball.sy = 1.4; },
+          net(w, h) {
+            w.S.ball.sx = 0.6; w.S.ball.sy = 1.4;
+            w.spawn({ type: "ring", x: h.x, y: h.y, size: 12, size1: 80, life: 0.35, w: 6, color: "255,255,255" });
+          },
         },
         {
           id: "slow", name: { en: "Slow-mo Catch", ko: "슬로모션" }, param: "0.3× · 600ms",
@@ -1512,12 +1516,15 @@
         {
           id: "rattle", name: { en: "Frame Rattle", ko: "골대 떨림" }, param: "±4px · 500ms",
           cap: { en: "The *goal frame* rattles from the force.", ko: "충격에 *골대*까지 덜덜." },
-          net(w) { w.S.rattle = 1; },
+          net(w) {
+            w.S.rattle = 1;
+            for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: rand(340, 480), y: G - 154, vx: rand(-40, 40), vy: rand(10, 60), size: 4, size1: 12, life: 0.8, color: "220,225,230" });
+          },
         },
         {
           id: "shake", name: { en: "Screen Kick", ko: "화면 반동" }, param: "trauma .3 → right",
           cap: { en: "Kick the screen *toward* the goal.", ko: "화면을 *골대 쪽으로* 툭." },
-          net(w) { w.shake(0.3, 1); },
+          net(w) { w.shake(0.3, 1); w.zoomPunch(0.05); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swish + thump",
@@ -1739,7 +1746,7 @@
         for (const p of S.pins) {
           if (!p.down) continue;
           if (S.phys) { p.vh -= 6 * dt; p.x += p.vx * dt; p.h += p.vh * dt; p.z += p.vz * dt; p.rot += p.vr * dt; if (p.h < 0) { p.h = 0; p.vh *= -0.3; p.vx *= 0.6; p.vz *= 0.6; } }
-          else p.alpha = Math.max(0, p.alpha - dt * 8);
+          else { p.rot += ((p.vr > 0 ? 1.5 : -1.5) - p.rot) * Math.min(1, dt * 12); p.alpha = Math.max(0, p.alpha - dt * 1.5); }
         }
       },
       drawFloor(w, ctx) {
@@ -1788,7 +1795,7 @@
           id: "text", name: { en: "STRIKE!", ko: "STRIKE!" }, param: "rays + 56px",
           cap: { en: "Celebrate with a *word* and spinning rays.", ko: "*글자*와 도는 빛줄기로 축하해요." },
           strike(w) {
-            w.spawn({ type: "rays", x: 270, y: 160, size: 170, n: 12, vr: 1, life: 1.4, hold: true, color: "250,204,21" });
+            w.spawn({ type: "rays", x: 270, y: 72, size: 150, n: 12, vr: 1, life: 1.4, hold: true, color: "250,204,21" });
             w.spawn({ type: "text", text: "STRIKE!", x: 270, y: 72, size: 52, color: "#facc15", life: 1.4 });
           },
         },
@@ -2140,7 +2147,7 @@
           id: "text", name: { en: "GOAL! Slam", ko: "GOAL! 글자" }, param: "70px + rays",
           cap: { en: "*GOAL!* in giant letters with rays.", ko: "거대한 *GOAL!* 글자와 빛줄기." },
           goal(w) {
-            w.spawn({ type: "rays", x: 270, y: 140, size: 260, n: 14, vr: 0.8, life: 1.6, hold: true, color: "198,244,50" });
+            w.spawn({ type: "rays", x: 270, y: 140, size: 190, n: 12, vr: 0.8, life: 1.6, hold: true, color: "198,244,50", alpha: 0.6 });
             w.spawn({ type: "text", text: "GOAL!", x: 270, y: 140, size: 72, color: "#c6f432", life: 1.6 });
           },
         },

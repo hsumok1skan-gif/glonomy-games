@@ -354,7 +354,7 @@
           id: "burst", name: { en: "Lid Burst", ko: "뚜껑 폭발" }, param: "0.22s back · stop 80ms",
           cap: { en: "Kick the lid *open*. Squash the box.", ko: "뚜껑을 *뻥* 차올리고, 상자는 *찌그러져요*." },
           open(w, c) {
-            w.hitstop(0.08); w.shake(0.45); w.flash("255,236,170", 0.5);
+            w.hitstop(0.08); w.shake(0.45); w.flash("255,236,170", 0.25);
             c.sx = 1.2; c.sy = 0.78;
             w.tween(c, { sx: 1, sy: 1 }, 0.45, "back");
           },
@@ -442,7 +442,7 @@
           id: "gather", name: { en: "XP Gather", ko: "경험치 모으기" }, param: "orbs 22 · ease-in",
           cap: { en: "Suck *XP orbs* in. The bar *accelerates*.", ko: "*경험치 구슬*을 빨아들이고 막대가 *가속*해요." },
           gather(w, h, v) {
-            v.bar = 1; w.tween(h, { burn: 0.9 }, 0.6, "in");
+            v.bar = 1; w.tween(h, { burn: 0.5 }, 0.6, "in");
             for (let i = 0; i < 22; i++) w.after(i * 0.026, () => {
               const a = rand(0, TAU), d = rand(110, 170);
               w.spawn({ type: "spark", seek: true, x: h.x + Math.cos(a) * d, y: h.gy - 60 + Math.sin(a) * d, tx: h.x, ty: h.gy - 60, life: 0.32, size: 3, color: pick(["255,214,90", "190,150,255"]) });
@@ -453,8 +453,8 @@
           id: "pillar", name: { en: "Golden Pillar", ko: "황금 빛기둥" }, param: "stop 100ms · beam",
           cap: { en: "*Freeze*, then a golden *pillar* lifts you.", ko: "*멈칫*, 황금 *빛기둥*이 몸을 띄워요." },
           level(w, h) {
-            w.hitstop(0.1); w.flash("255,240,190", 0.55); h.flash = 1; h.sx = 0.8; h.sy = 1.3;
-            w.spawn({ type: "beam", under: true, x: h.x, y: h.gy + 4, size: 58, h: 440, life: 1.3, hold: true, color: "255,214,90" });
+            w.hitstop(0.1); w.flash("255,240,190", 0.25); h.flash = 1; h.sx = 0.8; h.sy = 1.3;
+            w.spawn({ type: "beam", under: true, x: h.x, y: h.gy + 4, size: 44, h: 440, life: 1.3, hold: true, color: "255,190,70" });
             w.tween(h, { oy: -26 }, 0.18, "out", () => w.tween(h, { oy: 0 }, 0.6, "back"));
           },
         },
@@ -555,7 +555,7 @@
           },
           reveal(w, c) {
             if (c.rar < 2) return;
-            c.vib = 0; w.hitstop(0.1); w.flash("255,240,200", 0.5); w.shake(0.4);
+            c.vib = 0; w.hitstop(0.1); w.flash("255,240,200", 0.25); w.shake(0.4);
             w.tween(w, { dim: 0 }, 0.6);
           },
         },
@@ -666,7 +666,7 @@
           cap: { en: "*Pop* the lid off. Light bursts *out*.", ko: "뚜껑이 *뻥* 날아가고 빛이 *쏟아져요*." },
           open(w, d, x, y) {
             d.lidFly = { x: 0, y: 0, vx: 170, vy: -720, rot: 0, vr: 9 };
-            w.hitstop(0.06); w.flash("255,220,235", 0.4); w.shake(0.3);
+            w.hitstop(0.06); w.flash("255,220,235", 0.2); w.shake(0.3);
             w.spawn({ type: "rays", under: true, x, y, n: 12, size: 30, size1: 170, vr: 1, life: 2.2, hold: true, color: "255,200,230" });
             stars(w, x, y, 10, ["255,220,240", "255,255,255", "120,200,255"], 150, 340);
           },
@@ -811,9 +811,9 @@
             for (let i = 0; i < 4; i++) w.spawn({ type: "spark", x, y, vx: rand(-260, 260), vy: rand(-200, 200), drag: 4, size: 2.5, life: 0.35, color: "255,230,120" });
           },
           done(w) {
-            w.spawn({ type: "text", x: 270, y: 116, text: "+320", size: 32, color: "#ffd75a", life: 1.6 });
+            w.spawn({ type: "text", x: 270, y: 146, text: "+320", size: 34, color: "#ffd75a", life: 1.6 });
             w.spawn({ type: "rays", under: true, x: 270, y: 66, n: 14, size: 40, size1: 200, vr: 0.8, life: 1.6, hold: true, color: "255,214,90" });
-            w.flash("255,240,180", 0.3);
+            w.flash("255,240,180", 0.16);
             w.spawn({ type: "ring", x: 270, y: 66, size: 60, size1: 170, life: 0.45, w: 8, color: "255,220,110" });
             stars(w, 270, 66, 12, ["255,230,120", "255,255,255"], 150, 320);
           },
@@ -935,7 +935,7 @@
           id: "glory", name: { en: "Glory Burst", ko: "영광의 폭발" }, param: "rays 16 · confetti 40",
           cap: { en: "*Rays* behind, *confetti* everywhere.", ko: "뒤로 *빛줄기*, 사방에 *꽃가루*." },
           unlock(w) {
-            w.flash("255,240,200", 0.35);
+            w.flash("255,240,200", 0.17);
             w.spawn({ type: "rays", under: true, x: 270, y: 140, n: 16, size: 60, size1: 250, vr: 0.6, life: 2.2, hold: true, color: "255,210,100" });
             w.spawn({ type: "ring", x: 270, y: 140, size: 60, size1: 200, life: 0.5, w: 10, color: "255,230,140" });
             stars(w, 270, 140, 16, ["255,220,90", "255,255,255", "140,190,255"]);
@@ -1018,7 +1018,7 @@
           cap: { en: "Save the *biggest* hit for the *last* star.", ko: "*마지막 별*에 가장 *큰 한 방*." },
           land(w, s, i) {
             if (i < 2) return;
-            w.flash("255,230,170", 0.5); w.zoomPunch(0.1);
+            w.flash("255,230,170", 0.25); w.zoomPunch(0.1);
             w.spawn({ type: "rays", under: true, x: s.x, y: s.y, n: 16, size: 50, size1: 280, vr: 0.7, life: 2, hold: true, color: "255,200,90" });
             w.spawn({ type: "text", x: 270, y: 214, text: "PERFECT!", size: 30, color: "#ffd75a", life: 1.8 });
             stars(w, s.x, s.y, 18, ["255,230,120", "255,255,255", "255,170,80"]);
@@ -1095,7 +1095,7 @@
           id: "shatter", name: { en: "Shatter", ko: "산산조각" }, param: "shards 34 · stop 110ms",
           cap: { en: "*Freeze*, then blow it into *shards*.", ko: "*멈칫*, 그리고 *와장창*." },
           break(w, e, x, y) {
-            w.hitstop(0.11); w.flash("255,255,255", 0.5); w.shake(0.5);
+            w.hitstop(0.11); w.flash("255,240,210", 0.25); w.shake(0.5);
             for (let i = 0; i < 34; i++) {
               const a = rand(0, TAU), s = rand(200, 600);
               w.spawn({ type: "chunk", x: x + rand(-40, 40), y: y + rand(-50, 50), vx: Math.cos(a) * s, vy: Math.sin(a) * s - 200, g: 1500, vr: rand(-14, 14),
@@ -1200,7 +1200,7 @@
           cap: { en: "*Freeze*, then *pop* the shell. Keep the bottom.", ko: "*멈칫*, 껍질이 *팡*, 아래 반쪽은 남겨요." },
           hatch(w, e, x, y) {
             e.half = 1;
-            w.hitstop(0.09); w.flash("240,255,220", 0.5); w.shake(0.4);
+            w.hitstop(0.09); w.flash("240,255,220", 0.25); w.shake(0.4);
             for (let i = 0; i < 22; i++) {
               const a = rand(-Math.PI, 0), s = rand(220, 560);
               w.spawn({ type: "chunk", x: x + rand(-30, 30), y: y - 10, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 100, g: 1500, vr: rand(-12, 12),

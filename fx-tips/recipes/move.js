@@ -49,10 +49,13 @@
       },
       drawBack(w, ctx) {
         const T = w.trail; if (T.length < 2) return;
-        ctx.lineWidth = 3; ctx.lineCap = "round";
-        for (let i = 1; i < T.length; i++) {
-          ctx.strokeStyle = `rgba(198,244,50,${0.7 * i / T.length})`;
-          ctx.beginPath(); ctx.moveTo(T[i - 1][0], T[i - 1][1]); ctx.lineTo(T[i][0], T[i][1]); ctx.stroke();
+        ctx.lineCap = "round";
+        for (const [lw, k] of [[14, 0.12], [5, 0.85]]) {
+          ctx.lineWidth = lw;
+          for (let i = 1; i < T.length; i++) {
+            ctx.strokeStyle = `rgba(198,244,50,${k * i / T.length})`;
+            ctx.beginPath(); ctx.moveTo(T[i - 1][0], T[i - 1][1]); ctx.lineTo(T[i][0], T[i][1]); ctx.stroke();
+          }
         }
       },
       setup(w) { w.hero = mkHero(w, 270); w.trail = []; w.M = null; },
@@ -95,14 +98,17 @@
         {
           id: "puff", name: { en: "Kick Puff", ko: "벽 먼지" }, param: "6 puffs off wall",
           cap: { en: "A puff of *dust* where the foot pushes off.", ko: "발로 찬 자리에 *먼지* 한 줌." },
-          kick(w, h, dir, wx, y) { dust(w, wx, y - 10, 6, -dir); },
+          kick(w, h, dir, wx, y) { dust(w, wx, y - 10, 10, -dir); },
+          land(w, h) { dust(w, h.x - 10, G, 8, -1); dust(w, h.x + 10, G, 8, 1); },
         },
         {
           id: "spark", name: { en: "Contact Spark", ko: "접촉 불꽃" }, param: "8 sparks",
           cap: { en: "Sparks *burst* off the wall on contact.", ko: "닿는 순간 벽에서 *불꽃*이 튀어요." },
           wall(w, h, dir, wx, y) {
             const a = dir > 0 ? Math.PI : 0;
-            sparks(w, wx, y - 36, 8, "198,244,50", [150, 420], a - 1.2, a + 1.2);
+            sparks(w, wx, y - 36, 16, "198,244,50", [200, 520], a - 1.2, a + 1.2);
+            w.spawn({ type: "ring", x: wx, y: y - 36, size: 8, size1: 56, life: 0.3, w: 7, color: "236,252,203" });
+            w.spawn({ type: "ellipse", round: true, under: true, x: wx, y: y - 36, size: 26, life: 1.4, hold: true, color: "198,244,50" });
           },
         },
         {
@@ -137,7 +143,7 @@
       drawBack(w, ctx) {
         for (const m of w.marks) {
           const a = Math.max(0, 1 - (w.time - m.t) / 1.6); if (a <= 0) continue;
-          ctx.fillStyle = `rgba(255,${150 + 80 * a | 0},80,${a * 0.8})`; ctx.fillRect(360, m.y - 2, 5, 4);
+          ctx.fillStyle = `rgba(255,${150 + 80 * a | 0},80,${a * 0.85})`; ctx.fillRect(359, m.y - 2, 8, 4);
         }
       },
       setup(w) { w.hero = mkHero(w, 336, 80); w.marks = []; w.M = null; },
@@ -169,7 +175,7 @@
           cap: { en: "Sparks *spray* from the hand every frame.", ko: "손끝에서 매 프레임 *불꽃*이 튀어요." },
           update(w) {
             const M = w.M; if (!M || !M.slide) return;
-            w.spawn({ type: "spark", x: 360, y: M.y - rand(44, 58), vx: -rand(60, 280), vy: -rand(60, 280), g: 900, drag: 1, life: rand(0.2, 0.4), size: 2, color: "255,190,90" });
+            for (let i = 0; i < 2; i++) w.spawn({ type: "spark", x: 360, y: M.y - rand(44, 58), vx: -rand(80, 340), vy: -rand(60, 300), g: 900, drag: 1, life: rand(0.25, 0.5), size: 3, color: pick(["255,190,90", "255,240,200"]) });
           },
         },
         {
@@ -177,7 +183,7 @@
           cap: { en: "A *hot glow* where skin meets stone.", ko: "벽과 닿은 곳이 *빨갛게* 달아요." },
           update(w) {
             const M = w.M; if (!M || !M.slide) return;
-            w.spawn({ type: "glow", x: 360, y: M.y - 52, size: 22, size1: 6, life: 0.15, color: "255,130,40" });
+            w.spawn({ type: "glow", x: 360, y: M.y - 52, size: 34, size1: 8, life: 0.2, color: "255,130,40" });
           },
         },
         {
@@ -194,7 +200,10 @@
           id: "crumbs", name: { en: "Crumbs + Land", ko: "부스러기 + 착지" }, param: "debris · dust",
           cap: { en: "Bits of wall *crumble* down. Dust on landing.", ko: "벽 *부스러기*가 떨어지고, 착지엔 먼지." },
           grind(w, h, y) { w.spawn({ type: "chunk", x: 362, y: y - 50, vx: rand(-40, 0), vy: 0, g: 1200, life: 1, size: rand(2, 3.5), color: "160,160,170", ground: true, bounce: 0.3 }); },
-          land(w, h) { dust(w, h.x, G, 8); },
+          land(w, h) {
+            dust(w, h.x, G, 12);
+            w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 10, size1: 80, life: 0.4, w: 6, color: "255,210,150" });
+          },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "scrape loop / tup",
@@ -244,8 +253,9 @@
           id: "puff", name: { en: "Air Puff", ko: "공중 발판" }, param: "flat ring + dust",
           cap: { en: "Kick off a *puff of air*. Now there's something to push.", ko: "*공기 발판*을 차요. 밟은 게 생겨요." },
           djump(w, h) {
-            w.spawn({ type: "ring", flat: true, x: h.x, y: feetY(h), size: 8, size1: 46, life: 0.35, w: 5, color: "255,255,255" });
-            dust(w, h.x, feetY(h), 5);
+            w.spawn({ type: "ring", flat: true, x: h.x, y: feetY(h), size: 10, size1: 70, life: 0.4, w: 8, color: "255,255,255" });
+            w.spawn({ type: "ring", flat: true, x: h.x, y: feetY(h) + 8, size: 6, size1: 44, life: 0.5, w: 5, color: "103,232,249" });
+            dust(w, h.x, feetY(h), 8);
           },
         },
         {
@@ -257,7 +267,7 @@
           id: "stretch", name: { en: "Squash & Stretch", ko: "늘었다 줄었다" }, param: "0.7 / 1.35",
           cap: { en: "*Stretch* on the air kick, *squash* on landing.", ko: "공중에서 찰 때 *늘고*, 내릴 때 *찌그러져요*." },
           djump(w, h) { h.sx = 0.7; h.sy = 1.35; },
-          land(w, h) { h.sx = 1.35; h.sy = 0.7; },
+          land(w, h) { h.sx = 1.35; h.sy = 0.7; dust(w, h.x, feetY(h), 10); },
         },
         {
           id: "ghost", name: { en: "Afterimage", ko: "잔상" }, param: "cyan · 400ms",
@@ -268,14 +278,14 @@
           id: "pips", name: { en: "Jump Pips", ko: "남은 점프 표시" }, param: "2 dots over head",
           cap: { en: "Show *jumps left* as dots. One pops on use.", ko: "남은 점프를 *점*으로. 쓰면 하나 톡." },
           jump(w) { w.M.pips = 1; },
-          djump(w, h) { w.M.pips = 0; sparks(w, h.x + 7, feetY(h) - HH - 14, 6, "198,244,50", [80, 220]); },
+          djump(w, h) { w.M.pips = 0; sparks(w, h.x + 7, feetY(h) - HH - 14, 10, "198,244,50", [120, 300]); w.spawn({ type: "ring", x: h.x + 7, y: feetY(h) - HH - 14, size: 4, size1: 22, life: 0.3, w: 4, color: "198,244,50" }); },
         },
         {
           id: "trail", name: { en: "Feet Trail", ko: "발끝 꼬리" }, param: "glow · 350ms",
           cap: { en: "Glowing feet until you *touch down*.", ko: "*착지할 때까지* 발끝이 빛나요." },
           update(w) {
             const M = w.M, h = w.hero;
-            if (M && M.jumps === 2 && M.end == null) w.spawn({ type: "glow", x: h.x, y: feetY(h) - 6, size: 12, size1: 0, life: 0.35, color: "103,232,249" });
+            if (M && M.jumps === 2 && M.end == null) w.spawn({ type: "glow", x: h.x, y: feetY(h) - 6, size: 18, size1: 0, life: 0.5, color: "103,232,249" });
           },
         },
         {
@@ -339,15 +349,17 @@
           id: "grip", name: { en: "Grip Flash", ko: "손 닿는 곳 번쩍" }, param: "ring + 6 sparks",
           cap: { en: "Flash the *exact spot* the hand grabs.", ko: "손이 닿은 *그 자리*가 번쩍." },
           grab(w) {
-            w.spawn({ type: "ring", x: 330, y: 150, size: 6, size1: 30, life: 0.3, w: 4, color: "198,244,50" });
-            sparks(w, 330, 150, 6, "198,244,50", [100, 260], -Math.PI, 0);
+            w.spawn({ type: "ring", x: 330, y: 150, size: 8, size1: 52, life: 0.35, w: 7, color: "198,244,50" });
+            w.spawn({ type: "star", x: 330, y: 150, size: 34, life: 0.18, color: "255,255,255" });
+            w.spawn({ type: "glow", under: true, x: 330, y: 150, size: 60, size1: 20, life: 0.8, color: "198,244,50" });
+            sparks(w, 330, 150, 14, "198,244,50", [160, 420], -Math.PI, 0);
           },
         },
         {
           id: "crumbs", name: { en: "Crumbling Edge", ko: "부서지는 모서리" }, param: "5 pebbles",
           cap: { en: "A few *pebbles* fall from the edge.", ko: "모서리에서 *돌 부스러기*가 떨어져요." },
           grab(w) {
-            for (let i = 0; i < 5; i++) w.spawn({ type: "chunk", x: 330 + rand(-6, 4), y: 154, vx: rand(-70, 20), vy: rand(-80, 20), g: 1400, vr: rand(-8, 8), life: 1.1, size: rand(2, 4), color: "170,170,180", ground: true, bounce: 0.3 });
+            for (let i = 0; i < 9; i++) w.spawn({ type: "chunk", x: 330 + rand(-6, 4), y: 154, vx: rand(-90, 20), vy: rand(-140, 20), g: 1400, vr: rand(-8, 8), life: 1.4, hold: true, size: rand(3, 6), color: pick(["170,170,180", "120,120,130"]), ground: true, gy: G, bounce: 0.35 });
           },
         },
         {
@@ -365,7 +377,7 @@
           id: "kick", name: { en: "Weight", ko: "무게감" }, param: "6px dip · dust",
           cap: { en: "The camera *dips* with the catch.", ko: "잡는 순간 화면도 *쿵* 내려가요." },
           grab(w) { w.kick(0, 6); },
-          top(w, h) { dust(w, h.x, 150, 5); },
+          top(w, h) { dust(w, h.x, 150, 10); w.spawn({ type: "ring", flat: true, x: h.x, y: 150, size: 10, size1: 70, life: 0.4, w: 6, color: "255,255,255" }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk / grunt / tup",
@@ -447,7 +459,7 @@
           cap: { en: "Thin *wind streaks* slide past the body.", ko: "몸 옆으로 가는 *바람 줄기*가 지나가요." },
           update(w) {
             const M = w.M, h = w.hero; if (!M || M.st !== "glide" || Math.random() > 0.5) return;
-            w.spawn({ type: "spark", x: h.x + rand(30, 160), y: feetY(h) - rand(0, HH + 30), vx: -600, vy: -40, life: 0.22, size: 1.4, color: "255,255,255" });
+            w.spawn({ type: "spark", x: h.x + rand(30, 160), y: feetY(h) - rand(0, HH + 30), vx: -600, vy: -40, life: 0.22, size: 2.2, color: "255,255,255" });
           },
         },
         {
@@ -524,7 +536,8 @@
           id: "crown", name: { en: "Splash Crown", ko: "물보라" }, param: "16 drops · g 1400",
           cap: { en: "Throw up a *crown of droplets*.", ko: "*물방울 왕관*이 솟아요." },
           splash(w, h) {
-            for (let i = 0; i < 16; i++) w.spawn({ x: h.x + rand(-16, 16), y: WS, vx: rand(-170, 170), vy: -rand(260, 540), g: 1400, life: rand(0.5, 0.8), size: rand(2, 4.5), color: "186,230,253" });
+            for (let i = 0; i < 28; i++) w.spawn({ x: h.x + rand(-18, 18), y: WS, vx: rand(-200, 200), vy: -rand(280, 620), g: 1400, life: rand(0.6, 0.9), size: rand(3, 6), color: pick(["186,230,253", "255,255,255"]) });
+            for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", x: h.x + rand(-20, 20), y: WS - 4, vx: rand(-80, 80), vy: -rand(40, 120), drag: 3, size: 10, size1: 26, life: 0.7, color: "224,242,254" });
           },
         },
         {
@@ -536,7 +549,7 @@
           id: "ripple", name: { en: "Ripples", ko: "동심원" }, param: "3 flat rings",
           cap: { en: "*Rings* spread across the top.", ko: "수면 위로 *동그라미*가 번져요." },
           splash(w, h) {
-            for (let k = 0; k < 3; k++) w.spawn({ type: "ring", flat: true, x: h.x, y: WS, size: 10, size1: 70 + k * 35, life: 0.5 + k * 0.2, w: 3, color: "186,230,253" });
+            for (let k = 0; k < 3; k++) w.spawn({ type: "ring", flat: true, x: h.x, y: WS, size: 10, size1: 80 + k * 40, life: 0.6 + k * 0.25, w: 5, color: "186,230,253" });
           },
         },
         {
@@ -613,7 +626,7 @@
         {
           id: "grip", name: { en: "Grip Dot", ko: "잡는 손 표시" }, param: "small ring",
           cap: { en: "A small *ring* on each rung you grab.", ko: "잡는 칸마다 작은 *동그라미*." },
-          rung(w, h, i) { w.spawn({ type: "ring", x: i % 2 ? 272 : 248, y: G - 14 - 24 * (i + 2), size: 3, size1: 14, life: 0.3, w: 3, color: "198,244,50" }); },
+          rung(w, h, i) { w.spawn({ type: "ring", x: i % 2 ? 272 : 248, y: G - 14 - 24 * (i + 2), size: 4, size1: 24, life: 0.35, w: 5, color: "198,244,50" }); },
         },
         {
           id: "wobble", name: { en: "Ladder Wobble", ko: "사다리 흔들림" }, param: "3px · decay",
@@ -630,7 +643,11 @@
         {
           id: "mantle", name: { en: "Top Pop", ko: "다 오르면 톡" }, param: "squash · dust",
           cap: { en: "*Pop* onto the top. The climb is done.", ko: "꼭대기에 *톡* 올라서요. 끝났다는 신호." },
-          top(w, h) { h.sx = 1.25; h.sy = 0.8; dust(w, h.x, 90, 6); w.kick(0, 4); },
+          top(w, h) {
+            h.sx = 1.25; h.sy = 0.8; dust(w, h.x, 90, 10); w.kick(0, 4);
+            w.spawn({ type: "ring", flat: true, x: h.x, y: 90, size: 10, size1: 80, life: 0.45, w: 7, color: "198,244,50" });
+            sparks(w, h.x, 80, 10, "198,244,50", [120, 300], -Math.PI, 0);
+          },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "alternating tok",
@@ -651,7 +668,7 @@
         slab(ctx, 20, 520, G);
         ctx.fillStyle = "rgba(255,255,255,0.08)"; ctx.fillRect(260, 140, 110, G - 46 - 140);
         ctx.fillStyle = "rgba(255,255,255,0.45)"; ctx.fillRect(260, G - 47, 110, 2);
-        for (const m of w.marks) { const a = Math.max(0, 1 - (w.time - m.t) / 1.2); ctx.fillStyle = `rgba(255,255,255,${a * 0.5})`; ctx.fillRect(m.x - 3, G - 2, 6, 3); }
+        for (const m of w.marks) { const a = Math.max(0, 1 - (w.time - m.t) / 1.2); ctx.fillStyle = `rgba(255,190,120,${a * 0.75})`; ctx.fillRect(m.x - 4, G - 2, 8, 4); }
       },
       setup(w) { w.hero = mkHero(w, 60); w.marks = []; w.M = null; },
       fire(w) {
@@ -693,7 +710,8 @@
           cap: { en: "Kick up a *dust wake* behind the feet.", ko: "발뒤로 *먼지 꼬리*가 일어요." },
           update(w) {
             const M = w.M; if (!M || M.st !== "slide" || Math.random() > 0.6) return;
-            w.spawn({ type: "smoke", x: M.x - 20, y: G - 4, vx: -rand(40, 140), vy: -rand(20, 70), drag: 3, size: 4, size1: 14, life: 0.5, color: "200,200,210" });
+            w.spawn({ type: "smoke", x: M.x - 20, y: G - 4, vx: -rand(40, 140), vy: -rand(20, 70), drag: 3, size: 4, size1: 12, life: 0.5, color: "170,160,140", add: false });
+            w.spawn({ type: "spark", x: M.x + 10, y: G - 2, vx: -rand(150, 380), vy: -rand(40, 160), g: 900, life: 0.3, size: 2.5, color: "255,210,140" });
           },
         },
         {
@@ -758,20 +776,23 @@
         {
           id: "dust", name: { en: "Rolling Dust", ko: "구르는 먼지" }, param: "spray forward",
           cap: { en: "*Dust* sprays along the roll.", ko: "구르는 길을 따라 *먼지*가 일어요." },
-          land(w, h) { dust(w, h.x, G, 8, 1); },
+          land(w, h) { dust(w, h.x, G, 14, 1); },
           update(w) { const M = w.M; if (M && M.roll > 0 && Math.random() < 0.5) dust(w, M.x - 10, G, 1, -1); },
         },
         {
           id: "arc", name: { en: "Roll Smear", ko: "회전 잔상" }, param: "arc · 350ms",
           cap: { en: "A curved *smear* shows the spin.", ko: "둥근 *잔상*이 회전을 보여줘요." },
           land(w, h) {
-            w.spawn({ type: "arc", x: h.x + 50, y: G - 26, size: 30, a0: -Math.PI * 0.9, a1: Math.PI * 0.4, life: 0.35, color: "255,255,255" });
+            w.spawn({ type: "arc", x: h.x + 50, y: G - 30, size: 38, a0: -Math.PI * 0.9, a1: Math.PI * 0.5, life: 0.45, color: "255,255,255" });
           },
         },
         {
           id: "ring", name: { en: "Impact Ring", ko: "충격 고리" }, param: "flat ring 70",
           cap: { en: "A *ring* on the ground where you hit.", ko: "닿은 자리에 *고리*가 퍼져요." },
-          land(w, h) { w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 10, size1: 70, life: 0.3, w: 5, color: "255,255,255" }); },
+          land(w, h) {
+            w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 10, size1: 120, life: 0.4, w: 8, color: "255,255,255" });
+            w.spawn({ type: "ellipse", under: true, x: h.x, y: G + 2, size: 60, life: 1.3, hold: true, color: "0,0,0", add: false });
+          },
         },
         {
           id: "kick", name: { en: "Camera Dip", ko: "화면 꿀렁" }, param: "kick ∝ fall speed",
@@ -823,12 +844,12 @@
         {
           id: "count", name: { en: "Chain Counter", ko: "연속 숫자" }, param: "×n · grows",
           cap: { en: "Count the chain. The number *grows*.", ko: "몇 번째인지 세요. 숫자가 *커져요*." },
-          hop(w, h, n) { if (n > 1) w.spawn({ type: "text", text: "×" + n, x: h.x, y: G - HH - 24, vy: -50, life: 0.6, size: 12 + n * 3, color: "#c6f432" }); },
+          hop(w, h, n) { if (n > 1) w.spawn({ type: "text", text: "×" + n, x: h.x, y: G - HH - 24, vy: -50, life: 0.7, size: 18 + n * 4, color: "#c6f432" }); },
         },
         {
           id: "perfect", name: { en: "Perfect Flash", ko: "타이밍 번쩍" }, param: "ring + white",
           cap: { en: "Flash on the *frame-perfect* takeoff.", ko: "*딱 맞춘* 순간 번쩍." },
-          hop(w, h) { h.flash = 0.8; w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 6, size1: 40, life: 0.25, w: 4, color: "198,244,50" }); },
+          hop(w, h, n) { h.flash = 0.8; w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 8, size1: 40 + n * 10, life: 0.35, w: 6, color: "198,244,50" }); sparks(w, h.x, G - 4, 4 + n * 2, "198,244,50", [120, 320], -Math.PI, 0); },
         },
         {
           id: "lean", name: { en: "Speed Lean", ko: "빠를수록 숙임" }, param: "rot ∝ speed",
@@ -848,7 +869,7 @@
           cap: { en: "More *speed lines* the faster you go.", ko: "빠를수록 *속도선*이 많아져요." },
           update(w) {
             const M = w.M, h = w.hero; if (!M || M.end != null || Math.random() > (M.vx - 100) / 150) return;
-            w.spawn({ type: "spark", x: h.x + rand(0, 80), y: feetY(h) - rand(5, HH), vx: -900, life: 0.12, size: 1.6, color: "255,255,255" });
+            w.spawn({ type: "spark", x: h.x + rand(0, 80), y: feetY(h) - rand(5, HH), vx: -900, life: 0.14, size: 2.6, color: "255,255,255" });
           },
         },
         {
@@ -928,8 +949,9 @@
           id: "anchor", name: { en: "Anchor Spark", ko: "걸린 곳 불꽃" }, param: "ring + 8 sparks",
           cap: { en: "Sparks where the hook *bites*.", ko: "갈고리가 *박힌* 곳에 불꽃." },
           attach(w) {
-            w.spawn({ type: "ring", x: 270, y: 40, size: 4, size1: 26, life: 0.3, w: 4, color: "255,220,140" });
-            sparks(w, 270, 40, 8, "255,220,140", [120, 320], 0, Math.PI);
+            w.spawn({ type: "ring", x: 270, y: 40, size: 6, size1: 44, life: 0.35, w: 6, color: "255,220,140" });
+            w.spawn({ type: "star", x: 270, y: 40, size: 30, life: 0.2, color: "255,255,255" });
+            sparks(w, 270, 40, 14, "255,220,140", [160, 420], 0, Math.PI);
           },
         },
         {
@@ -942,7 +964,7 @@
           cap: { en: "The feet draw the *swing arc*.", ko: "발끝이 *스윙 궤적*을 그려요." },
           update(w) {
             const M = w.M, h = w.hero; if (!M || (M.st !== "swing" && M.st !== "fly")) return;
-            w.spawn({ type: "glow", x: h.x, y: feetY(h) - 8, size: 12, size1: 0, life: 0.45, color: "198,244,50" });
+            w.spawn({ type: "glow", x: h.x, y: feetY(h) - 8, size: 17, size1: 0, life: 0.55, color: "198,244,50" });
           },
         },
         {
@@ -950,9 +972,10 @@
           cap: { en: "*Stretch* and burst at the release point.", ko: "놓는 순간 *쭉 늘어나며* 팡." },
           release(w, h) {
             h.sx = 0.75; h.sy = 1.3; w.kick(6, -3);
-            w.spawn({ type: "ring", x: h.x, y: feetY(h) - HH / 2, size: 10, size1: 50, life: 0.3, w: 4, color: "255,255,255" });
+            w.spawn({ type: "ring", x: h.x, y: feetY(h) - HH / 2, size: 10, size1: 80, life: 0.35, w: 7, color: "255,255,255" });
+            sparks(w, h.x, feetY(h) - HH / 2, 10, "198,244,50", [200, 460]);
           },
-          land(w, h) { dust(w, h.x, 250, 6); },
+          land(w, h) { dust(w, h.x, 250, 10); w.spawn({ type: "ring", flat: true, x: h.x, y: 250, size: 10, size1: 70, life: 0.4, w: 6, color: "255,255,255" }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "zip / twang / whoosh",
@@ -1016,7 +1039,7 @@
           id: "shatter", name: { en: "Shatter", ko: "깨지는 크리스털" }, param: "10 shards",
           cap: { en: "The crystal *shatters* into shards.", ko: "크리스털이 *와장창* 깨져요." },
           refill(w) {
-            for (let i = 0; i < 10; i++) w.spawn({ type: "chunk", x: 300, y: 170, vx: rand(-260, 260), vy: rand(-320, 80), g: 900, vr: rand(-10, 10), life: 0.7, size: rand(3, 6), color: "165,243,252" });
+            for (let i = 0; i < 18; i++) w.spawn({ type: "chunk", x: 300, y: 170, vx: rand(-320, 320), vy: rand(-380, 80), g: 900, vr: rand(-10, 10), life: rand(0.8, 1.2), size: rand(4, 8), color: pick(["165,243,252", "224,250,255", "34,211,238"]) });
           },
         },
         {
@@ -1038,8 +1061,8 @@
           id: "rays", name: { en: "Burst Rays", ko: "빛 터짐" }, param: "8 rays + ring",
           cap: { en: "A burst of *rays* from the crystal.", ko: "크리스털 자리에서 *빛줄기*가 터져요." },
           refill(w) {
-            w.spawn({ type: "rays", x: 300, y: 170, n: 8, size: 20, size1: 90, vr: 2, life: 0.4, color: "103,232,249" });
-            w.spawn({ type: "ring", x: 300, y: 170, size: 10, size1: 60, life: 0.35, w: 5, color: "165,243,252" });
+            w.spawn({ type: "rays", under: true, x: 300, y: 170, n: 12, size: 30, size1: 150, vr: 2, life: 0.6, color: "103,232,249" });
+            w.spawn({ type: "ring", x: 300, y: 170, size: 10, size1: 90, life: 0.4, w: 8, color: "165,243,252" });
           },
         },
         {
@@ -1110,14 +1133,15 @@
           id: "stretch", name: { en: "Launch Stretch", ko: "쭉 늘어나기" }, param: "0.65 × 1.45",
           cap: { en: "*Stretch tall* on the way up.", ko: "올라갈 때 *길쭉하게*." },
           launch(w, h) { h.sx = 0.65; h.sy = 1.45; },
-          land(w, h) { h.sx = 1.3; h.sy = 0.75; },
+          land(w, h) { h.sx = 1.3; h.sy = 0.75; dust(w, h.x, 110, 8); },
         },
         {
           id: "burst", name: { en: "Launch Burst", ko: "발사 폭발" }, param: "ring + 8 lines",
           cap: { en: "A *ring and upward lines* from the pad.", ko: "판에서 *고리와 위로 솟는 선*." },
           launch(w) {
-            w.spawn({ type: "ring", flat: true, x: 270, y: G - 14, size: 10, size1: 70, life: 0.35, w: 5, color: "198,244,50" });
-            for (let i = 0; i < 8; i++) w.spawn({ type: "spark", x: 270 + rand(-30, 30), y: G - 20, vx: 0, vy: -rand(500, 900), drag: 3, life: 0.3, size: 2, color: "198,244,50" });
+            w.spawn({ type: "ring", flat: true, x: 270, y: G - 14, size: 10, size1: 110, life: 0.4, w: 8, color: "198,244,50" });
+            w.spawn({ type: "glow", under: true, x: 270, y: G - 20, size: 70, size1: 20, life: 0.5, color: "198,244,50" });
+            for (let i = 0; i < 14; i++) w.spawn({ type: "spark", x: 270 + rand(-34, 34), y: G - 20, vx: 0, vy: -rand(600, 1000), drag: 3, life: 0.35, size: 3, color: pick(["198,244,50", "255,255,255"]) });
           },
         },
         {
@@ -1206,18 +1230,18 @@
           },
         },
         {
-          id: "slip", name: { en: "Slip Dust", ko: "발밑 미끄러짐" }, param: "∝ speed gap",
-          cap: { en: "Dust at the feet while they *slip*.", ko: "발이 *미끄러지는* 동안 먼지." },
+          id: "slip", name: { en: "Slip Sparks", ko: "발밑 미끄러짐" }, param: "∝ speed gap",
+          cap: { en: "Sparks at the feet while they *slip*.", ko: "발이 *미끄러지는* 동안 불꽃이 튀어요." },
           update(w) {
-            const M = w.M; if (!M || M.st !== "ride" || Math.random() > (230 - M.vx) / 150) return;
-            dust(w, M.x - 8, 220, 1, -1);
+            const M = w.M; if (!M || M.st !== "ride" || Math.random() > (230 - M.vx) / 120) return;
+            w.spawn({ type: "spark", x: M.x - 6, y: 218, vx: -rand(120, 300), vy: -rand(40, 140), g: 900, life: 0.3, size: 2.5, color: "255,210,140" });
           },
         },
         {
           id: "land", name: { en: "Landing Squash", ko: "착지 찌그러짐" }, param: "1.3 / 0.75",
           cap: { en: "*Squash* on landing so the drop reads.", ko: "떨어진 게 보이게 *찌그러져요*." },
-          land(w, h) { h.sx = 1.3; h.sy = 0.75; dust(w, h.x, 220, 4); },
-          off(w, h) { h.sx = 1.3; h.sy = 0.75; dust(w, h.x, G, 6); },
+          land(w, h) { h.sx = 1.3; h.sy = 0.75; w.spawn({ type: "ring", flat: true, x: h.x, y: 220, size: 8, size1: 60, life: 0.35, w: 6, color: "198,244,50" }); },
+          off(w, h) { h.sx = 1.3; h.sy = 0.75; dust(w, h.x, G, 8); },
         },
         {
           id: "lights", name: { en: "Chase Lights", ko: "흐르는 불빛" }, param: "8 lamps",
@@ -1256,7 +1280,7 @@
         tag(ctx, "LET GO", 230, 120, "rgba(198,244,50,0.8)");
         for (const m of w.marks) {
           const a = Math.max(0, 1 - (w.time - m.t) / 2);
-          ctx.fillStyle = `rgba(255,255,255,${a * 0.35})`; ctx.fillRect(m.x, m.y - 9, 3, 1.5); ctx.fillRect(m.x, m.y + 8, 3, 1.5);
+          ctx.fillStyle = `rgba(224,242,254,${a * 0.7})`; ctx.fillRect(m.x, m.y - 10, 3, 3); ctx.fillRect(m.x, m.y + 7, 3, 3);
         }
       },
       setup(w) { w.hero = w.actor("heroTop", { h: 52, home: 80, gy: 185 }); w.marks = []; w.M = null; },
@@ -1297,7 +1321,8 @@
           cap: { en: "*Shavings* spray ahead while you skid.", ko: "미끄러지는 동안 *얼음 가루*가 튀어요." },
           sliding(w, h, v) {
             if (Math.random() > v / 300) return;
-            w.spawn({ x: h.x + 22, y: h.gy + rand(-14, 14), vx: v * rand(0.6, 1.2), vy: rand(-90, 90), floor: 4, life: 0.5, size: rand(1.5, 3), color: "224,242,254" });
+            w.spawn({ x: h.x + 22, y: h.gy + rand(-16, 16), vx: v * rand(0.7, 1.4), vy: rand(-110, 110), floor: 4, life: 0.6, size: rand(2.5, 4.5), color: pick(["224,242,254", "255,255,255", "125,211,252"]) });
+            if (Math.random() < 0.3) w.spawn({ type: "smoke", x: h.x + 18, y: h.gy, vx: v * 0.4, vy: rand(-20, 20), floor: 3, size: 6, size1: 16, life: 0.5, color: "186,230,253" });
           },
         },
         {
@@ -1372,7 +1397,7 @@
           cap: { en: "Each step throws *mud blobs*.", ko: "걸음마다 *진흙 덩어리*가 튀어요." },
           step(w, h, mud) {
             if (!mud) return;
-            for (let i = 0; i < 5; i++) w.spawn({ x: h.x + rand(-10, 10), y: G - 4, vx: rand(-120, 120), vy: -rand(150, 320), g: 1500, life: 0.5, size: rand(2.5, 5), color: "120,80,40", add: false });
+            for (let i = 0; i < 9; i++) w.spawn({ type: "chunk", x: h.x + rand(-12, 12), y: G - 4, vx: rand(-160, 160), vy: -rand(180, 380), g: 1500, vr: rand(-8, 8), life: 0.9, size: rand(3.5, 7), color: pick(["120,80,40", "92,58,30", "150,105,60"]), ground: true, gy: G, bounce: 0.1, add: false });
           },
         },
         {
@@ -1390,7 +1415,7 @@
           cap: { en: "The surface *wobbles* and *bubbles*.", ko: "표면이 *출렁*이고 *뽀글*거려요." },
           update(w) {
             w.wob = 3;
-            if (Math.random() < 0.06) w.spawn({ type: "ring", x: rand(210, 370), y: G - 4, size: 2, size1: 7, life: 0.4, w: 2, color: "160,110,60" });
+            if (Math.random() < 0.08) w.spawn({ type: "ring", x: rand(210, 370), y: G - 4, size: 3, size1: 11, life: 0.5, w: 3, color: "170,120,70", add: false });
           },
         },
         {
@@ -1448,7 +1473,10 @@
         {
           id: "stars", name: { en: "Star Burst", ko: "별 터짐" }, param: "6 stars",
           cap: { en: "*Stars* pop out from under your feet.", ko: "발밑에서 *별*이 터져요." },
-          stomp(w, f) { for (let i = 0; i < 6; i++) { const a = Math.PI + (i / 5) * Math.PI; w.spawn({ type: "star", x: f.x, y: G - 60, vx: Math.cos(a) * 240, vy: Math.sin(a) * 240, drag: 4, size: 8, life: 0.5, color: "250,204,21" }); } },
+          stomp(w, f) {
+            for (let i = 0; i < 8; i++) { const a = Math.PI + (i / 7) * Math.PI; w.spawn({ type: "star", x: f.x, y: G - 60, vx: Math.cos(a) * 300, vy: Math.sin(a) * 300, drag: 4, size: 11, life: 0.6, color: "250,204,21" }); }
+            w.spawn({ type: "ring", flat: true, x: f.x, y: G, size: 14, size1: 110, life: 0.4, w: 8, color: "255,255,255" });
+          },
         },
         {
           id: "flash", name: { en: "White Flash", ko: "하얀 번쩍" }, param: "foe flash 1.0",
@@ -1458,7 +1486,7 @@
         {
           id: "score", name: { en: "Score Pop", ko: "점수 톡" }, param: "+100 · rise",
           cap: { en: "*+100* pops up where it happened.", ko: "그 자리에서 *+100*이 톡." },
-          stomp(w, f) { w.spawn({ type: "text", text: "+100", x: f.x, y: G - 100, vy: -70, life: 0.8, size: 20, color: "#c6f432" }); },
+          stomp(w, f) { w.spawn({ type: "text", text: "+100", x: f.x, y: G - 110, vy: -70, life: 1.1, size: 30, color: "#c6f432" }); },
         },
         {
           id: "shake", name: { en: "Down Kick", ko: "아래로 쿵" }, param: "kick 7px · .12",
@@ -1488,7 +1516,7 @@
         rr(ctx, M.px - 55, 190 + M.dip, 110, 14, 5, "#94a3b8");
         ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.fillRect(M.px - 50, 192 + M.dip, 100, 3);
       },
-      setup(w) { w.hero = mkHero(w, 110); w.M = { px: 170, dip: 0 }; },
+      setup(w) { w.hero = mkHero(w, 110); w.M = { px: 170, pdx: 0, dip: 0 }; },
       fire(w) {
         reset(w.hero);
         w.M = { t: 0, x: 110, y: G, vx: 255, vy: -700, st: "air", px: 170, pdx: 0, dip: 0, dipV: 0, on: false, surf: G, dir: 1 };
@@ -1534,14 +1562,14 @@
           cap: { en: "*Jets* under it show it's powered.", ko: "아래 *분사*로 움직이는 힘을 보여줘요." },
           update(w) {
             const M = w.M; if (M.px == null) return;
-            for (const s of [-36, 36]) w.spawn({ type: "glow", x: M.px + s, y: 206 + M.dip, vx: -M.pdx * 20, vy: 80, size: 8 + Math.abs(M.pdx) * 2, size1: 0, life: 0.2, color: "103,232,249" });
+            for (const s of [-36, 36]) w.spawn({ type: "glow", x: M.px + s, y: 206 + M.dip, vx: -M.pdx * 20, vy: 90, size: 12 + Math.abs(M.pdx) * 3, size1: 0, life: 0.25, color: "103,232,249" });
           },
         },
         {
           id: "dust", name: { en: "Ride Dust", ko: "발밑 먼지" }, param: "land + jump",
           cap: { en: "Dust on the jump and on the *landing*.", ko: "뛸 때와 *올라탈 때* 먼지." },
-          land(w, h) { dust(w, h.x, 190, 6); },
-          update(w) { const M = w.M; if (M.t > 0 && M.t < 0.02) dust(w, 110, G, 4); },
+          land(w, h) { dust(w, h.x, 190, 10); w.spawn({ type: "ring", flat: true, x: h.x, y: 196, size: 10, size1: 80, life: 0.4, w: 6, color: "103,232,249" }); },
+          update(w) { const M = w.M; if (M.t > 0 && M.t < 0.02) dust(w, 110, G, 8); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clank / soft clunk",
@@ -1678,14 +1706,14 @@
           cap: { en: "Particles *suck in* at start, *burst* at the end.", ko: "출발점은 *빨려 들고*, 도착점은 *터져요*." },
           blink(w, h, x0, x1) {
             for (let i = 0; i < 10; i++) { const a = rand(0, TAU); w.spawn({ type: "spark", x: x0 + Math.cos(a) * 60, y: h.gy + Math.sin(a) * 60, seek: true, tx: x0, ty: h.gy, life: 0.3, size: 2.5, color: "103,232,249" }); }
-            sparks(w, x1, h.gy, 12, "165,243,252", [200, 450]);
+            sparks(w, x1, h.gy, 18, "165,243,252", [220, 520]);
           },
         },
         {
           id: "ring", name: { en: "Mark Both Ends", ko: "양 끝 표시" }, param: "ring + 2 floor marks",
           cap: { en: "A *ring* and floor marks at *both ends*.", ko: "*양 끝*에 고리와 바닥 자국." },
           blink(w, h, x0, x1) {
-            w.spawn({ type: "ring", x: x1, y: h.gy, size: 10, size1: 70, life: 0.7, w: 6, color: "103,232,249" });
+            w.spawn({ type: "ring", x: x1, y: h.gy, size: 10, size1: 90, life: 0.7, w: 8, color: "103,232,249" });
             for (const x of [x0, x1]) w.spawn({ type: "ellipse", round: true, x, y: h.gy, size: 34, life: 1.3, hold: true, under: true, alpha: 0.35, color: "103,232,249", add: false });
           },
         },
@@ -1762,7 +1790,7 @@
           cap: { en: "*Speed lines* streak past.", ko: "*속도선*이 휙휙 지나가요." },
           update(w) {
             if (w.S.boostT <= 0) return;
-            for (let i = 0; i < 2; i++) w.spawn({ type: "spark", x: rand(260, 560), y: rand(80, G - 6), vx: -1400, life: 0.12, size: 1.6, color: "255,255,255" });
+            for (let i = 0; i < 3; i++) w.spawn({ type: "spark", x: rand(260, 560), y: rand(60, G - 6), vx: -1400, life: 0.14, size: rand(2, 3.5), color: "255,255,255" });
           },
         },
         {
@@ -1785,11 +1813,11 @@
         const M = w.M, h = w.hero, f = w.foe;
         if (w.dark > 0.02) {
           const g = ctx.createRadialGradient(f.x, G - 30, 30, f.x, G - 30, 260);
-          g.addColorStop(0, `rgba(250,204,21,${0.08 * w.dark})`); g.addColorStop(0.4, `rgba(5,6,10,${0.35 * w.dark})`); g.addColorStop(1, `rgba(5,6,10,${0.85 * w.dark})`);
+          g.addColorStop(0, `rgba(250,204,21,${0.1 * w.dark})`); g.addColorStop(0.4, `rgba(5,6,10,${0.25 * w.dark})`); g.addColorStop(1, `rgba(5,6,10,${0.7 * w.dark})`);
           ctx.fillStyle = g; ctx.fillRect(-40, -40, 620, 440);
         }
         if (M && M.meter) {
-          const x = f.x - 30, y = G - 104;
+          const x = f.x - 30, y = G - 132;
           rr(ctx, x - 2, y - 2, 64, 10, 4, "rgba(0,0,0,0.6)");
           ctx.fillStyle = M.det > 0.6 ? "#ef4444" : "#facc15"; ctx.fillRect(x, y, 60 * M.det, 6);
           tag(ctx, "?", x + 72, y + 3, "rgba(250,204,21,0.9)", 12);
@@ -1825,12 +1853,12 @@
         {
           id: "shade", name: { en: "In the Shadows", ko: "그림자 속으로" }, param: "alpha .55",
           cap: { en: "The player turns *half-transparent*. Hidden.", ko: "캐릭터를 *반투명*하게. 숨었다는 뜻." },
-          update(w) { const h = w.hero; if (h.alpha > 0.55) h.alpha = 0.55; },
+          update(w) { const h = w.hero; if (h.alpha > 0.6) h.alpha = 0.6; },
         },
         {
           id: "noise", name: { en: "Noise Rings", ko: "소리 고리" }, param: "r 18 · quiet",
           cap: { en: "Tiny *sound rings* show you're quiet.", ko: "작은 *소리 고리*가 조용하다고 알려줘요." },
-          step(w, h) { w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 4, size1: 18, life: 0.4, w: 2, color: "198,244,50" }); },
+          step(w, h) { w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 4, size1: 26, life: 0.5, w: 3, color: "198,244,50" }); },
         },
         {
           id: "meter", name: { en: "Detection Meter", ko: "들킴 게이지" }, param: "+12% / step · decay",
@@ -1843,7 +1871,7 @@
           cap: { en: "*Zzz* floats up. It's asleep. For now.", ko: "*Zzz*가 떠올라요. 아직은 자는 중." },
           update(w) {
             if (Math.random() > 0.04) return;
-            w.spawn({ type: "text", text: "z", x: w.foe.x - 10 + rand(-6, 6), y: G - 80, vx: 18, vy: -40, life: 1, size: rand(12, 18), color: "rgba(255,255,255,0.8)" });
+            w.spawn({ type: "text", text: "z", x: w.foe.x + 20 + rand(-4, 4), y: G - 78, vx: 22, vy: -30, life: 1, size: rand(16, 22), color: "rgba(255,255,255,0.85)" });
           },
         },
         {
@@ -1866,8 +1894,8 @@
         const x = h.x - 40, y = feetY(h) - HH + 6, low = M.sta < 0.3;
         if (low && M.blink && Math.sin(w.time * 22) > 0) return;
         ctx.globalAlpha = M.meterA;
-        ctx.strokeStyle = "rgba(0,0,0,0.5)"; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(x, y, 12, 0, TAU); ctx.stroke();
-        ctx.strokeStyle = M.col || "#ffffff"; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(x, y, 12, -Math.PI / 2, -Math.PI / 2 + TAU * M.sta); ctx.stroke();
+        ctx.strokeStyle = "rgba(0,0,0,0.55)"; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(x, y, 17, 0, TAU); ctx.stroke();
+        ctx.strokeStyle = M.col || "#ffffff"; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(x, y, 17, -Math.PI / 2, -Math.PI / 2 + TAU * M.sta); ctx.stroke();
         ctx.globalAlpha = 1;
       },
       setup(w) { w.hero = mkHero(w, 306); w.M = null; },
@@ -1924,7 +1952,8 @@
           id: "relief", name: { en: "Relief", ko: "안도" }, param: "refill burst · breathe",
           cap: { en: "Made it. *Refill burst* and a deep breath.", ko: "다 올랐다. *충전 번쩍*, 그리고 크게 숨." },
           top(w, h) {
-            w.spawn({ type: "ring", x: h.x - 40, y: feetY(h) - HH + 6, size: 12, size1: 40, life: 0.4, w: 4, color: "74,222,128" });
+            w.spawn({ type: "ring", x: h.x - 40, y: feetY(h) - HH + 6, size: 16, size1: 56, life: 0.5, w: 6, color: "74,222,128" });
+            sparks(w, h.x - 40, feetY(h) - HH + 6, 12, "134,239,172", [120, 300]);
             h.sx = 1.15; h.sy = 0.85; w.after(0.3, () => { h.sx = 0.95; h.sy = 1.08; });
           },
         },
@@ -1982,14 +2011,14 @@
         {
           id: "push", name: { en: "Push-off Burst", ko: "박차는 먼지" }, param: "8 puffs back",
           cap: { en: "*Kick off* the ground in a burst of dust.", ko: "땅을 *박차며* 먼지가 확." },
-          go(w, h) { dust(w, h.x - 10, G, 8, -1); w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 6, size1: 50, life: 0.3, w: 4, color: "255,255,255" }); },
+          go(w, h) { dust(w, h.x - 10, G, 14, -1); w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 8, size1: 90, life: 0.4, w: 7, color: "255,255,255" }); },
         },
         {
           id: "stride", name: { en: "Stride Prints", ko: "발자국 간격" }, param: "squash · prints 1.5s",
           cap: { en: "Footprints *spread apart* as speed builds.", ko: "빨라질수록 *발자국 간격*이 벌어져요." },
           stride(w, h) {
             h.sx = 1.1; h.sy = 0.9;
-            w.spawn({ type: "ellipse", x: h.x, y: G + 2, size: 9, life: 1.5, hold: true, under: true, color: "198,244,50", add: false });
+            w.spawn({ type: "ellipse", x: h.x, y: G + 2, size: 13, life: 1.6, hold: true, under: true, color: "198,244,50", add: false });
           },
         },
         {
@@ -2042,7 +2071,7 @@
           id: "crack", name: { en: "Ground Cracks", ko: "땅 갈라짐" }, param: "4 cracks · decal",
           cap: { en: "The ground *cracks* under you.", ko: "발밑 땅이 *쩍* 갈라져요." },
           land(w, h) {
-            for (const s of [-1, 1]) for (let i = 0; i < 2; i++) w.spawn({ type: "crack", x: h.x, y: G + 1, pts: [[0, 0], [s * rand(20, 30), rand(-2, 4)], [s * rand(45, 60), rand(-4, 6)], [s * rand(70, 90), rand(-2, 8)]], w: 2.5, life: 1.6, hold: true, under: true, color: "10,10,14", add: false });
+            for (const s of [-1, 1]) for (let i = 0; i < 2; i++) w.spawn({ type: "crack", x: h.x, y: G + 1, pts: [[0, 0], [s * rand(25, 40), rand(-2, 4)], [s * rand(60, 80), rand(-4, 6)], [s * rand(95, 125), rand(-2, 8)]], w: 4, life: 1.8, hold: true, under: true, color: "10,10,14", add: false });
           },
         },
         {
@@ -2053,13 +2082,13 @@
         {
           id: "damage", name: { en: "Damage Number", ko: "피해 숫자" }, param: "−15 · red tint",
           cap: { en: "Show the *cost*. Red number, red body.", ko: "*대가*를 보여줘요. 빨간 숫자, 빨간 몸." },
-          land(w, h) { h.tint = 1; w.spawn({ type: "text", text: "−15", x: h.x + 40, y: G - 90, vy: -60, life: 0.9, size: 26, color: "#ef4444" }); },
+          land(w, h) { h.tint = 1; w.spawn({ type: "text", text: "−15", x: h.x + 50, y: G - 100, vy: -60, life: 1.1, size: 36, color: "#ef4444" }); },
         },
         {
           id: "debris", name: { en: "Flying Rocks", ko: "튀는 돌" }, param: "10 chunks",
           cap: { en: "*Rocks* burst out to both sides.", ko: "양옆으로 *돌조각*이 튀어요." },
           land(w, h) {
-            for (let i = 0; i < 10; i++) w.spawn({ type: "chunk", x: h.x + rand(-20, 20), y: G - 4, vx: rand(-320, 320), vy: -rand(200, 500), g: 1600, vr: rand(-12, 12), life: 1.1, size: rand(3, 6), color: "150,150,160", ground: true, bounce: 0.35 });
+            for (let i = 0; i < 16; i++) w.spawn({ type: "chunk", x: h.x + rand(-20, 20), y: G - 4, vx: rand(-360, 360), vy: -rand(220, 560), g: 1600, vr: rand(-12, 12), life: 1.6, hold: true, size: rand(4, 8), color: pick(["150,150,160", "100,100,110"]), ground: true, gy: G + 4, bounce: 0.35 });
             dust(w, h.x - 20, G, 6, -1); dust(w, h.x + 20, G, 6, 1);
           },
         },
@@ -2071,7 +2100,10 @@
         {
           id: "ring", name: { en: "Shockwave", ko: "충격파" }, param: "flat ring 120",
           cap: { en: "A wide *shockwave* rolls out.", ko: "넓은 *충격파*가 퍼져요." },
-          land(w, h) { w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 14, size1: 120, life: 0.4, w: 7, color: "255,255,255" }); },
+          land(w, h) {
+            w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 14, size1: 180, life: 0.5, w: 10, color: "255,255,255" });
+            w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 10, size1: 110, life: 0.7, w: 6, color: "239,68,68" });
+          },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slam + grunt",

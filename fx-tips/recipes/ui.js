@@ -607,12 +607,12 @@
         {
           id: "bell", name: { en: "Ringing Icon", ko: "흔들리는 종" }, param: "±25° · 0.6s",
           cap: { en: "The icon *rings*. Now it says *what* it is.", ko: "종이 *딸랑딸랑*. 무슨 알림인지 보여요." },
-          show(w, N) { w.after(0.2, () => { N.ring = 1; }); },
+          show(w, N) { w.after(0.2, () => { N.ring = 1; ring(w, 330, 86, 16, 60, "250,204,21", 0.45, 5); }); },
         },
         {
           id: "accent", name: { en: "Accent + Glow", ko: "강조 띠와 빛" }, param: "lime strip · blur 30",
           cap: { en: "A *color strip* and a short *glow*. It stands out from the game.", ko: "*색 띠*와 짧은 *빛*. 게임 화면과 구분돼요." },
-          show(w, N) { N.strip = true; N.glowA = 1; },
+          show(w, N) { N.strip = true; N.glowA = 1; w.after(0.3, () => w.spawn({ type: "glow", x: 400, y: 90, size: 60, size1: 150, life: 0.5, color: "198,244,50" })); },
         },
         {
           id: "timer", name: { en: "Timer Bar", ko: "남은 시간 줄" }, param: "1.3s shrink",
@@ -730,9 +730,9 @@
           txt(ctx, L(["Mail", "Shop", "Friends"][I.i], ["우편", "상점", "친구"][I.i]), I.x, I.y + 60, 14, DIM, "center", 700);
           if (I.n > 0) {
             ctx.save(); ctx.translate(I.x + 34, I.y - 34); ctx.scale(I.sc, I.sc);
-            ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(0, 0, 16, 0, TAU); ctx.fill();
+            ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(0, 0, 20, 0, TAU); ctx.fill();
             ctx.strokeStyle = PANEL; ctx.lineWidth = 4; ctx.stroke();
-            txt(ctx, String(I.n), 0, 1, 16, "#fff");
+            txt(ctx, String(I.n), 0, 1, 20, "#fff");
             ctx.restore();
           }
         }
@@ -757,7 +757,7 @@
         {
           id: "ring", name: { en: "Ring Pulse", ko: "고리 퍼짐" }, param: "ring 16 → 46",
           cap: { en: "A red *ring* spreads from the badge.", ko: "배지에서 빨간 *고리*가 퍼져요." },
-          land(w, I) { ring(w, I.x + 34, I.y - 34, 16, 46, "248,113,113", 0.4, 5); },
+          land(w, I) { ring(w, I.x + 34, I.y - 34, 18, 64, "248,113,113", 0.45, 7); sparks(w, I.x + 34, I.y - 34, 10, "254,202,202", [150, 360]); },
         },
         {
           id: "plus", name: { en: "+N Float", ko: "+N 떠오름" }, param: "text 22px",
@@ -837,7 +837,7 @@
         {
           id: "rays", name: { en: "Light Rays", ko: "빛줄기" }, param: "10 rays · 0.6s",
           cap: { en: "*Rays* burst behind the box. It feels like a prize.", ko: "칸 뒤로 *빛줄기*. 상 받는 느낌이에요." },
-          claim(w, c, p) { w.spawn({ type: "rays", x: p.x, y: p.y, n: 10, size: 20, size1: 110, vr: 1.5, life: 0.6, color: "253,224,71" }); },
+          claim(w, c, p) { w.spawn({ type: "rays", under: true, x: p.x, y: p.y, n: 10, size: 20, size1: 110, vr: 1.5, life: 0.6, color: "253,224,71" }); },
         },
         {
           id: "fly", name: { en: "Coins Fly Home", ko: "동전이 지갑으로" }, param: "6 coins · 60ms gap",
@@ -1180,7 +1180,7 @@
           cap: { en: "Spending needs a *payoff*. The item *levels up* loudly.", ko: "쓴 만큼 *보상*이 보여야 해요. 레벨이 *팡*." },
           upgrade(w, S) {
             S.lsc = 1.3;
-            w.spawn({ type: "rays", x: 270, y: 150, n: 12, size: 30, size1: 130, vr: 1.2, life: 0.6, color: "198,244,50" });
+            w.spawn({ type: "rays", under: true, x: 270, y: 150, n: 12, size: 30, size1: 130, vr: 1.2, life: 0.6, color: "198,244,50" });
             w.spawn({ type: "text", text: "Lv " + S.lv + "!", x: 270, y: 90, vy: -50, life: 0.8, size: 26, color: "#c6f432" });
           },
         },
@@ -1421,14 +1421,14 @@
       id: "ui-flip", cat: "ui", view: "ui",
       title: { en: "Flip cards with *drama*", ko: "카드 뒤집기에 *긴장감*" },
       intro: { en: "Back. Front. *Swap.*", ko: "뒷면. 앞면. *휙* 바뀜." },
-      interval: 2.0, stepDur: 3.8,
+      interval: 2.3, stepDur: 3.8,
       drawFloor() {},
       setup(w) { w.CF = { face: false, f: 0, lift: 0, rot: 0, shine: -1, aura: 0, rar: 3 }; w.T = tap(); },
       fire(w) {
         const C = w.CF;
         C.face = false; C.f = 0; C.aura = 0; C.shine = -1; C.rar = pick([1, 3, 4]);
-        tapAt(w.T, 270, 180);
-        w.after(0.1, () => {
+        w.after(0.3, () => tapAt(w.T, 270, 180));
+        w.after(0.45, () => {
           w.emit("flip", C);
           if (!w.on("turn")) { C.face = true; w.emit("reveal", C); }
         });
@@ -1483,7 +1483,7 @@
           cap: { en: "The *rarity color* floods out behind the card.", ko: "카드 뒤로 *등급 색*이 퍼져요." },
           reveal(w, C) {
             w.tween(C, { aura: 1 }, 0.2, "out");
-            w.spawn({ type: "rays", x: 270, y: 180, n: 14, size: 40, size1: 200, vr: 0.8, life: 1.2, color: GEM_COL[C.rar], hold: true });
+            w.spawn({ type: "rays", under: true, x: 270, y: 180, n: 14, size: 40, size1: 200, vr: 0.8, life: 1.2, color: GEM_COL[C.rar], hold: true });
           },
         },
         {
@@ -1592,11 +1592,11 @@
       intro: { en: "Achievement unlocked. *Grey box.*", ko: "업적 달성. *회색 상자* 하나." },
       interval: 2.1, stepDur: 4.0,
       drawFloor() {},
-      setup(w) { w.A = { show: 0, y: 150, tsc: 1, rot: 0, lines: [1, 1], gold: false, pulse: 0 }; w.hero = w.actor("hero", { home: 270 }); w.hero.alpha = 0.35; },
+      setup(w) { w.A = { show: 0, y: 110, tsc: 1, rot: 0, lines: [1, 1], gold: false, pulse: 0 }; w.hero = w.actor("hero", { home: 270 }); w.hero.alpha = 0.35; },
       fire(w) {
         const A = w.A;
         const at = seq(w, A);
-        A.show = 1; A.y = 150; w.emit("unlock", A);
+        A.show = 1; A.y = 110; w.emit("unlock", A);
         at(1.7, () => { A.show = 0; });
       },
       update(w, dt) { const A = w.A; A.pulse = 0.5 + 0.5 * Math.sin(w.time * 8); },
@@ -1622,7 +1622,7 @@
         {
           id: "drop", name: { en: "Drop In", ko: "떨어지며 등장" }, param: "from −120 · back",
           cap: { en: "The banner *drops in* and bounces a little.", ko: "배너가 *툭 떨어져* 살짝 튕겨요." },
-          unlock(w, A) { A.y = -60; w.tween(A, { y: 150 }, 0.4, "back"); },
+          unlock(w, A) { A.y = -60; w.tween(A, { y: 110 }, 0.4, "back"); },
         },
         {
           id: "gold", name: { en: "Gold Frame", ko: "금색 테두리" }, param: "gold + glow pulse",
@@ -1636,7 +1636,7 @@
             A.tsc = 0; A.rot = -3;
             w.after(0.3, () => {
               w.tween(A, { tsc: 1, rot: 0 }, 0.4, "back");
-              w.spawn({ type: "rays", x: 132, y: 150, n: 12, size: 20, size1: 90, vr: 2, life: 1, color: "253,224,71", hold: true });
+              w.spawn({ type: "rays", under: true, x: 132, y: 110, n: 12, size: 20, size1: 90, vr: 2, life: 1, color: "253,224,71", hold: true });
             });
           },
         },
@@ -1648,7 +1648,7 @@
         {
           id: "confetti", name: { en: "Confetti", ko: "꽃가루" }, param: "40 pieces",
           cap: { en: "*Confetti* bursts from the banner. Party time.", ko: "배너에서 *꽃가루*가 펑. 축하해요." },
-          unlock(w) { w.after(0.4, () => { confetti(w, 170, 130, 20, 520); confetti(w, 370, 130, 20, 520); }); },
+          unlock(w) { w.after(0.4, () => { confetti(w, 170, 90, 20, 520); confetti(w, 370, 90, 20, 520); }); },
         },
         {
           id: "sound", name: { en: "Fanfare", ko: "팡파르" }, param: "5-note arpeggio",
@@ -1788,7 +1788,7 @@
           cap: { en: "The *last star* gets the biggest moment.", ko: "*마지막 별*에 제일 큰 연출을." },
           star(w, s, i, x) {
             if (i < 2) return;
-            w.after(0.16, () => { w.shake(0.4); w.flash("255,240,180", 0.35); w.spawn({ type: "rays", x: 270, y: 168, n: 16, size: 40, size1: 260, vr: 1, life: 1.2, color: "253,224,71", hold: true }); });
+            w.after(0.16, () => { w.shake(0.4); w.flash("255,240,180", 0.35); w.spawn({ type: "rays", under: true, x: 270, y: 168, n: 16, size: 40, size1: 230, vr: 1, life: 1.2, alpha: 0.7, color: "253,224,71", hold: true }); });
           },
         },
         {
@@ -1825,8 +1825,8 @@
         box(ctx, 106, 56, 328, 196, 14, "#334155");
         ctx.fillStyle = "#475569"; ctx.beginPath(); ctx.moveTo(106, 252); ctx.lineTo(200, 150); ctx.lineTo(270, 210); ctx.lineTo(330, 160); ctx.lineTo(434, 252); ctx.closePath(); ctx.fill();
         ctx.fillStyle = "#fde68a"; ctx.beginPath(); ctx.arc(380, 100, 20, 0, TAU); ctx.fill();
-        if (H.big > 0.01) { ctx.save(); ctx.globalAlpha = clamp(H.big); heart(ctx, 270, 154, 56 * H.bigSc, "#fff"); ctx.restore(); }
-        ctx.save(); ctx.translate(128, 290); ctx.scale(H.sc, H.sc);
+        if (H.big > 0.01) { ctx.save(); ctx.globalAlpha = clamp(H.big); heart(ctx, 270, 158, 62 * H.bigSc, "#be123c"); heart(ctx, 270, 154, 56 * H.bigSc, "#fb7185"); ctx.restore(); }
+        ctx.save(); ctx.translate(128, 290); ctx.scale(H.sc * 1.3, H.sc * 1.3);
         if (H.on) heart(ctx, 0, 0, 18, "#ef4444"); else { heart(ctx, 0, 0, 18, "#64748b"); heart(ctx, 0, 0, 12, PANEL); }
         ctx.restore();
         ctx.save(); ctx.beginPath(); ctx.rect(150, 274, 120, 32); ctx.clip();
@@ -1861,7 +1861,10 @@
         {
           id: "big", name: { en: "Big Heart on Post", ko: "사진 위 큰 하트" }, param: "scale 0 → 1.2 → 1",
           cap: { en: "A *big heart* blooms on the post itself.", ko: "사진 위에 *큰 하트*가 피어나요." },
-          like(w, H) { H.big = 1; H.bigSc = 0; w.tween(H, { bigSc: 1 }, 0.3, "back", () => w.after(0.8, () => w.tween(H, { big: 0 }, 0.3, "in"))); },
+          like(w, H) {
+            H.big = 1; H.bigSc = 0; w.tween(H, { bigSc: 1 }, 0.3, "back", () => w.after(0.8, () => w.tween(H, { big: 0 }, 0.3, "in")));
+            ring(w, 270, 150, 40, 140, "251,113,133", 0.5, 8);
+          },
         },
         {
           id: "roll", name: { en: "Count Rolls", ko: "숫자 굴리기" }, param: "slide 26px",

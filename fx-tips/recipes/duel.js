@@ -38,7 +38,7 @@
   const BLACK = {};
   const black = key => BLACK[key] || (BLACK[key] = tinted(SPR[key].c, "#05060a"));
   // 연출 처음부터 다시: 남은 타이머·트윈·카메라를 비움
-  const restart = w => { w.timers.length = 0; w.tweens.length = 0; w.slowT = 0; w.ts = 1; w.stopT = 0; w.cam.tx = w.cam.ty = 0; w.camZ = 0; };
+  const restart = w => { w.timers.length = 0; w.tweens.length = 0; w.slowT = 0; w.ts = 1; w.stopT = 0; w.cam.tx = w.cam.ty = 0; w.camZ = 0; if (w.blade) w.blade.a = -1.1; };
   const camHold = w => { if (w.camZ) w.zoom = Math.max(w.zoom, w.camZ); };
   const handH = a => ({ x: a.x + a.ox + a.w * 0.4, y: a.gy + a.oy - a.h * 0.55 });
   const handF = a => ({ x: a.x + a.ox - a.w * 0.3, y: a.gy + a.oy - a.h * 0.36 });
@@ -107,6 +107,13 @@
     ctx.fillStyle = "#4ade80"; ctx.fillRect(x, y, W * Math.max(0, a.hp) / a.maxHp, H);
     label(ctx, "YOU", x, y - 11, 11, "rgba(255,255,255,0.8)", "left", "'JetBrains Mono', monospace", 700);
   }
+  // 주인공의 맨 칼: 기본 상태에서도 '베었다'가 보이게
+  const blade = w => w.blade || (w.blade = { a: -1.1 });
+  function heroSword(w, ctx) { const h = w.hero; if (h.alpha <= 0) return; const p = handH(h); drawSword(ctx, p.x, p.y, blade(w).a, 72); }
+  function swing(w) {
+    const s = blade(w); s.a = -2.0;
+    w.tween(s, { a: 0.7 }, 0.12, "in", () => w.after(0.22, () => w.tween(s, { a: -1.1 }, 0.3, "out")));
+  }
   const growl = w => w.play(() => { nz({ dur: 0.9, type: "lowpass", f: 500, f2: 140, q: 3, vol: 0.55 }); tn({ type: "sawtooth", f: 90, f2: 55, dur: 0.9, vol: 0.12 }); tn({ type: "square", f: 64, f2: 48, dur: 0.8, vol: 0.08 }); });
   const clang = w => w.play(() => { tn({ type: "triangle", f: 2100, f2: 1900, dur: 0.5, vol: 0.18 }); tn({ type: "triangle", f: 3150, dur: 0.3, vol: 0.08 }); nz({ dur: 0.08, type: "highpass", f: 3000, vol: 0.4 }); });
 
@@ -120,9 +127,9 @@
       setup(w) { art(); w.hero = w.actor("hero", { home: 110 }); w.boss = w.actor("duel-boss", { home: 400 }); w.dim = 0; w.card = null; },
       fire(w) {
         restart(w);
-        const b = w.boss; b.oy = -440; w.dim = 0; w.card = null; w.hero.ox = 0;
+        const b = w.boss; b.oy = -300; w.dim = 0; w.card = null; w.hero.ox = 0;
         w.emit("start", b);
-        w.tween(b, { oy: 0 }, 0.26, "in", () => {
+        w.tween(b, { oy: 0 }, 0.36, "in", () => {
           w.emit("land", b);
           w.after(0.08, () => w.emit("roar", b));
           w.after(0.14, () => w.emit("title", b));
@@ -272,9 +279,9 @@
       fire(w) {
         restart(w);
         const b = w.boss, h = w.hero;
-        b.hp = 560; b.oy = 0; w.ph = 0; w.bubble = 0;
-        w.tween(h, { x: 270 }, 0.1, "in", () => {
-          b.hp = 500; b.ox += 8; w.emit("phase", b);
+        b.hp = 640; b.oy = 0; w.ph = 0; w.bubble = 0;
+        w.tween(h, { x: 270 }, 0.2, "in", () => {
+          swing(w); b.hp = 500; b.ox += 18; w.emit("phase", b);
           if (!w.on("morph")) w.ph = 1;
           w.after(0.12, () => w.tween(h, { x: h.home }, 0.25, "inout"));
         });
@@ -282,7 +289,7 @@
       update(w, dt) { w.bubble = Math.max(0, w.bubble - dt); },
       drawFront(w, ctx) {
         const b = w.boss;
-        drawOver(ctx, b, SPR["duel-boss2"].c, w.ph);
+        drawOver(ctx, b, SPR["duel-boss2"].c, w.ph); heroSword(w, ctx);
         if (w.bubble > 0) {
           const c = chest(b), r = 130 + Math.sin(w.time * 20) * 3, a = Math.min(1, w.bubble * 3);
           ctx.globalCompositeOperation = "lighter"; glow(ctx, c.x + 10, c.y, r, "251,113,133", 0.25 * a);
@@ -298,7 +305,7 @@
         {
           id: "freeze", name: { en: "Freeze Frame", ko: "정지 화면" }, param: "stop 250ms",
           cap: { en: "*Stop everything* on the hit that crosses 50%.", ko: "50%를 넘기는 한 방에 *모두 정지*." },
-          phase(w, b) { w.hitstop(0.25); b.flash = 2.2; },
+          phase(w, b) { w.hitstop(0.25); b.flash = 0.9; },
         },
         {
           id: "lift", name: { en: "Lift & Shield", ko: "떠오르며 무적" }, param: "rise 40px · 1.2s",
@@ -354,8 +361,8 @@
         w.after(0.12, () => { w.rage = 1; w.emit("rage", b); say(w, "ENRAGED", b.x, 50, 15, "#9ca3af", 0.8, 0); });
         w.after(0.45, () => {
           w.emit("lunge", b);
-          w.tween(b, { x: 250 }, 0.14, "in", () => {
-            h.ox -= 30; h.tint = 1; w.emit("hit", b);
+          w.tween(b, { x: 250 }, 0.22, "in", () => {
+            h.ox -= 55; h.tint = 1; w.emit("hit", b);
             w.tween(b, { x: b.home }, 0.35, "inout");
           });
         });
@@ -414,7 +421,7 @@
         const slam = () => {
           w.emit("dodge", h);
           w.tween(h, { x: 80 }, 0.22, "out");
-          w.tween(w.club, { rot: -2.0 }, 0.12, "in", () => {
+          w.tween(w.club, { rot: -2.0 }, 0.18, "in", () => {
             w.zone = null; w.emit("slam", { x: 222, y: G });
             w.after(0.5, () => w.tween(w.club, { rot: 0.2 }, 0.4, "inout"));
             w.after(0.7, () => w.tween(h, { x: h.home }, 0.4, "inout"));
@@ -493,7 +500,7 @@
         restart(w);
         const h = w.hero, f = w.foe;
         h.x = h.home; f.x = f.home; h.ox = f.ox = 0; w.lock = null;
-        w.tween(h, { x: 222 }, 0.18, "in"); w.tween(f, { x: 330 }, 0.18, "in", () => {
+        w.tween(h, { x: 222 }, 0.26, "in"); w.tween(f, { x: 330 }, 0.26, "in", () => {
           w.lock = { x: 272, y: G - 112, push: 0 };
           w.emit("lock", w.lock);
           w.after(w.on("struggle") ? 1.1 : 0.12, () => {
@@ -579,14 +586,15 @@
         const h = w.hero, b = w.boss;
         Object.assign(b, { alpha: 1, rot: 0, oy: 0, flash: 0 }); b.hp = 60; h.x = h.home; w.lb = 0; w.sil = 0;
         w.emit("start");
-        w.after(0.12, () => w.tween(h, { x: 500 }, 0.16, "in", () => { h.sx = 1.3; h.sy = 0.8; }));
-        w.after(0.2, () => {
+        w.after(0.12, () => { swing(w); w.tween(h, { x: 500 }, 0.24, "in", () => { h.sx = 1.3; h.sy = 0.8; }); });
+        w.after(0.26, () => {
           b.hp = 0; w.emit("blow", { x: b.x - 10, y: G - 110 }, b);
           if (!w.on("collapse")) w.after(0.3, () => { b.alpha = 0; });
         });
         w.after(1.9, () => w.tween(h, { x: h.home }, 0.4, "inout"));
       },
       update(w, dt) { w.sil = Math.max(0, w.sil - dt / Math.max(0.05, w.ts)); },
+      drawFront(w, ctx) { heroSword(w, ctx); },
       drawHud(w, ctx) {
         if (w.sil > 0) {
           ctx.fillStyle = "#f5f5f0"; ctx.fillRect(-100, -100, 740, 560);
@@ -650,10 +658,10 @@
         if (w.busy) return;
         w.busy = true;
         const h = w.hero, b = w.boss;
-        w.tween(h, { x: 270 }, 0.1, "in", () => {
+        w.tween(h, { x: 270 }, 0.17, "in", () => {
           const down = w.down > 0, d = down ? 120 : 30, at = { x: b.x - 70, y: G - 120 };
           b.hp -= d; if (b.hp <= 0) b.hp = b.maxHp;
-          b.ox += 6;
+          b.ox += 16; swing(w);
           w.emit("hit", at, d, down);
           if (!down && (w.post.v += 34) >= 100) { w.post.v = 100; w.down = 2.4; w.emit("break", b); }
           w.after(0.08, () => w.tween(h, { x: h.home }, 0.22, "inout", () => { w.busy = false; }));
@@ -664,6 +672,7 @@
         w.post.flash = Math.max(0, w.post.flash - dt * 4);
         if (w.down > 0 && (w.down -= dt) <= 0) { w.post.v = 0; w.emit("recover", w.boss); }
       },
+      drawFront(w, ctx) { heroSword(w, ctx); },
       drawHud(w, ctx) {
         topBar(ctx, w.boss, { name: "GOBLIN WARLORD", lag: true });
         if (w.on("gauge")) {
@@ -841,8 +850,8 @@
           cap: { en: "End on one *huge* blast. White screen, *rays*.", ko: "마지막은 *엄청 크게*. 하얀 화면, *빛줄기*." },
           final(w, b) {
             const c = chest(b);
-            boom(w, c.x, c.y, 2.4); w.flash("255,255,255", 0.9); w.shake(0.8);
-            w.spawn({ type: "rays", x: c.x, y: c.y, size: 320, n: 14, vr: 1.2, life: 1.2, color: "255,220,150" });
+            boom(w, c.x, c.y, 2.4); w.flash("255,255,255", 0.45); w.shake(0.8);
+            w.spawn({ type: "rays", x: c.x, y: c.y, size: 320, n: 14, vr: 1.2, life: 1.2, under: true, color: "255,220,150" });
           },
         },
         {
@@ -904,7 +913,7 @@
         {
           id: "wind", name: { en: "Drifting Dust", ko: "흩날리는 먼지" }, param: "streaks 25/s",
           cap: { en: "*Wind* and dust drifting by. Silence you can *see*.", ko: "*바람*에 먼지가 쓸려요. *보이는* 정적." },
-          update(w, dt) { if (Math.random() < dt * 25) w.spawn({ type: "spark", x: rand(-20, 300), y: rand(150, G), vx: rand(260, 420), vy: rand(-10, 10), life: rand(0.6, 1.1), size: 1.4, color: "200,190,170" }); },
+          update(w, dt) { if (Math.random() < dt * 25) w.spawn({ type: "spark", x: rand(-20, 300), y: rand(150, G), vx: rand(260, 420), vy: rand(-10, 10), life: rand(0.6, 1.1), size: 2.6, color: "200,190,170" }); },
         },
         {
           id: "signal", name: { en: "The Signal", ko: "신호" }, param: "“!” 0.6s in",
@@ -1006,15 +1015,16 @@
         restart(w);
         const h = w.hero, f = w.foe;
         w.respawn(f); f.sx = f.sy = 1; h.x = h.home; h.oy = 0; w.pip.lit = false; w.spot = 0; w.ban = null;
-        w.tween(h, { x: 300 }, 0.1, "in", () => {
-          f.flash = 1; w.pip.lit = true;
+        w.tween(h, { x: 300 }, 0.2, "in", () => {
+          swing(w); f.flash = 1; w.pip.lit = true;
           w.emit("ko", f, { x: f.x - 40, y: G - 80 });
           if (!f.flying) f.alpha = 0;
-          say(w, "win", 270, 96, 16, "#9ca3af", 1.4, 0);
+          if (!w.on("ko")) say(w, "win", 270, 96, 16, "#9ca3af", 1.4, 0);
           w.after(0.15, () => w.tween(h, { x: 250 }, 0.3, "out"));
         });
       },
       update(w, dt) { camHold(w); w.pip.pop = Math.max(0, w.pip.pop - dt * 3); if (w.ban) w.ban.t += dt; },
+      drawFront(w, ctx) { heroSword(w, ctx); },
       drawBack(w, ctx) {
         if (w.spot <= 0) return;
         const x = w.hero.x, g = ctx.createLinearGradient(0, 0, 0, G);
@@ -1085,8 +1095,8 @@
       fire(w) {
         restart(w);
         const h = w.hero, f = w.foe; w.respawn(f); f.sx = f.sy = 1; h.x = h.home; w.pf = null;
-        w.tween(h, { x: 300 }, 0.1, "in", () => {
-          w.fly(f, 380, -500, 8);
+        w.tween(h, { x: 300 }, 0.2, "in", () => {
+          swing(w); w.fly(f, 380, -500, 8);
           w.pf = { t: 0, drop: false, gold: -1, score: 0, shown: 0 };
           w.emit("win", w.pf);
           w.after(0.1, () => w.tween(h, { x: h.home }, 0.3, "inout"));
@@ -1097,6 +1107,7 @@
         p.t += dt; if (p.gold >= 0) p.gold += dt;
         p.shown += (p.score - p.shown) * Math.min(1, dt * 5);
       },
+      drawFront(w, ctx) { heroSword(w, ctx); },
       drawHud(w, ctx) {
         const p = w.pf, h = w.hero;
         const gold = p && p.gold >= 0, X = 40, Y = 306, W = 150;
@@ -1188,7 +1199,7 @@
           ctx.strokeStyle = "#fff"; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(L.gx, G); ctx.stroke();
           glow(ctx, c.x, c.y, 50, "251,113,133", 1); glow(ctx, L.gx, G, 60, "255,200,200", 0.9);
           ctx.globalCompositeOperation = "source-over";
-        } else { ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(L.gx, G); ctx.stroke(); }
+        } else { ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(L.gx, G); ctx.stroke(); }
       },
       steps: [
         {
@@ -1330,8 +1341,8 @@
         if (w.busy) return;
         w.busy = true;
         const h = w.hero, S = w.sh;
-        w.tween(h, { x: 230 }, 0.1, "in", () => {
-          const p = { x: 290 + rand(-6, 6), y: G - 110 + rand(-40, 40) };
+        w.tween(h, { x: 230 }, 0.17, "in", () => {
+          const p = { x: 290 + rand(-6, 6), y: G - 110 + rand(-40, 40) }; swing(w); w.boss.ox += 6;
           if (S.up > 0.5) {
             S.hp--; w.emit("hit", p, 4 - S.hp);
             if (S.hp <= 0) { S.up = 0; w.emit("break", w.boss, p); w.after(2.2, () => { S.hp = 4; S.cracks = []; S.up = 1; }); }
@@ -1341,6 +1352,7 @@
       },
       update(w, dt) { w.sh.flash = Math.max(0, w.sh.flash - dt * 4); },
       drawFront(w, ctx) {
+        heroSword(w, ctx);
         const S = w.sh, b = w.boss, cx = b.x - 10, cy = G - 104;
         if (S.up <= 0) return;
         ctx.save(); ctx.translate(cx, cy);
@@ -1382,12 +1394,12 @@
         {
           id: "flash", name: { en: "Break Flash", ko: "깨지는 섬광" }, param: "stop 120ms · flash",
           cap: { en: "*Freeze* and flash cyan on the breaking hit.", ko: "깨지는 한 방에 *멈칫*, 하늘색 *번쩍*." },
-          break(w) { w.hitstop(0.12); w.flash("165,243,252", 0.5); w.shake(0.45); },
+          break(w) { w.hitstop(0.12); w.flash("165,243,252", 0.3); w.shake(0.45); },
         },
         {
           id: "stun", name: { en: "Boss Exposed", ko: "보스 노출" }, param: "push 40 · BREAK!",
           cap: { en: "The boss *reels*, “BREAK!” — now it's *open*.", ko: "보스가 *휘청*, “BREAK!”. 이제 *뚫렸어요*." },
-          break(w, b) { b.ox += 40; b.flash = 1.2; b.vib = 6; say(w, "BREAK!", 300, 120, 38, "#67e8f9", 1, -20); },
+          break(w, b) { b.ox += 40; b.flash = 0.8; b.vib = 6; say(w, "BREAK!", 300, 120, 38, "#67e8f9", 1, -20); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "glass tink → crash",
@@ -1482,10 +1494,10 @@
         restart(w);
         const h = w.hero, b = w.boss;
         Object.assign(b, { oy: 0, rot: 0, ox: 0 }); h.x = h.home; h.oy = 0; w.fl = 0;
-        w.tween(h, { x: 290 }, 0.14, "in", () => {
+        w.tween(h, { x: 290 }, 0.22, "in", () => {
           const p = { x: 318, y: G - 140 };
           h.sx = 0.8; h.sy = 1.25; w.tween(h, { oy: -40 }, 0.12, "out", () => w.tween(h, { oy: 0 }, 0.2, "in"));
-          b.flash = 1.5; w.emit("smash", p, b);
+          b.flash = 0.8; w.emit("smash", p, b);
           if (!w.on("launch")) b.ox += 30;
           w.after(1.3, () => w.tween(h, { x: h.home }, 0.4, "inout"));
         });
@@ -1525,8 +1537,8 @@
           cap: { en: "A *shockwave* and *rays* burst from the fist.", ko: "주먹에서 *충격파*와 *빛줄기*가 터져요." },
           smash(w, p) {
             w.spawn({ type: "ring", x: p.x, y: p.y, size: 10, size1: 130, life: 0.4, w: 12, color: "255,240,200" });
-            w.spawn({ type: "rays", x: p.x, y: p.y, size: 160, n: 12, vr: 3, life: 0.5, color: "255,230,150" });
-            w.spawn({ type: "star", x: p.x, y: p.y, size: 80, life: 0.14, color: "255,255,255" });
+            w.spawn({ type: "rays", x: p.x, y: p.y, size: 160, n: 12, vr: 3, life: 0.5, under: true, color: "255,230,150" });
+            w.spawn({ type: "star", x: p.x, y: p.y, size: 50, life: 0.1, color: "255,255,255" });
           },
         },
         {
@@ -1557,7 +1569,7 @@
         const h = w.hero, b = w.boss; h.x = h.home; w.club.rot = 0.3; w.cool = 0; b.ox = 0;
         w.tween(w.club, { rot: 0.9 }, 0.3, "out", () => w.tween(w.club, { rot: -1.7 }, 0.2, "in", () => w.tween(w.club, { rot: 0.3 }, 0.5, "inout")));
         w.after(0.4, () => { w.emit("dodge", h); w.tween(h, { x: 130 }, 0.18, "out"); });
-        w.after(0.95, () => w.tween(h, { x: 300 }, 0.1, "in", () => {
+        w.after(0.95, () => w.tween(h, { x: 300 }, 0.16, "in", () => {
           const p = { x: 330, y: G - 110 }; b.flash = 1; b.ox += 14;
           w.emit("counter", p);
           w.after(0.3, () => w.tween(h, { x: h.home }, 0.3, "inout"));
@@ -1782,7 +1794,7 @@
         const h = w.hero, b = w.boss;
         Object.assign(h, { x: h.home, oy: 0, rot: 0, hp: 100, hpLag: 100 });
         const grab = () => {
-          w.tween(h, { x: 335, oy: -90 }, 0.12, "out", () => {
+          w.tween(h, { x: 335, oy: -90 }, 0.2, "out", () => {
             w.emit("grab", h);
             for (let i = 0; i < 3; i++) w.after(0.12 + i * 0.16, () => { h.hp -= 8; w.emit("squeeze", h, i); });
             w.after(0.6, () => {
@@ -1856,7 +1868,7 @@
         const h = w.hero, f = w.foe;
         Object.assign(f, { x: f.home, rot: 0, ox: 0 }); h.x = h.home; w.ha = -0.9; w.fa = -2.0;
         w.tween(w, { fa: -1.2 }, 0.2, "out");
-        w.after(0.22, () => w.tween(f, { x: 330 }, 0.12, "in", () => {
+        w.after(0.22, () => w.tween(f, { x: 330 }, 0.18, "in", () => {
           w.fa = -2.9; w.ha = -1.5;
           const p = { x: 285, y: G - 105 };
           w.emit("parry", p, f);
@@ -1931,8 +1943,8 @@
         restart(w);
         const h = w.hero, b = w.boss, B = w.B;
         Object.assign(B, { v: 0.12, col: "#ef4444", badge: 0, under: null }); Object.assign(b, { h: 210, w: 210, tint: 0 }); h.x = h.home;
-        w.tween(h, { x: 280 }, 0.1, "in", () => {
-          B.v = 0; b.flash = 1; w.emit("die", b);
+        w.tween(h, { x: 280 }, 0.2, "in", () => {
+          swing(w); B.v = 0; b.flash = 1; b.ox += 16; w.emit("die", b);
           w.after(0.1, () => w.tween(h, { x: h.home }, 0.3, "inout"));
           w.after(w.on("fakeout") ? 0.7 : 0.05, () => { B.v = 1; Object.assign(b, { h: 210, w: 210 }); w.emit("revive", b, B); });
         });
@@ -1947,6 +1959,7 @@
         }
       },
       update(w, dt) { w.B.badge = Math.max(w.B.badge > 0 ? 0.7 : 0, w.B.badge - dt * 2); },
+      drawFront(w, ctx) { heroSword(w, ctx); },
       steps: [
         {
           id: "fakeout", name: { en: "Fake Death", ko: "죽은 척" }, param: "700ms of silence",

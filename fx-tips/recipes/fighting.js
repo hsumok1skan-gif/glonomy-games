@@ -17,7 +17,11 @@
     a.hp = Math.max(0, a.hp - n); a.lagWait = 0.35;
     if (floor && a.hp <= floor && !a.refill) { a.refill = true; w.after(0.9, () => { a.hp = a.hpLag = a.maxHp; a.refill = false; }); }
   };
-  const tick = (w, dt) => { lagBar(w.hero, dt); lagBar(w.foe, dt); };
+  const tick = (w, dt) => {
+    lagBar(w.hero, dt); lagBar(w.foe, dt);
+    // 주먹이 너무 빨리 들어가지 않게 (맨 그림에서도 보이도록)
+    for (const a of [w.hero, w.foe]) if (Math.abs(a.ox) > 4 && a.k > 7) a.k = 7;
+  };
   // 공중 몸: vy·vx 로 움직이고 땅에 닿으면 true
   const body = (a, dt, g = 2000) => {
     if (!a.air) return false;
@@ -105,6 +109,21 @@
     ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, TAU); ctx.fill();
   };
   const swish = w => w.play(() => nz({ type: "bandpass", f: 1400, f2: 3800, q: 1.4, dur: 0.09, vol: 0.18 }));
+  // 기본 동작: 몸이 앞으로 나가면 팔(주먹)도 쭉 뻗어요. 효과 없이도 "때렸다"가 보이게
+  const limb = (ctx, a, dir, light, dark) => {
+    const reach = Math.min(70, dir * a.ox * 2.2);
+    if (reach < 12 || !a.alive || a.alpha <= 0 || Math.abs(a.rot) > 0.3) return;
+    const x = a.x + a.ox + dir * 16, y = a.gy + a.oy - a.h * 0.6 * a.sy;
+    ctx.save(); ctx.fillStyle = light; ctx.strokeStyle = dark; ctx.lineWidth = 2.5; ctx.lineJoin = "round";
+    ctx.beginPath(); ctx.roundRect(dir > 0 ? x : x - reach, y - 6, reach, 12, 4); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(dir > 0 ? x + reach - 6 : x - reach - 14, y - 11, 20, 22, 6); ctx.fill(); ctx.stroke();
+    ctx.restore();
+  };
+  const arms = (w, ctx) => {
+    if (!w.hero || !w.foe || w.hero.key !== "hero") return;
+    limb(ctx, w.hero, 1, "#ece9e2", "#55565f");
+    limb(ctx, w.foe, -1, "#8cc35a", "#2c4520");
+  };
 
   RECIPES.push(
     /* 1 ─ 맞기 / 막기 / 카운터 */
@@ -120,7 +139,7 @@
         w.after(0.05, () => {
           const p = cp(w);
           hurt(w, w.foe, kind === "block" ? 2 : kind === "hit" ? 10 : 18);
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "210,210,210" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit(kind, p);
         });
       },
@@ -193,7 +212,7 @@
           w.hero.ox = 26; w.foe.flash = 1; w.foe.ox += 7;
           C.n++; C.dmg += 10 + C.n * 4; C.t = 0.7;
           hurt(w, w.foe, 5);
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 6, life: 0.15, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hit", C, p);
         });
         w.after(1.18, () => { w.emit("end", C); w.busy = false; });
@@ -586,7 +605,7 @@
           w.tween(h, { x: f.x - 90 }, 0.08, "in", () => {
             const p = cp(w);
             hurt(w, f, 30); f.flash = 1.4; f.ox += 70; f.k = 4;
-            w.spawn({ type: "circle", x: p.x, y: p.y, size: 8, life: 0.2, color: "230,230,230" });
+            w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
             w.emit("hit", p);
             w.after(0.35, () => w.tween(h, { x: h.home }, 0.3, "inout", () => { w.busy = false; }));
           });
@@ -662,7 +681,7 @@
         if (M.v >= 3) { if (++M.idle < 2) return; M.v = M.show = M.idle = 0; return; }
         const p = cp(w);
         w.hero.ox = 30; w.foe.flash = 1; w.foe.ox += 12; hurt(w, w.foe, 6);
-        w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "230,230,230" });
+        w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
         const lv = Math.floor(M.v);
         M.v = Math.min(3, M.v + 0.31);
         w.emit("gain", M, p);
@@ -737,7 +756,7 @@
         const p = cp(w);
         w.hero.ox = 36;
         g.v = Math.max(0, g.v - 0.34);
-        w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "210,210,210" });
+        w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
         if (g.v > 0.01) { f.ox += 10; hurt(w, f, 1); w.emit("block", p, g); return; }
         g.stag = 1.1; hurt(w, f, 12); f.flash = 1; f.ox += 20;
         w.emit("crush", p, g);
@@ -829,7 +848,7 @@
         w.after(0.06, () => {
           const p = { x: h.x + h.ox + 40, y: G - 88 };
           h.ox -= 4;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "210,210,210" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("just", p);
         });
       },
@@ -965,7 +984,7 @@
         w.tween(h, { x: f.x - 96 }, 0.07, "in", () => {
           const p = cp(w);
           f.hp = 0; f.lagWait = 0.4; f.flash = 1;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 8, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("ko", p, f);
           if (!f.flying) w.tween(f, { rot: 1.35 }, 0.35, "in");
           w.after(1.5, () => {
@@ -1034,7 +1053,7 @@
         w.after(0.04, () => {
           const p = cp(w);
           w.chip.from = f.hp; hurt(w, f, 4); f.ox += 6;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 6, life: 0.2, color: "210,210,210" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("chip", p, f);
         });
       },
@@ -1096,7 +1115,7 @@
         w.after(0.05, () => {
           const p = cp(w, [98, 84, 70][s]);
           hurt(w, w.foe, [4, 9, 16][s]); w.foe.flash = 1;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "220,220,220" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hit", p, s);
         });
       },
@@ -1159,7 +1178,7 @@
         w.tween(h, { x: f.x + f.ox - 100 }, 0.07, "in", () => {
           const p = cp(w);
           h.ox = 18; hurt(w, f, 1);
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 6, life: 0.2, color: "210,210,210" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("block", p);
           w.after(0.45, () => w.tween(h, { x: h.home }, 0.3, "inout", () => { w.busy = false; }));
         });
@@ -1328,7 +1347,7 @@
         w.after(0.07, () => {
           const p = cp(w, 96);
           hurt(w, f, 16); f.flash = 1; f.air = true; f.vy = -520; f.vx = 120;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 8, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hit", p);
         });
       },
@@ -1395,7 +1414,7 @@
         const h = w.hero, f = w.foe;
         const strike = (n, dmg, push) => {
           const p = cp(w); hurt(w, f, dmg); f.flash = 1; f.ox += push; f.k = 4;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hit", p, n);
         };
         h.ox = 30;
@@ -1469,7 +1488,7 @@
           if (!f.air) return;
           const q = { x: f.x - 34, y: f.gy + f.oy - 70 };
           h.ox = 26; f.flash = 1; hurt(w, f, 5);
-          w.spawn({ type: "circle", x: q.x, y: q.y, size: 7, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: q.x, y: q.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("air", q, i + 2);
         }));
         w.after(0.62, () => {
@@ -1538,7 +1557,7 @@
         w.after(0.04, () => {
           const p = cp(w);
           hurt(w, f, 12); f.flash = 1; f.air = true; f.vy = -380; f.vx = 150;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 8, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.tween(f, { rot: 1.35 }, 0.25, "out");
         });
       },
@@ -1606,7 +1625,7 @@
         f.ox = -14; h.ox = 36;
         w.after(0.05, () => {
           const p = cp(w); hurt(w, f, 5);
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "220,220,220" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hit", p);
         });
       },
@@ -1672,7 +1691,7 @@
           w.tween(h, { rot: 0, oy: 0 }, 0.07, "out", () => {
             const p = cp(w, 100);
             h.ox = 30; hurt(w, f, 14); f.flash = 1; f.air = true; f.vy = -560; f.vx = 200;
-            w.spawn({ type: "circle", x: p.x, y: p.y, size: 8, life: 0.2, color: "230,230,230" });
+            w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
             w.emit("hit", p);
           });
         });
@@ -1743,7 +1762,7 @@
         w.after(0.05, () => {
           const p = cp(w);
           f.hp = 0; f.flash = 1; w.koT = 1.6;
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 8, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.tween(f, { rot: 1.35 }, 0.3, "in");
           w.emit("ko", p);
           w.after(0.2, () => w.emit("perfect", h));
@@ -2067,7 +2086,7 @@
           const d = 24, p = { x: h.x + 34, y: G - 90 };
           h.ox -= 10; h.flash = 0.6; w.since = 0;
           hurt(w, h, d);
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hurt", h, d, p);
         });
       },
@@ -2131,7 +2150,7 @@
         const f = w.foe, D = w.dz;
         [0, 0.14].forEach((t, i) => w.after(t, () => {
           const p = cp(w); w.hero.ox = 34; f.flash = 1; f.ox += 10; hurt(w, f, 8);
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "230,230,230" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hit", p, i + 1);
           if (i === 1) { D.t = 1.3; w.emit("stun", p); }
         }));
@@ -2269,7 +2288,7 @@
         w.after(0.05, () => {
           const p = cp(w, [98, 84, 70][s]);
           hurt(w, w.foe, [4, 9, 16][s]); w.foe.flash = 1; w.foe.ox += [6, 14, 28][s];
-          w.spawn({ type: "circle", x: p.x, y: p.y, size: 7, life: 0.2, color: "220,220,220" });
+          w.spawn({ type: "circle", x: p.x, y: p.y, size: 12, life: 0.16, color: "245,245,245" });
           w.emit("hit", p, s);
         });
       },
@@ -2318,4 +2337,11 @@
       ],
     },
   );
+  // 격투 장면 레시피는 모두 팔 그리기를 앞쪽 그림 단계에 끼워 넣어요
+  for (const r of RECIPES) {
+    if (!r.id.startsWith("fighting-") || r.armed) continue;
+    const front = r.drawFront;
+    r.armed = true;
+    r.drawFront = function (w, ctx) { arms(w, ctx); if (front) front.call(this, w, ctx); };
+  }
 })();

@@ -134,7 +134,7 @@
         const S = w.S, u = S.u; if (!u) return;
         const x = u.x + u.ox, y = u.gy + u.oy, r = 36 * S.r;
         if (w.on("ring")) circle(ctx, x, y, r, "rgba(198,244,50,0.14)", "#c6f432", 4);
-        else circle(ctx, x, y, r, null, "rgba(255,255,255,0.35)", 1.5);
+        else circle(ctx, x, y, r, null, "rgba(255,255,255,0.8)", 3);
         if (w.on("spin")) {
           ctx.setLineDash([12, 9]); ctx.lineDashOffset = -S.spin;
           circle(ctx, x, y, r + 10, null, "rgba(198,244,50,0.75)", 2.5);
@@ -229,9 +229,9 @@
           id: "marker", name: { en: "Ground Marker", ko: "바닥 표시" }, param: "ring 38 → 6",
           cap: { en: "Mark the spot. A ring that *shrinks into* it.", ko: "찍은 자리에 고리가 *쏙* 줄어들어요." },
           order(w, d) {
-            w.spawn({ type: "ring", x: d.x, y: d.y, size: 40, size1: 6, life: 0.5, w: 5, color: LIME });
-            w.spawn({ type: "ring", x: d.x, y: d.y, size: 26, size1: 4, life: 0.4, w: 3, color: "255,255,255" });
-            w.spawn({ type: "glow", x: d.x, y: d.y, size: 30, size1: 6, life: 0.4, color: LIME });
+            w.spawn({ type: "ring", x: d.x, y: d.y, size: 60, size1: 8, life: 0.5, w: 7, color: LIME });
+            w.spawn({ type: "ring", x: d.x, y: d.y, size: 36, size1: 4, life: 0.4, w: 4, color: "255,255,255" });
+            w.spawn({ type: "ellipse", round: true, under: true, x: d.x, y: d.y, size: 34, life: 1.2, hold: true, color: LIME });
           },
         },
         {
@@ -261,7 +261,7 @@
           id: "dust", name: { en: "Start Dust", ko: "출발 먼지" }, param: "4 puffs / unit",
           cap: { en: "A puff of *dust* as they set off.", ko: "출발할 때 *먼지*가 폴폴." },
           order(w) {
-            for (const u of w.units) for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: u.x + rand(-10, 10), y: u.gy + rand(-10, 10), vx: rand(-60, 60), vy: rand(-60, 60), floor: 3, size: 5, size1: 16, life: 0.5, color: "200,195,180" });
+            for (const u of w.units) for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: u.x + rand(-10, 10), y: u.gy + rand(-10, 10), vx: rand(-60, 60), vy: rand(-60, 60), floor: 3, size: 4, size1: 12, life: 0.45, color: "150,140,120", add: false });
           },
         },
         {
@@ -295,9 +295,9 @@
         w.units.forEach((u, i) => w.after(0.1 + i * 0.07, () => {
           if (!f.alive) return;
           const a = Math.atan2(f.gy - u.gy, f.x - u.x); u.rot = a;
-          const b = { x: u.x + Math.cos(a) * 26, y: u.gy + Math.sin(a) * 26, vx: Math.cos(a) * 950, vy: Math.sin(a) * 950, r: 3.5, color: "#e2e8f0" };
+          const b = { x: u.x + Math.cos(a) * 26, y: u.gy + Math.sin(a) * 26, vx: Math.cos(a) * 800, vy: Math.sin(a) * 800, r: 5, color: "#e2e8f0" };
           b.test = p => f.alive && Math.hypot(p.x - f.x, p.y - f.gy) < 36;
-          b.onHit = p => { f.hp -= 10; w.emit("hit", p, f); if (f.hp <= 0) w.kill(f); };
+          b.onHit = p => { f.hp -= 10; f.ox += Math.sign(p.vx) * 4; w.emit("hit", p, f); if (f.hp <= 0) w.kill(f); };
           w.emit("shot", b, u);
           w.shoot(b);
         }));
@@ -349,7 +349,8 @@
           cap: { en: "The target *flashes* and gets *shoved*.", ko: "표적이 *번쩍*하고 *밀려요*." },
           hit(w, p, f) {
             f.flash = 1; f.ox += Math.sign(p.vx) * 7; f.oy += p.vy / 950 * 7;
-            sparks(w, p.x, p.y, 6, "255,220,160", [120, 360]);
+            sparks(w, p.x, p.y, 12, "255,220,160", [160, 440]);
+            w.spawn({ type: "glow", x: p.x, y: p.y, size: 36, size1: 8, life: 0.25, color: "255,200,120" });
           },
         },
         {
@@ -533,7 +534,7 @@
         {
           id: "flash", name: { en: "White Flash", ko: "하얀 번쩍임" }, param: "overlay 0.3s",
           cap: { en: "Flash the whole building *white*.", ko: "건물 전체가 *하얗게* 번쩍." },
-          done(w, B) { B.flash = 1; },
+          done(w, B) { B.flash = 0.75; },
         },
         {
           id: "dust", name: { en: "Dust Ring", ko: "먼지 고리" }, param: "16 puffs",
@@ -625,8 +626,8 @@
           id: "chips", name: { en: "Mining Chips", ko: "캐는 파편" }, param: "6 sparks / swing",
           cap: { en: "Each swing *chips* bright shards off.", ko: "캘 때마다 *반짝이는 조각*이 튀어요." },
           mine(w, u, m) {
-            sparks(w, m.x - 14, m.y - 10, 6, "103,232,249", [120, 300]);
-            w.spawn({ type: "star", x: m.x - 12, y: m.y - 12, size: 14, life: 0.12, color: "255,255,255" });
+            sparks(w, m.x - 14, m.y - 10, 10, "103,232,249", [140, 360]);
+            w.spawn({ type: "star", x: m.x - 12, y: m.y - 12, size: 20, life: 0.15, color: "255,255,255" });
             u.ox += 6;
           },
         },
@@ -905,7 +906,7 @@
           ctx.save(); ctx.translate(x, p.y - (last ? (1 - t.pip) * 40 : 0)); ctx.scale(s, s);
           ctx.fillStyle = "#facc15"; ctx.strokeStyle = "#0b0c10"; ctx.lineWidth = 2; starPath(ctx, 0, 0, 11); ctx.fill(); ctx.stroke();
           ctx.restore();
-        } else label(ctx, "Lv " + t.lv, p.x, p.y + 10, 13, "rgba(255,255,255,0.6)");
+        } else label(ctx, "Lv " + t.lv, p.x, p.y + 10, 16, "rgba(255,255,255,0.8)");
       },
       steps: [
         {
@@ -913,7 +914,7 @@
           cap: { en: "A *beam of light* drops onto the tower.", ko: "타워에 *빛기둥*이 내려와요." },
           upgrade(w, t) {
             const p = isoPt(4.5, 2.5);
-            w.spawn({ type: "beam", x: p.x, y: p.y + 10, size: 46, h: 300, life: 1.1, color: "253,224,71" });
+            w.spawn({ type: "beam", under: true, x: p.x, y: p.y + 10, size: 46, h: 300, life: 1.1, color: "253,224,71" });
             t.aura = 1;
           },
         },
@@ -2570,6 +2571,7 @@
     const c = isoPt(3, 3), base = c.y + 38 * 0.95, W = 150;
     const img = SPR["strategy-hall"].c, H = W * img.height / img.width, top = base - H;
     const showAll = B.done;
+    if (!showAll && B.on && !B.frame && !B.rise) drawSpr(ctx, "strategy-hall", c.x, base, W, { alpha: 0.15 + 0.85 * B.p });
     if (!showAll && B.frame) {
       drawSpr(ctx, "strategy-hall", c.x, base, W, { alpha: 0.16 });
       ctx.strokeStyle = "rgba(251,191,36,0.8)"; ctx.lineWidth = 2;
@@ -2590,7 +2592,7 @@
         const n = 10, f = B.p * n;
         for (let i = 0; i < n; i++) { const k = Math.max(0, Math.min(1, f - i)); ctx.fillStyle = "rgba(255,255,255,0.12)"; ctx.fillRect(x + i * bw / n + 1, y, bw / n - 2, 12); if (k > 0) { ctx.fillStyle = "#fbbf24"; ctx.fillRect(x + i * bw / n + 1, y, (bw / n - 2) * k, 12); } }
         numText(ctx, Math.floor(B.p * 100) + "%", c.x, y - 18, 18, "#fde68a", "center");
-      } else label(ctx, Math.floor(B.p * 100) + "%", c.x, c.y - 10, 13, "rgba(255,255,255,0.55)");
+      } else label(ctx, Math.floor(B.p * 100) + "%", c.x, top - 14, 16, "rgba(255,255,255,0.75)");
     }
   }
 })();

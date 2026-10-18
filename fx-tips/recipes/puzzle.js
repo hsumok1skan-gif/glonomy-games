@@ -4,6 +4,10 @@
   /* ───── 이 파일 전용 도우미 ───── */
   const PAL = ["244,63,94", "56,189,248", "74,222,128", "250,204,21", "192,132,252", "251,146,60", "45,212,191"];
   const LIME = "198,244,50";
+  // 떨어지는 블록 계열은 한 가지 색조만 씀 (판: 진한 단계, 조각: 밝은 단계)
+  const SKY = ["14,165,233", "2,132,199", "3,105,161", "7,89,133"], SKY_HI = "125,211,252";
+  const VIO = ["139,92,246", "124,58,237", "109,40,217", "91,33,182"], VIO_HI = "196,181,253";
+  const EME = ["16,185,129", "5,150,105", "4,120,87", "6,95,70"], EME_HI = "110,231,183";
   // 둥근 블록 한 칸: 위는 밝게, 아래는 어둡게 (x, y = 가운데)
   function tile(ctx, x, y, s, c, k = 1, white = 0) {
     const h = (s / 2) * k;
@@ -29,7 +33,7 @@
     }
   }
   // 떠오르는 글자
-  function say(w, text, x, y, size = 26, color = "#fff", life = 0.8) { w.spawn({ type: "text", text, x, y, vy: -46, life, size, color }); }
+  function say(w, text, x, y, size = 26, color = "#fff", life = 0.8) { return w.spawn({ type: "text", text, x, y, vy: -46, life, size, color }); }
   // 반짝이 별 몇 개
   function twinkle(w, x, y, n = 5, r = 30, c = "255,255,255") {
     for (let i = 0; i < n; i++) { const a = rand(0, TAU), d = rand(r * 0.5, r); w.spawn({ type: "star", x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, vx: Math.cos(a) * 40, vy: Math.sin(a) * 40 - 20, size: rand(7, 12), life: rand(0.3, 0.5), color: c }); }
@@ -48,18 +52,19 @@
   /* ───── 1. 낙하 블록 줄 지우기 ───── */
   const LC = { x0: 150, y0: 40, cs: 24, cols: 10, rows: 11 };
   const lcPos = (r, c) => ({ x: LC.x0 + c * LC.cs + LC.cs / 2, y: LC.y0 + r * LC.cs + LC.cs / 2 });
-  const lcBuild = () => fromRows(["#.......##", "##.....###", "###...####", "####..####", "####..####"], LC.rows, LC.cols, (r, c) => PAL[(r * 5 + c * 3) % 7]);
+  const LC_PIECE = [[0, 0], [0, 1], [1, 0]];
+  const lcBuild = () => fromRows(["#.......##", "##.....###", "###...####", "####..####", "####.#####"], LC.rows, LC.cols, (r, c) => SKY[(r + c * 3) % 4]);
 
   /* ───── 2. 하드 드롭 ───── */
   const HD = { x0: 166, y0: 44, cs: 26, cols: 8, rows: 10, land: 6 };
-  const HD_PIECE = [[0, 0], [1, 0], [1, 1], [1, 2]];
+  const HD_PIECE = [[0, 0], [1, 0], [1, 1], [1, 2], [0, 2]];
   const HD_GRAY = ["100,116,139", "71,85,105", "148,163,184"];
   const hdBuild = () => fromRows(["#......#", "##..#.##", "###.####"], HD.rows, HD.cols, (r, c) => HD_GRAY[(r + c) % 3]);
 
   /* ───── 3. 회전 보너스 ───── */
   const SP = { x0: 150, y0: 50, cs: 24, cols: 10, rows: 10 };
   const spPos = (r, c) => ({ x: SP.x0 + c * SP.cs + SP.cs / 2, y: SP.y0 + r * SP.cs + SP.cs / 2 });
-  const spBuild = () => fromRows(["......####", "###..#####", "###...####", "####.#####"], SP.rows, SP.cols, (r, c) => PAL[(r * 2 + c * 3 + 2) % 7]);
+  const spBuild = () => fromRows(["......####", "###..#####", "###...####", "####..####"], SP.rows, SP.cols, (r, c) => VIO[(r + c * 3) % 4]);
 
   /* ───── 4. 숫자 합치기 ───── */
   const MG = { x0: 135, y0: 44, cs: 60, gap: 6 };
@@ -103,7 +108,7 @@
         S.B = lcBuild(); S.py = -1; S.piece = true;
         w.tween(S, { py: 9 }, 0.18, "in", () => {
           S.piece = false;
-          for (const [r, c] of [[9, 4], [9, 5], [10, 4], [10, 5]]) S.B[r][c] = { c: PAL[3], sc: 1, wh: 0, dy: 0 };
+          for (const [dr, dc] of LC_PIECE) S.B[9 + dr][4 + dc] = { c: SKY_HI, sc: 1, wh: 0, dy: 0 };
           S.clearT = 0;
           w.emit("clear", [9, 10]);
           w.after(S.clearT, () => {
@@ -119,7 +124,7 @@
       drawFront(w, ctx) {
         const S = w.S;
         S.B.forEach((row, r) => row.forEach((m, c) => { if (m) { const p = lcPos(r, c); tile(ctx, p.x, p.y + m.dy, LC.cs - 2, m.c, m.sc, m.wh); } }));
-        if (S.piece) for (const [dr, dc] of [[0, 0], [0, 1], [1, 0], [1, 1]]) { const p = lcPos(S.py + dr, 4 + dc); tile(ctx, p.x, p.y, LC.cs - 2, PAL[3]); }
+        if (S.piece) for (const [dr, dc] of LC_PIECE) { const p = lcPos(S.py + dr, 4 + dc); tile(ctx, p.x, p.y, LC.cs - 2, SKY_HI); }
       },
       steps: [
         {
@@ -141,7 +146,7 @@
           clear(w, rows) {
             rows.forEach(r => w.S.B[r].forEach((m, c) => {
               const p = lcPos(r, c);
-              w.after(Math.abs(c - 4.5) * 0.035 + 0.1, () => shards(w, p.x, p.y, m.c, 4));
+              w.after(Math.abs(c - 4.5) * 0.035 + 0.1, () => shards(w, p.x, p.y, m.c, 6, 340));
             }));
           },
         },
@@ -206,7 +211,7 @@
           ctx.globalCompositeOperation = "lighter";
           for (const c of [2, 3, 4]) {
             const g = ctx.createLinearGradient(0, y0, 0, y1);
-            g.addColorStop(0, "rgba(251,146,60,0)"); g.addColorStop(1, `rgba(253,186,116,${0.9 * S.trail})`);
+            g.addColorStop(0, "rgba(56,189,248,0)"); g.addColorStop(1, `rgba(186,230,253,${0.9 * S.trail})`);
             ctx.fillStyle = g; ctx.fillRect(X(c) - cs / 2 + 2, y0, cs - 4, y1 - y0 - cs);
           }
           ctx.globalCompositeOperation = "source-over";
@@ -218,7 +223,7 @@
         }
         const bx = X(3), by = Y(S.r + 1) + cs / 2;
         ctx.save(); ctx.translate(bx, by); ctx.scale(S.sx, S.sy); ctx.translate(-bx, -by);
-        for (const [dr, dc] of HD_PIECE) tile(ctx, X(2 + dc), Y(S.r + dr), cs - 2, PAL[5], 1, S.wh);
+        for (const [dr, dc] of HD_PIECE) tile(ctx, X(2 + dc), Y(S.r + dr), cs - 2, SKY_HI, 1, S.wh);
         ctx.restore();
       },
       steps: [
@@ -298,7 +303,7 @@
         const S = w.S, cs = SP.cs;
         S.B.forEach((row, r) => row.forEach((m, c) => { if (m) { const p = spPos(r, c); tile(ctx, p.x, p.y, cs - 2, m.c); } }));
         const pv = spPos(S.pr, 4), co = Math.cos(S.ang), si = Math.sin(S.ang);
-        for (const [dc, dr] of [[-1, 0], [0, 0], [1, 0], [0, 1]]) tile(ctx, pv.x + (dc * co - dr * si) * cs, pv.y + (dc * si + dr * co) * cs, cs - 2, PAL[4], 1, S.wh);
+        for (const [dc, dr] of [[-1, 0], [0, 0], [1, 0], [0, 1], [1, 1]]) tile(ctx, pv.x + (dc * co - dr * si) * cs, pv.y + (dc * si + dr * co) * cs, cs - 2, VIO_HI, 1, S.wh);
       },
       drawHud(w, ctx) {
         const S = w.S, sc = 1 + S.bump * 0.35;
@@ -993,7 +998,11 @@
         {
           id: "score", name: { en: "Counting Points", ko: "세어지는 점수" }, param: "+10 × n",
           cap: { en: "Each pop *counts up*: +10, +20, +30...", ko: "터질 때마다 *점수가 올라가요*. +10, +20..." },
-          burst(w, g) { const n = ++w.S.pops; say(w, "+" + n * 10, g.x, g.y - 12, 13 + n * 3, "#fff", 0.6); },
+          burst(w, g) {
+            const S = w.S, n = ++S.pops;
+            if (!S.tx || S.tx.age >= S.tx.life) S.tx = say(w, "", g.x, g.y - 30, 20, "#fff", 0.9);
+            Object.assign(S.tx, { text: "+" + n * 10, size: 18 + n * 3, age: 0 });
+          },
         },
         {
           id: "sound", name: { en: "Rising Pops", ko: "올라가는 뽁" }, param: "+2 semitones / pop",
@@ -2165,7 +2174,7 @@
         if (r === 5 || c === 2) on = true;
         if (BL_PIECE.some(([pr, pc]) => pr === r && pc === c)) on = false;
         if (r === 4 && c !== 2) on = Math.random() < 0.5 && c !== 0;
-        B[r].push(on ? { c: PAL[(r + c * 2) % 7], sc: 1, wh: 0 } : null);
+        B[r].push(on ? { c: EME[(r + c * 2) % 4], sc: 1, wh: 0 } : null);
       }
     }
     return B;
@@ -2587,7 +2596,7 @@
         w.emit("drag", S);
         w.tween(S, { px: to.x, py: to.y, ps: 1 }, 0.26, "out", () => {
           S.show = false;
-          BL_PIECE.forEach(([r, c]) => { S.B[r][c] = { c: PAL[4], sc: 1, wh: 0 }; });
+          BL_PIECE.forEach(([r, c]) => { S.B[r][c] = { c: EME_HI, sc: 1, wh: 0 }; });
           w.emit("place", S);
           const cells = [];
           for (let i = 0; i < BL.n; i++) { cells.push([5, i]); if (i !== 5) cells.push([i, 2]); }
@@ -2608,7 +2617,7 @@
         }
         if (S.show) {
           const base = blPos(5, 2);
-          for (const [r, c] of BL_PIECE) { const p = blPos(r, c); tile(ctx, S.px + (p.x - base.x) * S.ps, S.py + (p.y - base.y) * S.ps, (BL.cs - 2) * S.ps, PAL[4]); }
+          for (const [r, c] of BL_PIECE) { const p = blPos(r, c); tile(ctx, S.px + (p.x - base.x) * S.ps, S.py + (p.y - base.y) * S.ps, (BL.cs - 2) * S.ps, EME_HI); }
         }
       },
       steps: [

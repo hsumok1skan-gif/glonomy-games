@@ -19,7 +19,7 @@
   // 데미지 주고 "hit" 이벤트 → (at, foe, ...)
   const hit = (w, f, d, at, ...more) => {
     if (!f || !f.alive) return false;
-    f.hp -= d;
+    f.hp -= d; f.ox += 5; // 기본 반응: 살짝 밀림
     w.emit("hit", at, f, ...more);
     if (f.hp <= 0) down(w, f);
     return true;
@@ -112,7 +112,7 @@
         w.busy = true;
         const shot = () => {
           const m = loc(grip(w), w.rf.rot, 126 - w.rf.kick, -3), f = w.foe;
-          const b = { x: m.x, y: m.y, vx: 2600, vy: 0, r: 3, color: "#e5e7eb", hitX: f.x - 24 };
+          const b = { x: m.x, y: m.y, vx: 1600, vy: 0, r: 5, color: "#f1f5f9", hitX: f.x - 24 };
           b.onHit = () => hit(w, f, 100, { x: b.x, y: b.y });
           w.emit("fire", m, b);
           w.shoot(b);
@@ -203,8 +203,8 @@
         if (g.t > 0) return;
         g.t = 0.065; g.n++; g.heat = Math.min(1, g.heat + 0.03);
         const m = loc(grip(w), 0, 114, rand(-3, 3)), f = w.foe;
-        const b = { x: m.x, y: m.y, vx: 1900, vy: rand(-50, 50), r: 2.5, color: "#e5e7eb", hitX: f.x - 40 };
-        b.onHit = () => hit(w, f, 2, { x: b.x, y: b.y });
+        const b = { x: m.x, y: m.y, vx: 1300, vy: rand(-50, 50), r: 4, color: "#f1f5f9", hitX: f.x - 40 };
+        b.onHit = () => { if (!w.on("chip")) f.ox += 1.5; hit(w, f, 2, { x: b.x, y: b.y }); };
         w.emit("fire", m, b, g);
         w.shoot(b);
         if (g.heat >= 1) w.emit("overheat", g);
@@ -283,9 +283,9 @@
         z.hold -= dt; z.t -= dt; z.L = null;
         if (z.hold <= 0) return;
         const m = muzzle(w), end = f.alive ? f.x - 30 : 600;
-        z.L = { x0: m.x, y0: m.y, x1: end, y1: m.y, w: 1.5, glow: 0, jit: 0 };
+        z.L = { x0: m.x, y0: m.y, x1: end, y1: m.y, w: 3, glow: 0, jit: 0 };
         w.emit("beam", z.L);
-        if (z.t <= 0) { z.t = 0.08; hit(w, f, 2, { x: end, y: m.y }); }
+        if (z.t <= 0) { z.t = 0.08; if (!w.on("sizzle")) f.ox += 2; hit(w, f, 2, { x: end, y: m.y }); }
       },
       drawFront(w, ctx) { drawGun(w, ctx); drawLaser(ctx, w.lz.L, w.time); },
       drawHud(w, ctx) { drawBar(ctx, w.foe); },
@@ -503,7 +503,7 @@
         const shoot = () => {
           const m = loc(grip(w), w.rg.rot, 124 - w.rg.kick, -1);
           w.rg.charge = 0;
-          w.spawn({ type: "slash", x: (m.x + 600) / 2, y: m.y, ang: 0, len: (600 - m.x) / 2, size: 2, life: 0.08, color: "200,240,255" });
+          w.spawn({ type: "slash", x: (m.x + 600) / 2, y: m.y, ang: 0, len: (600 - m.x) / 2, size: 5, life: 0.3, color: "200,240,255" });
           w.emit("fire", m);
           for (const f of w.foes) hit(w, f, 100, { x: f.x - 20, y: m.y });
           w.after(0.4, () => { w.busy = false; });
@@ -825,7 +825,7 @@
         w.busy = true;
         const f = w.foe;
         for (let i = 0; i < 5; i++) w.after(i * 0.08, () => {
-          w.dg[i % 2] = 26; w.hero.ox = 6;
+          w.dg[i % 2] = 34; w.hero.ox = 10;
           const at = { x: f.x - 45 + rand(-6, 6), y: G - 70 - (i % 2) * 18 + rand(-6, 6) };
           w.emit("stab", i, at);
           hit(w, f, 6, at, i);
@@ -928,8 +928,8 @@
           id: "smear", name: { en: "Wide Smear", ko: "넓은 잔상" }, param: "arc r 150",
           cap: { en: "One *huge crescent*. The whole arc, in one frame.", ko: "*커다란 초승달* 하나. 휘두른 길 전체를 한 장에." },
           swing(w, p) {
-            w.spawn({ type: "arc", x: p.x, y: p.y, size: 140, life: 0.2, a0: -2.3, a1: 0.5, color: "255,255,255" });
-            w.spawn({ type: "arc", x: p.x, y: p.y, size: 120, life: 0.16, a0: -2.1, a1: 0.4, color: "147,197,253" });
+            w.spawn({ type: "arc", under: true, x: p.x, y: p.y, size: 140, life: 0.2, a0: -2.3, a1: 0.5, alpha: 0.7, color: "255,255,255" });
+            w.spawn({ type: "arc", under: true, x: p.x, y: p.y, size: 120, life: 0.16, a0: -2.1, a1: 0.4, color: "147,197,253" });
           },
         },
         {
@@ -1027,8 +1027,8 @@
           cap: { en: "A *flat* hit: wide crescents, a solid *stop*.", ko: "*넓적한* 충격. 큰 반달 두 개, *딱* 멈춤." },
           bash(w, at) {
             w.hitstop(0.1);
-            w.spawn({ type: "arc", x: at.x - 30, y: at.y, size: 60, a0: -1.1, a1: 1.1, life: 0.2, color: "255,255,255" });
-            w.spawn({ type: "arc", x: at.x - 10, y: at.y, size: 84, a0: -0.9, a1: 0.9, life: 0.25, color: "186,230,253" });
+            w.spawn({ type: "arc", under: true, x: at.x - 30, y: at.y, size: 60, a0: -1.1, a1: 1.1, life: 0.2, alpha: 0.7, color: "255,255,255" });
+            w.spawn({ type: "arc", under: true, x: at.x - 10, y: at.y, size: 84, a0: -0.9, a1: 0.9, life: 0.25, color: "186,230,253" });
             w.spawn({ type: "star", x: at.x, y: at.y, size: 50, life: 0.12, color: "255,255,255" });
           },
         },
@@ -1397,7 +1397,7 @@
         for (const f of w.foes) if (f.alive) nodes.push({ x: f.x - 6, y: G - 55, f, delay: 0 });
         w.emit("cast", nodes);
         for (let i = 1; i < nodes.length; i++) w.after(nodes[i].delay, () => {
-          const a = nodes[i - 1], b = nodes[i], L = { a, b, life: 0.14, jag: 0, core: false, forks: 0 };
+          const a = nodes[i - 1], b = nodes[i], L = { a, b, life: 0.28, jag: 0, core: false, forks: 0 };
           w.emit("link", L);
           w.bolts.push(L);
           hit(w, b.f, 34 - i * 6, { x: b.x, y: b.y });
@@ -1455,7 +1455,7 @@
       setup(w) { w.hero = w.actor("hero", { home: 100 }); w.foe = w.actor("foe", { home: 400 }); w.foe.ice = 0; },
       fire(w) {
         const p = paw(w), f = w.foe;
-        const b = { x: p.x + 8, y: p.y, vx: 900, vy: 0, r: 4, color: "#7dd3fc" };
+        const b = { x: p.x + 8, y: p.y, vx: 720, vy: 0, r: 7, color: "#7dd3fc" };
         b.test = q => f.alive && q.x >= f.x + f.ox - 40;
         b.onHit = q => hit(w, f, 25, { x: q.x, y: q.y });
         w.emit("fire", p, b);
@@ -1714,7 +1714,7 @@
         const s = w.ss;
         const release = () => {
           const p = forkPt(w), f = w.foe;
-          const b = { x: p.x, y: p.y, vx: 700, vy: -250, g: 900, r: 5, color: "#a8a29e", rot: 0 };
+          const b = { x: p.x, y: p.y, vx: 700, vy: -250, g: 900, r: 7, color: "#d6d3d1", rot: 0 };
           b.test = q => f.alive && q.x >= f.x + f.ox - 34;
           b.onHit = q => hit(w, f, 20, { x: q.x, y: q.y });
           s.pull = 0;
@@ -1753,7 +1753,8 @@
           cap: { en: "Head *squashes*, stone *bounces off*. Comedy!", ko: "머리가 *찌그러지고* 돌은 *튕겨 나가요*." },
           hit(w, at, f) {
             f.sy = 0.78; f.sx = 1.16; f.flash = 1;
-            w.spawn({ type: "star", x: at.x, y: at.y, size: 30, life: 0.12, color: "255,255,255" });
+            w.spawn({ type: "star", x: at.x, y: at.y, size: 46, life: 0.14, color: "255,255,255" });
+            w.spawn({ type: "ring", x: at.x, y: at.y, size: 8, size1: 60, life: 0.25, w: 6, color: "253,224,71" });
             w.spawn({ type: "text", text: "BONK!", x: at.x - 10, y: at.y - 40, vy: -100, life: 0.7, size: 28, color: "#fde047" });
             w.spawn({ type: "chunk", x: at.x, y: at.y, vx: -220, vy: -420, g: 1400, ground: true, bounce: 0.45, vr: 15, life: 1.6, size: 6, color: "168,162,158", hold: true });
           },
@@ -2019,7 +2020,7 @@
         if (w.busy) return;
         w.busy = true;
         const h = w.hero, f = w.foe, x0 = h.x + 40;
-        w.tween(h, { x: f.x + 130 }, 0.08, "in", () => {
+        w.tween(h, { x: f.x + 130 }, 0.12, "in", () => {
           h.flip = true;
           const c = { x0, x1: h.x - 40, y: G - 78 }, at = { x: f.x, y: c.y };
           w.emit("cut", c);
@@ -2036,7 +2037,7 @@
           cap: { en: "Leave *afterimages* along the dash.", ko: "지나간 자리에 *잔상*을 남겨요." },
           cut(w, c) {
             const h = w.hero;
-            for (let i = 0; i < 5; i++) w.spawn({ type: "ghost", img: SPR.hero.white, x: c.x0 - 40 + (c.x1 - c.x0 + 40) * i / 5, y: G, w: h.w, h: h.h, alpha0: 0.2 + i * 0.1, life: 0.35, add: true });
+            for (let i = 0; i < 5; i++) w.spawn({ type: "ghost", img: SPR.hero.white, x: c.x0 - 40 + (c.x1 - c.x0 + 40) * i / 5, y: G, w: h.w, h: h.h, alpha0: 0.12 + i * 0.08, life: 0.35, add: false });
           },
         },
         {
@@ -2056,9 +2057,9 @@
           },
         },
         {
-          id: "flash", name: { en: "Flash on Click", ko: "딸깍에 번쩍" }, param: "white .7 · stop 100ms",
+          id: "flash", name: { en: "Flash on Click", ko: "딸깍에 번쩍" }, param: "white .45 · stop 100ms",
           cap: { en: "On the click: *white flash*, *freeze*.", ko: "딸깍 하는 순간 *하얗게 번쩍*, *정지*." },
-          sheathe(w) { w.flash("255,255,255", 0.7); w.hitstop(0.1); },
+          sheathe(w) { w.flash("255,255,255", 0.45); w.hitstop(0.1); },
         },
         {
           id: "split", name: { en: "Split in Two", ko: "두 동강" }, param: "halves slide apart",
@@ -2194,7 +2195,7 @@
     const pts = L.jag ? zig(L.a.x, L.a.y, L.b.x, L.b.y, 8, L.jag) : [[L.a.x, L.a.y], [L.b.x, L.b.y]];
     ctx.globalCompositeOperation = "lighter";
     if (L.core) line(ctx, pts, "rgba(56,189,248,0.45)", 14);
-    line(ctx, pts, L.core ? "rgba(255,255,255,1)" : "rgba(147,197,253,0.9)", L.core ? 2.5 : 2);
+    line(ctx, pts, L.core ? "rgba(255,255,255,1)" : "rgba(147,197,253,0.9)", L.core ? 3 : 3.5);
     for (let i = 0; i < L.forks; i++) {
       const p = pick(pts.slice(1, -1)) || pts[0];
       const f = zig(p[0], p[1], p[0] + rand(-30, 30), p[1] + rand(-50, 50), 3, 6);

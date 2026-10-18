@@ -68,8 +68,8 @@
     /* ───────── 전설 아이템 공개 ───────── */
     {
       id: "spot-loot-reveal", cat: "ui", view: "3d",
-      title: { en: "Make loot reveals feel *legendary*", ko: "전설 아이템을 *전설답게*" },
-      intro: { en: "Legendary pull. It just *flips*.", ko: "전설을 뽑았는데 그냥 *휙* 뒤집혀요." },
+      title: { en: "Turn a rare drop into a *show*", ko: "희귀 카드 공개를 *무대*처럼" },
+      intro: { en: "Top-tier pull. Flipped like a *receipt*.", ko: "최고 등급인데 *영수증*처럼 넘어가요." },
       interval: 3.1, stepDur: 4.0,
       setup(w) {
         w.card = { x: 270, y: 182, lift: 0, ang: 0, scale: 1, rot: 0, vib: 0, foil: 0, pop: 0, gold: false, persp: false };
@@ -95,8 +95,8 @@
       drawFront(w, ctx) { drawCard(w, ctx, w.card); },
       steps: [
         {
-          id: "float", name: { en: "Tension Shake", ko: "긴장감 떨림" }, param: "lift 30 · orbs 24",
-          cap: { en: "*Float* it up, *shake* it, suck in *energy*.", ko: "*붕* 띄우고, *덜덜* 떨고, 빛을 *빨아들여요*." },
+          id: "float", name: { en: "Hover & Hum", ko: "떠올라 웅웅" }, param: "lift 30 · orbs 24",
+          cap: { en: "Lift it, let it *tremble*, draw light *inward*.", ko: "*스르륵* 떠서 *달달* 떨고, 빛이 *모여요*." },
           charge(w, c) {
             c.gold = true;
             w.tween(c, { lift: -30, vib: 4 }, 0.75, "in");
@@ -108,8 +108,8 @@
           },
         },
         {
-          id: "whip", name: { en: "Whip Flip", ko: "채찍 뒤집기" }, param: "0.2s · freeze 90ms",
-          cap: { en: "*Snap* it in 3D, *freeze*, then *bounce*.", ko: "입체로 *휙*, 잠깐 *멈칫*, *통* 튀어요." },
+          id: "whip", name: { en: "Snap Turn", ko: "홱 돌리기" }, param: "0.2s · freeze 90ms",
+          cap: { en: "Turn it *fast* with depth. *Pause*. Spring back.", ko: "두께 있게 *홱* 돌고, *딱* 멈췄다 *톡*." },
           reveal(w, c) {
             w.hitstop(0.09);
             c.vib = 0; c.lift = -30; c.scale = 1.3;
@@ -117,8 +117,8 @@
           },
         },
         {
-          id: "shock", name: { en: "Shockwave", ko: "충격파" }, param: "rings 3 · bolts 6",
-          cap: { en: "Blast floor *rings* and *golden lightning*.", ko: "바닥에 *고리*, 사방으로 *금빛 번개*." },
+          id: "shock", name: { en: "Gold Pulse", ko: "금빛 파동" }, param: "rings 3 · bolts 6",
+          cap: { en: "Rings race over the floor. *Gold bolts* crackle.", ko: "바닥에 *고리*가 번지고 *금빛 전기*가 튀어요." },
           reveal(w, c) {
             for (let i = 0; i < 3; i++) w.spawn({ type: "ring", flat: true, x: c.x, y: 280, size: 20, size1: 260 + i * 60, life: 0.6 + i * 0.15, w: 10, color: i ? "80,230,220" : "255,210,90" });
             for (let i = 0; i < 6; i++) {
@@ -130,8 +130,8 @@
           },
         },
         {
-          id: "foil", name: { en: "Holo Foil", ko: "홀로 광택" }, param: "rays 14 · sheen",
-          cap: { en: "Rainbow *sheen*, light *rays*, blade *pops out*.", ko: "*무지개* 광택, *빛줄기*, 칼이 *튀어나와요*." },
+          id: "foil", name: { en: "Rainbow Gleam", ko: "무지개 윤기" }, param: "rays 14 · sheen",
+          cap: { en: "A *rainbow* glides by. Beams turn. The blade *leaps out*.", ko: "*무지갯빛*이 쓱, 칼이 *툭* 튀어나와요." },
           reveal(w, c) {
             c.foil = 1; c.pop = 1;
             w.spawn({ type: "rays", under: true, x: c.x, y: c.y - 30, n: 14, size: 60, size1: 240, vr: 0.8, life: 2.2, hold: true, color: "255,200,90" });
@@ -139,8 +139,8 @@
           },
         },
         {
-          id: "rarity", name: { en: "Rarity Burst", ko: "등급 터뜨리기" }, param: "stars 16 · text",
-          cap: { en: "Shout the *rarity*. Throw *stars*.", ko: "*등급*을 크게 외치고, *별*을 뿌려요." },
+          id: "rarity", name: { en: "Tier Callout", ko: "등급 외치기" }, param: "stars 16 · text",
+          cap: { en: "Name the *tier* out loud. Toss *stars*.", ko: "*등급*을 크게 띄우고 *별*을 흩뿌려요." },
           reveal(w, c) {
             w.spawn({ type: "text", x: c.x, y: 52, text: "★ LEGENDARY ★", size: 24, color: "#ffcf4a", life: 2.2 });
             for (let i = 0; i < 16; i++) {
@@ -151,7 +151,7 @@
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rise + chord + boom",
-          cap: { en: "Rising *charge*, *thunder*, a bright *chord*.", ko: "차오르는 *웅~*, *콰광*, 밝은 *화음*." },
+          cap: { en: "A rising *hum*, a *crash*, a bright *chord*.", ko: "*웅~* 차오르다 *콰광*, 밝은 *화음*." },
           charge(w) { w.play(() => tn({ type: "sawtooth", f: 110, f2: 660, dur: 0.8, vol: 0.12 })); },
           reveal(w) { w.sfx.boom(); w.sfx.fanfare(); },
         },
@@ -161,8 +161,8 @@
     /* ───────── 적 처치 폭발 ───────── */
     {
       id: "spot-death-pop", cat: "combat", view: "3d",
-      title: { en: "Make enemy deaths feel *explosive*", ko: "적 처치를 *폭발*처럼" },
-      intro: { en: "One slash. It just *vanishes*.", ko: "한 번 베면 그냥 *사라져요*." },
+      title: { en: "Give every kill a *bang*", ko: "처치하는 순간 *펑* 터뜨리기" },
+      intro: { en: "One cut and it just *blinks out*.", ko: "한 번 베면 그냥 *뿅* 없어져요." },
       interval: 2.6, stepDur: 3.8,
       setup(w) {
         w.foe = w.actor("foe", { home: 270, h: 150, gy: G - 6 });
@@ -194,8 +194,8 @@
       },
       steps: [
         {
-          id: "swell", name: { en: "Death Swell", ko: "부풀어 오르기" }, param: "0.6s · ×1.38",
-          cap: { en: "*Inflate* it like a bomb. *Cracks* glow.", ko: "폭탄처럼 *부풀고*, 틈이 *빨갛게* 빛나요." },
+          id: "swell", name: { en: "Bloat", ko: "빵빵 부풀기" }, param: "0.6s · ×1.38",
+          cap: { en: "Puff it up, *about to burst*. Seams *glow*.", ko: "곧 터질 듯 *부풀고*, 틈새가 *달아올라요*." },
           swell(w, f, x, y) {
             for (let i = 0; i < 7; i++) w.after(i * 0.07, () => {
               const a = rand(0, TAU), pts = [[0, 0]];
@@ -206,16 +206,16 @@
           },
         },
         {
-          id: "stop", name: { en: "Lethal Hitstop", ko: "결정타 멈춤" }, param: "stop 130ms · white",
-          cap: { en: "*Freeze* on the kill. Flash it *white*.", ko: "죽는 순간 *멈칫*, *하얗게* 번쩍." },
+          id: "stop", name: { en: "Kill Freeze", ko: "처치 정지" }, param: "stop 130ms · white",
+          cap: { en: "*Hold* the final frame. Paint it *white*.", ko: "마지막 순간 *딱* 멈추고 *하얗게*." },
           pop(w, x, y) {
             w.hitstop(0.13); w.zoomPunch(0.1); w.shake(0.55); w.flash("255,255,255", 0.45);
             w.spawn({ type: "ghost", img: goblinWhite(), x, y: w.foe.gy, w: 150 * 1.38, h: 150 * 1.38, alpha0: 1, life: 0.16 });
           },
         },
         {
-          id: "shatter", name: { en: "3D Shatter", ko: "조각으로 부서짐" }, param: "shards 30 · bounce",
-          cap: { en: "Blow it into *shards* that *bounce*.", ko: "*조각조각* 터져서 바닥에 *통통*." },
+          id: "shatter", name: { en: "Shard Spray", ko: "파편 흩뿌리기" }, param: "shards 30 · bounce",
+          cap: { en: "Break it into *chunks* that clatter and settle.", ko: "*파편*으로 터져 바닥에 *달그락*." },
           pop(w, x, y) {
             for (let i = 0; i < 30; i++) {
               const a = rand(-Math.PI, 0), s = rand(220, 620);
@@ -225,8 +225,8 @@
           },
         },
         {
-          id: "wave", name: { en: "Shockwave", ko: "충격파" }, param: "ring 260 · dust 12",
-          cap: { en: "Push a *ring* out. Kick up *dust*.", ko: "*고리*가 퍼지고, *먼지*가 일어요." },
+          id: "wave", name: { en: "Dust Ring", ko: "먼지 고리" }, param: "ring 260 · dust 12",
+          cap: { en: "A *ring* rolls across the floor. *Dust* billows.", ko: "바닥에 *고리*가 번지고 *흙먼지*가 피어요." },
           pop(w, x, y) {
             w.spawn({ type: "ring", flat: true, x, y: G + 6, size: 20, size1: 260, life: 0.55, w: 14, color: "255,200,150" });
             w.spawn({ type: "ring", x, y, size: 10, size1: 150, life: 0.3, w: 10, color: "255,240,220" });
@@ -234,8 +234,8 @@
           },
         },
         {
-          id: "soul", name: { en: "Soul Eruption", ko: "영혼 분출" }, param: "orbs 18 · scorch 2s",
-          cap: { en: "Fountain *soul orbs*. Leave a *scorch mark*.", ko: "*빛 구슬*이 솟고, 바닥이 *그을려요*." },
+          id: "soul", name: { en: "Spirit Fountain", ko: "빛 구슬 분수" }, param: "orbs 18 · scorch 2s",
+          cap: { en: "Orbs *gush* upward. A *burn mark* stays.", ko: "*빛 구슬*이 솟구치고 *그을음*이 남아요." },
           pop(w, x, y) {
             w.spawn({ type: "ellipse", under: true, add: false, x, y: G + 8, size: 120, life: 2.4, hold: true, color: "0,0,0" });
             w.spawn({ type: "ring", flat: true, x, y: G + 8, size: 70, life: 2.4, hold: true, w: 6, color: "255,190,90" });
@@ -245,7 +245,7 @@
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hiss + crunch + boom",
-          cap: { en: "Rising *hiss*, wet *crunch*, deep *boom*.", ko: "*쉬익* 차오르고, *우직*, *쿵*." },
+          cap: { en: "A *hiss* builds, a *crunch*, a low *boom*.", ko: "*쉬익* 차오르다 *와작*, *쿵*." },
           swell(w) { w.play(() => nz({ type: "bandpass", f: 600, f2: 4000, q: 3, dur: 0.6, vol: 0.2 })); },
           pop(w) { w.sfx.crit(); w.sfx.boom(); },
         },

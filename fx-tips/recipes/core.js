@@ -9,10 +9,11 @@ RECIPES.push(
     setup(w) { w.hero = w.actor("hero"); w.foe = w.actor("foe"); w.gun = { kick: 0, rot: 0 }; },
     fire(w) {
       const m = muzzle(w);
-      const b = { x: m.x, y: m.y, vx: 1700, vy: 0, r: 3, color: "#cbd5e1", hitX: w.foe.x - 55 };
+      const b = { x: m.x, y: m.y, vx: 1150, vy: 0, r: 5, color: "#e2e8f0", hitX: w.foe.x - 55 };
       b.onHit = () => {
         const r = w.foe; if (!r.alive) return;
-        r.hp -= 20; w.emit("hit", { x: b.x, y: b.y });
+        r.hp -= 20; if (!w.on("hit")) r.ox += 8;
+        w.emit("hit", { x: b.x, y: b.y });
         if (r.hp <= 0) w.kill(r);
       };
       w.emit("fire", m, b);
@@ -55,7 +56,8 @@ RECIPES.push(
         hit(w, h) {
           const r = w.foe;
           r.flash = 1; r.sx = 0.78; r.sy = 1.18; r.ox += 16;
-          for (let i = 0; i < 8; i++) w.spawn({ type: "spark", x: h.x, y: h.y, vx: rand(-520, -150), vy: rand(-260, 260), drag: 5, life: rand(0.1, 0.22), size: 2.4, color: "255,230,160" });
+          w.spawn({ type: "star", x: h.x, y: h.y, size: 40, life: 0.08, color: "255,250,230" });
+          for (let i = 0; i < 12; i++) w.spawn({ type: "spark", x: h.x, y: h.y, vx: rand(-620, -150), vy: rand(-300, 300), drag: 5, life: rand(0.12, 0.28), size: 3, color: "255,220,140" });
         },
       },
       {
@@ -97,10 +99,12 @@ RECIPES.push(
         o.onHit = () => {
           const r = w.foe; if (!r.alive) return;
           const crit = Math.random() < 0.25, d = crit ? 48 : 24;
-          r.hp -= d; w.emit("hit", { x: o.x, y: o.y }, d, crit);
+          r.hp -= d; if (!w.on("hitstop")) r.ox += 8;
+          w.emit("hit", { x: o.x, y: o.y }, d, crit);
           if (r.hp <= 0) w.kill(r);
         };
         w.emit("launch", o);
+        if (!o.core) o.draw = (ctx, p) => { ctx.fillStyle = "#8b7fd6"; ctx.beginPath(); ctx.arc(p.x, p.y, 10, 0, TAU); ctx.fill(); };
         w.shoot(o);
       };
       if (w.on("charge")) { w.emit("charge", paw(w)); w.after(0.36, launch); } else launch();
@@ -194,7 +198,7 @@ RECIPES.push(
         w.emit("swing", at);
         if (r.alive) {
           r.hp -= 25;
-          if (!w.on("knock")) r.ox += 6;
+          if (!w.on("knock")) r.ox += 14;
           w.emit("hit", at);
           if (r.hp <= 0) w.kill(r);
         }
@@ -214,8 +218,8 @@ RECIPES.push(
         id: "arc", name: { en: "Slash Arc", ko: "궤적" },
         cap: { en: "*Draw the swing.* Just a few frames.", ko: "휘두른 *궤적*을 그려요. 아주 잠깐만." },
         swing(w, at) {
-          w.spawn({ type: "arc", x: at.x - 30, y: at.y, size: 70, life: 0.16, a0: -1.9, a1: 1.1, color: "255,255,255" });
-          w.spawn({ type: "arc", x: at.x - 30, y: at.y, size: 56, life: 0.12, a0: -1.7, a1: 0.9, color: "253,224,71" });
+          w.spawn({ type: "arc", under: true, x: at.x - 30, y: at.y, size: 70, life: 0.16, a0: -1.9, a1: 1.1, alpha: 0.75, color: "255,255,255" });
+          w.spawn({ type: "arc", under: true, x: at.x - 30, y: at.y, size: 56, life: 0.12, a0: -1.7, a1: 0.9, color: "253,224,71" });
         },
       },
       {
@@ -229,7 +233,7 @@ RECIPES.push(
         hit(w, at) {
           w.foe.flash = 1.2;
           w.spawn({ type: "star", x: at.x + 10, y: at.y, size: 72, life: 0.12, color: "255,255,255" });
-          w.spawn({ type: "glow", x: at.x + 10, y: at.y, size: 62, size1: 10, life: 0.15, color: "255,240,200" });
+          w.spawn({ type: "glow", under: true, x: at.x + 10, y: at.y, size: 62, size1: 10, life: 0.15, color: "255,240,200" });
         },
       },
       {
@@ -377,7 +381,7 @@ RECIPES.push(
       w.busy = true;
       const r = w.foe, c = w.hero;
       w.tween(r, { x: c.x + c.w / 2 + r.w / 2 + 2 }, 0.13, "in", () => {
-        c.hp -= 17;
+        c.hp -= 17; if (!w.on("knock")) c.ox -= 8;
         w.emit("hurt", c);
         if (c.hp <= 0) w.after(0.5, () => w.tween(c, { hp: 100 }, 0.5, "out"));
         w.tween(r, { x: r.home }, 0.35, "inout", () => { w.busy = false; });
@@ -455,7 +459,7 @@ RECIPES.push(
       {
         id: "flash", name: { en: "White Frame", ko: "하얀 한 프레임" },
         cap: { en: "Start with *one white frame*.", ko: "첫 프레임은 *하얗게*." },
-        boom(w) { w.flash("255,250,235", 0.9); },
+        boom(w) { w.flash("255,250,235", 0.7); },
       },
       {
         id: "ring", name: { en: "Shockwave", ko: "충격파" },
@@ -519,9 +523,9 @@ RECIPES.push(
     fire(w) {
       const m = muzzle(w), pellets = [];
       for (let i = 0; i < 7; i++) {
-        const b = { x: m.x, y: m.y, vx: 1500, vy: (i - 3) * 12, r: 2.5, color: "#cbd5e1" };
+        const b = { x: m.x, y: m.y, vx: 1100, vy: (i - 3) * 12, r: 4, color: "#e2e8f0" };
         b.test = p => { const f = w.foe; return f.alive && p.x >= f.x - f.w / 2 - 6 && Math.abs(p.y - (f.gy - f.h / 2)) < f.h / 2; };
-        b.onHit = () => { const f = w.foe; if (!f.alive) return; f.hp -= 6; w.emit("hit", { x: b.x, y: b.y }); if (f.hp <= 0) w.kill(f); };
+        b.onHit = () => { const f = w.foe; if (!f.alive) return; f.hp -= 6; if (!w.on("hit")) f.ox += 3; w.emit("hit", { x: b.x, y: b.y }); if (f.hp <= 0) w.kill(f); };
         pellets.push(b);
       }
       w.emit("fire", m, pellets);
@@ -608,14 +612,14 @@ RECIPES.push(
       if (t) w.aim = Math.atan2(t.gy + t.oy - h.gy, t.x + t.ox - h.x);
       h.rot = w.aim;
       const m = { x: h.x + h.ox + Math.cos(w.aim) * 36, y: h.gy + h.oy + Math.sin(w.aim) * 36, a: w.aim };
-      const b = { x: m.x, y: m.y, a: w.aim, sp: 1300, r: 3, color: "#e5e7eb", box: [16, 16, 524, 344] };
+      const b = { x: m.x, y: m.y, a: w.aim, sp: 1000, r: 4.5, color: "#f1f5f9", box: [16, 16, 524, 344] };
       w.emit("fire", m, b);
       b.vx = Math.cos(b.a) * b.sp; b.vy = Math.sin(b.a) * b.sp;
       b.test = p => w.foes.some(f => {
         if (f.alive && Math.hypot(p.x - f.x - f.ox, p.y - f.gy - f.oy) < f.w / 2) { p.target = f; return true; }
         return false;
       });
-      b.onHit = p => { const f = p.target; f.hp -= 5; w.emit("hit", p, f); if (f.hp <= 0) w.kill(f); };
+      b.onHit = p => { const f = p.target; f.hp -= 5; if (!w.on("knock")) f.ox += 2; w.emit("hit", p, f); if (f.hp <= 0) w.kill(f); };
       b.onOut = p => w.emit("wall", p);
       w.shoot(b);
     },
@@ -693,7 +697,7 @@ RECIPES.push(
       const release = () => {
         const b = bowPt(w), o = { x: b.x + 10, y: b.y, vx: 1100, vy: 0, g: 0, draw: drawArrow };
         o.test = p => { const f = w.foe; return f.alive && p.x >= f.x - f.w / 2 + 14 && p.y > f.gy - f.h; };
-        o.onHit = p => { const f = w.foe; if (!f.alive) return; f.hp -= 34; w.emit("hit", p); if (f.hp <= 0) w.kill(f); };
+        o.onHit = p => { const f = w.foe; if (!f.alive) return; f.hp -= 34; if (!w.on("hit")) f.ox += 8; w.emit("hit", p); if (f.hp <= 0) w.kill(f); };
         w.emit("release", o);
         w.bow.pull = 0;
         w.shoot(o);
@@ -777,7 +781,7 @@ RECIPES.push(
         const at = { x: hammerPivot(w).x + 97, y: G };
         w.emit("slam", at);
         const f = w.foe;
-        if (f.alive) { f.hp -= 34; w.emit("hit", at); if (f.hp <= 0) w.kill(f); }
+        if (f.alive) { f.hp -= 34; if (!w.on("wave")) f.ox += 10; w.emit("hit", at); if (f.hp <= 0) w.kill(f); }
         w.after(0.28, () => w.tween(w.ham, { rot: -0.5 }, 0.35, "inout", () => { w.busy = false; }));
       });
       if (w.on("antic")) { w.emit("antic"); w.after(0.3, swing); } else swing();
@@ -793,7 +797,7 @@ RECIPES.push(
       {
         id: "smear", name: { en: "Smear Frame", ko: "잔상 한 장" }, param: "140ms arc",
         cap: { en: "One *smeared* frame sells the speed.", ko: "*뭉개진* 한 장이 속도를 말해줘요." },
-        slam(w) { const p = hammerPivot(w); w.spawn({ type: "arc", x: p.x, y: p.y, size: 128, life: 0.14, a0: -2.2, a1: 0.65, color: "255,255,255" }); },
+        slam(w) { const p = hammerPivot(w); w.spawn({ type: "arc", under: true, x: p.x, y: p.y, size: 128, life: 0.14, a0: -2.2, a1: 0.65, alpha: 0.75, color: "255,255,255" }); },
       },
       {
         id: "stop", name: { en: "Heavy Hit Stop", ko: "묵직한 멈춤" }, param: "150ms + target shake",

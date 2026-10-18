@@ -167,7 +167,7 @@
           const p = paw(w), f = w.foe;
           const o = { x: p.x + 6, y: p.y, vx: 950, vy: 0, orb: true, hitX: f.x - 40 };
           o.onHit = () => {
-            f.hp = Math.max(0, f.hp - 40); f.flash = 0.8;
+            f.hp = Math.max(0, f.hp - 40); f.flash = 0.8; f.ox += 14;
             w.emit("hit", { x: o.x, y: o.y });
             if (f.hp <= 0) w.after(0.5, () => { f.hp = f.maxHp; });
           };
@@ -219,8 +219,9 @@
           id: "impact", name: { en: "Impact Burst", ko: "맞는 순간 터짐" }, param: "ring + 16 sparks",
           cap: { en: "Pay it off: *ring*, *sparks*, a short *shake*.", ko: "끝은 확실하게. *고리*, *불꽃*, 짧은 *흔들림*." },
           hit(w, h) {
-            w.spawn({ type: "ring", x: h.x, y: h.y, size: 10, size1: 90, life: 0.35, w: 10, color: "196,181,253" });
-            burst(w, h.x, h.y, 16, "233,213,255"); w.shake(0.25, 1); w.foe.ox += 18;
+            w.spawn({ type: "ring", x: h.x, y: h.y, size: 10, size1: 110, life: 0.4, w: 12, color: "196,181,253" });
+            w.spawn({ type: "glow", under: true, x: h.x, y: h.y, size: 120, size1: 60, life: 0.9, color: "167,139,250" });
+            burst(w, h.x, h.y, 26, "233,213,255", [200, 620], 3.2); w.shake(0.3, 1); w.foe.ox += 22;
           },
         },
         {
@@ -298,14 +299,15 @@
           id: "ready", name: { en: "Ready Flash", ko: "준비 완료 번쩍" }, param: "white + ring",
           cap: { en: "When it's back, *flash* so the eye catches it.", ko: "다 차면 *번쩍*. 눈이 바로 가요." },
           ready(w, s) {
-            s.flash = 1; s.sc = 1.18;
-            w.spawn({ type: "ring", x: s.x, y: s.y, size: 40, size1: 70, life: 0.4, w: 5, color: "255,255,255" });
+            s.flash = 1; s.sc = 1.25;
+            w.spawn({ type: "ring", x: s.x, y: s.y, size: 40, size1: 80, life: 0.45, w: 7, color: "198,244,50" });
+            w.spawn({ type: "star", x: s.x + 22, y: s.y - 22, size: 18, life: 0.4, color: "255,255,255" });
           },
         },
         {
           id: "press", name: { en: "Press Squash", ko: "누름 반응" }, param: "scale 0.8",
           cap: { en: "Using a skill *squashes* the icon.", ko: "쓰는 순간 아이콘이 *꾹*." },
-          use(w, s) { s.sc = 0.8; burst(w, s.x, s.y, 8, "255,255,255", [120, 300], 2); },
+          use(w, s) { s.sc = 0.8; burst(w, s.x, s.y, 14, "255,255,255", [160, 380], 3); w.spawn({ type: "ring", x: s.x, y: s.y, size: 30, size1: 60, life: 0.3, w: 5, color: "255,255,255" }); },
         },
         {
           id: "deny", name: { en: "Not Ready", ko: "아직 안 돼요" }, param: "shake 300ms",
@@ -429,12 +431,12 @@
       drawBack(w, ctx) { w.emit("back", ctx); },
       drawHud(w, ctx) {
         w.B.forEach((b, i) => {
-          const [kind, col] = w.K[b.k], x = 270 - (w.B.length - 1) * 26 + i * 52, y = 96 + b.oy;
+          const [kind, col] = w.K[b.k], x = 270 - (w.B.length - 1) * 34 + i * 68, y = 92 + b.oy;
           b.x = x; b.y = y;
           ctx.save(); ctx.translate(x, y); ctx.scale(b.sc * (1 + b.bump * 0.3), b.sc * (1 + b.bump * 0.3));
           w.emit("icon", ctx, b);
-          slotIcon(ctx, kind, 0, 0, 20, col);
-          if (b.n > 1) T(ctx, "x" + b.n, 16, 16, 14, "#fff");
+          slotIcon(ctx, kind, 0, 0, 27, col);
+          if (b.n > 1) T(ctx, "x" + b.n, 22, 22, 18, "#fff");
           ctx.restore();
         });
       },
@@ -477,7 +479,7 @@
           icon(w, ctx, b) {
             if (b.t < 1.2 && Math.floor(b.t * 8) % 2) ctx.globalAlpha = 0.35;
             ctx.strokeStyle = "#c6f432"; ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.arc(0, 0, 27, -Math.PI / 2, -Math.PI / 2 + TAU * b.t / 4.5); ctx.stroke();
+            ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, 35, -Math.PI / 2, -Math.PI / 2 + TAU * b.t / 4.5); ctx.stroke();
           },
         },
         {
@@ -533,7 +535,7 @@
         {
           id: "numbers", name: { en: "Tick Numbers", ko: "틱 숫자" }, param: "purple · small",
           cap: { en: "Every tick shows a *small purple* number.", ko: "틱마다 *작은 보라색* 숫자." },
-          tick(w, f, d) { w.spawn({ type: "text", text: String(d), x: f.x + rand(-30, 30), y: G - 165, vy: -70, life: 0.6, size: 22, color: "#d8b4fe" }); },
+          tick(w, f, d) { w.spawn({ type: "text", text: String(d), x: f.x + rand(-40, 40), y: G - 120, vy: -70, life: 0.7, size: 28, color: "#d8b4fe" }); },
         },
         {
           id: "flinch", name: { en: "Tick Flinch", ko: "틱마다 움찔" }, param: "squash .9 · vib 4",
@@ -576,14 +578,14 @@
       },
       fire(w) {
         const p = paw(w), f = w.foe, s = w.S[w.cnt++ % 3];
-        w.shoot({ x: p.x, y: p.y, vx: 900, vy: 0, r: 6, color: s.col, hitX: f.x - 40, onHit: () => { w.st = s; f.rot = 0; w.emit("apply", s, f); } });
+        w.shoot({ x: p.x, y: p.y, vx: 900, vy: 0, r: 6, color: s.col, hitX: f.x - 40, onHit: () => { w.st = s; f.rot = 0; f.ox += 12; w.emit("apply", s, f); } });
       },
       update(w) { if (!w.on("body")) w.foe.rot = 0; },
       drawFront(w, ctx) { if (w.st) w.emit("fx", ctx, w.st); },
       drawHud(w, ctx) {
         const s = w.st, f = w.foe;
         if (!s) return;
-        if (!w.on("badge")) { label(ctx, s.name.toLowerCase(), f.x, f.gy - f.h - 22, 12, "#9ca3af", "center", FONT, 600); return; }
+        if (!w.on("badge")) { label(ctx, s.name.toLowerCase(), f.x, f.gy - f.h - 22, 15, "#9ca3af", "center", FONT, 600); return; }
         ctx.save(); ctx.translate(f.x, f.gy - f.h - 34); ctx.scale(w.badge.sc, w.badge.sc);
         ctx.fillStyle = "rgba(10,12,20,0.85)"; ctx.beginPath(); ctx.arc(0, 0, 22, 0, TAU); ctx.fill();
         ctx.strokeStyle = s.col; ctx.lineWidth = 3; ctx.stroke();
@@ -599,14 +601,15 @@
           id: "ring", name: { en: "Color Burst", ko: "상태 색 터짐" }, param: "ring + glow",
           cap: { en: "Burst in the *status color*. Color = meaning.", ko: "*상태 색*으로 터져요. 색이 곧 뜻." },
           apply(w, s, f) {
-            w.spawn({ type: "ring", x: f.x, y: G - 75, size: 20, size1: 120, life: 0.4, w: 9, color: s.rgb });
-            w.spawn({ type: "glow", x: f.x, y: G - 75, size: 120, size1: 40, life: 0.4, color: s.rgb });
+            w.spawn({ type: "ring", x: f.x, y: G - 75, size: 20, size1: 130, life: 0.45, w: 10, color: s.rgb });
+            w.spawn({ type: "glow", under: true, x: f.x, y: G - 75, size: 140, size1: 60, life: 0.7, color: s.rgb });
+            burst(w, f.x, G - 75, 14, s.rgb, [200, 480], 3);
           },
         },
         {
           id: "callout", name: { en: "Callout", ko: "큰 글자" }, param: "34px · rise",
           cap: { en: "Shout it once: a *big word* rises and fades.", ko: "한 번은 크게: *큰 글자*가 떠올라요." },
-          apply(w, s, f) { w.spawn({ type: "text", text: s.name + "!", x: f.x - 20, y: G - 190, vy: -40, life: 1, size: 34, color: s.col }); },
+          apply(w, s, f) { w.spawn({ type: "text", text: s.name + "!", x: f.x - 40, y: G - 228, vy: -20, life: 1, size: 34, color: s.col }); },
         },
         {
           id: "body", name: { en: "Body Reacts", ko: "몸이 반응" }, param: "tilt / ice / droop",
@@ -654,14 +657,14 @@
         const h = w.hero, big = ++w.cnt % 3 === 0, a = big ? 48 : 24;
         if (h.hp >= h.maxHp) { h.hp = 30; h.shown = 30; }
         h.hp = Math.min(h.maxHp, h.hp + a);
-        const n = { text: String(a), x: 270 + rand(-20, 20), y: G - 160, vx: rand(-40, 40), vy: -320, g: 900, life: 1.2, size: big ? 40 : 30, color: "#ffffff" };
+        const n = { text: String(a), x: 270 + rand(-20, 20), y: G - 196, vx: rand(-40, 40), vy: -320, g: 900, life: 1.2, size: big ? 40 : 30, color: "#ffffff" };
         w.emit("heal", h, n, big);
         w.spawn(Object.assign({ type: "text" }, n));
       },
       update(w, dt) { const h = w.hero; h.glow = Math.max(0, h.glow - dt * 1.2); if (!w.on("bar")) h.shown = h.hp; },
       drawFront(w, ctx) { const h = w.hero; if (h.glow > 0) overlay(ctx, h, tintSpr("hero", "#4ade80").c, h.glow * 0.55); },
       drawHud(w, ctx) {
-        const h = w.hero, X = 200, Y = 108, W = 140;
+        const h = w.hero, X = 200, Y = 128, W = 140;
         panel(ctx, X - 3, Y - 3, W + 6, 16, 6, "rgba(0,0,0,0.65)", null);
         ctx.fillStyle = "#4ade80"; ctx.fillRect(X, Y, W * h.hp / h.maxHp, 10);
         ctx.fillStyle = "#ef4444"; ctx.fillRect(X, Y, W * h.shown / h.maxHp, 10);
@@ -744,8 +747,8 @@
           id: "light", name: { en: "Light From Above", ko: "위에서 내리는 빛" }, param: "beam 1.2s",
           cap: { en: "A *beam* comes down first. Something is coming.", ko: "먼저 *빛*이 내려와요. 뭔가 온다는 신호." },
           revive(w) {
-            w.spawn({ type: "beam", x: 270, y: G, size: 70, h: 360, life: 1.4, color: "253,230,138" });
-            w.spawn({ type: "glow", x: 270, y: G - 30, size: 150, size1: 90, life: 1.3, color: "253,230,138" });
+            w.spawn({ type: "beam", under: true, x: 270, y: G, size: 70, h: 360, life: 1.4, color: "253,230,138" });
+            w.spawn({ type: "glow", under: true, x: 270, y: G - 30, size: 150, size1: 90, life: 1.3, color: "253,230,138" });
           },
         },
         {
@@ -1015,7 +1018,7 @@
         {
           id: "strike", name: { en: "Strike Flash", ko: "깡! 번쩍" }, param: "white + star",
           cap: { en: "The result lands with a *white flash*.", ko: "결과는 *하얀 번쩍*과 함께." },
-          success(w) { w.flash("255,255,255", 0.6); w.spawn({ type: "star", x: 270, y: 160, size: 120, life: 0.4, color: "255,255,255" }); },
+          success(w) { w.flash("255,255,255", 0.35); w.spawn({ type: "star", x: 270, y: 160, size: 90, life: 0.3, color: "255,255,255" }); },
         },
         {
           id: "level", name: { en: "Level Pop", ko: "숫자 팡" }, param: "scale 1.8 → 1",
@@ -1068,7 +1071,7 @@
       },
       update(w, dt) {
         const E2 = w.E; E2.shake = Math.max(0, E2.shake - dt); E2.grey = Math.max(0, E2.grey - dt * 0.6);
-        const b = E2.ban; if (b) { b.vy += 500 * dt; b.y = Math.min(b.y + b.vy * dt, 236); b.rot += b.vr * dt; b.t -= dt; if (b.t <= 0) E2.ban = null; }
+        const b = E2.ban; if (b) { b.vy += 500 * dt; b.y = Math.min(b.y + b.vy * dt, 64); b.rot += b.vr * dt; b.t -= dt; if (b.t <= 0) E2.ban = null; }
       },
       drawFront(w, ctx) {
         const E2 = w.E, sx = E2.shake > 0 ? rand(-3, 3) : 0;
@@ -1107,12 +1110,12 @@
         {
           id: "drop", name: { en: "Level Falls", ko: "숫자가 떨어짐" }, param: "old +8 falls red",
           cap: { en: "The old *+8 falls* off in red.", ko: "예전 *+8이 툭* 떨어져요. 빨갛게." },
-          fail(w, E2) { w.spawn({ type: "text", text: "+" + (E2.lv + 1), x: 270, y: 300, vx: 40, vy: -120, g: 700, life: 1.2, size: 30, color: "#f87171" }); },
+          fail(w, E2) { w.spawn({ type: "text", text: "+" + (E2.lv + 1), x: 300, y: 296, vx: 110, vy: -160, g: 700, life: 1.2, size: 30, color: "#f87171" }); },
         },
         {
           id: "banner", name: { en: "FAILED Droops", ko: "FAILED가 축 처짐" }, param: "fall + tilt",
           cap: { en: "*FAILED* doesn't pop. It *slumps*.", ko: "*FAILED*는 튀지 않아요. *축 처져요*." },
-          fail(w, E2) { E2.ban = { y: 40, vy: 0, rot: 0, vr: 0.4, t: 1.5 }; },
+          fail(w, E2) { E2.ban = { y: 20, vy: 0, rot: 0, vr: 0.25, t: 1.5 }; },
           over(w, ctx, E2) {
             const b = E2.ban; if (!b) return;
             ctx.save(); ctx.globalAlpha = Math.min(1, b.t * 2); ctx.translate(270, b.y); ctx.rotate(b.rot); T(ctx, "FAILED", 0, 0, 40, "#f87171"); ctx.restore();
@@ -1121,7 +1124,7 @@
         {
           id: "smoke", name: { en: "Smoke Puff", ko: "연기 피식" }, param: "8 grey puffs",
           cap: { en: "A sad little *puff of smoke*.", ko: "*피식*, 연기 한 줌." },
-          fail(w) { for (let i = 0; i < 8; i++) w.spawn({ type: "smoke", x: 270 + rand(-30, 30), y: 160 + rand(-40, 40), vx: rand(-40, 40), vy: rand(-60, -20), size: rand(10, 16), size1: rand(26, 36), life: rand(1, 1.5), color: "120,120,130" }); },
+          fail(w) { for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: 270 + rand(-50, 50), y: 200 + rand(-60, 40), vx: rand(-90, 90), vy: rand(-50, -15), drag: 1, size: rand(6, 10), size1: rand(18, 26), life: rand(1, 1.5), color: "90,90,100", add: false }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack + falling tone",
@@ -1141,7 +1144,7 @@
       drawFloor() {},
       setup(w) {
         w.RAR = [{ n: "R", col: "#60a5fa", rgb: "96,165,250" }, { n: "SR", col: "#c084fc", rgb: "192,132,252" }, { n: "SSR", col: "#facc15", rgb: "250,204,21" }];
-        w.P = { r: 2, face: true, sx: 1, stars: 3, shake: 0, glow: 0 }; w.cnt = 0;
+        w.P = { r: 2, face: false, sx: 1, stars: 0, shake: 0, glow: 0 }; w.cnt = 0;
       },
       fire(w) {
         if (w.busy) return;
@@ -1149,7 +1152,7 @@
         const P = w.P;
         P.r = [2, 0, 1, 2][w.cnt++ % 4]; P.face = false; P.stars = 0; P.glow = 0;
         w.emit("pull", P);
-        const delay = (w.on("flip") ? 0.2 : 0) + (w.on("tease") ? 0.2 * P.r : 0);
+        const delay = (w.on("flip") ? 0.2 : 0.3) + (w.on("tease") ? 0.2 * P.r : 0);
         w.after(delay, () => { P.face = true; P.stars = P.r + 1; w.emit("reveal", P, w.RAR[P.r]); });
         w.after(1.9, () => { w.busy = false; });
       },
@@ -1209,7 +1212,7 @@
         {
           id: "flash", name: { en: "SSR Flash", ko: "최고 등급 번쩍" }, param: "flash + shake",
           cap: { en: "Only the top tier *flashes the screen*.", ko: "*최고 등급*만 화면이 번쩍." },
-          reveal(w, P, R2) { if (P.r === 2) { w.flash(R2.rgb, 0.6); w.shake(0.4); w.spawn({ type: "text", text: "SSR!!", x: 270, y: 54, vy: -8, life: 1.4, size: 40, color: R2.col }); } },
+          reveal(w, P, R2) { if (P.r === 2) { w.flash(R2.rgb, 0.4); w.shake(0.4); w.spawn({ type: "text", text: "SSR!!", x: 270, y: 54, vy: -8, life: 1.4, size: 40, color: R2.col }); } },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch by tier",
@@ -1491,7 +1494,7 @@
       fire(w) {
         const S = w.S;
         if (S.gold < 120) { S.gold = S.shown = 1250; S.bag = 3; }
-        S.gold -= 120; S.bag++;
+        S.gold -= 120; S.bag++; S.bsc = 0.95;
         w.emit("buy", S);
       },
       update(w, dt) {
@@ -1552,7 +1555,7 @@
         {
           id: "stamp", name: { en: "Purchased Stamp", ko: "구매 도장" }, param: "1.6× → 1",
           cap: { en: "Stamp *PURCHASED* on the card. Clear and done.", ko: "카드 위에 *구매 완료* 도장. 깔끔하게 끝." },
-          buy(w) { w.spawn({ type: "text", text: "PURCHASED", x: 270, y: 112, life: 1.2, hold: true, size: 26, color: "#c6f432" }); },
+          buy(w) { w.spawn({ type: "text", text: "PURCHASED", x: 270, y: 64, life: 1.2, hold: true, size: 28, color: "#c6f432" }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "coins + bag thud",
@@ -1625,7 +1628,7 @@
         {
           id: "new", name: { en: "NEW Badge", ko: "NEW 배지" }, param: "until 3s",
           cap: { en: "A *NEW* tag says \"this one, just now\".", ko: "*NEW* 표시가 \"방금 들어온 거\"라고 알려줘요." },
-          badge(w, ctx, it) { if (it.t < 3) { panel(ctx, 2, -30, 28, 14, 5, "#c6f432", null); ctx.font = `900 9px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#111"; ctx.fillText("NEW", 16, -23); } },
+          badge(w, ctx, it) { if (it.t < 3) { panel(ctx, -2, -34, 36, 17, 6, "#c6f432", null); ctx.font = `900 12px ${FONT}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#111"; ctx.fillText("NEW", 16, -25); } },
         },
         {
           id: "sparkle", name: { en: "Landing Sparkle", ko: "착지 반짝" }, param: "star + ring",
@@ -1721,7 +1724,7 @@
         {
           id: "banner", name: { en: "Turn Banner", ko: "차례 알림" }, param: "ally lime · foe red",
           cap: { en: "Say whose side: *YOUR TURN* or *ENEMY TURN*.", ko: "어느 편인지 말해요. *내 차례*, *적 차례*." },
-          turn(w, cur) { w.spawn({ type: "text", text: cur.ally ? "YOUR TURN" : "ENEMY TURN", x: 270, y: 140, vy: -10, life: 1.1, size: 30, color: cur.ally ? "#c6f432" : "#f87171" }); },
+          turn(w, cur) { w.spawn({ type: "text", text: cur.ally ? "YOUR TURN" : "ENEMY TURN", x: 270, y: 122, vy: -6, life: 1.1, size: 30, color: cur.ally ? "#c6f432" : "#f87171" }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "high ally · low foe",
@@ -1745,9 +1748,10 @@
         if (w.busy) return;
         w.busy = true;
         const strike = () => {
-          const f = w.foe; f.hp = Math.max(0, f.hp - 180); f.flash = 1;
+          const f = w.foe; f.hp = Math.max(0, f.hp - 180); f.flash = 1; f.ox += 16;
+          w.spawn({ type: "slash", x: f.x - 20, y: G - 75, ang: -0.5, len: 60, size: 4, life: 0.2, color: "255,255,255" });
           w.emit("strike", { x: f.x - 20, y: G - 75 });
-          w.spawn({ type: "text", text: "180", x: f.x - 20, y: G - 170, vy: -40, life: 1.2, size: 40, color: "#fff" });
+          w.spawn({ type: "text", text: "180", x: f.x - 70, y: G - 205, vy: -40, life: 1.2, size: 40, color: "#fff" });
           if (f.hp <= 0) w.after(0.6, () => { f.hp = f.maxHp; });
           w.after(0.3, () => { w.busy = false; });
         };
@@ -1809,7 +1813,7 @@
           id: "release", name: { en: "Release Hit", ko: "풀리는 순간 한 방" }, param: "flash · shake .6",
           cap: { en: "Then *release*: flash, slash, big shake.", ko: "그리고 *팡*. 번쩍, 베기, 크게 흔들기." },
           strike(w, at) {
-            w.flash("255,255,255", 0.8); w.shake(0.6, 1); w.hitstop(0.08); w.foe.ox += 40;
+            w.flash("255,255,255", 0.5); w.shake(0.6, 1); w.hitstop(0.08); w.foe.ox += 40;
             w.spawn({ type: "slash", x: at.x, y: at.y, ang: -0.5, len: 120, size: 14, life: 0.3, color: "255,255,255" });
             w.spawn({ type: "slash", x: at.x, y: at.y, ang: 0.6, len: 100, size: 10, life: 0.3, color: "198,244,50" });
           },
@@ -1837,8 +1841,8 @@
         const p = paw(w), f = w.foe, weak = w.cnt++ % 3 !== 2;
         const col = weak ? "251,146,60" : "103,232,249";
         w.shoot({ x: p.x, y: p.y, vx: 950, vy: 0, r: 9, color: weak ? "#fb923c" : "#67e8f9", trail: col, hitX: f.x - 40, onHit: o => {
-          const d = weak ? 72 : 24, n = { text: String(d), x: f.x - 20, y: G - 170, vy: -320, g: 900, life: 1.2, size: 30, color: "#fff" };
-          f.hp = Math.max(0, f.hp - d); f.flash = 0.8;
+          const d = weak ? 72 : 24, n = { text: String(d), x: f.x + 50, y: G - 165, vy: -320, g: 900, life: 1.2, size: 30, color: "#fff" };
+          f.hp = Math.max(0, f.hp - d); f.flash = 0.8; f.ox += 8;
           w.emit("hit", { x: o.x, y: o.y }, weak, n);
           w.spawn(Object.assign({ type: "text" }, n));
           if (f.hp <= 0) w.after(0.5, () => { f.hp = f.maxHp; });
@@ -1854,7 +1858,7 @@
           hud(w, ctx, K) {
             if (K.t < 0) return;
             const s = 1 + Math.max(0, 1 - K.t * 6) * 1.2;
-            ctx.save(); ctx.globalAlpha = Math.min(1, (1.1 - K.t) * 4); ctx.translate(310, 92); ctx.rotate(-0.16); ctx.scale(s, s);
+            ctx.save(); ctx.globalAlpha = Math.min(1, (1.1 - K.t) * 4); ctx.translate(250, 78); ctx.rotate(-0.16); ctx.scale(s, s);
             T(ctx, "WEAK!", 0, 0, 46, "#fb923c"); ctx.restore();
           },
         },
@@ -1924,7 +1928,7 @@
         {
           id: "whiff", name: { en: "Whiff Arc", ko: "헛스윙 궤적" }, param: "grey arc",
           cap: { en: "Draw the swing *through empty air*.", ko: "*허공*을 가르는 궤적." },
-          miss(w, h, at) { w.spawn({ type: "arc", x: at.x + 20, y: at.y, size: 70, life: 0.35, a0: 1.6, a1: 4.4, color: "203,213,225" }); },
+          miss(w, h, at) { w.spawn({ type: "arc", x: at.x + 34, y: at.y, size: 50, life: 0.3, a0: 1.8, a1: 4.3, color: "148,163,184" }); },
         },
         {
           id: "text", name: { en: "MISS Text", ko: "MISS 글자" }, param: "grey · drift sideways",
@@ -1996,7 +2000,7 @@
         {
           id: "label", name: { en: "GUARD Label", ko: "GUARD 표시" }, param: "blue number + tag",
           cap: { en: "Blue *GUARD* tag, a *small blue* number.", ko: "파란 *GUARD* 표시, 숫자는 *작고 파랗게*." },
-          block(w, h, at, n) { n.color = "#7dd3fc"; n.size = 22; w.spawn({ type: "text", text: "GUARD", x: h.x + 10, y: G - 200, vy: -20, life: 1.2, size: 26, color: "#38bdf8" }); },
+          block(w, h, at, n) { n.color = "#7dd3fc"; n.size = 22; n.x = h.x + 60; w.spawn({ type: "text", text: "GUARD", x: h.x - 20, y: G - 205, vy: -20, life: 1.2, size: 28, color: "#38bdf8" }); },
         },
         {
           id: "slide", name: { en: "Guard Slide", ko: "버티며 밀림" }, param: "-24px · dust",
@@ -2102,9 +2106,10 @@
         if (w.busy) return;
         w.busy = true;
         const blast = () => {
-          const f = w.foe; f.hp = Math.max(0, f.hp - 300); f.flash = 1; w.U.charging = false;
+          const f = w.foe; f.hp = Math.max(0, f.hp - 300); f.flash = 1; f.ox += 20; w.U.charging = false;
+          w.spawn({ type: "slash", x: (w.hero.x + f.x) / 2, y: G - 80, ang: 0, len: (f.x - w.hero.x) / 2 - 30, size: 4, life: 0.25, color: "255,255,255" });
           w.emit("blast", w.U, f);
-          if (!w.on("multi")) w.spawn({ type: "text", text: "300", x: f.x - 20, y: G - 200, vy: -40, life: 1.2, size: 44, color: "#fff" });
+          if (!w.on("multi")) w.spawn({ type: "text", text: "300", x: f.x - 110, y: G - 160, vy: -40, life: 1.2, size: 44, color: "#fff" });
           if (f.hp <= 0) w.after(0.8, () => { f.hp = f.maxHp; });
           w.after(0.4, () => { w.busy = false; });
         };
@@ -2142,7 +2147,7 @@
         {
           id: "name", name: { en: "Skill Name", ko: "기술 이름" }, param: "slide in · 40px",
           cap: { en: "Shout the *skill name* across the screen.", ko: "*기술 이름*을 화면에 크게 외쳐요." },
-          charge(w) { w.spawn({ type: "text", text: "NOVA BREAKER", x: 200, y: 90, vx: -20, life: 1.3, size: 40, color: "#c6f432" }); },
+          charge(w) { w.spawn({ type: "text", text: "NOVA BREAKER", x: 250, y: 120, vx: -20, life: 1.3, size: 40, color: "#c6f432" }); },
         },
         {
           id: "beam", name: { en: "Giant Beam", ko: "거대한 빔" }, param: "h 90 · 600ms",
@@ -2161,7 +2166,7 @@
           id: "multi", name: { en: "Multi-hit", ko: "연타 숫자" }, param: "5 × 60 · 70ms",
           cap: { en: "Split it into *rapid hits*. Five numbers, one blast.", ko: "*여러 번* 나눠 때려요. 숫자 다섯 개." },
           blast(w, U, f) {
-            for (let i = 0; i < 5; i++) w.after(i * 0.07, () => { f.vib = 8; f.flash = 0.8; w.spawn({ type: "text", text: "60", x: f.x - 40 + rand(-30, 30), y: G - 120 - i * 26, vy: -60, life: 1, size: 30 + i * 3, color: i === 4 ? "#c6f432" : "#fff" }); });
+            for (let i = 0; i < 5; i++) w.after(i * 0.07, () => { f.vib = 8; f.flash = 0.8; w.spawn({ type: "text", text: "60", x: f.x - 90 + i * 12, y: G - 70 - i * 24, vy: -40, life: 1, size: 30 + i * 3, color: i === 4 ? "#c6f432" : "#fff" }); });
           },
         },
         {
@@ -2220,7 +2225,7 @@
           id: "flash", name: { en: "Color Flash", ko: "멤버 색 번쩍" }, param: "ring + glow",
           cap: { en: "Flash the *member's color*. Who it is, instantly.", ko: "*멤버 색*으로 번쩍. 누군지 바로 알아요." },
           join(w, m) {
-            w.after(0.22, () => { m.a.flash = 1; w.spawn({ type: "ring", x: m.a.home, y: G - 65, size: 20, size1: 120, life: 0.45, w: 8, color: m.rgb }); w.spawn({ type: "glow", x: m.a.home, y: G - 65, size: 120, size1: 40, life: 0.5, color: m.rgb }); });
+            w.after(0.22, () => { m.a.flash = 1; w.spawn({ type: "ring", x: m.a.home, y: G - 65, size: 20, size1: 120, life: 0.45, w: 8, color: m.rgb }); w.spawn({ type: "glow", under: true, x: m.a.home, y: G - 65, size: 130, size1: 50, life: 0.7, color: m.rgb }); });
           },
         },
         {
@@ -2271,6 +2276,7 @@
       drawFront(w, ctx) {
         const V = w.V;
         panel(ctx, 110, 108, 320, 200, 16, "rgba(24,27,36,0.95)");
+        if (V.t < 0.25 && !w.on("banner")) return;
         ctx.save(); ctx.translate(270, 66); ctx.scale(V.ban, V.ban); T(ctx, "VICTORY", 0, 0, 44, "#c6f432"); ctx.restore();
         V.rows.forEach((r, i) => {
           const y = 140 + i * 36;
@@ -2552,7 +2558,7 @@
         {
           id: "flicker", name: { en: "Flash Flicker", ko: "깜빡깜빡" }, param: "3 flashes · 250ms",
           cap: { en: "The screen *flickers* white. Danger!", ko: "화면이 하얗게 *깜빡깜빡*. 위험!" },
-          alert(w) { for (let i = 0; i < 3; i++) w.after(0.35 + i * 0.08, () => w.flash("255,255,255", 0.7)); },
+          alert(w) { for (let i = 0; i < 3; i++) w.after(0.35 + i * 0.08, () => w.flash("255,255,255", 0.4)); },
         },
         {
           id: "swirl", name: { en: "Vortex", ko: "소용돌이" }, param: "12 arms · spin",

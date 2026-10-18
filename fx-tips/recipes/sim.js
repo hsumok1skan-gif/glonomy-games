@@ -172,7 +172,7 @@
       },
       drawFront(w, ctx) { put(ctx, "sim-shop", 270, 236, 180, w.S.sx, w.S.sy); },
       drawHud(w, ctx) {
-        for (const p of w.S.pops) if (p.show) popTxt(ctx, p, "+$" + p.amt);
+        for (const p of w.S.pops) if (p.show) popTxt(ctx, p, "+$" + p.amt); else if (p.age < 0.35) ico(ctx, "coin", p.x, 118, 28);
         flyDraw(w, ctx);
         wallet(ctx, 214, 26, "$" + comma(w.S.shown), w.S.bump);
       },
@@ -236,7 +236,7 @@
           const col = ["#ef4444", "#facc15", "#f43f5e"][b.mood];
           ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
           if (b.pop) bubble(ctx, 0, 0, 50, 42, b.col ? ["#fee2e2", "#fef9c3", "#dcfce7"][b.mood] : "#f1f5f9", b.col ? col : "rgba(0,0,0,0.2)");
-          const g = b.col ? col : "#9ca3af", sz = b.pop ? 26 : 16;
+          const g = b.col ? col : "#9ca3af", sz = b.pop ? 26 : 22;
           ctx.fillStyle = g;
           if (b.mood === 2) { heartPath(ctx, sz * 1.1); ctx.fill(); }
           else if (b.mood === 1) for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.arc(i * sz * 0.34, 0, sz * 0.12, 0, TAU); ctx.fill(); }
@@ -408,7 +408,7 @@
           update(w) {
             const K = w.K; if (!K.cook) return;
             if (Math.random() < 0.5) w.spawn({ type: "spark", x: 270 + rand(-50, 50), y: G - 26, vx: rand(-120, 120), vy: rand(-300, -150), g: 900, life: 0.3, size: 2, color: "255,236,180" });
-            if (Math.random() < 0.15 + K.p * 0.3) w.spawn({ type: "smoke", x: 270 + rand(-40, 40), y: G - 30, vx: rand(-15, 15), vy: rand(-90, -50), size: 6, size1: 22, life: 0.9, color: "230,230,240" });
+            if (Math.random() < 0.08 + K.p * 0.15) w.spawn({ type: "smoke", x: 270 + rand(-40, 40), y: G - 30, vx: rand(-15, 15), vy: rand(-90, -50), size: 5, size1: 15, life: 0.8, color: "190,190,200" });
           } },
         { id: "jiggle", name: { en: "Pan Jiggle", ko: "팬 떨림" }, param: "±1.5px · 50Hz",
           cap: { en: "A tiny *jiggle* says heat is on.", ko: "살짝 *달달* 떨려야 불이 켜진 느낌." },
@@ -423,7 +423,7 @@
           cap: { en: "Puff of *steam*, a big *DONE!*, bar flashes.", ko: "김이 *푹*, *완성!* 글자, 막대도 번쩍." },
           done(w, K) {
             K.flash = 1; w.spawn({ type: "text", text: "DONE!", x: 270, y: 160, vy: -30, life: 1, size: 34, color: "#4ade80" });
-            for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: 270 + rand(-50, 50), y: G - 30, vx: rand(-80, 80), vy: rand(-160, -80), drag: 2, size: 10, size1: 30, life: 0.9, color: "240,240,245" });
+            for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", x: 270 + rand(-60, 60), y: G - 34, vx: rand(-90, 90), vy: rand(-170, -90), drag: 2, size: 7, size1: 18, life: 0.8, color: "190,190,200" });
           } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "sizzle loop / ding",
           cap: { en: "A soft *sizzle* loop, a clear *ding* when done.", ko: "*지글지글* 깔고, 다 되면 *띵*." },
@@ -582,10 +582,10 @@
         w.busy = true; B.wait = 0; w.emit("pre", B);
         w.after(B.wait, () => { B.lv = B.lv % 3 + 1; w.emit("up", B); w.busy = false; });
       },
-      update(w, dt) { const B = w.B; ease1(B, dt, 9); B.badge = Math.max(0, B.badge - dt * 2.5); B.glow = Math.max(0, B.glow - dt * 2); },
+      update(w, dt) { const B = w.B; ease1(B, dt, 9); B.badge = Math.max(0, B.badge - dt * 2.5); B.glow = Math.max(0, B.glow - dt * 3.5); },
       drawFront(w, ctx) {
         const B = w.B, x = 270 + Math.sin(w.time * 80) * B.wob * 4;
-        if (B.glow > 0) { ctx.globalCompositeOperation = "lighter"; glow(ctx, 270, 200, 140, "198,244,50", B.glow * 0.6); ctx.globalCompositeOperation = "source-over"; }
+        if (B.glow > 0) { ctx.globalCompositeOperation = "lighter"; glow(ctx, 270, 200, 140, "198,244,50", B.glow * 0.35); ctx.globalCompositeOperation = "source-over"; }
         put(ctx, "sim-up" + B.lv, x, 238, 135, B.sx, B.sy, 1, "white", B.glow);
       },
       drawHud(w, ctx) {

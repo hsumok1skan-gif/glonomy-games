@@ -1,6 +1,8 @@
 "use strict";
 /* survival — 생존·샌드박스·제작·공포 레시피 */
 (() => {
+  // 먼지: 블룸에 하얗게 번지지 않도록 바닥 레이어(under)에 그림
+  const dirt = (w, x, y, n, dir = 0, col = "150,140,130") => { for (let i = 0; i < n; i++) w.spawn({ type: "smoke", under: true, x: x + rand(-10, 10), y: y - rand(0, 6), vx: (dir || (Math.random() < 0.5 ? -1 : 1)) * rand(40, 180), vy: rand(-60, -10), drag: 3, size: rand(4, 8), size1: rand(12, 20), life: rand(0.35, 0.6), color: col }); };
   /* ───────── 파일 전용 도우미 ───────── */
   // 어둠 레이어: 검게 덮고, 빛이 닿는 곳만 지움 (원형 또는 원뿔)
   let DK = null;
@@ -115,7 +117,7 @@
       setup(w) {
         w.hero = w.actor("hero", { home: 140 });
         w.axe = { rot: 0.3 };
-        w.T = { x: 262, hp: 4, rot: 0, wob: 0, notch: 0, down: false, a: 1, sc: 1 };
+        w.T = { x: 262, hp: 4, rot: 0, wob: 0, notch: 0, down: false, a: 1, sc: 1, jx: 0, fl: 0 };
       },
       fire(w) {
         if (w.busy) return;
@@ -123,7 +125,7 @@
         const A = w.axe, T = w.T;
         w.tween(A, { rot: -0.5 }, 0.12, "out", () => w.tween(A, { rot: 1.5 }, 0.07, "in", () => {
           if (!T.down && T.a > 0.9) {
-            T.hp--; w.emit("chop", { x: T.x - 16, y: G - 88 }, T);
+            T.hp--; T.jx = 7; w.emit("chop", { x: T.x - 16, y: G - 88 }, T);
             if (T.hp <= 0) {
               T.down = true;
               if (w.on("fall")) w.emit("fell", T); else T.a = 0;
@@ -133,11 +135,13 @@
           w.after(0.1, () => w.tween(A, { rot: 0.3 }, 0.18, "inout", () => { w.busy = false; }));
         }));
       },
-      update(w, dt) { w.T.wob *= Math.pow(0.03, dt); },
+      update(w, dt) { const T = w.T; T.wob *= Math.pow(0.03, dt); T.jx *= Math.pow(0.002, dt); T.fl = Math.max(0, T.fl - dt * 8); },
       drawBack(w, ctx) {
-        const T = w.T; if (T.a <= 0) return;
-        ctx.save(); ctx.globalAlpha = T.a; ctx.translate(T.x, G); ctx.rotate(T.rot); ctx.scale(T.sc, T.sc);
-        rr(ctx, -14, -130, 28, 130, 4, "#7c4a1e", "rgba(0,0,0,0.3)", 2);
+        const T = w.T;
+        if (T.down) { rr(ctx, T.x - 15, G - 22, 30, 22, 3, "#7c4a1e", "rgba(0,0,0,0.3)", 2); ctx.fillStyle = "#fcd9a0"; ctx.fillRect(T.x - 13, G - 24, 26, 5); }
+        if (T.a <= 0) return;
+        ctx.save(); ctx.globalAlpha = T.a; ctx.translate(T.x + T.jx * Math.sin(w.time * 70), G); ctx.rotate(T.rot); ctx.scale(T.sc, T.sc);
+        rr(ctx, -14, -130, 28, 130, 4, T.fl > 0 ? "#fff3dc" : "#7c4a1e", "rgba(0,0,0,0.3)", 2);
         if (T.notch > 0) { ctx.fillStyle = "#fcd9a0"; ctx.beginPath(); ctx.moveTo(-14, -98); ctx.lineTo(-14 + T.notch, -88); ctx.lineTo(-14, -78); ctx.closePath(); ctx.fill(); }
         const sw = Math.sin(w.time * 30) * T.wob * 0.08;
         ctx.rotate(sw);
@@ -152,7 +156,10 @@
         {
           id: "chips", name: { en: "Wood Chips", ko: "나무 조각" }, param: "8 chips · bounce",
           cap: { en: "Every swing throws *wood chips*. They stay a while.", ko: "찍을 때마다 *나무 조각*이 튀어요." },
-          chop(w, at) { chips(w, at.x, at.y, 8, ["252,211,77", "217,160,90", "146,86,30"]); },
+          chop(w, at) {
+            chips(w, at.x, at.y, 12, ["252,211,77", "217,160,90", "146,86,30"], [-420, -60], [4, 8]);
+            w.spawn({ type: "star", x: at.x, y: at.y, size: 34, life: 0.12, color: "255,236,190" });
+          },
         },
         {
           id: "notch", name: { en: "Growing Notch", ko: "파이는 자국" }, param: "+5px / hit",
@@ -170,13 +177,17 @@
         {
           id: "stop", name: { en: "Bite", ko: "박히는 멈칫" }, param: "stop 60ms · shake",
           cap: { en: "The axe *bites* in. Freeze for a beat.", ko: "도끼가 *콱* 박혀요. 아주 잠깐 멈칫." },
-          chop(w) { w.hitstop(0.06); w.shake(0.16, 1); w.hero.ox -= 4; },
+          chop(w, at, T) { w.hitstop(0.06); w.shake(0.16, 1); w.hero.ox -= 4; T.fl = 1; },
         },
         {
           id: "fall", name: { en: "Timber!", ko: "쓰러짐" }, param: "ease-in 700ms",
           cap: { en: "Don't delete it. Let it *fall*, slow then fast.", ko: "지우지 말고 *쓰러뜨려요*. 천천히, 그리고 쿵." },
           fell(w, T) { w.tween(T, { rot: 1.5 }, 0.7, "in", () => w.emit("land", T)); w.after(1.2, () => w.tween(T, { a: 0 }, 0.4)); },
-          land(w, T) { w.shake(0.55); dust(w, T.x + 200, G, 14); dust(w, T.x + 100, G, 8); },
+          land(w, T) {
+            w.shake(0.55); w.hitstop(0.05);
+            for (let i = 0; i < 16; i++) w.spawn({ type: "smoke", under: true, x: T.x + rand(60, 230), y: G - 4, vx: rand(-90, 90), vy: rand(-90, -20), drag: 2, size: rand(10, 16), size1: rand(26, 40), life: rand(0.8, 1.3), color: "150,120,90" });
+            chips(w, T.x + 190, G - 40, 14, ["74,180,90", "46,150,72", "34,120,60"], [-200, 260], [5, 9]);
+          },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk / creak / slam",
@@ -207,7 +218,7 @@
         const P = w.pick, R = w.rock;
         w.tween(P, { rot: -0.9 }, 0.12, "out", () => w.tween(P, { rot: 1.95 }, 0.07, "in", () => {
           if (R.alive) {
-            R.hp -= 20;
+            R.hp -= 20; R.ox = 7;
             w.emit("hit", { x: R.x - 80, y: G - 46 }, R);
             if (R.hp <= 0) { R.cracks = []; w.kill(R); }
           }
@@ -255,6 +266,9 @@
           kill(w, R) {
             chips(w, R.x, G - 50, 18, ["148,163,184", "100,116,139", "71,85,105"], [-420, 420], [6, 12]);
             chips(w, R.x, G - 50, 3, ["251,191,36"], [-200, 200], [9, 11]);
+            for (let i = 0; i < 12; i++) w.spawn({ type: "smoke", under: true, x: R.x + rand(-60, 60), y: G - rand(10, 60), vx: rand(-120, 120), vy: rand(-80, -10), drag: 2, size: 14, size1: 38, life: rand(0.8, 1.2), color: "120,125,140" });
+            w.spawn({ type: "ring", flat: true, x: R.x, y: G, size: 20, size1: 170, life: 0.5, w: 10, color: "226,232,240" });
+            w.spawn({ type: "glow", under: true, x: R.x, y: G - 50, size: 40, size1: 140, life: 0.4, color: "251,191,36" });
             txt(w, R.x, G - 140, "+3", 34, "#fbbf24");
             w.shake(0.5); w.hitstop(0.12);
           },
@@ -273,7 +287,7 @@
       id: "survival-craft", cat: "survival", view: "ui",
       title: { en: "Make crafting feel like *making*", ko: "제작이 *만드는 맛* 나게" },
       intro: { en: "Click. Items gone. Axe *appears*.", ko: "누르면 재료 사라지고 도끼 *뿅*." },
-      interval: 2.3, stepDur: 4.0,
+      interval: 2.6, stepDur: 4.0,
       setup(w) {
         w.C = { prog: 0, glint: -1 };
         w.reset = () => {
@@ -285,11 +299,13 @@
       fire(w) {
         if (w.busy) return;
         w.busy = true; w.reset();
-        const C = w.C, d = w.on("ring") ? 0.75 : 0.05;
-        w.emit("craft", C);
-        if (!w.on("fly")) C.ing.forEach(it => { it.a = 0; });
+        const C = w.C, d = 0.35 + (w.on("ring") ? 0.75 : 0.05);
+        w.after(0.35, () => {
+          w.emit("craft", C);
+          if (!w.on("fly")) C.ing.forEach(it => { it.a = 0; });
+        });
         w.after(d, () => { C.res.a = 1; w.emit("done", C.res); });
-        w.after(d + 1.2, () => { w.busy = false; });
+        w.after(d + 1.1, () => { w.reset(); w.busy = false; });
       },
       drawFloor(w, ctx) {
         const C = w.C;
@@ -337,7 +353,8 @@
           id: "burst", name: { en: "Burst", ko: "완성 빛" }, param: "rays + 12 sparks",
           cap: { en: "Celebrate it: *rays* and *sparks*.", ko: "완성을 축하해요. *빛줄기*와 *불꽃*." },
           done(w) {
-            w.spawn({ type: "rays", x: 436, y: 170, size: 120, n: 10, vr: 1.2, life: 0.9, color: "198,244,50" });
+            w.spawn({ type: "rays", under: true, x: 436, y: 170, size: 130, n: 10, vr: 1.2, life: 1.1, hold: true, color: "198,244,50" });
+            w.spawn({ type: "glow", under: true, x: 436, y: 170, size: 50, size1: 90, life: 1.1, hold: true, color: "198,244,50" });
             w.spawn({ type: "ring", x: 436, y: 170, size: 30, size1: 110, life: 0.4, w: 6, color: "198,244,50" });
             sparks(w, 436, 170, 12, "236,252,203", [150, 420]);
           },
@@ -407,12 +424,12 @@
         {
           id: "drop", name: { en: "Drop In", ko: "위에서 툭" }, param: "-50px · ease-in 120ms",
           cap: { en: "Drop it from above. It *lands*, it doesn't appear.", ko: "위에서 *툭* 떨어뜨려요. 생기는 게 아니라 *놓이는* 거예요." },
-          place(w, p) { p.oy = -50; w.tween(p, { oy: 0 }, 0.12, "in", () => { p.sx = 1.18; p.sy = 0.78; w.emit("snap", p); }); },
+          place(w, p) { p.oy = -110; w.tween(p, { oy: 0 }, 0.18, "in", () => { p.sx = 1.18; p.sy = 0.78; w.emit("snap", p); }); },
         },
         {
           id: "dust", name: { en: "Dust Puff", ko: "먼지" }, param: "8 puffs",
           cap: { en: "A *puff of dust* at the seam.", ko: "닿는 자리에 *먼지 폴폴*." },
-          snap(w, p) { dust(w, p.x - 26, p.y, 4, -1); dust(w, p.x + 26, p.y, 4, 1); },
+          snap(w, p) { dirt(w, p.x - 30, p.y, 6, -1, "170,140,100"); dirt(w, p.x + 30, p.y, 6, 1, "170,140,100"); },
         },
         {
           id: "flash", name: { en: "Snap Outline", ko: "딱 맞음 테두리" }, param: "lime outline 330ms",
@@ -490,7 +507,9 @@
           cap: { en: "Feed it a log: the fire *flares up*.", ko: "장작을 넣으면 불이 *확* 커져요." },
           feed(w, F) {
             F.flare = 1;
-            for (let i = 0; i < 14; i++) w.spawn({ type: "glow", x: F.x + rand(-20, 20), y: G - 30, vx: rand(-120, 120), vy: rand(-320, -120), drag: 2, size: rand(5, 9), size1: 0, life: rand(0.5, 0.9), color: "255,200,90" });
+            w.spawn({ type: "glow", under: true, x: F.x, y: G - 50, size: 60, size1: 150, life: 0.7, color: "255,140,40" });
+            w.spawn({ type: "ring", flat: true, x: F.x, y: G, size: 20, size1: 120, life: 0.5, w: 8, color: "255,190,90" });
+            for (let i = 0; i < 22; i++) w.spawn({ type: "spark", x: F.x + rand(-20, 20), y: G - 30, vx: rand(-160, 160), vy: rand(-480, -160), drag: 2, size: 3, life: rand(0.5, 0.9), color: pick(["255,200,90", "255,120,40"]) });
           },
         },
         {
@@ -513,7 +532,7 @@
       id: "survival-hunger", cat: "survival", view: "side",
       title: { en: "Make hunger *hard to ignore*", ko: "배고픔을 *못 본 척 못 하게*" },
       intro: { en: "Hunger: 10%. Did you *notice?*", ko: "배고픔 10%. *눈치채셨어요?*" },
-      interval: 0.9, stepDur: 4.0,
+      interval: 0.6, stepDur: 4.0,
       setup(w) {
         w.hero = w.actor("hero", { home: 270 });
         w.H = { v: 100, col: "#cbd5e1", pulse: 0, shake: 0, sc: 1 };
@@ -521,16 +540,16 @@
       fire(w) {
         const H = w.H;
         if (H.v <= 0) { H.v = 100; w.emit("eat", H); return; }
-        H.v = Math.max(0, H.v - 18);
+        H.v = Math.max(0, H.v - 20);
         w.emit("drain", H);
       },
       update(w, dt) { const H = w.H; H.shake = Math.max(0, H.shake - dt * 3); H.sc += (1 - H.sc) * Math.min(1, dt * 10); },
       drawHud(w, ctx) {
-        const H = w.H, x = 190, y = 70, sx = H.shake * rand(-4, 4);
-        ctx.save(); ctx.translate(x + 80 + sx, y); ctx.scale(H.sc, H.sc); ctx.translate(-x - 80, -y);
-        meter(ctx, x, y - 8, 160, 16, H.v / 100, H.col);
-        icon(ctx, "meat", x - 26 + H.shake * rand(-6, 6), y, 1);
-        label(ctx, Math.round(H.v) + "%", x + 196, y, 16, "rgba(255,255,255,0.8)");
+        const H = w.H, x = 170, y = 76, sx = H.shake * rand(-4, 4);
+        ctx.save(); ctx.translate(x + 100 + sx, y); ctx.scale(H.sc, H.sc); ctx.translate(-x - 100, -y);
+        meter(ctx, x, y - 11, 200, 22, H.v / 100, H.col);
+        icon(ctx, "meat", x - 34 + H.shake * rand(-8, 8), y, 1.4);
+        label(ctx, Math.round(H.v) + "%", x + 238, y, 20, "rgba(255,255,255,0.85)");
         ctx.restore();
       },
       steps: [
@@ -554,8 +573,9 @@
           cap: { en: "Low? The hero *hunches* and the belly *growls*.", ko: "배고프면 몸이 *움츠러들고* 배에서 *꼬르륵*." },
           drain(w, H) {
             if (H.v > 40) return;
-            const h = w.hero; h.sy = 0.88; h.sx = 1.06;
-            for (let i = 0; i < 3; i++) w.after(i * 0.12, () => w.spawn({ type: "ring", x: h.x + 10, y: G - 70, size: 8, size1: 50, life: 0.45, w: 4, color: "245,158,11" }));
+            const h = w.hero; h.sy = 0.84; h.sx = 1.1;
+            for (let i = 0; i < 3; i++) w.after(i * 0.12, () => w.spawn({ type: "ring", x: h.x + 10, y: G - 70, size: 10, size1: 80, life: 0.5, w: 6, color: "245,158,11" }));
+            txt(w, h.x + 60, G - 120, "grrr…", 22, "#f59e0b", -40);
           },
         },
         {
@@ -568,8 +588,11 @@
           cap: { en: "Eating *fills* the bar, not snaps it.", ko: "먹으면 바가 *차오르게*. 뚝 바뀌지 않게." },
           eat(w, H) {
             H.v = 0; w.tween(H, { v: 100 }, 0.6, "out");
-            for (let i = 0; i < 10; i++) w.spawn({ type: "star", x: 190 + i * 16, y: 62, vy: -60, size: 8, life: 0.5, color: "134,239,172" });
-            txt(w, w.hero.x, G - 160, "+100", 26, "#4ade80");
+            for (let i = 0; i < 12; i++) w.spawn({ type: "star", x: 170 + i * 18, y: 76, vx: rand(-40, 40), vy: rand(-160, -60), size: 9, life: 0.7, color: "134,239,172" });
+            w.spawn({ type: "glow", under: true, x: w.hero.x, y: G - 70, size: 50, size1: 120, life: 0.6, color: "74,222,128" });
+            w.spawn({ type: "ring", flat: true, x: w.hero.x, y: G, size: 20, size1: 110, life: 0.5, w: 8, color: "134,239,172" });
+            w.hero.sy = 1.15; w.hero.sx = 0.92;
+            txt(w, w.hero.x, G - 160, "+100", 30, "#4ade80");
           },
         },
         {
@@ -586,21 +609,21 @@
       id: "survival-thirst", cat: "survival", view: "top",
       title: { en: "Make thirst feel *dry*", ko: "목마름이 *바싹* 느껴지게" },
       intro: { en: "A drop disappears. *So what?*", ko: "물방울 하나 사라짐. *그래서?*" },
-      interval: 0.8, stepDur: 4.0,
+      interval: 0.6, stepDur: 4.0,
       drawFloor(w, ctx) {
         ctx.fillStyle = "#3a2f1f"; ctx.fillRect(-80, -80, 700, 520);
         ctx.fillStyle = "rgba(255,220,150,0.06)";
         for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.ellipse(40 + i * 62, 120 + (i % 3) * 80, 70, 14, 0.2, 0, TAU); ctx.fill(); }
       },
       setup(w) {
-        w.hero = w.actor("heroTop", { home: 270, gy: 210 });
+        w.hero = w.actor("heroTop", { home: 270, gy: 210, h: 92, w: 92 });
         w.D = { n: 5, pop: -1, heat: 0, ghost: 0, grade: 0 };
       },
       fire(w) {
         const D = w.D;
         if (D.n <= 0) { D.n = 5; w.emit("drink", D); return; }
         D.n--;
-        w.emit("lose", D, 200 + D.n * 36);
+        w.emit("lose", D, 182 + D.n * 44);
       },
       update(w, dt) {
         const h = w.hero; h.x = 270 + Math.sin(w.time * 0.9) * 120; h.rot = Math.cos(w.time * 0.9) > 0 ? 0 : Math.PI;
@@ -613,8 +636,8 @@
       drawHud(w, ctx) {
         const D = w.D;
         for (let i = 0; i < 5; i++) {
-          const x = 200 + i * 36, y = 70, full = i < D.n;
-          ctx.globalAlpha = full ? 1 : 0.25; icon(ctx, "drop", x, y, full && i === D.n - 1 && D.n <= 1 && D.warn ? 1 + 0.2 * Math.abs(Math.sin(w.time * 10)) : 1); ctx.globalAlpha = 1;
+          const x = 182 + i * 44, y = 72, full = i < D.n;
+          ctx.globalAlpha = full ? 1 : 0.25; icon(ctx, "drop", x, y, 1.4 * (full && i === D.n - 1 && D.n <= 1 && D.warn ? 1 + 0.2 * Math.abs(Math.sin(w.time * 10)) : 1)); ctx.globalAlpha = 1;
         }
       },
       steps: [
@@ -622,21 +645,21 @@
           id: "burst", name: { en: "Drop Bursts", ko: "물방울 톡 터짐" }, param: "6 drops · splash",
           cap: { en: "The lost drop *bursts*. You see what you lost.", ko: "사라지는 물방울이 *톡 터져요*. 잃은 게 보여요." },
           lose(w, D, x) {
-            for (let i = 0; i < 6; i++) w.spawn({ type: "circle", x, y: 70, vx: rand(-120, 120), vy: rand(-200, 40), g: 700, size: 4, life: 0.5, color: "56,189,248", add: false });
-            w.spawn({ type: "ring", x, y: 70, size: 6, size1: 30, life: 0.3, w: 3, color: "125,211,252" });
+            for (let i = 0; i < 10; i++) w.spawn({ type: "circle", x, y: 72, vx: rand(-160, 160), vy: rand(-240, 40), g: 800, size: rand(3, 6), life: 0.6, color: "56,189,248", add: false });
+            w.spawn({ type: "ring", x, y: 72, size: 8, size1: 46, life: 0.35, w: 5, color: "125,211,252" });
           },
         },
         {
           id: "sun", name: { en: "Harsh Sun", ko: "뜨거운 해" }, param: "rays · spin",
           cap: { en: "Put the *sun* in the frame. Heat needs a source.", ko: "화면에 *해*를 걸어요. 더위엔 원인이 있어야죠." },
           update(w) {
-            if (!w.D.sunT || w.time > w.D.sunT) { w.D.sunT = w.time + 1; w.spawn({ type: "rays", x: 490, y: 150, size: 110, n: 9, vr: 0.3, life: 1.05, color: "255,220,120", hold: true }); w.spawn({ type: "glow", x: 490, y: 150, size: 46, life: 1.05, color: "255,240,180", hold: true }); }
+            if (!w.D.sunT || w.time > w.D.sunT) { w.D.sunT = w.time + 1; w.spawn({ type: "rays", x: 450, y: 130, size: 100, n: 9, vr: 0.3, life: 1.05, color: "255,220,120", hold: true }); w.spawn({ type: "glow", x: 450, y: 130, size: 40, life: 1.05, color: "255,240,180", hold: true }); }
           },
         },
         {
           id: "haze", name: { en: "Heat Haze", ko: "아지랑이" }, param: "wavy wisps",
           cap: { en: "Wavy *heat haze* rises off the sand.", ko: "모래 위로 *아지랑이*가 피어올라요." },
-          update(w, dt) { if (Math.random() < dt * 14) w.spawn({ type: "ellipse", x: rand(30, 510), y: rand(110, 330), vx: rand(-10, 10), vy: -26, size: rand(30, 60), life: 1.4, color: "255,236,190", alpha: 0.35, add: true }); },
+          update(w, dt) { if (Math.random() < dt * 6) w.spawn({ type: "ellipse", x: rand(30, 510), y: rand(130, 330), vx: rand(-10, 10), vy: -26, size: rand(30, 60), life: 1.4, color: "255,236,190", alpha: 0.22, add: true }); },
         },
         {
           id: "grade", name: { en: "Dry Color Grade", ko: "누렇게 바래기" }, param: "orange × thirst",
@@ -730,7 +753,7 @@
           update(w) {
             if (w.time < (w.breathT || 0)) return;
             w.breathT = w.time + 0.9; const h = w.hero;
-            for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: h.x + 34, y: G - 122, vx: rand(50, 90), vy: rand(-20, 0), drag: 1.5, size: 4, size1: 16, life: 1, color: "241,245,249" });
+            for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", under: true, x: h.x + 30 + i * 4, y: G - 120, vx: rand(40, 110), vy: rand(-30, 0), drag: 1.5, size: 3, size1: rand(12, 22), life: 1.1, alpha: 0.6, color: "241,245,249" });
           },
         },
         {
@@ -874,7 +897,7 @@
         {
           id: "flash", name: { en: "Flash Frame", ko: "번쩍 한 프레임" }, param: "white .8 + red",
           cap: { en: "*One white frame*, then red on the creature.", ko: "*하얀 한 프레임*, 괴물은 *빨갛게*." },
-          scare(w, m) { w.flash("255,255,255", 0.8); m.tint = 1.2; },
+          scare(w, m) { w.flash("255,255,255", 0.5); m.tint = 1.2; },
         },
         {
           id: "zoom", name: { en: "Zoom Punch", ko: "확 다가옴" }, param: "zoom +18%",
@@ -890,7 +913,7 @@
           id: "split", name: { en: "Color Split", ko: "색 갈라짐" }, param: "red / cyan ghosts",
           cap: { en: "Split it into *red and cyan*. The eye can't settle.", ko: "*빨강·하늘색*으로 갈라져요. 눈이 못 버텨요." },
           scare(w, m) {
-            for (const [c, d] of [["red", -16], ["cyan", 16]]) w.spawn({ type: "ghost", img: m.s[c], x: 250 + d, y: G, w: m.w * 1.55, h: m.h * 1.55, alpha0: 0.55, life: 0.45, add: true });
+            for (const [c, d] of [["red", -18], ["cyan", 18]]) w.spawn({ type: "ghost", img: m.s[c], x: 250 + d, y: G, w: m.w * 1.55, h: m.h * 1.55, alpha0: 0.4, life: 0.35, add: true });
           },
         },
         {
@@ -1006,7 +1029,7 @@
         const h = w.hero, L = w.L, ox = h.x + 46, oy = G - 84;
         if (L.dark > 0) shade(ctx, L.dark, L.on ? [{ x: ox, y: oy, r: 470, cone: [L.ang + 0.1, 0.26], hard: 0.55 }, { x: h.x, y: G - 70, r: L.glow ? 100 : 0.1, a: 0.5 }] : [], "4,4,8");
         if (L.on) {
-          ctx.fillStyle = `rgba(253,230,138,${L.dark ? 0.08 : 0.35})`;
+          ctx.fillStyle = `rgba(253,230,138,${L.dark ? 0.16 : 0.35})`;
           ctx.beginPath(); ctx.moveTo(ox, oy); ctx.arc(ox, oy, 460, L.ang + 0.1 - 0.26, L.ang + 0.1 + 0.26); ctx.closePath(); ctx.fill();
           if (L.glow) { ctx.globalCompositeOperation = "lighter"; glow(ctx, ox, oy, 26, "255,240,200", 1); ctx.globalCompositeOperation = "source-over"; }
         }
@@ -1022,7 +1045,7 @@
           id: "stutter", name: { en: "Stutter Pattern", ko: "불규칙 깜빡임" }, param: "5 uneven blinks",
           cap: { en: "Blink *unevenly*. Short, short, *long*.", ko: "*불규칙하게*. 짧게, 짧게, *길게*." },
           flick(w, L) {
-            [[0, 0], [0.06, 1], [0.12, 0], [0.2, 1], [0.27, 0], [0.62, 1]].forEach(([t, v]) => w.after(t, () => { L.on = v; w.emit("toggle", L, t); }));
+            [[0, 0], [0.06, 1], [0.12, 0], [0.2, 1], [0.48, 0], [0.8, 1]].forEach(([t, v]) => w.after(t, () => { L.on = v; w.emit("toggle", L, t); }));
           },
         },
         {
@@ -1115,7 +1138,7 @@
         {
           id: "whisper", name: { en: "Whispers", ko: "속삭임" }, param: "symbols drift",
           cap: { en: "Scraps of *whispers* drift past.", ko: "알 수 없는 *속삭임*이 스쳐 가요." },
-          drop(w, s) { for (let i = 0; i < 1 + s * 4; i++) w.spawn({ type: "text", text: pick(["…", "?", "shh", "!"]), x: rand(80, 460), y: rand(110, 250), vx: rand(-30, 30), vy: -20, life: 1.2, size: rand(16, 26), color: "#c4b5fd" }); },
+          drop(w, s) { for (let i = 0; i < 1 + s * 2; i++) w.spawn({ type: "text", text: pick(["…", "?", "shh"]), x: pick([rand(70, 170), rand(340, 470)]), y: rand(120, 240), vx: rand(-30, 30), vy: -20, life: 1.1, size: rand(20, 28), color: "#c4b5fd" }); },
         },
         {
           id: "glitch", name: { en: "UI Glitch", ko: "UI 오류" }, param: "jitter + typo",
@@ -1151,11 +1174,11 @@
         const open = () => {
           w.emit("opening", D);
           if (!w.on("slow")) D.o = 0.85;
-          w.after(1.5, () => { w.busy = false; });
+          w.after(1.9, () => w.tween(D, { o: 0 }, 0.25, "in", () => { w.busy = false; }));
         };
         if (D.o > 0) w.tween(D, { o: 0 }, 0.15, "in", open); else open();
       },
-      update(w) { if (w.D.push) { w.zoomPunch(w.D.o * 0.12); w.cam.tx = w.D.o * 50; } },
+      update(w) { if (w.D.push) { w.zoomPunch(w.D.o * 0.12); w.cam.tx = w.D.o * 30; } },
       drawBack(w, ctx) {
         const D = w.D, hx = 300, dw = 84, top = G - 160, open = Math.max(0, D.o);
         ctx.fillStyle = "#07060a"; ctx.fillRect(hx, top, dw, 160);
@@ -1254,17 +1277,17 @@
         {
           id: "dust", name: { en: "Dust Kick", ko: "먼지" }, param: "3 puffs",
           cap: { en: "A little *dust* where the foot lands.", ko: "발 닿는 곳에 *먼지 폴폴*." },
-          step(w, f) { dust(w, f.x, f.y, 3, 0, "160,150,140"); },
+          step(w, f) { dirt(w, f.x, f.y, 6, 0, "110,100,92"); },
         },
         {
           id: "prints", name: { en: "Footprints", ko: "발자국" }, param: "decal 4s",
           cap: { en: "Leave *prints*. You see the path it took.", ko: "*발자국*을 남겨요. 지나온 길이 보여요." },
-          step(w, f) { w.spawn({ type: "ellipse", under: true, x: f.x, y: G + 4, size: 16, life: 4, color: "0,0,0", alpha: 0.8, hold: true, add: false }); },
+          step(w, f) { w.spawn({ type: "ellipse", under: true, x: f.x, y: G + 5, size: 22, life: 4, color: "0,0,0", alpha: 0.9, hold: true, add: false }); },
         },
         {
           id: "rings", name: { en: "Sound Rings", ko: "소리 고리" }, param: "r × proximity",
           cap: { en: "*Draw the sound*. Louder as it gets closer.", ko: "*소리를 그려요*. 가까울수록 크게." },
-          step(w, f, near) { w.spawn({ type: "ring", x: f.x, y: G, size: 8, size1: 40 + near * 90, life: 0.5, w: 4, flat: true, color: "248,113,113" }); },
+          step(w, f, near) { w.spawn({ type: "ring", x: f.x, y: G, size: 8, size1: 50 + near * 110, life: 0.55, w: 6, flat: true, color: "248,113,113" }); },
         },
         {
           id: "thump", name: { en: "Camera Thump", ko: "화면 쿵" }, param: "kick 1–6px",
@@ -1359,7 +1382,7 @@
           cap: { en: "Let it out: a *big puff* and the body *relaxes*.", ko: "*푸하* 내쉬고, 몸이 *풀려요*." },
           release(w) {
             const h = w.hero; h.sy = 0.9; h.sx = 0.96;
-            for (let i = 0; i < 10; i++) w.spawn({ type: "smoke", x: h.x + 34, y: G - 92, vx: rand(60, 160), vy: rand(-60, 10), drag: 2, size: 5, size1: 20, life: 0.8, color: "226,232,240" });
+            for (let i = 0; i < 12; i++) w.spawn({ type: "smoke", under: true, x: h.x + 10, y: G - 96, vx: rand(-90, 40), vy: rand(-140, -40), drag: 2.5, size: 3, size1: rand(10, 18), life: 0.9, alpha: 0.7, color: "170,180,195" });
           },
         },
         {
@@ -1537,8 +1560,10 @@
           id: "shatter", name: { en: "Shatter", ko: "산산조각" }, param: "head flies · 8 bits",
           cap: { en: "The head *flies off* in pieces. Only the handle stays.", ko: "머리가 *날아가고*, 손잡이만 남아요." },
           break(w, T) {
-            w.spawn({ type: "chunk", x: 262, y: G - 140, vx: 260, vy: -520, g: 1500, ground: true, bounce: 0.4, vr: 14, size: 16, life: 2.2, color: "100,116,139", hold: true });
-            chips(w, 262, G - 120, 8, ["148,163,184", "71,85,105", "161,98,7"], [-200, 300]);
+            w.spawn({ type: "chunk", x: 262, y: G - 140, vx: 260, vy: -520, g: 1500, ground: true, bounce: 0.4, vr: 14, size: 24, life: 2.2, color: "100,116,139", hold: true });
+            chips(w, 262, G - 120, 16, ["148,163,184", "71,85,105", "161,98,7"], [-260, 360], [4, 9]);
+            w.spawn({ type: "star", x: 262, y: G - 120, size: 70, life: 0.15, color: "255,255,255" });
+            sparks(w, 262, G - 120, 16, "255,220,150", [250, 650]);
             w.shake(0.4);
           },
         },
@@ -1574,6 +1599,7 @@
         ctx.fillStyle = "#4a2d1a"; for (const x of [60, 160, 240]) ctx.fillRect(x, G + 10, 10, 120);
       },
       setup(w) {
+        ensure();
         w.hero = w.actor("hero", { home: 170 });
         w.B = { x: 0, y: 0, k: 0, arc: 0, sag: 0, out: false, bob: 0, dip: 0, tense: 0 };
         w.SURF = G + 12;
@@ -1588,18 +1614,27 @@
           w.emit("land", B);
           w.after(0.6, () => {
             w.emit("bite", B);
-            w.after(0.5, () => { B.out = false; w.emit("catch", B); w.after(0.9, () => { w.busy = false; }); });
+            w.after(0.5, () => {
+              B.out = false; w.emit("catch", B);
+              w.after(w.on("leap") ? 0.7 : 0, () => { w.caught = 1; });
+              w.after(1.3, () => { w.busy = false; });
+            });
           });
         });
       },
-      update(w) {
-        const B = w.B;
+      update(w, dt) {
+        const B = w.B; w.caught = Math.max(0, (w.caught || 0) - dt);
         B.x = B.x0 + (B.x1 - B.x0) * B.k;
         B.y = B.y0 + (B.y1 - B.y0) * B.k - B.arc * 4 * B.k * (1 - B.k) + (B.k >= 1 ? Math.sin(w.time * 5) * B.bob + B.dip : 0);
       },
       drawFront(w, ctx) {
         const B = w.B, h = w.hero, bend = B.tense * 0.35, tip = { x: h.x + 70 - bend * 40, y: G - 150 + bend * 30 };
         ctx.strokeStyle = "#a16207"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(h.x + 24, G - 70); ctx.quadraticCurveTo(h.x + 50, G - 120, tip.x, tip.y); ctx.stroke();
+        if (w.caught > 0) {
+          const sw = Math.sin(w.time * 9) * 0.25;
+          ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(tip.x, tip.y); ctx.lineTo(tip.x, tip.y + 30); ctx.stroke();
+          ctx.save(); ctx.translate(tip.x, tip.y + 30); ctx.rotate(Math.PI / 2 + sw); ctx.drawImage(SPR["survival-fish"].c, -10, -22, 88, 44); ctx.restore();
+        }
         if (!B.out) return;
         const jx = B.tense ? rand(-2, 2) : 0;
         ctx.strokeStyle = B.tense ? "#fde047" : "rgba(255,255,255,0.7)"; ctx.lineWidth = B.tense ? 2 : 1.2;
@@ -1665,7 +1700,7 @@
       id: "survival-cook", cat: "survival", view: "side",
       title: { en: "Make cooking look *delicious*", ko: "굽는 걸 *맛있어 보이게*" },
       intro: { en: "Raw… raw… raw… *cooked*.", ko: "날것… 날것… 날것… *익음*." },
-      interval: 0.9, stepDur: 4.0,
+      interval: 0.7, stepDur: 4.0,
       setup(w) { w.M = { done: 0, rot: 0, sx: 1, sy: 1, smooth: false, flick: 0 }; },
       fire(w) {
         const M = w.M;
@@ -1717,7 +1752,7 @@
         {
           id: "steam", name: { en: "Steam Wisps", ko: "김" }, param: "∝ doneness",
           cap: { en: "*Steam* rises more as it cooks.", ko: "익을수록 *김*이 더 피어나요." },
-          update(w, dt) { if (Math.random() < dt * 10 * w.M.done) w.spawn({ type: "smoke", x: 270 + rand(-40, 40), y: G - 170, vx: rand(-15, 15), vy: rand(-60, -30), size: 5, size1: 18, life: 1.1, color: "241,245,249" }); },
+          update(w, dt) { if (Math.random() < dt * 10 * w.M.done) w.spawn({ type: "smoke", under: true, x: 270 + rand(-40, 40), y: G - 166, vx: rand(-15, 15), vy: rand(-60, -30), size: 4, size1: 20, life: 1.1, alpha: 0.55, color: "200,205,215" }); },
         },
         {
           id: "perfect", name: { en: "Perfect Moment", ko: "딱 익었을 때" }, param: "gold ring + text",
@@ -1758,7 +1793,7 @@
       fire(w) {
         const b = { x: 410, top: -20, bot: G - 150 };
         w.emit("strike", b);
-        if (!w.on("bolt")) w.spawn({ type: "beam", x: b.x, y: b.bot, size: 2, h: 200, life: 0.12, color: "255,255,255" });
+        if (!w.on("bolt")) w.spawn({ type: "crack", x: b.x, y: b.top, pts: [[0, 0], [0, b.bot - b.top]], w: 5, life: 0.3, hold: true, add: false, color: "255,255,255" });
       },
       update(w, dt) {
         const S = w.S; S.burn = Math.max(0, S.burn - dt * 0.4);
@@ -1773,7 +1808,7 @@
         {
           id: "flash", name: { en: "Double Flash", ko: "두 번 번쩍" }, param: ".7 → .4 · 80ms gap",
           cap: { en: "Real lightning flashes *twice*.", ko: "진짜 번개는 *두 번* 번쩍여요." },
-          strike(w) { w.flash("230,240,255", 0.7); w.after(0.09, () => w.flash("230,240,255", 0.45)); },
+          strike(w) { w.flash("230,240,255", 0.5); w.after(0.09, () => w.flash("230,240,255", 0.3)); },
         },
         {
           id: "bolt", name: { en: "Jagged Bolt", ko: "갈라지는 번개" }, param: "12 segs + 2 forks",
@@ -1792,7 +1827,8 @@
           strike(w, b) {
             w.S.burn = 1;
             sparks(w, b.x, b.bot, 16, "255,230,180", [200, 600]);
-            for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", x: b.x + rand(-20, 20), y: b.bot + rand(0, 40), vx: rand(-30, 30), vy: rand(-60, -20), size: 8, size1: 30, life: 1.5, color: "60,60,70" });
+            for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", under: true, x: b.x + rand(-20, 20), y: b.bot + rand(0, 40), vx: rand(-30, 30), vy: rand(-60, -20), size: 8, size1: 30, life: 1.5, color: "60,60,70" });
+            for (let i = 0; i < 10; i++) w.spawn({ type: "glow", x: b.x + rand(-30, 30), y: b.bot + rand(0, 90), vx: rand(-20, 20), vy: rand(-50, -15), size: rand(3, 5), life: rand(1.2, 2), color: "255,150,60" });
           },
         },
         {
@@ -1876,7 +1912,7 @@
           id: "relax", name: { en: "Shoulders Drop", ko: "어깨가 풀림" }, param: "squash + steam",
           cap: { en: "The body *relaxes*. Wet clothes start to *steam*.", ko: "몸이 *풀리고*, 젖은 옷에서 *김*이 나요." },
           inside(w, h) { h.sy = 0.88; h.sx = 1.08; },
-          update(w, dt) { if (w.Sh.inside && Math.random() < dt * 6) w.spawn({ type: "smoke", x: w.hero.x + rand(-30, 30), y: G - rand(40, 130), vy: -40, size: 4, size1: 14, life: 0.9, color: "226,232,240" }); },
+          update(w, dt) { if (w.Sh.inside && Math.random() < dt * 6) w.spawn({ type: "smoke", under: true, x: w.hero.x + rand(-30, 30), y: G - rand(40, 130), vy: -40, size: 3, size1: 14, life: 0.9, alpha: 0.5, color: "190,195,205" }); },
         },
         {
           id: "regen", name: { en: "Rest Regen", ko: "쉬면 회복" }, param: "+ crosses",
@@ -1901,8 +1937,8 @@
       drawFloor(w, ctx) {
         sky(ctx, "#070a16", "#1a1f38");
         const H = w.Hw;
-        ctx.globalCompositeOperation = "lighter"; glow(ctx, 120, 90, 50 + H.moon * 60, "226,232,240", 0.25 + H.moon * 0.35); ctx.globalCompositeOperation = "source-over";
-        ctx.fillStyle = "#e2e8f0"; ctx.beginPath(); ctx.arc(120, 90, 22, 0, TAU); ctx.fill();
+        ctx.globalCompositeOperation = "lighter"; glow(ctx, 260, 80, 50 + H.moon * 60, "226,232,240", 0.25 + H.moon * 0.35); ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "#e2e8f0"; ctx.beginPath(); ctx.arc(260, 80, 22, 0, TAU); ctx.fill();
         ctx.fillStyle = "#0b0f1c"; ctx.beginPath(); ctx.moveTo(250, G); ctx.quadraticCurveTo(420, G - 110, 620, G - 90); ctx.lineTo(620, G); ctx.closePath(); ctx.fill();
         soil(ctx);
       },
@@ -1915,7 +1951,7 @@
         if (w.busy) return;
         w.busy = true;
         const Hw = w.Hw;
-        Hw.rot = -0.35;
+        Hw.rot = -0.5;
         w.emit("howl", { x: 395, y: G - 135 });
         w.after(1.0, () => { Hw.rot = 0; w.busy = false; });
       },
@@ -1923,7 +1959,7 @@
       drawBack(w, ctx) {
         const Hw = w.Hw, c = SPR["survival-wolf"].c;
         const wolf = (x, y, s, a, r = 0) => { ctx.save(); ctx.globalAlpha = a; ctx.translate(x, y); ctx.scale(-s, s); ctx.rotate(r); ctx.drawImage(c, -65, -76, 130, 78); ctx.restore(); };
-        if (Hw.pack > 0) { wolf(372, G - 60, 0.7, Hw.pack); wolf(495, G - 88, 0.8, Hw.pack); }
+        if (Hw.pack > 0) { wolf(360, G - 58, 0.7, Hw.pack); wolf(470, G - 92, 0.75, Hw.pack); }
         wolf(440, G - 80, 1, 1, Hw.rot);
       },
       drawHud(w, ctx) {
@@ -1937,7 +1973,7 @@
         {
           id: "waves", name: { en: "Sound Waves", ko: "소리 물결" }, param: "4 rings · 150ms",
           cap: { en: "*Draw the howl*. Rings roll out from the source.", ko: "*울음을 그려요*. 소리가 퍼져 나와요." },
-          howl(w, s) { for (let i = 0; i < 4; i++) w.after(i * 0.15, () => w.spawn({ type: "ring", x: s.x, y: s.y, size: 12, size1: 180, life: 0.9, w: 5, color: "203,213,225" })); },
+          howl(w, s) { for (let i = 0; i < 4; i++) w.after(i * 0.15, () => w.spawn({ type: "ring", x: s.x, y: s.y, size: 12, size1: 140, life: 0.9, w: 6, color: "203,213,225" })); },
         },
         {
           id: "arrow", name: { en: "Direction Arrow", ko: "방향 화살표" }, param: "edge · 1.2s",
@@ -1972,7 +2008,7 @@
       id: "survival-overweight", cat: "survival", view: "side",
       title: { en: "Make a heavy bag *feel* heavy", ko: "무거운 가방이 *무겁게*" },
       intro: { en: "120% weight. Walks like *nothing*.", ko: "무게 120%인데 *가뿐하게* 걸어요." },
-      interval: 0.75, stepDur: 4.0,
+      interval: 0.55, stepDur: 4.0,
       setup(w) {
         w.hero = w.actor("hero", { home: 250 });
         w.Wt = { v: 30, pile: [], over: false, col: "#cbd5e1" };
@@ -1999,9 +2035,9 @@
       },
       drawHud(w, ctx) {
         const Wt = w.Wt;
-        meter(ctx, 190, 62, 160, 14, Wt.v / 120, Wt.col);
-        ctx.fillStyle = "#fff"; ctx.fillRect(190 + 160 * 100 / 120, 54, 2, 30);
-        label(ctx, `${Wt.v} / 100 kg`, 270, 98, 15, "rgba(255,255,255,0.75)");
+        meter(ctx, 170, 60, 200, 20, Wt.v / 120, Wt.col);
+        ctx.fillStyle = "#fff"; ctx.fillRect(170 + 200 * 100 / 120, 52, 3, 36);
+        label(ctx, `${Wt.v} / 100 kg`, 270, 104, 18, "rgba(255,255,255,0.85)");
       },
       steps: [
         {
@@ -2033,7 +2069,7 @@
         {
           id: "stomp", name: { en: "Heavy Steps", ko: "쿵쿵 걸음" }, param: "dust + kick 3px",
           cap: { en: "Each step *thumps* the ground.", ko: "걸음마다 땅이 *쿵*." },
-          stepped(w, Wt) { if (Wt.v < 80) return; dust(w, w.hero.x, G, 3, 0, "180,170,160"); w.kick(0, 3); },
+          stepped(w, Wt) { if (Wt.v < 80) return; dirt(w, w.hero.x, G, 3, 0, "180,170,160"); w.kick(0, 3); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clunk / thud",
@@ -2092,7 +2128,7 @@
         {
           id: "fall", name: { en: "Collapse", ko: "쓰러짐" }, param: "rot −90° · ease-in",
           cap: { en: "Don't delete the body. Let it *fall*.", ko: "지우지 말고 *쓰러지게*." },
-          die(w, h) { w.tween(h, { rot: -1.5, oy: 24 }, 0.45, "in", () => dust(w, h.x, G, 8)); },
+          die(w, h) { w.tween(h, { rot: -1.5, oy: 24 }, 0.45, "in", () => { dirt(w, h.x, G, 10, 0, "120,90,90"); w.shake(0.2); }); },
         },
         {
           id: "fade", name: { en: "Drain to Red", ko: "핏빛으로" }, param: "red .65 · 1s",
@@ -2167,7 +2203,7 @@
         {
           id: "form", name: { en: "Stretch Pop", ko: "쭉 늘었다 톡" }, param: "sx .3 sy 1.6 → 1",
           cap: { en: "The body *stretches* in, then *settles*.", ko: "몸이 *쭉* 늘었다가 *톡* 자리잡아요." },
-          spawn(w, h) { h.sx = 0.3; h.sy = 1.6; h.flash = 1.3; },
+          spawn(w, h) { h.sx = 0.3; h.sy = 1.6; h.flash = 1; },
         },
         {
           id: "ring", name: { en: "Ground Ring", ko: "바닥 고리" }, param: "flat ring r 130",
@@ -2177,7 +2213,7 @@
         {
           id: "shield", name: { en: "Spawn Shield", ko: "부활 보호막" }, param: "blink 1.2s + bubble",
           cap: { en: "*Blink* and a *bubble*: you're safe for a moment.", ko: "*깜빡*과 *보호막*. 잠깐은 안전해요." },
-          spawn(w, h) { h.blink = 1.2; w.spawn({ type: "glow", x: 270, y: G - 70, size: 100, life: 1.2, color: "125,211,252", hold: true }); w.spawn({ type: "ring", x: 270, y: G - 70, size: 90, life: 1.2, w: 3, color: "186,230,253", hold: true }); },
+          spawn(w, h) { h.blink = 1.2; w.spawn({ type: "glow", under: true, x: 270, y: G - 70, size: 110, life: 1.2, alpha: 0.6, color: "125,211,252", hold: true }); w.spawn({ type: "ring", x: 270, y: G - 70, size: 90, life: 1.2, w: 4, color: "186,230,253", hold: true }); },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising arpeggio",
@@ -2221,7 +2257,7 @@
       drawFront(w, ctx) {
         for (const it of w.K.items) {
           if (it.beam) { ctx.globalCompositeOperation = "lighter"; glow(ctx, it.x, it.y, 56, "251,191,36", 0.9); ctx.globalCompositeOperation = "source-over"; }
-          icon(ctx, it.k, it.x, it.y, 1.3 * it.sc);
+          icon(ctx, it.k, it.x, it.y, 1.7 * it.sc);
         }
       },
       steps: [
@@ -2241,7 +2277,10 @@
         {
           id: "dust", name: { en: "Dust Burst", ko: "먼지 펑" }, param: "12 puffs",
           cap: { en: "Old crate? A *puff of dust* bursts out.", ko: "오래된 상자라 *먼지가 펑*." },
-          open(w) { for (let i = 0; i < 12; i++) w.spawn({ type: "smoke", x: 270 + rand(-60, 60), y: G - 100, vx: rand(-160, 160), vy: rand(-140, -20), drag: 3, size: 6, size1: 22, life: 0.8, color: "180,170,150" }); },
+          open(w) {
+            for (let i = 0; i < 14; i++) w.spawn({ type: "smoke", under: true, x: 270 + rand(-60, 60), y: G - 100, vx: rand(-200, 200), vy: rand(-160, -20), drag: 3, size: 8, size1: 28, life: 0.9, alpha: 0.7, color: "140,120,95" });
+            w.spawn({ type: "ring", x: 270, y: G - 100, size: 30, size1: 150, life: 0.4, w: 8, color: "255,230,170" });
+          },
         },
         {
           id: "fan", name: { en: "Fan Out", ko: "부채꼴로 착착" }, param: "stagger 90ms · back",
@@ -2262,7 +2301,10 @@
         {
           id: "counts", name: { en: "Amount Tags", ko: "수량 표시" }, param: "x30 · x2 · x1",
           cap: { en: "Tag each with *how many*. Numbers feel generous.", ko: "*몇 개*인지 붙여요. 숫자가 넉넉해 보여요." },
-          open(w, K) { ["x30", "x2", "x1"].forEach((t, i) => w.after(0.45 + i * 0.09, () => { const it = K.items[i]; txt(w, it.x, it.y + 34, t, 18, i === 2 ? "#fbbf24" : "#fff", -10); })); },
+          open(w, K) {
+            const items = K.items;
+            ["x30", "x2", "x1"].forEach((t, i) => w.after(0.45 + i * 0.09, () => txt(w, items[i].x, items[i].y + 40, t, 20, i === 2 ? "#fbbf24" : "#fff", -10)));
+          },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / crack / pops",
@@ -2287,7 +2329,7 @@
       fire(w) {
         const f = w.foe, A = w.A;
         w.tween(f, { x: 400 }, 0.1, "in", () => {
-          A.wall = A.wall <= 10 ? 100 : A.wall - 10;
+          A.wall = A.wall <= 10 ? 100 : A.wall - 10; A.wsh = Math.max(A.wsh, 0.5);
           w.emit("hit", { x: 340, y: G - 70 }, A);
           w.tween(f, { x: 450 }, 0.3, "out");
         });

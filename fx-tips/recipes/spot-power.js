@@ -191,7 +191,7 @@
             for (let i = 0; i < 3; i++) w.spawn({ type: "ring", flat: true, x, y: 286, size: 20, size1: 220 + i * 60, life: 0.6 + i * 0.15, w: 10, color: i ? "120,200,255" : "255,255,255" });
             w.spawn({ type: "rays", under: true, x, y, n: 12, size: 50, size1: 230, vr: 1, life: 1.4, color: "110,180,255" });
             bolts(w, x, y, 6, ["150,210,255", "255,255,255"]);
-            w.shake(0.45); w.flash("170,210,255", 0.4);
+            w.shake(0.45); w.flash("170,210,255", 0.2);
           },
         },
         {
@@ -219,16 +219,16 @@
       intro: { en: "Three hits. Just *tap, tap, tap*.", ko: "세 번 쳤는데 그냥 *톡, 톡, 톡*." },
       interval: 2.9, stepDur: 4.0,
       setup(w) {
-        w.blade = { len: 140, th: 16, heat: 0.45, sheen: -1 };
+        w.blade = { len: 150, th: 30, heat: 0.45, sheen: -1 };
         w.ham = { a: Math.PI + 0.55 };
       },
       fire(w) {
         const b = w.blade, hm = w.ham, HIT = Math.PI - 0.1;
-        Object.assign(b, { len: 140, th: 16, heat: 0.45, sheen: -1 });
+        Object.assign(b, { len: 150, th: 30, heat: 0.45, sheen: -1 });
         const strike = (i) => {
           w.tween(hm, { a: Math.PI + 0.9 }, 0.2, "out", () => w.tween(hm, { a: HIT }, 0.08, "in", () => {
-            b.len += 14; b.th -= 2;
-            w.emit("strike", b, 310, 190, i);
+            b.len += 16; b.th -= 3;
+            w.emit("strike", b, 310, 166, i);
             if (i < 2) w.after(0.1, () => strike(i + 1));
             else { w.emit("forged", b); w.after(0.25, () => w.tween(hm, { a: Math.PI + 0.55 }, 0.4, "out")); }
           }));
@@ -254,19 +254,27 @@
         const heat = b.heat, col = heat > 0.7 ? mix3([255, 150, 40], [255, 245, 200], (heat - 0.7) / 0.3) : mix3([140, 50, 30], [255, 150, 40], (heat - 0.3) / 0.4);
         const x0 = 262 - b.len / 2, y = 204;
         if (heat > 0.5) { ctx.globalCompositeOperation = "lighter"; glow(ctx, 270, y - 40, 50 + b.len * 0.6, "255,110,20", (heat - 0.45) * 0.9); ctx.globalCompositeOperation = "source-over"; }
-        ctx.fillStyle = "#3a2618"; ctx.fillRect(x0 - 34, y - b.th / 2 - 4, 36, 8);
-        ctx.fillStyle = `rgb(${col})`; ctx.strokeStyle = "rgba(40,10,0,0.7)"; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(x0, y - b.th); ctx.lineTo(x0 + b.len, y - b.th); ctx.lineTo(x0 + b.len + 26, y - b.th / 2); ctx.lineTo(x0 + b.len, y); ctx.lineTo(x0, y); ctx.closePath(); ctx.fill(); ctx.stroke();
-        ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.fillRect(x0, y - b.th, b.len, 3);
+        // 손잡이 + 칼날 (윗면 · 앞면 두 면, 가운데 능선)
+        ctx.fillStyle = "#3a2618"; ctx.fillRect(x0 - 44, y - b.th / 2 - 6, 46, 12);
+        ctx.fillStyle = "#6a4a2a"; ctx.fillRect(x0 - 44, y - b.th / 2 - 6, 46, 4);
+        const tip = x0 + b.len + 34, top = y - b.th, D = 9;
+        ctx.strokeStyle = "rgba(40,10,0,0.75)"; ctx.lineWidth = 2; ctx.lineJoin = "round";
+        ctx.fillStyle = `rgb(${mix3(col.split(",").map(Number), [255, 255, 255], 0.35)})`; // 윗면
+        ctx.beginPath(); ctx.moveTo(x0, top); ctx.lineTo(x0 + 8, top - D); ctx.lineTo(x0 + b.len + 6, top - D); ctx.lineTo(tip, y - b.th / 2); ctx.lineTo(x0 + b.len, top); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = `rgb(${col})`; // 앞면
+        ctx.beginPath(); ctx.moveTo(x0, top); ctx.lineTo(x0 + b.len, top); ctx.lineTo(tip, y - b.th / 2); ctx.lineTo(x0 + b.len, y); ctx.lineTo(x0, y); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = `rgba(${mix3(col.split(",").map(Number), [60, 10, 0], 0.45)},0.8)`; // 아래 날 그늘
+        ctx.beginPath(); ctx.moveTo(x0, y - b.th * 0.45); ctx.lineTo(x0 + b.len, y - b.th * 0.45); ctx.lineTo(tip, y - b.th / 2); ctx.lineTo(x0 + b.len, y); ctx.lineTo(x0, y); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.fillRect(x0, top + 2, b.len, 3);
         if (b.sheen >= 0 && b.sheen <= 1) {
-          ctx.save(); ctx.beginPath(); ctx.rect(x0, y - b.th - 2, b.len + 24, b.th + 4); ctx.clip();
+          ctx.save(); ctx.beginPath(); ctx.rect(x0, y - b.th - 12, b.len + 36, b.th + 14); ctx.clip();
           const sx = x0 + b.sheen * (b.len + 60) - 30;
           ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = "rgba(255,255,255,0.9)";
-          ctx.beginPath(); ctx.moveTo(sx, y + 2); ctx.lineTo(sx + 14, y + 2); ctx.lineTo(sx + 26, y - b.th - 2); ctx.lineTo(sx + 12, y - b.th - 2); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(sx, y + 2); ctx.lineTo(sx + 18, y + 2); ctx.lineTo(sx + 40, y - b.th - 12); ctx.lineTo(sx + 22, y - b.th - 12); ctx.fill();
           ctx.restore();
         }
         // 망치: 오른쪽 위 손잡이 끝을 축으로 회전
-        const px = 446, py = 178, L = 138, hx = px + Math.cos(hm.a) * L, hy = py + Math.sin(hm.a) * L;
+        const px = 446, py = 150, L = 138, hx = px + Math.cos(hm.a) * L, hy = py + Math.sin(hm.a) * L;
         ctx.strokeStyle = "#6b4426"; ctx.lineWidth = 9; ctx.lineCap = "round";
         ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.save(); ctx.translate(hx, hy); ctx.rotate(hm.a + Math.PI / 2);
@@ -366,14 +374,14 @@
         ring(false);
         if (s.edge > 0) { // 칼 테두리 발광: 하늘색 실루엣을 조금 크게, 더하기 합성
           const k = 1.1 + 0.04 * Math.sin(w.time * 8);
-          ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.filter = "blur(5px)";
-          for (let i = 0; i < 2; i++) ctx.drawImage(art.cyan, 270 - W * k / 2, 168 + bob - H * k / 2, W * k, H * k);
+          ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.filter = "blur(6px)"; ctx.globalAlpha = 0.8;
+          ctx.drawImage(art.cyan, 270 - W * k / 2, 168 + bob - H * k / 2, W * k, H * k);
           ctx.restore();
         }
         ctx.drawImage(art.c, x, y, W, H);
         if (s.fill > 0) { // 아래에서 위로 차오르는 얼음빛
           ctx.save(); ctx.beginPath(); ctx.rect(x - 5, y + H * (1 - s.fill), W + 10, H * s.fill + 5); ctx.clip();
-          ctx.globalAlpha = 0.5; ctx.drawImage(art.cyan, x, y, W, H); ctx.restore();
+          ctx.globalAlpha = 0.38; ctx.drawImage(art.cyan, x, y, W, H); ctx.restore();
         }
         ring(true);
       },
@@ -402,7 +410,7 @@
           id: "pulse", name: { en: "Flash Pulse", ko: "번쩍 맥동" }, param: "stop 100ms · ×1.2",
           cap: { en: "*Freeze*, flash, the sword *swells* and settles.", ko: "*멈칫*, 번쩍, 칼이 *부풀었다* 돌아와요." },
           enchant(w, s, x, y) {
-            w.hitstop(0.1); w.flash("170,240,255", 0.45); w.shake(0.4);
+            w.hitstop(0.1); w.flash("170,240,255", 0.23); w.shake(0.4);
             s.scale = 1.2; w.tween(s, { scale: 1 }, 0.45, "back");
             w.spawn({ type: "ring", x, y, size: 80, size1: 230, life: 0.45, w: 10, color: "160,230,255" });
           },
@@ -606,7 +614,7 @@
           cap: { en: "*Rip* it open with a *freeze* and lightning.", ko: "*멈칫*하고 번개와 함께 *쫙* 찢어져요." },
           open(w, p, x, y) {
             p.open = 0.05; w.tween(p, { open: 1 }, 0.4, "back");
-            w.hitstop(0.1); w.shake(0.5); w.flash("255,190,250", 0.5);
+            w.hitstop(0.1); w.shake(0.5); w.flash("255,190,250", 0.25);
             bolts(w, x, y, 7, ["255,160,240", "255,255,255"], 26);
           },
         },
@@ -687,7 +695,7 @@
           id: "fuse", name: { en: "Fuse Pop", ko: "합체 팡" }, param: "stop 100ms · ×1.4",
           cap: { en: "*Freeze*, flash, the item *pops* big.", ko: "*멈칫*, 번쩍, 결과물이 *통* 커져요." },
           fuse(w, c) {
-            w.hitstop(0.1); w.flash("255,250,220", 0.5); w.shake(0.35);
+            w.hitstop(0.1); w.flash("255,250,220", 0.25); w.shake(0.35);
             c.res = 1.45; w.tween(c, { res: 1 }, 0.5, "back");
           },
         },
@@ -772,7 +780,7 @@
           id: "clash", name: { en: "Clash Freeze", ko: "충돌 멈춤" }, param: "stop 140ms · bolts 8",
           cap: { en: "*Freeze* on contact. *Lightning* crackles.", ko: "부딪히는 순간 *멈칫*, *번개* 찌직." },
           merge(w, f, x, y) {
-            w.hitstop(0.14); w.shake(0.55); w.flash("255,255,255", 0.55);
+            w.hitstop(0.14); w.shake(0.55); w.flash("255,200,220", 0.25);
             bolts(w, x, y, 8, ["255,140,160", "255,255,255", "190,150,255"], 24);
           },
         },
@@ -965,34 +973,36 @@
         const k = w.sk, T = [270, 165], R = [270, 290], C = [[160, 72], [380, 72]], S = [[130, 210], [410, 210]];
         const line = (a, b, on, t = 1) => {
           ctx.lineCap = "round";
-          ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 7;
+          ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 12;
           ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
           if (on && t > 0) {
             const x = a[0] + (b[0] - a[0]) * t, y = a[1] + (b[1] - a[1]) * t;
-            ctx.strokeStyle = "#45f0d8"; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(x, y); ctx.stroke();
-            if (t < 1) { ctx.globalCompositeOperation = "lighter"; glow(ctx, x, y, 22, "160,255,240", 1); ctx.globalCompositeOperation = "source-over"; }
+            ctx.strokeStyle = "#45f0d8"; ctx.lineWidth = 10; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(x, y); ctx.stroke();
+            if (t < 1) { ctx.globalCompositeOperation = "lighter"; glow(ctx, x, y, 30, "160,255,240", 1); ctx.globalCompositeOperation = "source-over"; }
           }
         };
         for (const s of S) line(R, s, false);
         line(R, T, true, k.flow);
         for (const c of C) line(T, c, k.spread > 0, k.spread);
         const node = (x, y, r, state, icon) => { // state: 0 잠김, 1 열 수 있음, 2 해금
+          ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.beginPath(); ctx.arc(x + 3, y + 6, r + 2, 0, TAU); ctx.fill();
           ctx.fillStyle = state === 2 ? "#127a6e" : "#1b2426"; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
-          ctx.lineWidth = 4; ctx.strokeStyle = state === 2 ? "#7dfbe8" : state === 1 ? `rgba(125,251,232,${0.5 + 0.4 * Math.sin(w.time * 10)})` : "#3a4648"; ctx.stroke();
+          ctx.fillStyle = state === 2 ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.05)"; ctx.beginPath(); ctx.arc(x, y - r * 0.25, r * 0.72, Math.PI, 0); ctx.fill();
+          ctx.lineWidth = r > 30 ? 6 : 5; ctx.strokeStyle = state === 2 ? "#7dfbe8" : state === 1 ? `rgba(125,251,232,${0.5 + 0.4 * Math.sin(w.time * 10)})` : "#3a4648"; ctx.stroke();
           if (icon) { // 번개 아이콘
             ctx.fillStyle = state === 2 ? "#ffffff" : "#4a5658";
             ctx.beginPath(); ctx.moveTo(x + r * 0.15, y - r * 0.6); ctx.lineTo(x - r * 0.35, y + r * 0.08); ctx.lineTo(x - r * 0.02, y + r * 0.08); ctx.lineTo(x - r * 0.15, y + r * 0.6); ctx.lineTo(x + r * 0.35, y - r * 0.08); ctx.lineTo(x + r * 0.02, y - r * 0.08); ctx.closePath(); ctx.fill();
           }
         };
-        node(R[0], R[1], 20, 2, true);
-        for (const s of S) node(s[0], s[1], 18, 0, true);
-        for (const c of C) node(c[0], c[1], 22, k.spread >= 1 ? 1 : 0, true);
+        node(R[0], R[1], 28, 2, true);
+        for (const s of S) node(s[0], s[1], 26, 0, true);
+        for (const c of C) node(c[0], c[1], 30, k.spread >= 1 ? 1 : 0, true);
         if (k.charge > 0 && !k.lit) {
-          ctx.strokeStyle = "#ffe066"; ctx.lineWidth = 6; ctx.lineCap = "round";
-          ctx.beginPath(); ctx.arc(T[0], T[1], 46, -Math.PI / 2, -Math.PI / 2 + TAU * k.charge); ctx.stroke();
+          ctx.strokeStyle = "#ffe066"; ctx.lineWidth = 8; ctx.lineCap = "round";
+          ctx.beginPath(); ctx.arc(T[0], T[1], 62, -Math.PI / 2, -Math.PI / 2 + TAU * k.charge); ctx.stroke();
         }
         const v = k.vib ? rand(-k.vib, k.vib) : 0;
-        node(T[0] + v, T[1], 36 * k.s, k.lit ? 2 : 0, true);
+        node(T[0] + v, T[1], 50 * k.s, k.lit ? 2 : 0, true);
       },
       steps: [
         {
@@ -1006,15 +1016,15 @@
         {
           id: "flow", name: { en: "Energy Flow", ko: "에너지 흐름" }, param: "pulse 0.3s",
           cap: { en: "Run *energy* up the line into the node.", ko: "선을 타고 *에너지*가 쭉 올라와요." },
-          unlock(w, k, x, y) { w.spawn({ type: "glow", x, y, size: 30, size1: 70, life: 0.3, color: "120,255,230" }); },
+          unlock(w, k, x, y) { w.spawn({ type: "glow", x, y, size: 40, size1: 90, life: 0.3, color: "120,255,230" }); },
         },
         {
           id: "pop", name: { en: "Unlock Pop", ko: "해금 팡" }, param: "stop 90ms · ×1.45",
           cap: { en: "*Freeze*, flash, the node *pops* big.", ko: "*멈칫*, 번쩍, 노드가 *통* 커져요." },
           unlock(w, k, x, y) {
-            w.hitstop(0.09); w.flash("200,255,245", 0.4); w.shake(0.3);
+            w.hitstop(0.09); w.flash("200,255,245", 0.2); w.shake(0.3);
             k.s = 1.45; w.tween(k, { s: 1 }, 0.45, "back");
-            w.spawn({ type: "ring", x, y, size: 36, size1: 150, life: 0.45, w: 10, color: "150,255,235" });
+            w.spawn({ type: "ring", x, y, size: 50, size1: 190, life: 0.45, w: 10, color: "150,255,235" });
             starBurst(w, x, y, 10, ["150,255,235", "255,255,255"]);
           },
         },
@@ -1028,8 +1038,8 @@
           cap: { en: "*Rays* behind, the skill *name* up front.", ko: "뒤엔 *빛줄기*, 앞엔 스킬 *이름*." },
           unlock(w, k, x, y) {
             w.spawn({ type: "rays", under: true, x, y, n: 12, size: 50, size1: 200, vr: 0.8, life: 1.7, hold: true, color: "90,240,220" });
-            w.spawn({ type: "text", x, y: 232, text: "CHAIN LIGHTNING", size: 20, color: "#bffcf2", life: 1.7 });
-            w.spawn({ type: "text", x, y: 120, vy: -20, text: "UNLOCKED!", size: 26, color: "#ffe066", life: 1.5 });
+            w.spawn({ type: "text", x, y: 240, text: "CHAIN LIGHTNING", size: 22, color: "#bffcf2", life: 1.7 });
+            w.spawn({ type: "text", x, y: 98, vy: -20, text: "UNLOCKED!", size: 30, color: "#ffe066", life: 1.5 });
           },
         },
         {

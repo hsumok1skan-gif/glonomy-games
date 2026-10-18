@@ -44,23 +44,24 @@
   }
 
   /* ───── 보스 모델 (로우폴리, 얼굴 없음) ───── */
-  const bossArt = () => polySprite("spot-combat-boss", () => {
+  const bossArt = () => polySprite("spot-combat-boss2", () => {
     const armor = [[214, 78, 64], [44, 8, 16]], skin = [[150, 205, 95], [32, 56, 26]], bone = [[248, 238, 214], [96, 84, 64]], iron = [[150, 150, 170], [30, 30, 42]];
-    const horn = s => pyr([[s * 14, 196, -9], [s * 30, 196, -9], [s * 30, 204, 9], [s * 14, 204, 9]], [s * 62, 252, 0]);
-    const spike = s => pyr([[s * 70, 178, -14], [s * 98, 178, -14], [s * 98, 178, 14], [s * 70, 178, 14]], [s * 92, 214, 0]);
+    const horn = s => pyr([[s * 12, 262, -9], [s * 28, 262, -9], [s * 28, 270, 9], [s * 12, 270, 9]], [s * 56, 326, 0]);
+    const spike = s => pyr([[s * 62, 236, -14], [s * 88, 236, -14], [s * 88, 236, 14], [s * 62, 236, 14]], [s * 84, 276, 0]);
     return [
-      part(blk(-30, 0, 0, 34, 64, 38, 0.9), ...iron), part(blk(30, 0, 0, 34, 64, 38, 0.9), ...iron),
-      part(blk(0, 60, 0, 104, 26, 54, 1), ...armor),
-      part(blk(0, 84, 0, 112, 84, 66, 1.3), ...armor),
-      part(blk(0, 110, 10, 46, 40, 54, 0.8), ...bone),
-      part(blk(-92, 64, 0, 34, 90, 34, 1.15), ...skin), part(blk(92, 64, 0, 34, 90, 34, 1.15), ...skin),
-      part(blk(-92, 36, 0, 46, 30, 44, 1.05), ...iron), part(blk(92, 36, 0, 46, 30, 44, 1.05), ...iron),
-      part(blk(-84, 150, 0, 60, 30, 70, 0.75), ...bone), part(blk(84, 150, 0, 60, 30, 70, 0.75), ...bone),
+      part(blk(-26, 0, 0, 32, 34, 40, 1), ...iron), part(blk(26, 0, 0, 32, 34, 40, 1), ...iron),
+      part(blk(-26, 32, 0, 28, 70, 32, 0.9), ...skin), part(blk(26, 32, 0, 28, 70, 32, 0.9), ...skin),
+      part(blk(0, 98, 0, 96, 30, 52, 1), ...armor),
+      part(blk(0, 126, 0, 100, 102, 60, 1.2), ...armor),
+      part(blk(0, 150, 10, 42, 58, 50, 0.8), ...bone),
+      part(blk(-82, 116, 0, 30, 110, 30, 1.1), ...skin), part(blk(82, 116, 0, 30, 110, 30, 1.1), ...skin),
+      part(blk(-82, 82, 0, 42, 40, 40, 1.05), ...iron), part(blk(82, 82, 0, 42, 40, 40, 1.05), ...iron),
+      part(blk(-76, 210, 0, 54, 30, 64, 0.75), ...bone), part(blk(76, 210, 0, 54, 30, 64, 0.75), ...bone),
       part(spike(-1), ...bone), part(spike(1), ...bone),
-      part(blk(0, 166, 0, 54, 44, 50, 0.85), ...skin),
+      part(blk(0, 226, 0, 48, 46, 46, 0.85), ...skin),
       part(horn(-1), ...bone), part(horn(1), ...bone),
     ];
-  }, 300, 250, 0.32, 0.2);
+  }, 270, 330, 0.32, 0.2);
 
   RECIPES.push(
     /* ───────── 1. 치명타 큰 숫자 ───────── */
@@ -77,10 +78,10 @@
       fire(w) {
         const h = w.hero, f = w.foe, later = seq(w);
         w.dmg = null; w.respawn(f); f.sx = f.sy = 1;
-        w.tween(h, { ox: -18 }, 0.12, "out");
-        later(0.14, () => w.tween(h, { ox: 100 }, 0.08, "in", () => {
+        w.tween(h, { ox: -24 }, 0.26, "out");
+        later(0.28, () => w.tween(h, { ox: 104 }, 0.13, "in", () => {
           const d = (w.dmg = { v: "4,812", x: 376, y: 132, t: 0, scale: 1, big: false, sh: 0 });
-          f.ox = 8; f.hp = 40;
+          f.ox = 22; f.hp = 40;
           w.emit("crit", f, d);
         }));
       },
@@ -107,10 +108,10 @@
           },
         },
         {
-          id: "number", name: { en: "Giant Number", ko: "거대한 숫자" }, param: "66px · ×3 → ×1",
-          cap: { en: "Make the number *huge*. Slam it from *3×*.", ko: "숫자를 *크게*, *세 배*에서 쾅 줄여요." },
+          id: "number", name: { en: "Giant Number", ko: "거대한 숫자" }, param: "66px · ×2.2 → ×1",
+          cap: { en: "Make the number *huge*. Slam it down from *2×*.", ko: "숫자를 *크게*, *두 배*에서 쾅 줄여요." },
           crit(w, f, d) {
-            d.big = true; d.scale = 3; d.sh = 9;
+            d.big = true; d.scale = 2.2; d.sh = 9;
             w.tween(d, { scale: 1 }, 0.32, "back");
           },
         },
@@ -138,7 +139,7 @@
           cap: { en: "*Shake*, *zoom*, and burn the edges.", ko: "화면이 *흔들리고*, *확* 다가오고, 가장자리가 *타요*." },
           crit(w) {
             w.shake(0.6, 1); w.zoomPunch(0.1);
-            w.flash("255,150,70", 0.45); w.vignette(0.6);
+            w.flash("255,150,70", 0.23); w.vignette(0.6);
           },
         },
         {
@@ -186,7 +187,7 @@
       },
       drawBack(w, ctx) {
         const b = w.boss; if (!b.vis) return;
-        const s = bossArt(), H = 196, W = H * s.c.width / s.c.height, vx = b.vib ? rand(-b.vib, b.vib) : 0;
+        const s = bossArt(), H = 240, W = H * s.c.width / s.c.height, vx = b.vib ? rand(-b.vib, b.vib) : 0;
         ctx.save();
         ctx.beginPath(); ctx.rect(-100, -100, 800, G + 106); ctx.clip();
         ctx.translate(b.x + vx, G + 4 + b.rise * H * 1.05); ctx.scale(2 - b.sy, b.sy);
@@ -240,7 +241,7 @@
             b.sy = 0.8; b.flash = 0.8;
             for (let i = 0; i < 3; i++) w.after(i * 0.12, () => w.spawn({ type: "ring", x: b.x, y: G - 150, size: 30, size1: 260, life: 0.5, w: 10, color: "255,110,110" }));
             w.spawn({ type: "ring", flat: true, x: b.x, y: G + 4, size: 40, size1: 300, life: 0.7, w: 12, color: "255,160,140" });
-            w.shake(0.6); w.flash("255,40,60", 0.3);
+            w.shake(0.6); w.flash("255,40,60", 0.16);
           },
         },
         {
@@ -283,12 +284,13 @@
           for (let k = 1; k < 7; k++) { const p = pts[k - 1]; pts.push([p[0] + Math.cos(a0) * 26 + rand(-6, 10), p[1] + Math.sin(a0) * 26 + rand(-10, 10)]); }
           return pts;
         });
-        w.tween(h, { ox: -22 }, 0.3, "out");
-        later(0.32, () => w.tween(h, { ox: 88 }, 0.12, "in", () => {
+        w.tween(h, { ox: -26 }, 0.34, "out");
+        later(0.36, () => w.tween(h, { ox: 88 }, 0.16, "in", () => {
           const x = s.cx - s.r + 4, y = s.cy;
           w.emit("strike", s, x, y);
           later(w.on("crack") ? 0.5 : 0.04, () => {
-            s.a = 0; f.ox = 10; w.emit("break", s, x, y);
+            if (w.on("shatter")) s.a = 0; else w.tween(s, { a: 0 }, 0.25, "in");
+            f.ox = 24; w.emit("break", s, x, y);
             later(1.7, () => { s.crack = 0; w.tween(s, { a: 1 }, 0.3, "out"); });
           });
         }));
@@ -369,7 +371,7 @@
           cap: { en: "*Freeze* the frame. *Flash* icy white.", ko: "깨지는 순간 *멈칫*, 화면이 *하얗게*." },
           break(w) {
             w.hitstop(0.14); w.zoomPunch(0.09);
-            w.shake(0.55, 1); w.flash("200,255,255", 0.55);
+            w.shake(0.55, 1); w.flash("200,255,255", 0.25);
           },
         },
         {
@@ -403,18 +405,39 @@
         w.hero = w.actor("hero", { home: 196, h: 134 });
         w.foe = w.actor("foe", { home: 344, h: 142 });
         w.freeze = 0;
+        w.bl = { fa: -2.6, ha: -1.25 };
       },
       fire(w) {
-        const h = w.hero, f = w.foe, later = seq(w);
+        const h = w.hero, f = w.foe, b = w.bl, later = seq(w);
         w.respawn(f); f.sx = f.sy = 1; f.k = 10; w.freeze = 0;
-        w.tween(f, { ox: 26 }, 0.34, "out");
-        w.spawn({ type: "glow", x: f.x - 20, y: f.gy - 100, size: 26, size1: 6, life: 0.34, color: "255,80,80" });
-        later(0.36, () => w.tween(f, { ox: -62 }, 0.08, "in", () => {
-          const x = h.x + 44, y = G - 84;
-          f.ox = -40; h.ox = -8;
-          if (!w.on("perfect")) w.spawn({ type: "text", x, y: y - 40, text: "parry", size: 12, color: "#cbd5e1", life: 0.8 });
-          w.emit("parry", h, f, x, y);
-        }));
+        Object.assign(b, { fa: -2.6, ha: -1.25 });
+        // 고블린이 칼을 치켜들고 → 내려침, 영웅은 칼을 세워 막음
+        w.tween(f, { ox: 26 }, 0.4, "out");
+        w.tween(b, { fa: -0.9 }, 0.4, "out");
+        w.tween(b, { ha: -0.95 }, 0.3, "out");
+        w.spawn({ type: "glow", x: f.x - 20, y: f.gy - 100, size: 26, size1: 6, life: 0.4, color: "255,80,80" });
+        later(0.44, () => {
+          w.tween(b, { fa: -2.75 }, 0.13, "in");
+          w.tween(f, { ox: -62 }, 0.13, "in", () => {
+            const x = h.x + 44, y = G - 92;
+            f.ox = -40; h.ox = -8; b.fa = -2.2; b.ha = -1.2;
+            w.tween(b, { fa: -2.6, ha: -0.95 }, 0.35, "out");
+            if (!w.on("perfect")) w.spawn({ type: "text", x, y: y - 44, text: "parry", size: 16, color: "#cbd5e1", life: 0.9 });
+            w.emit("parry", h, f, x, y);
+          });
+        });
+      },
+      drawFront(w, ctx) {
+        const h = w.hero, f = w.foe, b = w.bl;
+        const blade = (x, y, a, len, col) => {
+          ctx.lineCap = "round"; ctx.strokeStyle = "#2a2f3a"; ctx.lineWidth = 9;
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len); ctx.stroke();
+          ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.stroke();
+          ctx.strokeStyle = "#6b4426"; ctx.lineWidth = 7;
+          ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * 12, y - Math.sin(a) * 12); ctx.lineTo(x, y); ctx.stroke();
+        };
+        if (f.alive !== false) blade(f.x + f.ox - 24, G - 92, b.fa, 70, "#c9ced8");
+        blade(h.x + h.ox + 16, G - 58, b.ha, 76, "#eef2fa");
       },
       update(w, dt) { if (w.freeze > 0) w.freeze = Math.max(0, w.freeze - dt * 1.6); },
       drawFloor(w, ctx) {
@@ -464,7 +487,7 @@
               for (let i = 0; i < 4; i++) w.spawn({ type: "ghost", img: SPR.hero.cyan, x: h.x + i * 32, y: G, w: h.w, h: h.h, alpha0: 0.55 - i * 0.1, life: 0.4 });
               h.ox = 130; f.flash = 1; f.tint = 1; f.ox = 100;
               w.spawn({ type: "slash", x: f.x + 30, y: G - 80, ang: -0.25, len: 140, size: 14, life: 0.3, color: "255,255,255" });
-              w.flash("230,240,255", 0.5); w.shake(0.5, 1);
+              w.flash("230,240,255", 0.25); w.shake(0.5, 1);
             });
           },
         },
@@ -508,7 +531,7 @@
         later(w.on("aura") ? 0.9 : 0.3, () => {
           const p = paw(w);
           const bm = (w.beam = { x0: p.x + 4, x1: f.x - 30, y: p.y, t: 0, life: 1.25, big: false, grow: 1 });
-          w.charging = false; f.ox = 8; f.flash = 0.6;
+          w.charging = false; f.ox = 30; f.flash = 0.6; f.hp = 30;
           w.emit("release", h, f, bm);
           later(bm.life, () => w.tween(w, { aura: 0, dim: 0 }, 0.4, "out"));
         });
@@ -540,7 +563,7 @@
         const b = w.beam; if (!b || b.t > b.life) return;
         const k = b.t / b.life, fade = 1 - Math.pow(k, 4), len = b.x1 - b.x0;
         ctx.save(); ctx.globalCompositeOperation = "lighter";
-        if (!b.big) { ctx.strokeStyle = `rgba(255,230,120,${fade})`; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(b.x0, b.y); ctx.lineTo(b.x1, b.y); ctx.stroke(); }
+        if (!b.big) { ctx.strokeStyle = `rgba(255,230,120,${fade})`; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(b.x0, b.y); ctx.lineTo(b.x1, b.y); ctx.stroke(); }
         else {
           const W = (36 + Math.sin(w.time * 70) * 6) * fade * b.grow;
           [[W * 1.6, "200,120,255", 0.35], [W, "255,200,90", 0.75], [W * 0.45, "255,255,255", 1]].forEach(([wd, c, a]) => {
@@ -595,7 +618,7 @@
           id: "kick", name: { en: "Camera Kick", ko: "카메라 반동" }, param: "flash .6 · rumble .4",
           cap: { en: "*Flash* on release. *Rumble* while it fires.", ko: "쏘는 순간 *번쩍*, 쏘는 내내 *덜덜*." },
           release(w, h) {
-            w.flash("255,230,170", 0.6); w.zoomPunch(0.12);
+            w.flash("255,230,170", 0.25); w.zoomPunch(0.12);
             h.ox = -26; w.kick(-14, 0);
           },
           update(w) {
@@ -687,7 +710,7 @@
           id: "escalate", name: { en: "Escalation", ko: "점점 세게" }, param: "shake n×.07 · zoom",
           cap: { en: "Each hit *shakes harder*. The last one *booms*.", ko: "칠수록 *더 크게* 흔들고, 마지막은 *쾅*." },
           hit(w, f, n) { w.shake(0.07 * n); w.zoomPunch(0.012 * n); },
-          finish(w) { w.shake(0.7, 1); w.zoomPunch(0.14); w.flash("255,210,140", 0.5); },
+          finish(w) { w.shake(0.7, 1); w.zoomPunch(0.14); w.flash("255,210,140", 0.25); },
         },
         {
           id: "finale", name: { en: "Finish Stamp", ko: "피니시 도장" }, param: "rays 16 · gold",
@@ -727,12 +750,12 @@
         w.respawn(f); f.sx = f.sy = 1; f.rot = 0;
         Object.assign(m, { s: 1, lock: 0, on: true });
         w.emit("aim", m);
-        later(w.on("marker") ? 0.55 : 0.15, () => {
-          const p = muzzle(w), tx = w.wp.x, ty = w.wp.y, sp = 1800, d = Math.hypot(tx - p.x, ty - p.y);
+        later(w.on("marker") ? 0.55 : 0.4, () => {
+          const p = muzzle(w), tx = w.wp.x, ty = w.wp.y, sp = 1100, d = Math.hypot(tx - p.x, ty - p.y);
           w.gun.kick = 12; w.gun.rec = 0.12; w.sfx.gun();
           w.shoot({ x: p.x, y: p.y, vx: (tx - p.x) / d * sp, vy: (ty - p.y) / d * sp, len: 46, lw: 4, hitX: tx, onHit: () => {
-            f.ox = 6; m.on = false;
-            if (!w.on("bonus")) w.spawn({ type: "text", x: tx, y: ty - 30, text: "×2", size: 16, color: "#ffffff", life: 1.4 });
+            f.ox = 18; f.hp -= 30; m.on = false;
+            if (!w.on("bonus")) w.spawn({ type: "text", x: tx, y: ty - 34, text: "×2", size: 20, color: "#ffffff", life: 1.4 });
             w.emit("hit", f, tx, ty);
           } });
         });
@@ -1019,8 +1042,8 @@
           kill(w, f, x, y) {
             w.mono = 1; w.tween(w, { mono: 0 }, 1.6, "in");
             w.cut = { x, y, a: 1 }; w.tween(w.cut, { a: 0 }, 1.2, "in");
-            w.spawn({ type: "ring", x, y, size: 20, size1: 240, life: 0.9, w: 10, color: "255,255,255" });
-            w.spawn({ type: "ring", x, y, size: 10, size1: 150, life: 0.7, w: 5, color: "255,255,255" });
+            w.spawn({ type: "ring", x, y, size: 20, size1: 220, life: 0.8, w: 7, color: "255,230,230" });
+            w.spawn({ type: "ring", x, y, size: 10, size1: 140, life: 0.6, w: 4, color: "255,70,90" });
           },
         },
         {

@@ -269,22 +269,32 @@
   }
 
   /* ───── 8. 줄 지우기 ───── */
-  const LCOL = ["255,90,110", "255,170,70", "255,225,80", "110,220,120", "80,200,255", "100,130,255", "200,120,255"];
+  // single-hue lime/teal palette + merged irregular clusters (generic block puzzle, not the classic look)
+  const LCOL = ["206,246,92", "160,214,72", "112,186,96", "70,160,128", "52,128,116"];
+  const PIECE = 5; LCOL[PIECE] = "236,255,150";
   const LW = 10, LH = 12, LC = 20, LX = 270 - LW * LC / 2, LY = 48, GAP = 7;
-  function drawBlock(ctx, x, y, col, white) {
-    const s = LC - 2;
-    if (white) { ctx.fillStyle = `rgba(255,255,255,${white})`; ctx.fillRect(x + 1, y + 1, s, s); return; }
-    const rgb = col.split(",").map(Number);
-    ctx.fillStyle = `rgb(${col})`; ctx.fillRect(x + 1, y + 1, s, s);
-    ctx.fillStyle = mixc([255, 255, 255], rgb, 0.45); ctx.beginPath(); ctx.moveTo(x + 1, y + 1); ctx.lineTo(x + 1 + s, y + 1); ctx.lineTo(x + s - 3, y + 5); ctx.lineTo(x + 5, y + 5); ctx.lineTo(x + 5, y + s - 3); ctx.lineTo(x + 1, y + 1 + s); ctx.fill();
-    ctx.fillStyle = mixc(rgb, [10, 10, 30], 0.55); ctx.beginPath(); ctx.moveTo(x + 1 + s, y + 1); ctx.lineTo(x + 1 + s, y + 1 + s); ctx.lineTo(x + 1, y + 1 + s); ctx.lineTo(x + 5, y + s - 3); ctx.lineTo(x + s - 3, y + s - 3); ctx.lineTo(x + s - 3, y + 5); ctx.fill();
+  const PCELLS = [[0, 0], [1, 0], [2, 0], [3, 0], [-1, 1]]; // irregular 5-cell piece
+  // one tile; seams only where the neighbor belongs to another cluster
+  function drawTile(ctx, x, y, col, same) {
+    const rgb = col.split(",").map(Number), [t, rt, b, l] = same;
+    ctx.fillStyle = `rgb(${col})`; ctx.fillRect(x, y, LC, LC);
+    ctx.fillStyle = mixc([255, 255, 255], rgb, 0.5);
+    if (!t) ctx.fillRect(x + 1, y + 1, LC - 2, 3);
+    if (!l) ctx.fillRect(x + 1, y + 1, 3, LC - 2);
+    ctx.fillStyle = mixc(rgb, [6, 20, 16], 0.6);
+    if (!b) ctx.fillRect(x + 1, y + LC - 4, LC - 2, 3);
+    if (!rt) ctx.fillRect(x + LC - 4, y + 1, 3, LC - 2);
+    ctx.fillStyle = "rgba(4,14,10,0.9)";
+    if (!t) ctx.fillRect(x, y, LC, 1); if (!b) ctx.fillRect(x, y + LC - 1, LC, 1);
+    if (!l) ctx.fillRect(x, y, 1, LC); if (!rt) ctx.fillRect(x + LC - 1, y, 1, LC);
   }
   const newWell = L => {
     L.grid = [];
     for (let r = 0; r < LH; r++) L.grid.push(new Array(LW).fill(-1));
-    for (let r = 8; r < LH; r++) for (let c = 0; c < LW; c++) if (c !== GAP) L.grid[r][c] = (Math.random() * 7) | 0;
-    const tops = [6, 5, 7, 6, 4, 7, 6, 8, 7, 5];
-    for (let c = 0; c < LW; c++) for (let r = tops[c]; r < 8; r++) if (c !== GAP) L.grid[r][c] = (Math.random() * 7) | 0;
+    const tops = [6, 5, 7, 6, 4, 7, 6, 12, 8, 5], s = (Math.random() * 9) | 0;
+    // blobby cluster ids: cells share a shade in uneven 2–4 cell patches
+    for (let c = 0; c < LW; c++) for (let r = tops[c]; r < LH; r++) if (c !== GAP)
+      L.grid[r][c] = (Math.floor((c + s + ((r >> 1) & 1) * 2) / 3) * 2 + Math.floor((r + ((c * 5 + s) % 3)) / 3)) % 5;
     Object.assign(L, { piece: { y: 1 }, hard: false, delay: 0, fall: 0, flash: 0, off: 0, clearing: false });
   };
 
@@ -458,7 +468,7 @@
           id: "freeze", name: { en: "Power Freeze", ko: "폭발 직전 멈춤" }, param: "stop 140ms · flash",
           cap: { en: "*Freeze*, flash, punch the *camera*.", ko: "*멈칫*, 번쩍, 화면이 *쿵*." },
           boom(w) {
-            w.hitstop(0.14); w.flash("255,255,255", 0.35);
+            w.hitstop(0.14); w.flash("255,190,255", 0.16);
             w.zoomPunch(0.08); w.shake(0.5);
           },
         },
@@ -467,8 +477,8 @@
           cap: { en: "Fire *lasers* down three rows and columns.", ko: "가로세로 세 줄씩 *레이저*가 쭉." },
           boom(w, B, x, y) {
             for (let k = -1; k <= 1; k++) {
-              w.spawn({ type: "slash", x, y: y + k * GS, ang: 0, len: 140, size: 16, life: 0.4, color: "120,220,255" });
-              w.spawn({ type: "slash", x: x + k * GS, y: y - 18, ang: Math.PI / 2, len: 120, size: 16, life: 0.4, color: "240,150,255" });
+              w.spawn({ type: "slash", x, y: y + k * GS, ang: 0, len: 140, size: 8, life: 0.32, color: "90,200,255" });
+              w.spawn({ type: "slash", x: x + k * GS, y: y - 18, ang: Math.PI / 2, len: 120, size: 8, life: 0.32, color: "220,110,255" });
             }
             w.spawn({ type: "glow", under: true, x, y, size: 40, size1: 200, life: 0.7, color: "220,140,255" });
           },
@@ -493,9 +503,9 @@
           id: "combo", name: { en: "Combo Shout", ko: "콤보 외치기" }, param: "text · rays 12",
           cap: { en: "Shout the *combo*. Burst *stars*.", ko: "*콤보*를 크게 외치고, *별*이 팡." },
           boom(w, B, x, y) {
-            w.spawn({ type: "text", x: 270, y: 176, text: "SUPER COMBO!", size: 36, color: "#ffe14a", life: 1.7 });
+            w.after(0.22, () => w.spawn({ type: "text", x: 270, y: 176, text: "SUPER COMBO!", size: 38, color: "#ffe14a", life: 1.6 }));
             w.spawn({ type: "rays", under: true, x, y, n: 12, size: 80, size1: 320, vr: 0.7, life: 1.6, hold: true, color: "255,200,120" });
-            starBurst(w, x, y, 16, ["255,230,120", "255,255,255", "240,150,255"]);
+            starBurst(w, x, y, 16, ["255,230,120", "255,200,90", "240,150,255"]);
           },
         },
         {
@@ -676,7 +686,7 @@
           id: "boom", name: { en: "GO Explosion", ko: "GO 대폭발" }, param: "stop 100ms · rays 18",
           cap: { en: "*GO* explodes: flash, rays, *confetti*.", ko: "*GO*에서 번쩍, 빛줄기, *꽃가루*." },
           go(w) {
-            w.hitstop(0.1); w.flash("220,255,140", 0.4); w.shake(0.6); w.zoomPunch(0.1);
+            w.hitstop(0.1); w.flash("220,255,140", 0.2); w.shake(0.6); w.zoomPunch(0.1);
             w.spawn({ type: "rays", under: true, x: 270, y: 186, n: 18, size: 90, size1: 340, vr: 0.9, life: 1.5, hold: true, color: "200,255,90" });
             for (let i = 0; i < 3; i++) w.spawn({ type: "ring", x: 270, y: 186, size: 60, size1: 260 + i * 70, life: 0.5 + i * 0.12, w: 12, color: i ? "255,255,255" : "200,255,90" });
             confetti(w, 120, 330, 30, -1.4, -0.9); confetti(w, 420, 330, 30, -2.2, -1.7);
@@ -747,11 +757,15 @@
           win(w, m) { m.chase = 1; },
         },
         {
-          id: "coins", name: { en: "Coin Rain", ko: "동전 비" }, param: "36 coins · bounce",
-          cap: { en: "*Rain* coins. Let them *bounce*.", ko: "*동전*이 쏟아져서 바닥에 *통통*." },
+          id: "coins", name: { en: "Coin Spout", ko: "동전 쏟기" }, param: "40 coins · spout",
+          cap: { en: "*Spout* coins out. Let them *bounce*.", ko: "*동전*이 와르르 쏟아져 바닥에 *통통*." },
           win(w) {
-            for (let i = 0; i < 36; i++) w.after(i * 0.025, () => w.spawn({ type: "ghost", img: SPR.coin.c, top: true, alpha0: 1, w: 24, h: 24,
-              x: rand(70, 470), y: rand(-40, -10), vx: rand(-60, 60), vy: rand(80, 260), g: 1100, ground: true, gy: 318, bounce: 0.45, life: 2, hold: true }));
+            // 받침 아래 배출구에서 양옆으로 쏟아져 릴은 가리지 않아요
+            for (let i = 0; i < 40; i++) w.after(i * 0.03, () => {
+              const s = i % 2 ? 1 : -1;
+              w.spawn({ type: "ghost", img: SPR.coin.c, top: true, alpha0: 1, w: 24, h: 24, x: 270 + s * 30, y: 292,
+                vx: s * rand(140, 420), vy: rand(-260, -120), g: 1100, ground: true, gy: rand(310, 326), bounce: 0.45, life: 2.2, hold: true });
+            });
           },
         },
         {
@@ -759,9 +773,9 @@
           cap: { en: "Pulse the *sevens*. Shout *JACKPOT*.", ko: "*7*이 두근두근, *JACKPOT*을 외쳐요." },
           win(w, m) {
             m.reels.forEach(r => (r.pulse = 1));
-            w.flash("255,220,120", 0.35); w.zoomPunch(0.08);
+            w.flash("255,220,120", 0.17); w.zoomPunch(0.08);
             w.spawn({ type: "rays", under: true, x: 270, y: 180, n: 16, size: 120, size1: 380, vr: 0.5, life: 2, hold: true, color: "255,210,90" });
-            w.spawn({ type: "text", x: 270, y: 130, text: "JACKPOT!", size: 44, color: "#ffe14a", life: 1.8 });
+            w.spawn({ type: "text", x: 270, y: 116, text: "JACKPOT!", size: 44, color: "#ffe14a", life: 1.8 });
             starBurst(w, 270, 180, 14, ["255,230,120", "255,255,255"]);
           },
         },
@@ -910,7 +924,7 @@
           id: "beat", name: { en: "Break the Best", ko: "기록 깨기" }, param: "stop 120ms · 22 shards",
           cap: { en: "*Freeze* as you pass it. *Shatter* the old best.", ko: "넘는 순간 *멈칫*, 옛 기록이 *와장창*." },
           beat(w, h) {
-            w.hitstop(0.12); w.flash("255,200,220", 0.4); w.shake(0.4);
+            w.hitstop(0.12); w.flash("255,200,220", 0.2); w.shake(0.4);
             h.bestA = 0;
             for (let i = 0; i < 22; i++) w.spawn({ type: "chunk", x: 270 + rand(-70, 70), y: 100 + rand(-8, 8), vx: rand(-200, 200), vy: rand(-320, -60),
               g: 1200, vr: rand(-14, 14), size: rand(4, 8), life: 1.2, color: "255,207,106" });
@@ -960,7 +974,7 @@
         w.emit("start", L);
         const p = L.piece, px = LX + GAP * LC + LC / 2;
         const lock = () => {
-          for (let k = 0; k < 4; k++) L.grid[8 + k][GAP] = 4;
+          for (const [dr, dc] of PCELLS) L.grid[8 + dr][GAP + dc] = PIECE;
           L.piece = null;
           w.emit("lock", L, px, LY + LH * LC);
           const rows = [8, 9, 10, 11];
@@ -984,8 +998,8 @@
       },
       update(w, dt) { w.lc.flash = Math.max(0, w.lc.flash - dt * 2.5); },
       drawFloor(w, ctx) {
-        backdrop(ctx, 270, 170, "#0f4058", "#020a10");
-        rr(ctx, LX - 8, LY - 8, LW * LC + 16, LH * LC + 16, 8, "#0a1822", "rgba(140,220,255,0.45)", 3);
+        backdrop(ctx, 270, 170, "#1d4a34", "#030c08");
+        rr(ctx, LX - 8, LY - 8, LW * LC + 16, LH * LC + 16, 8, "#08160f", "rgba(190,240,120,0.45)", 3);
         ctx.fillStyle = "rgba(255,255,255,0.04)";
         for (let c = 1; c < LW; c++) ctx.fillRect(LX + c * LC, LY, 1, LH * LC);
         for (let r = 1; r < LH; r++) ctx.fillRect(LX, LY + r * LC, LW * LC, 1);
@@ -993,13 +1007,18 @@
       drawFront(w, ctx) {
         const L = w.lc;
         ctx.save(); ctx.beginPath(); ctx.rect(LX - 2, LY - 2, LW * LC + 4, LH * LC + 4); ctx.clip();
+        const g = (r, c) => (L.grid[r] && c >= 0 && c < LW ? L.grid[r][c] : -1);
         for (let r = 0; r < LH; r++) for (let c = 0; c < LW; c++) {
           const k = L.grid[r][c]; if (k < 0) continue;
           const x = LX + c * LC, y = LY + r * LC - L.off;
-          drawBlock(ctx, x, y, LCOL[k]);
-          if (L.clearing && r >= 8 && L.flash > 0) drawBlock(ctx, x, y, "", 0.4 + 0.6 * L.flash);
+          drawTile(ctx, x, y, LCOL[k], [g(r - 1, c) === k, g(r, c + 1) === k, g(r + 1, c) === k, g(r, c - 1) === k]);
+          if (L.clearing && r >= 8 && L.flash > 0) { ctx.fillStyle = `rgba(236,255,190,${0.3 + 0.6 * L.flash})`; ctx.fillRect(x, y, LC, LC); }
         }
-        if (L.piece) for (let k = 0; k < 4; k++) drawBlock(ctx, LX + GAP * LC, LY + (L.piece.y + k) * LC, LCOL[4]);
+        if (L.piece) {
+          const has = (dr, dc) => PCELLS.some(([a, b]) => a === dr && b === dc);
+          for (const [dr, dc] of PCELLS) drawTile(ctx, LX + (GAP + dc) * LC, LY + (L.piece.y + dr) * LC, LCOL[PIECE],
+            [has(dr - 1, dc), has(dr, dc + 1), has(dr + 1, dc), has(dr, dc - 1)]);
+        }
         ctx.restore();
       },
       steps: [
@@ -1007,7 +1026,7 @@
           id: "hard", name: { en: "Hard Drop", ko: "한 번에 꽂기" }, param: "0.08s · streak",
           cap: { en: "*Slam* the bar down with a light *streak*.", ko: "막대가 빛 꼬리를 끌며 *쾅* 꽂혀요." },
           start(w, L) { L.hard = true; },
-          drop(w, L, x) { w.spawn({ type: "beam", x, y: LY + LH * LC, size: 12, h: 220, life: 0.3, color: "120,220,255" }); },
+          drop(w, L, x) { w.spawn({ type: "beam", x, y: LY + LH * LC, size: 12, h: 220, life: 0.3, color: "210,255,120" }); },
           lock(w) { w.kick(0, 10); w.shake(0.25); },
         },
         {
@@ -1019,8 +1038,8 @@
           id: "sweep", name: { en: "Side Beams", ko: "가로 광선" }, param: "4 beams · 260px",
           cap: { en: "Shoot *beams* out of both sides.", ko: "줄마다 양옆으로 *광선*이 쭉." },
           clear(w, L, rows) {
-            rows.forEach(r => w.spawn({ type: "slash", x: 270, y: LY + r * LC + LC / 2, ang: 0, len: 150, size: 16, life: 0.35, color: "170,235,255" }));
-            w.spawn({ type: "glow", under: true, x: 270, y: LY + 10 * LC, size: 50, size1: 200, life: 0.6, color: "90,200,255" });
+            rows.forEach(r => w.spawn({ type: "slash", x: 270, y: LY + r * LC + LC / 2, ang: 0, len: 150, size: 16, life: 0.35, color: "225,255,160" }));
+            w.spawn({ type: "glow", under: true, x: 270, y: LY + 10 * LC, size: 50, size1: 200, life: 0.6, color: "150,230,90" });
           },
         },
         {
@@ -1041,10 +1060,10 @@
           id: "text", name: { en: "4 LINES!", ko: "네 줄 외치기" }, param: "text · rays 14",
           cap: { en: "Shout *4 LINES!* and the *points*.", ko: "*4 LINES!*와 *점수*를 크게 띄워요." },
           collapse(w) {
-            w.spawn({ type: "text", x: 270, y: 150, text: "4 LINES!", size: 44, color: "#7fe8ff", life: 1.6 });
+            w.spawn({ type: "text", x: 270, y: 150, text: "4 LINES!", size: 44, color: "#d8ff6a", life: 1.6 });
             w.spawn({ type: "text", x: 270, y: 204, text: "+1200", size: 26, color: "#ffe14a", life: 1.5 });
-            w.spawn({ type: "rays", under: true, x: 270, y: 170, n: 14, size: 80, size1: 320, vr: 0.6, life: 1.6, hold: true, color: "120,220,255" });
-            starBurst(w, 270, 170, 12, ["170,240,255", "255,255,255"]);
+            w.spawn({ type: "rays", under: true, x: 270, y: 170, n: 14, size: 80, size1: 320, vr: 0.6, life: 1.6, hold: true, color: "170,240,110" });
+            starBurst(w, 270, 170, 12, ["220,255,150", "255,255,255"]);
           },
         },
         {
@@ -1125,7 +1144,7 @@
           id: "score", name: { en: "Score Climb", ko: "점수 오르기" }, param: "+10 ×n · grows",
           cap: { en: "Each pop scores *more* and pops *bigger*.", ko: "터질수록 점수가 *커지고* 글자도 *커져요*." },
           pop(w, B, x, y, i) {
-            w.spawn({ type: "text", x, y, vy: -70, text: `+${(i + 1) * 10}`, size: 14 + i * 1.8, color: "#fff4d8", life: 0.9 });
+            w.spawn({ type: "text", x: x + (i % 2 ? 12 : -12), y: y - 6, vy: -170, drag: 2, text: `+${(i + 1) * 10}`, size: 13 + i * 1.4, color: "#fff4d8", life: 0.55 });
           },
         },
         {
@@ -1140,8 +1159,8 @@
           id: "chain", name: { en: "Chain Finale", ko: "연쇄 마무리" }, param: "text · rays 14",
           cap: { en: "End with a big *CHAIN* shout and *stars*.", ko: "마지막에 *CHAIN*을 크게, *별*이 팡." },
           chain(w, B, n) {
-            w.shake(0.4); w.zoomPunch(0.07); w.flash("255,220,160", 0.3);
-            w.spawn({ type: "text", x: 270, y: 150, text: `CHAIN ×${n}!`, size: 40, color: "#ffd84a", life: 1.6 });
+            w.shake(0.4); w.zoomPunch(0.07); w.flash("255,220,160", 0.16);
+            w.spawn({ type: "text", x: 270, y: 274, text: `CHAIN ×${n}!`, size: 38, color: "#ffd84a", life: 1.6 });
             w.spawn({ type: "rays", under: true, x: 270, y: 150, n: 14, size: 80, size1: 320, vr: 0.6, life: 1.6, hold: true, color: "255,190,110" });
             starBurst(w, 270, 150, 14, ["255,230,140", "255,255,255", "255,150,200"]);
           },
