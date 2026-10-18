@@ -43,6 +43,8 @@
     .ov { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 9 / 16; pointer-events: none; font-family: var(--sans); }
     body:not(.recmode) .o-sub, body:not(.recmode) .o-ft, body:not(.recmode) .cta { display: none; }
     body.recmode .stage { aspect-ratio: 9 / 16; }
+    body:not(.recmode) .stage.split { aspect-ratio: 540 / 800; }
+    body.splitv:not(.recmode) .rail { display: none; }
     .u { position: absolute; }
     .ov .m { font-family: var(--mono); font-weight: 700; letter-spacing: .06em; }
     .o-top { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 34); display: flex; align-items: center; justify-content: space-between; }
@@ -356,31 +358,31 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261018g"></script>
-  <script src="recipes/core.js?v=20261018g"></script>
-  <script src="recipes/weapon.js?v=20261018g"></script>
-  <script src="recipes/combat.js?v=20261018g"></script>
-  <script src="recipes/duel.js?v=20261018g"></script>
-  <script src="recipes/horde.js?v=20261018g"></script>
-  <script src="recipes/army.js?v=20261018g"></script>
-  <script src="recipes/fighting.js?v=20261018g"></script>
-  <script src="recipes/shooter.js?v=20261018g"></script>
-  <script src="recipes/action.js?v=20261018g"></script>
-  <script src="recipes/move.js?v=20261018g"></script>
-  <script src="recipes/rpg.js?v=20261018g"></script>
-  <script src="recipes/strategy.js?v=20261018g"></script>
-  <script src="recipes/sim.js?v=20261018g"></script>
-  <script src="recipes/puzzle.js?v=20261018g"></script>
-  <script src="recipes/racing.js?v=20261018g"></script>
-  <script src="recipes/survival.js?v=20261018g"></script>
-  <script src="recipes/casual.js?v=20261018g"></script>
-  <script src="recipes/ui.js?v=20261018g"></script>
-  <script src="recipes/env.js?v=20261018g"></script>
-  <script src="recipes/spotlight.js?v=20261018g"></script>
-  <script src="recipes/spot-reward.js?v=20261018g"></script>
-  <script src="recipes/spot-combat.js?v=20261018g"></script>
-  <script src="recipes/spot-power.js?v=20261018g"></script>
-  <script src="recipes/spot-casual.js?v=20261018g"></script>
+  <script src="engine.js?v=20261018h"></script>
+  <script src="recipes/core.js?v=20261018h"></script>
+  <script src="recipes/weapon.js?v=20261018h"></script>
+  <script src="recipes/combat.js?v=20261018h"></script>
+  <script src="recipes/duel.js?v=20261018h"></script>
+  <script src="recipes/horde.js?v=20261018h"></script>
+  <script src="recipes/army.js?v=20261018h"></script>
+  <script src="recipes/fighting.js?v=20261018h"></script>
+  <script src="recipes/shooter.js?v=20261018h"></script>
+  <script src="recipes/action.js?v=20261018h"></script>
+  <script src="recipes/move.js?v=20261018h"></script>
+  <script src="recipes/rpg.js?v=20261018h"></script>
+  <script src="recipes/strategy.js?v=20261018h"></script>
+  <script src="recipes/sim.js?v=20261018h"></script>
+  <script src="recipes/puzzle.js?v=20261018h"></script>
+  <script src="recipes/racing.js?v=20261018h"></script>
+  <script src="recipes/survival.js?v=20261018h"></script>
+  <script src="recipes/casual.js?v=20261018h"></script>
+  <script src="recipes/ui.js?v=20261018h"></script>
+  <script src="recipes/env.js?v=20261018h"></script>
+  <script src="recipes/spotlight.js?v=20261018h"></script>
+  <script src="recipes/spot-reward.js?v=20261018h"></script>
+  <script src="recipes/spot-combat.js?v=20261018h"></script>
+  <script src="recipes/spot-power.js?v=20261018h"></script>
+  <script src="recipes/spot-casual.js?v=20261018h"></script>
   <script>
   (() => {
     "use strict";
@@ -526,6 +528,7 @@
       $("ovView").textContent = (VIEWS[r.view] || VIEWS.side)[0];
       $("ovTitle").innerHTML = fmt(r.title[L]);
       stage.classList.toggle("split", seg.k === "split");
+      document.body.classList.toggle("splitv", seg.k === "split");
       stage.classList.toggle("cta-on", seg.k === "cta");
       const n = seg.k === "intro" ? 0 : seg.k === "step" ? seg.n : N;
       const pill = $("ovPill");
@@ -888,7 +891,11 @@
       if (app.demo) { app.demo = false; app.autoT = 0; renderPills(); return; }
       startDemo();
     });
-    $("splitBtn").addEventListener("click", () => { app.split = !app.split; app.demo = false; makeWorlds(app.split, app.n); renderPills(); renderOverlay(browseSeg()); });
+    $("splitBtn").addEventListener("click", () => {
+      app.split = !app.split; app.demo = false; makeWorlds(app.split, app.n); renderPills(); renderOverlay(browseSeg());
+      // 전후 비교는 화면이 길어지니 목록을 잠깐 내려 둠
+      if (app.split) { app.sheetBefore = $("sheet").offsetHeight; setSheetH(70); } else if (app.sheetBefore) setSheetH(app.sheetBefore);
+    });
     $("soundBtn").addEventListener("click", () => { app.mute = !app.mute; store.set("mute", app.mute); renderPills(); });
     $("codeBtn").addEventListener("click", () => {
       if (app.idle) return toast("먼저 아래에서 이펙트를 골라 주세요");
