@@ -1,0 +1,255 @@
+"use strict";
+/* 한 대상만 크게 보여 주는 쇼케이스 레시피: 전설 아이템 공개, 적 처치 폭발 */
+(() => {
+  /* ───── 공통 그림 ───── */
+  const part = (p, light, dark) => Object.assign(p, { light, dark });
+  const swordArt = () => polySprite("spot-sword", () => {
+    const steel = [[236, 246, 255], [52, 70, 110]], gold = [[255, 214, 110], [120, 58, 10]], gem = [[255, 120, 150], [110, 10, 40]];
+    return [
+      part(blk(0, 70, 0, 30, 150, 10, 0.7), ...steel),
+      part(pyr([[-8, 220, -3], [8, 220, -3], [8, 220, 3], [-8, 220, 3]], [0, 262, 0]), ...steel),
+      part(blk(0, 58, 0, 96, 14, 16, 0.8), ...gold),
+      part(pyr([[-48, 58, -8], [-34, 58, -8], [-34, 72, 8], [-48, 72, 8]], [-70, 86, 0]), ...gold),
+      part(pyr([[34, 58, -8], [48, 58, -8], [48, 72, 8], [34, 72, 8]], [70, 86, 0]), ...gold),
+      part(blk(0, 14, 0, 14, 44, 14, 0.9), [140, 90, 60], [40, 20, 14]),
+      part(blk(0, 0, 0, 22, 14, 22, 0.6), ...gold),
+      part(blk(0, 60, -8, 14, 14, 4, 0.7), ...gem),
+    ];
+  }, 120, 200, 0.35, 0.18);
+
+  // 카드 한 장 (cx, cy 중심, 각도 ang: 0 = 뒷면, π = 앞면)
+  function drawCard(w, ctx, c) {
+    const W = 112, H = 156, s = Math.cos(c.ang), front = s < 0, sx = Math.abs(s) * c.scale;
+    ctx.save();
+    ctx.translate(c.x + (c.vib ? rand(-c.vib, c.vib) : 0), c.y + c.lift + (c.vib ? rand(-c.vib, c.vib) * 0.6 : 0));
+    ctx.rotate(c.rot);
+    // 원근: 카드 옆면 두께와 기울기
+    if (c.persp) {
+      const sk = Math.sin(c.ang) * 0.28, edge = Math.sin(c.ang) * 9;
+      ctx.fillStyle = "#3be0d0";
+      ctx.beginPath(); ctx.moveTo(W / 2 * sx, -H / 2 + sk * 40); ctx.lineTo(W / 2 * sx + edge, -H / 2 + sk * 40 + 4); ctx.lineTo(W / 2 * sx + edge, H / 2 - sk * 40 - 4); ctx.lineTo(W / 2 * sx, H / 2 - sk * 40); ctx.fill();
+      ctx.transform(sx, sk * (front ? -1 : 1) * 0.25, 0, c.scale, 0, 0);
+    } else ctx.scale(sx, c.scale);
+    ctx.lineJoin = "round";
+    if (!front) {
+      rr(ctx, -W / 2, -H / 2, W, H, 12, "#1d2240");
+      ctx.strokeStyle = c.gold ? "#f5b733" : "#8a90a8"; ctx.lineWidth = 5; ctx.stroke();
+      ctx.strokeStyle = c.gold ? "rgba(245,183,51,.7)" : "rgba(160,168,190,.6)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, -48); ctx.lineTo(32, 0); ctx.lineTo(0, 48); ctx.lineTo(-32, 0); ctx.closePath(); ctx.stroke();
+      ctx.fillStyle = c.gold ? "#f59e0b" : "#596079"; ctx.beginPath(); ctx.moveTo(0, -18); ctx.lineTo(12, 0); ctx.lineTo(0, 18); ctx.lineTo(-12, 0); ctx.fill();
+    } else {
+      const g = ctx.createLinearGradient(0, -H / 2, 0, H / 2); g.addColorStop(0, "#3b1d6e"); g.addColorStop(1, "#140b2c");
+      rr(ctx, -W / 2, -H / 2, W, H, 12, g);
+      ctx.strokeStyle = "#f5b733"; ctx.lineWidth = 6; ctx.stroke();
+      // 홀로 광택: 무지개 띠가 대각선으로 지나감
+      if (c.foil > 0) {
+        ctx.save(); ctx.clip();
+        const t = (w.time * 1.4) % 2 - 0.5, hg = ctx.createLinearGradient(-W + t * W * 2, -H, t * W * 2, H);
+        ["255,80,80", "255,220,80", "80,255,160", "80,180,255", "200,90,255"].forEach((col, i) => hg.addColorStop(0.3 + i * 0.08, `rgba(${col},${0.42 * c.foil})`));
+        hg.addColorStop(0, "rgba(0,0,0,0)"); hg.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.globalCompositeOperation = "lighter"; ctx.fillStyle = hg; ctx.fillRect(-W / 2, -H / 2, W, H);
+        ctx.restore();
+      }
+      const art = swordArt().c, pop = c.pop;
+      // 칼이 액자 밖으로 튀어나옴(pop): 위로 커지고, 테두리 밖까지 그림
+      const aw = 76 * (1 + pop * 0.22), ah = 124 * (1 + pop * 0.22);
+      if (!pop) { ctx.save(); ctx.beginPath(); ctx.roundRect(-W / 2 + 4, -H / 2 + 4, W - 8, H - 8, 9); ctx.clip(); }
+      ctx.drawImage(art, -aw / 2, 46 - ah - pop * 14, aw, ah);
+      if (!pop) ctx.restore();
+      rr(ctx, -40, H / 2 - 30, 80, 18, 4, "#f5b733");
+      label(ctx, "LEGEND", 0, H / 2 - 21, 10, "#2a1600");
+    }
+    ctx.restore();
+  }
+
+  const goblinWhite = () => SPR.foe.white;
+
+  RECIPES.push(
+    /* ───────── 전설 아이템 공개 ───────── */
+    {
+      id: "spot-loot-reveal", cat: "ui", view: "3d",
+      title: { en: "Make loot reveals feel *legendary*", ko: "전설 아이템을 *전설답게*" },
+      intro: { en: "Legendary pull. It just *flips*.", ko: "전설을 뽑았는데 그냥 *휙* 뒤집혀요." },
+      interval: 3.1, stepDur: 4.0,
+      setup(w) {
+        w.card = { x: 270, y: 182, lift: 0, ang: 0, scale: 1, rot: 0, vib: 0, foil: 0, pop: 0, gold: false, persp: false };
+      },
+      fire(w) {
+        const c = w.card;
+        Object.assign(c, { ang: 0, lift: 0, scale: 1, rot: 0, vib: 0, foil: 0, pop: 0, gold: false, persp: w.on("whip") });
+        const flip = () => {
+          w.tween(c, { ang: Math.PI }, w.on("whip") ? 0.2 : 0.5, w.on("whip") ? "out" : "lin", () => w.emit("reveal", c));
+          w.emit("flip", c);
+        };
+        if (w.on("float")) { w.emit("charge", c); w.after(0.8, flip); } else w.after(0.15, flip);
+      },
+      drawFloor(w, ctx) {
+        const g = ctx.createRadialGradient(270, 150, 10, 270, 150, 340);
+        g.addColorStop(0, "#2a1a4e"); g.addColorStop(1, "#0b0916");
+        ctx.fillStyle = g; ctx.fillRect(-80, -80, 700, 520);
+        ctx.strokeStyle = "rgba(160,130,255,0.28)"; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(270, 280, 120, 24, 0, 0, TAU); ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(270, 280, 86, 16, 0, 0, TAU); ctx.stroke();
+        ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.beginPath(); ctx.ellipse(270, 280, 50 - w.card.lift * 0.4, 9, 0, 0, TAU); ctx.fill();
+      },
+      drawFront(w, ctx) { drawCard(w, ctx, w.card); },
+      steps: [
+        {
+          id: "float", name: { en: "Tension Shake", ko: "긴장감 떨림" }, param: "lift 30 · orbs 24",
+          cap: { en: "*Float* it up, *shake* it, suck in *energy*.", ko: "*붕* 띄우고, *덜덜* 떨고, 빛을 *빨아들여요*." },
+          charge(w, c) {
+            c.gold = true;
+            w.tween(c, { lift: -30, vib: 4 }, 0.75, "in");
+            for (let i = 0; i < 24; i++) w.after(i * 0.028, () => {
+              const a = rand(0, TAU), d = rand(110, 170);
+              w.spawn({ type: "spark", seek: true, x: c.x + Math.cos(a) * d, y: c.y - 30 + Math.sin(a) * d, tx: c.x, ty: c.y - 30, life: 0.32, size: 3, color: pick(["255,190,80", "190,140,255"]) });
+            });
+            w.spawn({ type: "glow", under: true, x: c.x, y: c.y - 30, size: 20, size1: 120, life: 0.8, color: "245,170,60" });
+          },
+        },
+        {
+          id: "whip", name: { en: "Whip Flip", ko: "채찍 뒤집기" }, param: "0.2s · freeze 90ms",
+          cap: { en: "*Snap* it in 3D, *freeze*, then *bounce*.", ko: "입체로 *휙*, 잠깐 *멈칫*, *통* 튀어요." },
+          reveal(w, c) {
+            w.hitstop(0.09);
+            c.vib = 0; c.lift = -30; c.scale = 1.3;
+            w.tween(c, { scale: 1 }, 0.45, "back");
+          },
+        },
+        {
+          id: "shock", name: { en: "Shockwave", ko: "충격파" }, param: "rings 3 · bolts 6",
+          cap: { en: "Blast floor *rings* and *golden lightning*.", ko: "바닥에 *고리*, 사방으로 *금빛 번개*." },
+          reveal(w, c) {
+            for (let i = 0; i < 3; i++) w.spawn({ type: "ring", flat: true, x: c.x, y: 280, size: 20, size1: 260 + i * 60, life: 0.6 + i * 0.15, w: 10, color: i ? "80,230,220" : "255,210,90" });
+            for (let i = 0; i < 6; i++) {
+              const a = -Math.PI / 2 + rand(-1.4, 1.4), pts = [[0, 0]];
+              for (let k = 1; k < 7; k++) pts.push([Math.cos(a) * k * 22 + rand(-12, 12), Math.sin(a) * k * 22 + rand(-12, 12)]);
+              w.spawn({ type: "crack", x: c.x, y: c.y - 30, pts, w: 3.5, life: 0.35, add: true, color: pick(["255,220,90", "90,240,255"]) });
+            }
+            w.shake(0.5); w.flash("255,220,150", 0.5);
+          },
+        },
+        {
+          id: "foil", name: { en: "Holo Foil", ko: "홀로 광택" }, param: "rays 14 · sheen",
+          cap: { en: "Rainbow *sheen*, light *rays*, blade *pops out*.", ko: "*무지개* 광택, *빛줄기*, 칼이 *튀어나와요*." },
+          reveal(w, c) {
+            c.foil = 1; c.pop = 1;
+            w.spawn({ type: "rays", under: true, x: c.x, y: c.y - 30, n: 14, size: 60, size1: 240, vr: 0.8, life: 2.2, hold: true, color: "255,200,90" });
+            w.spawn({ type: "glow", under: true, x: c.x, y: c.y - 30, size: 70, size1: 130, life: 2, hold: true, color: "170,90,255" });
+          },
+        },
+        {
+          id: "rarity", name: { en: "Rarity Burst", ko: "등급 터뜨리기" }, param: "stars 16 · text",
+          cap: { en: "Shout the *rarity*. Throw *stars*.", ko: "*등급*을 크게 외치고, *별*을 뿌려요." },
+          reveal(w, c) {
+            w.spawn({ type: "text", x: c.x, y: 52, text: "★ LEGENDARY ★", size: 24, color: "#ffcf4a", life: 2.2 });
+            for (let i = 0; i < 16; i++) {
+              const a = rand(0, TAU), s = rand(180, 420);
+              w.spawn({ type: "star", x: c.x, y: c.y - 30, vx: Math.cos(a) * s, vy: Math.sin(a) * s, drag: 2.5, g: 260, size: rand(6, 11), life: rand(0.8, 1.4), color: pick(["255,220,90", "255,255,255", "190,140,255"]) });
+            }
+          },
+        },
+        {
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "rise + chord + boom",
+          cap: { en: "Rising *charge*, *thunder*, a bright *chord*.", ko: "차오르는 *웅~*, *콰광*, 밝은 *화음*." },
+          charge(w) { w.play(() => tn({ type: "sawtooth", f: 110, f2: 660, dur: 0.8, vol: 0.12 })); },
+          reveal(w) { w.sfx.boom(); w.sfx.fanfare(); },
+        },
+      ],
+    },
+
+    /* ───────── 적 처치 폭발 ───────── */
+    {
+      id: "spot-death-pop", cat: "combat", view: "3d",
+      title: { en: "Make enemy deaths feel *explosive*", ko: "적 처치를 *폭발*처럼" },
+      intro: { en: "One slash. It just *vanishes*.", ko: "한 번 베면 그냥 *사라져요*." },
+      interval: 2.6, stepDur: 3.8,
+      setup(w) {
+        w.foe = w.actor("foe", { home: 270, h: 150, gy: G - 6 });
+        w.swell = 0;
+      },
+      fire(w) {
+        const f = w.foe; if (!f.alive) return;
+        const cx = f.x, cy = f.gy - 70;
+        w.spawn({ type: "slash", x: cx, y: cy, ang: -0.6, len: 60, size: 6, life: 0.18, color: "255,255,255" });
+        f.ox = 6;
+        const pop = () => {
+          f.alive = false; f.alpha = 0;
+          w.spawn({ type: "smoke", x: cx, y: cy, size: 16, size1: 30, life: 0.35, color: "150,150,160" });
+          w.emit("pop", cx, cy);
+          w.after(1.5, () => { w.respawn(f); w.swell = 0; });
+        };
+        if (w.on("swell")) { w.emit("swell", f, cx, cy); w.tween(w, { swell: 1 }, 0.6, "in", pop); } else w.after(0.22, pop);
+      },
+      update(w) {
+        const f = w.foe;
+        if (f.alive && w.swell > 0) { f.sx = f.sy = 1 + w.swell * 0.38; f.burn = w.swell; f.vib = w.swell * 5; f.vibAxis = "x"; }
+      },
+      drawFloor(w, ctx) {
+        const g = ctx.createRadialGradient(270, 200, 10, 270, 200, 330);
+        g.addColorStop(0, "#3a1418"); g.addColorStop(1, "#0d0708");
+        ctx.fillStyle = g; ctx.fillRect(-80, -80, 700, 520);
+        ctx.fillStyle = "#1b0c0e"; ctx.beginPath(); ctx.ellipse(270, G + 8, 230, 48, 0, 0, TAU); ctx.fill();
+        ctx.strokeStyle = "rgba(255,140,120,0.45)"; ctx.lineWidth = 2; ctx.stroke();
+      },
+      steps: [
+        {
+          id: "swell", name: { en: "Death Swell", ko: "부풀어 오르기" }, param: "0.6s · ×1.38",
+          cap: { en: "*Inflate* it like a bomb. *Cracks* glow.", ko: "폭탄처럼 *부풀고*, 틈이 *빨갛게* 빛나요." },
+          swell(w, f, x, y) {
+            for (let i = 0; i < 7; i++) w.after(i * 0.07, () => {
+              const a = rand(0, TAU), pts = [[0, 0]];
+              for (let k = 1; k < 5; k++) pts.push([Math.cos(a) * k * 11 + rand(-5, 5), Math.sin(a) * k * 11 + rand(-5, 5)]);
+              w.spawn({ type: "crack", x: x + rand(-20, 20), y: y + rand(-25, 25), pts, w: 3, life: 0.6 - i * 0.07, add: true, color: "255,150,40" });
+            });
+            w.spawn({ type: "glow", x, y, size: 30, size1: 110, life: 0.6, color: "255,90,30" });
+          },
+        },
+        {
+          id: "stop", name: { en: "Lethal Hitstop", ko: "결정타 멈춤" }, param: "stop 130ms · white",
+          cap: { en: "*Freeze* on the kill. Flash it *white*.", ko: "죽는 순간 *멈칫*, *하얗게* 번쩍." },
+          pop(w, x, y) {
+            w.hitstop(0.13); w.zoomPunch(0.1); w.shake(0.55); w.flash("255,255,255", 0.45);
+            w.spawn({ type: "ghost", img: goblinWhite(), x, y: w.foe.gy, w: 150 * 1.38, h: 150 * 1.38, alpha0: 1, life: 0.16 });
+          },
+        },
+        {
+          id: "shatter", name: { en: "3D Shatter", ko: "조각으로 부서짐" }, param: "shards 30 · bounce",
+          cap: { en: "Blow it into *shards* that *bounce*.", ko: "*조각조각* 터져서 바닥에 *통통*." },
+          pop(w, x, y) {
+            for (let i = 0; i < 30; i++) {
+              const a = rand(-Math.PI, 0), s = rand(220, 620);
+              w.spawn({ type: "chunk", x: x + rand(-20, 20), y: y + rand(-20, 20), vx: Math.cos(a) * s, vy: Math.sin(a) * s - 120, g: 1500, vr: rand(-14, 14),
+                ground: true, gy: G + 14, bounce: 0.45, size: rand(5, 11), life: rand(1.6, 2.4), hold: true, color: pick(["150,205,95", "96,150,60", "60,100,40", "220,240,180"]) });
+            }
+          },
+        },
+        {
+          id: "wave", name: { en: "Shockwave", ko: "충격파" }, param: "ring 260 · dust 12",
+          cap: { en: "Push a *ring* out. Kick up *dust*.", ko: "*고리*가 퍼지고, *먼지*가 일어요." },
+          pop(w, x, y) {
+            w.spawn({ type: "ring", flat: true, x, y: G + 6, size: 20, size1: 260, life: 0.55, w: 14, color: "255,200,150" });
+            w.spawn({ type: "ring", x, y, size: 10, size1: 150, life: 0.3, w: 10, color: "255,240,220" });
+            for (let i = 0; i < 12; i++) w.spawn({ type: "smoke", x: x + rand(-40, 40), y: G + 4, vx: rand(-260, 260), vy: rand(-60, -10), drag: 3, size: rand(10, 18), size1: 34, life: rand(0.6, 1), color: "120,80,80" });
+          },
+        },
+        {
+          id: "soul", name: { en: "Soul Eruption", ko: "영혼 분출" }, param: "orbs 18 · scorch 2s",
+          cap: { en: "Fountain *soul orbs*. Leave a *scorch mark*.", ko: "*빛 구슬*이 솟고, 바닥이 *그을려요*." },
+          pop(w, x, y) {
+            w.spawn({ type: "ellipse", under: true, add: false, x, y: G + 8, size: 120, life: 2.4, hold: true, color: "0,0,0" });
+            w.spawn({ type: "ring", flat: true, x, y: G + 8, size: 70, life: 2.4, hold: true, w: 6, color: "255,190,90" });
+            w.spawn({ type: "beam", x, y: G, size: 34, h: 420, life: 0.5, color: "255,170,90" });
+            for (let i = 0; i < 18; i++) w.spawn({ type: "glow", x: x + rand(-25, 25), y, vx: rand(-160, 160), vy: rand(-620, -320), g: 500, drag: 0.6, size: rand(8, 14), life: rand(1, 1.6), color: pick(["120,240,230", "255,200,90", "255,255,255"]) });
+          },
+        },
+        {
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "hiss + crunch + boom",
+          cap: { en: "Rising *hiss*, wet *crunch*, deep *boom*.", ko: "*쉬익* 차오르고, *우직*, *쿵*." },
+          swell(w) { w.play(() => nz({ type: "bandpass", f: 600, f2: 4000, q: 3, dur: 0.6, vol: 0.2 })); },
+          pop(w) { w.sfx.crit(); w.sfx.boom(); },
+        },
+      ],
+    },
+  );
+})();
