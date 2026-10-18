@@ -244,16 +244,26 @@
   </div>
   <div class="toast" id="toast">COPIED</div>
 
-  <script src="engine.js"></script>
-  <script src="recipes/core.js"></script>
-  <script>
-    // 분야별 레시피 파일. ?only=파일이름 으로 하나만 불러와 시험할 수 있어요.
-    (() => {
-      const FILES = ["weapon", "combat", "duel", "horde", "army", "fighting", "shooter", "action", "move", "rpg", "strategy", "sim", "puzzle", "racing", "survival", "casual", "ui", "env"];
-      const only = new URLSearchParams(location.search).get("only");
-      for (const f of FILES) if (!only || f === only) document.write('<script src="recipes/' + f + '.js"><\/script>');
-    })();
-  </script>
+  <script src="engine.js?v=20261018b"></script>
+  <script src="recipes/core.js?v=20261018b"></script>
+  <script src="recipes/weapon.js?v=20261018b"></script>
+  <script src="recipes/combat.js?v=20261018b"></script>
+  <script src="recipes/duel.js?v=20261018b"></script>
+  <script src="recipes/horde.js?v=20261018b"></script>
+  <script src="recipes/army.js?v=20261018b"></script>
+  <script src="recipes/fighting.js?v=20261018b"></script>
+  <script src="recipes/shooter.js?v=20261018b"></script>
+  <script src="recipes/action.js?v=20261018b"></script>
+  <script src="recipes/move.js?v=20261018b"></script>
+  <script src="recipes/rpg.js?v=20261018b"></script>
+  <script src="recipes/strategy.js?v=20261018b"></script>
+  <script src="recipes/sim.js?v=20261018b"></script>
+  <script src="recipes/puzzle.js?v=20261018b"></script>
+  <script src="recipes/racing.js?v=20261018b"></script>
+  <script src="recipes/survival.js?v=20261018b"></script>
+  <script src="recipes/casual.js?v=20261018b"></script>
+  <script src="recipes/ui.js?v=20261018b"></script>
+  <script src="recipes/env.js?v=20261018b"></script>
   <script>
   (() => {
     "use strict";
