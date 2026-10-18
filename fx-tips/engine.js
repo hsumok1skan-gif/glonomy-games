@@ -510,8 +510,16 @@ class World {
     for (const p of this.shots) drawShot(ctx, p);
     for (const p of this.parts) if (!p.under) drawPart(ctx, p);
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
+    // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
+    const N = this.R.steps.length, glowA = N && this.n > 0 ? 0.9 * this.n / N : 0;
+    const gl = glowA > 0 ? bloomBegin(ctx, rx, ry, rw, rh) : null;
+    if (gl) {
+      for (const p of this.shots) drawShot(gl, p);
+      for (const p of this.parts) if (!p.under) drawPart(gl, p);
+    }
     if (this.R.drawHud) this.R.drawHud(this, ctx);
     ctx.restore();
+    if (gl) bloomEnd(ctx, rx, ry, rw, rh, glowA);
 
     // 화면 전체 효과 (번쩍임, 붉은 테두리)
     if (this.flashA > 0 || this.vig > 0) {
@@ -836,6 +844,32 @@ function m3Board(w) {
   B[0][c].c = X; B[0][c + 1].c = X; B[0][c + 2].c = (X + 1 + ((Math.random() * 4) | 0)) % 5;
 }
 
+
+/* ───────── 블룸: 이펙트만 작은 캔버스에 한 번 더 그리고, 흐리게 해서 더하기로 겹침 ───────── */
+const BLOOM = { c: null, x: null, ok: true, D: 4 };
+function bloomBegin(ctx, rx, ry, rw, rh) {
+  if (!BLOOM.ok) return null;
+  try {
+    const M = ctx.getTransform(), base = BLOOM.base = BLOOM.base || new DOMMatrix();
+    const k = ctx.canvas.width / 540, D = BLOOM.D;
+    const W = Math.max(1, Math.round(rw * k / D)), H = Math.max(1, Math.round(rh * k / D));
+    if (!BLOOM.c) { BLOOM.c = document.createElement("canvas"); BLOOM.x = BLOOM.c.getContext("2d"); }
+    if (BLOOM.c.width !== W || BLOOM.c.height !== H) { BLOOM.c.width = W; BLOOM.c.height = H; }
+    const g = BLOOM.x;
+    g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = "source-over"; g.globalAlpha = 1; g.clearRect(0, 0, W, H);
+    g.setTransform(new DOMMatrix().scale(1 / D).translate(-rx * k, -ry * k).multiply(M));
+    return g;
+  } catch (e) { BLOOM.ok = false; return null; }
+}
+function bloomEnd(ctx, rx, ry, rw, rh, a) {
+  try {
+    ctx.save(); ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.globalAlpha = Math.min(1, a); ctx.filter = "blur(10px)"; ctx.drawImage(BLOOM.c, rx, ry, rw, rh);
+    ctx.globalAlpha = Math.min(1, a) * 0.7; ctx.filter = "blur(3px)"; ctx.drawImage(BLOOM.c, rx, ry, rw, rh);
+    ctx.restore();
+  } catch (e) { BLOOM.ok = false; }
+}
 
 /* ───────── 레시피 등록소 ───────── */
 const RECIPES = [];

@@ -210,7 +210,7 @@
           <div class="u vh tr m" id="ovTime">TIME 1.00×</div>
           <div class="u vh bl m" id="ovFrame">F 00000</div>
           <div class="u vh br m" id="ovLayers">LAYERS 0/0</div>
-          <div class="u ab a m">A — NO FX</div>
+          <div class="u ab a m">A — RAW</div>
           <div class="u ab b m" id="ovAB">B — ALL LAYERS</div>
           <div class="u abnote" id="ovABNote"></div>
           <div class="u cap"><div class="k m" id="ovKey"></div><p id="ovCap"></p></div>
@@ -278,9 +278,9 @@
     const VIEW_B = { x: 54, y: 504, s: 0.8, r: [20, 510, 500, 300] };
     const UI = {
       ko: { cta: ["SOURCE CODE", "댓글에 <em>FX</em>", "레이어별 코드 전체를 DM으로 보내드려요.", "다음 게임 만들 때 쓰게 저장해 두세요."],
-            base: "BASELINE — 효과 없음", ab: n => `같은 장면, 같은 타이밍.<br>달라진 건 <em>레이어 ${n}개</em>뿐이에요.` },
+            base: "0단계 — 날것 그대로", ab: n => `같은 장면, 같은 타이밍.<br>달라진 건 <em>레이어 ${n}개</em>뿐이에요.` },
       en: { cta: ["SOURCE CODE", "Comment <em>FX</em>", "I'll DM you the full source, layer by layer.", "Save this for your next game."],
-            base: "BASELINE — NO FX", ab: n => `Same scene. Same timing.<br>The only difference: <em>${n} layers</em>.` },
+            base: "STEP 0 — RAW", ab: n => `Same scene. Same timing.<br>The only difference: <em>${n} layers</em>.` },
     };
 
     const app = {
@@ -358,7 +358,7 @@
       else if (app.worlds.length !== 1 || seg.k === "intro" || seg.k === "cta") makeWorlds(false, seg.n);
       else app.worlds[0].setN(seg.n);
       if (seg.k === "step") { const s = R().steps[seg.n - 1]; if (s.enter) s.enter(app.worlds[0]); }
-      app.autoT = Math.max(0, R().interval - 0.25);
+      app.autoT = R().interval; // 단계가 바뀌면 바로 한 번 실행
       renderOverlay(seg);
     }
     function startRec() {
@@ -436,7 +436,7 @@
     }
     function renderSteps() {
       const r = R();
-      const chips = [`<button type="button" class="chip${app.n === 0 ? " cur" : " on"}" data-n="0"><i>00</i><span>효과 없음</span><em>BASELINE</em></button>`]
+      const chips = [`<button type="button" class="chip${app.n === 0 ? " cur" : " on"}" data-n="0"><i>00</i><span>날것 그대로</span><em>RAW</em></button>`]
         .concat(r.steps.map((s, i) => {
           const n = i + 1, cls = n === app.n ? " cur" : n < app.n ? " on" : "";
           return `<button type="button" class="chip${cls}" data-n="${n}"><i>${String(n).padStart(2, "0")}</i><span>${s.name.ko}</span><em>${s.param || ""}</em></button>`;
