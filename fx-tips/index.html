@@ -3,352 +3,595 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>게임 이펙트 TIP · GLONOMY</title>
-  <meta name="description" content="모든 게임을 맛도리로 만드는 이펙트 모음. 효과를 하나씩 켜 보며 차이를 보고, 코드도 가져가세요." />
-  <meta name="theme-color" content="#070a12" />
+  <title>FX Lab · GLONOMY</title>
+  <meta name="description" content="게임을 멋있게 만드는 이펙트 연구소. 날것 그대로의 동작에 레이어를 하나씩 쌓아 보고, 코드도 가져가세요." />
+  <meta name="theme-color" content="#0c0d0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     :root {
-      --bg: #0b0c0f;
-      --panel: #131418;
-      --panel-2: #191a20;
-      --text: #f4f4f5;
-      --muted: #8b8d98;
-      --dim: #4b4d57;
-      --line: rgba(255, 255, 255, 0.09);
-      --acc: #c6f432;
-      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      --sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+      --ink: #0c0d0a;        /* 바탕 */
+      --ink-2: #16180f;      /* 어두운 카드 */
+      --ink-3: #20231a;
+      --paper: #f3f3ee;      /* 밝은 카드 */
+      --paper-2: #e7e7e0;
+      --text: #f4f4ef;
+      --text-d: #15160f;     /* 밝은 카드 위 글자 */
+      --muted: #8d9081;
+      --muted-d: #8a8b82;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-d: rgba(20, 22, 15, 0.08);
+      --acc: #c8f03c;        /* 라임 */
+      --acc-2: #93b52a;
+      --olive: #3e4a17;
+      --sans: "Outfit", "Pretendard", "Apple SD Gothic Neo", system-ui, sans-serif;
+      --ko: "Pretendard", "Apple SD Gothic Neo", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --r: 28px;
       color-scheme: dark;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
-      font-family: var(--sans); word-break: keep-all; -webkit-tap-highlight-color: transparent;
-    }
+    html, body { margin: 0; background: var(--ink); }
+    body { color: var(--text); font-family: var(--sans); word-break: keep-all; -webkit-tap-highlight-color: transparent; min-height: 100vh; }
+    button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
     a { color: inherit; text-decoration: none; }
-    button { font: inherit; color: inherit; cursor: pointer; }
-    .page { width: min(760px, 100%); margin: 0 auto; padding: 14px 16px calc(40px + env(safe-area-inset-bottom, 0px)); }
+    .ko { font-family: var(--ko); }
+    .wrap { width: min(520px, 100%); margin: 0 auto; padding: 10px 12px calc(40px + env(safe-area-inset-bottom, 0px)); }
 
-    header { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--muted); }
-    header .back { padding: 6px 0; }
-    header .ver { color: var(--dim); }
-    h1 { margin: 14px 0 4px; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
-    h1 small { display: block; margin-bottom: 6px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--acc); }
-    .lead { margin: 0 0 16px; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+    /* ───── 밝은 윗판 (헤더 + 오늘) ───── */
+    .sheet-top { background: var(--paper); color: var(--text-d); border-radius: var(--r); padding: 8px 8px 0; position: relative; }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px 8px 12px; background: #fff; border-radius: 22px; box-shadow: 0 1px 0 var(--line-d); }
+    .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+    .logo svg { width: 26px; height: 26px; }
+    .bar h1 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -0.01em; }
+    .icon-btn { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; }
+    .icon-btn svg { width: 22px; height: 22px; }
 
-    .search { width: 100%; margin: 0 0 10px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: inherit; font-size: 14px; }
-    .search:focus { outline: none; border-color: var(--acc); }
-    .empty { color: var(--muted); font-size: 13px; padding: 10px 2px; }
-    .cats { display: flex; gap: 6px; overflow-x: auto; margin: 0 -16px 10px; padding: 0 16px 2px; scrollbar-width: none; }
-    .cats::-webkit-scrollbar { display: none; }
-    .cat { flex: none; padding: 7px 11px; border-radius: 6px; border: 1px solid var(--line); background: transparent; font-size: 12.5px; font-weight: 700; color: var(--muted); }
-    .cat small { font-family: var(--mono); font-size: 10.5px; color: var(--dim); margin-left: 4px; }
-    .cat.active { border-color: var(--acc); color: var(--acc); }
-    .recipes { display: flex; gap: 6px; overflow-x: auto; margin: 0 -16px 14px; padding: 0 16px 4px; scroll-snap-type: x proximity; scrollbar-width: none; }
-    .recipes::-webkit-scrollbar { display: none; }
-    .rc { flex: 0 0 136px; scroll-snap-align: start; padding: 10px 10px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); text-align: left; font-size: 13px; font-weight: 700; color: var(--muted); line-height: 1.35; }
-    .rc b { display: block; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim); margin-bottom: 2px; }
-    .rc.active { background: var(--panel-2); color: var(--text); box-shadow: inset 0 -2px 0 var(--acc); }
-    .rc.active b { color: var(--acc); }
+    .today { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 18px 14px 6px; }
+    .today .k { font-size: 13px; color: var(--muted-d); font-weight: 500; }
+    .today .ep { font-size: 54px; font-weight: 300; letter-spacing: -0.04em; line-height: 1; margin: 6px 0 4px; }
+    .today .ep small { font-size: 18px; color: var(--muted-d); margin-left: 4px; font-weight: 400; }
+    .today .t { font-family: var(--ko); font-size: 15px; font-weight: 600; line-height: 1.35; max-width: 15em; }
+    .today .t em { font-style: normal; background: linear-gradient(transparent 58%, rgba(200, 240, 60, .55) 58%); }
+    .dates { display: grid; grid-template-columns: repeat(2, 46px); gap: 10px 6px; align-content: start; padding-top: 2px; }
+    .date { text-align: center; position: relative; padding-right: 8px; }
+    .date b { display: block; font-size: 26px; font-weight: 300; line-height: 1; color: #9a9b93; }
+    .date span { font-size: 11px; color: #a7a89f; }
+    .date i { position: absolute; right: 0; top: 2px; display: grid; gap: 5px; }
+    .date i::before, .date i::after { content: ""; width: 4px; height: 4px; border-radius: 50%; background: #d0d1c9; }
+    .date.now b { color: var(--text-d); }
+    .date.now i::before { background: var(--text-d); }
+    .date.done i::after { background: var(--acc-2); }
+
+    .stat { margin: 10px 4px 0; padding: 16px 16px 30px; background: #fff; border-radius: 24px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+    .stat .k { font-size: 13px; color: var(--muted-d); }
+    .stat .v { font-size: 40px; font-weight: 300; letter-spacing: -0.03em; line-height: 1.05; margin-top: 4px; }
+    .stat .v small { font-size: 16px; color: var(--muted-d); margin-left: 4px; }
+    .stat svg.spark { display: block; width: 150px; height: 34px; margin-top: 8px; }
+    .ring { width: 104px; height: 104px; position: relative; }
+    .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; font-weight: 600; }
+    .notch { position: absolute; left: 50%; bottom: -1px; transform: translateX(-50%); width: 120px; height: 22px; background: var(--ink); border-radius: 18px 18px 0 0; display: grid; place-items: center; }
+    .notch::before { content: ""; width: 9px; height: 9px; border-left: 2px solid #c9cabf; border-top: 2px solid #c9cabf; transform: rotate(45deg) translate(2px, 2px); }
+
+    /* ───── 어두운 아랫판 ───── */
+    .sec { margin: 22px 4px 10px; display: flex; align-items: baseline; justify-content: space-between; }
+    .sec h2 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
+    .sec span { font-size: 13px; color: var(--muted); }
+    .groups { display: flex; gap: 10px; overflow-x: auto; margin: 0 -12px; padding: 2px 12px 6px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .groups::-webkit-scrollbar { display: none; }
+    .grp {
+      flex: 0 0 152px; height: 196px; scroll-snap-align: start; position: relative; overflow: hidden; text-align: left;
+      border-radius: 26px; padding: 16px 14px; background: #252a14; isolation: isolate;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
+    }
+    .grp::before {
+      content: ""; position: absolute; z-index: -1; inset: 30% -20% -30% -20%;
+      background: radial-gradient(closest-side, var(--g1, #d9ff6a), transparent 70%), radial-gradient(closest-side at 70% 30%, var(--g2, #8fb52a), transparent 75%);
+      filter: blur(14px); border-radius: var(--shape, 45% 55% 40% 60%); opacity: .95; transform: rotate(var(--rot, 0deg));
+    }
+    .grp::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(20, 24, 8, .55), transparent 45%); }
+    .grp b { display: block; font-size: 16px; font-weight: 600; line-height: 1.2; }
+    .grp small { display: block; margin-top: 4px; font-size: 12.5px; color: rgba(255, 255, 255, .7); }
+    .grp .go { position: absolute; right: 12px; top: 12px; width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 255, 255, .22); display: grid; place-items: center; }
+    .grp .go::before { content: ""; width: 6px; height: 6px; border-right: 1.6px solid #fff; border-top: 1.6px solid #fff; transform: rotate(45deg) translate(-1px, 1px); }
+    .grp.on { box-shadow: inset 0 0 0 2px var(--acc); }
+
+    .subs { display: flex; gap: 6px; overflow-x: auto; margin: 12px -12px 10px; padding: 0 12px; scrollbar-width: none; }
+    .subs::-webkit-scrollbar { display: none; }
+    .sub { flex: none; padding: 9px 14px; border-radius: 999px; background: var(--ink-2); font-family: var(--ko); font-size: 13px; font-weight: 600; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+    .sub small { margin-left: 5px; font-family: var(--sans); font-weight: 500; color: #5d6052; }
+    .sub.on { background: var(--acc); color: #141708; box-shadow: none; }
+    .sub.on small { color: #4c5a17; }
+
+    .search { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; padding: 0 14px; height: 46px; border-radius: 16px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); }
+    .search svg { width: 18px; height: 18px; opacity: .55; flex: none; }
+    .search input { flex: 1; min-width: 0; background: none; border: 0; color: var(--text); font: 500 14px var(--ko); }
+    .search input:focus { outline: none; }
+
+    .list { display: grid; gap: 8px; }
+    .item { display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 20px; background: var(--ink-2); text-align: left; box-shadow: inset 0 0 0 1px var(--line); }
+    .thumb { width: 54px; height: 54px; border-radius: 15px; position: relative; overflow: hidden; background: #262b15; }
+    .thumb::before { content: ""; position: absolute; inset: 18% 10% -20% 0; background: radial-gradient(closest-side, var(--g1), transparent 72%); filter: blur(6px); border-radius: 50% 40% 55% 45%; }
+    .thumb span { position: absolute; left: 7px; top: 6px; font: 600 10.5px var(--sans); color: rgba(255, 255, 255, .85); }
+    .item b { display: block; font-family: var(--ko); font-size: 14.5px; font-weight: 600; line-height: 1.3; }
+    .item b em { font-style: normal; color: var(--acc); }
+    .item small { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); }
+    .item .st { font-size: 11px; font-weight: 600; color: #6c705f; text-align: right; }
+    .item .st.done { color: var(--acc); }
+    .more { margin: 10px auto 0; display: block; padding: 12px 22px; border-radius: 999px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); font: 600 13px var(--ko); color: var(--muted); }
+    .empty { padding: 30px 0; text-align: center; color: var(--muted); font-family: var(--ko); font-size: 14px; }
+
+    /* ───── 플레이어 (아래에서 올라오는 화면) ───── */
+    .player { position: fixed; inset: 0; z-index: 30; background: var(--ink); overflow-y: auto; transform: translateY(100%); transition: transform .38s cubic-bezier(.2, .8, .2, 1); -webkit-overflow-scrolling: touch; }
+    .player.open { transform: none; }
+    .pbar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px; background: linear-gradient(var(--ink) 70%, transparent); }
+    .pbar .mid { text-align: center; min-width: 0; }
+    .pbar .mid b { display: block; font-size: 15px; font-weight: 600; }
+    .pbar .mid small { font-size: 12px; color: var(--muted); }
+    .round { width: 42px; height: 42px; border-radius: 50%; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); display: grid; place-items: center; }
+    .round svg { width: 20px; height: 20px; }
+    .pwrap { width: min(520px, 100%); margin: 0 auto; padding: 0 12px calc(40px + env(safe-area-inset-bottom, 0px)); }
 
     .stage-wrap { display: flex; justify-content: center; }
     .stage {
-      --u: 0.7px;
-      position: relative; width: min(100%, 430px, calc((100vh - 150px) * 9 / 16)); aspect-ratio: 9 / 16;
-      border-radius: 14px; overflow: hidden; background: var(--bg); border: 1px solid var(--line);
+      --u: 0.7px; position: relative; width: min(100%, 430px, calc((100svh - 190px) * 9 / 16)); aspect-ratio: 9 / 16;
+      border-radius: 26px; overflow: hidden; background: #0b0c09; box-shadow: 0 0 0 1px var(--line), 0 30px 60px -30px rgba(200, 240, 60, .25);
       touch-action: manipulation; user-select: none; -webkit-user-select: none;
     }
-    @supports (height: 100svh) { .stage { width: min(100%, 430px, calc((100svh - 150px) * 9 / 16)); } }
     .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-    .ov { position: absolute; inset: 0; pointer-events: none; }
-    .ov .m { font-family: var(--mono); font-weight: 700; letter-spacing: 0.08em; }
+    .ov { position: absolute; inset: 0; pointer-events: none; font-family: var(--sans); }
     .u { position: absolute; }
+    .ov .m { font-family: var(--mono); font-weight: 700; letter-spacing: .06em; }
 
-    .hd { left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 30); display: flex; justify-content: space-between; font-size: calc(var(--u) * 15); color: var(--muted); }
-    .hd span:first-child { color: var(--acc); }
-    #ovTitle {
-      left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 62); margin: 0;
-      font-size: calc(var(--u) * 46); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; color: var(--text);
-    }
+    /* 영상 오버레이 — 540×960 기준 좌표 */
+    .o-top { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 34); display: flex; align-items: center; justify-content: space-between; }
+    .o-brand { display: flex; align-items: center; gap: calc(var(--u) * 10); font-size: calc(var(--u) * 17); font-weight: 600; color: var(--text); }
+    .o-brand i { width: calc(var(--u) * 22); height: calc(var(--u) * 22); border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f0ffb0, var(--acc) 45%, #5d7413); }
+    .o-ep { font-size: calc(var(--u) * 16); font-weight: 500; color: var(--muted); }
+    #ovTitle { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 78); margin: 0; font-size: calc(var(--u) * 46); font-weight: 700; line-height: 1.08; letter-spacing: -0.03em; color: var(--text); }
     #ovTitle em { font-style: normal; color: var(--acc); }
-
-    .vh { font-size: calc(var(--u) * 13); color: var(--muted); }
-    .vh.tl { left: calc(var(--u) * 32); top: calc(var(--u) * 202); }
-    .vh.tl::before { content: ""; display: inline-block; width: calc(var(--u) * 8); height: calc(var(--u) * 8); margin-right: calc(var(--u) * 8); border-radius: 50%; background: #ef4444; vertical-align: middle; transform: translateY(-10%); }
-    .vh.tr { right: calc(var(--u) * 32); top: calc(var(--u) * 202); }
-    .vh.bl { left: calc(var(--u) * 32); top: calc(var(--u) * 524); }
-    .vh.br { right: calc(var(--u) * 32); top: calc(var(--u) * 524); }
+    .o-pill { left: calc(var(--u) * 28); top: calc(var(--u) * 186); display: flex; align-items: center; gap: calc(var(--u) * 10); font-size: calc(var(--u) * 17); font-weight: 600; color: var(--text); }
+    .o-pill span { padding: calc(var(--u) * 5) calc(var(--u) * 12); border-radius: 999px; background: var(--acc); color: #141708; font-size: calc(var(--u) * 14); font-weight: 700; letter-spacing: .04em; }
+    .o-pill.raw span { background: #3a3d31; color: #d9dbd0; }
+    .vh { font-size: calc(var(--u) * 12); color: rgba(244, 244, 239, .5); }
+    .vh.tl { left: calc(var(--u) * 34); top: calc(var(--u) * 232); }
+    .vh.tr { right: calc(var(--u) * 34); top: calc(var(--u) * 232); }
+    .vh.bl { left: calc(var(--u) * 34); top: calc(var(--u) * 552); }
+    .vh.br { right: calc(var(--u) * 34); top: calc(var(--u) * 552); }
     .vh.hot { color: var(--acc); }
+    .o-seg { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 600); display: flex; gap: calc(var(--u) * 6); }
+    .o-seg i { flex: 1; height: calc(var(--u) * 6); border-radius: 99px; background: rgba(255, 255, 255, .12); overflow: hidden; position: relative; }
+    .o-seg i.on { background: var(--acc); }
+    .o-seg i.cur::after { content: ""; position: absolute; inset: 0; background: var(--acc); transform-origin: left; transform: scaleX(var(--p, 0)); }
+    .o-sub { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 636); margin: 0; font-size: calc(var(--u) * 37); font-weight: 600; line-height: 1.22; letter-spacing: -0.02em; color: var(--text); }
+    .o-sub.ko { font-family: var(--ko); font-size: calc(var(--u) * 34); line-height: 1.32; }
+    .o-sub .w { display: inline-block; opacity: 0; transform: translateY(calc(var(--u) * 10)) scale(.96); transition: opacity .16s, transform .22s cubic-bezier(.2, 1.4, .4, 1); }
+    .o-sub .w.in { opacity: 1; transform: none; }
+    .o-sub .w.em { color: var(--acc); }
+    .o-list { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 780); margin: 0; padding: 0; list-style: none; display: grid; gap: calc(var(--u) * 6); }
+    .o-list li { display: flex; align-items: center; gap: calc(var(--u) * 10); font-size: calc(var(--u) * 16); color: rgba(244, 244, 239, .32); }
+    .o-list li i { width: calc(var(--u) * 8); height: calc(var(--u) * 8); border-radius: 50%; background: rgba(255, 255, 255, .15); flex: none; }
+    .o-list li.on { color: rgba(244, 244, 239, .78); }
+    .o-list li.on i { background: var(--acc); }
+    .o-list li em { font-style: normal; margin-left: auto; font-family: var(--mono); font-size: calc(var(--u) * 12); color: rgba(244, 244, 239, .35); }
+    .o-ft { left: calc(var(--u) * 28); right: calc(var(--u) * 28); bottom: calc(var(--u) * 26); display: flex; justify-content: space-between; font-size: calc(var(--u) * 14); color: rgba(244, 244, 239, .38); }
+    .ab { display: none; left: calc(var(--u) * 34); font-size: calc(var(--u) * 13); }
+    .ab.a { top: calc(var(--u) * 206); color: #cfd1c6; }
+    .ab.b { top: calc(var(--u) * 498); color: var(--acc); }
+    .stage.split .ab { display: block; }
+    .stage.split .vh, .stage.split .o-seg, .stage.split .o-pill, .stage.split .o-list { display: none; }
+    .stage.split .o-sub { top: calc(var(--u) * 790); }
+    .cta { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 586); height: calc(var(--u) * 300); border-radius: calc(var(--u) * 30); background: var(--paper); color: var(--text-d); padding: calc(var(--u) * 30); display: grid; align-content: center; gap: calc(var(--u) * 10); opacity: 0; transform: translateY(calc(var(--u) * 20)); transition: opacity .35s, transform .45s cubic-bezier(.2, 1.2, .3, 1); }
+    .cta .t { font-size: calc(var(--u) * 15); color: var(--muted-d); font-weight: 500; }
+    .cta .q { font-size: calc(var(--u) * 64); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+    .cta .q em { font-style: normal; background: var(--acc); padding: 0 calc(var(--u) * 10); border-radius: calc(var(--u) * 14); }
+    .cta .c { font-size: calc(var(--u) * 22); font-weight: 500; line-height: 1.3; }
+    .stage.cta-on .cta { opacity: 1; transform: none; }
+    .stage.cta-on .o-sub, .stage.cta-on .o-seg, .stage.cta-on .o-list { opacity: 0; }
 
-    .cap { left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 574); }
-    .cap .k { font-size: calc(var(--u) * 15); color: var(--acc); margin-bottom: calc(var(--u) * 8); }
-    #ovCap { margin: 0; font-size: calc(var(--u) * 28); font-weight: 600; line-height: 1.35; letter-spacing: -0.015em; color: var(--text); }
-    #ovCap em { font-style: normal; color: var(--acc); }
-
-    .stack { left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 676); margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
-    .stack li {
-      display: grid; grid-template-columns: calc(var(--u) * 40) 1fr auto calc(var(--u) * 48); align-items: center;
-      height: calc(var(--u) * 30); padding: 0 calc(var(--u) * 6); border-bottom: 1px solid var(--line);
-      font-size: calc(var(--u) * 17); color: var(--dim); transition: background .2s, color .2s;
-    }
-    .stack li i, .stack li em, .stack li s { font-family: var(--mono); font-style: normal; text-decoration: none; font-size: calc(var(--u) * 13); font-weight: 700; letter-spacing: 0.04em; }
-    .stack li b { font-weight: 600; }
-    .stack li em { padding-right: calc(var(--u) * 12); }
-    .stack li s { text-align: right; }
-    .stack li.on { color: var(--text); }
-    .stack li.on em { color: var(--muted); }
-    .stack li.on s { color: var(--acc); }
-    .stack li.cur { background: rgba(198, 244, 50, 0.09); box-shadow: inset calc(var(--u) * 3) 0 0 var(--acc); }
-    .stack li.cur i { color: var(--acc); }
-
-    .ab { display: none; font-size: calc(var(--u) * 14); left: calc(var(--u) * 32); }
-    .ab.a { top: calc(var(--u) * 202); color: var(--muted); }
-    .ab.b { top: calc(var(--u) * 522); color: var(--acc); }
-    .abnote { display: none; left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 838); font-size: calc(var(--u) * 26); font-weight: 600; line-height: 1.35; }
-    .abnote em { font-style: normal; color: var(--acc); }
-    .stage.split .ab, .stage.split .abnote { display: block; }
-    .stage.split .vh, .stage.split .cap, .stage.split .stack { display: none; }
-
-    .cta {
-      left: calc(var(--u) * 20); right: calc(var(--u) * 20); top: calc(var(--u) * 572); height: calc(var(--u) * 344);
-      display: grid; align-content: center; gap: calc(var(--u) * 14); padding: 0 calc(var(--u) * 28);
-      border: 1px solid rgba(198, 244, 50, 0.45); border-radius: calc(var(--u) * 14); background: #0f110b;
-      opacity: 0; transition: opacity .35s;
-    }
-    .cta .t { font-size: calc(var(--u) * 15); color: var(--acc); }
-    .cta .q { font-size: calc(var(--u) * 54); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
-    .cta .q em { font-style: normal; color: var(--acc); }
-    .cta .c { font-size: calc(var(--u) * 26); font-weight: 600; color: var(--text); line-height: 1.35; }
-    .cta .s { font-size: calc(var(--u) * 14); color: var(--muted); }
-    .stage.cta-on .cta { opacity: 1; }
-    .stage.cta-on .cap, .stage.cta-on .stack { opacity: 0; }
-
-    .ft { left: calc(var(--u) * 20); right: calc(var(--u) * 20); bottom: calc(var(--u) * 18); display: flex; justify-content: space-between; font-size: calc(var(--u) * 13); color: var(--dim); }
-    .pop { animation: pop .28s ease-out both; }
-    @keyframes pop { from { opacity: 0; transform: translateY(calc(var(--u) * 8)); } to { opacity: 1; transform: none; } }
-
-    .ready {
-      position: absolute; inset: 0; z-index: 3; display: none; place-content: center; gap: 12px; padding: 24px;
-      background: rgba(11, 12, 15, 0.95); text-align: center; line-height: 1.6;
-    }
-    .ready strong { font-size: 18px; }
-    .ready span { color: var(--muted); font-size: 13.5px; }
+    .ready { position: absolute; inset: 0; z-index: 3; display: none; place-content: center; gap: 12px; padding: 24px; background: rgba(12, 13, 10, .94); text-align: center; line-height: 1.6; font-family: var(--ko); }
+    .ready strong { font-size: 19px; }
+    .ready span { color: var(--muted); font-size: 14px; }
     .ready code { font-family: var(--mono); color: var(--acc); font-size: 12px; letter-spacing: .1em; }
 
-    .ctrl { margin-top: 14px; display: grid; gap: 10px; }
-    .label { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; margin: 6px 2px -2px; }
-    .steps { display: grid; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-    .chip {
-      display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 6px; padding: 10px 12px;
-      border: 0; border-bottom: 1px solid var(--line); background: var(--panel); text-align: left; font-size: 14px; font-weight: 600; color: var(--dim);
-    }
-    .chip:last-child { border-bottom: 0; }
-    .chip i, .chip em { font-family: var(--mono); font-style: normal; font-size: 11.5px; font-weight: 700; }
-    .chip em { color: var(--dim); }
+    /* 레이어 단계 고르기 */
+    .layers { margin: 16px 0 0; padding: 14px; border-radius: 24px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); }
+    .layers .hd { display: flex; justify-content: space-between; align-items: baseline; margin: 0 2px 10px; }
+    .layers .hd b { font-size: 15px; font-weight: 600; }
+    .layers .hd span { font-size: 12px; color: var(--muted); }
+    .steps { display: grid; gap: 6px; }
+    .chip { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 16px; background: var(--ink-3); text-align: left; font-family: var(--ko); font-size: 14px; font-weight: 600; color: #6f7363; }
+    .chip i { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 600 12px var(--sans); background: rgba(255, 255, 255, .06); font-style: normal; }
+    .chip em { font: 500 11px var(--mono); font-style: normal; color: #5b5f50; }
     .chip.on { color: var(--text); }
-    .chip.on em { color: var(--muted); }
-    .chip.cur { background: var(--panel-2); color: var(--text); box-shadow: inset 3px 0 0 var(--acc); }
-    .chip.cur i { color: var(--acc); }
-    .row { display: flex; flex-wrap: wrap; gap: 6px; }
-    .btn { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); font-size: 13px; font-weight: 700; }
-    .btn.primary { flex: 1 1 100%; padding: 13px; border-color: var(--acc); background: var(--acc); color: #10120a; font-size: 14.5px; font-weight: 800; }
-    .btn[aria-pressed="false"] { color: var(--muted); }
-    .btn[aria-pressed="true"] { border-color: rgba(198, 244, 50, 0.5); color: var(--acc); }
+    .chip.on i { background: rgba(200, 240, 60, .18); color: var(--acc); }
+    .chip.cur { background: var(--acc); color: #141708; }
+    .chip.cur i { background: rgba(20, 23, 8, .12); color: #141708; }
+    .chip.cur em { color: #4e5c19; }
 
-    .code { margin-top: 26px; }
-    .code h2 { font-size: 17px; margin: 0 0 4px; }
-    .code p { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.55; }
-    .code p b { font-family: var(--mono); color: var(--text); font-weight: 700; }
-    .cs { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); margin-bottom: 8px; overflow: hidden; }
-    .cs-h { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-weight: 700; font-size: 14px; }
-    .cs-h b { font-family: var(--mono); font-size: 11.5px; color: var(--acc); flex: none; }
+    .tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+    .tool { padding: 12px 4px 10px; border-radius: 18px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); display: grid; justify-items: center; gap: 6px; font-family: var(--ko); font-size: 12px; font-weight: 600; color: var(--muted); }
+    .tool svg { width: 20px; height: 20px; }
+    .tool[aria-pressed="true"] { color: var(--acc); box-shadow: inset 0 0 0 1px rgba(200, 240, 60, .45); }
+    .rec { margin-top: 10px; width: 100%; height: 58px; border-radius: 20px; background: var(--acc); color: #141708; font-family: var(--ko); font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .rec::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: #e3342f; box-shadow: 0 0 0 4px rgba(227, 52, 47, .2); }
+    .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
+    .ghost { height: 48px; border-radius: 16px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--ko); font-size: 13.5px; font-weight: 600; color: var(--text); }
+    .ghost.done { color: var(--acc); box-shadow: inset 0 0 0 1px rgba(200, 240, 60, .45); }
+
+    .panel { margin-top: 16px; border-radius: 24px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+    .panel > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; font-size: 15px; font-weight: 600; }
+    .panel > summary::-webkit-details-marker { display: none; }
+    .panel > summary small { font-family: var(--ko); font-size: 12px; color: var(--muted); font-weight: 500; }
+    .panel > summary::after { content: ""; width: 8px; height: 8px; border-right: 1.6px solid var(--muted); border-bottom: 1.6px solid var(--muted); transform: rotate(45deg); margin-left: 10px; }
+    .panel[open] > summary::after { transform: rotate(-135deg); }
+    .pbody { padding: 0 14px 14px; }
+    .pbody p { margin: 0 4px 12px; color: var(--muted); font-family: var(--ko); font-size: 13px; line-height: 1.6; }
+    .script { display: grid; gap: 8px; }
+    .line { display: grid; grid-template-columns: 50px 1fr; gap: 10px; padding: 12px; border-radius: 16px; background: var(--ink-3); }
+    .line time { font: 600 12px var(--mono); color: var(--acc); padding-top: 2px; }
+    .line div { font-size: 15px; line-height: 1.4; }
+    .line div small { display: block; font-family: var(--ko); font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .mini { padding: 8px 12px; border-radius: 999px; background: var(--ink-3); font-family: var(--ko); font-size: 12px; font-weight: 600; color: var(--muted); }
+    .row { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+    .cs { border-radius: 16px; background: var(--ink-3); margin-bottom: 8px; overflow: hidden; }
+    .cs-h { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-family: var(--ko); font-weight: 600; font-size: 13.5px; }
+    .cs-h b { font: 600 12px var(--sans); color: var(--acc); flex: none; }
     .cs-h span { flex: 1; min-width: 0; }
-    .cs-h small { color: var(--muted); font-weight: 600; }
-    .copy { padding: 5px 9px; border-radius: 6px; border: 1px solid var(--line); background: transparent; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--muted); flex: none; }
-    pre { margin: 0; padding: 12px; overflow-x: auto; background: #0d0e11; border-top: 1px solid var(--line); font: 12px/1.6 var(--mono); color: #d4d4d8; }
-    details.cs summary { list-style: none; cursor: pointer; }
-    details.cs summary::-webkit-details-marker { display: none; }
-    .toast {
-      position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
-      padding: 9px 14px; border-radius: 8px; background: var(--acc); color: #10120a; font-family: var(--mono); font-weight: 700; font-size: 12px;
-      opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 60;
-    }
+    .cs-h small { color: var(--muted); font-weight: 500; }
+    pre { margin: 0; padding: 12px; overflow-x: auto; background: #0d0e0b; font: 12px/1.6 var(--mono); color: #d6d8cc; }
+
+    /* 일정 */
+    .sched { position: fixed; inset: 0; z-index: 40; background: var(--ink); overflow-y: auto; transform: translateX(100%); transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+    .sched.open { transform: none; }
+    .plan { display: grid; gap: 8px; padding: 14px; margin-bottom: 12px; border-radius: 24px; background: var(--paper); color: var(--text-d); }
+    .plan b { font-size: 16px; }
+    .plan p { margin: 0; font-family: var(--ko); font-size: 13.5px; line-height: 1.6; color: #4b4d44; }
+    .plan .opts { display: flex; flex-wrap: wrap; gap: 6px; }
+    .plan .opts button { padding: 9px 13px; border-radius: 999px; background: #fff; font-family: var(--ko); font-size: 13px; font-weight: 600; box-shadow: inset 0 0 0 1px var(--line-d); }
+    .plan .opts button.on { background: var(--text-d); color: var(--paper); }
+    .plan label { font-family: var(--ko); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .plan input[type="date"] { font: 500 14px var(--sans); padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line-d); background: #fff; color: var(--text-d); }
+    .month { margin: 18px 4px 8px; font-size: 15px; font-weight: 600; color: var(--muted); }
+    .slot { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; padding: 10px 14px 10px 10px; border-radius: 18px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); margin-bottom: 6px; text-align: left; width: 100%; }
+    .slot .d { text-align: center; }
+    .slot .d b { display: block; font-size: 22px; font-weight: 400; line-height: 1; }
+    .slot .d span { font-size: 11px; color: var(--muted); }
+    .slot .x b { display: block; font-family: var(--ko); font-size: 14px; font-weight: 600; }
+    .slot .x b em, .item b em { font-style: normal; color: var(--acc); }
+    .slot .x small { font-size: 12px; color: var(--muted); }
+    .slot.today { box-shadow: inset 0 0 0 2px var(--acc); }
+    .slot.done { opacity: .5; }
+
+    .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 11px 16px; border-radius: 999px; background: var(--acc); color: #141708; font-family: var(--ko); font-weight: 700; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 90; }
     .toast.show { opacity: 1; }
 
-    body.rec { overflow: hidden; }
-    body.rec .stage-wrap { position: fixed; inset: 0; z-index: 50; background: var(--bg); align-items: center; }
-    body.rec .stage { width: min(100vw, calc(100vh * 9 / 16)); border-radius: 0; border: 0; }
-    @supports (height: 100svh) { body.rec .stage { width: min(100vw, calc(100svh * 9 / 16)); } }
-    body.rec.rec-ready .ready { display: grid; }
-    @media (prefers-reduced-motion: reduce) { .pop { animation: none; } }
+    /* 녹화 모드: 화면 전체에 영상만 */
+    body.recmode { overflow: hidden; }
+    body.recmode .player { overflow: hidden; }
+    body.recmode .stage-wrap { position: fixed; inset: 0; z-index: 60; background: linear-gradient(#10120c 50%, #0a0b08 50%); align-items: center; }
+    body.recmode .stage { width: min(100vw, calc(100vh * 9 / 16)); border-radius: 0; box-shadow: none; }
+    @supports (height: 100svh) { body.recmode .stage { width: min(100vw, calc(100svh * 9 / 16)); } }
+    body.recmode.rec-ready .ready { display: grid; }
+    @media (prefers-reduced-motion: reduce) { .player, .sched { transition: none; } }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header>
-      <a class="back" href="../index.html">← GLONOMY</a>
-      <span class="ver">fx-tips / v4</span>
-    </header>
-    <h1><small>GAME FEEL LAB</small>게임 이펙트 TIP</h1>
-    <p class="lead">무기·전투·1대1·1대다수·다대다·격투·슈팅·액션·동작·RPG·전략·시뮬·퍼즐·레이싱·생존·캐주얼·UI·환경까지 18개 분야, 501가지 이펙트. 날것 그대로의 동작에서 시작해 레이어를 하나씩 쌓습니다. 무엇이 손맛을 만드는지 눈으로 확인하고, 코드는 그대로 가져가세요.</p>
-
-    <input class="search" id="search" type="search" placeholder="이펙트 검색 (예: 패링, 드리프트, 콤보)" autocomplete="off" />
-    <nav class="cats" id="cats" aria-label="분야"></nav>
-    <nav class="recipes" id="recipes" aria-label="이펙트 종류"></nav>
-
-    <div class="stage-wrap">
-      <div class="stage" id="stage">
-        <canvas id="cv"></canvas>
-        <div class="ov">
-          <div class="u hd m"><span>FX BREAKDOWN</span><span id="ovIdx"></span></div>
-          <h2 class="u" id="ovTitle"></h2>
-          <div class="u vh tl m" id="ovView">VIEWPORT</div>
-          <div class="u vh tr m" id="ovTime">TIME 1.00×</div>
-          <div class="u vh bl m" id="ovFrame">F 00000</div>
-          <div class="u vh br m" id="ovLayers">LAYERS 0/0</div>
-          <div class="u ab a m">A — RAW</div>
-          <div class="u ab b m" id="ovAB">B — ALL LAYERS</div>
-          <div class="u abnote" id="ovABNote"></div>
-          <div class="u cap"><div class="k m" id="ovKey"></div><p id="ovCap"></p></div>
-          <ol class="u stack" id="ovStack"></ol>
-          <div class="u cta" id="ovCta"></div>
-          <div class="u ft m"><span>glonomy.com/fx-tips</span><span id="ovHint">TAP TO FIRE</span></div>
+  <div class="wrap" id="home">
+    <section class="sheet-top">
+      <div class="bar">
+        <a class="logo" href="../index.html" aria-label="GLONOMY 홈">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4c3 4 3 8 0 11-3-3-3-7 0-11Z" fill="#15160f"/><path d="M5 12c5 0 8 3 9 7-4 1-8-1-9-7Zm22 0c-5 0-8 3-9 7 4 1 8-1 9-7Z" fill="#15160f"/><path d="M7 22c3-2 6-2 9 1 3-3 6-3 9-1-2 4-6 6-9 6s-7-2-9-6Z" fill="#15160f"/></svg>
+        </a>
+        <h1>FX Lab</h1>
+        <button class="icon-btn" id="menuBtn" type="button" aria-label="업로드 일정">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#15160f" stroke-width="1.8" stroke-linecap="round"><path d="M5 9h14M9 15h10"/></svg>
+        </button>
+      </div>
+      <button class="today" id="todayCard" type="button" style="width:100%;text-align:left">
+        <div>
+          <div class="k" id="todayK">Today</div>
+          <div class="ep" id="todayEp">#001<small>/ 539</small></div>
+          <div class="t" id="todayT"></div>
         </div>
-        <div class="ready" id="ready">
-          <code>REC MODE</code>
-          <strong>화면 녹화를 먼저 켜 주세요</strong>
-          <span>준비되면 화면을 탭하세요. 처음부터 끝까지 자동으로 재생됩니다.<br />끝나면 한 번 더 탭해서 나갑니다.</span>
+        <div class="dates" id="dates"></div>
+      </button>
+      <div class="stat">
+        <div>
+          <div class="k">Uploaded so far</div>
+          <div class="v" id="statV">0<small>%</small></div>
+          <svg class="spark" viewBox="0 0 150 34" aria-hidden="true"><path id="sparkP" d="" fill="none" stroke="#15160f" stroke-width="1.6" stroke-linecap="round"/><circle id="sparkC" r="4.5" fill="#fff" stroke="#15160f" stroke-width="1.6"/></svg>
         </div>
+        <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#ececE5" stroke-width="14"/><circle id="ringC" cx="50" cy="50" r="40" fill="none" stroke="#15160f" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 252"/></svg><b id="ringB">0/539</b></div>
       </div>
-    </div>
-
-    <section class="ctrl">
-      <div class="row">
-        <button class="btn primary" id="recBtn" type="button">● 영상용 자동 재생 (녹화 모드)</button>
-      </div>
-      <p class="label">LAYERS — 누르면 그 단계까지 켜집니다</p>
-      <div class="steps" id="steps"></div>
-      <div class="row">
-        <button class="btn" id="autoBtn" type="button" aria-pressed="true">자동 발사</button>
-        <button class="btn" id="soundBtn" type="button" aria-pressed="true">소리</button>
-        <button class="btn" id="splitBtn" type="button" aria-pressed="false">A/B 비교</button>
-        <button class="btn" id="langBtn" type="button">자막: EN</button>
-      </div>
+      <div class="notch" aria-hidden="true"></div>
     </section>
 
-    <section class="code" id="code"></section>
+    <div class="sec"><h2>Collections</h2><span id="totalN"></span></div>
+    <nav class="groups" id="groups" aria-label="분야"></nav>
+    <nav class="subs" id="subs" aria-label="세부 분야"></nav>
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="search" type="search" placeholder="이펙트 검색 (예: 패링, 드리프트, 콤보)" autocomplete="off" /></label>
+    <div class="list" id="list"></div>
+    <button class="more" id="more" type="button" hidden>더 보기</button>
   </div>
-  <div class="toast" id="toast">COPIED</div>
 
-  <script src="engine.js?v=20261018b"></script>
-  <script src="recipes/core.js?v=20261018b"></script>
-  <script src="recipes/weapon.js?v=20261018b"></script>
-  <script src="recipes/combat.js?v=20261018b"></script>
-  <script src="recipes/duel.js?v=20261018b"></script>
-  <script src="recipes/horde.js?v=20261018b"></script>
-  <script src="recipes/army.js?v=20261018b"></script>
-  <script src="recipes/fighting.js?v=20261018b"></script>
-  <script src="recipes/shooter.js?v=20261018b"></script>
-  <script src="recipes/action.js?v=20261018b"></script>
-  <script src="recipes/move.js?v=20261018b"></script>
-  <script src="recipes/rpg.js?v=20261018b"></script>
-  <script src="recipes/strategy.js?v=20261018b"></script>
-  <script src="recipes/sim.js?v=20261018b"></script>
-  <script src="recipes/puzzle.js?v=20261018b"></script>
-  <script src="recipes/racing.js?v=20261018b"></script>
-  <script src="recipes/survival.js?v=20261018b"></script>
-  <script src="recipes/casual.js?v=20261018b"></script>
-  <script src="recipes/ui.js?v=20261018b"></script>
-  <script src="recipes/env.js?v=20261018b"></script>
-  <script src="recipes/spotlight.js?v=20261018c"></script>
-  <script src="recipes/spot-reward.js?v=20261018d"></script>
-  <script src="recipes/spot-combat.js?v=20261018d"></script>
-  <script src="recipes/spot-power.js?v=20261018d"></script>
-  <script src="recipes/spot-casual.js?v=20261018d"></script>
+  <section class="player" id="player" aria-label="이펙트 보기">
+    <div class="pbar">
+      <button class="round" id="closeBtn" type="button" aria-label="목록으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg></button>
+      <div class="mid"><b id="pEp">#001</b><small id="pDate"></small></div>
+      <button class="round" id="nextBtn" type="button" aria-label="다음 편"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button>
+    </div>
+    <div class="pwrap">
+      <div class="stage-wrap">
+        <div class="stage" id="stage">
+          <canvas id="cv"></canvas>
+          <div class="ov">
+            <div class="u o-top"><div class="o-brand"><i></i>FX Lab</div><div class="o-ep" id="ovIdx"></div></div>
+            <h2 class="u" id="ovTitle"></h2>
+            <div class="u o-pill" id="ovPill"><span id="ovKey"></span><b id="ovName"></b></div>
+            <div class="u vh tl m" id="ovView"></div>
+            <div class="u vh tr m" id="ovTime">TIME 1.00×</div>
+            <div class="u vh bl m" id="ovFrame">F 00000</div>
+            <div class="u vh br m" id="ovLayers"></div>
+            <div class="u ab a m">BEFORE · RAW</div>
+            <div class="u ab b m" id="ovAB">AFTER · ALL LAYERS</div>
+            <div class="u o-seg" id="ovSeg"></div>
+            <p class="u o-sub" id="ovCap"></p>
+            <div class="u cta" id="ovCta"></div>
+            <div class="u o-ft"><span>glonomy.com/fx-tips</span><span id="ovHint">TAP TO FIRE</span></div>
+          </div>
+          <div class="ready" id="ready">
+            <code>REC MODE</code>
+            <strong>화면 녹화를 먼저 켜 주세요</strong>
+            <span>준비되면 화면을 탭하세요. 영어 자막과 함께 끝까지 자동으로 재생돼요.<br />끝나면 한 번 더 탭해서 나가요.</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="rec" id="recBtn" type="button">녹화 모드로 재생</button>
+      <div class="duo">
+        <button class="ghost" id="postBtn" type="button">게시글 문구 복사</button>
+        <button class="ghost" id="doneBtn" type="button">올렸어요</button>
+      </div>
+
+      <div class="layers">
+        <div class="hd"><b>Layers</b><span>누르면 그 단계까지 켜져요</span></div>
+        <div class="steps" id="steps"></div>
+      </div>
+      <div class="tools">
+        <button class="tool" id="autoBtn" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg>자동 발사</button>
+        <button class="tool" id="soundBtn" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4h4l5 4V6L8 10H4Zm12-1a4 4 0 0 1 0 6"/></svg>소리</button>
+        <button class="tool" id="splitBtn" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/></svg>전후 비교</button>
+        <button class="tool" id="langBtn" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg><span id="langT">자막 EN</span></button>
+      </div>
+
+      <details class="panel" id="scriptPanel" open>
+        <summary>Voice script <small>녹음할 때 읽을 대본</small></summary>
+        <div class="pbody">
+          <p>녹화 모드 영상의 자막과 똑같은 문장이에요. 시간에 맞춰 읽으면 자막과 목소리가 맞아요.</p>
+          <div class="row"><button class="mini" id="copyScript" type="button">대본 복사</button></div>
+          <div class="script" id="script"></div>
+        </div>
+      </details>
+      <details class="panel" id="codePanel">
+        <summary>Code <small>단계별 코드</small></summary>
+        <div class="pbody" id="code"></div>
+      </details>
+    </div>
+  </section>
+
+  <section class="sched" id="sched" aria-label="업로드 일정">
+    <div class="pbar">
+      <button class="round" id="schedClose" type="button" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg></button>
+      <div class="mid"><b>Upload plan</b><small id="schedSub"></small></div>
+      <span style="width:42px"></span>
+    </div>
+    <div class="pwrap">
+      <div class="plan">
+        <b>올리는 규칙</b>
+        <p id="planText"></p>
+        <div class="opts" id="cadence"></div>
+        <label>시작일 <input type="date" id="startDate" /></label>
+      </div>
+      <div id="slots"></div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="engine.js?v=20261018e"></script>
+  <script src="recipes/core.js?v=20261018e"></script>
+  <script src="recipes/weapon.js?v=20261018e"></script>
+  <script src="recipes/combat.js?v=20261018e"></script>
+  <script src="recipes/duel.js?v=20261018e"></script>
+  <script src="recipes/horde.js?v=20261018e"></script>
+  <script src="recipes/army.js?v=20261018e"></script>
+  <script src="recipes/fighting.js?v=20261018e"></script>
+  <script src="recipes/shooter.js?v=20261018e"></script>
+  <script src="recipes/action.js?v=20261018e"></script>
+  <script src="recipes/move.js?v=20261018e"></script>
+  <script src="recipes/rpg.js?v=20261018e"></script>
+  <script src="recipes/strategy.js?v=20261018e"></script>
+  <script src="recipes/sim.js?v=20261018e"></script>
+  <script src="recipes/puzzle.js?v=20261018e"></script>
+  <script src="recipes/racing.js?v=20261018e"></script>
+  <script src="recipes/survival.js?v=20261018e"></script>
+  <script src="recipes/casual.js?v=20261018e"></script>
+  <script src="recipes/ui.js?v=20261018e"></script>
+  <script src="recipes/env.js?v=20261018e"></script>
+  <script src="recipes/spotlight.js?v=20261018e"></script>
+  <script src="recipes/spot-reward.js?v=20261018e"></script>
+  <script src="recipes/spot-combat.js?v=20261018e"></script>
+  <script src="recipes/spot-power.js?v=20261018e"></script>
+  <script src="recipes/spot-casual.js?v=20261018e"></script>
   <script>
   (() => {
     "use strict";
+    /* ───────── 분류: 큰 묶음 4개 안에 세부 분야 ───────── */
     const CATS = {
-      all: ["ALL", "전체"], weapon: ["WEAPON", "무기"], combat: ["COMBAT", "전투 공통"], duel: ["1 VS 1", "1대1·보스"], horde: ["1 VS MANY", "1대다수"],
-      army: ["MANY VS MANY", "다대다"], fighting: ["FIGHTING", "격투"], shooter: ["SHOOTER", "슈팅"], action: ["ACTION", "액션"], move: ["MOVEMENT", "동작"],
-      rpg: ["RPG", "RPG"], strategy: ["STRATEGY", "전략"], sim: ["SIM", "시뮬·경영"], puzzle: ["PUZZLE", "퍼즐"], racing: ["RACING · SPORTS", "레이싱·스포츠"],
-      survival: ["SURVIVAL · HORROR", "생존·공포"], casual: ["CASUAL", "리듬·캐주얼"], ui: ["UI · REWARD", "UI·보상"], env: ["ENVIRONMENT", "환경"],
+      weapon: ["Weapons", "무기"], combat: ["Combat basics", "전투 기본"], duel: ["1 vs 1 · Boss", "1대1·보스"], horde: ["1 vs Many", "1대다수"],
+      army: ["Many vs Many", "다대다"], fighting: ["Fighting", "격투"], shooter: ["Shooter", "슈팅"], action: ["Action", "액션"], move: ["Movement", "이동·동작"],
+      survival: ["Survival", "생존·공포"], rpg: ["RPG", "RPG"], ui: ["UI · Reward", "UI·보상"], sim: ["Sim · Tycoon", "시뮬·경영"],
+      strategy: ["Strategy", "전략"], puzzle: ["Puzzle", "퍼즐"], racing: ["Racing · Sports", "레이싱·스포츠"], casual: ["Casual · Rhythm", "캐주얼·리듬"], env: ["World", "환경"],
     };
-    const CAT_ORDER = Object.keys(CATS).slice(1);
-    RECIPES.forEach((R, i) => { R._i = i; if (!CATS[R.cat]) R.cat = "combat"; R.steps.forEach(st => { st.param = st.param || ""; }); });
-    RECIPES.sort((a, b) => (CAT_ORDER.indexOf(a.cat) - CAT_ORDER.indexOf(b.cat)) || ((a.ord ?? 999) - (b.ord ?? 999)) || (a._i - b._i));
-    RECIPES.forEach((R, i) => { R.no = i + 1; });
+    const GROUPS = [
+      { id: "fight", en: "Combat", ko: "전투", cats: ["combat", "weapon", "duel", "horde", "army", "fighting"], g1: "#e3ff7a", g2: "#9cc22e", shape: "52% 48% 38% 62%", rot: "-12deg" },
+      { id: "act", en: "Action", ko: "액션·이동", cats: ["action", "shooter", "move", "survival"], g1: "#f5ffb5", g2: "#b6d84a", shape: "40% 60% 55% 45%", rot: "20deg" },
+      { id: "grow", en: "Rewards & UI", ko: "성장·보상·UI", cats: ["ui", "rpg", "sim"], g1: "#d4f75a", g2: "#6f8f1c", shape: "60% 40% 45% 55%", rot: "35deg" },
+      { id: "genre", en: "Genres", ko: "퍼즐·전략·스포츠", cats: ["puzzle", "strategy", "racing", "casual", "env"], g1: "#ebffa0", g2: "#87a827", shape: "45% 55% 60% 40%", rot: "-30deg" },
+    ];
+    const groupOf = c => GROUPS.find(g => g.cats.includes(c)) || GROUPS[0];
     const VIEWS = { side: ["SIDE VIEW", "횡스크롤"], top: ["TOP-DOWN", "탑다운"], iso: ["ISOMETRIC", "쿼터뷰"], "3d": ["3D PERSPECTIVE", "3D"], ui: ["UI", "UI"] };
 
+    RECIPES.forEach((R, i) => { R._i = i; if (!CATS[R.cat]) R.cat = "combat"; R.steps.forEach(st => { st.param = st.param || ""; }); });
 
-    /* ───────── 화면 / 앱 ───────── */
+    /* ───────── 업로드 순서: 쇼케이스 먼저, 묶음을 번갈아 ───────── */
+    const isShow = r => r.id.startsWith("spot-");
+    const queues = GROUPS.map(g => {
+      const rs = RECIPES.filter(r => g.cats.includes(r.cat));
+      const order = c => g.cats.indexOf(c);
+      return rs.sort((a, b) => (isShow(b) - isShow(a)) || ((a.ord ?? 999) - (b.ord ?? 999)) || (order(a.cat) - order(b.cat)) || (a._i - b._i));
+    });
+    // 같은 세부 분야가 연달아 나오지 않게 묶음 안에서도 분야를 번갈아 꺼냄
+    const interleave = list => {
+      const by = {}; list.forEach(r => (by[r.cat] = by[r.cat] || []).push(r));
+      const show = list.filter(isShow), rest = {}; Object.keys(by).forEach(k => (rest[k] = by[k].filter(r => !isShow(r))));
+      const out = [...show], keys = Object.keys(rest);
+      while (keys.some(k => rest[k].length)) for (const k of keys) if (rest[k].length) out.push(rest[k].shift());
+      return out;
+    };
+    const Q = queues.map(interleave);
+    const ORDER = [];
+    while (Q.some(q => q.length)) for (const q of Q) if (q.length) ORDER.push(q.shift());
+    // 맨 앞은 가장 화려한 두 편
+    for (const id of ["spot-death-pop", "spot-loot-reveal"].reverse()) { const k = ORDER.findIndex(r => r.id === id); if (k > 0) ORDER.unshift(ORDER.splice(k, 1)[0]); }
+    ORDER.forEach((r, i) => { r.ep = i + 1; });
+    RECIPES.sort((a, b) => a.ep - b.ep);
+    RECIPES.forEach((R, i) => { R.no = R.ep; });
+    const TOTAL = RECIPES.length;
+
+    /* ───────── 상태 ───────── */
     const $ = id => document.getElementById(id);
-    const stage = $("stage"), cv = $("cv"), ctx = cv.getContext("2d");
-    const VIEW_MAIN = { x: 0, y: 186, s: 1, r: [20, 190, 500, 360] };
-    const VIEW_A = { x: 54, y: 184, s: 0.8, r: [20, 190, 500, 300] };
-    const VIEW_B = { x: 54, y: 504, s: 0.8, r: [20, 510, 500, 300] };
-    const UI = {
-      ko: { cta: ["SOURCE CODE", "댓글에 <em>FX</em>", "레이어별 코드 전체를 DM으로 보내드려요.", "다음 게임 만들 때 쓰게 저장해 두세요."],
-            base: "0단계 — 날것 그대로", ab: n => `같은 장면, 같은 타이밍.<br>달라진 건 <em>레이어 ${n}개</em>뿐이에요.` },
-      en: { cta: ["SOURCE CODE", "Comment <em>FX</em>", "I'll DM you the full source, layer by layer.", "Save this for your next game."],
-            base: "STEP 0 — RAW", ab: n => `Same scene. Same timing.<br>The only difference: <em>${n} layers</em>.` },
+    const store = {
+      get(k, d) { try { const v = localStorage.getItem("fxlab-" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+      set(k, v) { try { localStorage.setItem("fxlab-" + k, JSON.stringify(v)); } catch (e) {} },
     };
-
     const app = {
-      ri: 0, cat: "all", q: "", n: 0, lang: "en", auto: true, mute: false, split: false,
-      mode: "browse", playing: false, ended: false, segs: [], si: 0, segT: 0, autoT: 0, worlds: [],
+      ri: 0, group: store.get("group", "all"), cat: "all", q: "", n: 0, lang: store.get("lang", "en"), auto: true, mute: store.get("mute", false), split: false,
+      mode: "browse", playing: false, ended: false, segs: [], si: 0, segT: 0, autoT: 0, worlds: [], capT: 0, shown: 40,
+      posted: new Set(store.get("posted", [])), cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-20"),
     };
-    window.app = app; // 엔진(소리 끄기)에서 참조
-    try {
-      app.lang = localStorage.getItem("fxtip-lang") || "en";
-      app.mute = localStorage.getItem("fxtip-mute") === "1";
-    } catch (e) {}
-
+    window.app = app;
     const R = () => RECIPES[app.ri];
+
+    /* ───────── 일정 계산 ───────── */
+    const CAD = {
+      daily: { ko: "매일", days: [0, 1, 2, 3, 4, 5, 6] },
+      week5: { ko: "주 5회 (월~금)", days: [1, 2, 3, 4, 5] },
+      week3: { ko: "주 3회 (월·수·금)", days: [1, 3, 5] },
+    };
+    const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const DOWK = ["일", "월", "화", "수", "목", "금", "토"];
+    let DATES = [];
+    function buildDates() {
+      const days = CAD[app.cadence].days, [y, m, d] = app.start.split("-").map(Number);
+      const t = new Date(y, m - 1, d); DATES = [];
+      while (DATES.length < TOTAL) { if (days.includes(t.getDay())) DATES.push(new Date(t)); t.setDate(t.getDate() + 1); }
+    }
+    const dateOf = r => DATES[r.ep - 1];
+    const fmtD = d => `${d.getMonth() + 1}월 ${d.getDate()}일 (${DOWK[d.getDay()]})`;
+    const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    function todayIdx() {
+      const now = new Date(); now.setHours(0, 0, 0, 0);
+      const k = DATES.findIndex(d => d >= now);
+      return k < 0 ? TOTAL - 1 : k;
+    }
+
+    /* ───────── 영상 화면 ───────── */
+    const stage = $("stage"), cv = $("cv"), ctx = cv.getContext("2d");
+    const VIEW_MAIN = { x: 0, y: 220, s: 1, r: [20, 224, 500, 352] };
+    const VIEW_A = { x: 59, y: 222, s: 0.78, r: [20, 226, 500, 268] };
+    const VIEW_B = { x: 59, y: 512, s: 0.78, r: [20, 516, 500, 268] };
+    const WPS = 3.1; // 자막 속도(초당 단어)
+
     function makeWorlds(split, n) {
-      app.worlds = split
-        ? [new World(R(), 0, VIEW_A, true), new World(R(), R().steps.length, VIEW_B)]
-        : [new World(R(), n, VIEW_MAIN)];
+      app.worlds = split ? [new World(R(), 0, VIEW_A, true), new World(R(), R().steps.length, VIEW_B)] : [new World(R(), n, VIEW_MAIN)];
     }
     function fireAll() { for (const w of app.worlds) w.R.fire(w); }
-    function fmt(s) { return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])).replace(/\*(.+?)\*/g, "<em>$1</em>"); }
-    function plain(s) { return String(s).replace(/\*/g, ""); }
-    function repop(el) { el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+    const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    const fmt = s => esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>");
+    const plain = s => String(s).replace(/\*/g, "");
+    const words = s => plain(s).trim().split(/\s+/).filter(Boolean).length;
 
-    let lastKey = "";
+    const CTA = {
+      en: { sub: "Comment *FX* and I'll send you the code.", t: "Want the source?", q: "Comment <em>FX</em>", c: "Every layer, ready to paste." },
+      ko: { sub: "댓글에 *FX* 남기면 코드 보내 드려요.", t: "코드가 필요하면", q: "댓글 <em>FX</em>", c: "단계별 코드 전부 보내 드려요." },
+    };
+    const SPLIT = { en: n => `Same scene. Only *${n} layers* changed.`, ko: n => `같은 장면, 바뀐 건 *레이어 ${n}개*뿐이에요.` };
+
+    // 한 구간의 자막 문장
+    function segText(seg, L) {
+      const r = R();
+      if (seg.k === "intro") return r.intro[L];
+      if (seg.k === "step") return r.steps[seg.n - 1].cap[L];
+      if (seg.k === "split") return SPLIT[L](r.steps.length);
+      return CTA[L].sub;
+    }
+    // 단어 단위 자막: *강조* 단어는 라임색
+    function subHTML(text) {
+      let em = false;
+      return text.trim().split(/\s+/).map((tok, i) => {
+        const open = tok.startsWith("*"), close = tok.replace(/[.,!?…]+$/, "").endsWith("*");
+        if (open) em = true;
+        const cls = em ? "w em" : "w";
+        if (close) em = false;
+        return `<span class="${cls}" data-i="${i}">${esc(tok.replace(/\*/g, ""))}</span>`;
+      }).join(" ");
+    }
+
+    let lastKey = "", subSpans = [];
     function renderOverlay(seg) {
-      const r = R(), L = app.lang, N = r.steps.length, u = UI[L];
-      const pad = x => String(x).padStart(2, "0");
-      $("ovIdx").textContent = `${CATS[r.cat][0]} · ${String(r.no).padStart(3, "0")}`;
+      const r = R(), L = app.mode === "rec" ? "en" : app.lang, N = r.steps.length, pad = x => String(x).padStart(2, "0");
+      $("ovIdx").textContent = `#${String(r.ep).padStart(3, "0")}`;
       $("ovView").textContent = (VIEWS[r.view] || VIEWS.side)[0];
       $("ovTitle").innerHTML = fmt(r.title[L]);
       stage.classList.toggle("split", seg.k === "split");
       stage.classList.toggle("cta-on", seg.k === "cta");
       const n = seg.k === "intro" ? 0 : seg.k === "step" ? seg.n : N;
-      const key = $("ovKey"), cap = $("ovCap");
-      if (seg.k === "step") {
-        const st = r.steps[seg.n - 1];
-        key.textContent = `${pad(seg.n)}/${pad(N)} · ${plain(st.name[L]).toUpperCase()}`;
-        cap.innerHTML = fmt(st.cap[L]);
-      } else if (seg.k === "intro") {
-        key.textContent = u.base;
-        cap.innerHTML = fmt(r.intro[L]);
-      }
-      $("ovStack").innerHTML = r.steps.map((st, i) => {
-        const on = i < n, cur = seg.k === "step" && i + 1 === n;
-        return `<li class="${on ? "on" : ""}${cur ? " cur" : ""}"><i>${pad(i + 1)}</i><b>${plain(st.name[L])}</b><em>${st.param || ""}</em><s>${on ? "ON" : "—"}</s></li>`;
-      }).join("");
-      $("ovLayers").textContent = `LAYERS ${n}/${N}`;
-      $("ovAB").textContent = `B — ALL ${N} LAYERS`;
-      $("ovABNote").innerHTML = u.ab(N);
-      $("ovCta").innerHTML = `<div class="t m">${u.cta[0]}</div><div class="q">${u.cta[1]}</div><div class="c">${u.cta[2]}</div><div class="s">${u.cta[3]}</div>`;
+      const pill = $("ovPill");
+      pill.classList.toggle("raw", n === 0);
+      if (seg.k === "step") { $("ovKey").textContent = `STEP ${seg.n}`; $("ovName").textContent = plain(r.steps[seg.n - 1].name.en); }
+      else if (seg.k === "intro") { $("ovKey").textContent = "STEP 0"; $("ovName").textContent = "Raw"; }
+      $("ovSeg").innerHTML = r.steps.map((s, i) => `<i class="${i < n - (seg.k === "step" ? 1 : 0) ? "on" : ""}${seg.k === "step" && i === n - 1 ? " cur" : ""}"></i>`).join("");
+            $("ovLayers").textContent = `LAYERS ${n}/${N}`;
+      $("ovAB").textContent = `AFTER · ${N} LAYERS`;
+      $("ovCta").innerHTML = `<div class="t">${CTA[L].t}</div><div class="q">${CTA[L].q}</div><div class="c">${CTA[L].c}</div>`;
       $("ovHint").textContent = app.mode === "rec" ? "" : "TAP TO FIRE";
-      const k = r.id + seg.k + seg.n + L;
-      if (k !== lastKey) { lastKey = k; repop(key); repop(cap); }
+      const key = r.id + seg.k + seg.n + L;
+      if (key !== lastKey) {
+        lastKey = key;
+        const cap = $("ovCap");
+        cap.classList.toggle("ko", L === "ko");
+        cap.innerHTML = subHTML(segText(seg, L));
+        subSpans = [...cap.querySelectorAll(".w")];
+        app.capT = 0;
+      }
+    }
+    // 자막을 한 단어씩 켬 + 진행 막대
+    function tickSub(dt) {
+      app.capT += dt;
+      const k = Math.floor(app.capT * WPS + 1);
+      for (let i = 0; i < subSpans.length; i++) if (i < k && !subSpans[i].classList.contains("in")) subSpans[i].classList.add("in");
+      const cur = $("ovSeg").querySelector(".cur");
+      if (cur) {
+        const seg = app.mode === "rec" && app.playing ? app.segs[app.si] : null;
+        cur.style.setProperty("--p", seg ? Math.min(1, app.segT / seg.dur) : 1);
+      }
     }
     let hudT = "", hudF = "";
     function updateHud() {
@@ -358,14 +601,17 @@
       const f = "F " + String(w.frames || 0).padStart(5, "0");
       if (f !== hudF) { hudF = f; $("ovFrame").textContent = f; }
     }
-    function browseSeg() { return app.split ? { k: "split" } : app.n ? { k: "step", n: app.n } : { k: "intro", n: 0 }; }
+    const browseSeg = () => (app.split ? { k: "split" } : app.n ? { k: "step", n: app.n } : { k: "intro", n: 0 });
 
-    /* 녹화 모드 타임라인 */
-    function buildSegs() {
-      const r = R(), segs = [{ k: "intro", n: 0, dur: 3.6 }];
-      r.steps.forEach((s, i) => segs.push({ k: "step", n: i + 1, dur: r.stepDur }));
-      segs.push({ k: "split", dur: 5.4 });
-      segs.push({ k: "cta", n: r.steps.length, dur: 3.8 });
+    /* 녹화 타임라인: 자막 길이에 맞춰 구간 길이를 늘림 */
+    function buildSegs(r = R()) {
+      const L = "en", segs = [];
+      const fit = (min, text) => Math.max(min, words(text) / WPS + 1.4);
+      segs.push({ k: "intro", n: 0, dur: fit(3.4, r.intro[L]) });
+      r.steps.forEach((s, i) => segs.push({ k: "step", n: i + 1, dur: fit(r.stepDur, s.cap[L]) }));
+      segs.push({ k: "split", dur: fit(5, SPLIT[L](r.steps.length)) });
+      segs.push({ k: "cta", n: r.steps.length, dur: fit(3.6, CTA[L].sub) });
+      let t = 0; segs.forEach(s => { s.t = t; t += s.dur; });
       return segs;
     }
     function enterSeg(seg) {
@@ -373,13 +619,13 @@
       else if (app.worlds.length !== 1 || seg.k === "intro" || seg.k === "cta") makeWorlds(false, seg.n);
       else app.worlds[0].setN(seg.n);
       if (seg.k === "step") { const s = R().steps[seg.n - 1]; if (s.enter) s.enter(app.worlds[0]); }
-      app.autoT = R().interval; // 단계가 바뀌면 바로 한 번 실행
+      app.autoT = R().interval;
       renderOverlay(seg);
     }
     function startRec() {
       app.mode = "rec"; app.playing = false; app.ended = false;
-      document.body.classList.add("rec", "rec-ready");
-      makeWorlds(false, 0); renderOverlay({ k: "intro", n: 0 });
+      document.body.classList.add("recmode", "rec-ready");
+      makeWorlds(false, 0); lastKey = ""; renderOverlay({ k: "intro", n: 0 });
       layout();
     }
     function beginPlayback() {
@@ -390,31 +636,32 @@
     }
     function exitRec() {
       app.mode = "browse"; app.playing = false; app.ended = false;
-      document.body.classList.remove("rec", "rec-ready");
-      makeWorlds(app.split, app.n); renderOverlay(browseSeg());
+      document.body.classList.remove("recmode", "rec-ready");
+      makeWorlds(app.split, app.n); lastKey = ""; renderOverlay(browseSeg());
       layout();
     }
 
-    /* 레이아웃 */
     const DPR = () => Math.min(window.devicePixelRatio || 1, 2.5);
-    let scale = 1;
     function layout() {
-      const rect = stage.getBoundingClientRect();
-      if (!rect.width) return;
-      scale = rect.width / 540;
-      stage.style.setProperty("--u", scale + "px");
-      cv.width = Math.round(rect.width * DPR());
-      cv.height = Math.round(rect.height * DPR());
+      const rect = stage.getBoundingClientRect(); if (!rect.width) return;
+      stage.style.setProperty("--u", rect.width / 540 + "px");
+      cv.width = Math.round(rect.width * DPR()); cv.height = Math.round(rect.height * DPR());
     }
     window.addEventListener("resize", layout);
 
-    /* 배경 */
     function drawBg() {
-      ctx.fillStyle = "#0b0c0f"; ctx.fillRect(0, 0, 540, 960);
+      const g = ctx.createLinearGradient(0, 0, 0, 960);
+      g.addColorStop(0, "#10120c"); g.addColorStop(1, "#0a0b08");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, 540, 960);
+      // 뷰포트 카드
+      ctx.save();
+      const rr2 = (x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
+      const box = r => { rr2(r[0], r[1], r[2], r[3], 22); ctx.strokeStyle = "rgba(255,255,255,0.07)"; ctx.lineWidth = 1.5; ctx.stroke(); };
+      for (const w of app.worlds) box(w.view.r);
+      ctx.restore();
     }
 
-    /* 루프 */
-    let last = performance.now();
+    let last = performance.now(), running = false;
     function frame(now) {
       const dt = Math.min(0.05, (now - last) / 1000); last = now; frameNo++;
       if (app.mode === "rec" && app.playing && !app.ended) {
@@ -425,45 +672,113 @@
           else enterSeg(app.segs[app.si]);
         }
       }
-      const autoOn = app.mode === "rec" ? app.playing : app.auto;
-      if (autoOn) { app.autoT += dt; if (app.autoT >= R().interval) { app.autoT = 0; fireAll(); } }
-      for (const w of app.worlds) w.update(dt);
-
-      const k = (cv.width / 540);
-      ctx.setTransform(k, 0, 0, k, 0, 0);
-      drawBg();
-      for (const w of app.worlds) w.draw(ctx);
-      updateHud();
+      const live = app.mode === "rec" || $("player").classList.contains("open");
+      if (live) {
+        const autoOn = app.mode === "rec" ? app.playing : app.auto;
+        if (autoOn) { app.autoT += dt; if (app.autoT >= R().interval) { app.autoT = 0; fireAll(); } }
+        for (const w of app.worlds) w.update(dt);
+        const k = cv.width / 540;
+        ctx.setTransform(k, 0, 0, k, 0, 0);
+        drawBg();
+        // 둥근 뷰포트 안에만 그림
+        for (const w of app.worlds) {
+          ctx.save(); ctx.beginPath(); ctx.roundRect(w.view.r[0], w.view.r[1], w.view.r[2], w.view.r[3], 22); ctx.clip();
+          w.draw(ctx); ctx.restore();
+        }
+        tickSub(dt); updateHud();
+      }
       requestAnimationFrame(frame);
     }
 
-    /* 조작부 */
-    function renderRecipes() {
-      $("cats").innerHTML = Object.keys(CATS).map(k => {
-        const n = k === "all" ? RECIPES.length : RECIPES.filter(r => r.cat === k).length;
-        return `<button type="button" class="cat${app.cat === k ? " active" : ""}" data-c="${k}">${CATS[k][1]}<small>${n}</small></button>`;
+    /* ───────── 홈 ───────── */
+    function renderHome() {
+      buildDates();
+      const ti = todayIdx(), tr = RECIPES[ti], now = new Date(); now.setHours(0, 0, 0, 0);
+      const isToday = sameDay(DATES[ti], now);
+      $("todayK").textContent = isToday ? "Today's upload · " + fmtD(DATES[ti]) : "Next upload · " + fmtD(DATES[ti]);
+      $("todayEp").innerHTML = `#${String(tr.ep).padStart(3, "0")}<small>/ ${TOTAL}</small>`;
+      $("todayT").innerHTML = fmt(tr.title.ko);
+      $("todayCard").dataset.i = ti;
+      $("dates").innerHTML = [0, 1, 2, 3].map(k => {
+        const r = RECIPES[ti + k]; if (!r) return "";
+        const d = DATES[ti + k];
+        return `<div class="date${k === 0 ? " now" : ""}${app.posted.has(r.id) ? " done" : ""}"><b>${d.getDate()}</b><span>${DOW[d.getDay()].toLowerCase()}</span><i></i></div>`;
       }).join("");
-      const q = app.q.trim().toLowerCase();
-      const hit = r => !q || (plain(r.title.ko) + " " + plain(r.title.en) + " " + r.steps.map(s => s.name.ko + " " + s.name.en).join(" ")).toLowerCase().includes(q);
-      const html = RECIPES.map((r, i) => ((q ? hit(r) : (app.cat === "all" || r.cat === app.cat)))
-        ? `<button type="button" class="rc${i === app.ri ? " active" : ""}" data-i="${i}"><b>${String(r.no).padStart(3, "0")} · ${(VIEWS[r.view] || VIEWS.side)[1]}</b>${plain(r.title.ko)}</button>` : "").join("");
-      $("recipes").innerHTML = html || `<div class="empty">찾는 이펙트가 없어요.</div>`;
+      const p = app.posted.size, pct = Math.round((p / TOTAL) * 100);
+      $("statV").innerHTML = `${p}<small>편 · ${pct}%</small>`;
+      $("ringB").textContent = `${p}/${TOTAL}`;
+      $("ringC").setAttribute("stroke-dasharray", `${(p / TOTAL) * 251.3} 252`);
+      // 지난 8주 업로드 흐름
+      const weeks = Array.from({ length: 8 }, (_, w) => {
+        const a = new Date(now); a.setDate(a.getDate() - (7 - w) * 7);
+        return RECIPES.filter(r => app.posted.has(r.id) && dateOf(r) <= a).length;
+      });
+      const mx = Math.max(1, ...weeks), pts = weeks.map((v, i) => [6 + i * 19, 28 - (v / mx) * 22]);
+      $("sparkP").setAttribute("d", pts.map((q, i) => (i ? "S" + (q[0] - 8) + "," + q[1] + " " : "M") + q[0] + "," + q[1]).join(" "));
+      $("sparkC").setAttribute("cx", pts[7][0]); $("sparkC").setAttribute("cy", pts[7][1]);
+      $("totalN").textContent = `${TOTAL} effects`;
+      renderGroups(); renderList();
     }
-    function renderSteps() {
-      const r = R();
-      const chips = [`<button type="button" class="chip${app.n === 0 ? " cur" : " on"}" data-n="0"><i>00</i><span>날것 그대로</span><em>RAW</em></button>`]
-        .concat(r.steps.map((s, i) => {
-          const n = i + 1, cls = n === app.n ? " cur" : n < app.n ? " on" : "";
-          return `<button type="button" class="chip${cls}" data-n="${n}"><i>${String(n).padStart(2, "0")}</i><span>${s.name.ko}</span><em>${s.param || ""}</em></button>`;
-        }));
-      $("steps").innerHTML = chips.join("");
-      $("autoBtn").setAttribute("aria-pressed", app.auto);
-      $("soundBtn").setAttribute("aria-pressed", !app.mute);
-      $("soundBtn").textContent = app.mute ? "소리 꺼짐" : "소리";
-      $("splitBtn").setAttribute("aria-pressed", app.split);
-      $("langBtn").textContent = "자막: " + (app.lang === "en" ? "EN" : "한글");
+    function renderGroups() {
+      $("groups").innerHTML = GROUPS.map(g => {
+        const n = RECIPES.filter(r => g.cats.includes(r.cat)).length;
+        return `<button type="button" class="grp${app.group === g.id ? " on" : ""}" data-g="${g.id}" style="--g1:${g.g1};--g2:${g.g2};--shape:${g.shape};--rot:${g.rot}"><span class="go"></span><b>${g.en}</b><small class="ko">${g.ko} · ${n}</small></button>`;
+      }).join("");
+      const g = GROUPS.find(x => x.id === app.group);
+      const subs = g ? [["all", "전체", RECIPES.filter(r => g.cats.includes(r.cat)).length]].concat(g.cats.map(c => [c, CATS[c][1], RECIPES.filter(r => r.cat === c).length])) : [["all", "모든 이펙트", TOTAL]];
+      $("subs").innerHTML = subs.map(([k, label, n]) => `<button type="button" class="sub${app.cat === k ? " on" : ""}" data-c="${k}">${label}<small>${n}</small></button>`).join("");
+    }
+    function filtered() {
+      const q = app.q.trim().toLowerCase(), g = GROUPS.find(x => x.id === app.group);
+      return RECIPES.map((r, i) => [r, i]).filter(([r]) => {
+        if (q) return (plain(r.title.ko) + " " + plain(r.title.en) + " " + CATS[r.cat][1] + " " + r.steps.map(s => s.name.ko + " " + s.name.en).join(" ")).toLowerCase().includes(q);
+        if (g && !g.cats.includes(r.cat)) return false;
+        return app.cat === "all" || r.cat === app.cat;
+      });
+    }
+    function renderList() {
+      const rows = filtered(), show = rows.slice(0, app.shown);
+      $("list").innerHTML = show.length ? show.map(([r, i]) => {
+        const g = groupOf(r.cat), d = dateOf(r), done = app.posted.has(r.id);
+        return `<button type="button" class="item" data-i="${i}"><span class="thumb" style="--g1:${g.g1}"><span>#${String(r.ep).padStart(3, "0")}</span></span><span><b>${fmt(r.title.ko)}</b><small class="ko">${CATS[r.cat][1]} · ${(VIEWS[r.view] || VIEWS.side)[1]} · 레이어 ${r.steps.length}</small></span><span class="st${done ? " done" : ""}">${done ? "올림" : `${d.getMonth() + 1}/${d.getDate()}`}</span></button>`;
+      }).join("") : `<div class="empty">찾는 이펙트가 없어요.</div>`;
+      $("more").hidden = rows.length <= app.shown;
     }
 
+    /* ───────── 플레이어 ───────── */
+    function renderSteps() {
+      const r = R();
+      const chip = (n, name, param) => {
+        const cls = n === app.n ? " cur" : n < app.n ? " on" : "";
+        return `<button type="button" class="chip${cls}" data-n="${n}"><i>${n}</i><span>${name}</span><em>${esc(param)}</em></button>`;
+      };
+      $("steps").innerHTML = [chip(0, "날것 그대로", "RAW")].concat(r.steps.map((s, i) => chip(i + 1, esc(s.name.ko), s.param || ""))).join("");
+      $("autoBtn").setAttribute("aria-pressed", app.auto);
+      $("soundBtn").setAttribute("aria-pressed", !app.mute);
+      $("splitBtn").setAttribute("aria-pressed", app.split);
+      $("langT").textContent = app.lang === "en" ? "자막 EN" : "자막 한글";
+      $("langBtn").setAttribute("aria-pressed", app.lang === "ko");
+    }
+    const mmss = t => `${String(Math.floor(t / 60)).padStart(1, "0")}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+    function scriptLines(r = R()) {
+      return buildSegs(r).map(s => {
+        const label = s.k === "intro" ? "Raw" : s.k === "step" ? `Step ${s.n} · ${plain(r.steps[s.n - 1].name.en)}` : s.k === "split" ? "Before / After" : "Outro";
+        const save = app.ri; app.ri = RECIPES.indexOf(r);
+        const en = plain(segText(s, "en")), ko = plain(segText(s, "ko"));
+        app.ri = save;
+        return { t: s.t, label, en, ko };
+      });
+    }
+    function renderScript() {
+      const ls = scriptLines(), total = buildSegs().reduce((a, s) => a + s.dur, 0);
+      $("script").innerHTML = ls.map(l => `<div class="line"><time>${mmss(l.t)}</time><div>${esc(l.en)}<small>${esc(l.label)} · ${esc(l.ko)}</small></div></div>`).join("")
+        + `<div class="line"><time>${mmss(total)}</time><div><small>끝 · 영상 길이 약 ${Math.round(total)}초</small></div></div>`;
+    }
+    const scriptText = () => scriptLines().map(l => `[${mmss(l.t)}] ${l.en}`).join("\n");
+    function postText(r = R()) {
+      const tags = ["#gamedev", "#indiedev", "#gamefeel", "#vfx", "#gamedesign", "#" + CATS[r.cat][0].split(/[\s·]+/)[0].toLowerCase()];
+      return `${plain(r.title.en)} 🎮\n\n${plain(r.intro.en)}\n` + r.steps.map((s, i) => `${i + 1}. ${plain(s.name.en)} — ${plain(s.cap.en)}`).join("\n") + `\n\n💬 Comment "FX" and I'll DM you the full code.\n📌 Save this for your next game.\n\n${tags.join(" ")}`;
+    }
     function dedent(src) {
       const lines = src.split("\n");
       const ind = lines.slice(1).filter(l => l.trim()).reduce((m, l) => Math.min(m, l.match(/^\s*/)[0].length), 99);
@@ -480,75 +795,101 @@
     const engineCode = () => "// 엔진: w.spawn / w.shake / w.hitstop / w.slowmo / w.flash / w.after / w.tween …\n" + dedent(World.toString());
     function renderCode() {
       const r = R();
-      const blocks = r.steps.map((s, i) => `
-        <div class="cs">
-          <div class="cs-h"><b>${String(i + 1).padStart(2, "0")}</b><span>${s.name.ko} <small>· ${s.name.en}</small></span><button type="button" class="copy" data-copy="s${i}">복사</button></div>
-          <pre>${fmt(stepCode(s, i)).replace(/<em>|<\/em>/g, "*")}</pre>
-        </div>`).join("");
       $("code").innerHTML = `
-        <h2>코드</h2>
-        <p>단계마다 들어간 코드 그대로입니다. 함수 이름이 그 순간이에요 — <b>fire</b>는 쏠 때, <b>hit</b>는 맞을 때, <b>kill</b>은 쓰러질 때, <b>update</b>는 매 프레임.</p>
-        <div class="row" style="margin-bottom:10px">
-          <button type="button" class="btn" data-copy="all">이 레시피 전체 복사</button>
-          <button type="button" class="btn" data-copy="engine">엔진 코드 복사</button>
-        </div>
-        ${blocks}
-        <details class="cs"><summary class="cs-h"><b>ENG</b><span>엔진 (World) <small>· spawn·shake·hitstop 등</small></span></summary><pre>${fmt(engineCode()).replace(/<em>|<\/em>/g, "*")}</pre></details>`;
+        <p>단계마다 들어간 코드 그대로예요. 함수 이름이 그 순간이에요. <b>fire</b>는 쏠 때, <b>hit</b>는 맞을 때, <b>kill</b>은 쓰러질 때, <b>update</b>는 매 프레임.</p>
+        <div class="row"><button type="button" class="mini" data-copy="all">레시피 전체 복사</button><button type="button" class="mini" data-copy="engine">엔진 코드 복사</button></div>
+        ${r.steps.map((s, i) => `<div class="cs"><div class="cs-h"><b>${String(i + 1).padStart(2, "0")}</b><span>${esc(s.name.ko)} <small>· ${esc(s.name.en)}</small></span><button type="button" class="mini" data-copy="s${i}">복사</button></div><pre>${esc(stepCode(s, i))}</pre></div>`).join("")}`;
     }
-    function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1300); }
-    function copyText(text) {
-      const done = () => toast("COPIED");
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback());
-      else fallback();
-      function fallback() {
-        const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
-        document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (e) {} ta.remove();
-      }
+    function renderPlayerHead() {
+      const r = R(), d = dateOf(r);
+      $("pEp").textContent = `#${String(r.ep).padStart(3, "0")} · ${CATS[r.cat][1]}`;
+      $("pDate").textContent = `${fmtD(d)} 업로드`;
+      const done = app.posted.has(r.id);
+      $("doneBtn").textContent = done ? "올림 ✓" : "올렸어요";
+      $("doneBtn").classList.toggle("done", done);
+    }
+    function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1400); }
+    function copyText(text, msg = "복사했어요") {
+      const done = () => toast(msg);
+      const fallback = () => { const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (e) {} ta.remove(); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
     }
 
-    function selectRecipe(i) {
+    function selectRecipe(i, open) {
       app.ri = i; app.n = 0;
       try { history.replaceState(null, "", "#" + R().id); } catch (e) {}
-      makeWorlds(app.split, app.n);
-      renderRecipes(); renderSteps(); renderCode(); renderOverlay(browseSeg());
-      const b = $("recipes").querySelector(".rc.active"); if (b && b.scrollIntoView) b.scrollIntoView({ inline: "center", block: "nearest" });
+      makeWorlds(app.split, app.n); lastKey = "";
+      renderSteps(); renderCode(); renderScript(); renderPlayerHead(); renderOverlay(browseSeg());
+      if (open) openPlayer();
     }
+    function openPlayer() { $("player").classList.add("open"); requestAnimationFrame(layout); }
+    function closePlayer() { $("player").classList.remove("open"); try { history.replaceState(null, "", location.pathname); } catch (e) {} renderHome(); }
     function setN(n) {
       app.n = n;
-      if (app.split) { app.split = false; makeWorlds(false, n); }
-      else app.worlds[0].setN(n);
+      if (app.split) { app.split = false; makeWorlds(false, n); } else app.worlds[0].setN(n);
       const s = R().steps[n - 1]; if (s && s.enter) s.enter(app.worlds[0]);
       app.autoT = R().interval * 0.6;
       renderSteps(); renderOverlay(browseSeg());
     }
 
+    /* ───────── 일정 화면 ───────── */
+    function renderSched() {
+      buildDates();
+      const last = DATES[TOTAL - 1], ti = todayIdx(), now = new Date(); now.setHours(0, 0, 0, 0);
+      $("schedSub").textContent = `${TOTAL}편 · ${CAD[app.cadence].ko}`;
+      $("planText").innerHTML = `${CAD[app.cadence].ko}, 오전 9시(한국 시간)에 한 편씩 올려요. 미국 동부 기준 전날 저녁 8시라, 영어권 사람들이 많이 보는 시간대예요. 이대로면 <b>${last.getFullYear()}년 ${last.getMonth() + 1}월 ${last.getDate()}일</b>에 ${TOTAL}편을 다 올려요.`;
+      $("cadence").innerHTML = Object.keys(CAD).map(k => `<button type="button" data-k="${k}" class="${app.cadence === k ? "on" : ""}">${CAD[k].ko}</button>`).join("");
+      $("startDate").value = app.start;
+      let html = "", mon = "";
+      RECIPES.forEach((r, i) => {
+        const d = DATES[i], m = `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
+        if (m !== mon) { mon = m; html += `<div class="month">${m}</div>`; }
+        const done = app.posted.has(r.id);
+        html += `<button type="button" class="slot${i === ti && sameDay(d, now) ? " today" : ""}${done ? " done" : ""}" data-i="${i}"><span class="d"><b>${d.getDate()}</b><span>${DOWK[d.getDay()]}</span></span><span class="x"><b>${fmt(r.title.ko)}</b><small>#${String(r.ep).padStart(3, "0")} · ${CATS[r.cat][1]}</small></span><span class="mini">${done ? "올림" : "보기"}</span></button>`;
+      });
+      $("slots").innerHTML = html;
+      const t = $("slots").querySelector(".slot.today") || $("slots").querySelectorAll(".slot")[ti];
+      if (t) setTimeout(() => t.scrollIntoView({ block: "center" }), 60);
+    }
+
+    /* ───────── 이벤트 ───────── */
     document.addEventListener("pointerdown", audioInit, { capture: true });
-    $("recipes").addEventListener("click", e => { const b = e.target.closest(".rc"); if (b) selectRecipe(+b.dataset.i); });
-    $("search").addEventListener("input", e => { app.q = e.target.value; renderRecipes(); });
-    $("cats").addEventListener("click", e => {
-      const b = e.target.closest(".cat"); if (!b) return;
-      app.cat = b.dataset.c;
-      const first = RECIPES.findIndex(r => app.cat === "all" || r.cat === app.cat);
-      if (app.cat !== "all" && R().cat !== app.cat && first >= 0) selectRecipe(first); else renderRecipes();
+    $("groups").addEventListener("click", e => {
+      const b = e.target.closest(".grp"); if (!b) return;
+      app.group = app.group === b.dataset.g ? "all" : b.dataset.g; app.cat = "all"; app.shown = 40; store.set("group", app.group);
+      renderGroups(); renderList();
     });
+    $("subs").addEventListener("click", e => { const b = e.target.closest(".sub"); if (!b) return; app.cat = b.dataset.c; app.shown = 40; renderGroups(); renderList(); });
+    $("search").addEventListener("input", e => { app.q = e.target.value; app.shown = 40; renderList(); });
+    $("list").addEventListener("click", e => { const b = e.target.closest(".item"); if (b) selectRecipe(+b.dataset.i, true); });
+    $("more").addEventListener("click", () => { app.shown += 60; renderList(); });
+    $("todayCard").addEventListener("click", () => selectRecipe(+$("todayCard").dataset.i, true));
+    $("closeBtn").addEventListener("click", closePlayer);
+    $("nextBtn").addEventListener("click", () => selectRecipe((app.ri + 1) % TOTAL, true));
     $("steps").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) setN(+b.dataset.n); });
     $("autoBtn").addEventListener("click", () => { app.auto = !app.auto; renderSteps(); });
-    $("soundBtn").addEventListener("click", () => { app.mute = !app.mute; try { localStorage.setItem("fxtip-mute", app.mute ? "1" : "0"); } catch (e) {} renderSteps(); });
+    $("soundBtn").addEventListener("click", () => { app.mute = !app.mute; store.set("mute", app.mute); renderSteps(); });
     $("splitBtn").addEventListener("click", () => { app.split = !app.split; makeWorlds(app.split, app.n); renderSteps(); renderOverlay(browseSeg()); });
-    $("langBtn").addEventListener("click", () => {
-      app.lang = app.lang === "en" ? "ko" : "en";
-      try { localStorage.setItem("fxtip-lang", app.lang); } catch (e) {}
-      renderSteps(); renderOverlay(browseSeg());
-    });
+    $("langBtn").addEventListener("click", () => { app.lang = app.lang === "en" ? "ko" : "en"; store.set("lang", app.lang); renderSteps(); renderOverlay(browseSeg()); });
     $("recBtn").addEventListener("click", startRec);
+    $("postBtn").addEventListener("click", () => copyText(postText(), "게시글 문구를 복사했어요"));
+    $("copyScript").addEventListener("click", () => copyText(scriptText(), "대본을 복사했어요"));
+    $("doneBtn").addEventListener("click", () => {
+      const id = R().id; app.posted.has(id) ? app.posted.delete(id) : app.posted.add(id);
+      store.set("posted", [...app.posted]); renderPlayerHead();
+    });
     $("code").addEventListener("click", e => {
       const b = e.target.closest("[data-copy]"); if (!b) return;
       const k = b.dataset.copy, r = R();
       copyText(k === "all" ? recipeCode(r) : k === "engine" ? engineCode() : stepCode(r.steps[+k.slice(1)], +k.slice(1)));
     });
+    $("menuBtn").addEventListener("click", () => { renderSched(); $("sched").classList.add("open"); });
+    $("schedClose").addEventListener("click", () => { $("sched").classList.remove("open"); renderHome(); });
+    $("cadence").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; app.cadence = b.dataset.k; store.set("cadence", app.cadence); renderSched(); });
+    $("startDate").addEventListener("change", e => { if (e.target.value) { app.start = e.target.value; store.set("start", app.start); renderSched(); } });
+    $("slots").addEventListener("click", e => { const b = e.target.closest(".slot"); if (!b) return; $("sched").classList.remove("open"); selectRecipe(+b.dataset.i, true); });
     stage.addEventListener("pointerdown", e => {
-      e.preventDefault();
-      audioInit();
+      e.preventDefault(); audioInit();
       if (app.mode === "rec") {
         if (document.body.classList.contains("rec-ready")) beginPlayback();
         else if (app.ended) exitRec();
@@ -556,20 +897,19 @@
       }
       fireAll();
     });
-    document.addEventListener("keydown", e => { if (e.key === "Escape" && app.mode === "rec") exitRec(); });
-    window.addEventListener("hashchange", () => { const i = RECIPES.findIndex(r => r.id === location.hash.slice(1)); if (i >= 0 && i !== app.ri && app.mode === "browse") selectRecipe(i); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") { if (app.mode === "rec") exitRec(); else if ($("player").classList.contains("open")) closePlayer(); } });
 
-    /* 시작 */
+    /* ───────── 시작 ───────── */
     makeSprites().then(() => {
-      const hash = location.hash.slice(1);
-      const idx = RECIPES.findIndex(r => r.id === hash);
+      const hash = location.hash.slice(1), idx = RECIPES.findIndex(r => r.id === hash);
+      renderHome();
+      selectRecipe(idx >= 0 ? idx : todayIdx(), idx >= 0);
       layout();
-      selectRecipe(idx >= 0 ? idx : 0);
       requestAnimationFrame(t => { last = t; frame(t); });
     });
 
-    // 테스트용
-    window.__fx = { app, RECIPES, setN, selectRecipe, fireAll, startRec, beginPlayback };
+    // 테스트용 (selectRecipe는 플레이어를 열어서 보여 줌)
+    window.__fx = { app, RECIPES, setN, selectRecipe: i => selectRecipe(i, true), fireAll, startRec, beginPlayback, buildSegs, scriptText, postText };
   })();
   </script>
 </body>

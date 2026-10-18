@@ -484,7 +484,7 @@ class World {
     const v = this.view, [rx, ry, rw, rh] = v.r;
     ctx.save();
     ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
-    ctx.fillStyle = "#121318"; ctx.fillRect(rx, ry, rw, rh);
+    ctx.fillStyle = "#12140f"; ctx.fillRect(rx, ry, rw, rh);
     ctx.fillStyle = "rgba(255,255,255,0.045)";
     for (let gx = rx + 25; gx < rx + rw; gx += 25) ctx.fillRect(gx, ry, 1, rh);
     for (let gy = ry + 25; gy < ry + rh; gy += 25) ctx.fillRect(rx, gy, rw, 1);
