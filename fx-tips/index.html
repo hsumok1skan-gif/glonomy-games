@@ -92,13 +92,13 @@
     .ready code { font-family: var(--mono); color: var(--acc); font-size: 12px; letter-spacing: .1em; }
 
     /* 영상 오른쪽 아이콘 (반투명) */
-    .rail { position: absolute; right: 6px; top: 44%; display: grid; gap: 10px; z-index: 4; }
-    .ric { display: grid; justify-items: center; gap: 4px; font-family: var(--ko); font-size: 10.5px; font-weight: 600; color: rgba(244, 244, 239, .85); text-shadow: 0 1px 6px rgba(0, 0, 0, .6); }
-    .ric span { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(20, 22, 15, .42); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
-    .ric svg { width: 19px; height: 19px; }
+    .rail { position: absolute; right: 4.5%; top: 27.4%; display: flex; gap: 8px; z-index: 4; }
+    .ric { display: grid; justify-items: center; font-size: 0; color: rgba(244, 244, 239, .9); }
+    .ric span { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(20, 22, 15, .42); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+    .ric svg { width: 17px; height: 17px; }
     .ric[aria-pressed="true"] span { background: rgba(200, 240, 60, .9); color: #141708; box-shadow: none; }
     .ric.recb span { background: rgba(227, 52, 47, .88); box-shadow: 0 0 0 4px rgba(227, 52, 47, .22); }
-    .ric.recb span::before { content: ""; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+    .ric.recb span::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: #fff; }
 
     /* 단계 줄 */
     .stepbar { flex: none; display: flex; align-items: center; gap: 8px; padding: 12px 0 0; }
@@ -281,8 +281,8 @@
         </div>
         <div class="rail">
           <button class="ric recb" id="recBtn" type="button" aria-label="녹화 모드"><span></span>녹화</button>
-          <button class="ric" id="soundBtn" type="button" aria-pressed="false"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10H4Z"/><path id="sndWave" d="M16 9a4 4 0 0 1 0 6"/></svg></span><em style="font-style:normal" id="soundT">소리</em></button>
-          <button class="ric" id="codeBtn" type="button"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg></span>코드</button>
+          <button class="ric" id="soundBtn" type="button" aria-pressed="false" aria-label="소리"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10H4Z"/><path id="sndWave" d="M16 9a4 4 0 0 1 0 6"/></svg></span><em style="font-style:normal" id="soundT">소리</em></button>
+          <button class="ric" id="codeBtn" type="button" aria-label="코드 받기"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg></span>코드</button>
         </div>
       </div>
     </div>
@@ -360,33 +360,33 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261018l"></script>
-  <script src="export.js?v=20261018l"></script>
+  <script src="engine.js?v=20261018m"></script>
+  <script src="export.js?v=20261018m"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
-  <script src="recipes/core.js?v=20261018l"></script><script>tagFx("core")</script>
-  <script src="recipes/weapon.js?v=20261018l"></script><script>tagFx("weapon")</script>
-  <script src="recipes/combat.js?v=20261018l"></script><script>tagFx("combat")</script>
-  <script src="recipes/duel.js?v=20261018l"></script><script>tagFx("duel")</script>
-  <script src="recipes/horde.js?v=20261018l"></script><script>tagFx("horde")</script>
-  <script src="recipes/army.js?v=20261018l"></script><script>tagFx("army")</script>
-  <script src="recipes/fighting.js?v=20261018l"></script><script>tagFx("fighting")</script>
-  <script src="recipes/shooter.js?v=20261018l"></script><script>tagFx("shooter")</script>
-  <script src="recipes/action.js?v=20261018l"></script><script>tagFx("action")</script>
-  <script src="recipes/move.js?v=20261018l"></script><script>tagFx("move")</script>
-  <script src="recipes/rpg.js?v=20261018l"></script><script>tagFx("rpg")</script>
-  <script src="recipes/strategy.js?v=20261018l"></script><script>tagFx("strategy")</script>
-  <script src="recipes/sim.js?v=20261018l"></script><script>tagFx("sim")</script>
-  <script src="recipes/puzzle.js?v=20261018l"></script><script>tagFx("puzzle")</script>
-  <script src="recipes/racing.js?v=20261018l"></script><script>tagFx("racing")</script>
-  <script src="recipes/survival.js?v=20261018l"></script><script>tagFx("survival")</script>
-  <script src="recipes/casual.js?v=20261018l"></script><script>tagFx("casual")</script>
-  <script src="recipes/ui.js?v=20261018l"></script><script>tagFx("ui")</script>
-  <script src="recipes/env.js?v=20261018l"></script><script>tagFx("env")</script>
-  <script src="recipes/spotlight.js?v=20261018l"></script><script>tagFx("spotlight")</script>
-  <script src="recipes/spot-reward.js?v=20261018l"></script><script>tagFx("spot-reward")</script>
-  <script src="recipes/spot-combat.js?v=20261018l"></script><script>tagFx("spot-combat")</script>
-  <script src="recipes/spot-power.js?v=20261018l"></script><script>tagFx("spot-power")</script>
-  <script src="recipes/spot-casual.js?v=20261018l"></script><script>tagFx("spot-casual")</script>
+  <script src="recipes/core.js?v=20261018m"></script><script>tagFx("core")</script>
+  <script src="recipes/weapon.js?v=20261018m"></script><script>tagFx("weapon")</script>
+  <script src="recipes/combat.js?v=20261018m"></script><script>tagFx("combat")</script>
+  <script src="recipes/duel.js?v=20261018m"></script><script>tagFx("duel")</script>
+  <script src="recipes/horde.js?v=20261018m"></script><script>tagFx("horde")</script>
+  <script src="recipes/army.js?v=20261018m"></script><script>tagFx("army")</script>
+  <script src="recipes/fighting.js?v=20261018m"></script><script>tagFx("fighting")</script>
+  <script src="recipes/shooter.js?v=20261018m"></script><script>tagFx("shooter")</script>
+  <script src="recipes/action.js?v=20261018m"></script><script>tagFx("action")</script>
+  <script src="recipes/move.js?v=20261018m"></script><script>tagFx("move")</script>
+  <script src="recipes/rpg.js?v=20261018m"></script><script>tagFx("rpg")</script>
+  <script src="recipes/strategy.js?v=20261018m"></script><script>tagFx("strategy")</script>
+  <script src="recipes/sim.js?v=20261018m"></script><script>tagFx("sim")</script>
+  <script src="recipes/puzzle.js?v=20261018m"></script><script>tagFx("puzzle")</script>
+  <script src="recipes/racing.js?v=20261018m"></script><script>tagFx("racing")</script>
+  <script src="recipes/survival.js?v=20261018m"></script><script>tagFx("survival")</script>
+  <script src="recipes/casual.js?v=20261018m"></script><script>tagFx("casual")</script>
+  <script src="recipes/ui.js?v=20261018m"></script><script>tagFx("ui")</script>
+  <script src="recipes/env.js?v=20261018m"></script><script>tagFx("env")</script>
+  <script src="recipes/spotlight.js?v=20261018m"></script><script>tagFx("spotlight")</script>
+  <script src="recipes/spot-reward.js?v=20261018m"></script><script>tagFx("spot-reward")</script>
+  <script src="recipes/spot-combat.js?v=20261018m"></script><script>tagFx("spot-combat")</script>
+  <script src="recipes/spot-power.js?v=20261018m"></script><script>tagFx("spot-power")</script>
+  <script src="recipes/spot-casual.js?v=20261018m"></script><script>tagFx("spot-casual")</script>
   <script>
   (() => {
     "use strict";
@@ -446,7 +446,7 @@
     const app = {
       ri: 0, group: store.get("group", "all"), cat: "all", q: "", n: 0, lang: store.get("lang", "en"), auto: true, mute: store.get("mute", false), split: false,
       mode: "browse", playing: false, ended: false, segs: [], si: 0, segT: 0, autoT: 0, worlds: [], capT: 0, shown: 40,
-      posted: new Set(store.get("posted", [])), cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-20"),
+      posted: new Set(store.get("posted", [])), cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-19"),
     };
     window.app = app;
     // 처음 화면: 캐릭터만 서서 기다림
