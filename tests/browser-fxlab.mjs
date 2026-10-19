@@ -25,6 +25,17 @@ async function check(viewport,mobile,label) {
       assert.equal(await page.evaluate(()=>window.__fx.RECIPES[window.__fx.app.ri].id),id);
       await page.evaluate(()=>{window.__fx.app.auto=false;window.__fx.fireAll();});
       await page.waitForTimeout(delay);
+      const rig=await page.evaluate(()=>{
+        const w=window.__fx.app.worlds[0], c=document.querySelector("#pcCanvas");
+        return {id:w.R.id,phase:w.studioRig?.phase,logical:c.fxLogicalWidth,
+          bloomWidth:typeof BLOOM!=="undefined" ? BLOOM.c?.width : null,
+          expectedBloomWidth:Math.round(c.width/4)};
+      });
+      assert.equal(rig.id,id);
+      assert.equal(rig.logical,960,"PC bloom must render at 960 logical width");
+      assert.ok(rig.phase,"Character arm rig should respond to the selected FX action: "+id);
+      assert.ok(Math.abs(rig.bloomWidth-rig.expectedBloomWidth)<3,
+        "No duplicate small upper-left bloom: "+JSON.stringify(rig));
       await page.locator("#pcTheater").screenshot({path:"browser-artifacts/showcase-"+id+".png"});
     }
     await page.locator("#pcFinal").click();
