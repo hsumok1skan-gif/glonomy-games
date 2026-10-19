@@ -167,7 +167,7 @@
         w.foe = w.actor("foe", { home: 413, hp: 200 });
         w.burnT = 0; w.burnAge = 0; w.tickT = 0;
         w.flamePulse = 0; w.emberPulse = 0; w.heatStatus = 0; w.castT = 0;
-        w.busy = false;
+        w.busy = false; w.barShown = w.foe.hp; w.barLag = w.foe.hp; w.barPulse = 0;
       },
       fire(w) {
         if(w.busy) return;
@@ -190,7 +190,8 @@
             f.ox+=12;f.vib=3.8;f.sx=.91;f.sy=1.06;f.flash=.32;
             const hit={x:shot.x,y:shot.y};
             w.emit("hit",hit);
-            if(w.on("ignite")){
+            if(w.on("cinema")) w.barPulse=.92;
+            if(w.on("flame")){
               // Fire is attached to the enemy for the whole burn duration.
               w.burnT=2.35;w.burnAge=0;w.tickT=.42;
               w.flamePulse=0;
@@ -204,13 +205,19 @@
       },
       update(w,dt) {
         const f=w.foe;
+        if(w.on("cinema")){
+          // HP first flashes on contact, then visibly drains with an amber delayed trail.
+          w.barShown+=(f.hp-w.barShown)*Math.min(1,dt*5.2);
+          w.barLag+=(f.hp-w.barLag)*Math.min(1,dt*1.65);
+          w.barPulse=Math.max(0,w.barPulse-dt*2.1);
+        }
         f.burn=Math.max(0,f.burn-dt);
         // Reset only after a complete cycle, so no unexplained HP jump mid-burn.
         if(f.hp<=0&&w.burnT<=0) f.hp=f.maxHp;
         if(w.burnT<=0)return;
         w.burnT=Math.max(0,w.burnT-dt);
         w.burnAge+=dt;
-        if(w.on("ignite")){
+        if(w.on("flame")){
           f.burn=.13;
           // Visible flames climb the silhouette, not a floating ring.
           w.flamePulse+=dt;
@@ -223,16 +230,17 @@
               color:pick(["255,118,33","255,168,46","255,221,96"])});
           }
         }
-        if(w.on("dot")){
+        if(w.on("flame")){
           w.tickT-=dt;
           while(w.tickT<=0 && w.burnT>0){
             w.tickT+=.42;
             const damage=6;
             f.hp=Math.max(0,f.hp-damage);
+            if(w.on("cinema"))w.barPulse=.68;
             w.emit("tick",f,damage);
           }
         }
-        if(w.on("status")){
+        if(w.on("flame")){
           w.heatStatus=Math.min(1,w.heatStatus+dt*5);
           w.emberPulse+=dt;
           while(w.emberPulse>=.16){
@@ -247,7 +255,7 @@
         }
       },
       drawFront(w,ctx) {
-        if(!w.on("ignite")||w.burnT<=0)return;
+        if(!w.on("flame")||w.burnT<=0)return;
         const f=w.foe,age=w.burnAge,fade=Math.min(1,w.burnT/.32);
         // Five body-following flames: shaped yellow cores + orange silhouettes.
         ctx.save();
@@ -273,25 +281,47 @@
       },
       drawHud(w,ctx){
         const f=w.foe;
-        drawBar(ctx,f);
-        if(w.on("status")&&w.burnT>0){
-          // The orange status is pinned to the victim and sits ABOVE its HP bar.
+        if(w.on("cinema")){
+          const bw=110,bh=11,x=f.x-bw/2,y=f.gy-f.h-23;
+          const hp=Math.max(0,Math.min(1,w.barShown/f.maxHp));
+          const lag=Math.max(0,Math.min(1,w.barLag/f.maxHp));
           ctx.save();
-          ctx.font="800 13px Pretendard, sans-serif";
+          ctx.fillStyle="#080d16";ctx.beginPath();
+          ctx.roundRect(x-5,y-5,bw+10,bh+10,6);ctx.fill();
+          ctx.fillStyle="#efb14d";ctx.fillRect(x,y,bw*lag,bh);
+          const grad=ctx.createLinearGradient(x,y,x,y+bh);
+          grad.addColorStop(0,w.barPulse>.1?"#fff2a3":"#ff6468");
+          grad.addColorStop(.4,w.barPulse>.1?"#ffb15d":"#e43349");
+          grad.addColorStop(1,"#96213c");
+          ctx.fillStyle=grad;ctx.fillRect(x,y,bw*hp,bh);
+          ctx.fillStyle="rgba(255,255,255,.35)";ctx.fillRect(x,y,bw*hp,2);
+          if(w.barPulse>.02){
+            ctx.globalAlpha=Math.min(1,w.barPulse);
+            ctx.shadowColor="#ffbd5c";ctx.shadowBlur=20;
+            ctx.strokeStyle="#ffe29a";ctx.lineWidth=2.2;
+            ctx.strokeRect(x,y,bw*hp,bh);
+            ctx.shadowBlur=0;
+          }
+          ctx.globalAlpha=1;ctx.strokeStyle="rgba(239,166,100,.33)";
+          ctx.strokeRect(x-.5,y-.5,bw+1,bh+1);
+          ctx.restore();
+        }else drawBar(ctx,f);
+        if(w.on("flame")&&w.burnT>0){
+          ctx.save();ctx.font="800 13px Pretendard, sans-serif";
           ctx.textAlign="center";ctx.textBaseline="middle";
           ctx.shadowColor="rgba(255,85,14,.65)";ctx.shadowBlur=10;
           ctx.fillStyle="#ffb56e";
-          ctx.fillText("🔥 화상",f.x+f.ox,f.gy-f.h-41);
+          ctx.fillText("🔥 화상",f.x+f.ox,f.gy-f.h-44);
           ctx.restore();
         }
       },
       steps:[
         {
-          id:"projectile",
-          name:{en:"01 · Fire Attack",ko:"공격 · 불꽃이 날아감"},
-          param:"windup → projectile → hit",
-          cap:{en:"The hero *winds up and fires*. Damage lands only when the shot connects.",
-               ko:"손을 뻗어 발사하고, *적에게 맞은 순간* 체력이 줄어요."},
+          id:"flame",
+          name:{en:"Fire + Burning Damage",ko:"화염 공격 · 점화와 지속 피해"},
+          param:"fire projectile + attached flames + burn DOT",
+          cap:{en:"The attack now *ignites the target*. Fire clings to the body, with visible damage ticks.",
+               ko:"불꽃이 날아가 *적 몸에 붙고*, 화상 숫자와 체력이 함께 줄어들어요."},
           cast(w,o){
             o.draw=(ctx,p)=>{
               ctx.save();ctx.globalCompositeOperation="lighter";
@@ -303,74 +333,67 @@
               ctx.bezierCurveTo(p.x-9,p.y-15,p.x-25,p.y-11-flicker,p.x-37,p.y+flicker);
               ctx.bezierCurveTo(p.x-21,p.y+17,p.x-4,p.y+15,p.x+11,p.y);
               ctx.fill();
-              ctx.fillStyle="#fff3bd";
-              ctx.beginPath();ctx.ellipse(p.x+2,p.y,8,5,0,0,TAU);ctx.fill();
+              ctx.fillStyle="#fff3bd";ctx.beginPath();
+              ctx.ellipse(p.x+2,p.y,8,5,0,0,TAU);ctx.fill();
               ctx.restore();
             };
             o.trail="255,123,36";
           },
-        },
-        {
-          id:"ignite",
-          name:{en:"02 · Ignition",ko:"명중 · 몸에 불이 붙음"},
-          param:"impact burst + attached body flames",
-          cap:{en:"A fireball actually *ignites the enemy*; flames stay on the body.",
-               ko:"맞은 자리에서 *화르륵* 불이 붙고, 적 몸에 계속 타올라요."},
           ignite(w,hit){
-            w.foe.flash=.70;
-            w.spawn({type:"glow",x:hit.x,y:hit.y,size:58,size1:4,
-              life:.24,color:"255,121,32"});
-            for(let i=0;i<9;i++){
-              const a=rand(-Math.PI,0),v=rand(120,290);
+            w.foe.flash=.64;
+            w.spawn({type:"glow",x:hit.x,y:hit.y,size:68,size1:4,
+              life:.26,color:"255,121,32"});
+            for(let i=0;i<11;i++){
+              const a=rand(-Math.PI,0),v=rand(110,300);
               w.spawn({type:"spark",x:hit.x,y:hit.y,
                 vx:Math.cos(a)*v,vy:Math.sin(a)*v-60,
                 drag:4,size:rand(1.5,3.0),life:rand(.19,.37),
                 color:"255,181,71"});
             }
           },
-        },
-        {
-          id:"dot",
-          name:{en:"03 · Burning Damage",ko:"화상 · 체력이 지속 감소"},
-          param:"6 HP × 0.42s; floating numbers",
-          cap:{en:"Now *damage-over-time* is visible: 6 HP per tick and readable orange numbers.",
-               ko:"불붙은 동안 *0.42초마다 6 피해*. 숫자와 체력 감소가 연결돼요."},
           tick(w,f,damage){
-            popText(w,"−"+damage,f.x+rand(-19,19),f.gy-f.h*.83,
-              23,"#ffb264",{vy:-106,g:80,life:.54});
-            f.flash=.16;f.vib=2.5;f.sy=.97;
+            popText(w,"−"+damage,f.x+rand(-17,17),f.gy-f.h*.84,
+              25,"#ffbf72",{vy:-110,g:80,life:.65});
+            f.flash=.17;f.vib=2.5;f.sy=.97;
           },
-        },
-        {
-          id:"status",
-          name:{en:"04 · Burning Status",ko:"상태 표시 · 연기와 불씨"},
-          param:"burn label + smoke + embers",
-          cap:{en:"A *BURNING* tag, smoke and embers explain why the HP keeps dropping.",
-               ko:"적 머리 위에 *화상 상태 표시*, 불씨와 연기를 더해 이유가 보여요."},
         },
         {
           id:"cinema",
-          name:{en:"05 · Full Game Feel",ko:"최종 · 충전과 타격감 완성"},
-          param:"charge light + hitstop + recoil + heat bloom",
-          cap:{en:"A charging hand, bright hit, recoil and restrained screen shake *complete the combat scene*.",
-               ko:"기 모으기부터 *발사·명중·화상 피해·충격 반응*까지 하나로 연결해요."},
+          name:{en:"Final Game Feel",ko:"최종 · 강력한 타격감과 체력 연출"},
+          param:"charge → fire → impact → lagged HP → crackle",
+          cap:{en:"A charged strike, bright impact, lingering flames, crackling audio and a *glowing health bar that drains visibly*.",
+               ko:"기 모으기부터 발사·폭발·화상·소리까지 연결되고, *체력바가 빛난 뒤 눈에 보이게 감소*해요."},
           charge(w,p){
-            w.spawn({type:"glow",x:p.x,y:p.y,size:41,size1:15,
-              life:.24,color:"255,145,47"});
-          },
-          ignite(w,hit){
-            w.shake(.24,1);w.zoomPunch(.035);w.hitstop(.052);
-            w.flash("255,151,57",.10);
-            w.foe.ox+=13;w.foe.vib=7;
-            for(let i=0;i<5;i++){
-              const x=hit.x+rand(-9,9),y=hit.y+rand(-9,9);
-              w.spawn({type:"glow",x,y,size:rand(16,27),size1:1,
-                vx:rand(-80,90),vy:rand(-150,-55),life:.31,
-                color:"255,218,94"});
+            w.spawn({type:"glow",x:p.x,y:p.y,size:44,size1:9,
+              life:.25,color:"255,145,47"});
+            for(let i=0;i<6;i++){
+              const a=i*TAU/6,v=rand(35,85);
+              w.spawn({type:"spark",x:p.x+Math.cos(a)*28,y:p.y+Math.sin(a)*22,
+                vx:-Math.cos(a)*v,vy:-Math.sin(a)*v,
+                size:1.5,life:.24,color:"255,218,134"});
             }
           },
+          cast(w,o){
+            w.hero.ox-=8;w.hero.rot=-.13;
+            w.spawn({type:"glow",x:o.x,y:o.y,size:35,size1:8,
+              life:.15,color:"255,205,100"});
+            w.sfx.burst();
+          },
+          ignite(w,hit){
+            w.shake(.32,1);w.zoomPunch(.055);w.hitstop(.07);
+            w.flash("255,151,57",.15);
+            w.foe.ox+=17;w.foe.vib=8;w.foe.barShake=.16;
+            for(let i=0;i<11;i++){
+              const x=hit.x+rand(-11,11),y=hit.y+rand(-11,11);
+              w.spawn({type:"glow",x,y,size:rand(14,32),size1:1,
+                vx:rand(-130,130),vy:rand(-190,-45),life:.33,
+                color:pick(["255,128,41","255,200,80","255,235,143"])});
+            }
+            w.sfx.crit();
+          },
           tick(w,f){
-            f.ox+=2.5;
+            f.ox+=3.5;
+            w.play(()=>nz({type:"bandpass",f:2600,q:1.5,dur:.06,vol:.30}));
           },
         },
       ],
