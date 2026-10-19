@@ -465,7 +465,51 @@ const STUDIO_MOODS = {
   casual:[124,221,210], ui:[135,218,215], racing:[88,179,251],
   move:[107,175,249], env:[174,169,131]
 };
-function studioBackdrop(ctx, v, cat, clock) {
+/* Lightweight, code-drawn level dressing for the 3 featured demos (no assets). */
+function studioDemoSet(ctx,v,id){
+  if (!["weapon-railgun","weapon-katana","magic"].includes(id)) return;
+  const [x,y,w,h]=v;
+  ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
+  if(id==="weapon-railgun"){
+    ctx.fillStyle="rgba(36,83,99,.18)";ctx.fillRect(x,y+h*.16,w,h*.62);
+    for(let i=0;i<6;i++){
+      const px=x+w*(.07+i*.177);
+      ctx.fillStyle="rgba(10,24,38,.55)";ctx.fillRect(px,y+h*.10,w*.037,h*.7);
+      ctx.fillStyle="rgba(82,220,252,.13)";ctx.fillRect(px+w*.03,y+h*.12,2,h*.65);
+      ctx.fillStyle="rgba(86,218,250,.065)";ctx.fillRect(px-5,y+h*.52,w*.12,2);
+    }
+    ctx.fillStyle="rgba(20,78,112,.16)";ctx.fillRect(x,y+h*.84,w,h*.16);
+  } else if(id==="weapon-katana"){
+    const moonX=x+w*.77,moonY=y+h*.2;
+    const moon=ctx.createRadialGradient(moonX,moonY,7,moonX,moonY,w*.22);
+    moon.addColorStop(0,"rgba(213,232,243,.17)");moon.addColorStop(1,"rgba(155,215,248,0)");
+    ctx.fillStyle=moon;ctx.fillRect(x,y,w,h);
+    ctx.fillStyle="rgba(110,157,155,.10)";ctx.beginPath();ctx.arc(moonX,moonY,44,0,TAU);ctx.fill();
+    for(let i=0;i<4;i++){
+      const px=x+w*(.1+i*.245);
+      ctx.fillStyle="rgba(12,24,31,.50)";ctx.fillRect(px,y+h*.07,13,h*.65);
+      ctx.fillStyle="rgba(106,191,188,.12)";ctx.fillRect(px,y+h*.13,2,h*.58);
+    }
+    ctx.fillStyle="rgba(32,72,80,.24)";ctx.fillRect(x,y+h*.79,w,h*.21);
+  } else if(id==="magic"){
+    const cx=x+w*.56,cy=y+h*.42,r=Math.min(w,h)*.31;
+    const halo=ctx.createRadialGradient(cx,cy,5,cx,cy,r*1.5);
+    halo.addColorStop(0,"rgba(139,94,234,.19)");halo.addColorStop(1,"rgba(139,94,234,0)");
+    ctx.fillStyle=halo;ctx.fillRect(x,y,w,h);
+    ctx.strokeStyle="rgba(176,128,241,.16)";ctx.lineWidth=2;
+    for(const scale of [1,0.84,0.58]){
+      ctx.beginPath();ctx.arc(cx,cy,r*scale,-Math.PI*.85,Math.PI*.83);ctx.stroke();
+    }
+    for(let i=0;i<9;i++){
+      const a=i*TAU/9;
+      ctx.fillStyle="rgba(215,174,255,.23)";
+      ctx.fillRect(cx+Math.cos(a)*r*.82,cy+Math.sin(a)*r*.82,3,3);
+    }
+  }
+  ctx.restore();
+}
+
+function studioBackdrop(ctx, v, cat, clock, recipeId) {
   const [x,y,w,h]=v, col=STUDIO_MOODS[cat] || [174,196,164], rgb=col.join(",");
   const floor=ctx.createLinearGradient(x,y,x,y+h);
   floor.addColorStop(0,"#090e17"); floor.addColorStop(0.58,"#111b26"); floor.addColorStop(1,"#090c12");
@@ -474,6 +518,7 @@ function studioBackdrop(ctx, v, cat, clock) {
   halo.addColorStop(0,"rgba("+rgb+",0.17)"); halo.addColorStop(0.44,"rgba("+rgb+",0.045)");
   halo.addColorStop(1,"rgba("+rgb+",0)");
   ctx.fillStyle=halo; ctx.fillRect(x,y,w,h);
+  studioDemoSet(ctx,v,recipeId);
   ctx.strokeStyle="rgba("+rgb+",0.06)"; ctx.lineWidth=1;
   const spacing=38;
   const offset=Math.sin(clock*0.12)*3;
@@ -586,10 +631,10 @@ function drawStudioHero(ctx,w){
     ctx.restore();
   }
   if(!h)return;
-  const t=w.time-h.start;if(t<0||t>.7)return;
+  const t=w.time-h.start;if(t<0||t>1.02)return;
   ctx.save();ctx.globalCompositeOperation="lighter";ctx.lineCap="round";
   if(h.kind==="rail"){
-    const fade=Math.pow(Math.max(0,1-t/.43),2);
+    const fade=Math.max(0,1-t/.95);
     if(fade>0){
       const beam=ctx.createLinearGradient(h.x,h.y,580,h.y);
       beam.addColorStop(0,"rgba(100,231,255,.98)");beam.addColorStop(.4,"rgba(195,245,255,.98)");
@@ -810,7 +855,7 @@ class World {
     const v = this.view, [rx, ry, rw, rh] = v.r;
     ctx.save();
     ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
-    studioBackdrop(ctx, v.r, this.R.cat, this.time);
+    studioBackdrop(ctx, v.r, this.R.cat, this.time, this.R.id);
     ctx.translate(v.x, v.y); ctx.scale(v.s, v.s);
     const tr = this.trauma * this.trauma;
     ctx.translate(270 + (Math.random() * 2 - 1) * tr * 24 + this.kx, 180 + (Math.random() * 2 - 1) * tr * 18 + this.ky);
