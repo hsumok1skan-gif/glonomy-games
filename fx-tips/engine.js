@@ -357,7 +357,73 @@ function makeSprites() {
   S.heroTop = dustFig(HUMAN_TOP, 24, 24, FX.colors.hero, 4);
   S.foeTop = (() => { const c = dustFig(HUMAN_TOP, 24, 24, FX.colors.foe, 4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })();
   for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
+  buildStudioArmRig();
   return fxLoadImages();
+}
+
+
+// Rigged variants keep the exact same dot material/lighting as the static hero.
+// Pre-rendered pieces rotate at joint pivots; there is no per-frame 3D rendering.
+function buildStudioArmRig() {
+  const body=HUMAN.filter((_,i)=>![0,1,2,15,16,17,18].includes(i));
+  SPR.heroRigBody={c:dustFig(body,32,44,FX.colors.hero,3.4,41)};
+  const limb=(seed)=>dustFig([{a:[4,8],b:[28,8],r0:1.5,r1:1.15,z:4}],34,16,FX.colors.hero,3.4,seed);
+  SPR.heroRigUpper={c:limb(47)};
+  SPR.heroRigLower={c:limb(71)};
+}
+function studioLerp(a,b,t){return a+(b-a)*t;}
+function studioEase(t){return t*t*(3-2*t);}
+function studioRigPose(w) {
+  const base={fe:[21.5,14.2],fh:[27,12.4],be:[11,15],bh:[13,20]};
+  const id=w.R.id,rig=w.studioRig;
+  if(!rig) return base;
+  const t=Math.max(0,w.time-rig.at);
+  let target=base,k=0;
+  if(id==="weapon-railgun") {
+    const charge={fe:[24,12.5],fh:[30,12],be:[15.5,13.6],bh:[24,13.3]};
+    const kick={fe:[19,8.5],fh:[28,7],be:[13,10.5],bh:[22,11]};
+    if(rig.phase==="charge"){target=charge;k=studioEase(Math.min(1,t/.55));}
+    if(rig.phase==="fire"){target=kick;k=1-studioEase(Math.min(1,Math.max(0,t-.10)/.46));}
+  } else if(id==="weapon-katana"){
+    const sword={fe:[13.5,17],fh:[9,22],be:[10.5,16.5],bh:[12,22]};
+    const strike={fe:[19,2],fh:[30,-1],be:[16,6],bh:[23,3]};
+    const settle={fe:[23,12],fh:[32,14],be:[10,16],bh:[11.5,21]};
+    if(rig.phase==="draw"){target=sword;k=1;}
+    if(rig.phase==="cut"){target=strike;k=1-studioEase(Math.min(1,t/.46));}
+    if(rig.phase==="sheathe"){target=settle;k=1-studioEase(Math.min(1,t/.55));}
+  } else if(id==="magic"){
+    const charge={fe:[20,5.5],fh:[26,1],be:[14.5,7],bh:[20,2.5]};
+    const cast={fe:[24,9],fh:[34,8],be:[17,12],bh:[27,11]};
+    if(rig.phase==="charge"){target=charge;k=studioEase(Math.min(1,t/.30));}
+    if(rig.phase==="launch"){target=cast;k=1-studioEase(Math.min(1,Math.max(0,t-.08)/.5));}
+  }
+  return {
+    fe:base.fe.map((v,i)=>studioLerp(v,target.fe[i],k)),
+    fh:base.fh.map((v,i)=>studioLerp(v,target.fh[i],k)),
+    be:base.be.map((v,i)=>studioLerp(v,target.be[i],k)),
+    bh:base.bh.map((v,i)=>studioLerp(v,target.bh[i],k))
+  };
+}
+function drawStudioRigHero(ctx,a,w,top) {
+  const pose=studioRigPose(w), k=3.4,pad=10,S=2,
+    mw=SPR.hero.c.width,mh=SPR.hero.c.height;
+  const xy=point=>({
+    x:((point[0]*k+pad)*S/mw-.5)*a.w,
+    y:((point[1]*k+pad)*S/mh-1)*a.h
+  });
+  const bone=(a0,b0,front)=>{
+    const A=xy(a0),B=xy(b0),dx=B.x-A.x,dy=B.y-A.y,length=Math.hypot(dx,dy);
+    if(length<.1)return;
+    const key=front?"heroRigUpper":"heroRigLower",bmp=SPR[key].c;
+    const x0=(4*k+pad)*S,x1=(28*k+pad)*S,cy=(8*k+pad)*S;
+    ctx.save();ctx.translate(A.x,A.y);ctx.rotate(Math.atan2(dy,dx));
+    ctx.scale(length/(x1-x0),a.h/mh);
+    ctx.drawImage(bmp,-x0,-cy);ctx.restore();
+  };
+  const backShoulder=[12.6,10],frontShoulder=[17.6,9.8];
+  bone(backShoulder,pose.be,false);bone(pose.be,pose.bh,false);
+  ctx.drawImage(SPR.heroRigBody.c,-a.w/2,top,a.w,a.h);
+  bone(frontShoulder,pose.fe,true);bone(pose.fe,pose.fh,true);
 }
 
 /* ───────── 소리 (파일 없이 합성) ───────── */
@@ -575,6 +641,12 @@ function studioPayoff(w, ev, args) {
 function studioHeroEvent(w, ev, args) {
   if (w.bare || w.n !== w.R.steps.length) return;
   const id=w.R.id;
+  if(["weapon-railgun","weapon-katana","magic"].includes(id)) {
+    if((id==="weapon-railgun"&&(ev==="charge"||ev==="fire"))||
+       (id==="weapon-katana"&&(ev==="cut"||ev==="sheathe"))||
+       (id==="magic"&&(ev==="charge"||ev==="launch")))
+      w.studioRig={phase:ev,at:w.time};
+  }
   if (id==="weapon-railgun") {
     if(ev==="charge"){const at=args[0]; w.studioCharge={start:w.time};return;}
     if(ev==="fire"){
@@ -873,7 +945,7 @@ class World {
     for (const p of this.parts) if (p.under) drawPart(ctx, p);
     for (const a of this.actors) drawShadow(ctx, a);
     if (this.R.drawBack) this.R.drawBack(this, ctx);
-    for (const a of this.actors) drawActor(ctx, a);
+    for (const a of this.actors) drawActor(ctx, a, this);
     if (this.R.drawFront) this.R.drawFront(this, ctx);
     for (const p of this.shots) drawShot(ctx, p);
     for (const p of this.parts) if (!p.under) drawPart(ctx, p);
@@ -1046,7 +1118,7 @@ function drawShadow(ctx, a) {
   ctx.fillStyle = `rgba(0,0,0,${0.32 * a.alpha * lift})`;
   ctx.beginPath(); ctx.ellipse(a.x + a.ox, a.gy + 2, a.w * 0.34 * a.sx, 8, 0, 0, TAU); ctx.fill();
 }
-function drawActor(ctx, a) {
+function drawActor(ctx, a, w) {
   if (a.alpha <= 0) return;
   const hide = a.blink > 0 && Math.floor(a.blink * 14) % 2 === 0;
   ctx.save();
@@ -1062,7 +1134,11 @@ function drawActor(ctx, a) {
   ctx.scale(a.sx * (1 - br * 0.5) * (a.flip ? -1 : 1), a.sy * (1 + br));
   // Soft rim light on the hero silhouette, without changing the custom sprites.
   if (a.key === "hero" && !a.top) { ctx.shadowColor = "rgba(160,216,242,.38)"; ctx.shadowBlur = 9; }
-  ctx.drawImage(a.s.c, -a.w / 2, top, a.w, a.h);
+  const rigged = w && a.key==="hero" && !a.top && !w.bare &&
+    w.n===w.R.steps.length && ["weapon-railgun","weapon-katana","magic"].includes(w.R.id) &&
+    !FX.images.hero && SPR.heroRigBody;
+  if(rigged) drawStudioRigHero(ctx,a,w,top);
+  else ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h);
   ctx.shadowBlur = 0;
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
