@@ -507,11 +507,11 @@ button:not(:disabled):active,button.press{transform:scale(.92);filter:brightness
 /* 창이 떠 있으면 뒤의 전투 HUD · 로비 UI를 숨긴다(창 글자와 겹치지 않게). 그림(캔버스)만 어둡게 남는다 */
 #app.ovon #hud,#app.ovon #banner,#app.ovon #log,#app.ovon #aimbtn,#app.ovon #pausebtn,#app.ovon .gbtns,#app.ovon #hub>*:not(canvas):not(.lbg){visibility:hidden}
 #app.ovon #ov>.card{margin-top:max(72px,calc(env(safe-area-inset-top,0px) + 56px))}
-/* 철수 시간: 화면 위 가운데에 크게. 열리면 금빛으로 맥박친다 */
-#hud .exitst{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 14px);font-size:1.1rem;font-weight:800;padding:6px 16px;white-space:nowrap;z-index:3;letter-spacing:.01em}
-#hud .exitst.open{color:#1a1406;background:linear-gradient(180deg,#f6dc7e,#d9b04a);border-color:#fff3c2;animation:exitp 1.1s ease-in-out infinite}
-@keyframes exitp{50%{box-shadow:0 0 22px rgba(246,220,126,.85)}}
-@media (max-width:699px){#hud .exitst{top:calc(env(safe-area-inset-top,0px) + 118px);font-size:1rem}}
+/* 철수 시간: 배경 없이 글자만 */
+#hud .exitst{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 16px);font-size:.9rem;font-weight:700;padding:0;background:none;border:0;box-shadow:none;white-space:nowrap;z-index:3;color:#efe6c9;text-shadow:0 1px 2px #000,0 0 6px rgba(0,0,0,.8)}
+#hud .exitst.open{color:#f6dc7e;background:none;animation:exitp 1.1s ease-in-out infinite}
+@keyframes exitp{50%{text-shadow:0 1px 2px #000,0 0 12px rgba(246,220,126,.9)}}
+@media (max-width:699px){#hud .exitst{position:static;transform:none;align-self:flex-start;margin-top:6px;font-size:.8rem;white-space:normal}}
 @media (prefers-reduced-motion:reduce){#hud .exitst.open{animation:none}}
 .gb .kh{display:none;position:absolute;top:-6px;right:-6px;font:700 10px/1 'IBM Plex Sans KR',sans-serif;padding:3px 5px;border-radius:5px;background:#e9e1c8;color:#1a1406;box-shadow:0 1px 2px #000}@media (hover:hover) and (pointer:fine){.gb .kh{display:block}}.gb{position:relative}
 .btabs{position:sticky;top:-12px;z-index:2;display:flex;gap:6px;padding:8px 0 10px;margin-bottom:4px;background:var(--panel)}.bt{flex:1;min-height:40px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--dim);font:700 .9rem var(--body)}.bt.on{border-color:#e8c24a;color:#f1d27a;background:rgba(232,194,74,.1)}
