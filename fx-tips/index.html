@@ -115,6 +115,7 @@
     body.idle .stepbar { visibility: hidden; }
     .ab-t { flex: none; height: 36px; padding: 0 12px; border-radius: 999px; background: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line); font: 600 12.5px var(--ko); color: var(--muted); }
     .ab-t[aria-pressed="true"] { color: var(--acc); box-shadow: inset 0 0 0 1px rgba(200, 240, 60, .5); }
+    #finalBtn { color: #141708; background: var(--acc); font-weight: 800; box-shadow: none; }
 
     /* 손잡이 */
     /* 영상 밑 자막과 코드 */
@@ -295,8 +296,9 @@
       </div>
     </div>
     <div class="stepbar">
-      <button class="play" id="playBtn" type="button" aria-label="단계 자동 넘기기"></button>
+      <button class="play" id="playBtn" type="button" aria-label="RAW부터 이펙트 단계 보기"></button>
       <div class="pills" id="pills"></div>
+      <button class="ab-t" id="finalBtn" type="button" aria-label="완성된 효과 즉시 보기">완성</button>
       <button class="ab-t" id="splitBtn" type="button" aria-pressed="false">전후</button>
     </div>
     <p class="subline" id="subline"></p>
@@ -540,6 +542,7 @@
     // 한 구간의 자막 문장
     function segText(seg, L) {
       const r = R();
+      if (seg.k === "hook") return L === "en" ? "This is what *game feel* can do." : "이것이 *게임 손맛*의 차이예요.";
       if (seg.k === "intro") return r.intro[L];
       if (seg.k === "step") return r.steps[seg.n - 1].cap[L];
       if (seg.k === "split") return app.pack ? r.title[L] : SPLIT[L](r.steps.length);
@@ -570,6 +573,7 @@
       const pill = $("ovPill");
       pill.classList.toggle("raw", n === 0);
       if (seg.k === "step") { $("ovKey").textContent = `STEP ${seg.n}`; $("ovName").textContent = plain(r.steps[seg.n - 1].name.en); }
+      else if (seg.k === "hook") { $("ovKey").textContent = "FINAL"; $("ovName").textContent = "ALL FX ON"; }
       else if (seg.k === "intro") { $("ovKey").textContent = app.idle ? "READY" : "STEP 0"; $("ovName").textContent = app.idle ? "" : "Raw"; }
       $("ovSeg").innerHTML = r.steps.map((s, i) => `<i class="${i < n - (seg.k === "step" ? 1 : 0) ? "on" : ""}${seg.k === "step" && i === n - 1 ? " cur" : ""}"></i>`).join("");
             $("ovLayers").textContent = `LAYERS ${n}/${N}`;
@@ -622,6 +626,8 @@
         let n = 1; while (t0 + (n - 1) * iv + tail < need) n++;
         return { dur: t0 + (n - 1) * iv + tail, fires: Array.from({ length: n }, (_, i) => t0 + i * iv) };
       };
+      // First 2 seconds are the payoff; then rewind to RAW and teach the layers.
+      segs.push({ k: "hook", n: r.steps.length, dur: Math.max(1.65, Math.min(2.35, r.interval + 0.95)), fires: [0.26, ...(r.interval < 1 ? [0.26 + r.interval] : [])] });
       segs.push({ k: "intro", n: 0, ...plan(3.4, r.intro[L]) });
       r.steps.forEach((s, i) => segs.push({ k: "step", n: i + 1, ...plan(r.stepDur, s.cap[L]) }));
       segs.push({ k: "split", ...plan(5, SPLIT[L](r.steps.length)) });
@@ -636,6 +642,7 @@
         const rIndex = RECIPES.findIndex(r => r.id === id);
         if (rIndex < 0) throw Error("Missing FX recipe: " + id);
         const r = RECIPES[rIndex], iv = r.interval, tail = Math.min(2, Math.max(0.9, iv)), n = r.steps.length;
+        segs.push({ k: "hook", n, rIndex, packPos, dur: Math.max(1.4, Math.min(2, 0.4 + iv)), fires: [0.26] });
         segs.push({ k: "intro", n: 0, rIndex, packPos, dur: 0.35 + tail, fires: [0.35] });
         segs.push({ k: "split", n, rIndex, packPos, dur: 0.35 + iv + tail, fires: [0.35, 0.35 + iv] });
       });
@@ -657,7 +664,7 @@
     }
     function startDemo() {
       app.demo = true; app.split = false;
-      app.segs = buildSegs().filter(s => s.k === "intro" || s.k === "step"); app.si = 0; app.segT = 0;
+      app.segs = buildSegs().filter(s => s.k === "hook" || s.k === "intro" || s.k === "step"); app.si = 0; app.segT = 0;
       enterSeg(app.segs[0]);
     }
     function enterSeg(seg) {
@@ -717,7 +724,7 @@
         const save = app.ri;
         app.ri = s.rIndex != null ? s.rIndex : RECIPES.indexOf(r);
         const current = R();
-        const label = s.k === "intro" ? (app.pack ? `FX ${s.packPos + 1} · RAW` : "Raw") : s.k === "step" ? `Step ${s.n} · ${plain(current.steps[s.n - 1].name.en)}` : s.k === "split" ? (app.pack ? `FX ${s.packPos + 1} · BEFORE / AFTER` : "Before / After") : "Outro";
+        const label = s.k === "hook" ? (app.pack ? `FX ${s.packPos + 1} · FINAL` : "Hook · FINAL") : s.k === "intro" ? (app.pack ? `FX ${s.packPos + 1} · RAW` : "Raw") : s.k === "step" ? `Step ${s.n} · ${plain(current.steps[s.n - 1].name.en)}` : s.k === "split" ? (app.pack ? `FX ${s.packPos + 1} · BEFORE / AFTER` : "Before / After") : "Outro";
         const en = plain(segText(s, "en")), ko = plain(segText(s, "ko"));
         app.ri = save;
         return { t: s.t, label, en, ko };
@@ -978,6 +985,7 @@
       if (app.demo) { app.demo = false; app.autoT = 0; renderPills(); return; }
       startDemo();
     });
+    $("finalBtn").addEventListener("click", () => { if (app.idle) return; setN(R().steps.length); app.autoT = R().interval - 0.35; });
     $("splitBtn").addEventListener("click", () => {
       app.split = !app.split; app.demo = false; makeWorlds(app.split, app.n); renderPills(); renderOverlay(browseSeg());
       // 전후 비교는 화면이 길어지니 목록을 잠깐 내려 둠
@@ -1046,7 +1054,12 @@
       const mix = PACKS.find(p => p.id === new URLSearchParams(location.search).get("mix"));
       if (mix) openPack(mix);
       else if (idx >= 0) selectRecipe(idx);
-      else { const featured = RECIPES.findIndex(r => r.id === "weapon-railgun"); selectRecipe(featured >= 0 ? featured : 0); }
+      else {
+        const featured = RECIPES.findIndex(r => r.id === "weapon-railgun");
+        selectRecipe(featured >= 0 ? featured : 0);
+        app.demo = false;
+        stepTo(R().steps.length); // Landing page opens on the polished result, not the empty RAW preview.
+      }
       layout();
       requestAnimationFrame(t => { last = t; frame(t); });
     });
