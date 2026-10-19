@@ -918,8 +918,8 @@
         let n = 1; while (t0 + (n - 1) * iv + tail < need) n++;
         return { dur: t0 + (n - 1) * iv + tail, fires: Array.from({ length: n }, (_, i) => t0 + i * iv) };
       };
-      // First 2 seconds are the payoff; then rewind to RAW and teach the layers.
-      segs.push({ k: "hook", n: r.steps.length, dur: Math.max(1.65, Math.min(2.35, r.interval + 0.95)), fires: [0.26, ...(r.interval < 1 ? [0.26 + r.interval] : [])] });
+      // Open with enough time to see the full final payoff (including burn ticks), then compare with RAW.
+      segs.push({ k: "hook", n: r.steps.length, dur: Math.max(1.9, Math.min(4.2, r.interval * 0.90 + 0.5)), fires: [0.26, ...(r.interval < 1 ? [0.26 + r.interval] : [])] });
       segs.push({ k: "intro", n: 0, ...plan(3.4, r.intro[L]) });
       // Reel pacing follows a visual arc, not an arbitrary 5/6/7 tiny steps.
       // Keep all tutorial layers in the manual inspector; the recorded short
