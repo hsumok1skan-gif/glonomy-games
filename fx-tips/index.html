@@ -669,7 +669,7 @@
     const app = {
       ri: 0, group: store.get("group", "all"), cat: "all", q: "", n: 0, lang: store.get("lang", "en"), auto: true, mute: store.get("mute", false), split: false,
       mode: "browse", playing: false, ended: false, segs: [], si: 0, segT: 0, autoT: 0, worlds: [], capT: 0, shown: 40,
-      posted: new Set(store.get("posted", [])), pack: null, cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-19"),
+      posted: new Set(store.get("posted", [])), favorites: new Set(store.get("favorites", [])), libraryMode:"top", pack: null, cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-19"),
     };
     window.app = app;
     // 처음 화면: 캐릭터만 서서 기다림
@@ -1062,7 +1062,10 @@
     }
     function filtered() {
       const q = app.q.trim().toLowerCase(), g = GROUPS.find(x => x.id === app.group);
+      const onDesktop = window.matchMedia("(min-width:1140px)").matches;
       return RECIPES.map((r, i) => [r, i]).filter(([r]) => {
+        if(onDesktop && app.libraryMode === "top" && r.ep > 30) return false;
+        if(onDesktop && app.libraryMode === "saved" && !app.favorites.has(r.id)) return false;
         if (q) return (plain(r.title.ko) + " " + plain(r.title.en) + " " + CATS[r.cat][1] + " " + r.steps.map(s => s.name.ko + " " + s.name.en).join(" ")).toLowerCase().includes(q);
         if (g && !g.cats.includes(r.cat)) return false;
         return app.cat === "all" || r.cat === app.cat;
@@ -1128,10 +1131,57 @@
       const p = POSTS.filter(isPostDone).length;
       $("progT").textContent = `${p} / ${UPLOAD_TOTAL}편 올림 · 전체 소스 ${TOTAL}개`;
       $("progB").style.width = (p / UPLOAD_TOTAL) * 100 + "%";
+      renderBeginnerGuide();
       $("layers").innerHTML = `<div class="lay"><i>0</i><div><b>날것 그대로<small>RAW</small></b><p>${fmt(r.intro.ko)}</p></div></div>` +
         r.steps.map((s, i) => `<div class="lay"><i>${i + 1}</i><div><b>${esc(s.name.ko)}<small>${esc(s.param || "")}</small></b><p>${fmt(s.cap.ko)}</p></div></div>`).join("");
     }
 
+
+    // AI 게임 제작 초보자를 위한 실제 구현 요청문.
+    const FX_USE = {
+      weapon:"총·검·마법 등 공격 장면",combat:"타격이나 적 처치",duel:"보스전·결투",
+      fighting:"격투와 콤보",shooter:"슈팅 게임",horde:"다수의 적과 싸우는 장면",
+      action:"액션 플레이",move:"점프·대시·이동",rpg:"스킬·레벨업·보상",
+      strategy:"선택·지시·전략",sim:"경영·시뮬레이션",puzzle:"퍼즐 해결·연쇄 보상",
+      racing:"가속·드리프트·완주",survival:"생존·위험·상태",casual:"캐주얼 게임 조작",
+      ui:"버튼·알림·정보창",army:"전투·이동 지휘",env:"환경과 상호작용"
+    };
+    function aiPromptText(){
+      const r=R();
+      const steps=r.steps.map((s,i)=>(i+1)+". "+plain(s.name.ko)+": "+plain(s.cap.ko)).join("\n");
+      return [
+        "나는 AI로 게임을 만드는 초보자야. 내 게임의 현재 파일을 먼저 확인하고, 기존 기능을 손상시키지 않으면서 아래 이펙트를 구현해 줘.",
+        "효과: "+plain(r.title.ko)+" ("+plain(r.title.en)+")",
+        "어울리는 장면: "+(FX_USE[r.cat]||"게임 주요 장면"),
+        "목표: 플레이어가 게임 손맛을 느낄 정도로 선명하고 멋진 연출.",
+        "구현 단계:\n"+steps,
+        "실제 이펙트 및 참고 코드: https://glonomy.com/fx-tips/code.html#"+r.id,
+        "내 게임의 엔진과 언어를 먼저 확인하고 그 방식으로 구현해 줘.",
+        "반동, 충격, 파티클, 사운드의 타이밍을 맞추고 RAW와 완성본의 차이를 확실히 만들어 줘.",
+        "심한 화면 점멸을 피하고 효과 강도·소리를 조절할 수 있게 해 줘.",
+        "기존 조작과 저장 기능을 유지하고 PC·모바일 성능을 고려해 줘.",
+        "테스트 방법을 함께 알려 줘. 프로젝트 파일이 없으면 먼저 요청해 줘.",
+        "코딩을 모르는 사람이 이해할 수 있도록 한국어로 설명해 줘."
+      ].join("\n\n");
+    }
+    function renderBeginnerGuide(){
+      if(app.idle) return;
+      const r=R();
+      $("beginnerCurrent").textContent=plain(r.title.ko);
+      $("beginnerUsage").textContent="어울리는 장면: "+(FX_USE[r.cat]||"게임의 주요 장면");
+      $("saveFx").textContent=app.favorites.has(r.id)?"♥ 저장했어요":"♡ 나중에 다시 보기";
+      $("saveFx").setAttribute("aria-pressed",String(app.favorites.has(r.id)));
+      $("savedFxCount").textContent=app.favorites.size;
+    }
+    function chooseDiscover(mode){
+      app.libraryMode=mode;
+      [["discoverTop","top"],["discoverAll","all"],["discoverSaved","saved"]].forEach(([id,k])=>{
+        const yes=mode===k;
+        $(id).classList.toggle("on",yes);
+        $(id).setAttribute("aria-pressed",String(yes));
+      });
+      app.group="all";app.cat="all";renderTabs();renderList();
+    }
     // 영상 밑에 지금 단계의 코드를 작게 보여 줌
     function renderCodeline(seg) {
       const r = R(), el = $("codeline");
@@ -1195,6 +1245,17 @@
     $("guideBtn").addEventListener("click", () => window.open(`code.html#${RECIPES[app.ri].id}`, "_blank"));
     $("copyScript").addEventListener("click", () => copyText(scriptText(), "대본을 복사했어요"));
     $("copyTTS").addEventListener("click", () => copyText(voiceOnlyText(), "CapCut 음성 대본을 복사했어요"));
+    $("copyAIPrompt").addEventListener("click",()=>copyText(aiPromptText(),"내 게임용 AI 요청문을 복사했어요"));
+    $("copyFxLink").addEventListener("click",()=>copyText(codeURL(R()),"효과 링크를 복사했어요"));
+    $("saveFx").addEventListener("click",()=>{
+      const id=R().id;
+      if(app.favorites.has(id)) app.favorites.delete(id); else app.favorites.add(id);
+      store.set("favorites",[...app.favorites]);renderBeginnerGuide();
+      if(app.libraryMode==="saved"&&window.matchMedia("(min-width:1140px)").matches)renderList();
+    });
+    $("discoverTop").addEventListener("click",()=>chooseDiscover("top"));
+    $("discoverAll").addEventListener("click",()=>chooseDiscover("all"));
+    $("discoverSaved").addEventListener("click",()=>chooseDiscover("saved"));
     $("fxPacks").addEventListener("click", e => { const b = e.target.closest("[data-pack]"); if (b) openPack(PACKS.find(p => p.id === b.dataset.pack)); });
     $("desktopMixToggle").addEventListener("click", () => {
       const opened = $("desktopMixList").hidden;
@@ -1251,6 +1312,7 @@
       const hash = location.hash.slice(1), idx = RECIPES.findIndex(r => r.id === hash);
       setSheetH(store.get("sheetH", Math.round(window.innerHeight * 0.42)));
       renderTabs(); renderList(); renderPackList();
+      $("savedFxCount").textContent=app.favorites.size;
       const mix = PACKS.find(p => p.id === new URLSearchParams(location.search).get("mix"));
       if (mix) openPack(mix);
       else if (idx >= 0) selectRecipe(idx);
