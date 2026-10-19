@@ -38,6 +38,33 @@ async function check(viewport,mobile,label) {
         "No duplicate small upper-left bloom: "+JSON.stringify(rig));
       await page.locator("#pcTheater").screenshot({path:"browser-artifacts/showcase-"+id+".png"});
     }
+    // Validate one full effect from each distinct genre with live canvas drawing.
+    // Check the whole library is populated before selecting representatives.
+    const covered = await page.evaluate(() => {
+      const fx=window.__fx, genres=[...new Set(fx.RECIPES.map(r=>r.cat))], results=[];
+      const canvas=document.querySelector("#pcCanvas");
+      for(const cat of genres){
+        const i=fx.RECIPES.findIndex(r=>r.cat===cat);
+        fx.selectRecipe(i);fx.setN(fx.RECIPES[i].steps.length);
+        try {
+          fx.fireAll();
+          const w=fx.app.worlds[0];
+          w.update(.016);
+          const original=w.view;
+          w.view={x:80,y:0,s:1.2,r:[0,0,960,540]};
+          const ctx=canvas.getContext("2d");ctx.setTransform(1,0,0,1,0,0);
+          w.draw(ctx);
+          w.view=original;
+          results.push({cat,ok:true,n:w.n});
+        } catch(e){results.push({cat,ok:false,error:String(e)});}
+      }
+      return {n:fx.RECIPES.length, director:window.FXDirector?.categoryCount, results};
+    });
+    assert.equal(covered.n,539,"539 FX retained");
+    assert.equal(covered.director,18,"18 visual genres active");
+    assert.equal(covered.results.length,18,"Each visual genre tested");
+    assert.ok(covered.results.every(x=>x.ok),"Genre preview errors: "+JSON.stringify(covered.results.filter(x=>!x.ok)));
+    await page.screenshot({path:"browser-artifacts/director-18-genres.png",fullPage:true});
     await page.locator("#pcFinal").click();
     await page.locator("#pcCompare").click();
     assert.equal(await page.locator("#pcTheater").evaluate(x=>x.classList.contains("split-view")),true);
