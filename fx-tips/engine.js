@@ -357,7 +357,77 @@ function makeSprites() {
   S.heroTop = dustFig(HUMAN_TOP, 24, 24, FX.colors.hero, 4);
   S.foeTop = (() => { const c = dustFig(HUMAN_TOP, 24, 24, FX.colors.foe, 4, 23), m = document.createElement("canvas"); m.width = c.width; m.height = c.height; const x = m.getContext("2d"); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return m; })();
   for (const k in S) SPR[k] = { c: S[k], white: tinted(S[k], "#ffffff"), red: tinted(S[k], "#ef4444"), orange: tinted(S[k], "#fb923c"), cyan: tinted(S[k], "#67e8f9") };
+  buildStudioArmRig();
   return fxLoadImages();
+}
+
+
+// Rigged variants keep the exact same dot material/lighting as the static hero.
+// Pre-rendered pieces rotate at joint pivots; there is no per-frame 3D rendering.
+function buildStudioArmRig() {
+  const body=HUMAN.filter((_,i)=>![0,1,2,15,16,17,18].includes(i));
+  SPR.heroRigBody={c:dustFig(body,32,44,FX.colors.hero,3.4,41)};
+  const limb=(seed)=>dustFig([{a:[4,8],b:[28,8],r0:1.5,r1:1.15,z:4}],34,16,FX.colors.hero,3.4,seed);
+  SPR.heroRigUpper={c:limb(47)};
+  SPR.heroRigLower={c:limb(71)};
+}
+function studioLerp(a,b,t){return a+(b-a)*t;}
+function studioEase(t){return t*t*(3-2*t);}
+function studioRigPose(w) {
+  const base={fe:[21.5,14.2],fh:[27,12.4],be:[11,15],bh:[13,20]};
+  const id=w.R.id,rig=w.studioRig;
+  if(!rig) return base;
+  const t=Math.max(0,w.time-rig.at);
+  let target=base,k=0;
+  if(id==="weapon-railgun") {
+    const charge={fe:[24,12.5],fh:[30,12],be:[15.5,13.6],bh:[24,13.3]};
+    const kick={fe:[19,8.5],fh:[28,7],be:[13,10.5],bh:[22,11]};
+    if(rig.phase==="charge"){target=charge;k=studioEase(Math.min(1,t/.55));}
+    if(rig.phase==="fire"){target=kick;k=1-studioEase(Math.min(1,Math.max(0,t-.10)/.46));}
+  } else if(id==="weapon-katana"){
+    const sword={fe:[13.5,17],fh:[9,22],be:[10.5,16.5],bh:[12,22]};
+    const strike={fe:[19,2],fh:[30,-1],be:[16,6],bh:[23,3]};
+    const settle={fe:[23,12],fh:[32,14],be:[10,16],bh:[11.5,21]};
+    if(rig.phase==="draw"){target=sword;k=1;}
+    if(rig.phase==="cut"){target=strike;k=1-studioEase(Math.min(1,t/.46));}
+    if(rig.phase==="sheathe"){target=settle;k=1-studioEase(Math.min(1,t/.55));}
+  } else if(id==="magic"){
+    const charge={fe:[20,5.5],fh:[26,1],be:[14.5,7],bh:[20,2.5]};
+    const cast={fe:[24,9],fh:[34,8],be:[17,12],bh:[27,11]};
+    if(rig.phase==="charge"){target=charge;k=studioEase(Math.min(1,t/.30));}
+    if(rig.phase==="launch"){target=cast;k=1-studioEase(Math.min(1,Math.max(0,t-.08)/.5));}
+  }
+  if (window.FXDirector) {
+    const general=FXDirector.pose(w,base);
+    if (general) return general;
+  }
+  return {
+    fe:base.fe.map((v,i)=>studioLerp(v,target.fe[i],k)),
+    fh:base.fh.map((v,i)=>studioLerp(v,target.fh[i],k)),
+    be:base.be.map((v,i)=>studioLerp(v,target.be[i],k)),
+    bh:base.bh.map((v,i)=>studioLerp(v,target.bh[i],k))
+  };
+}
+function drawStudioRigHero(ctx,a,w,top) {
+  const pose=studioRigPose(w), k=3.4,pad=10,S=2,
+    mw=SPR.hero.c.width,mh=SPR.hero.c.height;
+  const xy=point=>({
+    x:((point[0]*k+pad)*S/mw-.5)*a.w,
+    y:((point[1]*k+pad)*S/mh-1)*a.h
+  });
+  const bone=(a0,b0,front)=>{
+    const A=xy(a0),B=xy(b0),dx=B.x-A.x,dy=B.y-A.y,length=Math.hypot(dx,dy);
+    if(length<.1)return;
+    const key=front?"heroRigUpper":"heroRigLower",bmp=SPR[key].c;
+    const x0=(4*k+pad)*S,x1=(28*k+pad)*S,cy=(8*k+pad)*S;
+    ctx.save();ctx.translate(A.x,A.y);ctx.rotate(Math.atan2(dy,dx));
+    ctx.scale(length/(x1-x0),a.h/mh);
+    ctx.drawImage(bmp,-x0,-cy);ctx.restore();
+  };
+  const backShoulder=[12.6,10],frontShoulder=[17.6,9.8];
+  bone(backShoulder,pose.be,false);bone(pose.be,pose.bh,false);
+  ctx.drawImage(SPR.heroRigBody.c,-a.w/2,top,a.w,a.h);
+  bone(frontShoulder,pose.fe,true);bone(pose.fe,pose.fh,true);
 }
 
 /* ───────── 소리 (파일 없이 합성) ───────── */
@@ -465,7 +535,51 @@ const STUDIO_MOODS = {
   casual:[124,221,210], ui:[135,218,215], racing:[88,179,251],
   move:[107,175,249], env:[174,169,131]
 };
-function studioBackdrop(ctx, v, cat, clock) {
+/* Lightweight, code-drawn level dressing for the 3 featured demos (no assets). */
+function studioDemoSet(ctx,v,id){
+  if (!["weapon-railgun","weapon-katana","magic"].includes(id)) return;
+  const [x,y,w,h]=v;
+  ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
+  if(id==="weapon-railgun"){
+    ctx.fillStyle="rgba(36,83,99,.18)";ctx.fillRect(x,y+h*.16,w,h*.62);
+    for(let i=0;i<6;i++){
+      const px=x+w*(.07+i*.177);
+      ctx.fillStyle="rgba(10,24,38,.55)";ctx.fillRect(px,y+h*.10,w*.037,h*.7);
+      ctx.fillStyle="rgba(82,220,252,.13)";ctx.fillRect(px+w*.03,y+h*.12,2,h*.65);
+      ctx.fillStyle="rgba(86,218,250,.065)";ctx.fillRect(px-5,y+h*.52,w*.12,2);
+    }
+    ctx.fillStyle="rgba(20,78,112,.16)";ctx.fillRect(x,y+h*.84,w,h*.16);
+  } else if(id==="weapon-katana"){
+    const moonX=x+w*.77,moonY=y+h*.2;
+    const moon=ctx.createRadialGradient(moonX,moonY,7,moonX,moonY,w*.22);
+    moon.addColorStop(0,"rgba(213,232,243,.17)");moon.addColorStop(1,"rgba(155,215,248,0)");
+    ctx.fillStyle=moon;ctx.fillRect(x,y,w,h);
+    ctx.fillStyle="rgba(110,157,155,.10)";ctx.beginPath();ctx.arc(moonX,moonY,44,0,TAU);ctx.fill();
+    for(let i=0;i<4;i++){
+      const px=x+w*(.1+i*.245);
+      ctx.fillStyle="rgba(12,24,31,.50)";ctx.fillRect(px,y+h*.07,13,h*.65);
+      ctx.fillStyle="rgba(106,191,188,.12)";ctx.fillRect(px,y+h*.13,2,h*.58);
+    }
+    ctx.fillStyle="rgba(32,72,80,.24)";ctx.fillRect(x,y+h*.79,w,h*.21);
+  } else if(id==="magic"){
+    const cx=x+w*.56,cy=y+h*.42,r=Math.min(w,h)*.31;
+    const halo=ctx.createRadialGradient(cx,cy,5,cx,cy,r*1.5);
+    halo.addColorStop(0,"rgba(139,94,234,.19)");halo.addColorStop(1,"rgba(139,94,234,0)");
+    ctx.fillStyle=halo;ctx.fillRect(x,y,w,h);
+    ctx.strokeStyle="rgba(176,128,241,.16)";ctx.lineWidth=2;
+    for(const scale of [1,0.84,0.58]){
+      ctx.beginPath();ctx.arc(cx,cy,r*scale,-Math.PI*.85,Math.PI*.83);ctx.stroke();
+    }
+    for(let i=0;i<9;i++){
+      const a=i*TAU/9;
+      ctx.fillStyle="rgba(215,174,255,.23)";
+      ctx.fillRect(cx+Math.cos(a)*r*.82,cy+Math.sin(a)*r*.82,3,3);
+    }
+  }
+  ctx.restore();
+}
+
+function studioBackdrop(ctx, v, cat, clock, recipeId) {
   const [x,y,w,h]=v, col=STUDIO_MOODS[cat] || [174,196,164], rgb=col.join(",");
   const floor=ctx.createLinearGradient(x,y,x,y+h);
   floor.addColorStop(0,"#090e17"); floor.addColorStop(0.58,"#111b26"); floor.addColorStop(1,"#090c12");
@@ -474,18 +588,166 @@ function studioBackdrop(ctx, v, cat, clock) {
   halo.addColorStop(0,"rgba("+rgb+",0.17)"); halo.addColorStop(0.44,"rgba("+rgb+",0.045)");
   halo.addColorStop(1,"rgba("+rgb+",0)");
   ctx.fillStyle=halo; ctx.fillRect(x,y,w,h);
-  ctx.strokeStyle="rgba("+rgb+",0.06)"; ctx.lineWidth=1;
-  const spacing=38;
-  const offset=Math.sin(clock*0.12)*3;
-  ctx.beginPath();
-  for(let gx=x+spacing+offset;gx<x+w;gx+=spacing){ctx.moveTo(gx,y);ctx.lineTo(gx,y+h);}
-  for(let gy=y+spacing;gy<y+h;gy+=spacing){ctx.moveTo(x,gy);ctx.lineTo(x+w,gy);}
-  ctx.stroke();
+  studioDemoSet(ctx,v,recipeId);
+  if (window.FXDirector) FXDirector.stage(ctx,v,cat,recipeId,clock);
+  // Art direction: visible grid only when it communicates a board, interface or
+  // tactical map. Hiding generic graph-paper lines keeps combat FX in focus.
+  if (/^(ui|puzzle|strategy|army|sim)$/.test(cat)) {
+    ctx.strokeStyle="rgba("+rgb+",0.045)"; ctx.lineWidth=1;
+    const spacing=cat==="puzzle"?46:57;
+    ctx.beginPath();
+    for(let gx=x+spacing;gx<x+w;gx+=spacing){ctx.moveTo(gx,y);ctx.lineTo(gx,y+h);}
+    for(let gy=y+spacing;gy<y+h;gy+=spacing){ctx.moveTo(x,gy);ctx.lineTo(x+w,gy);}
+    ctx.stroke();
+  }
   // Cinematic rim-light bars, kept below the foreground and UI.
   const rim=ctx.createLinearGradient(x,y,x+w,y);
   rim.addColorStop(0,"rgba("+rgb+",0.075)");rim.addColorStop(0.24,"rgba("+rgb+",0)");
   rim.addColorStop(0.76,"rgba("+rgb+",0)");rim.addColorStop(1,"rgba("+rgb+",0.075)");
   ctx.fillStyle=rim;ctx.fillRect(x,y,w,h);
+}
+
+
+/* Genre-specific final-stage payoff. Original RAW and each learning step stay untouched.
+   Effects are throttled and share the normal particle budget for mobile safety. */
+const STUDIO_PAYOFF_EVENTS = {
+  weapon:["fire","cast","blast"],combat:["fire","blast"],duel:["strike","cast"],fighting:["strike","combo"],
+  shooter:["fire","shoot"],action:["dash","blast"],horde:["fire","blast"],
+  puzzle:["match","merge","clear","chain","done","unlock"],rpg:["cast","success","complete","gain","unlock"],
+  ui:["claim","unlock","upgrade"],casual:["pop","done","unlock"],sim:["upgrade","gain"],
+  racing:["finish","boost"],strategy:["complete","unlock"],survival:["heal","unlock"]
+};
+function studioPayoff(w, ev, args) {
+  if (w.bare || w.n < 2 || w.n !== w.R.steps.length) return;
+  const cat=w.R.cat, signals=STUDIO_PAYOFF_EVENTS[cat];
+  if (!signals || !signals.includes(ev)) return;
+  const cooldown=/^(weapon|shooter|combat|horde)$/.test(cat) ? 0.19 : 0.42;
+  if (w.studioLast != null && w.time-w.studioLast < cooldown) return;
+  w.studioLast=w.time;
+  const src=args.find(a=>a && typeof a==="object" && Number.isFinite(a.x) && Number.isFinite(a.y));
+  const focal=src || (cat==="weapon" || cat==="combat" ? (w.hero || w.foe) : null);
+  const x=focal?focal.x:270,y=focal?(src?src.y:(focal.gy||G)-(focal.h||80)*0.56):184;
+  const magic=/magic|spell|summon|mana|cast|arcane|lightning/i.test(w.R.id);
+  const c=magic?"173,138,255":/^(puzzle|ui|casual)$/.test(cat)?"111,239,218":
+          cat==="rpg"?"207,148,255":cat==="racing"?"102,190,255":"255,181,101";
+  const isSpecial=["clear","chain","match","unlock","complete","gain","blast","cast"].includes(ev);
+  const size=isSpecial?64:43, num=isSpecial?13:8;
+  w.spawn({type:"glow",x,y,size:size*1.7,size1:0,life:0.25,color:c,alpha:0.75});
+  w.spawn({type:"ring",x,y,size:7,size1:size,life:0.3,w:isSpecial?7:4,color:c});
+  w.spawn({type:"rays",x,y,size:size*1.15,size1:0,life:0.19,n:12,color:c});
+  w.spawn({type:"star",x,y,size:isSpecial?28:19,size1:0,life:0.16,color:"255,252,229"});
+  for(let i=0;i<num;i++){
+    const ang=Math.random()*TAU,speed=120+Math.random()*(isSpecial?410:270);
+    w.spawn({type:"spark",x,y,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,
+      size:1.35+Math.random()*1.9,drag:4.1,life:0.15+Math.random()*0.26,color:c});
+  }
+  if (/^(weapon|combat|fighting|shooter)$/.test(cat)) w.zoomPunch(0.018);
+}
+
+/* Three hero showcase scenes: fully procedural Canvas, no meshes or images.
+   Only enabled on the FINAL layer; no additional continuous animation loops. */
+function studioHeroEvent(w, ev, args) {
+  if (w.bare || w.n !== w.R.steps.length) return;
+  const id=w.R.id;
+  if(["weapon-railgun","weapon-katana","magic"].includes(id)) {
+    if((id==="weapon-railgun"&&(ev==="charge"||ev==="fire"))||
+       (id==="weapon-katana"&&(ev==="cut"||ev==="sheathe"))||
+       (id==="magic"&&(ev==="charge"||ev==="launch")))
+      w.studioRig={phase:ev,at:w.time};
+  }
+  if (id==="weapon-railgun") {
+    if(ev==="charge"){const at=args[0]; w.studioCharge={start:w.time};return;}
+    if(ev==="fire"){
+      const m=args[0];if(!m || !Number.isFinite(m.x))return;
+      w.studioHero={kind:"rail",start:w.time,x:m.x,y:m.y};
+      for(let i=0;i<12;i++){const xx=m.x+Math.random()*340;
+        w.spawn({type:"spark",x:xx,y:m.y+rand(-12,12),vx:rand(90,260),vy:rand(-160,160),size:rand(1,2.7),drag:4,life:rand(.12,.37),color:"114,230,255"});}
+    }
+  } else if (id==="weapon-katana") {
+    if(ev==="cut") {
+      const c=args[0];if(!c)return;
+      w.studioHero={kind:"katana",start:w.time,x:c.x0,y:c.y,x1:c.x1};
+      for(let i=0;i<10;i++){const x=c.x0+(c.x1-c.x0)*Math.random();
+        w.spawn({type:"spark",x,y:c.y+rand(-15,15),vx:rand(-120,150),vy:rand(-80,80),drag:4,size:rand(1.2,3),life:rand(.15,.38),color:"172,244,250"});}
+    }
+    if(ev==="sheathe" || ev==="hit") {
+      if(w.studioHero&&w.studioHero.kind==="katana"){w.studioHero.burstAt=w.time;}
+    }
+  } else if(id==="magic"){
+    if(ev==="charge")w.studioCharge={start:w.time};
+    if(ev==="launch") {
+      const o=args[0]; if(o)w.studioHero={kind:"magic",start:w.time,x:o.x,y:o.y};
+    }
+    if(ev==="hit"){
+      const p=args[0];if(p && Number.isFinite(p.x)) {
+        w.studioHero={kind:"magicBurst",start:w.time,x:p.x,y:p.y};
+        for(let i=0;i<16;i++) {
+          const a=Math.random()*TAU,vel=rand(110,400);
+          w.spawn({type:"spark",x:p.x,y:p.y,vx:Math.cos(a)*vel,vy:Math.sin(a)*vel,drag:4.5,
+            life:rand(.17,.5),size:rand(1.2,3),color:"198,147,255"});
+        }
+      }
+    }
+  }
+}
+function drawStudioHero(ctx,w){
+  if(w.bare||w.n!==w.R.steps.length)return;
+  const h=w.studioHero,c=w.studioCharge;
+  // Charged spell and railgun rings: one glow gradient, two wireframe arcs.
+  if(c && w.time-c.start<.78&&(w.R.id==="magic"||w.R.id==="weapon-railgun")){
+    const age=w.time-c.start, power=Math.min(1,age/.66);
+    const origin=w.R.id==="magic"?
+      {x:(w.hero?.x||110)+50,y:G-72}:
+      {x:(w.hero?.x||80)+150,y:G-75};
+    const tint=w.R.id==="magic"?"164,116,255":"92,218,255";
+    ctx.save();ctx.globalCompositeOperation="lighter";
+    glow(ctx,origin.x,origin.y,38+power*50,tint,power*.55);
+    ctx.translate(origin.x,origin.y);ctx.rotate(age*2.1);
+    ctx.strokeStyle="rgba("+tint+","+(0.4+power*.5)+")";ctx.lineWidth=1.5;
+    for(let k=0;k<2;k++){
+      ctx.beginPath();ctx.ellipse(0,0,24+power*16,(24+power*16)*(k?.52:.92),k?.4:-.25,0,TAU);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  if(!h)return;
+  const t=w.time-h.start;if(t<0||t>1.02)return;
+  ctx.save();ctx.globalCompositeOperation="lighter";ctx.lineCap="round";
+  if(h.kind==="rail"){
+    const fade=Math.max(0,1-t/.95);
+    if(fade>0){
+      const beam=ctx.createLinearGradient(h.x,h.y,580,h.y);
+      beam.addColorStop(0,"rgba(100,231,255,.98)");beam.addColorStop(.4,"rgba(195,245,255,.98)");
+      beam.addColorStop(1,"rgba(92,205,255,.05)");
+      for(const [width,alpha] of [[62,.16],[37,.26],[18,.72],[5,.98]]) {
+        ctx.beginPath();ctx.moveTo(h.x,h.y);ctx.lineTo(600,h.y);
+        ctx.lineWidth=width*fade;ctx.strokeStyle=beam;ctx.globalAlpha=alpha*fade;ctx.stroke();
+      }
+      ctx.globalAlpha=1;glow(ctx,h.x,h.y,80,"130,223,255",.6*fade);
+    }
+  } else if(h.kind==="katana"){
+    const age=t,fade=Math.max(0,1-age/.62),left=h.x-30,right=h.x1+30;
+    ctx.lineWidth=2.5+fade*5;
+    ctx.strokeStyle="rgba(190,254,255,"+fade+")";
+    ctx.beginPath();ctx.moveTo(left,h.y+18);ctx.lineTo(right,h.y-17);ctx.stroke();
+    const burst=h.burstAt==null?0:Math.max(0,1-(w.time-h.burstAt)/.36);
+    if(burst>0) {
+      glow(ctx,(left+right)/2,h.y,120,"122,233,255",burst*.7);
+      ctx.lineWidth=1.5;ctx.strokeStyle="rgba(225,255,255,"+burst+")";
+      ctx.beginPath();ctx.moveTo(left,h.y-38);ctx.lineTo(right,h.y+41);ctx.stroke();
+    }
+  } else if(h.kind==="magic"||h.kind==="magicBurst"){
+    const fade=Math.max(0,1-t/.48),rr=h.kind==="magicBurst"?55+95*t:36+35*t;
+    glow(ctx,h.x,h.y,rr*1.6,"162,115,255",fade*.65);
+    ctx.strokeStyle="rgba(206,167,255,"+fade*.85+")";ctx.lineWidth=Math.max(1,6*fade);
+    ctx.beginPath();ctx.arc(h.x,h.y,rr,0,TAU);ctx.stroke();
+    ctx.beginPath();ctx.arc(h.x,h.y,rr*.68,0,TAU);ctx.stroke();
+    if(h.kind==="magicBurst"){
+      for(let i=0;i<8;i++){let a=i*TAU/8+t*1.2;ctx.beginPath();ctx.moveTo(h.x+Math.cos(a)*rr*.3,h.y+Math.sin(a)*rr*.3);
+        ctx.lineTo(h.x+Math.cos(a)*rr*1.28,h.y+Math.sin(a)*rr*1.28);ctx.stroke();}
+    }
+  }
+  ctx.restore();
 }
 
 class World {
@@ -505,6 +767,9 @@ class World {
     if (this.bare) return;
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
+    if (window.FXDirector) FXDirector.moment(this,ev,a);
+    else studioPayoff(this, ev, a);
+    studioHeroEvent(this, ev, a);
     // Showcase-grade impact accent on finished combat scenes only.
     // We leave RAW and intermediate steps untouched, so before/after stays meaningful.
     if ((ev === "hit" || ev === "kill") && this.n >= 3 && this.n === this.R.steps.length &&
@@ -671,7 +936,7 @@ class World {
     const v = this.view, [rx, ry, rw, rh] = v.r;
     ctx.save();
     ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
-    studioBackdrop(ctx, v.r, this.R.cat, this.time);
+    studioBackdrop(ctx, v.r, this.R.cat, this.time, this.R.id);
     ctx.translate(v.x, v.y); ctx.scale(v.s, v.s);
     const tr = this.trauma * this.trauma;
     ctx.translate(270 + (Math.random() * 2 - 1) * tr * 24 + this.kx, 180 + (Math.random() * 2 - 1) * tr * 18 + this.ky);
@@ -689,10 +954,12 @@ class World {
     for (const p of this.parts) if (p.under) drawPart(ctx, p);
     for (const a of this.actors) drawShadow(ctx, a);
     if (this.R.drawBack) this.R.drawBack(this, ctx);
-    for (const a of this.actors) drawActor(ctx, a);
+    for (const a of this.actors) drawActor(ctx, a, this);
     if (this.R.drawFront) this.R.drawFront(this, ctx);
     for (const p of this.shots) drawShot(ctx, p);
     for (const p of this.parts) if (!p.under) drawPart(ctx, p);
+    drawStudioHero(ctx,this);
+    if (window.FXDirector) FXDirector.overlay(ctx,this);
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
     // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
     const N = this.R.steps.length, glowA = N && this.n > 0 && !this.bare ? 0.9 * this.n / N : 0;
@@ -861,7 +1128,7 @@ function drawShadow(ctx, a) {
   ctx.fillStyle = `rgba(0,0,0,${0.32 * a.alpha * lift})`;
   ctx.beginPath(); ctx.ellipse(a.x + a.ox, a.gy + 2, a.w * 0.34 * a.sx, 8, 0, 0, TAU); ctx.fill();
 }
-function drawActor(ctx, a) {
+function drawActor(ctx, a, w) {
   if (a.alpha <= 0) return;
   const hide = a.blink > 0 && Math.floor(a.blink * 14) % 2 === 0;
   ctx.save();
@@ -877,7 +1144,11 @@ function drawActor(ctx, a) {
   ctx.scale(a.sx * (1 - br * 0.5) * (a.flip ? -1 : 1), a.sy * (1 + br));
   // Soft rim light on the hero silhouette, without changing the custom sprites.
   if (a.key === "hero" && !a.top) { ctx.shadowColor = "rgba(160,216,242,.38)"; ctx.shadowBlur = 9; }
-  ctx.drawImage(a.s.c, -a.w / 2, top, a.w, a.h);
+  const rigged = w && a.key==="hero" && !a.top && !w.bare &&
+    w.n===w.R.steps.length && (window.FXDirector || ["weapon-railgun","weapon-katana","magic"].includes(w.R.id)) &&
+    !FX.images.hero && SPR.heroRigBody;
+  if(rigged) drawStudioRigHero(ctx,a,w,top);
+  else ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h);
   ctx.shadowBlur = 0;
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
@@ -1051,7 +1322,12 @@ function bloomBegin(ctx, rx, ry, rw, rh) {
   if (!BLOOM.ok) return null;
   try {
     const M = ctx.getTransform(), base = BLOOM.base = BLOOM.base || new DOMMatrix();
-    const k = ctx.canvas.width / 540, D = BLOOM.D;
+    // Match the actual canvas coordinate system: portrait uses 540 logical
+    // pixels, while the desktop theater is 960 logical pixels wide.
+    // Previously assuming 540 on the 960 theater scaled down bloom and
+    // replayed it as a miniature duplicate in the upper-left corner.
+    const logicalW = ctx.canvas.fxLogicalWidth || 540;
+    const k = ctx.canvas.width / logicalW, D = BLOOM.D;
     const W = Math.max(1, Math.round(rw * k / D)), H = Math.max(1, Math.round(rh * k / D));
     if (!BLOOM.c) { BLOOM.c = document.createElement("canvas"); BLOOM.x = BLOOM.c.getContext("2d"); }
     if (BLOOM.c.width !== W || BLOOM.c.height !== H) { BLOOM.c.width = W; BLOOM.c.height = H; }

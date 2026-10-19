@@ -1,0 +1,28 @@
+name: FX Lab browser preview
+on:
+  push:
+    branches: [fxlab-desktop-workspace-20261019]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-save playwright@1.57.0
+      - run: npx playwright install --with-deps chromium
+      - run: python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/fxlab-server.log 2>&1 &
+      - run: node tests/browser-fxlab.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fx-lab-browser-screenshots
+          path: browser-artifacts/
+          if-no-files-found: ignore
