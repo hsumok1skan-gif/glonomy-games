@@ -904,7 +904,16 @@
       // First 2 seconds are the payoff; then rewind to RAW and teach the layers.
       segs.push({ k: "hook", n: r.steps.length, dur: Math.max(1.65, Math.min(2.35, r.interval + 0.95)), fires: [0.26, ...(r.interval < 1 ? [0.26 + r.interval] : [])] });
       segs.push({ k: "intro", n: 0, ...plan(3.4, r.intro[L]) });
-      r.steps.forEach((s, i) => segs.push({ k: "step", n: i + 1, ...plan(r.stepDur, s.cap[L]) }));
+      // Reel pacing follows a visual arc, not an arbitrary 5/6/7 tiny steps.
+      // Keep all tutorial layers in the manual inspector; the recorded short
+      // shows at most two meaningful upgrades before RAW/FINAL comparison.
+      const total = r.steps.length;
+      const milestones = total <= 2 ? Array.from({length: total}, (_,i)=>i+1)
+        : [Math.ceil(total/2), total];
+      milestones.forEach(n => {
+        const s = r.steps[n-1];
+        segs.push({ k: "step", n, ...plan(r.stepDur, s.cap[L]) });
+      });
       segs.push({ k: "split", ...plan(5, SPLIT[L](r.steps.length)) });
       segs.push({ k: "cta", n: r.steps.length, dur: Math.max(3.6, words(CTA[L].sub) / WPS + 1.4), fires: [] });
       let t = 0; segs.forEach(s => { s.t = t; t += s.dur; });
