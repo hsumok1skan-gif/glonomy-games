@@ -1046,7 +1046,7 @@
       const mix = PACKS.find(p => p.id === new URLSearchParams(location.search).get("mix"));
       if (mix) openPack(mix);
       else if (idx >= 0) selectRecipe(idx);
-      else { app.ri = RECIPES.indexOf(POSTS[todayIdx()].r); showIdle(); }
+      else { const featured = RECIPES.findIndex(r => r.id === "weapon-railgun"); selectRecipe(featured >= 0 ? featured : 0); }
       layout();
       requestAnimationFrame(t => { last = t; frame(t); });
     });
