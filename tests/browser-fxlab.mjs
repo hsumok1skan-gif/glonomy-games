@@ -64,6 +64,23 @@ async function check(viewport,mobile,label) {
     assert.equal(covered.director,18,"18 visual genres active");
     assert.equal(covered.results.length,18,"Each visual genre tested");
     assert.ok(covered.results.every(x=>x.ok),"Genre preview errors: "+JSON.stringify(covered.results.filter(x=>!x.ok)));
+    // Every recipe must set up, fire, and advance without throwing, including
+    // rare gameplay/UI events. We draw a representative from each category above.
+    const full=await page.evaluate(()=>{
+      const fx=window.__fx, fail=[];
+      for(let i=0;i<fx.RECIPES.length;i++){
+        const R=fx.RECIPES[i];
+        try{
+          const w=new World(R,R.steps.length,{x:0,y:0,s:1,r:[0,0,540,360]},true,false);
+          R.fire(w);
+          w.update(.016);
+          if (w.parts.length>700) throw new Error("exceeded particle cap");
+        }catch(e){fail.push({i,id:R.id,error:String(e)});}
+      }
+      return {count:fx.RECIPES.length,fail:fail.slice(0,30),failCount:fail.length};
+    });
+    assert.equal(full.count,539);
+    assert.equal(full.failCount,0,"539 FX activation errors: "+JSON.stringify(full.fail));
     await page.screenshot({path:"browser-artifacts/director-18-genres.png",fullPage:true});
     await page.locator("#pcFinal").click();
     await page.locator("#pcCompare").click();
