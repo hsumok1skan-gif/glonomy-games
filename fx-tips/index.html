@@ -1329,7 +1329,16 @@
         '<b>'+esc(plain(layer.name.ko))+'</b>'+
         '<p>'+esc(plain(layer.cap.ko))+'</p></div></div>'
       ).join("");
-      const suggestions=RECIPES.filter(x=>x.cat===r.cat&&x.id!==r.id).slice(0,3);
+      // Rotate cross-section of the same genre instead of always suggesting
+      // the first three entries. Related ideas change naturally as people browse.
+      const same=RECIPES.filter(x=>x.cat===r.cat&&x.id!==r.id);
+      const offset=(RECIPES.findIndex(x=>x.id===r.id)*7)%Math.max(1,same.length);
+      const suggestions=[];
+      for(const shift of [0,Math.floor(same.length/3),Math.floor(same.length*2/3),1,2]){
+        if(!same.length || suggestions.length>=3)break;
+        const candidate=same[(offset+shift)%same.length];
+        if(!suggestions.some(x=>x.id===candidate.id))suggestions.push(candidate);
+      }
       $("relatedFx").innerHTML=suggestions.map(x=>
         '<button type="button" data-related-id="'+esc(x.id)+'">'+esc(plain(x.title.ko))+'</button>'
       ).join("");
