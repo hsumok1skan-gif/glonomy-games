@@ -397,6 +397,10 @@ function studioRigPose(w) {
     if(rig.phase==="charge"){target=charge;k=studioEase(Math.min(1,t/.30));}
     if(rig.phase==="launch"){target=cast;k=1-studioEase(Math.min(1,Math.max(0,t-.08)/.5));}
   }
+  if (window.FXDirector) {
+    const general=FXDirector.pose(w,base);
+    if (general) return general;
+  }
   return {
     fe:base.fe.map((v,i)=>studioLerp(v,target.fe[i],k)),
     fh:base.fh.map((v,i)=>studioLerp(v,target.fh[i],k)),
@@ -585,6 +589,7 @@ function studioBackdrop(ctx, v, cat, clock, recipeId) {
   halo.addColorStop(1,"rgba("+rgb+",0)");
   ctx.fillStyle=halo; ctx.fillRect(x,y,w,h);
   studioDemoSet(ctx,v,recipeId);
+  if (window.FXDirector) FXDirector.stage(ctx,v,cat,recipeId,clock);
   ctx.strokeStyle="rgba("+rgb+",0.06)"; ctx.lineWidth=1;
   const spacing=38;
   const offset=Math.sin(clock*0.12)*3;
@@ -759,7 +764,8 @@ class World {
     if (this.bare) return;
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
-    studioPayoff(this, ev, a);
+    if (window.FXDirector) FXDirector.moment(this,ev,a);
+    else studioPayoff(this, ev, a);
     studioHeroEvent(this, ev, a);
     // Showcase-grade impact accent on finished combat scenes only.
     // We leave RAW and intermediate steps untouched, so before/after stays meaningful.
@@ -950,6 +956,7 @@ class World {
     for (const p of this.shots) drawShot(ctx, p);
     for (const p of this.parts) if (!p.under) drawPart(ctx, p);
     drawStudioHero(ctx,this);
+    if (window.FXDirector) FXDirector.overlay(ctx,this);
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
     // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
     const N = this.R.steps.length, glowA = N && this.n > 0 && !this.bare ? 0.9 * this.n / N : 0;
@@ -1135,7 +1142,7 @@ function drawActor(ctx, a, w) {
   // Soft rim light on the hero silhouette, without changing the custom sprites.
   if (a.key === "hero" && !a.top) { ctx.shadowColor = "rgba(160,216,242,.38)"; ctx.shadowBlur = 9; }
   const rigged = w && a.key==="hero" && !a.top && !w.bare &&
-    w.n===w.R.steps.length && ["weapon-railgun","weapon-katana","magic"].includes(w.R.id) &&
+    w.n===w.R.steps.length && (window.FXDirector || ["weapon-railgun","weapon-katana","magic"].includes(w.R.id)) &&
     !FX.images.hero && SPR.heroRigBody;
   if(rigged) drawStudioRigHero(ctx,a,w,top);
   else ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h);
