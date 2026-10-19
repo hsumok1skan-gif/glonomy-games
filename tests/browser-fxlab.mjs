@@ -81,6 +81,69 @@ async function check(viewport,mobile,label) {
     });
     assert.equal(full.count,539);
     assert.equal(full.failCount,0,"539 FX activation errors: "+JSON.stringify(full.fail));
+    // Commercial game-feel regressions for three independently authored FX:
+    // damage follows arrival, contacts linger, and kill feedback has a payoff.
+    const combatUpgrade=await page.evaluate(()=>{
+      const v={};const get=id=>window.__fx.RECIPES.find(r=>r.id===id);
+      const sim=(id,n,times,shots=1)=>{
+        const R=get(id),w=new World(R,n,{x:0,y:0,s:1,r:[0,0,540,360]},true,false);
+        R.fire(w);
+        const out=[];let time=0,scheduled=1;
+        for(const until of times){
+          while(time<until-.00001){
+            w.update(Math.min(.016,until-time));time=Math.min(until,time+.016);
+            if(id==="shooter-killconfirm"&&scheduled<shots&&time>=scheduled*.45){
+              R.fire(w);scheduled++;
+            }
+          }
+          out.push({time,hp:w.foe?.hp??w.gobs?.[0]?.hp,ignited:w.fl?.ignited??0,
+            scorch:w.lz?.scorch??0,impact:w.impactGlow??0,
+            hpView:w.fl?.hpView??w.lz?.hpView??w.hpView??0,
+            hpLag:w.fl?.hpLag??w.lz?.hpLag??w.hpLag??0,
+            kills:w.skulls||0,alive:w.gobs?.[0]?.alive});
+        }
+        return out;
+      };
+      for(const id of ["weapon-flamethrower","weapon-laser","shooter-killconfirm"]){
+        const R=get(id);v[id]={steps:R?.steps?.length};
+      }
+      v.flameRaw=sim("weapon-flamethrower",0,[.10,.39,.7]);
+      v.flameFull=sim("weapon-flamethrower",v["weapon-flamethrower"].steps,[.10,.39,.7]);
+      v.laser=sim("weapon-laser",v["weapon-laser"].steps,[.03,.25,.49]);
+      v.shooter=sim("shooter-killconfirm",v["shooter-killconfirm"].steps,[.1,.55,1.0,1.32],3);
+      return v;
+    });
+    assert.equal(combatUpgrade.flameRaw[0].hp,240,"Flame should not damage before stream arrives");
+    assert.equal(combatUpgrade.flameFull[0].hp,240,"Upgraded stream cannot cause phantom early damage");
+    assert.ok(combatUpgrade.flameRaw[1].hp<240,"Plain stream must actually land");
+    assert.equal(combatUpgrade.flameRaw[1].ignited,0,"RAW should not carry burning status");
+    assert.ok(combatUpgrade.flameFull[1].ignited>0,"Full stream visibly ignites target on arrival");
+    assert.ok(combatUpgrade.flameFull[2].hp<combatUpgrade.flameRaw[2].hp,"Burn must add real delayed DOT");
+    assert.ok(combatUpgrade.laser[1].hp<260,"Laser must deal actual damage on contact");
+    assert.ok(combatUpgrade.laser[1].scorch>0,"Laser must visibly scorch contact surface");
+    assert.ok(combatUpgrade.shooter.at(-1).hp<=0,"Three hit sequence kills target");
+    assert.ok(combatUpgrade.shooter.at(-1).kills>=1,"Final kill renders an actual kill marker");
+    await page.evaluate(()=>{
+      const cv=document.createElement("canvas");cv.id="genre-qa";cv.width=960;cv.height=540;
+      cv.fxLogicalWidth=960;
+      Object.assign(cv.style,{position:"fixed",left:"0",top:"0",width:"960px",height:"540px",zIndex:"99999"});
+      document.body.appendChild(cv);
+    });
+    for(const [id,at] of [["weapon-flamethrower",.42],["weapon-laser",.31],["shooter-killconfirm",1.32]]){
+      await page.evaluate(({id,at})=>{
+        const R=window.__fx.RECIPES.find(r=>r.id===id),w=new World(R,R.steps.length,{x:80,y:0,s:1.2,r:[0,0,960,540]},true,false);
+        R.fire(w);
+        let t=0,fired=1;
+        while(t<at){
+          const dt=Math.min(.016,at-t);w.update(dt);t+=dt;
+          if(id==="shooter-killconfirm"&&fired<3&&t>=fired*.45){R.fire(w);fired++;}
+        }
+        const cv=document.querySelector("#genre-qa"),ctx=cv.getContext("2d");
+        ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,960,540);w.draw(ctx);
+      },{id,at});
+      await page.locator("#genre-qa").screenshot({path:"browser-artifacts/game-feel-"+id+".png"});
+    }
+    await page.locator("#genre-qa").evaluate(x=>x.remove());
     // Compare one authentic base attack against two genuinely transformative
     // passes: attached flames+DOT and the full cinematic HP-bar experience.
     const burnQa=await page.evaluate(()=>{
