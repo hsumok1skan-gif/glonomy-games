@@ -168,6 +168,18 @@
 
     .item.featured { padding: 16px 14px; }
     .item.featured h3 { font-size: 19px; }
+    /* FX Lab showcase — highlighted above the other apps, fully responsive. */
+    .item.fx-feature { position:relative; overflow:hidden; border-color:rgba(200,240,60,.46); background:radial-gradient(ellipse at 90% 16%,rgba(200,240,60,.17),transparent 42%),linear-gradient(125deg,#121d27,#152218 75%); box-shadow:0 20px 48px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.07); }
+    .item.fx-feature::before {content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 53%,rgba(255,255,255,.045) 59%,transparent 68%);}
+    .fx-feature .fx-mark { background:linear-gradient(135deg,#e6ff76,#8fbf2d);color:#111c0b;box-shadow:0 0 24px rgba(200,240,60,.22); }
+    .fx-feature .kind {color:#d9fc6c;}
+    .fx-feature h3 {font-size:20px;line-height:1.2;margin:5px 0 5px;}
+    .fx-feature .desc {color:#bdcbbd;-webkit-line-clamp:3;}
+    .fx-feature .go {background:#c8f03c;color:#101c0e;border-color:transparent;font-size:21px;}
+    .fx-feature .fx-tags {display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+    .fx-feature .fx-tags b {font-size:10px;font-weight:800;letter-spacing:.025em;padding:5px 8px;border:1px solid rgba(216,252,108,.24);border-radius:999px;color:#deedc0;background:rgba(200,240,60,.075);}
+    @media(hover:hover){.item.fx-feature:hover{border-color:#c8f03c;transform:translateY(-2px);}}
+
 
     .group-label {
       margin: 12px 2px 0;
@@ -218,6 +230,16 @@
     </nav>
 
     <main class="list" id="list">
+      <a class="item fx-feature" data-cat="sns" href="./fx-tips/index.html" aria-label="FX Lab: 539가지 게임 이펙트 직접 체험하기">
+        <span class="badge fx-mark">FX</span>
+        <span class="body">
+          <span class="kind">FEATURED · GAME FEEL LAB</span>
+          <h3>밋밋한 게임이 달라지는 순간</h3>
+          <span class="desc">RAW와 완성본을 직접 비교하세요. 539개 이펙트, 첫 동작부터 사운드, 영어 릴스 녹화·코드까지 한곳에서.</span>
+          <span class="fx-tags"><b>539 FX</b><b>BEFORE / AFTER</b><b>FX MIX</b></span>
+        </span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
       <a class="item featured" data-cat="study" href="./kbs-vocab-quiz/index.html">
         <span class="badge b-study">어휘</span>
         <span class="body">
@@ -292,15 +314,7 @@
 
       <p class="group-label" id="snsLabel">SNS · 콘텐츠</p>
 
-      <a class="item" data-cat="sns" href="./fx-tips/index.html">
-        <span class="badge b-sns">FX</span>
-        <span class="body">
-          <span class="kind k-sns">SNS · 게임 이펙트 TIP</span>
-          <h3>게임 이펙트 TIP</h3>
-          <span class="desc">18개 분야 539가지 게임 이펙트. 레이어를 하나씩 켜 보며 차이를 보고, 코드도 그대로 가져가세요.</span>
-        </span>
-        <span class="go" aria-hidden="true">→</span>
-      </a>
+
     </main>
 
     <footer>
