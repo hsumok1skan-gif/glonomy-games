@@ -81,6 +81,56 @@ async function check(viewport,mobile,label) {
     });
     assert.equal(full.count,539);
     assert.equal(full.failCount,0,"539 FX activation errors: "+JSON.stringify(full.fail));
+    // Compare one authentic base attack against two genuinely transformative
+    // passes: attached flames+DOT and the full cinematic HP-bar experience.
+    const burnQa=await page.evaluate(()=>{
+      const R=window.__fx.RECIPES.find(x=>x.id==="combat-fire"),rows=[];
+      if(!R)return {error:"missing combat-fire"};
+      for(let n=0;n<=R.steps.length;n++){
+        const w=new World(R,n,{x:82,y:-4,s:1.57,r:[0,0,960,540]},true,false);
+        R.fire(w);w.update(.10);
+        const early={hp:w.foe.hp,shots:w.shots.length};
+        for(let i=0;i<92;i++)w.update(.016);
+        rows.push({n,early,hp:w.foe.hp,burn:w.burnT,
+          charred:w.on("flame"),cinema:w.on("cinema"),
+          shown:w.barShown,lag:w.barLag});
+      }
+      return {rows,steps:R.steps.length};
+    });
+    assert.equal(burnQa.steps,2,"Only two impactful upgrade stages, not five micro-steps");
+    assert.equal(burnQa.rows.length,3,"Base attack + fire upgrade + final");
+    for(const row of burnQa.rows){
+      assert.equal(row.early.hp,200,"Hit damage may only occur after contact");
+      assert.ok(row.hp<200,"Base attack must land and damage HP");
+    }
+    assert.equal(burnQa.rows[0].burn,0,"Base is a normal attack with no unexplained burning");
+    assert.ok(burnQa.rows[1].burn>0,"Upgrade applies visible persistent fire");
+    assert.ok(burnQa.rows[1].hp<burnQa.rows[0].hp,"Fire upgrade adds actual DOT damage");
+    assert.ok(burnQa.rows[2].cinema,"Final adds complete timing, sound and UI feedback");
+    assert.ok(burnQa.rows[2].lag>burnQa.rows[2].hp,"Final health-bar lag shows recently lost HP");
+    await page.evaluate(()=>{
+      const canvas=document.createElement("canvas");
+      canvas.id="burn-qa-canvas";canvas.width=960;canvas.height=540;
+      Object.assign(canvas.style,{position:"fixed",top:"8px",left:"8px",
+        width:"960px",height:"540px",zIndex:"99999",pointerEvents:"none"});
+      canvas.fxLogicalWidth=960;document.body.appendChild(canvas);
+    });
+    for(let n=0;n<=2;n++){
+      for(const [phase,time] of [["charge",.12],["impact",.69],["burn",1.43]]){
+        await page.evaluate(({stage,time})=>{
+          const R=window.__fx.RECIPES.find(r=>r.id==="combat-fire");
+          const w=new World(R,stage,{x:82,y:-4,s:1.57,r:[0,0,960,540]},true,false);
+          R.fire(w);
+          const frames=Math.round(time/.016);
+          for(let i=0;i<frames;i++)w.update(.016);
+          const cv=document.querySelector("#burn-qa-canvas"),ctx=cv.getContext("2d");
+          ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,960,540);w.draw(ctx);
+        },{stage:n,time});
+        await page.locator("#burn-qa-canvas").screenshot({path:"browser-artifacts/combat-fire-"+n+"-"+phase+".png"});
+      }
+    }
+    await page.locator("#burn-qa-canvas").evaluate(x=>x.remove());
+
     await page.screenshot({path:"browser-artifacts/director-18-genres.png",fullPage:true});
     const sampleExport=await page.evaluate(async()=>{
       const r=window.__fx.RECIPES.find(r=>r.id==="weapon-railgun");
@@ -111,6 +161,25 @@ async function check(viewport,mobile,label) {
     await page.locator("#relatedFx button").first().click();
     assert.equal(await page.locator("#pcCanvas").isVisible(),true);
 
+    // Inspiration catalog: every recipe exposes actual authored design ideas,
+    // while the Reel selects only the meaningful changes instead of 7+ microsteps.
+    const discovery=await page.evaluate(()=>{
+      const fx=window.__fx,fail=[];
+      for(const r of fx.RECIPES){
+        const segs=fx.buildSegs(r);
+        const upgrades=segs.filter(x=>x.k==="step");
+        const final=segs.find(x=>x.k==="hook");
+        if(upgrades.length>2 || !final || final.n!==r.steps.length)
+          fail.push({id:r.id,upgrades:upgrades.length});
+      }
+      return {count:fx.RECIPES.length,failed:fail.slice(0,10),
+        fireHook:fx.buildSegs(fx.RECIPES.find(r=>r.id==="combat-fire"))[0].dur,
+        ideas:document.querySelectorAll("#fxDiscoveryIdeas .fx-discovery-item").length};
+    });
+    assert.equal(discovery.count,539);
+    assert.deepEqual(discovery.failed,[],"All 539 Reels must use cinematic progression");
+    assert.ok(discovery.fireHook>=3.2,"Final fire reveal must show actual damage-over-time");
+    assert.ok(discovery.ideas>=1 && discovery.ideas<=3,"Relevant authored FX tricks visible to visitors");
     await page.locator("#discoverAll").click();
     await page.locator("#search").fill("마법");
     await page.waitForTimeout(300);
