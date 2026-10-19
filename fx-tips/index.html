@@ -1182,7 +1182,7 @@
       const q = app.q.trim().toLowerCase(), g = GROUPS.find(x => x.id === app.group);
       const onDesktop = window.matchMedia("(min-width:1140px)").matches;
       return RECIPES.map((r, i) => [r, i]).filter(([r]) => {
-        if(onDesktop && app.libraryMode === "top" && !FEATURED.has(r.id)) return false;
+        if(onDesktop && !q && app.libraryMode === "top" && !FEATURED.has(r.id)) return false;
         if(onDesktop && app.libraryMode === "saved" && !app.favorites.has(r.id)) return false;
         if (q) return (plain(r.title.ko) + " " + plain(r.title.en) + " " + CATS[r.cat][1] + " " + r.steps.map(s => s.name.ko + " " + s.name.en).join(" ")).toLowerCase().includes(q);
         if (g && !g.cats.includes(r.cat)) return false;
