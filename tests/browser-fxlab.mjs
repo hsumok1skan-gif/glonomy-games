@@ -81,6 +81,59 @@ async function check(viewport,mobile,label) {
     });
     assert.equal(full.count,539);
     assert.equal(full.failCount,0,"539 FX activation errors: "+JSON.stringify(full.fail));
+    // Burn recipe is a real five-step gameplay timeline, not disconnected VFX.
+    // 0 RAW: attack and a single HP hit; 1 visible projectile; 2 body ignite;
+    // 3 repeated DOT ticks; 4 readable status and embers; 5 cinematic payoff.
+    const burnQa=await page.evaluate(()=>{
+      const R=window.__fx.RECIPES.find(x=>x.id==="combat-fire"),rows=[];
+      if(!R)return {error:"missing combat-fire"};
+      for(let n=0;n<=R.steps.length;n++){
+        const world=new World(R,n,{x:82,y:-4,s:1.57,r:[0,0,960,540]},true,false);
+        R.fire(world);
+        world.update(.10);
+        const early={hp:world.foe.hp,shots:world.shots.length};
+        for(let i=0;i<94;i++)world.update(.016);
+        const smoke=world.parts.filter(x=>x.type==="smoke").length;
+        const text=world.parts.filter(x=>x.type==="text").length;
+        const row={n,early,steps:R.steps.length,hp:world.foe.hp,burn:world.burnT,
+          smoke,text,hasProjectile:world.on("projectile"),hasIgnite:world.on("ignite"),
+          hasDot:world.on("dot"),hasStatus:world.on("status"),
+          hasCinema:world.on("cinema")};
+        rows.push(row);
+      }
+      return {rows};
+    });
+    assert.equal(burnQa.rows.length,6,"RAW + exactly five meaningful fire stages");
+    assert.equal(burnQa.rows[0].early.hp,200,"HP must not change before the attack connects");
+    for(const row of burnQa.rows)assert.ok(row.hp<200,"Hit must change HP in stage "+row.n);
+    assert.equal(burnQa.rows[0].burn,0,"RAW should not magically ignite");
+    assert.equal(burnQa.rows[1].burn,0,"Projectile stage is not yet a burn effect");
+    assert.ok(burnQa.rows[2].burn>0,"Step 2 attaches flames");
+    assert.ok(burnQa.rows[2].hp===188,"Step 2 ignite alone must not secretly tick HP");
+    assert.ok(burnQa.rows[3].hp<burnQa.rows[2].hp,"Step 3 adds real burning DOT");
+    assert.ok(burnQa.rows[4].hasStatus,"Step 4 displays burn badge and embers");
+    assert.ok(burnQa.rows[5].hasCinema,"Step 5 has full impact choreography");
+    // Deterministic visual snapshots for each of the six stages.
+    await page.evaluate(()=>{
+      const canvas=document.createElement("canvas");
+      canvas.id="burn-qa-canvas";canvas.width=960;canvas.height=540;
+      Object.assign(canvas.style,{position:"fixed",top:"8px",left:"8px",
+        width:"960px",height:"540px",zIndex:"99999",pointerEvents:"none"});
+      canvas.fxLogicalWidth=960;document.body.appendChild(canvas);
+    });
+    for(let n=0;n<=5;n++){
+      await page.evaluate(stage=>{
+        const R=window.__fx.RECIPES.find(r=>r.id==="combat-fire");
+        const w=new World(R,stage,{x:82,y:-4,s:1.57,r:[0,0,960,540]},true,false);
+        R.fire(w);
+        for(let t=0;t<90;t++)w.update(.016);
+        const cv=document.querySelector("#burn-qa-canvas"),ctx=cv.getContext("2d");
+        ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,960,540);
+        w.draw(ctx);
+      },n);
+      await page.locator("#burn-qa-canvas").screenshot({path:"browser-artifacts/combat-fire-stage-"+n+".png"});
+    }
+    await page.locator("#burn-qa-canvas").evaluate(x=>x.remove());
     await page.screenshot({path:"browser-artifacts/director-18-genres.png",fullPage:true});
     const sampleExport=await page.evaluate(async()=>{
       const r=window.__fx.RECIPES.find(r=>r.id==="weapon-railgun");
