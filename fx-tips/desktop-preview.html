@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>FX Lab 16:9 PC Showtime · GLONOMY</title>
+  <title>FX Lab PC Showcase Prototype · GLONOMY</title>
   <meta name="robots" content="noindex,nofollow" />
   <meta name="description" content="게임을 멋있게 만드는 이펙트 연구소. 날것 그대로의 동작에 레이어를 하나씩 쌓아 보고, 코드도 가져가세요." />
   <meta name="theme-color" content="#0c0d0a" />
@@ -625,7 +625,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine-preview.js?v=20261019wide"></script>
+  <script src="engine-preview.js?v=20261019wide2"></script>
   <script src="export.js?v=20261019q3"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
   <script src="recipes/core.js?v=20261019q3"></script><script>tagFx("core")</script>
@@ -832,7 +832,7 @@
       $("ovCta").innerHTML = `<div class="t">${CTA[L].t}</div><div class="q">${CTA[L].q}</div><div class="c">${CTA[L].c}</div>`;
       $("ovHint").textContent = "";
       $("pcEffectName").textContent=plain(r.title.ko);
-      $("pcPhase").textContent=seg.k==="intro"?"RAW · NO FX":seg.k==="split"?"RAW / FINAL":seg.k==="hook"?"FINAL FX · LIVE":seg.k==="step"?"STEP "+seg.n:"FINAL FX · LIVE";
+      $("pcPhase").textContent=seg.k==="intro"?"RAW · NO FX":seg.k==="split"?"RAW / FINAL":seg.k==="hook"?"FINAL FX · LIVE":seg.k==="step" && seg.n === N?"FINAL FX · LIVE":seg.k==="step"?"STEP "+seg.n:"FINAL FX · LIVE";
       const key = r.id + seg.k + seg.n + L;
       if (key !== lastKey) {
         lastKey = key;
