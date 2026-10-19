@@ -19,10 +19,13 @@ async function check(viewport,mobile,label) {
     assert.equal(await page.locator("#pcShowcase").isVisible(),true);
     const sz=await page.locator("#pcCanvas").evaluate(x=>({width:x.width,height:x.height}));
     assert.ok(sz.width>600&&sz.height>300,JSON.stringify(sz));
-    for(const id of ["weapon-railgun","weapon-katana","magic"]) {
+    for(const [id,delay] of [["weapon-railgun",765],["weapon-katana",170],["magic",570]]) {
       await page.locator('[data-hero-fx="'+id+'"]').click();
-      await page.waitForTimeout(250);
+      await page.waitForTimeout(100);
       assert.equal(await page.evaluate(()=>window.__fx.RECIPES[window.__fx.app.ri].id),id);
+      await page.evaluate(()=>{window.__fx.app.auto=false;window.__fx.fireAll();});
+      await page.waitForTimeout(delay);
+      await page.locator("#pcTheater").screenshot({path:"browser-artifacts/showcase-"+id+".png"});
     }
     await page.locator("#pcFinal").click();
     await page.locator("#pcCompare").click();
