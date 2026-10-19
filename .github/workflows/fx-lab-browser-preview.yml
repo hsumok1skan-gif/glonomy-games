@@ -2,6 +2,8 @@ name: FX Lab browser preview
 on:
   push:
     branches: [fxlab-desktop-workspace-20261019]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
