@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>FX Lab PC Showcase Prototype · GLONOMY</title>
+  <title>FX Lab PC Preview · 움직이는 점묘 캐릭터 · GLONOMY</title>
   <meta name="robots" content="noindex,nofollow" />
   <meta name="description" content="게임을 멋있게 만드는 이펙트 연구소. 날것 그대로의 동작에 레이어를 하나씩 쌓아 보고, 코드도 가져가세요." />
   <meta name="theme-color" content="#0c0d0a" />
@@ -625,7 +625,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine-preview.js?v=20261019wide2"></script>
+  <script src="engine-preview.js?v=20261019rig1"></script>
   <script src="export.js?v=20261019q3"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
   <script src="recipes/core.js?v=20261019q3"></script><script>tagFx("core")</script>
@@ -768,6 +768,7 @@
     /* ───────── 영상 화면 ───────── */
     const stage = $("stage"), cv = $("cv"), ctx = cv.getContext("2d");
     const pcCanvas=$("pcCanvas"), pcCtx=pcCanvas.getContext("2d");
+    cv.fxLogicalWidth=540; pcCanvas.fxLogicalWidth=960;
     const theaterOn=()=>window.matchMedia("(min-width:1140px)").matches&&app.mode==="browse";
     const VIEW_MAIN = { x: 0, y: 220, s: 1, r: [20, 224, 500, 368] };
     const VIEW_A = { x: 59, y: 222, s: 0.78, r: [20, 226, 500, 268] };
