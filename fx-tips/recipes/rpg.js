@@ -1576,7 +1576,7 @@
       setup(w) {
         w.KIND = [["sword", "#cbd5e1"], ["shield", "#93c5fd"], ["potion", "#fb7185"], ["star", "#fde047"], ["drop", "#86efac"]];
         w.RCOL = ["148,163,184", "96,165,250", "192,132,252"];
-        w.cells = []; for (let i = 0; i < 18; i++) w.cells.push({ it: null, sc: 1 });
+        w.cells = []; for (let i = 0; i < 18; i++) w.cells.push({ it: null, sc: 1, x: 132 + (i % 6) * 56, y: 130 + Math.floor(i / 6) * 56 });
         for (let i = 0; i < 4; i++) w.cells[i].it = { k: i, r: i % 3, oy: 0, t: 9 };
         w.bag = { sc: 1 };
       },
