@@ -476,24 +476,83 @@
       title: { en: "Make poison look *toxic*", ko: "독은 *독하게*" },
       intro: { en: "HP drops. *Why?* Nobody knows.", ko: "체력이 줄어요. *왜*인지 몰라요." },
       interval: 1.9, stepDur: 3.8,
-      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 410, hp: 120 }); w.pois = 0; w.tickT = 0; },
+      setup(w) { w.hero=w.actor("hero",{home:110});w.foe=w.actor("foe",{home:410,hp:160});
+        w.pois=0;w.tickT=0;w.poisonPulse=0;w.toxicMistT=0;w.toxicBar=160;w.toxicLag=160;w.poisonAge=0; },
       fire(w) {
         const c = w.hero, f = w.foe, x0 = c.x + 40, y0 = G - 100, tx = f.x - 30, T = 0.3, g = 1400;
         const o = { x: x0, y: y0, vx: (tx - x0) / T, vy: (G - 70 - y0 - 0.5 * g * T * T) / T, g, r: 10, color: "#84cc16", vr: 14, hitX: tx };
-        o.onHit = () => { f.ox += 6; w.pois = 1.7; w.tickT = 0.15; w.emit("splash", { x: o.x, y: o.y }); };
+        o.onHit=()=>{
+          // Physical splash: only after projectile impact can the poison spread.
+          f.hp=Math.max(0,f.hp-5);f.ox+=11;f.vib=4;f.flash=.45;
+          w.pois=1.8;w.poisonAge=0;w.tickT=.28;w.toxicMistT=0;w.poisonPulse=.95;
+          w.emit("splash",{x:o.x,y:o.y});
+        };
         c.sx = 0.9; c.sy = 1.08;
         w.emit("toss", o);
         w.shoot(o);
       },
       update(w, dt) {
-        const f = w.foe;
-        if (f.hp <= 0) f.hp = f.maxHp;
-        if (w.pois <= 0) { f.barCol = null; f.over = null; return; }
-        w.pois -= dt; w.tickT -= dt;
-        if (w.tickT <= 0) { w.tickT = 0.25; f.hp -= 3; w.emit("tick", f); }
+        const f=w.foe;
+        if(w.on("bar")){
+          w.toxicBar+=(f.hp-w.toxicBar)*Math.min(1,dt*5.4);
+          w.toxicLag+=(f.hp-w.toxicLag)*Math.min(1,dt*1.55);
+          w.poisonPulse=Math.max(0,w.poisonPulse-dt*1.9);
+        }
+        if(f.hp<=0 && w.pois<=0)f.hp=f.maxHp;
+        if(w.pois<=0){f.barCol=null;f.over=null;return;}
+        w.pois=Math.max(0,w.pois-dt);w.tickT-=dt;w.poisonAge+=dt;w.toxicMistT-=dt;
+        if(w.on("bar")&&w.toxicMistT<=0){
+          w.toxicMistT=.105;
+          w.spawn({type:"smoke",x:f.x+rand(-f.w*.27,f.w*.27),
+            y:f.gy-rand(f.h*.44,f.h*.86),vx:rand(-24,24),vy:rand(-100,-57),
+            size:8,size1:18,life:.42,color:"109,190,45"});
+          w.spawn({type:"spark",x:f.x+rand(-f.w*.24,f.w*.24),
+            y:f.gy-rand(f.h*.28,f.h*.8),vx:rand(-35,35),vy:rand(-80,-35),
+            size:1.8,life:.24,color:"194,249,93"});
+        }
+        if(w.tickT<=0&&w.pois>0){
+          w.tickT=.29;f.hp=Math.max(0,f.hp-3);w.poisonPulse=.7;
+          f.vib=2.4;f.flash=.14;w.emit("tick",f);
+        }
       },
-      drawFront(w, ctx) { drawOvers(w, ctx); },
-      drawHud(w, ctx) { bar(ctx, w.foe, w.foe.barCol); },
+      drawFront(w,ctx){
+        drawOvers(w,ctx);
+        if(!w.on("bar")||w.pois<=0)return;
+        const f=w.foe;
+        ctx.save();ctx.translate(f.x+f.ox,f.gy+f.oy);
+        ctx.globalCompositeOperation="lighter";
+        const shade=Math.min(1,w.pois/.35);
+        for(let i=0;i<5;i++){
+          const theta=i*2.43+w.time*1.5;
+          const x=Math.sin(theta)*f.w*.29,y=-f.h*(.28+i*.135)+Math.sin(w.time*4+i)*3;
+          const r=5+2*Math.sin(w.time*7+i);
+          glow(ctx,x,y,r*2,"126,243,66",shade*.24);
+          ctx.strokeStyle="rgba(177,251,87,"+(shade*.58)+")";
+          ctx.lineWidth=1.3;ctx.beginPath();ctx.arc(x,y,r,Math.PI*.16,Math.PI*1.8);ctx.stroke();
+        }
+        ctx.restore();
+      },
+      drawHud(w,ctx){
+        const f=w.foe;
+        if(!w.on("bar")){bar(ctx,f,f.barCol);return;}
+        const x=f.x-53,y=f.gy-f.h-24,bw=106,h=10;
+        const hp=Math.max(0,Math.min(1,w.toxicBar/f.maxHp));
+        const lag=Math.max(hp,Math.min(1,w.toxicLag/f.maxHp));
+        ctx.save();ctx.fillStyle="rgba(5,13,9,.88)";
+        ctx.beginPath();ctx.roundRect(x-5,y-5,bw+10,h+10,6);ctx.fill();
+        ctx.fillStyle="rgba(234,235,103,.53)";ctx.fillRect(x,y,bw*lag,h);
+        const gr=ctx.createLinearGradient(x,y,x,y+h);
+        gr.addColorStop(0,"#d8fb83");gr.addColorStop(.65,"#7ddd45");gr.addColorStop(1,"#3c9738");
+        ctx.fillStyle=gr;ctx.fillRect(x,y,bw*hp,h);
+        ctx.strokeStyle="rgba(220,255,154,"+(w.poisonPulse*.85)+")";ctx.lineWidth=2;
+        if(w.poisonPulse>.05)ctx.strokeRect(x,y,bw*hp,h);
+        if(w.pois>0){
+          ctx.fillStyle="#c3f287";ctx.font="800 12px sans-serif";
+          ctx.textAlign="center";ctx.shadowColor="#88d94d";ctx.shadowBlur=8;
+          ctx.fillText("POISON",f.x,y-14);
+        }
+        ctx.restore();
+      },
       steps: [
         {
           id: "splash", name: { en: "Splash + Puddle", ko: "튀는 독과 웅덩이" }, param: "14 drops · puddle",

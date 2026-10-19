@@ -99,6 +99,58 @@
     ctx.restore();
   }
 
+
+  /* Clear cause-and-effect overlays for energy weapons. World-space only;
+     no external sprite files or generic full-screen geometry. */
+  function drawThermalHealth(ctx,f,st,shade="255,126,62") {
+    if(!f||!f.maxHp)return;
+    const x=f.x-53,y=f.gy-f.h-22,w=106,h=10;
+    const hp=Math.max(0,Math.min(1,(st.hpView??f.hp)/f.maxHp));
+    const lag=Math.max(hp,Math.min(1,(st.hpLag??f.hp)/f.maxHp));
+    ctx.save();ctx.fillStyle="rgba(5,9,15,.88)";
+    ctx.beginPath();ctx.roundRect(x-5,y-5,w+10,h+10,6);ctx.fill();
+    ctx.fillStyle="rgba("+shade+",.46)";ctx.fillRect(x,y,w*lag,h);
+    const grad=ctx.createLinearGradient(x,y,x,y+h);
+    grad.addColorStop(0,"#ffe4a8");grad.addColorStop(.32,"#f56c55");grad.addColorStop(1,"#a52b41");
+    ctx.fillStyle=grad;ctx.fillRect(x,y,w*hp,h);
+    ctx.fillStyle="rgba(255,255,255,.44)";ctx.fillRect(x,y,w*hp,2);
+    if(st.hpPulse>0){
+      ctx.globalCompositeOperation="lighter";
+      ctx.shadowColor="rgb("+shade+")";ctx.shadowBlur=20;
+      ctx.strokeStyle="rgba("+shade+","+(Math.min(1,st.hpPulse)) +")";
+      ctx.lineWidth=2.2;ctx.strokeRect(x,y,w*hp,h);
+    }
+    ctx.restore();
+  }
+  function thermalDecay(st,f,dt) {
+    if(st.hpView==null){st.hpView=f.hp;st.hpLag=f.hp;}
+    st.hpView+=(f.hp-st.hpView)*Math.min(1,dt*6.5);
+    st.hpLag+=(f.hp-st.hpLag)*Math.min(1,dt*1.7);
+    st.hpPulse=Math.max(0,(st.hpPulse||0)-dt*2);
+  }
+  function drawBodyIgnition(ctx,f,time,left,tone="255,130,46"){
+    if(left<=0)return;
+    const fade=Math.min(1,left/.24);
+    ctx.save();ctx.translate(f.x+f.ox,f.gy+f.oy);
+    ctx.globalCompositeOperation="lighter";
+    const ribbons=[[-.28,.28,24],[-.08,.40,38],[.23,.51,32],[-.20,.68,38],[.15,.81,25]];
+    for(let i=0;i<ribbons.length;i++){
+      const [off,up,height]=ribbons[i];
+      const px=off*f.w+Math.sin(time*10+i*2.6)*3.8,py=-up*f.h;
+      const size=9+(i%2)*4,h=height*(.88+.12*Math.sin(time*12+i));
+      const g=ctx.createLinearGradient(px,py,px,py-h);
+      g.addColorStop(0,"rgba("+tone+","+(fade*.88)+")");
+      g.addColorStop(.53,"rgba(255,184,73,"+(fade*.64)+")");
+      g.addColorStop(1,"rgba(255,248,194,0)");
+      ctx.fillStyle=g;ctx.beginPath();
+      ctx.moveTo(px-size,py);
+      ctx.bezierCurveTo(px-size*.55,py-h*.42,px+size*.16,py-h*.75,px+Math.sin(time*8+i)*4,py-h);
+      ctx.bezierCurveTo(px+size*.82,py-h*.55,px+size,py-h*.27,px+size,py);
+      ctx.closePath();ctx.fill();
+    }
+    ctx.restore();
+  }
+
   RECIPES.push(
     /* ─────────────── 1. 저격총 ─────────────── */
     {
@@ -275,20 +327,60 @@
       title: { en: "Make a laser beam *burn*", ko: "레이저가 *지지는* 느낌" },
       intro: { en: "A red thread. Is it *doing anything?*", ko: "빨간 실 한 가닥. *효과가 있긴* 해요?" },
       interval: 0.3, stepDur: 3.6,
-      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 430 }); w.gun = { kick: 0, rot: 0 }; w.lz = { hold: 0, t: 0, L: null }; },
-      fire(w) { w.lz.hold = 0.5; },
+      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 430, hp:260 }); w.gun = { kick: 0, rot: 0 };
+        w.lz = { hold: 0, t: 0, L: null, warm:0, initial:false, hpView:260, hpLag:260, hpPulse:0, scorch:0, emberT:0 }; },
+      fire(w) { const z=w.lz;z.hold=.58;z.warm=.12;z.initial=false;
+        w.hero.sx=.95;w.hero.sy=1.04;w.after(.14,()=>{w.hero.sx=1;w.hero.sy=1;}); },
       update(w, dt) {
         const z = w.lz, f = w.foe;
         gunSpring(w, dt);
-        z.hold -= dt; z.t -= dt; z.L = null;
-        if (z.hold <= 0) return;
+        z.hold-=dt;z.t-=dt;z.L=null;z.warm-=dt;
+        thermalDecay(z,f,dt);
+        z.scorch=Math.max(0,z.scorch-dt);
+        if(z.scorch>0 && z.emberT<=0){
+          z.emberT=.055;
+          w.spawn({type:"spark",x:f.x-27+rand(-5,9),y:G-f.h*.58+rand(-18,17),
+            vx:rand(-110,30),vy:rand(-150,-40),size:1.5,life:.34,drag:2.5,color:"255,182,117"});
+          if(Math.random()<.5)w.spawn({type:"smoke",x:f.x-24,y:G-f.h*.67,
+            vx:rand(-20,24),vy:-55,size:5,size1:16,life:.5,color:"67,61,64"});
+        }
+        z.emberT-=dt;
+        if(z.hold<=0||z.warm>0)return;
         const m = muzzle(w), end = f.alive ? f.x - 30 : 600;
         z.L = { x0: m.x, y0: m.y, x1: end, y1: m.y, w: 3, glow: 0, jit: 0 };
         w.emit("beam", z.L);
-        if (z.t <= 0) { z.t = 0.08; if (!w.on("sizzle")) f.ox += 2; hit(w, f, 2, { x: end, y: m.y }); }
+        if(z.t<=0){
+          z.t=.085;if(!w.on("sizzle"))f.ox+=2;
+          hit(w,f,2,{x:end,y:m.y});
+          z.hpPulse=1;z.scorch=.34;f.vib=2.4;
+          if(w.on("sizzle"))w.emit("heat",{x:end,y:m.y});
+        }
       },
-      drawFront(w, ctx) { drawGun(w, ctx); drawLaser(ctx, w.lz.L, w.time); },
-      drawHud(w, ctx) { drawBar(ctx, w.foe); },
+      drawFront(w,ctx){
+        drawGun(w,ctx);drawLaser(ctx,w.lz.L,w.time);
+        const z=w.lz;
+        if(z.warm>0&&z.hold>0){
+          const m=muzzle(w);
+          ctx.save();ctx.globalCompositeOperation="lighter";
+          glow(ctx,m.x,m.y,26,"255,77,108",.24);
+          glow(ctx,m.x,m.y,8,"255,238,207",.9);
+          ctx.restore();
+        }
+        if(z.scorch>0&&w.on("sizzle")){
+          const f=w.foe,px=f.x-29,py=G-f.h*.58;
+          ctx.save();ctx.globalCompositeOperation="lighter";
+          glow(ctx,px,py,46,"255,95,55",Math.min(.65,z.scorch*1.7));
+          const rot=w.time*15;
+          ctx.strokeStyle="rgba(255,233,184,.70)";ctx.lineWidth=2;
+          for(let i=0;i<3;i++){
+            const a=rot+i*2.09;
+            ctx.beginPath();ctx.moveTo(px+Math.cos(a)*10,py+Math.sin(a)*10);
+            ctx.lineTo(px+Math.cos(a)*25,py+Math.sin(a)*25);ctx.stroke();
+          }
+          ctx.restore();
+        }
+      },
+      drawHud(w,ctx){if(w.on("sizzle"))drawThermalHealth(ctx,w.foe,w.lz,"255,99,111");else drawBar(ctx,w.foe);},
       steps: [
         {
           id: "core", name: { en: "Hot Core + Halo", ko: "하얀 심 + 번짐" }, param: "core 4px · halo 26px",
@@ -422,23 +514,74 @@
       title: { en: "Make a flamethrower *roar*", ko: "화염방사기가 *활활*" },
       intro: { en: "Orange dots. That's not *fire*.", ko: "주황 점들. 이건 *불*이 아니에요." },
       interval: 0.3, stepDur: 3.6,
-      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 380 }); w.fl = { hold: 0, t: 0, tick: 0 }; },
-      fire(w) { w.fl.hold = 0.5; },
+      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 380, hp: 240 }); w.fl = { hold: 0, t: 0, tick: 0, travel:0, ignited:0, ashT:0, dmgT:0, hpPulse:0, hpView:240, hpLag:240, buildup:0 }; },
+      fire(w) { const s=w.fl; s.hold=0.56;s.travel=0;s.buildup=.34;w.hero.sx=.94;w.hero.sy=1.07;w.after(.2,()=>{w.hero.sx=1;w.hero.sy=1;}); },
       update(w, dt) {
         const s = w.fl, f = w.foe;
-        s.hold -= dt; s.t -= dt; s.tick -= dt;
-        if (s.hold <= 0) return;
+        s.hold -= dt;s.t -= dt;s.tick -= dt;s.dmgT-=dt;s.ashT-=dt;
+        s.buildup=Math.max(0,s.buildup-dt*2);
+        thermalDecay(s,f,dt);
+        if(s.ignited>0){
+          s.ignited=Math.max(0,s.ignited-dt);
+          f.burn=.14;
+          if(s.ashT<=0){
+            s.ashT=.075;
+            w.spawn({type:"glow",x:f.x+f.ox+rand(-f.w*.24,f.w*.24),
+              y:f.gy-rand(f.h*.34,f.h*.83),vx:rand(-18,22),vy:rand(-100,-55),
+              size:rand(9,18),size1:1,life:rand(.22,.4),color:pick(["255,105,28","255,170,58","255,237,139"])});
+            if(Math.random()<.38)w.spawn({type:"smoke",x:f.x+rand(-18,18),
+              y:f.gy-f.h*.89,vx:rand(-19,24),vy:rand(-65,-35),
+              size:7,size1:20,life:.6,color:"54,45,43"});
+          }
+          if(w.on("ignite") && s.dmgT<=0){
+            s.dmgT=.3;hit(w,f,4,{x:f.x-20,y:f.gy-f.h*.58});
+            s.hpPulse=.85;
+            w.spawn({type:"text",text:"−4",x:f.x+rand(-16,16),y:f.gy-f.h*.85,
+              vy:-100,g:90,size:20,color:"#ffbf78",life:.62});
+          }
+        }
+        if(s.hold<=0)return;
+        s.travel+=dt;
         const m = loc(grip(w), 0, 76, 0);
         if (s.t <= 0) {
           s.t = 0.02;
-          const p = { type: "circle", x: m.x, y: m.y, vx: rand(480, 560), vy: rand(-25, 25), size: 5, life: 0.55, color: "255,150,60" };
+          const p = { type:"glow",x:m.x,y:m.y,vx:rand(620,740),vy:rand(-22,22),
+            size:rand(9,14),size1:rand(26,37),drag:2.0,g:-165,
+            life:rand(.36,.52),color:pick(["255,96,28","255,161,47","255,236,117"]) };
           w.emit("flame", p, m);
           w.spawn(p);
         }
-        if (s.tick <= 0) { s.tick = 0.12; hit(w, f, 3, { x: f.x - 40, y: m.y + rand(-30, 10) }); }
+        // Stream takes time to travel from the nozzle to the victim.
+        if(s.travel>=.27 && s.tick<=0){
+          s.tick=.12;
+          const at={x:f.x-40,y:m.y+rand(-30,10)};
+          hit(w,f,3,at);s.hpPulse=.8;
+          if(w.on("ignite") && s.ignited<=0) {
+            s.ignited=1.8;s.dmgT=.32;s.ashT=0;
+            w.emit("contact",at);
+          }
+        }
       },
-      drawFront(w, ctx) { drawTorch(ctx, w); },
-      drawHud(w, ctx) { drawBar(ctx, w.foe); },
+      drawFront(w, ctx) {
+        drawTorch(ctx,w);
+        const s=w.fl;
+        if(s.buildup>0){
+          const m=loc(grip(w),0,76,0);
+          ctx.save();ctx.globalCompositeOperation="lighter";
+          glow(ctx,m.x,m.y,22,"255,170,68",.18+s.buildup*.65);
+          ctx.restore();
+        }
+        if(w.on("ignite"))drawBodyIgnition(ctx,w.foe,w.time,s.ignited);
+      },
+      drawHud(w, ctx) {
+        if(w.on("ignite"))drawThermalHealth(ctx,w.foe,w.fl);
+        else drawBar(ctx,w.foe);
+        if(w.on("ignite")&&w.fl.ignited>0){
+          ctx.save();ctx.font="800 13px sans-serif";ctx.textAlign="center";
+          ctx.fillStyle="#ffbd75";ctx.shadowColor="#ff661e";ctx.shadowBlur=9;
+          ctx.fillText("BURN",w.foe.x,w.foe.gy-w.foe.h-43);ctx.restore();
+        }
+      },
       steps: [
         {
           id: "billow", name: { en: "Grow + Rise", ko: "커지며 솟기" }, param: "5 → 36px · drag 2.2",

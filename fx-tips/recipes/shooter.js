@@ -978,20 +978,92 @@
       drawFloor: fpsRoom,
       setup(w) {
         fpsSetup(w, [[-0.05, 4.4]]); w.gobs[0].maxHp = w.gobs[0].hp = 60;
-        w.kmk = 0; w.score = 0; w.skulls = 0; w.skT = 0; w.rot = 0;
+        w.kmk = 0; w.score = 0; w.skulls = 0; w.skT = 0; w.rot = 0; w.impactGlow=0;w.muzzleGlow=0;w.hpView=60;w.hpLag=60;w.hpPulse=0;w.killGlow=0;
       },
       fire(w) {
         const g = w.gobs[0]; if (!g.alive) return;
-        w.fp.kick = 0.05; w.fp.rot = 0.04;
-        g.hp -= 20; g.vib = 2; g.ox += 5;
-        const t = torso(g);
-        w.spawn({ type: "circle", x: t.x, y: t.y, size: 7, life: 0.12, color: "255,255,255" });
-        if (g.hp <= 0) { w.kill(g); }
+        w.fp.kick=.085;w.fp.rot=.065;w.muzzleGlow=1;
+        const t=torso(g);
+        g.hp-=20;g.vib=3.1;g.ox+=7;g.flash=.32;
+        w.impactGlow=.95;w.hpPulse=.85;
+        w.emit("hit",t,g);
+        w.spawn({type:"spark",x:t.x,y:t.y,vx:rand(-95,115),vy:rand(-160,50),
+          life:.19,drag:2,size:2.4,color:"255,231,180"});
+        if(w.on("sound")){
+          w.shake(.075,1);
+          for(let i=0;i<5;i++){
+            const a=i*TAU/5+rand(-.26,.26);
+            w.spawn({type:"spark",x:t.x,y:t.y,vx:Math.cos(a)*rand(100,220),
+              vy:Math.sin(a)*rand(100,220),life:.22,drag:3,size:1.8,color:"255,213,147"});
+          }
+        }
+        if(g.hp<=0){
+          w.kill(g);w.killGlow=1;
+          if(w.on("sound")){
+            w.hitstop(.075);w.zoomPunch(.052);w.shake(.17,1);
+            w.flash("250,238,199",.12);
+          }
+        }
       },
-      update(w, dt) { fpsTick(w, dt); w.kmk = Math.max(0, w.kmk - dt * 1.6); w.skT = Math.max(0, w.skT - dt * 3); w.rot += dt * 3; },
-      drawFront(w, ctx) { drawFpGun(w, ctx); },
+      update(w,dt){
+        fpsTick(w,dt);
+        w.kmk=Math.max(0,w.kmk-dt*1.6);w.skT=Math.max(0,w.skT-dt*3);w.rot+=dt*3;
+        w.impactGlow=Math.max(0,w.impactGlow-dt*6);
+        w.muzzleGlow=Math.max(0,w.muzzleGlow-dt*9);
+        w.killGlow=Math.max(0,w.killGlow-dt*1.65);
+        w.hpPulse=Math.max(0,w.hpPulse-dt*2.8);
+        const hp=Math.max(0,w.gobs[0].hp);
+        w.hpView+=(hp-w.hpView)*Math.min(1,dt*7.4);
+        w.hpLag+=(hp-w.hpLag)*Math.min(1,dt*1.5);
+      },
+      drawFront(w,ctx){
+        drawFpGun(w,ctx);
+        if(w.on("sound")&&w.muzzleGlow>0){
+          ctx.save();ctx.globalCompositeOperation="lighter";
+          const x=270,y=HY+89,alpha=w.muzzleGlow;
+          glow(ctx,x,y,70,"255,175,83",alpha*.44);
+          ctx.fillStyle="rgba(255,245,197,"+(alpha*.82)+")";
+          ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+56*alpha,y-19);
+          ctx.lineTo(x+23*alpha,y);ctx.lineTo(x+50*alpha,y+18);
+          ctx.lineTo(x,y+8);ctx.closePath();ctx.fill();
+          ctx.restore();
+        }
+      },
       drawHud(w, ctx) {
         xhair(ctx);
+        if(w.on("sound")){
+          const t=torso(w.gobs[0]),p=w.impactGlow;
+          if(p>0){
+            ctx.save();ctx.globalCompositeOperation="lighter";
+            glow(ctx,t.x,t.y,35+25*(1-p),"255,212,129",p*.31);
+            ctx.strokeStyle="rgba(255,245,215,"+(p*.78)+")";ctx.lineWidth=2;
+            for(let i=0;i<4;i++){
+              const a=i*TAU/4+.79,r=12+19*(1-p);
+              ctx.beginPath();ctx.moveTo(t.x+Math.cos(a)*r,t.y+Math.sin(a)*r);
+              ctx.lineTo(t.x+Math.cos(a)*(r+9),t.y+Math.sin(a)*(r+9));ctx.stroke();
+            }
+            ctx.restore();
+          }
+          // Delayed lost-health strip visually confirms three landed shots.
+          const x=201,y=45,bw=138,bh=11;
+          const hp=Math.max(0,Math.min(1,w.hpView/60)),lag=Math.max(hp,Math.min(1,w.hpLag/60));
+          ctx.save();ctx.fillStyle="rgba(7,13,23,.83)";
+          ctx.beginPath();ctx.roundRect(x-7,y-7,bw+14,bh+14,7);ctx.fill();
+          ctx.fillStyle="rgba(251,195,107,.65)";ctx.fillRect(x,y,bw*lag,bh);
+          const g=ctx.createLinearGradient(x,y,x,y+bh);
+          g.addColorStop(0,w.hpPulse>0?"#fff7c8":"#ff8684");
+          g.addColorStop(1,"#c32a43");
+          ctx.fillStyle=g;ctx.fillRect(x,y,bw*hp,bh);
+          ctx.strokeStyle="rgba(255,240,194,"+(w.hpPulse*.9)+")";ctx.lineWidth=2;
+          if(w.hpPulse>0)ctx.strokeRect(x,y,bw*hp,bh);
+          ctx.font="700 11px sans-serif";ctx.textAlign="center";
+          ctx.fillStyle="#d8e4eb";ctx.fillText(w.gobs[0].alive?"TARGET HP":"TARGET DOWN",270,35);
+          if(w.killGlow>0){
+            ctx.globalCompositeOperation="lighter";
+            glow(ctx,270,HY,96,"255,199,117",w.killGlow*.18);
+          }
+          ctx.restore();
+        }
         if (w.kmk > 0) {
           const k = Math.max(0, w.kmk - 0.8);
           ctx.save(); ctx.translate(270, HY); ctx.rotate(k * 3); ctx.scale(1 + k * 2, 1 + k * 2);
