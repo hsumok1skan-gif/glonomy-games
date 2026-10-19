@@ -590,13 +590,16 @@ function studioBackdrop(ctx, v, cat, clock, recipeId) {
   ctx.fillStyle=halo; ctx.fillRect(x,y,w,h);
   studioDemoSet(ctx,v,recipeId);
   if (window.FXDirector) FXDirector.stage(ctx,v,cat,recipeId,clock);
-  ctx.strokeStyle="rgba("+rgb+",0.06)"; ctx.lineWidth=1;
-  const spacing=38;
-  const offset=Math.sin(clock*0.12)*3;
-  ctx.beginPath();
-  for(let gx=x+spacing+offset;gx<x+w;gx+=spacing){ctx.moveTo(gx,y);ctx.lineTo(gx,y+h);}
-  for(let gy=y+spacing;gy<y+h;gy+=spacing){ctx.moveTo(x,gy);ctx.lineTo(x+w,gy);}
-  ctx.stroke();
+  // Art direction: visible grid only when it communicates a board, interface or
+  // tactical map. Hiding generic graph-paper lines keeps combat FX in focus.
+  if (/^(ui|puzzle|strategy|army|sim)$/.test(cat)) {
+    ctx.strokeStyle="rgba("+rgb+",0.045)"; ctx.lineWidth=1;
+    const spacing=cat==="puzzle"?46:57;
+    ctx.beginPath();
+    for(let gx=x+spacing;gx<x+w;gx+=spacing){ctx.moveTo(gx,y);ctx.lineTo(gx,y+h);}
+    for(let gy=y+spacing;gy<y+h;gy+=spacing){ctx.moveTo(x,gy);ctx.lineTo(x+w,gy);}
+    ctx.stroke();
+  }
   // Cinematic rim-light bars, kept below the foreground and UI.
   const rim=ctx.createLinearGradient(x,y,x+w,y);
   rim.addColorStop(0,"rgba("+rgb+",0.075)");rim.addColorStop(0.24,"rgba("+rgb+",0)");
