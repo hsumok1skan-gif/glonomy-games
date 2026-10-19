@@ -113,6 +113,24 @@ async function check(viewport,mobile,label) {
       v.shooter=sim("shooter-killconfirm",v["shooter-killconfirm"].steps,[.1,.55,1.0,1.32],3);
       return v;
     });
+    const poisonQa=await page.evaluate(()=>{
+      const R=window.__fx.RECIPES.find(r=>r.id==="combat-poison");
+      const sim=n=>{
+        const w=new World(R,n,{x:0,y:0,s:1,r:[0,0,540,360]},true,false);
+        R.fire(w);
+        const a=[];let t=0;
+        for(const until of [.11,.43,.91]){
+          while(t<until-.00001){const dt=Math.min(.016,until-t);w.update(dt);t+=dt;}
+          a.push({hp:w.foe.hp,poison:w.pois,hpView:w.toxicBar,hpLag:w.toxicLag});
+        }
+        return a;
+      };
+      return {raw:sim(0),full:sim(R.steps.length)};
+    });
+    assert.equal(poisonQa.raw[0].hp,160,"Poison cannot harm before bottle contacts the target");
+    assert.ok(poisonQa.full[1].poison>0,"Splash produces a lasting poison status");
+    assert.ok(poisonQa.full[2].hp<160,"Status deals subsequent poison damage");
+    assert.ok(poisonQa.full[2].hpLag>poisonQa.full[2].hp,"Poison bar visually trails damage");
     assert.equal(combatUpgrade.flameRaw[0].hp,240,"Flame should not damage before stream arrives");
     assert.equal(combatUpgrade.flameFull[0].hp,240,"Upgraded stream cannot cause phantom early damage");
     assert.ok(combatUpgrade.flameRaw[1].hp<240,"Plain stream must actually land");
