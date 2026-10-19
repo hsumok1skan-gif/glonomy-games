@@ -427,11 +427,69 @@
       body:not(.recmode) {grid-template-columns:minmax(250px,27%) minmax(360px,1fr) minmax(315px,30%);gap:8px;padding:8px;}
       body:not(.recmode) .main,body:not(.recmode) .sheet,body:not(.recmode) .more {height:calc(100dvh - 16px);}
     }
+
+    /* PC cinematic showcase: 16:9 stage shown ONLY while browsing at >=1140px.
+       Recording still uses the original 9:16 Canvas and overlay. */
+    .pc-showcase {display:none;}
+    @media(min-width:1140px){
+      body:not(.recmode) {
+        grid-template-columns:clamp(245px,17vw,310px) minmax(470px,1fr) clamp(285px,21vw,360px);
+      }
+      body:not(.recmode) .main{padding:14px 18px 16px;}
+      body:not(.recmode) .stage-wrap{display:none;}
+      body:not(.recmode) .pc-showcase{display:block;margin:0 auto;max-width:1160px;}
+      .pc-featured{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:0 0 12px;}
+      .pc-featured>span{font:700 12px var(--ko);color:#c9d5d1;}
+      .pc-featured>div{display:flex;gap:6px;flex-wrap:wrap;}
+      .pc-featured button{font:750 12px var(--ko);background:#192423;color:#c7d8d6;border:1px solid rgba(255,255,255,.13);padding:9px 11px;border-radius:11px;}
+      .pc-featured button:hover,.pc-featured button:focus-visible{border-color:rgba(200,240,60,.7);color:#e7ffa9;}
+      .pc-theater{position:relative;overflow:hidden;aspect-ratio:16/9;width:100%;border-radius:18px;
+        background:radial-gradient(ellipse at 52% 48%,#20303b,#0b121b 66%);
+        border:1px solid rgba(153,200,213,.29);box-shadow:0 25px 45px rgba(0,0,0,.38);}
+      #pcCanvas{display:block;width:100%;height:100%;}
+      .pc-overlay{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:18px;}
+      .pc-overlay-top{display:flex;gap:10px;align-items:center;justify-content:space-between;}
+      .pc-live{border-radius:7px;background:rgba(7,17,24,.65);padding:7px 11px;font:850 11px var(--mono);letter-spacing:.08em;color:#b6fbfe;border:1px solid rgba(157,232,253,.26);}
+      .pc-effect-name{font:800 clamp(13px,1.4vw,21px) var(--ko);color:white;text-shadow:0 2px 14px rgba(0,0,0,.7);max-width:76%;text-align:right;}
+      .pc-overlay-bottom{display:flex;justify-content:space-between;align-items:end;gap:14px;}
+      .pc-overlay-bottom span{font:700 11px var(--mono);color:rgba(219,246,255,.72);background:rgba(6,12,18,.5);padding:7px 10px;border-radius:8px;}
+      .pc-theater.split-view::after{content:"RAW       |       FINAL";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+        background:rgba(2,13,18,.7);color:#dcffe8;font:800 10px var(--mono);padding:7px 13px;border-radius:999px;white-space:pre;}
+      .pc-controls{display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr;gap:8px;margin:12px 0;}
+      .pc-controls button{border:1px solid rgba(255,255,255,.13);border-radius:12px;background:#202b28;padding:12px 8px;
+        font:800 13px var(--ko);}
+      .pc-controls button.primary{background:#c8f03c;color:#151e0b;border:0;}
+      .pc-controls button:focus-visible,.pc-controls button:hover{outline:2px solid rgba(200,240,60,.65);outline-offset:2px;}
+      .pc-help{margin:0 2px 12px;color:#a8b6ad;font:500 13px/1.5 var(--ko);}
+      .pc-help b{color:#d6fcb2;}
+      body:not(.recmode) .main>.stepbar{padding-top:0;}
+      body:not(.recmode) .main>.subline{max-width:none;color:#d6dfd1;}
+      body:not(.recmode) .main>.codeline{max-width:none;max-height:110px;}
+    }
   </style>
 </head>
 <body>
   <section class="main" id="main">
-    <div class="desktop-main-head"><div><strong>내 게임에 넣고 싶은 이펙트</strong><small>큰 화면으로 완성 효과를 보고, RAW와 비교해 보세요</small></div><span>9:16 REEL STUDIO</span></div>
+    <div class="desktop-main-head"><div><strong>내 게임에 넣고 싶은 이펙트</strong><small>가로 게임 화면에서 크게 감상하고, 릴스는 9:16으로 녹화하세요.</small></div><span>CANVAS 2D · LIGHTWEIGHT</span></div>
+    <div class="pc-showcase" id="pcShowcase">
+      <div class="pc-featured"><span>먼저 볼 3가지 대표 효과</span><div>
+        <button type="button" data-hero-fx="weapon-railgun">⚡ 레일건</button>
+        <button type="button" data-hero-fx="weapon-katana">⚔ 검 · 발도술</button>
+        <button type="button" data-hero-fx="magic">✨ 마법</button>
+      </div></div>
+      <div class="pc-theater" id="pcTheater">
+        <canvas id="pcCanvas" width="960" height="540" aria-label="가로 게임 이펙트 미리보기"></canvas>
+        <div class="pc-overlay"><div class="pc-overlay-top"><span class="pc-live" id="pcPhase">FINAL FX · LIVE</span><span class="pc-effect-name" id="pcEffectName">FX Lab</span></div>
+        <div class="pc-overlay-bottom"><span>2D FX STUDIO · NO 3D ASSETS</span><span>PLAY · COMPARE · CREATE</span></div></div>
+      </div>
+      <div class="pc-controls">
+        <button id="pcRaw" type="button">① RAW</button>
+        <button id="pcFinal" type="button" class="primary">② 완성 효과</button>
+        <button id="pcCompare" type="button">③ 전후 비교</button>
+        <button id="pcRecord" type="button">● 9:16 릴스 녹화</button>
+      </div>
+      <p class="pc-help"><b>실제 게임처럼 보이지만 2D Canvas로 그립니다.</b> 모델·이미지 파일 없이 효과를 만들고, 마음에 드는 장면은 오른쪽에서 AI 요청문을 복사하세요.</p>
+    </div>
     <div class="stage-wrap" id="stageWrap">
       <div class="stage-box" id="stageBox">
         <div class="stage" id="stage">
@@ -708,6 +766,8 @@
 
     /* ───────── 영상 화면 ───────── */
     const stage = $("stage"), cv = $("cv"), ctx = cv.getContext("2d");
+    const pcCanvas=$("pcCanvas"), pcCtx=pcCanvas.getContext("2d");
+    const theaterOn=()=>window.matchMedia("(min-width:1140px)").matches&&app.mode==="browse";
     const VIEW_MAIN = { x: 0, y: 220, s: 1, r: [20, 224, 500, 368] };
     const VIEW_A = { x: 59, y: 222, s: 0.78, r: [20, 226, 500, 268] };
     const VIEW_B = { x: 59, y: 512, s: 0.78, r: [20, 516, 500, 268] };
@@ -770,6 +830,8 @@
       $("ovAB").textContent = `AFTER · ${N} LAYERS`;
       $("ovCta").innerHTML = `<div class="t">${CTA[L].t}</div><div class="q">${CTA[L].q}</div><div class="c">${CTA[L].c}</div>`;
       $("ovHint").textContent = "";
+      $("pcEffectName").textContent=plain(r.title.ko);
+      $("pcPhase").textContent=seg.k==="intro"?"RAW · NO FX":seg.k==="split"?"RAW / FINAL":seg.k==="hook"?"FINAL FX · LIVE":seg.k==="step"?"STEP "+seg.n:"FINAL FX · LIVE";
       const key = r.id + seg.k + seg.n + L;
       if (key !== lastKey) {
         lastKey = key;
@@ -890,6 +952,12 @@
     function layout() {
       const wrap = $("stageWrap"), box = $("stageBox");
       if (!document.body.classList.contains("recmode")) box.style.width = Math.min(wrap.clientWidth, 440) + "px";
+      const wide=$("pcTheater").getBoundingClientRect();
+      if(wide.width){
+        const density=Math.min(window.devicePixelRatio||1,1.5);
+        const px=Math.round(wide.width*density),py=Math.round(wide.width*9/16*density);
+        if(pcCanvas.width!==px||pcCanvas.height!==py){pcCanvas.width=px;pcCanvas.height=py;}
+      }
       const rect = stage.getBoundingClientRect(); if (!rect.width) return;
       stage.style.setProperty("--u", rect.width / 540 + "px");
       cv.width = Math.round(rect.width * DPR()); cv.height = Math.round(rect.width * 16 / 9 * DPR());
@@ -1013,12 +1081,27 @@
       else if (app.demo && !app.idle && app.auto) tickSegs(dt, () => { app.demo = false; app.autoT = 0; renderPills(); });
       else if (app.auto && !app.idle) { app.autoT += dt; if (app.autoT >= R().interval) { app.autoT = 0; fireAll(); } }
       for (const w of app.worlds) w.update(dt);
-      const k = cv.width / 540;
-      ctx.setTransform(k, 0, 0, k, 0, 0);
-      drawBg();
-      for (const w of app.worlds) {
-        ctx.save(); ctx.beginPath(); ctx.roundRect(w.view.r[0], w.view.r[1], w.view.r[2], w.view.r[3], 22); ctx.clip();
-        w.draw(ctx); ctx.restore();
+      if (theaterOn()) {
+        const k=pcCanvas.width/960;
+        pcCtx.setTransform(k,0,0,k,0,0);
+        pcCtx.fillStyle="#08131d";pcCtx.fillRect(0,0,960,540);
+        for(let i=0;i<app.worlds.length;i++){
+          const w=app.worlds[i], old=w.view;
+          w.view=app.split?
+            {x:i?495:15,y:113,s:.86,r:[i?480:0,0,480,540]}:
+            {x:82,y:-4,s:1.57,r:[0,0,960,540]};
+          w.draw(pcCtx);
+          w.view=old;
+        }
+        $("pcTheater").classList.toggle("split-view",app.split);
+      } else {
+        const k = cv.width / 540;
+        ctx.setTransform(k, 0, 0, k, 0, 0);
+        drawBg();
+        for (const w of app.worlds) {
+          ctx.save(); ctx.beginPath(); ctx.roundRect(w.view.r[0], w.view.r[1], w.view.r[2], w.view.r[3], 22); ctx.clip();
+          w.draw(ctx); ctx.restore();
+        }
       }
       tickSub(dt); updateHud();
       requestAnimationFrame(frame);
@@ -1227,6 +1310,20 @@
       startDemo();
     });
     $("finalBtn").addEventListener("click", () => { if (app.idle) return; setN(R().steps.length); app.autoT = R().interval - 0.35; });
+    $("pcShowcase").addEventListener("click",e=>{
+      const pick=e.target.closest("[data-hero-fx]");
+      if(pick){
+        const index=RECIPES.findIndex(r=>r.id===pick.dataset.heroFx);
+        if(index>=0){selectRecipe(index);setN(R().steps.length);}return;
+      }
+      if(e.target.closest("#pcRaw")){setN(0);return;}
+      if(e.target.closest("#pcFinal")){setN(R().steps.length);return;}
+      if(e.target.closest("#pcCompare")){
+        app.split=!app.split;app.demo=false;makeWorlds(app.split,app.n);renderPills();renderOverlay(browseSeg());
+        return;
+      }
+      if(e.target.closest("#pcRecord")){startRec();return;}
+    });
     $("splitBtn").addEventListener("click", () => {
       app.split = !app.split; app.demo = false; makeWorlds(app.split, app.n); renderPills(); renderOverlay(browseSeg());
       // 전후 비교는 화면이 길어지니 목록을 잠깐 내려 둠
