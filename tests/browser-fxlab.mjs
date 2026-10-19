@@ -161,6 +161,25 @@ async function check(viewport,mobile,label) {
     await page.locator("#relatedFx button").first().click();
     assert.equal(await page.locator("#pcCanvas").isVisible(),true);
 
+    // Inspiration catalog: every recipe exposes actual authored design ideas,
+    // while the Reel selects only the meaningful changes instead of 7+ microsteps.
+    const discovery=await page.evaluate(()=>{
+      const fx=window.__fx,fail=[];
+      for(const r of fx.RECIPES){
+        const segs=fx.buildSegs(r);
+        const upgrades=segs.filter(x=>x.k==="step");
+        const final=segs.find(x=>x.k==="hook");
+        if(upgrades.length>2 || !final || final.n!==r.steps.length)
+          fail.push({id:r.id,upgrades:upgrades.length});
+      }
+      return {count:fx.RECIPES.length,failed:fail.slice(0,10),
+        fireHook:fx.buildSegs(fx.RECIPES.find(r=>r.id==="combat-fire"))[0].dur,
+        ideas:document.querySelectorAll("#fxDiscoveryIdeas .fx-discovery-item").length};
+    });
+    assert.equal(discovery.count,539);
+    assert.deepEqual(discovery.failed,[],"All 539 Reels must use cinematic progression");
+    assert.ok(discovery.fireHook>=3.2,"Final fire reveal must show actual damage-over-time");
+    assert.ok(discovery.ideas>=1 && discovery.ideas<=3,"Relevant authored FX tricks visible to visitors");
     await page.locator("#discoverAll").click();
     await page.locator("#search").fill("마법");
     await page.waitForTimeout(300);
