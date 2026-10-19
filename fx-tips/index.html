@@ -767,6 +767,7 @@
     /* ───────── 영상 화면 ───────── */
     const stage = $("stage"), cv = $("cv"), ctx = cv.getContext("2d");
     const pcCanvas=$("pcCanvas"), pcCtx=pcCanvas.getContext("2d");
+    cv.fxLogicalWidth=540; pcCanvas.fxLogicalWidth=960;
     const theaterOn=()=>window.matchMedia("(min-width:1140px)").matches&&app.mode==="browse";
     const VIEW_MAIN = { x: 0, y: 220, s: 1, r: [20, 224, 500, 368] };
     const VIEW_A = { x: 59, y: 222, s: 0.78, r: [20, 226, 500, 268] };
