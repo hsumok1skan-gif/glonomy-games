@@ -8,7 +8,8 @@ const home = read("index.html");
 const guide = read("fx-tips/code.html");
 const engine = read("fx-tips/engine.js");
 const exportJs = read("fx-tips/export.js");
-for (const file of ["fx-tips/engine.js","fx-tips/export.js",...files.map(x=>"fx-tips/recipes/"+x+".js")]) {
+const director = read("fx-tips/director.js");
+for (const file of ["fx-tips/engine.js","fx-tips/director.js","fx-tips/export.js",...files.map(x=>"fx-tips/recipes/"+x+".js")]) {
   new vm.Script(read(file), {filename:file});
 }
 for (const path of ["fx-tips/index.html","fx-tips/code.html","index.html"]) {
@@ -35,6 +36,15 @@ assert.ok(html.includes('segs.push({ k: "hook"'),"Hook-first reels");
 assert.ok(html.includes('id="finalBtn"'),"Final effect preview");
 assert.ok(html.includes('id="copyTTS"'),"AI voice-over script");
 assert.ok(home.includes('class="item fx-feature"'),"Homepage has FX Lab showcase");
-assert.ok(guide.includes("20261019q3") && html.includes("20261019q3") && exportJs.includes("20261019q3"),"Cache version synchronized");
+assert.ok(html.includes('director.js?v=20261019director1'),"Director loaded on desktop");
+assert.ok(engine.includes("FXDirector.stage") && engine.includes("FXDirector.moment") && engine.includes("FXDirector.overlay"),"Director hooks mounted");
+assert.ok(director.includes("window.FXDirector=Object.freeze"),"Director exported");
+const expected=["weapon","combat","duel","fighting","shooter","horde","action","move","rpg","puzzle","casual","ui","sim","strategy","army","racing","survival","env"];
+assert.equal(expected.length,18);
+for(const cat of expected){
+  assert.ok(new RegExp("^[\\s]*"+cat+":\\[", "m").test(director),"Director covers "+cat);
+  assert.ok(ids.some(x=>x.startsWith("")),"Recipe IDs available");
+}
+assert.ok(guide.includes("20261019q3") && exportJs.includes("20261019q3"),"Code and export versions retained");
 assert.equal((home.match(/data-cat="sns"/g)||[]).length,1,"No duplicate FX Lab links");
 console.log("PASS: 539 unique FX | 11 bundles | 512 reels | site and studio assets present");
