@@ -42,7 +42,7 @@ assert.ok(director.includes("window.FXDirector=Object.freeze"),"Director exporte
 const expected=["weapon","combat","duel","fighting","shooter","horde","action","move","rpg","puzzle","casual","ui","sim","strategy","army","racing","survival","env"];
 assert.equal(expected.length,18);
 for(const cat of expected){
-  assert.ok(new RegExp("^[\\s]*"+cat+":\\[", "m").test(director),"Director covers "+cat);
+  assert.ok(new RegExp("^[\\s]*"+cat+":(?:\\[|\\{tone:)", "m").test(director),"Director covers "+cat);
   assert.ok(ids.some(x=>x.startsWith("")),"Recipe IDs available");
 }
 assert.ok(guide.includes("20261019q3") && exportJs.includes("20261019q3"),"Code and export versions retained");
