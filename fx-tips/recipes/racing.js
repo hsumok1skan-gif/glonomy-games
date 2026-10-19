@@ -936,7 +936,8 @@
       interval: 1.4, stepDur: 3.6,
       setup(w) {
         carTop("y");
-        w.S = { a: 0, speed: 1, gas: 0, tT: 0, wob: 0, rocks: [...Array(14)].map(() => ({ x: rand(30, 510), y: rand(40, 330), r: rand(4, 10) })) };
+        w.S = { a: 0, speed: 1, gas: 0, tT: 0, wob: 0, x: 445, y: 186, h: Math.PI / 2 + 0.3, rocks: [...Array(14)].map(() => ({ x: rand(30, 510), y: rand(40, 330), r: rand(4, 10) })) };
+        w.S.rx = w.S.x - Math.cos(w.S.h) * 34; w.S.ry = w.S.y - Math.sin(w.S.h) * 34;
       },
       fire(w) { w.S.gas = 0.8; w.emit("gas", w.S); },
       update(w, dt) {
