@@ -900,6 +900,13 @@
       setup(w) { w.F = []; w.halves = []; w.wave = 0; casualFruitToss(w); },
       fire(w) {
         const live = w.F.filter(f => !f.dead && f.y < 330);
+        // A swipe on frame one should be queued until the tossed fruit is
+        // actually in reach. Previously the first input did nothing at all.
+        if (!live.length && !w.swipeQueued) {
+          w.swipeQueued = true;
+          w.after(.30, () => { w.swipeQueued = false; if(w.F.some(f => !f.dead && f.y < 330)) w.R.fire(w); });
+          return;
+        }
         if (live.length) {
           const y = live.reduce((s, f) => s + f.y, 0) / live.length;
           if (!w.on("trail")) w.spawn({ type: "crack", x: 30, y: y + 30, pts: [[0, 0], [480, -60]], w: 2, life: 0.18, add: false, color: "255,255,255" });

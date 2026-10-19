@@ -654,9 +654,24 @@
       },
       drawHud(w, ctx) {
         for (const t of w.toasts) {
+          const polished=w.on("drift");
           ctx.save(); ctx.globalAlpha = clamp(t.a); ctx.translate(270, t.y + t.dy); ctx.scale(t.sc, t.sc);
-          box(ctx, -120, -20, 240, 40, 20, "rgba(30,34,44,0.95)", LINE);
+          if(polished){ctx.shadowColor=`rgba(${t.kc},0.45)`;ctx.shadowBlur=15;}
+          box(ctx,-120,polished?-23:-20,240,polished?46:40,polished?13:20,
+            polished?"rgba(19,30,41,0.98)":"rgba(30,34,44,0.95)",
+            polished?`rgba(${t.kc},0.55)`:LINE,polished?1.5:1);
+          ctx.shadowBlur=0;
+          if(polished){
+            const halo=ctx.createLinearGradient(-110,0,110,0);
+            halo.addColorStop(0,`rgba(${t.kc},0.40)`);
+            halo.addColorStop(.65,`rgba(${t.kc},0.06)`);
+            halo.addColorStop(1,`rgba(${t.kc},0)`);
+            ctx.fillStyle=halo;ctx.fillRect(-116,-20,228,40);
+            ctx.fillStyle=`rgba(${t.kc},0.95)`;ctx.fillRect(-115,-17,3,34);
+            ctx.fillStyle=`rgba(${t.kc},0.68)`;ctx.fillRect(-112,20,224,2);
+          }
           ctx.fillStyle = `rgb(${t.col})`; ctx.beginPath(); ctx.arc(-96, 0, 10, 0, TAU); ctx.fill();
+          if(polished){ctx.strokeStyle="rgba(255,255,255,0.55)";ctx.lineWidth=1.4;ctx.stroke();}
           txt(ctx, L(t.en, t.ko), -78, 1, 16, "#f1f5f9", "left", 700);
           ctx.restore();
         }
