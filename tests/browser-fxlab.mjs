@@ -82,6 +82,15 @@ async function check(viewport,mobile,label) {
     assert.equal(full.count,539);
     assert.equal(full.failCount,0,"539 FX activation errors: "+JSON.stringify(full.fail));
     await page.screenshot({path:"browser-artifacts/director-18-genres.png",fullPage:true});
+    const sampleExport=await page.evaluate(async()=>{
+      const r=window.__fx.RECIPES.find(r=>r.id==="weapon-railgun");
+      const html=await window.__fx.standaloneHTML(r);
+      return {bytes:html.length,hasDirector:html.includes("window.FXDirector=Object.freeze"),
+        hasEngine:html.includes("class World"),hasRecipe:html.includes("weapon-railgun")};
+    });
+    assert.ok(sampleExport.bytes>80000 && sampleExport.hasDirector &&
+      sampleExport.hasEngine && sampleExport.hasRecipe,
+      "Downloaded standalone HTML must contain the full cinematic renderer");
     await page.locator("#pcFinal").click();
     await page.locator("#pcCompare").click();
     assert.equal(await page.locator("#pcTheater").evaluate(x=>x.classList.contains("split-view")),true);
