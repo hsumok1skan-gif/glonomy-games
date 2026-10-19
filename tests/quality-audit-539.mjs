@@ -96,9 +96,9 @@ for (const cat of genres){
       a.fillStyle=flags.length?"#ffba8c":"#d5e9ee";
       a.fillText((index+1)+" · "+R.id.slice(0,35),x+8,y+11);
       a.font="10px monospace";a.fillStyle="#9dbcc5";
-      const label=raw?((best.fraction*100).toFixed(1)+"% changed | "+R.steps.length+" FX layers | t="+[.22,.65,1.2,2.05][winning]):"FAILED";
+      const label=(raw&&final)?((best.fraction*100).toFixed(1)+"% changed | "+R.steps.length+" FX layers | t="+[.22,.65,1.2,2.05][winning]):"FAILED";
       a.fillText(label,x+8,y+28);
-      if(raw){
+      if(raw && final){
         tg.putImageData(raw.shots[winning],0,0);a.drawImage(tmp,x+8,y+45,138,92);
         tg.putImageData(final.shots[winning],0,0);a.drawImage(tmp,x+164,y+45,138,92);
         a.fillStyle="rgba(7,17,22,.72)";
