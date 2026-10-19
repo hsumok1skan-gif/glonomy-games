@@ -1236,7 +1236,12 @@ function bloomBegin(ctx, rx, ry, rw, rh) {
   if (!BLOOM.ok) return null;
   try {
     const M = ctx.getTransform(), base = BLOOM.base = BLOOM.base || new DOMMatrix();
-    const k = ctx.canvas.width / 540, D = BLOOM.D;
+    // Match the actual canvas coordinate system: portrait uses 540 logical
+    // pixels, while the desktop theater is 960 logical pixels wide.
+    // Previously assuming 540 on the 960 theater scaled down bloom and
+    // replayed it as a miniature duplicate in the upper-left corner.
+    const logicalW = ctx.canvas.fxLogicalWidth || 540;
+    const k = ctx.canvas.width / logicalW, D = BLOOM.D;
     const W = Math.max(1, Math.round(rw * k / D)), H = Math.max(1, Math.round(rh * k / D));
     if (!BLOOM.c) { BLOOM.c = document.createElement("canvas"); BLOOM.x = BLOOM.c.getContext("2d"); }
     if (BLOOM.c.width !== W || BLOOM.c.height !== H) { BLOOM.c.width = W; BLOOM.c.height = H; }
