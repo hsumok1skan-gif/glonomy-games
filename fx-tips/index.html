@@ -39,6 +39,7 @@
       --u: 0.7px; position: relative; width: 100%; aspect-ratio: 540 / 618; border-radius: 18px; overflow: hidden; background: #0b0c09;
       box-shadow: 0 0 0 1px var(--line), 0 30px 60px -30px rgba(200, 240, 60, .22); touch-action: manipulation; user-select: none; -webkit-user-select: none;
     }
+    .stage::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0; background: linear-gradient(150deg, rgba(111,177,250,.045), transparent 40%, rgba(200,240,60,.025)); }
     .stage canvas { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 9 / 16; display: block; }
     .ov { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 9 / 16; pointer-events: none; font-family: var(--sans); }
     body:not(.recmode) .o-sub, body:not(.recmode) .o-ft, body:not(.recmode) .cta { display: none; }
@@ -77,6 +78,7 @@
     .ab.a { top: calc(var(--u) * 206); color: #cfd1c6; }
     .ab.b { top: calc(var(--u) * 498); color: var(--acc); }
     .stage.split .ab { display: block; }
+    .stage.split .ab.a, .stage.split .ab.b { font-weight: 800; letter-spacing: .09em; text-shadow: 0 1px 7px rgba(0,0,0,.85); }
     .stage.split .vh, .stage.split .o-seg, .stage.split .o-pill { display: none; }
     .stage.split .o-sub { top: calc(var(--u) * 790); }
     .cta { left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: calc(var(--u) * 586); height: calc(var(--u) * 300); border-radius: calc(var(--u) * 22); background: #13150f; color: var(--text); box-shadow: inset 0 0 0 calc(var(--u) * 2) rgba(200, 240, 60, .55); padding: calc(var(--u) * 30); display: grid; align-content: center; gap: calc(var(--u) * 10); opacity: 0; transform: translateY(calc(var(--u) * 20)); transition: opacity .35s, transform .45s cubic-bezier(.2, 1.2, .3, 1); }
@@ -514,7 +516,7 @@
 
     /* ───────── 영상 화면 ───────── */
     const stage = $("stage"), cv = $("cv"), ctx = cv.getContext("2d");
-    const VIEW_MAIN = { x: 0, y: 220, s: 1, r: [20, 224, 500, 352] };
+    const VIEW_MAIN = { x: 0, y: 220, s: 1, r: [20, 224, 500, 368] };
     const VIEW_A = { x: 59, y: 222, s: 0.78, r: [20, 226, 500, 268] };
     const VIEW_B = { x: 59, y: 512, s: 0.78, r: [20, 516, 500, 268] };
     const WPS = 3.1; // 자막 속도(초당 단어)
@@ -747,7 +749,8 @@
     }
     function recipeCode(r) {
       const base = ["setup", "fire", "update"].filter(k => typeof r[k] === "function").map(k => dedent(r[k].toString()));
-      return `// ${plain(r.title.en)} — ${plain(r.title.ko)}\n// 기본 동작 (효과 없음)\n${base.join("\n\n")}\n\n` + r.steps.map(stepCode).join("\n\n");
+      const soundBase = (r.base || []).map((layer, i) => stepCode(layer, i));
+      return `// ${plain(r.title.en)} — ${plain(r.title.ko)}\n// 기본 동작 (효과 없음)\n${base.join("\n\n")}\n\n` + (soundBase.length ? "// RAW부터 활성화되는 효과음\n" + soundBase.join("\n\n") + "\n\n" : "") + r.steps.map(stepCode).join("\n\n");
     }
     const standaloneHTML = r => FXExport.standaloneHTML(r);
     async function downloadStandalone(r) {
