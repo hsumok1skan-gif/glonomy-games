@@ -92,6 +92,16 @@ async function check(viewport,mobile,label) {
     await page.keyboard.press("Escape");
     await page.waitForTimeout(100);
     await page.screenshot({path:"browser-artifacts/desktop-fxlab.png",fullPage:true});
+    assert.equal(await page.locator("#creatorModeToggle").isVisible(),true);
+    assert.equal(await page.locator("#scriptCard").isVisible(),false,"Creator-only posts should be hidden by default");
+    await page.locator("#creatorModeToggle").click();
+    assert.equal(await page.locator("#scriptCard").isVisible(),true,"Creator panel should open on demand");
+    await page.locator("#creatorModeToggle").click();
+    assert.equal(await page.locator("#scriptCard").isVisible(),false);
+    assert.ok((await page.locator("#relatedFx button").count())>=2,"Contextual similar effects visible");
+    await page.locator("#relatedFx button").first().click();
+    assert.equal(await page.locator("#pcCanvas").isVisible(),true);
+
     await page.locator("#discoverAll").click();
     await page.locator("#search").fill("마법");
     await page.waitForTimeout(300);
