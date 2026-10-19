@@ -156,77 +156,222 @@
       ],
     },
 
-    /* 2. 화염 피해 */
+    /* 2. 화염 피해 · gameplay-first upgrade: complete attack → ignite → damage-over-time */
     {
       id: "combat-fire", cat: "combat", view: "side",
-      title: { en: "Set enemies *on fire*", ko: "적에게 *불* 붙이기" },
-      intro: { en: "It's burning. Apparently. *Trust me*.", ko: "타고 있대요. *믿어* 주세요." },
-      interval: 1.6, stepDur: 3.8,
-      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 410, hp: 200 }); w.burnT = 0; w.tickT = 0; },
+      title: { en: "Make fire damage *feel real*", ko: "불이 붙고 *화상*까지" },
+      intro: { en: "First: the hit. Then: fire sticks, *burns* and drains HP.", ko: "공격만 하던 장면에 *점화 → 화상 → 연출*을 더해요." },
+      interval: 3.55, stepDur: 5.0,
+      setup(w) {
+        w.hero = w.actor("hero", { home: 115 });
+        w.foe = w.actor("foe", { home: 413, hp: 200 });
+        w.burnT = 0; w.burnAge = 0; w.tickT = 0;
+        w.flamePulse = 0; w.emberPulse = 0; w.heatStatus = 0; w.castT = 0;
+        w.busy = false;
+      },
       fire(w) {
-        const p = paw(w), f = w.foe;
-        const o = { x: p.x, y: p.y, vx: 800, vy: 0, r: 9, color: "#fb923c", hitX: f.x - 45 };
-        o.onHit = () => { f.hp -= 10; f.ox += 8; w.burnT = 1.5; w.tickT = 0.22; w.emit("hit", { x: o.x, y: o.y }); };
-        w.emit("cast", o);
-        w.shoot(o);
+        if(w.busy) return;
+        w.busy = true;
+        const c=w.hero, f=w.foe;
+        // RAW already shows a believable attack movement before HP changes.
+        // The projectile and hit are the exact same gameplay event on every layer.
+        c.rot = -0.16; c.ox -= 15; c.sx = .89; c.sy = 1.05;
+        w.emit("charge", {x:c.x+38,y:c.gy-c.h*.58});
+        w.tween(c,{rot:0},.42,"out");
+        w.after(.22,()=>{
+          const p=paw(w);
+          const o={
+            x:p.x+8, y:p.y-2, vx:620,vy:0, r:6,
+            color:"#fb923c", hitX:f.x-f.w*.34
+          };
+          o.onHit = shot=>{
+            // First damage happens on actual contact, never at button press.
+            f.hp = Math.max(0, f.hp-12);
+            f.ox+=12;f.vib=3.8;f.sx=.91;f.sy=1.06;f.flash=.32;
+            const hit={x:shot.x,y:shot.y};
+            w.emit("hit",hit);
+            if(w.on("ignite")){
+              // Fire is attached to the enemy for the whole burn duration.
+              w.burnT=2.35;w.burnAge=0;w.tickT=.42;
+              w.flamePulse=0;
+              w.emit("ignite",hit);
+            }
+          };
+          w.emit("cast",o);
+          w.shoot(o);
+        });
+        w.after(.85,()=>{w.busy=false;});
       },
-      update(w, dt) {
-        const f = w.foe;
-        f.burn = Math.max(0, f.burn - dt);
-        if (f.hp <= 0) f.hp = f.maxHp;
-        if (w.burnT <= 0) return;
-        w.burnT -= dt; w.tickT -= dt;
-        if (w.tickT <= 0) { w.tickT = 0.3; f.hp -= 4; w.emit("tick", f); }
+      update(w,dt) {
+        const f=w.foe;
+        f.burn=Math.max(0,f.burn-dt);
+        // Reset only after a complete cycle, so no unexplained HP jump mid-burn.
+        if(f.hp<=0&&w.burnT<=0) f.hp=f.maxHp;
+        if(w.burnT<=0)return;
+        w.burnT=Math.max(0,w.burnT-dt);
+        w.burnAge+=dt;
+        if(w.on("ignite")){
+          f.burn=.13;
+          // Visible flames climb the silhouette, not a floating ring.
+          w.flamePulse+=dt;
+          while(w.flamePulse>=.065){
+            w.flamePulse-=.065;
+            const x=f.x+f.ox+rand(-f.w*.27,f.w*.25);
+            const y=f.gy+f.oy-rand(f.h*.20,f.h*.83);
+            w.spawn({type:"glow",x,y,vx:rand(-13,15),vy:rand(-85,-42),
+              size:rand(11,20),size1:1,life:rand(.19,.34),
+              color:pick(["255,118,33","255,168,46","255,221,96"])});
+          }
+        }
+        if(w.on("dot")){
+          w.tickT-=dt;
+          while(w.tickT<=0 && w.burnT>0){
+            w.tickT+=.42;
+            const damage=6;
+            f.hp=Math.max(0,f.hp-damage);
+            w.emit("tick",f,damage);
+          }
+        }
+        if(w.on("status")){
+          w.heatStatus=Math.min(1,w.heatStatus+dt*5);
+          w.emberPulse+=dt;
+          while(w.emberPulse>=.16){
+            w.emberPulse-=.16;
+            w.spawn({type:"smoke",x:f.x+rand(-22,22),y:f.gy-f.h*.88,
+              vx:rand(-18,22),vy:rand(-59,-24),size:9,size1:28,
+              life:rand(.43,.64),color:"46,34,32"});
+            w.spawn({type:"spark",x:f.x+rand(-f.w*.3,f.w*.3),y:f.gy-rand(32,95),
+              vx:rand(-55,55),vy:rand(-118,-60),drag:2.5,
+              size:1.8,life:.4,color:"255,193,79"});
+          }
+        }
       },
-      drawHud(w, ctx) { drawBar(ctx, w.foe); },
-      steps: [
+      drawFront(w,ctx) {
+        if(!w.on("ignite")||w.burnT<=0)return;
+        const f=w.foe,age=w.burnAge,fade=Math.min(1,w.burnT/.32);
+        // Five body-following flames: shaped yellow cores + orange silhouettes.
+        ctx.save();
+        ctx.translate(f.x+f.ox,f.gy+f.oy);
+        ctx.globalCompositeOperation="lighter";
+        const h=f.h,wi=f.w;
+        const positions=[[-.27,.26],[.17,.36],[-.16,.56],[.24,.68],[0,.44]];
+        for(let i=0;i<positions.length;i++){
+          const [u,v]=positions[i], px=u*wi+Math.sin(age*8+i*1.4)*4;
+          const py=-h*v,fh=(24+(i%3)*10)*(0.87+.13*Math.sin(age*10+i));
+          const fw=12+(i%3)*3;
+          const g=ctx.createLinearGradient(px,py,px,py-fh);
+          g.addColorStop(0,"rgba(255,88,17,"+(.78*fade)+")");
+          g.addColorStop(.62,"rgba(255,170,34,"+(.58*fade)+")");
+          g.addColorStop(1,"rgba(255,237,132,0)");
+          ctx.fillStyle=g;
+          ctx.beginPath();ctx.moveTo(px-fw,py);
+          ctx.bezierCurveTo(px-fw*.72,py-fh*.41,px+fw*.32,py-fh*.63,px+Math.sin(age*11+i)*4,py-fh);
+          ctx.bezierCurveTo(px+fw*.72,py-fh*.53,px+fw,py-fh*.20,px+fw,py);
+          ctx.closePath();ctx.fill();
+        }
+        ctx.restore();
+      },
+      drawHud(w,ctx){
+        const f=w.foe;
+        drawBar(ctx,f);
+        if(w.on("status")&&w.burnT>0){
+          // The orange status is pinned to the victim and sits ABOVE its HP bar.
+          ctx.save();
+          ctx.font="800 13px Pretendard, sans-serif";
+          ctx.textAlign="center";ctx.textBaseline="middle";
+          ctx.shadowColor="rgba(255,85,14,.65)";ctx.shadowBlur=10;
+          ctx.fillStyle="#ffb56e";
+          ctx.fillText("🔥 화상",f.x+f.ox,f.gy-f.h-41);
+          ctx.restore();
+        }
+      },
+      steps:[
         {
-          id: "ball", name: { en: "Fireball", ko: "불덩이" }, param: "hot core + trail",
-          cap: { en: "A *hot core* with a *trail*. Not a dot.", ko: "점 말고, *뜨거운 중심*에 *꼬리*." },
-          cast(w, o) { o.draw = drawFireball; o.trail = "255,130,40"; },
-        },
-        {
-          id: "ignite", name: { en: "Ignite Burst", ko: "확 붙는 순간" }, param: "glow + 16 flames",
-          cap: { en: "The moment it catches: *WHOOMPH*.", ko: "불붙는 순간은 *화르륵*." },
-          hit(w, h) {
-            w.foe.flash = 1;
-            w.spawn({ type: "glow", x: h.x, y: h.y, size: 110, size1: 30, life: 0.3, color: "255,140,40" });
-            for (let i = 0; i < 16; i++) w.spawn({ type: "glow", x: h.x + rand(-20, 30), y: h.y + rand(-20, 20), vx: rand(-60, 160), vy: rand(-320, -80), drag: 3, size: rand(14, 24), size1: 2, life: rand(0.3, 0.5), color: "255,170,60" });
+          id:"projectile",
+          name:{en:"01 · Fire Attack",ko:"공격 · 불꽃이 날아감"},
+          param:"windup → projectile → hit",
+          cap:{en:"The hero *winds up and fires*. Damage lands only when the shot connects.",
+               ko:"손을 뻗어 발사하고, *적에게 맞은 순간* 체력이 줄어요."},
+          cast(w,o){
+            o.draw=(ctx,p)=>{
+              ctx.save();ctx.globalCompositeOperation="lighter";
+              glow(ctx,p.x-9,p.y,33,"255,105,20",.73);
+              const flicker=3+Math.sin(p.age*41)*2;
+              ctx.fillStyle="rgba(252,124,25,.78)";
+              ctx.beginPath();
+              ctx.moveTo(p.x+11,p.y);
+              ctx.bezierCurveTo(p.x-9,p.y-15,p.x-25,p.y-11-flicker,p.x-37,p.y+flicker);
+              ctx.bezierCurveTo(p.x-21,p.y+17,p.x-4,p.y+15,p.x+11,p.y);
+              ctx.fill();
+              ctx.fillStyle="#fff3bd";
+              ctx.beginPath();ctx.ellipse(p.x+2,p.y,8,5,0,0,TAU);ctx.fill();
+              ctx.restore();
+            };
+            o.trail="255,123,36";
           },
         },
         {
-          id: "flames", name: { en: "Body Flames", ko: "몸에 붙은 불" }, param: "60 flames/s",
-          cap: { en: "While it burns, *flames climb* the body.", ko: "타는 동안 몸에서 *불길*이 올라와요." },
-          update(w) {
-            const f = w.foe;
-            if (w.burnT <= 0) return;
-            f.burn = 0.1;
-            w.spawn({ type: "glow", x: f.x + f.ox + rand(-45, 40), y: G - rand(10, 110), vx: rand(-20, 20), vy: rand(-170, -90), size: rand(12, 22), size1: 2, life: rand(0.3, 0.5), color: pick(["255,120,30", "255,180,60", "255,90,20"]) });
+          id:"ignite",
+          name:{en:"02 · Ignition",ko:"명중 · 몸에 불이 붙음"},
+          param:"impact burst + attached body flames",
+          cap:{en:"A fireball actually *ignites the enemy*; flames stay on the body.",
+               ko:"맞은 자리에서 *화르륵* 불이 붙고, 적 몸에 계속 타올라요."},
+          ignite(w,hit){
+            w.foe.flash=.70;
+            w.spawn({type:"glow",x:hit.x,y:hit.y,size:58,size1:4,
+              life:.24,color:"255,121,32"});
+            for(let i=0;i<9;i++){
+              const a=rand(-Math.PI,0),v=rand(120,290);
+              w.spawn({type:"spark",x:hit.x,y:hit.y,
+                vx:Math.cos(a)*v,vy:Math.sin(a)*v-60,
+                drag:4,size:rand(1.5,3.0),life:rand(.19,.37),
+                color:"255,181,71"});
+            }
           },
         },
         {
-          id: "smoke", name: { en: "Smoke + Embers", ko: "연기와 불씨" }, param: "dark smoke · sparks",
-          cap: { en: "Dark *smoke* above, *embers* floating off.", ko: "위로 *검은 연기*, 옆으로 *불씨*." },
-          update(w) {
-            const f = w.foe;
-            if (w.burnT <= 0 || Math.random() < 0.6) return;
-            w.spawn({ type: "smoke", x: f.x + rand(-30, 30), y: G - rand(90, 130), vx: rand(-20, 20), vy: rand(-70, -40), size: rand(8, 12), size1: rand(24, 34), life: rand(0.7, 1.1), color: "40,36,40" });
-            w.spawn({ type: "spark", x: f.x + rand(-40, 40), y: G - rand(30, 100), vx: rand(-60, 60), vy: rand(-200, -100), drag: 1, life: rand(0.4, 0.7), size: 2, color: "255,200,90" });
+          id:"dot",
+          name:{en:"03 · Burning Damage",ko:"화상 · 체력이 지속 감소"},
+          param:"6 HP × 0.42s; floating numbers",
+          cap:{en:"Now *damage-over-time* is visible: 6 HP per tick and readable orange numbers.",
+               ko:"불붙은 동안 *0.42초마다 6 피해*. 숫자와 체력 감소가 연결돼요."},
+          tick(w,f,damage){
+            popText(w,"−"+damage,f.x+rand(-19,19),f.gy-f.h*.83,
+              23,"#ffb264",{vy:-106,g:80,life:.54});
+            f.flash=.16;f.vib=2.5;f.sy=.97;
           },
         },
         {
-          id: "ticks", name: { en: "Burn Ticks", ko: "도트 숫자" }, param: "every 300ms",
-          cap: { en: "Each tick: an *orange number* and a *flinch*.", ko: "틱마다 *주황 숫자*와 *움찔*." },
-          tick(w, f) {
-            popText(w, "4", f.x + rand(-34, 34), G - 120, 22, "#fb923c", { vy: -150, g: 150, life: 0.6 });
-            f.flash = 0.5; f.sy = 0.93; f.sx = 1.05;
-          },
+          id:"status",
+          name:{en:"04 · Burning Status",ko:"상태 표시 · 연기와 불씨"},
+          param:"burn label + smoke + embers",
+          cap:{en:"A *BURNING* tag, smoke and embers explain why the HP keeps dropping.",
+               ko:"적 머리 위에 *화상 상태 표시*, 불씨와 연기를 더해 이유가 보여요."},
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + crackle",
-          cap: { en: "A *whoosh* on ignite, a *crackle* on every tick.", ko: "붙을 때 *훅*, 틱마다 *타닥*." },
-          hit(w) { w.sfx.burst(); },
-          tick(w) { w.play(() => nz({ type: "bandpass", f: 2600, q: 1.5, dur: 0.06, vol: 0.3 })); },
+          id:"cinema",
+          name:{en:"05 · Full Game Feel",ko:"최종 · 충전과 타격감 완성"},
+          param:"charge light + hitstop + recoil + heat bloom",
+          cap:{en:"A charging hand, bright hit, recoil and restrained screen shake *complete the combat scene*.",
+               ko:"기 모으기부터 *발사·명중·화상 피해·충격 반응*까지 하나로 연결해요."},
+          charge(w,p){
+            w.spawn({type:"glow",x:p.x,y:p.y,size:41,size1:15,
+              life:.24,color:"255,145,47"});
+          },
+          ignite(w,hit){
+            w.shake(.24,1);w.zoomPunch(.035);w.hitstop(.052);
+            w.flash("255,151,57",.10);
+            w.foe.ox+=13;w.foe.vib=7;
+            for(let i=0;i<5;i++){
+              const x=hit.x+rand(-9,9),y=hit.y+rand(-9,9);
+              w.spawn({type:"glow",x,y,size:rand(16,27),size1:1,
+                vx:rand(-80,90),vy:rand(-150,-55),life:.31,
+                color:"255,218,94"});
+            }
+          },
+          tick(w,f){
+            f.ox+=2.5;
+          },
         },
       ],
     },
