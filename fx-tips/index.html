@@ -1166,11 +1166,23 @@
         .map(([k, label, n]) => `<button type="button" class="sub${app.cat === k ? " on" : ""}" data-c="${k}">${label}<small>${n}</small></button>`).join("") : "";
       $("subs").style.display = g ? "" : "none";
     }
+    // Editorial starter pack: distinctive demonstrations rather than the
+    // first 30 records in date order. The full 539 remain accessible in All.
+    const FEATURED_IDS = [
+      "weapon-railgun","weapon-katana","magic","weapon-plasma","weapon-chain-lightning",
+      "weapon-sniper","weapon-rocket","weapon-greatsword","combat-crit","combat-lastkill",
+      "combat-flurry","combat-fire","duel-finisher","duel-parry","action-finisher-cam",
+      "action-parry","action-weapon-trail","fighting-perfect-ko","fighting-special-trail",
+      "shooter-headshot","shooter-tracers","rpg-cast-circle","spot-power-portal",
+      "spot-power-enchant","spot-power-vault","puzzle-chain-combo","puzzle-line-clear",
+      "puzzle-gravity-flip","racing-nitro","racing-drift"
+    ];
+    const FEATURED = new Set(FEATURED_IDS);
     function filtered() {
       const q = app.q.trim().toLowerCase(), g = GROUPS.find(x => x.id === app.group);
       const onDesktop = window.matchMedia("(min-width:1140px)").matches;
       return RECIPES.map((r, i) => [r, i]).filter(([r]) => {
-        if(onDesktop && app.libraryMode === "top" && r.ep > 30) return false;
+        if(onDesktop && app.libraryMode === "top" && !FEATURED.has(r.id)) return false;
         if(onDesktop && app.libraryMode === "saved" && !app.favorites.has(r.id)) return false;
         if (q) return (plain(r.title.ko) + " " + plain(r.title.en) + " " + CATS[r.cat][1] + " " + r.steps.map(s => s.name.ko + " " + s.name.en).join(" ")).toLowerCase().includes(q);
         if (g && !g.cats.includes(r.cat)) return false;
