@@ -488,6 +488,43 @@ function studioBackdrop(ctx, v, cat, clock) {
   ctx.fillStyle=rim;ctx.fillRect(x,y,w,h);
 }
 
+
+/* Genre-specific final-stage payoff. Original RAW and each learning step stay untouched.
+   Effects are throttled and share the normal particle budget for mobile safety. */
+const STUDIO_PAYOFF_EVENTS = {
+  weapon:["fire","cast","blast"],combat:["fire","blast"],duel:["strike","cast"],fighting:["strike","combo"],
+  shooter:["fire","shoot"],action:["dash","blast"],horde:["fire","blast"],
+  puzzle:["match","merge","clear","chain","done","unlock"],rpg:["cast","success","complete","gain","unlock"],
+  ui:["claim","unlock","upgrade"],casual:["pop","done","unlock"],sim:["upgrade","gain"],
+  racing:["finish","boost"],strategy:["complete","unlock"],survival:["heal","unlock"]
+};
+function studioPayoff(w, ev, args) {
+  if (w.bare || w.n < 2 || w.n !== w.R.steps.length) return;
+  const cat=w.R.cat, signals=STUDIO_PAYOFF_EVENTS[cat];
+  if (!signals || !signals.includes(ev)) return;
+  const cooldown=/^(weapon|shooter|combat|horde)$/.test(cat) ? 0.19 : 0.42;
+  if (w.studioLast != null && w.time-w.studioLast < cooldown) return;
+  w.studioLast=w.time;
+  const src=args.find(a=>a && typeof a==="object" && Number.isFinite(a.x) && Number.isFinite(a.y));
+  const focal=src || (cat==="weapon" || cat==="combat" ? (w.hero || w.foe) : null);
+  const x=focal?focal.x:270,y=focal?(src?src.y:(focal.gy||G)-(focal.h||80)*0.56):184;
+  const magic=/magic|spell|summon|mana|cast|arcane|lightning/i.test(w.R.id);
+  const c=magic?"173,138,255":/^(puzzle|ui|casual)$/.test(cat)?"111,239,218":
+          cat==="rpg"?"207,148,255":cat==="racing"?"102,190,255":"255,181,101";
+  const isSpecial=["clear","chain","match","unlock","complete","gain","blast","cast"].includes(ev);
+  const size=isSpecial?64:43, num=isSpecial?13:8;
+  w.spawn({type:"glow",x,y,size:size*1.7,size1:0,life:0.25,color:c,alpha:0.75});
+  w.spawn({type:"ring",x,y,size:7,size1:size,life:0.3,w:isSpecial?7:4,color:c});
+  w.spawn({type:"rays",x,y,size:size*1.15,size1:0,life:0.19,n:12,color:c});
+  w.spawn({type:"star",x,y,size:isSpecial?28:19,size1:0,life:0.16,color:"255,252,229"});
+  for(let i=0;i<num;i++){
+    const ang=Math.random()*TAU,speed=120+Math.random()*(isSpecial?410:270);
+    w.spawn({type:"spark",x,y,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,
+      size:1.35+Math.random()*1.9,drag:4.1,life:0.15+Math.random()*0.26,color:c});
+  }
+  if (/^(weapon|combat|fighting|shooter)$/.test(cat)) w.zoomPunch(0.018);
+}
+
 class World {
   // bare: 전후 비교용. 모든 단계의 "동작·타이밍"은 그대로 켜 두고, 이펙트(훅)만 끈 세계
   constructor(R, n, view, muted, bare) {
@@ -505,6 +542,7 @@ class World {
     if (this.bare) return;
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
+    studioPayoff(this, ev, a);
     // Showcase-grade impact accent on finished combat scenes only.
     // We leave RAW and intermediate steps untouched, so before/after stays meaningful.
     if ((ev === "hit" || ev === "kill") && this.n >= 3 && this.n === this.R.steps.length &&
