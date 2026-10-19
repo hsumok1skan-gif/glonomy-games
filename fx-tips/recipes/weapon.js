@@ -327,20 +327,60 @@
       title: { en: "Make a laser beam *burn*", ko: "레이저가 *지지는* 느낌" },
       intro: { en: "A red thread. Is it *doing anything?*", ko: "빨간 실 한 가닥. *효과가 있긴* 해요?" },
       interval: 0.3, stepDur: 3.6,
-      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 430 }); w.gun = { kick: 0, rot: 0 }; w.lz = { hold: 0, t: 0, L: null }; },
-      fire(w) { w.lz.hold = 0.5; },
+      setup(w) { w.hero = w.actor("hero", { home: 110 }); w.foe = w.actor("foe", { home: 430, hp:260 }); w.gun = { kick: 0, rot: 0 };
+        w.lz = { hold: 0, t: 0, L: null, warm:0, initial:false, hpView:260, hpLag:260, hpPulse:0, scorch:0, emberT:0 }; },
+      fire(w) { const z=w.lz;z.hold=.58;z.warm=.12;z.initial=false;
+        w.hero.sx=.95;w.hero.sy=1.04;w.after(.14,()=>{w.hero.sx=1;w.hero.sy=1;}); },
       update(w, dt) {
         const z = w.lz, f = w.foe;
         gunSpring(w, dt);
-        z.hold -= dt; z.t -= dt; z.L = null;
-        if (z.hold <= 0) return;
+        z.hold-=dt;z.t-=dt;z.L=null;z.warm-=dt;
+        thermalDecay(z,f,dt);
+        z.scorch=Math.max(0,z.scorch-dt);
+        if(z.scorch>0 && z.emberT<=0){
+          z.emberT=.055;
+          w.spawn({type:"spark",x:f.x-27+rand(-5,9),y:G-f.h*.58+rand(-18,17),
+            vx:rand(-110,30),vy:rand(-150,-40),size:1.5,life:.34,drag:2.5,color:"255,182,117"});
+          if(Math.random()<.5)w.spawn({type:"smoke",x:f.x-24,y:G-f.h*.67,
+            vx:rand(-20,24),vy:-55,size:5,size1:16,life:.5,color:"67,61,64"});
+        }
+        z.emberT-=dt;
+        if(z.hold<=0||z.warm>0)return;
         const m = muzzle(w), end = f.alive ? f.x - 30 : 600;
         z.L = { x0: m.x, y0: m.y, x1: end, y1: m.y, w: 3, glow: 0, jit: 0 };
         w.emit("beam", z.L);
-        if (z.t <= 0) { z.t = 0.08; if (!w.on("sizzle")) f.ox += 2; hit(w, f, 2, { x: end, y: m.y }); }
+        if(z.t<=0){
+          z.t=.085;if(!w.on("sizzle"))f.ox+=2;
+          hit(w,f,2,{x:end,y:m.y});
+          z.hpPulse=1;z.scorch=.34;f.vib=2.4;
+          if(w.on("sizzle"))w.emit("heat",{x:end,y:m.y});
+        }
       },
-      drawFront(w, ctx) { drawGun(w, ctx); drawLaser(ctx, w.lz.L, w.time); },
-      drawHud(w, ctx) { drawBar(ctx, w.foe); },
+      drawFront(w,ctx){
+        drawGun(w,ctx);drawLaser(ctx,w.lz.L,w.time);
+        const z=w.lz;
+        if(z.warm>0&&z.hold>0){
+          const m=muzzle(w);
+          ctx.save();ctx.globalCompositeOperation="lighter";
+          glow(ctx,m.x,m.y,26,"255,77,108",.24);
+          glow(ctx,m.x,m.y,8,"255,238,207",.9);
+          ctx.restore();
+        }
+        if(z.scorch>0&&w.on("sizzle")){
+          const f=w.foe,px=f.x-29,py=G-f.h*.58;
+          ctx.save();ctx.globalCompositeOperation="lighter";
+          glow(ctx,px,py,46,"255,95,55",Math.min(.65,z.scorch*1.7));
+          const rot=w.time*15;
+          ctx.strokeStyle="rgba(255,233,184,.70)";ctx.lineWidth=2;
+          for(let i=0;i<3;i++){
+            const a=rot+i*2.09;
+            ctx.beginPath();ctx.moveTo(px+Math.cos(a)*10,py+Math.sin(a)*10);
+            ctx.lineTo(px+Math.cos(a)*25,py+Math.sin(a)*25);ctx.stroke();
+          }
+          ctx.restore();
+        }
+      },
+      drawHud(w,ctx){if(w.on("sizzle"))drawThermalHealth(ctx,w.foe,w.lz,"255,99,111");else drawBar(ctx,w.foe);},
       steps: [
         {
           id: "core", name: { en: "Hot Core + Halo", ko: "하얀 심 + 번짐" }, param: "core 4px · halo 26px",
