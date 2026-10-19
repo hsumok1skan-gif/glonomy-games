@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>FX Lab PC Preview · GLONOMY</title>
+  <title>FX Lab 초보자용 PC 시안 · GLONOMY</title>
   <meta name="robots" content="noindex,nofollow" />
   <meta name="description" content="게임을 멋있게 만드는 이펙트 연구소. 날것 그대로의 동작에 레이어를 하나씩 쌓아 보고, 코드도 가져가세요." />
   <meta name="theme-color" content="#0c0d0a" />
@@ -265,7 +265,7 @@
        FX LAB DESKTOP STUDIO · 3-pane workspace, preserves mobile UI.
        All rules intentionally scoped to desktop and non-recording mode.
        ───────────────────────────────────────────────────────────── */
-    .desktop-panel-head, .desktop-main-head, .desktop-mixbar { display: none; }
+    .desktop-panel-head, .desktop-main-head, .desktop-mixbar, .desktop-discover, .beginner-card { display: none; }
     .desktop-mixlist { display:none; }
     @media (min-width: 1140px) {
       html { height:100%; }
@@ -331,6 +331,20 @@
         background:#0f1412;
       }
       body:not(.recmode) .more .card {margin-top:10px;}
+      body:not(.recmode) .beginner-card {display:block;order:0;padding:18px;background:linear-gradient(145deg,#213323,#131d19);border:1px solid rgba(200,240,60,.42);}
+      .beginner-eyebrow {font:800 10px var(--mono);color:#d9ff86;letter-spacing:.05em;margin-bottom:10px;}
+      .beginner-card h3 {font:800 21px var(--ko);color:#f1f8ed;margin:0 0 8px;}
+      .beginner-card p {font:500 13px/1.65 var(--ko);color:#bdcaba;margin:0 0 9px;}
+      .beginner-current {font:800 18px var(--ko);color:#fff;margin:14px 0 4px;}
+      .beginner-actions {display:grid;gap:8px;margin:14px 0 12px;}
+      .beginner-actions button {padding:11px;border-radius:11px;border:1px solid rgba(200,240,60,.25);background:rgba(255,255,255,.05);font:700 13px var(--ko);text-align:center;}
+      .beginner-actions .beginner-primary {background:#c8f03c;color:#18220d;border:0;font-weight:900;padding:14px;}
+      .beginner-card .beginner-small {color:#a4b4a6;font-size:11.5px;margin:0;}
+      body:not(.recmode) .desktop-discover {display:grid;gap:6px;padding:10px 12px 14px;border-bottom:1px solid rgba(255,255,255,.09);}
+      .desktop-discover button {padding:12px;text-align:left;border-radius:11px;background:rgba(255,255,255,.045);font:700 13px var(--ko);color:#b0c0af;}
+      .desktop-discover button.on {background:rgba(200,240,60,.13);border:1px solid rgba(200,240,60,.34);color:#ecffd2;}
+      .desktop-discover button span {float:right;font:700 12px var(--mono);}
+      .desktop-discover button:focus-visible,.beginner-actions button:focus-visible {outline:2px solid var(--acc);outline-offset:2px;}
       body:not(.recmode) .more .card.light {order:1;}
       body:not(.recmode) #scriptCard {order:2;}
       body:not(.recmode) #layerCard {order:3;}
@@ -358,8 +372,8 @@
       .desktop-main-head span {padding:6px 10px;border-radius:999px;color:#d7fc7e;background:rgba(200,240,60,.10);font:700 11px var(--mono);white-space:nowrap;}
       body:not(.recmode) .stage-wrap {overflow:visible;}
       body:not(.recmode) .stage-box {
-        width:min(100%,460px,calc(56.25dvh - 95px)) !important;
-        max-width:460px;
+        width:min(100%,530px,calc(82dvh * 9 / 16)) !important;
+        max-width:530px;
       }
       body:not(.recmode) .stage,
       body:not(.recmode) .stage.split {
@@ -418,7 +432,7 @@
 </head>
 <body>
   <section class="main" id="main">
-    <div class="desktop-main-head"><div><strong>Live FX Preview · PC 시안</strong><small>완성 · RAW · 전후 비교를 한 화면에서</small></div><span>9:16 REEL STUDIO</span></div>
+    <div class="desktop-main-head"><div><strong>내 게임에 넣고 싶은 이펙트 · PC 시안</strong><small>큰 화면으로 완성 효과를 보고, RAW와 비교해 보세요</small></div><span>9:16 REEL STUDIO</span></div>
     <div class="stage-wrap" id="stageWrap">
       <div class="stage-box" id="stageBox">
         <div class="stage" id="stage">
@@ -462,7 +476,12 @@
   </section>
 
   <section class="sheet" id="sheet" aria-label="이펙트 목록">
-    <div class="desktop-panel-head"><strong>FX LIBRARY</strong><small>539 EFFECTS</small></div>
+    <div class="desktop-panel-head"><strong>어떤 효과를 넣어볼까요?</strong><small>539 FX</small></div>
+    <div class="desktop-discover" role="group" aria-label="효과 찾아보기">
+      <button id="discoverTop" type="button" class="on" aria-pressed="true">✨ 처음 보기 좋은 30개</button>
+      <button id="discoverAll" type="button" aria-pressed="false">전체 539개</button>
+      <button id="discoverSaved" type="button" aria-pressed="false">♡ 저장한 효과 <span id="savedFxCount">0</span></button>
+    </div>
     <div class="grip" id="grip"></div>
     <nav class="tabs" id="tabs"></nav>
     <nav class="subs" id="subs"></nav>
@@ -473,6 +492,19 @@
   </section>
 
   <section class="more" id="more">
+    <section class="card beginner-card" id="beginnerCard" aria-label="내 AI 게임에 적용하기">
+      <div class="beginner-eyebrow">AI GAME MAKER · 코딩 몰라도 시작하기</div>
+      <h3>이 효과, 내 게임에 넣어볼까?</h3>
+      <p>효과를 골랐다면 지금 만드는 게임에 맞춰 달라고 AI에게 부탁하세요.</p>
+      <div class="beginner-current" id="beginnerCurrent">선택한 효과</div>
+      <p class="beginner-usage" id="beginnerUsage">게임 장면에 잘 어울리는 효과</p>
+      <div class="beginner-actions">
+        <button class="beginner-primary" id="copyAIPrompt" type="button">✨ AI 적용 요청문 복사하기</button>
+        <button id="saveFx" type="button" aria-pressed="false">♡ 나중에 다시 보기</button>
+        <button id="copyFxLink" type="button">🔗 효과 링크 복사</button>
+      </div>
+      <p class="beginner-small">내 게임 소스와 함께 AI 채팅에 붙여 넣으세요. 자동 적용되는 버튼은 아닙니다.</p>
+    </section>
     <div class="card" id="fxPackCard">
       <div class="hd2"><b>FX MIX · 3–5 in 1 Reel</b><span>원본은 유지하고 묶음 릴스 만들기</span></div>
       <p class="note">시각적 변화가 작은 소재를 3~5개로 묶었습니다. 누르면 바로 9:16 녹화 준비 화면이 열리고 RAW → BEFORE/AFTER를 자동으로 연결합니다. 영어 자막·원본 코드 링크를 모두 유지합니다.</p>
@@ -535,7 +567,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261019q3"></script>
+  <script src="engine-preview.js?v=20261019q4"></script>
   <script src="export.js?v=20261019q3"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
   <script src="recipes/core.js?v=20261019q3"></script><script>tagFx("core")</script>
@@ -638,7 +670,7 @@
     const app = {
       ri: 0, group: store.get("group", "all"), cat: "all", q: "", n: 0, lang: store.get("lang", "en"), auto: true, mute: store.get("mute", false), split: false,
       mode: "browse", playing: false, ended: false, segs: [], si: 0, segT: 0, autoT: 0, worlds: [], capT: 0, shown: 40,
-      posted: new Set(store.get("posted", [])), pack: null, cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-19"),
+      posted: new Set(store.get("posted", [])), favorites: new Set(store.get("favorites", [])), libraryMode:"top", pack: null, cadence: store.get("cadence", "daily"), start: store.get("start", "2026-10-19"),
     };
     window.app = app;
     // 처음 화면: 캐릭터만 서서 기다림
@@ -1031,7 +1063,10 @@
     }
     function filtered() {
       const q = app.q.trim().toLowerCase(), g = GROUPS.find(x => x.id === app.group);
+      const onDesktop = window.matchMedia("(min-width:1140px)").matches;
       return RECIPES.map((r, i) => [r, i]).filter(([r]) => {
+        if(onDesktop && app.libraryMode === "top" && r.ep > 30) return false;
+        if(onDesktop && app.libraryMode === "saved" && !app.favorites.has(r.id)) return false;
         if (q) return (plain(r.title.ko) + " " + plain(r.title.en) + " " + CATS[r.cat][1] + " " + r.steps.map(s => s.name.ko + " " + s.name.en).join(" ")).toLowerCase().includes(q);
         if (g && !g.cats.includes(r.cat)) return false;
         return app.cat === "all" || r.cat === app.cat;
@@ -1097,10 +1132,57 @@
       const p = POSTS.filter(isPostDone).length;
       $("progT").textContent = `${p} / ${UPLOAD_TOTAL}편 올림 · 전체 소스 ${TOTAL}개`;
       $("progB").style.width = (p / UPLOAD_TOTAL) * 100 + "%";
+      renderBeginnerGuide();
       $("layers").innerHTML = `<div class="lay"><i>0</i><div><b>날것 그대로<small>RAW</small></b><p>${fmt(r.intro.ko)}</p></div></div>` +
         r.steps.map((s, i) => `<div class="lay"><i>${i + 1}</i><div><b>${esc(s.name.ko)}<small>${esc(s.param || "")}</small></b><p>${fmt(s.cap.ko)}</p></div></div>`).join("");
     }
 
+
+    // AI 게임 제작 초보자를 위한 실제 구현 요청문.
+    const FX_USE = {
+      weapon:"총·검·마법 등 공격 장면",combat:"타격이나 적 처치",duel:"보스전·결투",
+      fighting:"격투와 콤보",shooter:"슈팅 게임",horde:"다수의 적과 싸우는 장면",
+      action:"액션 플레이",move:"점프·대시·이동",rpg:"스킬·레벨업·보상",
+      strategy:"선택·지시·전략",sim:"경영·시뮬레이션",puzzle:"퍼즐 해결·연쇄 보상",
+      racing:"가속·드리프트·완주",survival:"생존·위험·상태",casual:"캐주얼 게임 조작",
+      ui:"버튼·알림·정보창",army:"전투·이동 지휘",env:"환경과 상호작용"
+    };
+    function aiPromptText(){
+      const r=R();
+      const steps=r.steps.map((s,i)=>(i+1)+". "+plain(s.name.ko)+": "+plain(s.cap.ko)).join("\n");
+      return [
+        "나는 AI로 게임을 만드는 초보자야. 내 게임의 현재 파일을 먼저 확인하고, 기존 기능을 손상시키지 않으면서 아래 이펙트를 구현해 줘.",
+        "효과: "+plain(r.title.ko)+" ("+plain(r.title.en)+")",
+        "어울리는 장면: "+(FX_USE[r.cat]||"게임 주요 장면"),
+        "목표: 플레이어가 게임 손맛을 느낄 정도로 선명하고 멋진 연출.",
+        "구현 단계:\n"+steps,
+        "실제 이펙트 및 참고 코드: https://glonomy.com/fx-tips/code.html#"+r.id,
+        "내 게임의 엔진과 언어를 먼저 확인하고 그 방식으로 구현해 줘.",
+        "반동, 충격, 파티클, 사운드의 타이밍을 맞추고 RAW와 완성본의 차이를 확실히 만들어 줘.",
+        "심한 화면 점멸을 피하고 효과 강도·소리를 조절할 수 있게 해 줘.",
+        "기존 조작과 저장 기능을 유지하고 PC·모바일 성능을 고려해 줘.",
+        "테스트 방법을 함께 알려 줘. 프로젝트 파일이 없으면 먼저 요청해 줘.",
+        "코딩을 모르는 사람이 이해할 수 있도록 한국어로 설명해 줘."
+      ].join("\n\n");
+    }
+    function renderBeginnerGuide(){
+      if(app.idle) return;
+      const r=R();
+      $("beginnerCurrent").textContent=plain(r.title.ko);
+      $("beginnerUsage").textContent="어울리는 장면: "+(FX_USE[r.cat]||"게임의 주요 장면");
+      $("saveFx").textContent=app.favorites.has(r.id)?"♥ 저장했어요":"♡ 나중에 다시 보기";
+      $("saveFx").setAttribute("aria-pressed",String(app.favorites.has(r.id)));
+      $("savedFxCount").textContent=app.favorites.size;
+    }
+    function chooseDiscover(mode){
+      app.libraryMode=mode;
+      [["discoverTop","top"],["discoverAll","all"],["discoverSaved","saved"]].forEach(([id,k])=>{
+        const yes=mode===k;
+        $(id).classList.toggle("on",yes);
+        $(id).setAttribute("aria-pressed",String(yes));
+      });
+      app.group="all";app.cat="all";renderTabs();renderList();
+    }
     // 영상 밑에 지금 단계의 코드를 작게 보여 줌
     function renderCodeline(seg) {
       const r = R(), el = $("codeline");
@@ -1164,6 +1246,17 @@
     $("guideBtn").addEventListener("click", () => window.open(`code.html#${RECIPES[app.ri].id}`, "_blank"));
     $("copyScript").addEventListener("click", () => copyText(scriptText(), "대본을 복사했어요"));
     $("copyTTS").addEventListener("click", () => copyText(voiceOnlyText(), "CapCut 음성 대본을 복사했어요"));
+    $("copyAIPrompt").addEventListener("click",()=>copyText(aiPromptText(),"내 게임용 AI 요청문을 복사했어요"));
+    $("copyFxLink").addEventListener("click",()=>copyText(codeURL(R()),"효과 링크를 복사했어요"));
+    $("saveFx").addEventListener("click",()=>{
+      const id=R().id;
+      if(app.favorites.has(id)) app.favorites.delete(id); else app.favorites.add(id);
+      store.set("favorites",[...app.favorites]);renderBeginnerGuide();
+      if(app.libraryMode==="saved"&&window.matchMedia("(min-width:1140px)").matches)renderList();
+    });
+    $("discoverTop").addEventListener("click",()=>chooseDiscover("top"));
+    $("discoverAll").addEventListener("click",()=>chooseDiscover("all"));
+    $("discoverSaved").addEventListener("click",()=>chooseDiscover("saved"));
     $("fxPacks").addEventListener("click", e => { const b = e.target.closest("[data-pack]"); if (b) openPack(PACKS.find(p => p.id === b.dataset.pack)); });
     $("desktopMixToggle").addEventListener("click", () => {
       const opened = $("desktopMixList").hidden;
@@ -1220,6 +1313,7 @@
       const hash = location.hash.slice(1), idx = RECIPES.findIndex(r => r.id === hash);
       setSheetH(store.get("sheetH", Math.round(window.innerHeight * 0.42)));
       renderTabs(); renderList(); renderPackList();
+      $("savedFxCount").textContent=app.favorites.size;
       const mix = PACKS.find(p => p.id === new URLSearchParams(location.search).get("mix"));
       if (mix) openPack(mix);
       else if (idx >= 0) selectRecipe(idx);
