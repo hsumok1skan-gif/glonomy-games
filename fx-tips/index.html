@@ -831,7 +831,7 @@
       $("ovCta").innerHTML = `<div class="t">${CTA[L].t}</div><div class="q">${CTA[L].q}</div><div class="c">${CTA[L].c}</div>`;
       $("ovHint").textContent = "";
       $("pcEffectName").textContent=plain(r.title.ko);
-      $("pcPhase").textContent=seg.k==="intro"?"RAW · NO FX":seg.k==="split"?"RAW / FINAL":seg.k==="hook"?"FINAL FX · LIVE":seg.k==="step"?"STEP "+seg.n:"FINAL FX · LIVE";
+      $("pcPhase").textContent=seg.k==="intro"?"RAW · NO FX":seg.k==="split"?"RAW / FINAL":seg.k==="hook"?"FINAL FX · LIVE":seg.k==="step" && seg.n === N?"FINAL FX · LIVE":seg.k==="step"?"STEP "+seg.n:"FINAL FX · LIVE";
       const key = r.id + seg.k + seg.n + L;
       if (key !== lastKey) {
         lastKey = key;
