@@ -505,6 +505,26 @@ class World {
     if (this.bare) return;
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
+    // Showcase-grade impact accent on finished combat scenes only.
+    // We leave RAW and intermediate steps untouched, so before/after stays meaningful.
+    if ((ev === "hit" || ev === "kill") && this.n >= 3 && this.n === this.R.steps.length &&
+        /^(weapon|combat|duel|fighting|shooter|horde|action)$/.test(this.R.cat) &&
+        this.time - (this.polishAt == null ? -10 : this.polishAt) > 0.12) {
+      const a0 = a[0], target = a0 && typeof a0 === "object" && Number.isFinite(a0.x) ? a0 : this.foe;
+      if (target && Number.isFinite(target.x)) {
+        this.polishAt = this.time;
+        const x = target.x, y = Number.isFinite(target.y) ? target.y : (target.gy || G) - (target.h || 75) * 0.55;
+        const big = ev === "kill", C = big ? "255,216,143" : "255,241,202";
+        this.spawn({ type:"ring", x,y, size:5,size1:big?83:41,w:big?10:5,life:big?0.3:0.21,color:C });
+        this.spawn({ type:"glow", x,y, size:big?70:42,size1:0,life:0.17,color:C });
+        const count=big?16:7;
+        for(let i=0;i<count;i++){
+          const angle=Math.random()*TAU, speed=(big?250:120)+Math.random()*(big?450:260);
+          this.spawn({type:"spark",x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,drag:4.6,
+            size:big?2.8:1.9,life:0.13+Math.random()*0.23,color:C});
+        }
+      }
+    }
   }
   get sfx() { return this.muted || app.mute || this.bare ? NOSFX : SFX; }
 
@@ -855,7 +875,10 @@ function drawActor(ctx, a) {
   // 가만히 있어도 살짝 숨 쉬는 대기 동작
   const br = !a.top && a.alive && !a.flying ? Math.sin(performance.now() / 380 + a.home * 0.05) * 0.018 : 0;
   ctx.scale(a.sx * (1 - br * 0.5) * (a.flip ? -1 : 1), a.sy * (1 + br));
+  // Soft rim light on the hero silhouette, without changing the custom sprites.
+  if (a.key === "hero" && !a.top) { ctx.shadowColor = "rgba(160,216,242,.38)"; ctx.shadowBlur = 9; }
   ctx.drawImage(a.s.c, -a.w / 2, top, a.w, a.h);
+  ctx.shadowBlur = 0;
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
   if (a.burn > 0) { ctx.globalAlpha = (0.3 + 0.15 * Math.sin(performance.now() / 60)) * a.alpha; ctx.drawImage(a.s.orange, -a.w / 2, top, a.w, a.h); }
