@@ -1,0 +1,19 @@
+name: FX Lab smoke checks
+on:
+  push:
+    branches: [main, fx-lab-quality-20261019]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate all FX Lab scripts and content
+        run: node tests/check-fxlab.mjs

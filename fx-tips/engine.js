@@ -455,6 +455,39 @@ const ACTOR = {
 };
 
 /* ───────── 엔진: 이펙트를 돌리는 작은 세계 ───────── */
+/* FX Lab Studio: art-direction pass shared by all 539 recipes.
+   The RAW and completed scenes use the same backdrop, preserving fair comparisons. */
+const STUDIO_MOODS = {
+  weapon:[254,158,91], combat:[254,158,91], duel:[244,128,107], fighting:[247,144,99],
+  shooter:[108,177,250], horde:[244,128,107], action:[248,166,90],
+  rpg:[169,127,249], strategy:[111,207,166], army:[111,207,166],
+  sim:[233,188,114], survival:[210,168,111], puzzle:[94,220,224],
+  casual:[124,221,210], ui:[135,218,215], racing:[88,179,251],
+  move:[107,175,249], env:[174,169,131]
+};
+function studioBackdrop(ctx, v, cat, clock) {
+  const [x,y,w,h]=v, col=STUDIO_MOODS[cat] || [174,196,164], rgb=col.join(",");
+  const floor=ctx.createLinearGradient(x,y,x,y+h);
+  floor.addColorStop(0,"#090e17"); floor.addColorStop(0.58,"#111b26"); floor.addColorStop(1,"#090c12");
+  ctx.fillStyle=floor; ctx.fillRect(x,y,w,h);
+  const halo=ctx.createRadialGradient(x+w*0.54,y+h*0.40,4,x+w*0.54,y+h*0.40,w*0.64);
+  halo.addColorStop(0,"rgba("+rgb+",0.17)"); halo.addColorStop(0.44,"rgba("+rgb+",0.045)");
+  halo.addColorStop(1,"rgba("+rgb+",0)");
+  ctx.fillStyle=halo; ctx.fillRect(x,y,w,h);
+  ctx.strokeStyle="rgba("+rgb+",0.06)"; ctx.lineWidth=1;
+  const spacing=38;
+  const offset=Math.sin(clock*0.12)*3;
+  ctx.beginPath();
+  for(let gx=x+spacing+offset;gx<x+w;gx+=spacing){ctx.moveTo(gx,y);ctx.lineTo(gx,y+h);}
+  for(let gy=y+spacing;gy<y+h;gy+=spacing){ctx.moveTo(x,gy);ctx.lineTo(x+w,gy);}
+  ctx.stroke();
+  // Cinematic rim-light bars, kept below the foreground and UI.
+  const rim=ctx.createLinearGradient(x,y,x+w,y);
+  rim.addColorStop(0,"rgba("+rgb+",0.075)");rim.addColorStop(0.24,"rgba("+rgb+",0)");
+  rim.addColorStop(0.76,"rgba("+rgb+",0)");rim.addColorStop(1,"rgba("+rgb+",0.075)");
+  ctx.fillStyle=rim;ctx.fillRect(x,y,w,h);
+}
+
 class World {
   // bare: 전후 비교용. 모든 단계의 "동작·타이밍"은 그대로 켜 두고, 이펙트(훅)만 끈 세계
   constructor(R, n, view, muted, bare) {
@@ -472,6 +505,26 @@ class World {
     if (this.bare) return;
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
+    // Showcase-grade impact accent on finished combat scenes only.
+    // We leave RAW and intermediate steps untouched, so before/after stays meaningful.
+    if ((ev === "hit" || ev === "kill") && this.n >= 3 && this.n === this.R.steps.length &&
+        /^(weapon|combat|duel|fighting|shooter|horde|action)$/.test(this.R.cat) &&
+        this.time - (this.polishAt == null ? -10 : this.polishAt) > 0.12) {
+      const a0 = a[0], target = a0 && typeof a0 === "object" && Number.isFinite(a0.x) ? a0 : this.foe;
+      if (target && Number.isFinite(target.x)) {
+        this.polishAt = this.time;
+        const x = target.x, y = Number.isFinite(target.y) ? target.y : (target.gy || G) - (target.h || 75) * 0.55;
+        const big = ev === "kill", C = big ? "255,216,143" : "255,241,202";
+        this.spawn({ type:"ring", x,y, size:5,size1:big?83:41,w:big?10:5,life:big?0.3:0.21,color:C });
+        this.spawn({ type:"glow", x,y, size:big?70:42,size1:0,life:0.17,color:C });
+        const count=big?16:7;
+        for(let i=0;i<count;i++){
+          const angle=Math.random()*TAU, speed=(big?250:120)+Math.random()*(big?450:260);
+          this.spawn({type:"spark",x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,drag:4.6,
+            size:big?2.8:1.9,life:0.13+Math.random()*0.23,color:C});
+        }
+      }
+    }
   }
   get sfx() { return this.muted || app.mute || this.bare ? NOSFX : SFX; }
 
@@ -618,10 +671,7 @@ class World {
     const v = this.view, [rx, ry, rw, rh] = v.r;
     ctx.save();
     ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
-    ctx.fillStyle = "#12140f"; ctx.fillRect(rx, ry, rw, rh);
-    ctx.fillStyle = "rgba(255,255,255,0.045)";
-    for (let gx = rx + 25; gx < rx + rw; gx += 25) ctx.fillRect(gx, ry, 1, rh);
-    for (let gy = ry + 25; gy < ry + rh; gy += 25) ctx.fillRect(rx, gy, rw, 1);
+    studioBackdrop(ctx, v.r, this.R.cat, this.time);
     ctx.translate(v.x, v.y); ctx.scale(v.s, v.s);
     const tr = this.trauma * this.trauma;
     ctx.translate(270 + (Math.random() * 2 - 1) * tr * 24 + this.kx, 180 + (Math.random() * 2 - 1) * tr * 18 + this.ky);
@@ -707,20 +757,26 @@ function drawPart(ctx, p) {
   switch (p.type) {
     case "glow": glow(ctx, p.x, p.y, s, p.color, a); break;
     case "spark": {
-      const dir = Math.atan2(p.vy, p.vx), len = Math.max(s * 2, Math.hypot(p.vx, p.vy) * 0.035);
-      ctx.strokeStyle = `rgba(${p.color},${a})`; ctx.lineWidth = s; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(p.x - Math.cos(dir) * len, p.y - Math.sin(dir) * len); ctx.lineTo(p.x, p.y); ctx.stroke();
+      const dir = Math.atan2(p.vy, p.vx), len = Math.max(s * 2.7, Math.hypot(p.vx, p.vy) * 0.045);
+      const tx=p.x-Math.cos(dir)*len,ty=p.y-Math.sin(dir)*len;
+      ctx.lineCap="round";ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(p.x,p.y);
+      ctx.strokeStyle=`rgba(${p.color},${a*0.32})`;ctx.lineWidth=s*2.5;ctx.stroke();
+      ctx.strokeStyle=`rgba(${p.color},${a})`;ctx.lineWidth=Math.max(0.8,s*0.75);ctx.stroke();
+      if(s>2.4){ctx.beginPath();ctx.arc(p.x,p.y,Math.max(0.7,s*0.32),0,TAU);ctx.fillStyle=`rgba(255,252,225,${a*0.88})`;ctx.fill();}
       if (p.seek) { ctx.fillStyle = `rgba(${p.color},${a})`; ctx.beginPath(); ctx.arc(p.x, p.y, s, 0, TAU); ctx.fill(); }
       break;
     }
     case "star":
       ctx.fillStyle = `rgba(${p.color},${a})`; starPath(ctx, p.x, p.y, s * (0.6 + 0.4 * rem)); ctx.fill();
       glow(ctx, p.x, p.y, s * 0.7, p.color, a * 0.6); break;
-    case "ring":
-      ctx.strokeStyle = `rgba(${p.color},${a})`; ctx.lineWidth = Math.max(0.5, (p.w || 6) * rem);
+    case "ring": {
       ctx.beginPath();
       if (p.flat) ctx.ellipse(p.x, p.y, s, s * 0.22, 0, 0, TAU); else ctx.arc(p.x, p.y, s, 0, TAU);
-      ctx.stroke(); break;
+      const width=Math.max(0.5,(p.w||6)*rem);
+      ctx.strokeStyle=`rgba(${p.color},${a*0.22})`;ctx.lineWidth=width*3.2;ctx.stroke();
+      ctx.strokeStyle=`rgba(${p.color},${a})`;ctx.lineWidth=width;ctx.stroke();
+      break;
+    }
     case "arc":
       ctx.lineCap = "round";
       ctx.strokeStyle = `rgba(${p.color},${a})`; ctx.lineWidth = s * 0.34 * rem;
@@ -728,8 +784,13 @@ function drawPart(ctx, p) {
       ctx.strokeStyle = `rgba(${p.color},${a * 0.35})`; ctx.lineWidth = s * 0.7 * rem;
       ctx.beginPath(); ctx.arc(p.x, p.y, s * 0.92, p.a0 + 0.2, p.a1 - 0.1); ctx.stroke();
       break;
-    case "smoke":
-      ctx.fillStyle = `rgba(${p.color},${a * 0.5})`; ctx.beginPath(); ctx.arc(p.x, p.y, s, 0, TAU); ctx.fill(); break;
+    case "smoke": {
+      const mist = ctx.createRadialGradient(p.x - s * 0.18, p.y - s * 0.17, s * 0.1, p.x, p.y, s);
+      mist.addColorStop(0, `rgba(${p.color},${a * 0.34})`);
+      mist.addColorStop(0.62, `rgba(${p.color},${a * 0.14})`);
+      mist.addColorStop(1, `rgba(${p.color},0)`);
+      ctx.fillStyle = mist; ctx.beginPath(); ctx.arc(p.x, p.y, s, 0, TAU); ctx.fill(); break;
+    }
     case "shell":
       ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
       ctx.globalAlpha = a; ctx.fillStyle = `rgb(${p.color})`; ctx.fillRect(-s / 2, -s / 4, s, s / 2);
@@ -814,7 +875,10 @@ function drawActor(ctx, a) {
   // 가만히 있어도 살짝 숨 쉬는 대기 동작
   const br = !a.top && a.alive && !a.flying ? Math.sin(performance.now() / 380 + a.home * 0.05) * 0.018 : 0;
   ctx.scale(a.sx * (1 - br * 0.5) * (a.flip ? -1 : 1), a.sy * (1 + br));
+  // Soft rim light on the hero silhouette, without changing the custom sprites.
+  if (a.key === "hero" && !a.top) { ctx.shadowColor = "rgba(160,216,242,.38)"; ctx.shadowBlur = 9; }
   ctx.drawImage(a.s.c, -a.w / 2, top, a.w, a.h);
+  ctx.shadowBlur = 0;
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
   if (a.burn > 0) { ctx.globalAlpha = (0.3 + 0.15 * Math.sin(performance.now() / 60)) * a.alpha; ctx.drawImage(a.s.orange, -a.w / 2, top, a.w, a.h); }
