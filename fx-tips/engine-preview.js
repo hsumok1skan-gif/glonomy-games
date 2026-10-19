@@ -525,6 +525,106 @@ function studioPayoff(w, ev, args) {
   if (/^(weapon|combat|fighting|shooter)$/.test(cat)) w.zoomPunch(0.018);
 }
 
+/* Three hero showcase scenes: fully procedural Canvas, no meshes or images.
+   Only enabled on the FINAL layer; no additional continuous animation loops. */
+function studioHeroEvent(w, ev, args) {
+  if (w.bare || w.n !== w.R.steps.length) return;
+  const id=w.R.id;
+  if (id==="weapon-railgun") {
+    if(ev==="charge"){const at=args[0]; w.studioCharge={start:w.time};return;}
+    if(ev==="fire"){
+      const m=args[0];if(!m || !Number.isFinite(m.x))return;
+      w.studioHero={kind:"rail",start:w.time,x:m.x,y:m.y};
+      for(let i=0;i<12;i++){const xx=m.x+Math.random()*340;
+        w.spawn({type:"spark",x:xx,y:m.y+rand(-12,12),vx:rand(90,260),vy:rand(-160,160),size:rand(1,2.7),drag:4,life:rand(.12,.37),color:"114,230,255"});}
+    }
+  } else if (id==="weapon-katana") {
+    if(ev==="cut") {
+      const c=args[0];if(!c)return;
+      w.studioHero={kind:"katana",start:w.time,x:c.x0,y:c.y,x1:c.x1};
+      for(let i=0;i<10;i++){const x=c.x0+(c.x1-c.x0)*Math.random();
+        w.spawn({type:"spark",x,y:c.y+rand(-15,15),vx:rand(-120,150),vy:rand(-80,80),drag:4,size:rand(1.2,3),life:rand(.15,.38),color:"172,244,250"});}
+    }
+    if(ev==="sheathe" || ev==="hit") {
+      if(w.studioHero&&w.studioHero.kind==="katana"){w.studioHero.burstAt=w.time;}
+    }
+  } else if(id==="magic"){
+    if(ev==="charge")w.studioCharge={start:w.time};
+    if(ev==="launch") {
+      const o=args[0]; if(o)w.studioHero={kind:"magic",start:w.time,x:o.x,y:o.y};
+    }
+    if(ev==="hit"){
+      const p=args[0];if(p && Number.isFinite(p.x)) {
+        w.studioHero={kind:"magicBurst",start:w.time,x:p.x,y:p.y};
+        for(let i=0;i<16;i++) {
+          const a=Math.random()*TAU,vel=rand(110,400);
+          w.spawn({type:"spark",x:p.x,y:p.y,vx:Math.cos(a)*vel,vy:Math.sin(a)*vel,drag:4.5,
+            life:rand(.17,.5),size:rand(1.2,3),color:"198,147,255"});
+        }
+      }
+    }
+  }
+}
+function drawStudioHero(ctx,w){
+  if(w.bare||w.n!==w.R.steps.length)return;
+  const h=w.studioHero,c=w.studioCharge;
+  // Charged spell and railgun rings: one glow gradient, two wireframe arcs.
+  if(c && w.time-c.start<.78&&(w.R.id==="magic"||w.R.id==="weapon-railgun")){
+    const age=w.time-c.start, power=Math.min(1,age/.66);
+    const origin=w.R.id==="magic"?
+      {x:(w.hero?.x||110)+50,y:G-72}:
+      {x:(w.hero?.x||80)+150,y:G-75};
+    const tint=w.R.id==="magic"?"164,116,255":"92,218,255";
+    ctx.save();ctx.globalCompositeOperation="lighter";
+    glow(ctx,origin.x,origin.y,38+power*50,tint,power*.55);
+    ctx.translate(origin.x,origin.y);ctx.rotate(age*2.1);
+    ctx.strokeStyle="rgba("+tint+","+(0.4+power*.5)+")";ctx.lineWidth=1.5;
+    for(let k=0;k<2;k++){
+      ctx.beginPath();ctx.ellipse(0,0,24+power*16,(24+power*16)*(k?.52:.92),k?.4:-.25,0,TAU);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  if(!h)return;
+  const t=w.time-h.start;if(t<0||t>.7)return;
+  ctx.save();ctx.globalCompositeOperation="lighter";ctx.lineCap="round";
+  if(h.kind==="rail"){
+    const fade=Math.pow(Math.max(0,1-t/.43),2);
+    if(fade>0){
+      const beam=ctx.createLinearGradient(h.x,h.y,580,h.y);
+      beam.addColorStop(0,"rgba(100,231,255,.98)");beam.addColorStop(.4,"rgba(195,245,255,.98)");
+      beam.addColorStop(1,"rgba(92,205,255,.05)");
+      for(const [width,alpha] of [[62,.16],[37,.26],[18,.72],[5,.98]]) {
+        ctx.beginPath();ctx.moveTo(h.x,h.y);ctx.lineTo(600,h.y);
+        ctx.lineWidth=width*fade;ctx.strokeStyle=beam;ctx.globalAlpha=alpha*fade;ctx.stroke();
+      }
+      ctx.globalAlpha=1;glow(ctx,h.x,h.y,80,"130,223,255",.6*fade);
+    }
+  } else if(h.kind==="katana"){
+    const age=t,fade=Math.max(0,1-age/.62),left=h.x-30,right=h.x1+30;
+    ctx.lineWidth=2.5+fade*5;
+    ctx.strokeStyle="rgba(190,254,255,"+fade+")";
+    ctx.beginPath();ctx.moveTo(left,h.y+18);ctx.lineTo(right,h.y-17);ctx.stroke();
+    const burst=h.burstAt==null?0:Math.max(0,1-(w.time-h.burstAt)/.36);
+    if(burst>0) {
+      glow(ctx,(left+right)/2,h.y,120,"122,233,255",burst*.7);
+      ctx.lineWidth=1.5;ctx.strokeStyle="rgba(225,255,255,"+burst+")";
+      ctx.beginPath();ctx.moveTo(left,h.y-38);ctx.lineTo(right,h.y+41);ctx.stroke();
+    }
+  } else if(h.kind==="magic"||h.kind==="magicBurst"){
+    const fade=Math.max(0,1-t/.48),rr=h.kind==="magicBurst"?55+95*t:36+35*t;
+    glow(ctx,h.x,h.y,rr*1.6,"162,115,255",fade*.65);
+    ctx.strokeStyle="rgba(206,167,255,"+fade*.85+")";ctx.lineWidth=Math.max(1,6*fade);
+    ctx.beginPath();ctx.arc(h.x,h.y,rr,0,TAU);ctx.stroke();
+    ctx.beginPath();ctx.arc(h.x,h.y,rr*.68,0,TAU);ctx.stroke();
+    if(h.kind==="magicBurst"){
+      for(let i=0;i<8;i++){let a=i*TAU/8+t*1.2;ctx.beginPath();ctx.moveTo(h.x+Math.cos(a)*rr*.3,h.y+Math.sin(a)*rr*.3);
+        ctx.lineTo(h.x+Math.cos(a)*rr*1.28,h.y+Math.sin(a)*rr*1.28);ctx.stroke();}
+    }
+  }
+  ctx.restore();
+}
+
 class World {
   // bare: 전후 비교용. 모든 단계의 "동작·타이밍"은 그대로 켜 두고, 이펙트(훅)만 끈 세계
   constructor(R, n, view, muted, bare) {
@@ -543,6 +643,7 @@ class World {
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
     studioPayoff(this, ev, a);
+    studioHeroEvent(this, ev, a);
     // Showcase-grade impact accent on finished combat scenes only.
     // We leave RAW and intermediate steps untouched, so before/after stays meaningful.
     if ((ev === "hit" || ev === "kill") && this.n >= 3 && this.n === this.R.steps.length &&
@@ -731,6 +832,7 @@ class World {
     if (this.R.drawFront) this.R.drawFront(this, ctx);
     for (const p of this.shots) drawShot(ctx, p);
     for (const p of this.parts) if (!p.under) drawPart(ctx, p);
+    drawStudioHero(ctx,this);
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
     // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
     const N = this.R.steps.length, glowA = N && this.n > 0 && !this.bare ? 0.9 * this.n / N : 0;
