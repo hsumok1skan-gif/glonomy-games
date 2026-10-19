@@ -259,10 +259,165 @@
     body.recmode .stage { border-radius: 0; box-shadow: none; }
     body.recmode.rec-ready .ready { display: grid; }
     @media (prefers-reduced-motion: reduce) { .sheet, .sched { transition: none; } }
+
+    /* ─────────────────────────────────────────────────────────────
+       FX LAB DESKTOP STUDIO · 3-pane workspace, preserves mobile UI.
+       All rules intentionally scoped to desktop and non-recording mode.
+       ───────────────────────────────────────────────────────────── */
+    .desktop-panel-head, .desktop-main-head, .desktop-mixbar { display: none; }
+    .desktop-mixlist { display:none; }
+    @media (min-width: 1140px) {
+      html { height:100%; }
+      body:not(.recmode) {
+        display:grid;
+        grid-template-columns: clamp(260px,22vw,320px) minmax(390px,1fr) clamp(330px,29vw,420px);
+        grid-template-rows:minmax(0,1fr);
+        gap:12px;
+        padding:12px;
+        min-height:100dvh;
+        height:100dvh;
+        overflow:hidden;
+        background:radial-gradient(circle at 52% 15%,rgba(128,165,85,.09),transparent 48%),#080b0d;
+      }
+      body:not(.recmode) .main,
+      body:not(.recmode) .sheet,
+      body:not(.recmode) .more {
+        min-width:0;
+        min-height:0;
+        max-width:none;
+        margin:0;
+        border-radius:20px;
+        border:1px solid rgba(255,255,255,.10);
+        background:#111611;
+        box-shadow:0 8px 44px rgba(0,0,0,.25);
+      }
+      body:not(.recmode) .main {
+        grid-column:2;grid-row:1;
+        width:100%;
+        height:calc(100dvh - 24px);
+        overflow-y:auto;
+        overscroll-behavior:contain;
+        padding:14px 16px 20px;
+        scrollbar-width:thin;
+        scrollbar-color:rgba(200,240,60,.3) transparent;
+      }
+      body:not(.recmode) .sheet {
+        grid-column:1;grid-row:1;
+        position:relative;inset:auto;z-index:1;
+        width:100%;
+        height:calc(100dvh - 24px) !important;
+        max-height:none;
+        border-radius:20px;
+        display:flex;
+        flex-direction:column;
+        overflow:hidden;
+        padding-bottom:0;
+        background:#121815;
+        backdrop-filter:none;-webkit-backdrop-filter:none;
+        transition:none;
+      }
+      body:not(.recmode) .more {
+        grid-column:3;grid-row:1;
+        display:flex;flex-direction:column;
+        gap:0;
+        width:100%;
+        height:calc(100dvh - 24px);
+        padding:12px 12px 28px;
+        overflow-y:auto;
+        overscroll-behavior:contain;
+        scrollbar-width:thin;
+        scrollbar-color:rgba(200,240,60,.3) transparent;
+        background:#0f1412;
+      }
+      body:not(.recmode) .more .card {margin-top:10px;}
+      body:not(.recmode) .more .card.light {order:1;}
+      body:not(.recmode) #scriptCard {order:2;}
+      body:not(.recmode) #layerCard {order:3;}
+      body:not(.recmode) #fxPackCard {order:4;}
+      body:not(.recmode) #codeCard {order:5;}
+      body:not(.recmode) #settingsCard {order:6;}
+      body:not(.recmode) .more > p {order:7;}
+      body:not(.recmode) .grip {display:none;}
+      body:not(.recmode) .desktop-panel-head {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:18px 18px 14px;
+        flex:none;
+        border-bottom:1px solid rgba(255,255,255,.07);
+      }
+      .desktop-panel-head strong {font-size:16px;font-weight:800;letter-spacing:.03em;}
+      .desktop-panel-head small {font:700 11px var(--mono);color:var(--acc);}
+      body:not(.recmode) .desktop-main-head {
+        display:flex;align-items:center;justify-content:space-between;gap:12px;
+        margin-bottom:12px;padding:2px 3px 13px;border-bottom:1px solid rgba(255,255,255,.08);
+      }
+      .desktop-main-head strong {display:block;font-size:18px;letter-spacing:-.025em;}
+      .desktop-main-head small {display:block;margin-top:3px;font:500 12px var(--ko);color:#a5b0a1;}
+      .desktop-main-head span {padding:6px 10px;border-radius:999px;color:#d7fc7e;background:rgba(200,240,60,.10);font:700 11px var(--mono);white-space:nowrap;}
+      body:not(.recmode) .stage-wrap {overflow:visible;}
+      body:not(.recmode) .stage-box {
+        width:min(100%,460px,calc(56.25dvh - 95px)) !important;
+        max-width:460px;
+      }
+      body:not(.recmode) .stage,
+      body:not(.recmode) .stage.split {
+        aspect-ratio:9 / 16;
+        border-radius:18px;
+      }
+      body:not(.recmode) .stage {box-shadow:0 0 0 1px rgba(255,255,255,.11),0 24px 48px rgba(0,0,0,.4);}
+      body:not(.recmode) .rail {
+        position:static;
+        margin:10px auto 0;
+        justify-content:center;
+        gap:22px;
+        flex-direction:row;
+      }
+      body:not(.recmode) .ric {font:600 11px var(--ko);}
+      body:not(.recmode) .ric span {width:41px;height:41px;}
+      body:not(.recmode) .ric em {margin-top:5px;display:block;font:600 11px var(--ko);}
+      body:not(.recmode) .stepbar {max-width:540px;margin:0 auto;padding-top:12px;}
+      body:not(.recmode) .subline {max-width:540px;margin:12px auto 0;font-size:16px;}
+      body:not(.recmode) .codeline {max-width:540px;margin:10px auto 0;max-height:160px;font-size:10px;}
+      body:not(.recmode) .tabs {padding:13px 12px 6px;}
+      body:not(.recmode) .subs {padding:0 12px 10px;}
+      body:not(.recmode) .search {margin:8px 12px 10px;}
+      body:not(.recmode) .lwrap {flex:1;min-height:0;}
+      body:not(.recmode) .it {padding:9px 7px;}
+      body:not(.recmode) .it .n {width:38px;height:38px;}
+      body:not(.recmode) .it {grid-template-columns:38px minmax(0,1fr);gap:9px;}
+      body:not(.recmode) .desktop-mixbar {
+        display:flex;align-items:center;justify-content:space-between;
+        padding:9px 14px;flex:none;
+        border-bottom:1px solid rgba(255,255,255,.07);
+      }
+      .desktop-mixbar strong {font:700 12px var(--ko);color:#e2eed3;}
+      .desktop-mixbar button {font:800 11px var(--mono);color:var(--acc);padding:5px 8px;border-radius:7px;border:1px solid rgba(200,240,60,.28);}
+      body:not(.recmode) .desktop-mixlist:not([hidden]) {
+        display:grid;gap:3px;flex:none;max-height:31dvh;overflow-y:auto;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.09);
+      }
+      .desktop-mixlist button {
+        width:100%;padding:10px 11px;text-align:left;border-radius:10px;
+        background:rgba(200,240,60,.055);font:650 12px var(--ko);
+      }
+      .desktop-mixlist button:hover {background:rgba(200,240,60,.14);}
+      .desktop-mixlist small {display:block;color:var(--muted);margin-top:3px;font:500 11px var(--mono);}
+      body:not(.recmode) .more .card.light {border-color:rgba(200,240,60,.5);}
+      body:not(.recmode) .card .big {font-size:32px;}
+      body:not(.recmode) .btns .bt {min-height:44px;}
+      body:not(.recmode) .sched {grid-column:1 / -1;}
+      body:not(.recmode) .toast {position:fixed;}
+      body:not(.recmode).splitv .rail {display:flex;}
+    }
+    @media (min-width:1140px) and (max-width:1299px) {
+      body:not(.recmode) {grid-template-columns:minmax(250px,27%) minmax(360px,1fr) minmax(315px,30%);gap:8px;padding:8px;}
+      body:not(.recmode) .main,body:not(.recmode) .sheet,body:not(.recmode) .more {height:calc(100dvh - 16px);}
+    }
   </style>
 </head>
 <body>
   <section class="main" id="main">
+    <div class="desktop-main-head"><div><strong>Live FX Preview</strong><small>완성 · RAW · 전후 비교를 한 화면에서</small></div><span>9:16 REEL STUDIO</span></div>
     <div class="stage-wrap" id="stageWrap">
       <div class="stage-box" id="stageBox">
         <div class="stage" id="stage">
@@ -306,9 +461,12 @@
   </section>
 
   <section class="sheet" id="sheet" aria-label="이펙트 목록">
+    <div class="desktop-panel-head"><strong>FX LIBRARY</strong><small>539 EFFECTS</small></div>
     <div class="grip" id="grip"></div>
     <nav class="tabs" id="tabs"></nav>
     <nav class="subs" id="subs"></nav>
+    <div class="desktop-mixbar"><strong>FX MIX · 묶음 릴스</strong><button id="desktopMixToggle" type="button" aria-controls="desktopMixList" aria-expanded="false">11 MIX ▾</button></div>
+    <div class="desktop-mixlist" id="desktopMixList" hidden></div>
     <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="search" type="search" placeholder="이펙트 검색 (예: 패링, 드리프트, 콤보)" autocomplete="off" /></label>
     <div class="lwrap"><div class="lst" id="list"></div><div class="srail" id="srail"><i id="sthumb"></i></div></div>
   </section>
@@ -333,7 +491,7 @@
       </div>
       <div class="prog"><span id="progT"></span><i><b id="progB"></b></i></div>
     </div>
-    <div class="card">
+    <div class="card" id="layerCard">
       <div class="hd2"><b>Layers</b><span>단계마다 무엇이 더해지는지</span></div>
       <div id="layers"></div>
     </div>
@@ -347,7 +505,7 @@
       <summary>Code <small>단계별 코드</small></summary>
       <div id="code"></div>
     </details>
-    <div class="card">
+    <div class="card" id="settingsCard">
       <div class="hd2"><b>Settings</b><span>보기 설정</span></div>
       <div class="set">
         <button type="button" id="langBtn" aria-pressed="false">자막 한글로 보기</button>
@@ -964,6 +1122,7 @@
     }
 
     function renderPackList() {
+      $("desktopMixList").innerHTML = PACKS.map(p => `<button type="button" data-pack="${p.id}">${esc(p.en)}<small>${p.ids.length} FX · ${Math.round(buildPackSegs(p).reduce((a,x)=>a+x.dur,0))}s</small></button>`).join("");
       $("fxPacks").innerHTML = PACKS.map(p => `<button type="button" class="fx-pack" data-pack="${p.id}"><b>${p.en}</b><span>${p.ko} · ${p.ids.length} FX · ${Math.round(buildPackSegs(p).reduce((a, x) => a + x.dur, 0))}s</span></button>`).join("");
       $("fxPostCount").textContent = `${UPLOAD_TOTAL} reels / ${TOTAL} effects preserved`;
     }
@@ -1005,6 +1164,15 @@
     $("copyScript").addEventListener("click", () => copyText(scriptText(), "대본을 복사했어요"));
     $("copyTTS").addEventListener("click", () => copyText(voiceOnlyText(), "CapCut 음성 대본을 복사했어요"));
     $("fxPacks").addEventListener("click", e => { const b = e.target.closest("[data-pack]"); if (b) openPack(PACKS.find(p => p.id === b.dataset.pack)); });
+    $("desktopMixToggle").addEventListener("click", () => {
+      const opened = $("desktopMixList").hidden;
+      $("desktopMixList").hidden = !opened;
+      $("desktopMixToggle").setAttribute("aria-expanded", String(opened));
+    });
+    $("desktopMixList").addEventListener("click", e => {
+      const b = e.target.closest("[data-pack]");
+      if (b) openPack(PACKS.find(p => p.id === b.dataset.pack));
+    });
     $("doneBtn").addEventListener("click", () => {
       const ids = app.pack ? app.pack.ids : [R().id], allDone = ids.every(id => app.posted.has(id));
       ids.forEach(id => allDone ? app.posted.delete(id) : app.posted.add(id));
