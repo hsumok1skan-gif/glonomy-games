@@ -82,6 +82,15 @@ async function check(viewport,mobile,label) {
     assert.equal(full.count,539);
     assert.equal(full.failCount,0,"539 FX activation errors: "+JSON.stringify(full.fail));
     await page.screenshot({path:"browser-artifacts/director-18-genres.png",fullPage:true});
+    const sampleExport=await page.evaluate(async()=>{
+      const r=window.__fx.RECIPES.find(r=>r.id==="weapon-railgun");
+      const html=await window.__fx.standaloneHTML(r);
+      return {bytes:html.length,hasDirector:html.includes("window.FXDirector=Object.freeze"),
+        hasEngine:html.includes("class World"),hasRecipe:html.includes("weapon-railgun")};
+    });
+    assert.ok(sampleExport.bytes>80000 && sampleExport.hasDirector &&
+      sampleExport.hasEngine && sampleExport.hasRecipe,
+      "Downloaded standalone HTML must contain the full cinematic renderer");
     await page.locator("#pcFinal").click();
     await page.locator("#pcCompare").click();
     assert.equal(await page.locator("#pcTheater").evaluate(x=>x.classList.contains("split-view")),true);
@@ -92,6 +101,16 @@ async function check(viewport,mobile,label) {
     await page.keyboard.press("Escape");
     await page.waitForTimeout(100);
     await page.screenshot({path:"browser-artifacts/desktop-fxlab.png",fullPage:true});
+    assert.equal(await page.locator("#creatorModeToggle").isVisible(),true);
+    assert.equal(await page.locator("#scriptCard").isVisible(),false,"Creator-only posts should be hidden by default");
+    await page.locator("#creatorModeToggle").click();
+    assert.equal(await page.locator("#scriptCard").isVisible(),true,"Creator panel should open on demand");
+    await page.locator("#creatorModeToggle").click();
+    assert.equal(await page.locator("#scriptCard").isVisible(),false);
+    assert.ok((await page.locator("#relatedFx button").count())>=2,"Contextual similar effects visible");
+    await page.locator("#relatedFx button").first().click();
+    assert.equal(await page.locator("#pcCanvas").isVisible(),true);
+
     await page.locator("#discoverAll").click();
     await page.locator("#search").fill("마법");
     await page.waitForTimeout(300);

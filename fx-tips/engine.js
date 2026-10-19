@@ -1037,12 +1037,32 @@ function drawPart(ctx, p) {
       ctx.fillStyle = `rgba(${p.color},${a})`; starPath(ctx, p.x, p.y, s * (0.6 + 0.4 * rem)); ctx.fill();
       glow(ctx, p.x, p.y, s * 0.7, p.color, a * 0.6); break;
     case "ring": {
-      ctx.beginPath();
-      if (p.flat) ctx.ellipse(p.x, p.y, s, s * 0.22, 0, 0, TAU); else ctx.arc(p.x, p.y, s, 0, TAU);
-      const width=Math.max(0.5,(p.w||6)*rem);
-      ctx.strokeStyle=`rgba(${p.color},${a*0.22})`;ctx.lineWidth=width*3.2;ctx.stroke();
-      ctx.strokeStyle=`rgba(${p.color},${a})`;ctx.lineWidth=width;ctx.stroke();
-      break;
+      // A shockwave is no longer a perfect, flat cartoon circle. Asymmetric
+      // energy arcs read as direction and force; grounded FX retain ellipses.
+      const width=Math.max(.6,(p.w||6)*rem),r=Math.max(2,s);
+      ctx.save();ctx.lineCap="round";
+      if(p.flat){
+        ctx.beginPath();ctx.ellipse(p.x,p.y,r,r*.22,0,0,TAU);
+        ctx.lineWidth=width*2.4;ctx.strokeStyle=`rgba(${p.color},${a*.13})`;ctx.stroke();
+        ctx.lineWidth=width*.75;ctx.strokeStyle=`rgba(${p.color},${a*.78})`;ctx.stroke();
+      }else{
+        const twist=(p.rot||0)+p.x*.003;
+        for(let j=0;j<3;j++){
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,r*(.84+j*.07),twist+j*2.1,twist+j*2.1+1.62);
+          ctx.lineWidth=width*(j? .55:1.3);
+          ctx.strokeStyle=`rgba(${p.color},${a*(j===0?.82:.37)})`;
+          ctx.stroke();
+        }
+        if(r>26){
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,r*.96,twist+2.28,twist+3.3);
+          ctx.lineWidth=Math.max(.6,width*.3);
+          ctx.strokeStyle=`rgba(255,251,228,${a*.64})`;
+          ctx.stroke();
+        }
+      }
+      ctx.restore();break;
     }
     case "arc":
       ctx.lineCap = "round";
@@ -1098,9 +1118,25 @@ function drawPart(ctx, p) {
       break;
     }
     case "beam": {
-      const g = ctx.createLinearGradient(p.x - s, 0, p.x + s, 0);
-      g.addColorStop(0, `rgba(${p.color},0)`); g.addColorStop(0.5, `rgba(${p.color},${a * 0.8})`); g.addColorStop(1, `rgba(${p.color},0)`);
-      ctx.fillStyle = g; ctx.fillRect(p.x - s, p.y - (p.h || 600), s * 2, p.h || 600); break;
+      // Soft volumetric shaft with a shaped core, not an opaque rectangle.
+      const h=p.h||600,half=Math.max(2,s);
+      const g=ctx.createLinearGradient(p.x-half,0,p.x+half,0);
+      g.addColorStop(0,`rgba(${p.color},0)`);
+      g.addColorStop(.28,`rgba(${p.color},${a*.18})`);
+      g.addColorStop(.5,`rgba(${p.color},${a*.56})`);
+      g.addColorStop(.72,`rgba(${p.color},${a*.18})`);
+      g.addColorStop(1,`rgba(${p.color},0)`);
+      ctx.save();
+      ctx.beginPath();ctx.moveTo(p.x-half*.42,p.y-h);
+      ctx.bezierCurveTo(p.x-half*.94,p.y-h*.65,p.x-half,p.y-h*.23,p.x-half*.77,p.y);
+      ctx.lineTo(p.x+half*.77,p.y);
+      ctx.bezierCurveTo(p.x+half,p.y-h*.23,p.x+half*.94,p.y-h*.65,p.x+half*.42,p.y-h);
+      ctx.closePath();ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.moveTo(p.x,p.y-h);
+      ctx.lineTo(p.x,p.y);
+      ctx.strokeStyle=`rgba(254,253,231,${a*.52})`;
+      ctx.lineWidth=Math.max(.8,half*.075);ctx.stroke();
+      ctx.restore();break;
     }
     case "crack":
       ctx.strokeStyle = `rgba(${p.color},${a})`; ctx.lineWidth = p.w || 3; ctx.lineJoin = "round";

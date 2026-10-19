@@ -330,6 +330,24 @@
         background:#0f1412;
       }
       body:not(.recmode) .more .card {margin-top:10px;}
+      body:not(.recmode) .more>.card:not(.beginner-card),
+      body:not(.recmode) .more>p {display:none;}
+      body.creator-tools-open:not(.recmode) .more>.card:not(.beginner-card),
+      body.creator-tools-open:not(.recmode) .more>p {display:block;}
+      .related-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+        padding-top:16px;margin-top:17px;border-top:1px solid rgba(255,255,255,.1);}
+      .related-head strong{font:750 13px var(--ko);color:#edf8ed;}
+      .related-head span{font:500 11px var(--ko);color:#8caf9d;}
+      .related-fx{display:grid;gap:7px;margin:10px 0 15px;}
+      .related-fx button{display:block;text-align:left;border-radius:10px;background:rgba(255,255,255,.045);
+        padding:11px 12px;border:1px solid rgba(255,255,255,.075);color:#e3ecdc;font:650 12px var(--ko);}
+      .related-fx button:hover,.related-fx button:focus-visible{border-color:rgba(200,240,60,.6);outline:none;}
+      .creator-switch{display:flex;justify-content:space-between;align-items:center;width:100%;
+        margin-top:14px;padding:11px 13px;border:1px solid rgba(255,255,255,.13);border-radius:10px;
+        background:rgba(255,255,255,.04);color:#a8c6ae;font:700 12px var(--ko);}
+      .creator-switch[aria-pressed="true"]{border-color:rgba(200,240,60,.5);color:#dafa98;}
+      .creator-switch:focus-visible{outline:2px solid var(--acc);outline-offset:2px;}
+
       body:not(.recmode) .beginner-card {display:block;order:0;padding:18px;background:linear-gradient(145deg,#213323,#131d19);border:1px solid rgba(200,240,60,.42);}
       .beginner-eyebrow {font:800 10px var(--mono);color:#d9ff86;letter-spacing:.05em;margin-bottom:10px;}
       .beginner-card h3 {font:800 21px var(--ko);color:#f1f8ed;margin:0 0 8px;}
@@ -561,6 +579,9 @@
         <button id="copyFxLink" type="button">🔗 효과 링크 복사</button>
       </div>
       <p class="beginner-small">내 게임 소스와 함께 AI 채팅에 붙여 넣으세요. 자동 적용되는 버튼은 아닙니다.</p>
+      <div class="related-head"><strong>이런 효과도 살펴보세요</strong><span>비슷한 장르</span></div>
+      <div id="relatedFx" class="related-fx" aria-label="비슷한 이펙트 추천"></div>
+      <button type="button" id="creatorModeToggle" aria-pressed="false" class="creator-switch">제작자 도구 열기 <span>⌄</span></button>
     </section>
     <div class="card" id="fxPackCard">
       <div class="hd2"><b>FX MIX · 3–5 in 1 Reel</b><span>원본은 유지하고 묶음 릴스 만들기</span></div>
@@ -624,9 +645,9 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261019director1"></script>
-  <script src="director.js?v=20261019director1"></script>
-  <script src="export.js?v=20261019q3"></script>
+  <script src="engine.js?v=20261019cinematic2"></script>
+  <script src="director.js?v=20261019cinematic2"></script>
+  <script src="export.js?v=20261019cinematic2"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
   <script src="recipes/core.js?v=20261019q3"></script><script>tagFx("core")</script>
   <script src="recipes/weapon.js?v=20261019q3"></script><script>tagFx("weapon")</script>
@@ -1145,11 +1166,23 @@
         .map(([k, label, n]) => `<button type="button" class="sub${app.cat === k ? " on" : ""}" data-c="${k}">${label}<small>${n}</small></button>`).join("") : "";
       $("subs").style.display = g ? "" : "none";
     }
+    // Editorial starter pack: distinctive demonstrations rather than the
+    // first 30 records in date order. The full 539 remain accessible in All.
+    const FEATURED_IDS = [
+      "weapon-railgun","weapon-katana","magic","weapon-plasma","weapon-chain-lightning",
+      "weapon-sniper","weapon-rocket","weapon-greatsword","combat-crit","combat-lastkill",
+      "combat-flurry","combat-fire","duel-finisher","duel-parry","action-finisher-cam",
+      "action-parry","action-weapon-trail","fighting-perfect-ko","fighting-special-trail",
+      "shooter-headshot","shooter-tracers","rpg-cast-circle","spot-power-portal",
+      "spot-power-enchant","spot-power-vault","puzzle-chain-combo","puzzle-line-clear",
+      "puzzle-gravity-flip","racing-nitro","racing-drift"
+    ];
+    const FEATURED = new Set(FEATURED_IDS);
     function filtered() {
       const q = app.q.trim().toLowerCase(), g = GROUPS.find(x => x.id === app.group);
       const onDesktop = window.matchMedia("(min-width:1140px)").matches;
       return RECIPES.map((r, i) => [r, i]).filter(([r]) => {
-        if(onDesktop && app.libraryMode === "top" && r.ep > 30) return false;
+        if(onDesktop && !q && app.libraryMode === "top" && !FEATURED.has(r.id)) return false;
         if(onDesktop && app.libraryMode === "saved" && !app.favorites.has(r.id)) return false;
         if (q) return (plain(r.title.ko) + " " + plain(r.title.en) + " " + CATS[r.cat][1] + " " + r.steps.map(s => s.name.ko + " " + s.name.en).join(" ")).toLowerCase().includes(q);
         if (g && !g.cats.includes(r.cat)) return false;
@@ -1257,6 +1290,10 @@
       $("saveFx").textContent=app.favorites.has(r.id)?"♥ 저장했어요":"♡ 나중에 다시 보기";
       $("saveFx").setAttribute("aria-pressed",String(app.favorites.has(r.id)));
       $("savedFxCount").textContent=app.favorites.size;
+      const suggestions=RECIPES.filter(x=>x.cat===r.cat&&x.id!==r.id).slice(0,3);
+      $("relatedFx").innerHTML=suggestions.map(x=>
+        '<button type="button" data-related-id="'+esc(x.id)+'">'+esc(plain(x.title.ko))+'</button>'
+      ).join("");
     }
     function chooseDiscover(mode){
       app.libraryMode=mode;
@@ -1355,6 +1392,19 @@
     $("discoverTop").addEventListener("click",()=>chooseDiscover("top"));
     $("discoverAll").addEventListener("click",()=>chooseDiscover("all"));
     $("discoverSaved").addEventListener("click",()=>chooseDiscover("saved"));
+    $("relatedFx").addEventListener("click",e=>{
+      const item=e.target.closest("[data-related-id]");
+      if(!item)return;
+      const i=RECIPES.findIndex(r=>r.id===item.dataset.relatedId);
+      if(i<0)return;
+      selectRecipe(i);
+      setN(R().steps.length);
+    });
+    $("creatorModeToggle").addEventListener("click",()=>{
+      const on=document.body.classList.toggle("creator-tools-open");
+      $("creatorModeToggle").setAttribute("aria-pressed",String(on));
+      $("creatorModeToggle").innerHTML=on?"제작자 도구 접기 <span>⌃</span>":"제작자 도구 열기 <span>⌄</span>";
+    });
     $("fxPacks").addEventListener("click", e => { const b = e.target.closest("[data-pack]"); if (b) openPack(PACKS.find(p => p.id === b.dataset.pack)); });
     $("desktopMixToggle").addEventListener("click", () => {
       const opened = $("desktopMixList").hidden;

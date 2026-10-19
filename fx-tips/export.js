@@ -1,7 +1,7 @@
 "use strict";
 /* 받아 간 사람이 그대로 열어 쓰는 실행 파일 만들기 (사이트와 코드 안내 페이지가 같이 씀) */
 window.FXExport = (() => {
-  const V = "20261019q3";
+  const V = "20261019cinematic2";
   const plain = s => String(s).replace(/\*/g, "");
   const close = "<" + "/script>", open = "<" + "script>", cm = t => "<" + "!-- " + t + " --" + ">";
 
@@ -42,6 +42,7 @@ window.app = { mute: false };
 const R = RECIPES.find(r => r.id === ${JSON.stringify(r.id)});
 const cv = document.getElementById("c"), ctx = cv.getContext("2d"), ui = document.getElementById("ui");
 const VIEW = { x: 0, y: 0, s: 1, r: [0, 0, 540, 360] };
+cv.fxLogicalWidth = 540;
 let n = START_LAYERS, w, t = 0, last = 0;
 function reset() { w = new World(R, n, VIEW); const s = R.steps[n - 1]; if (s && s.enter) s.enter(w); t = R.interval - 0.35; buttons(); }
 function buttons() {
@@ -63,8 +64,9 @@ makeSprites().then(() => { reset(); requestAnimationFrame(t0 => { last = t0; loo
 `;
 
   async function standaloneHTML(r, base = "", o = {}) {
-    const [eng, rec] = await Promise.all([
+    const [eng, director, rec] = await Promise.all([
       fetch(`${base}engine.js?v=${V}`).then(x => x.text()),
+      fetch(`${base}director.js?v=${V}`).then(x => x.text()),
       fetch(`${base}recipes/${r._file}.js?v=${V}`).then(x => x.text()),
     ]);
     return `<!doctype html>
@@ -77,6 +79,10 @@ makeSprites().then(() => { reset(); requestAnimationFrame(t0 => { last = t0; loo
 ${cm("1) engine: World, particles, actors, sounds (no need to edit)")}
 ${open}
 ${eng}
+${close}
+${cm("1b) cinematic FX director, tailored scene treatments (no external assets)")}
+${open}
+${director}
 ${close}
 ${cm(`2) effect recipes — this file holds "${r.id}" and its neighbours. Search for id: "${r.id}" to tweak numbers.`)}
 ${open}
