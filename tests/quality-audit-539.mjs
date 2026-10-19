@@ -40,10 +40,16 @@ for (const cat of genres){
         const w=new World(R,n,{x:0,y:0,s:1,r:[0,0,540,360]},true,false);
         const shots=[],S=[.22,.65,1.2,2.05],dt=.016;
         R.fire(w);
-        let t=0, minHP=Infinity,maxParts=0;
+        let t=0, minHP=Infinity,maxParts=0,fireCount=1,nextFire=R.interval;
         for(const target of S){
           while(t+0.00001<target){
             const inc=Math.min(dt,target-t);w.update(inc);t+=inc;
+            // Model real auto-fire gameplay. Some important VFX only activate
+            // after several hits (kill confirm, combo) or a launched object
+            // reaches its playable height (fruit slice).
+            if(fireCount<3&&R.interval>0&&t>=nextFire){
+              R.fire(w);fireCount++;nextFire+=R.interval;
+            }
             if(w.foe&&Number.isFinite(w.foe.hp))minHP=Math.min(minHP,w.foe.hp);
             maxParts=Math.max(maxParts,w.parts.length+w.shots.length);
           }
@@ -58,7 +64,7 @@ for (const cat of genres){
           w.parts.some(x=>![x.x,x.y].every(Number.isFinite));
         return {shots,actors:w.actors.length,steps:R.steps.length,invalid,
           minHP:Number.isFinite(minHP)?minHP:null,maxParts,
-          totalParts:w.parts.length+w.shots.length,hasTarget:!!w.foe};
+          totalParts:w.parts.length+w.shots.length,hasTarget:!!w.foe,fireCount};
       }finally{Math.random=originalRand;}
     }
     function diff(a,b){
