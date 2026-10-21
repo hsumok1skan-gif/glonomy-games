@@ -78,9 +78,9 @@
   </div>
   <div class="toast" id="toast"></div>
 
-  <script src="engine.js?v=20261019cinematic2"></script>
-<script src="director.js?v=20261019cinematic2"></script>
-  <script src="export.js?v=20261019cinematic2"></script>
+  <script src="engine.js?v=20261021art"></script>
+<script src="director.js?v=20261021art"></script>
+  <script src="export.js?v=20261021art"></script>
   <script>window.tagFx = f => RECIPES.forEach(r => { if (!r._file) r._file = f; });</script>
   <script src="recipes/core.js?v=20261019q3"></script><script>tagFx("core")</script>
   <script src="recipes/weapon.js?v=20261019q3"></script><script>tagFx("weapon")</script>
@@ -171,7 +171,7 @@
       mine: ["Make it yours", "내 게임에 맞게 바꾸기"],
       mineSub: ["Change the look here and watch the preview. The download keeps these settings.", "여기서 바꾸면 위 화면에 바로 보이고, 받는 파일에도 그대로 들어가요."],
       style: ["Style", "스타일"],
-      styles: { dust: ["Grainy dots", "가루 도트"], smooth: ["Smooth 3D", "매끈한 입체"], flat: ["Flat silhouette", "단색 실루엣"] },
+      styles: { art: ["Default art", "기본 그림"], dust: ["Grainy dots", "가루 도트"], smooth: ["Smooth 3D", "매끈한 입체"], flat: ["Flat silhouette", "단색 실루엣"] },
       colors: ["Colors", "색"],
       player: ["Player", "우리 편"], enemy: ["Enemy", "적"], gun: ["Gun", "총"],
       art: ["Your own art", "내 그림 넣기"],
@@ -179,6 +179,7 @@
       heroArt: ["Player image", "우리 편 그림"], heroArtS: ["facing right", "오른쪽을 봄"],
       foeArt: ["Enemy image", "적 그림"], foeArtS: ["facing left", "왼쪽을 봄"],
       gunArt: ["Gun image", "총 그림"], gunArtS: ["pointing right, grip bottom-left", "오른쪽을 향함, 손잡이는 왼쪽 아래"],
+      bgArt: ["Background", "배경"], bgArtS: ["wide image, floor line about 69% from the top", "가로로 긴 그림, 바닥선이 위에서 69% 높이쯤"],
       topArt: ["Top-down images", "위에서 본 그림"], topArtS: ["player / enemy seen from above", "우리 편 / 적을 위에서 본 모습"],
       reset: ["Reset", "처음대로"],
       dl: ["Download .html (with your settings)", ".html 파일 받기 (지금 설정 그대로)"],
@@ -226,7 +227,7 @@
 
     const id = decodeURIComponent(location.hash.slice(1));
     const R = RECIPES.find(r => r.id === id);
-    const S = { style: "dust", colors: { hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }, images: {} };
+    const S = { style: "art", colors: { hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }, images: {} };
     let n = R ? R.steps.length : 0, w, cv, ctx, tm = 0, last = 0;
 
     const hex = c => "#" + c.map(v => v.toString(16).padStart(2, "0")).join("");
@@ -266,6 +267,7 @@
           <label class="f"><span>${t("heroArt")}<small>${t("heroArtS")}</small></span><input type="file" accept="image/png,image/webp,image/gif,image/jpeg" data-i="hero"></label>
           <label class="f"><span>${t("foeArt")}<small>${t("foeArtS")}</small></span><input type="file" accept="image/png,image/webp,image/gif,image/jpeg" data-i="foe"></label>
           <label class="f"><span>${t("gunArt")}<small>${t("gunArtS")}</small></span><input type="file" accept="image/png,image/webp,image/gif,image/jpeg" data-i="gun"></label>
+          ${!top ? `<label class="f"><span>${t("bgArt")}<small>${t("bgArtS")}</small></span><input type="file" accept="image/png,image/webp,image/jpeg" data-i="bg"></label>` : ""}
           ${top ? `<label class="f"><span>${t("topArt")}<small>${t("topArtS")}</small></span><span class="row"><input type="file" accept="image/*" data-i="heroTop"><input type="file" accept="image/*" data-i="foeTop"></span></label>` : ""}
           <div class="row" style="margin-top:8px"><button type="button" class="ghost" id="reset">${t("reset")}</button></div>
           <button type="button" class="big" id="dl">↓ ${t("dl")}</button>
@@ -328,7 +330,7 @@
       if (b.dataset.n != null) { n = +b.dataset.n; layers(); reset(); return; }
       if (b.dataset.s) { S.style = b.dataset.s; document.querySelectorAll("#styles .chip").forEach(c => c.classList.toggle("on", c === b)); await rebuild(); return; }
       if (b.dataset.copy != null) { copy(stepCode(R.steps[+b.dataset.copy], +b.dataset.copy)); return; }
-      if (b.id === "reset") { S.style = "dust"; S.colors = { hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }; S.images = {}; render(); await rebuild(); return; }
+      if (b.id === "reset") { S.style = "art"; S.colors = { hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }; S.images = {}; render(); await rebuild(); return; }
       if (b.id === "dl") { const imgs = Object.fromEntries(Object.keys(S.images).map(k => [k, S.images[k].url])); await FXExport.download(R, "", () => toast(t("dlDone")), { style: S.style, colors: S.colors, images: imgs }); return; }
       if (b.id === "copyAll") { copy(await FXExport.standaloneHTML(R, "", { style: S.style, colors: S.colors, images: Object.fromEntries(Object.keys(S.images).map(k => [k, S.images[k].url])) })); return; }
     });

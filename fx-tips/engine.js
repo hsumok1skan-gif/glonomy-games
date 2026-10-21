@@ -252,7 +252,7 @@ function dustSDF(GW, GH, field, rgb, seed0 = 7, opt = {}) {
   for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
     const d = D[y * cw + x];
     if (d > 0) {
-      if (FX.style === "dust" && d < 7 && rnd() < (opt.dust ?? 0.3) * Math.exp(-d / 1.8)) g.fillRect(x * S, y * S, S, S); // 가루
+      if ((FX.style === "dust" || FX.style === "art") && d < 7 && rnd() < (opt.dust ?? 0.3) * Math.exp(-d / 1.8)) g.fillRect(x * S, y * S, S, S); // 가루
       continue;
     }
     const gx = at(x + 1, y) - at(x - 1, y), gy = at(x, y + 1) - at(x, y - 1), gl = Math.hypot(gx, gy) || 1;
@@ -294,19 +294,40 @@ function dustGun() {
 }
 const DOT = { hero: [240, 236, 224], foe: [255, 112, 92] };
 /* ───────── 내 그림·내 스타일로 바꾸기 (받아 간 사람이 고치는 곳) ─────────
-   FX.style  : "dust" 가루 도트(기본) | "smooth" 매끈한 입체 | "flat" 단색 실루엣
+   FX.style  : "art" 기본 그림(기본값) | "dust" 가루 도트 | "smooth" 매끈한 입체 | "flat" 단색 실루엣
    FX.colors : 우리 편·적·총 색 [r, g, b]
    FX.images : 내 그림 파일 경로나 주소. 넣으면 위 스타일 대신 그 그림을 써요.
                hero(오른쪽을 봄) · foe(왼쪽을 봄) · gun(오른쪽을 향함) · heroTop · foeTop(위에서 본 모습)
                배경이 투명한 PNG, 발(바닥)이 그림 맨 아래에 닿게. 크기는 자유(비율만 유지돼요). */
-const FX = { style: "dust", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 218, 222] }, images: {} };
+const FX = { style: "art", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 218, 222] }, images: {},
+  // 손·총 위치(그림 크기에 대한 비율). 비워 두면 스타일에 맞는 값을 써요. 내 그림을 넣었다면 여기만 맞추세요.
+  hand: null,      // 주인공 손: [가운데에서 앞쪽으로 너비의 몇 배, 발에서 위로 키의 몇 배]
+  gunGrip: null,   // 총 그림에서 손이 쥐는 곳 [왼쪽에서, 위에서]
+  gunMuzzle: null, // 총 그림에서 총구 [왼쪽에서, 위에서]
+  bgFloor: 0.69,   // 배경 그림에서 바닥선 높이(위에서부터 비율)
+  bgDim: 0.28,     // 배경을 얼마나 어둡게 눌러 둘지(효과가 돋보이게)
+};
+// FX.style = "art" 일 때 쓰는 기본 그림 (FX Lab 기본 캐릭터·총·배경)
+const FX_ART_BASE = (() => { try { const s = document.currentScript && document.currentScript.src; if (s) return s.replace(/engine\.js.*$/, "") + "art/"; } catch (e) {} return "https://glonomy.com/fx-tips/art/"; })();
+const FX_ART = { images: { hero: FX_ART_BASE + "hero.webp", foe: FX_ART_BASE + "foe.webp", gun: FX_ART_BASE + "gun.webp", bg: FX_ART_BASE + "bg-ruins.webp" },
+  hand: [0.44, 0.73], gunGrip: [0.22, 0.5], gunMuzzle: [1.0, 0.27] };
+const FX_DOTPT = { hand: [0.27, 0.62], gunGrip: [0.28, 0.72], gunMuzzle: [0.98, 0.28] };
+const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? FX_ART[k] : FX_DOTPT[k]);
+// 배경 그림을 깔 장르 (옆에서 본 장면만)
+function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
+const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
 function fxLoadImages() {
-  const keys = Object.keys(FX.images || {}).filter(k => FX.images[k]);
+  // "art" 스타일이면 기본 그림을 깔고, 직접 넣은 그림이 있으면 그걸 우선
+  const user = FX.images || {}, art = FX.style === "art" ? FX_ART.images : {};
+  if (typeof SPR !== "undefined") delete SPR.bg;
+  FX._art = {}; for (const k in art) if (!user[k]) FX._art[k] = true;
+  const IM = Object.assign({}, art, user);
+  const keys = Object.keys(IM).filter(k => IM[k]);
   return Promise.all(keys.map(k => new Promise(res => {
     const im = new Image(); im.crossOrigin = "anonymous";
-    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
-    im.onerror = () => { console.warn("FX: could not load image for", k, FX.images[k]); res(); };
-    im.src = FX.images[k];
+    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
+    im.onerror = () => { console.warn("FX: could not load image for", k, IM[k]); res(); };
+    im.src = IM[k];
   })));
 }
 function makeSprites() {
@@ -579,7 +600,7 @@ function studioDemoSet(ctx,v,id){
   ctx.restore();
 }
 
-function studioBackdrop(ctx, v, cat, clock, recipeId) {
+function studioBackdrop(ctx, v, cat, clock, recipeId, art) {
   const [x,y,w,h]=v, col=STUDIO_MOODS[cat] || [174,196,164], rgb=col.join(",");
   const floor=ctx.createLinearGradient(x,y,x,y+h);
   floor.addColorStop(0,"#090e17"); floor.addColorStop(0.58,"#111b26"); floor.addColorStop(1,"#090c12");
@@ -588,6 +609,7 @@ function studioBackdrop(ctx, v, cat, clock, recipeId) {
   halo.addColorStop(0,"rgba("+rgb+",0.17)"); halo.addColorStop(0.44,"rgba("+rgb+",0.045)");
   halo.addColorStop(1,"rgba("+rgb+",0)");
   ctx.fillStyle=halo; ctx.fillRect(x,y,w,h);
+  if (art) return;
   studioDemoSet(ctx,v,recipeId);
   if (window.FXDirector) FXDirector.stage(ctx,v,cat,recipeId,clock);
   // Art direction: visible grid only when it communicates a board, interface or
@@ -936,7 +958,8 @@ class World {
     const v = this.view, [rx, ry, rw, rh] = v.r;
     ctx.save();
     ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
-    studioBackdrop(ctx, v.r, this.R.cat, this.time, this.R.id);
+    const art = useBgArt(this.R);
+    studioBackdrop(ctx, v.r, this.R.cat, this.time, this.R.id, art);
     ctx.translate(v.x, v.y); ctx.scale(v.s, v.s);
     const tr = this.trauma * this.trauma;
     ctx.translate(270 + (Math.random() * 2 - 1) * tr * 24 + this.kx, 180 + (Math.random() * 2 - 1) * tr * 18 + this.ky);
@@ -944,9 +967,11 @@ class World {
     ctx.scale(1 + this.zoom, 1 + this.zoom);
     ctx.translate(-270 - this.cam.x, -180 - this.cam.y);
 
+    // 배경 그림 (카메라와 같이 흔들림). 바닥선이 G에 오도록 맞춤
+    if (art) { const c = SPR.bg.c, bw = 660, bh = bw * c.height / c.width; ctx.drawImage(c, 270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.fillStyle = "rgba(4,6,12," + FX.bgDim + ")"; ctx.fillRect(270 - bw / 2, G - FX.bgFloor * bh, bw, bh); }
     // 바닥
     if (this.R.drawFloor) this.R.drawFloor(this, ctx);
-    else {
+    else if (!art) {
       ctx.fillStyle = "rgba(255,255,255,0.025)"; ctx.fillRect(-80, G, 700, 120);
       ctx.fillStyle = "rgba(255,255,255,0.22)"; ctx.fillRect(-80, G - 1, 700, 1.5);
     }
@@ -1182,7 +1207,7 @@ function drawActor(ctx, a, w) {
   if (a.key === "hero" && !a.top) { ctx.shadowColor = "rgba(160,216,242,.38)"; ctx.shadowBlur = 9; }
   const rigged = w && a.key==="hero" && !a.top && !w.bare &&
     w.n===w.R.steps.length && (window.FXDirector || ["weapon-railgun","weapon-katana","magic"].includes(w.R.id)) &&
-    !FX.images.hero && SPR.heroRigBody;
+    !((FX.images || {}).hero || (FX._art && FX._art.hero)) && SPR.heroRigBody;
   if(rigged) drawStudioRigHero(ctx,a,w,top);
   else ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h);
   ctx.shadowBlur = 0;
@@ -1241,19 +1266,19 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 
 /* ───────── 총·손 위치 ───────── */
 const GUNW = 68;
-function gripPt(w) { const c = w.hero; return { x: c.x + c.ox + c.w * 0.27, y: G - c.h * 0.62 * c.sy }; }
+function gripPt(w) { const c = w.hero; return { x: c.x + c.ox + c.w * fxPt("hand")[0], y: G - c.h * fxPt("hand")[1] * c.sy }; }
 function muzzle(w) {
   const g = w.gun, p = gripPt(w), gh = GUNW * SPR.gun.c.height / SPR.gun.c.width;
-  const lx = 0.7 * GUNW - g.kick, ly = -0.44 * gh, c = Math.cos(g.rot), s = Math.sin(g.rot);
+  const lx = (fxPt("gunMuzzle")[0] - fxPt("gunGrip")[0]) * GUNW - g.kick, ly = (fxPt("gunMuzzle")[1] - fxPt("gunGrip")[1]) * gh, c = Math.cos(g.rot), s = Math.sin(g.rot);
   return { x: p.x + lx * c - ly * s, y: p.y + lx * s + ly * c };
 }
 function drawGun(w, ctx) {
   const g = w.gun, p = gripPt(w), img = SPR.gun.c, gh = GUNW * img.height / img.width;
   ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(g.rot);
-  ctx.drawImage(img, -0.28 * GUNW - g.kick, -0.72 * gh, GUNW, gh);
+  ctx.drawImage(img, -fxPt("gunGrip")[0] * GUNW - g.kick, -fxPt("gunGrip")[1] * gh, GUNW, gh);
   ctx.restore();
 }
-function paw(w) { const c = w.hero; return { x: c.x + c.ox + c.w * 0.3, y: G - c.h * 0.68 }; }
+function paw(w) { const c = w.hero; return { x: c.x + c.ox + c.w * (fxPt("hand")[0] + 0.03), y: G - c.h * (fxPt("hand")[1] + 0.06) }; }
 
 /* ───────── 레시피용 도우미 ───────── */
 function gunSpring(w, dt) { const g = w.gun; g.kick -= g.kick * Math.min(1, dt * 16); g.rot -= g.rot * Math.min(1, dt * 12); }
@@ -1378,7 +1403,7 @@ function bloomEnd(ctx, rx, ry, rw, rh, a) {
     ctx.save(); ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
     ctx.globalCompositeOperation = "lighter";
     ctx.globalAlpha = Math.min(1, a); ctx.filter = "blur(10px)"; ctx.drawImage(BLOOM.c, rx, ry, rw, rh);
-    ctx.globalAlpha = Math.min(1, a) * 0.7; ctx.filter = "blur(3px)"; ctx.drawImage(BLOOM.c, rx, ry, rw, rh);
+    ctx.globalAlpha = Math.min(1, a) * 0.9; ctx.filter = "blur(3px)"; ctx.drawImage(BLOOM.c, rx, ry, rw, rh);
     ctx.restore();
   } catch (e) { BLOOM.ok = false; }
 }

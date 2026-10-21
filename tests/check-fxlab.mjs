@@ -36,7 +36,7 @@ assert.ok(html.includes('segs.push({ k: "hook"'),"Hook-first reels");
 assert.ok(html.includes('id="finalBtn"'),"Final effect preview");
 assert.ok(html.includes('id="copyTTS"'),"AI voice-over script");
 assert.ok(home.includes('class="item fx-feature"'),"Homepage has FX Lab showcase");
-assert.ok(html.includes('director.js?v=20261019cinematic2'),"Director loaded on desktop");
+assert.ok(/director\.js\?v=\w+/.test(html),"Director loaded on desktop");
 assert.ok(engine.includes("FXDirector.stage") && engine.includes("FXDirector.moment") && engine.includes("FXDirector.overlay"),"Director hooks mounted");
 assert.ok(director.includes("window.FXDirector=Object.freeze"),"Director exported");
 const expected=["weapon","combat","duel","fighting","shooter","horde","action","move","rpg","puzzle","casual","ui","sim","strategy","army","racing","survival","env"];
@@ -45,7 +45,9 @@ for(const cat of expected){
   assert.ok(new RegExp("^[\\s]*"+cat+":(?:\\[|\\{tone:)", "m").test(director),"Director covers "+cat);
   assert.ok(ids.some(x=>x.startsWith("")),"Recipe IDs available");
 }
-assert.ok(guide.includes("director.js?v=20261019cinematic2") && exportJs.includes("20261019cinematic2"),"Code guide includes cinematic director");
+const ver=(exportJs.match(/const V = "(\w+)"/)||[])[1];
+assert.ok(ver && guide.includes("director.js?v="+ver) && html.includes("engine.js?v="+ver),"Code guide, site and export share one cache version");
+for (const a of ["hero","foe","gun","bg-ruins"]) assert.ok(fs.existsSync("fx-tips/art/"+a+".webp"),"Default art "+a);
 assert.ok(exportJs.includes("director.js?v=${V}") && exportJs.includes("${director}"),"Standalone export embeds director");
 assert.equal((home.match(/data-cat="sns"/g)||[]).length,1,"No duplicate FX Lab links");
 console.log("PASS: 539 unique FX | 11 bundles | 512 reels | site and studio assets present");

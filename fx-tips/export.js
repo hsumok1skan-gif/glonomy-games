@@ -1,20 +1,20 @@
 "use strict";
 /* 받아 간 사람이 그대로 열어 쓰는 실행 파일 만들기 (사이트와 코드 안내 페이지가 같이 씀) */
 window.FXExport = (() => {
-  const V = "20261019cinematic2";
+  const V = "20261021art";
   const plain = s => String(s).replace(/\*/g, "");
   const close = "<" + "/script>", open = "<" + "script>", cm = t => "<" + "!-- " + t + " --" + ">";
 
   const arr = c => `[${c.join(", ")}]`;
   const config = (r, o = {}) => {
-    const st = o.style || "dust", col = Object.assign({ hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }, o.colors || {}), im = o.images || {};
+    const st = o.style || "art", col = Object.assign({ hero: [240, 236, 224], foe: [255, 112, 92], gun: [214, 218, 222] }, o.colors || {}), im = o.images || {};
     const line = (k, file, note) => im[k] ? `  ${k}: ${JSON.stringify(im[k])},` : `  // ${k}: "${file}",${" ".repeat(Math.max(1, 22 - k.length - file.length))}// ${note}`;
     return `/* ============================================================
    ★ EDIT HERE — the only part you need to change ★
    ============================================================ */
 
 // 1) Look of the built-in characters
-FX.style = "${st}";${" ".repeat(Math.max(1, 18 - st.length))}// "dust" (grainy dots) | "smooth" (shaded) | "flat" (solid silhouette)
+FX.style = "${st}";${" ".repeat(Math.max(1, 18 - st.length))}// "art" (default FX Lab art) | "dust" (grainy dots) | "smooth" (shaded) | "flat" (solid silhouette)
 FX.colors.hero = ${arr(col.hero)};   // player color  [r, g, b]
 FX.colors.foe  = ${arr(col.foe)};    // enemy color
 FX.colors.gun  = ${arr(col.gun)};   // gun color
@@ -28,7 +28,12 @@ ${line("foe", "my-enemy.png", "enemy, facing LEFT")}
 ${line("gun", "my-gun.png", "pointing RIGHT, grip at the bottom-left")}
 ${line("heroTop", "my-hero-top.png", "player seen from above (top-down effects only)")}
 ${line("foeTop", "my-enemy-top.png", "enemy seen from above")}
+${line("bg", "my-background.jpg", "side-view backdrop, floor line ~69% from the top")}
 };
+// If your hand or gun looks off, nudge these (fractions of the image size):
+// FX.hand = [0.44, 0.73];      // hero hand: [forward from centre, up from feet]
+// FX.gunGrip = [0.22, 0.5];    // where the hand holds the gun image [from left, from top]
+// FX.gunMuzzle = [1.0, 0.27];  // gun muzzle [from left, from top]
 
 // 3) Scene settings
 const START_LAYERS = ${r.steps.length};       // how many effect layers are ON when the page opens (0 = raw)
