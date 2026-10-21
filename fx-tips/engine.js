@@ -320,12 +320,14 @@ function fxLoadImages() {
   // "art" 스타일이면 기본 그림을 깔고, 직접 넣은 그림이 있으면 그걸 우선
   const user = FX.images || {}, art = FX.style === "art" ? FX_ART.images : {};
   if (typeof SPR !== "undefined") delete SPR.bg;
+  RIG.img = null; RIG.k = 0;
   FX._art = {}; for (const k in art) if (!user[k]) FX._art[k] = true;
   const IM = Object.assign({}, art, user);
+  if (FX._art.hero) IM.rig = FX_ART_BASE + "hero-rig.webp";
   const keys = Object.keys(IM).filter(k => IM[k]);
   return Promise.all(keys.map(k => new Promise(res => {
     const im = new Image(); im.crossOrigin = "anonymous";
-    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
+    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } if (k === "rig") { RIG.img = im; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
     im.onerror = () => { console.warn("FX: could not load image for", k, IM[k]); res(); };
     im.src = IM[k];
   })));
@@ -786,6 +788,8 @@ class World {
   on(id) { return id === "sound" || this.steps.has(id); }
   // 소리는 단계가 아니라 처음(RAW)부터 늘 켜져 있음 — R.base에 들어 있는 소리 훅은 항상 실행
   emit(ev, ...a) {
+    const rs = this.rigState || (this.rigState = {});
+    if (RIG_HIT.test(ev)) rs.hit = this.time; else if (RIG_THROW.test(ev)) rs.thr = this.time;
     if (this.bare) return;
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
@@ -864,6 +868,7 @@ class World {
   }
 
   update(rdt) {
+    this._rigDt = rdt;
     this.frames = (this.frames || 0) + 1;
     this.trauma = Math.max(0, this.trauma - rdt * 1.7);
     this.kx -= this.kx * Math.min(1, rdt * 12);
@@ -1189,6 +1194,130 @@ function drawShadow(ctx, a) {
   ctx.fillStyle = `rgba(0,0,0,${0.32 * a.alpha * lift})`;
   ctx.beginPath(); ctx.ellipse(a.x + a.ox, a.gy + 2, a.w * 0.34 * a.sx, 8, 0, 0, TAU); ctx.fill();
 }
+
+/* ───────── 관절 주인공 (기본 그림: 부품을 뼈대에 꽂아 움직임) ─────────
+   부품 그림 한 장(art/hero-rig.webp)에서 잘라 씀.
+   r: 그림 속 위치 [x, y, w, h] · pv: 부모에 꽂히는 관절(비율) · end: 다음 관절(비율) · 각도는 0=오른쪽, 90=아래 */
+const RIG = {
+  img: null,
+  parts: {
+    torso: { r: [319, 13, 298, 417], pv: [0.5, 0.9], end: [0.64, 0.06], pts: { shoulder: [0.4, 0.33], cape: [0.32, 0.14] } },
+    head: { r: [87, 26, 212, 264], pv: [0.55, 0.86], end: [0.45, 0.12] },
+    pelvis: { r: [597, 92, 306, 359], pv: [0.44, 0.1], end: [0.44, 0.6], pts: { hip: [0.42, 0.3] } },
+    cape: { r: [907, 31, 335, 491], pv: [0.56, 0.05], end: [0.3, 0.9] },
+    uarmF: { r: [52, 393, 190, 287], pv: [0.45, 0.17], end: [0.62, 0.86] },
+    uarmB: { r: [305, 399, 167, 292], pv: [0.45, 0.17], end: [0.62, 0.86] },
+    farmF: { r: [738, 491, 315, 205], pv: [0.12, 0.2], end: [0.9, 0.72] },
+    farmB: { r: [484, 500, 322, 208], pv: [0.13, 0.24], end: [0.9, 0.74] },
+    thighF: { r: [80, 696, 191, 376], pv: [0.42, 0.1], end: [0.5, 0.92] },
+    thighB: { r: [329, 700, 178, 366], pv: [0.42, 0.1], end: [0.5, 0.92] },
+    shinF: { r: [582, 707, 215, 371], pv: [0.52, 0.07], end: [0.42, 0.98] },
+    shinB: { r: [896, 708, 291, 368], pv: [0.3, 0.07], end: [0.3, 0.98] },
+    sword: { r: [38, 1055, 1182, 169], pv: [0.11, 0.5], end: [1, 0.5] },
+  },
+  // 동작 = 뼈마다 향하는 방향(도). 섞어서 씀
+  poses: {
+    idle:   { torso: -84, head: -96, pelvis: 92, cape: 115, uarmF: 72, farmF: -8, uarmB: 84, farmB: 8, thighF: 72, shinF: 98, thighB: 108, shinB: 96, sword: -60 },
+    aim:    { torso: -86, head: -92, uarmF: 6, farmF: 2, uarmB: 30, farmB: 8, thighF: 70, shinF: 98, thighB: 112, shinB: 96 },
+    recoil: { torso: -96, head: -104, uarmF: -14, farmF: -34, uarmB: 18, farmB: -10 },
+    windup: { torso: -100, head: -98, pelvis: 96, cape: 125, uarmF: -118, farmF: -160, uarmB: 120, farmB: 150, thighF: 64, shinF: 100, thighB: 116, shinB: 100, sword: -205 },
+    slash:  { torso: -62, head: -70, pelvis: 86, cape: 150, uarmF: 38, farmF: 58, uarmB: 128, farmB: 160, thighF: 50, shinF: 92, thighB: 128, shinB: 112, sword: 72 },
+    thrust: { torso: -72, head: -80, uarmF: -4, farmF: -4, uarmB: 120, farmB: 150, thighF: 54, shinF: 94, thighB: 124, shinB: 108, sword: -4 },
+    hurt:   { torso: -112, head: -128, pelvis: 100, cape: 70, uarmF: 120, farmF: 170, uarmB: 60, farmB: 30, thighF: 80, shinF: 100, thighB: 98, shinB: 96 },
+    dash:   { torso: -48, head: -58, pelvis: 80, cape: 178, uarmF: 120, farmF: 40, uarmB: 150, farmB: 190, thighF: 28, shinF: 84, thighB: 138, shinB: 150 },
+    air:    { torso: -80, thighF: 20, shinF: 100, thighB: 70, shinB: 140, uarmF: -30, farmF: -40, uarmB: 150, farmB: 120 },
+  },
+};
+const RIG_MELEE = /melee|sword|katana|slash|blade|parry|cleave|riposte|counter|combo|crit|execute|finisher/;
+const RIG_HIT = /^(hit|strike|swing|slam|stab|cut|smash|impact|crit|kill|break|finish|parry)$/;
+const RIG_THROW = /^(cast|launch|release|throw|shoot|fire|shot|beam|blast)$/;
+function rigOn(a) { return a.key === "hero" && !a.top && RIG.img && FX._art && FX._art.hero; }
+function rigDirs(w, a) {
+  const P = RIG.poses, base = Object.assign({}, P.idle), t = w.time, rs = w.rigState || {};
+  const mix = (name, k) => { if (k <= 0) return; const p = P[name]; for (const b in p) base[b] = base[b] + (p[b] - base[b]) * Math.min(1, k); };
+  const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : 1 - (1 - x) * (1 - x);
+  if (w.gun) { mix("aim", 1); const g = w.gun; mix("recoil", Math.min(1, Math.abs(g.kick) / 10 + Math.abs(g.rot) * 2.5)); }
+  else {
+    const since = t - (rs.fire ?? -9), hitAgo = t - (rs.hit ?? -9), thr = t - (rs.thr ?? -9);
+    const melee = RIG_MELEE.test(w.R.id) || (rs.hit != null && rs.hit >= (rs.fire ?? -9));
+    if (rs.hit != null && hitAgo >= 0 && hitAgo < 0.7 && rs.hit >= (rs.fire ?? -9) - 0.01) {
+      // 맞히는 순간 휘두름 → 잠깐 멈춤 → 대기로
+      mix(melee ? "slash" : "thrust", hitAgo < 0.06 ? ease(hitAgo / 0.06) : 1 - ease((hitAgo - 0.2) / 0.5));
+    } else if (since >= 0 && since < 0.9 && (rs.hit == null || rs.hit < rs.fire)) {
+      // 동작을 시작했지만 아직 안 맞힘 → 예비 동작
+      mix("windup", ease(since / 0.18) * (since > 0.6 ? 1 - ease((since - 0.6) / 0.3) : 1));
+    }
+    if (thr >= 0 && thr < 0.6) mix("thrust", thr < 0.08 ? ease(thr / 0.08) : 1 - ease((thr - 0.15) / 0.45));
+  }
+  if (a.tint > 0.05 || (a.vib > 0 && a.key === "hero")) mix("hurt", Math.min(1, Math.max(a.tint, a.vib / 4)));
+  const vx = a._rigPrevOx != null ? (a.ox - a._rigPrevOx) / Math.max(1e-3, w._rigDt || 1 / 60) : 0;
+  a._rigPrevOx = a.ox;
+  if (Math.abs(vx) > 120) mix("dash", Math.min(1, (Math.abs(vx) - 120) / 300));
+  if (a.oy < -6) mix("air", Math.min(1, -a.oy / 30));
+  // 숨쉬기
+  const br = Math.sin(t * 2.6 + a.home * 0.05);
+  base.torso += br * 1.2; base.uarmF += br * 2; base.uarmB += br * 2; base.cape += Math.sin(t * 1.9) * 4;
+  base.sword = base.sword ?? -60;
+  return base;
+}
+function rigSolve(dirs, k) {
+  const R = RIG.parts, out = {};
+  const restDir = p => Math.atan2((p.end[1] - p.pv[1]) * p.r[3], (p.end[0] - p.pv[0]) * p.r[2]);
+  const place = (name, J) => {
+    const p = R[name], rot = dirs[name] * Math.PI / 180 - restDir(p), c = Math.cos(rot), s = Math.sin(rot);
+    const at = f => { const lx = (f[0] - p.pv[0]) * p.r[2] * k, ly = (f[1] - p.pv[1]) * p.r[3] * k; return { x: J.x + lx * c - ly * s, y: J.y + lx * s + ly * c }; };
+    out[name] = { J, rot, at, end: at(p.end) }; return out[name];
+  };
+  const torso = place("torso", { x: 0, y: 0 });
+  place("pelvis", { x: 0, y: 0 });
+  place("head", torso.end);
+  place("cape", torso.at(R.torso.pts.cape));
+  const sh = torso.at(R.torso.pts.shoulder), hip = out.pelvis.at(R.pelvis.pts.hip);
+  for (const s of ["F", "B"]) {
+    const ua = place("uarm" + s, { x: sh.x + (s === "B" ? 4 * k / 0.12 * 0.1 : 0), y: sh.y });
+    place("farm" + s, ua.end);
+    const th = place("thigh" + s, { x: hip.x + (s === "B" ? -3 : 3) * k / 0.12 * 0.1, y: hip.y });
+    place("shin" + s, th.end);
+  }
+  place("sword", out.farmF.end);
+  return out;
+}
+const RIG_ORDER = [["cape", 1], ["uarmB", 0.62], ["farmB", 0.62], ["thighB", 0.62], ["shinB", 0.62], ["shinF", 1], ["thighF", 1], ["pelvis", 1], ["torso", 1], ["head", 1], ["sword", 1], ["farmF", 1], ["uarmF", 1]];
+function drawRig(ctx, a, w) {
+  const R = RIG.parts, dirs = rigDirs(w, a);
+  if (!RIG.k) { const s = rigSolve(RIG.poses.idle, 1); RIG.k = 1 / (Math.max(s.shinF.end.y, s.shinB.end.y) - s.head.end.y); }
+  const k = RIG.k * a.h * 1.04, S = rigSolve(dirs, k);
+  const foot = Math.max(S.shinF.end.y, S.shinB.end.y), dx = -(S.torso.J.x + S.head.end.x) * 0.15;
+  ctx.save(); ctx.translate(dx, -foot);
+  const sword = !w.gun && (RIG_MELEE.test(w.R.id));
+  for (const [name, lum] of RIG_ORDER) {
+    if (name === "sword" && !sword) continue;
+    const p = R[name], s = S[name];
+    ctx.save(); ctx.translate(s.J.x, s.J.y); ctx.rotate(s.rot); ctx.scale(k, k);
+    if (lum < 1) ctx.filter = "brightness(" + lum + ")";
+    ctx.drawImage(RIG.img, p.r[0], p.r[1], p.r[2], p.r[3], -p.pv[0] * p.r[2], -p.pv[1] * p.r[3], p.r[2], p.r[3]);
+    ctx.restore();
+  }
+  ctx.restore();
+  // 손 위치·팔 방향을 기억 (총·주먹 효과가 여기서 나감)
+  a.rigHand = { x: S.farmF.end.x + dx, y: S.farmF.end.y - foot, ang: dirs.farmF * Math.PI / 180 };
+}
+// 화면 밖에서 그려서 번쩍임·붉은 기운을 덧입힘
+const RIG_BUF = { c: null, x: null };
+function drawRigActor(ctx, a, w, top) {
+  const W = Math.ceil(a.w * 2.6), H = Math.ceil(a.h * 1.5), sc = 2;
+  if (!RIG_BUF.c) { RIG_BUF.c = document.createElement("canvas"); RIG_BUF.x = RIG_BUF.c.getContext("2d"); }
+  const c = RIG_BUF.c, x = RIG_BUF.x;
+  if (c.width !== W * sc || c.height !== H * sc) { c.width = W * sc; c.height = H * sc; }
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height);
+  x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.globalCompositeOperation = "source-over";
+  drawRig(x, a, w);
+  const over = (col, al) => { if (al <= 0) return; x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
+  over("#ffffff", a.flash); over("#ef4444", a.tint * 0.85); over("#fb923c", a.burn > 0 ? 0.35 : 0);
+  ctx.drawImage(c, -W / 2, -(H - 4), W, H);
+  if (a.rigHand) a.rigHand.y += 0;
+}
+
 function drawActor(ctx, a, w) {
   if (a.alpha <= 0) return;
   const hide = a.blink > 0 && Math.floor(a.blink * 14) % 2 === 0;
@@ -1208,6 +1337,7 @@ function drawActor(ctx, a, w) {
   const rigged = w && a.key==="hero" && !a.top && !w.bare &&
     w.n===w.R.steps.length && (window.FXDirector || ["weapon-railgun","weapon-katana","magic"].includes(w.R.id)) &&
     !((FX.images || {}).hero || (FX._art && FX._art.hero)) && SPR.heroRigBody;
+  if (rigOn(a) && w) { drawRigActor(ctx, a, w, top); ctx.restore(); return; }
   if(rigged) drawStudioRigHero(ctx,a,w,top);
   else ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h);
   ctx.shadowBlur = 0;
@@ -1266,19 +1396,21 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 
 /* ───────── 총·손 위치 ───────── */
 const GUNW = 68;
-function gripPt(w) { const c = w.hero; return { x: c.x + c.ox + c.w * fxPt("hand")[0], y: G - c.h * fxPt("hand")[1] * c.sy }; }
+function rigWorld(c) { const h = c.rigHand; return { x: c.x + c.ox + h.x * c.sx, y: c.gy + c.oy + h.y * c.sy }; }
+function gripPt(w) { const c = w.hero; if (c && c.rigHand && rigOn(c)) return rigWorld(c); return { x: c.x + c.ox + c.w * fxPt("hand")[0], y: G - c.h * fxPt("hand")[1] * c.sy }; }
 function muzzle(w) {
   const g = w.gun, p = gripPt(w), gh = GUNW * SPR.gun.c.height / SPR.gun.c.width;
-  const lx = (fxPt("gunMuzzle")[0] - fxPt("gunGrip")[0]) * GUNW - g.kick, ly = (fxPt("gunMuzzle")[1] - fxPt("gunGrip")[1]) * gh, c = Math.cos(g.rot), s = Math.sin(g.rot);
+  const r = gunRot(w), lx = (fxPt("gunMuzzle")[0] - fxPt("gunGrip")[0]) * GUNW - g.kick, ly = (fxPt("gunMuzzle")[1] - fxPt("gunGrip")[1]) * gh, c = Math.cos(r), s = Math.sin(r);
   return { x: p.x + lx * c - ly * s, y: p.y + lx * s + ly * c };
 }
+function gunRot(w) { const c = w.hero; return c && c.rigHand && rigOn(c) ? c.rigHand.ang : w.gun.rot; }
 function drawGun(w, ctx) {
   const g = w.gun, p = gripPt(w), img = SPR.gun.c, gh = GUNW * img.height / img.width;
-  ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(g.rot);
+  ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(gunRot(w));
   ctx.drawImage(img, -fxPt("gunGrip")[0] * GUNW - g.kick, -fxPt("gunGrip")[1] * gh, GUNW, gh);
   ctx.restore();
 }
-function paw(w) { const c = w.hero; return { x: c.x + c.ox + c.w * (fxPt("hand")[0] + 0.03), y: G - c.h * (fxPt("hand")[1] + 0.06) }; }
+function paw(w) { const c = w.hero; if (c && c.rigHand && rigOn(c)) return rigWorld(c); return { x: c.x + c.ox + c.w * (fxPt("hand")[0] + 0.03), y: G - c.h * (fxPt("hand")[1] + 0.06) }; }
 
 /* ───────── 레시피용 도우미 ───────── */
 function gunSpring(w, dt) { const g = w.gun; g.kick -= g.kick * Math.min(1, dt * 16); g.rot -= g.rot * Math.min(1, dt * 12); }
@@ -1412,7 +1544,11 @@ function bloomEnd(ctx, rx, ry, rw, rh, a) {
 const RECIPES = [];
 // 레시피를 등록할 때 "소리" 단계를 빼서 R.base로 옮김 → 소리는 RAW부터 항상 나오고, 단계 목록에는 눈에 보이는 효과만 남음
 RECIPES.push = function (...rs) {
-  for (const r of rs) if (r && r.steps && !r.base) { r.base = r.steps.filter(s => s.id === "sound"); r.steps = r.steps.filter(s => s.id !== "sound"); }
+  for (const r of rs) if (r && r.steps && !r.base) {
+    r.base = r.steps.filter(s => s.id === "sound"); r.steps = r.steps.filter(s => s.id !== "sound");
+    // 동작을 시작한 시각을 기록 (관절 주인공의 예비 동작용)
+    const f = r.fire; if (typeof f === "function") r.fire = function (w, ...x) { const st = w.rigState || (w.rigState = {}); st.fire = w.time; return f.call(this, w, ...x); };
+  }
   return Array.prototype.push.apply(this, rs);
 };
 function arrive(w, it) {
