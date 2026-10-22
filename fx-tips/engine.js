@@ -306,6 +306,7 @@ const FX = { style: "art", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 21
   gunMuzzle: null, // 총 그림에서 총구 [왼쪽에서, 위에서]
   bgFloor: 0.69,   // 배경 그림에서 바닥선 높이(위에서부터 비율)
   bgDim: 0.28,     // 배경을 얼마나 어둡게 눌러 둘지(효과가 돋보이게)
+  rig: false,      // 관절 부품으로 움직이기 (시험용, 기본은 끔)
 };
 // FX.style = "art" 일 때 쓰는 기본 그림 (FX Lab 기본 캐릭터·총·배경)
 const FX_ART_BASE = (() => { try { const s = document.currentScript && document.currentScript.src; if (s) return s.replace(/engine\.js.*$/, "") + "art/"; } catch (e) {} return "https://glonomy.com/fx-tips/art/"; })();
@@ -323,7 +324,7 @@ function fxLoadImages() {
   for (const k in RIGS) { RIGS[k].img = null; RIGS[k].k = 0; }
   FX._art = {}; for (const k in art) if (!user[k]) FX._art[k] = true;
   const IM = Object.assign({}, art, user);
-  for (const k in RIGS) if (FX._art[k]) IM["rig_" + k] = FX_ART_BASE + RIGS[k].file;
+  if (FX.rig) for (const k in RIGS) if (FX._art[k]) IM["rig_" + k] = FX_ART_BASE + RIGS[k].file;
   const keys = Object.keys(IM).filter(k => IM[k]);
   return Promise.all(keys.map(k => new Promise(res => {
     const im = new Image(); im.crossOrigin = "anonymous";
@@ -1264,7 +1265,7 @@ const RIGS = {
 const RIG_MELEE = /melee|sword|katana|slash|blade|parry|cleave|riposte|counter|combo|crit|execute|finisher/;
 const RIG_HIT = /^(hit|strike|swing|slam|stab|cut|smash|impact|crit|kill|break|finish|parry)$/;
 const RIG_THROW = /^(cast|launch|release|throw|shoot|fire|shot|beam|blast)$/;
-function rigOf(a) { if (a.top || !FX._art) return null; const R = RIGS[a.key]; return R && R.img && FX._art[a.key] ? R : null; }
+function rigOf(a) { if (!FX.rig || a.top || !FX._art) return null; const R = RIGS[a.key]; return R && R.img && FX._art[a.key] ? R : null; }
 function rigOn(a) { return !!rigOf(a); }
 const rigEase = x => x <= 0 ? 0 : x >= 1 ? 1 : 1 - (1 - x) * (1 - x);
 function rigDirs(R, w, a) {
