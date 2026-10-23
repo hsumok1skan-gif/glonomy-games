@@ -313,7 +313,7 @@ const FX = { style: "art", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 21
 };
 // FX.style = "art" 일 때 쓰는 기본 그림 (FX Lab 기본 캐릭터·총·배경)
 const FX_ART_BASE = (() => { try { const s = document.currentScript && document.currentScript.src; if (s) return s.replace(/engine\.js.*$/, "") + "art/"; } catch (e) {} return "https://glonomy.com/fx-tips/art/"; })();
-const FX_ART = { images: { hero: FX_ART_BASE + "hero.webp", foe: FX_ART_BASE + "foe.webp", gun: FX_ART_BASE + "gun.webp", bg: FX_ART_BASE + "bg-ruins-px.png" },
+const FX_ART = { images: { hero: FX_ART_BASE + "hero.webp", foe: FX_ART_BASE + "foe.webp", gun: FX_ART_BASE + "gun.webp", bg: FX_ART_BASE + "bg-ruins-px.png", heroTop: FX_ART_BASE + "heroTop-px.png", foeTop: FX_ART_BASE + "foeTop-px.png" },
   hand: [0.44, 0.73], gunGrip: [0.22, 0.5], gunMuzzle: [1.0, 0.27] };
 const FX_DOTPT = { hand: [0.27, 0.62], gunGrip: [0.28, 0.72], gunMuzzle: [0.98, 0.28] };
 const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? FX_ART[k] : FX_DOTPT[k]);
@@ -1638,7 +1638,7 @@ function drawActor(ctx, a, w) {
   if (w && poseSet(a) && !rigOf(a)) { drawPoseActor(ctx, a, w); ctx.restore(); return; }
   if (w && rigOf(a)) { drawRigActor(ctx, a, w); ctx.restore(); return; }
   if(rigged) drawStudioRigHero(ctx,a,w,top);
-  else ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h);
+  else { const pxl = FX._art && FX._art[a.key], sm = ctx.imageSmoothingEnabled; if (pxl) ctx.imageSmoothingEnabled = false; ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h); ctx.imageSmoothingEnabled = sm; }
   ctx.shadowBlur = 0;
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }
   if (a.tint > 0) { ctx.globalAlpha = Math.min(1, a.tint) * 0.85 * a.alpha; ctx.drawImage(a.s.red, -a.w / 2, top, a.w, a.h); }
