@@ -798,12 +798,13 @@ class World {
     if (this.bare) return;
     for (const s of this.R.base || []) if (typeof s[ev] === "function") s[ev](this, ...a);
     for (const s of this.R.steps) if (this.steps.has(s.id) && typeof s[ev] === "function") s[ev](this, ...a);
-    if (window.FXDirector) FXDirector.moment(this,ev,a);
-    else studioPayoff(this, ev, a);
+    if (window.FXDirector && !this.R.polished) FXDirector.moment(this,ev,a);
+    else if (!this.R.polished) studioPayoff(this, ev, a);
     studioHeroEvent(this, ev, a);
     // Showcase-grade impact accent on finished combat scenes only.
     // We leave RAW and intermediate steps untouched, so before/after stays meaningful.
-    if ((ev === "hit" || ev === "kill") && this.n >= 3 && this.n === this.R.steps.length &&
+    // 공들여 다듬은 레시피(polished)는 공통 장식을 끄고 자기 효과만 보여 줌
+    if (!this.R.polished && (ev === "hit" || ev === "kill") && this.n >= 3 && this.n === this.R.steps.length &&
         /^(weapon|combat|duel|fighting|shooter|horde|action)$/.test(this.R.cat) &&
         this.time - (this.polishAt == null ? -10 : this.polishAt) > 0.12) {
       const a0 = a[0], target = a0 && typeof a0 === "object" && Number.isFinite(a0.x) ? a0 : this.foe;
@@ -1003,7 +1004,7 @@ class World {
     ctx.translate(-270 - this.cam.x, -180 - this.cam.y);
 
     // 배경 그림 (카메라와 같이 흔들림). 바닥선이 G에 오도록 맞춤
-    if (art) { const c = SPR.bg.c, bw = 660, bh = bw * c.height / c.width, sm0 = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(c, 270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.fillStyle = "rgba(4,6,12," + FX.bgDim + ")"; ctx.fillRect(270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.imageSmoothingEnabled = sm0; }
+    if (art) { const c = SPR.bg.c, bw = 820, bh = bw * c.height / c.width, sm0 = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(c, 270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.fillStyle = "rgba(4,6,12," + FX.bgDim + ")"; ctx.fillRect(270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.imageSmoothingEnabled = sm0; }
     // 바닥
     if (this.R.drawFloor) this.R.drawFloor(this, ctx);
     else if (!art) {
@@ -1021,7 +1022,7 @@ class World {
     for (const p of this.shots) drawShot(fc, p);
     for (const p of this.parts) if (!p.under) drawPart(fc, p);
     drawStudioHero(fc,this);
-    if (window.FXDirector) FXDirector.overlay(fc,this);
+    if (window.FXDirector && !this.R.polished) FXDirector.overlay(fc,this);
     if (fx) pixFxEnd(ctx);
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
     // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
@@ -1118,6 +1119,8 @@ function drawPartPx(ctx, p, s, a, k, rem) {
 }
 function drawPart(ctx, p) {
   const k = p.age / p.life, rem = 1 - k;
+  // 직접 그리는 효과 (레시피가 모양을 정함): draw(ctx, p, 진행도 0→1)
+  if (p.draw) { ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1; p.draw(ctx, p, k); ctx.globalAlpha = 1; return; }
   const s = p.size1 == null ? p.size : p.size + (p.size1 - p.size) * E.out(k);
   let a = p.hold ? Math.min(1, rem * 4) : rem;
   if (p.alpha != null) a *= p.alpha;
@@ -1287,6 +1290,37 @@ function pxGlow(ctx, x, y, r, c, a) {
   const steps = [[1, 0.5, 0.45 * a], [0.7, 0.8, 0.75 * a], [0.45, 1, a], [0.22, 1.6, a]];
   for (const [kr, kc, al] of steps) { ctx.globalAlpha = Math.min(1, al); pxDisc(ctx, x, y, r * kr, `rgb(${pxShade(c, kc)})`); }
   ctx.globalAlpha = 1;
+}
+/* ── 픽셀 효과 도구 (손으로 찍은 듯한 모양) ──
+   색은 "r,g,b" 문자열. k = 0(시작) → 1(끝) */
+// 총구 불꽃: 앞으로 뾰족한 다이아몬드 + 위아래 갈래, 흰 심지 → 노랑 → 주황 테
+function pxMuzzle(ctx, x, y, s, k, ang = 0) {
+  const sz = s * (k < 0.35 ? 1 : 1 - (k - 0.35) * 1.4); if (sz <= 1) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  const dia = (len, wid, col) => { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(-len * 0.25, 0); ctx.lineTo(0, -wid); ctx.lineTo(len, 0); ctx.lineTo(0, wid); ctx.closePath(); ctx.fill(); };
+  const prong = (a, len, col) => { ctx.save(); ctx.rotate(a); dia(len, len * 0.16, col); ctx.restore(); };
+  for (const [kk, col] of [[1, "#c2410c"], [0.78, "#fb923c"], [0.55, "#fde047"], [0.3, "#fffbe6"]]) {
+    dia(sz * 1.5 * kk, sz * 0.42 * kk, col); prong(-0.8, sz * 0.75 * kk, col); prong(0.8, sz * 0.75 * kk, col);
+  }
+  ctx.restore();
+}
+// 명중 섬광: 8방향 가시(긴 것/짧은 것 번갈아) + 계단식 심지
+function pxImpact(ctx, x, y, s, k, c = "255,236,180") {
+  const sz = s * (k < 0.25 ? 0.7 + k * 1.2 : 1 - (k - 0.25) * 1.3); if (sz <= 1) return;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(0.2);
+  for (const [kk, sh] of [[1, 0.55], [0.7, 1], [0.42, 1.7]]) {
+    ctx.fillStyle = `rgb(${pxShade(c, sh)})`;
+    for (let i = 0; i < 8; i++) { const L = sz * kk * (i % 2 ? 0.55 : 1), W = Math.max(1.5, sz * kk * 0.13); ctx.save(); ctx.rotate(i * Math.PI / 4); ctx.beginPath(); ctx.moveTo(0, -W); ctx.lineTo(L, 0); ctx.lineTo(0, W); ctx.closePath(); ctx.fill(); ctx.restore(); }
+    pxDisc(ctx, 0, 0, sz * kk * 0.32, `rgb(${pxShade(c, sh)})`);
+  }
+  ctx.restore();
+}
+// 바위 파편: 두 면이 다른 밝기인 각진 조각
+function pxChip(ctx, x, y, s, rot, light, dark) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+  ctx.fillStyle = dark; ctx.beginPath(); ctx.moveTo(-s, -s * 0.5); ctx.lineTo(s * 0.6, -s); ctx.lineTo(s, s * 0.4); ctx.lineTo(-s * 0.3, s); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = light; ctx.beginPath(); ctx.moveTo(-s, -s * 0.5); ctx.lineTo(s * 0.6, -s); ctx.lineTo(s * 0.1, 0); ctx.closePath(); ctx.fill();
+  ctx.restore();
 }
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }
@@ -1609,7 +1643,7 @@ function drawPoseActor(ctx, a, w) {
   x.setTransform(1, 0, 0, 1, 0, 0);
   const over = (col, al) => { if (al <= 0) return; x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
   // 번쩍임은 짧고 또렷하게: 처음 순간만 흰색, 그 뒤는 옅게
-  over("#ffffff", a.flash > 0.75 ? 0.9 : a.flash * 0.35); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#fb923c", a.burn > 0 ? 0.35 : 0);
+  over("#ffffff", a.flash > 0.88 ? 0.85 : a.flash * 0.28); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#fb923c", a.burn > 0 ? 0.35 : 0);
   const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = !P.pixel; ctx.shadowBlur = 0;
   ctx.drawImage(c, -W / 2, -(H - 4), W, H); ctx.imageSmoothingEnabled = sm;
   // 손끝·총구 위치를 기억 (총알·주먹 효과가 여기서 나감)
@@ -1660,6 +1694,14 @@ function drawShot(ctx, p) {
       ctx.globalCompositeOperation = "source-over";
       ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, TAU); ctx.fill();
     } else { ctx.fillStyle = "#8b7fd6"; ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, TAU); ctx.fill(); }
+    return;
+  }
+  if (p.len && PIXMODE) {
+    const sp = Math.hypot(p.vx, p.vy) || 1, ux = p.vx / sp, uy = p.vy / sp; ctx.lineCap = "butt";
+    for (const [f, w, col] of [[1, 5, "#9a3412"], [0.75, 4, "#f97316"], [0.45, 3, "#fde047"], [0.18, 2, "#fffbe6"]]) {
+      ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(p.x - ux * p.len * f, p.y - uy * p.len * f); ctx.lineTo(p.x, p.y); ctx.stroke();
+    }
+    pxDisc(ctx, p.x, p.y, 3, "#fffbe6");
     return;
   }
   if (p.len) {

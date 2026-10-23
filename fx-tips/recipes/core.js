@@ -2,11 +2,11 @@
 /* 기본 레시피 20편 */
 RECIPES.push(
   {
-    id: "gun", cat: "weapon", view: "side",
+    id: "gun", cat: "weapon", view: "side", polished: true,
     title: { en: "Make gunshots *punchy*", ko: "총 쏘는 *손맛* 살리기" },
     intro: { en: "Feels like a *toy*.", ko: "장난감 총 같죠?" },
     interval: 0.5, stepDur: 3.2,
-    setup(w) { w.hero = w.actor("hero"); w.foe = w.actor("foe"); w.gun = { kick: 0, rot: 0 }; },
+    setup(w) { w.hero = w.actor("hero", { home: 150 }); w.foe = w.actor("foe", { home: 390 }); w.gun = { kick: 0, rot: 0 }; },
     fire(w) {
       const m = muzzle(w);
       const b = { x: m.x, y: m.y, vx: 1150, vy: 0, r: 5, color: "#e2e8f0", hitX: w.foe.x - 55 };
@@ -27,9 +27,9 @@ RECIPES.push(
         id: "muzzle", name: { en: "Muzzle Flash", ko: "총구 불꽃" },
         cap: { en: "Flash the barrel on the *same frame* you fire.", ko: "쏘는 *그 프레임*에 바로 번쩍." },
         fire(w, m) {
-          w.spawn({ type: "glow", x: m.x + 10, y: m.y, size: 48, size1: 10, life: 0.07, color: "255,210,120" });
-          w.spawn({ type: "star", x: m.x + 14, y: m.y, size: 34, life: 0.05, color: "255,245,220" });
-          for (let i = 0; i < 5; i++) w.spawn({ type: "spark", x: m.x, y: m.y, vx: rand(400, 900), vy: rand(-160, 160), drag: 6, life: rand(0.06, 0.14), size: 2, color: "255,200,100" });
+          // 3갈래 불꽃(0.07초) + 총구 앞 짧은 불티
+          w.spawn({ x: m.x + 2, y: m.y, life: 0.09, draw: (ctx, p, k) => pxMuzzle(ctx, p.x, p.y, 24, k) });
+          for (let i = 0; i < 4; i++) w.spawn({ type: "spark", x: m.x + 4, y: m.y, vx: rand(500, 900), vy: rand(-140, 140), drag: 8, life: rand(0.05, 0.1), size: 2, color: "255,214,120" });
         },
       },
       {
@@ -48,16 +48,19 @@ RECIPES.push(
       {
         id: "tracer", name: { en: "Tracer", ko: "총알 꼬리" },
         cap: { en: "A tiny dot is invisible. *Give it a tail.*", ko: "점은 안 보여요. *꼬리*를 달아요." },
-        fire(w, m, b) { b.len = 70; },
+        fire(w, m, b) { b.len = 46; },
       },
       {
         id: "hit", name: { en: "Hit Reaction", ko: "맞는 반응" },
-        cap: { en: "Flash *white*, *squash*, knock it *back*.", ko: "*하얗게* 번쩍, *찌그러지고*, *밀려나게*." },
+        cap: { en: "Flash *white*, chip the armor, knock it *back*.", ko: "*하얗게* 번쩍, 갑옷이 *튀고*, *밀려나게*." },
         hit(w, h) {
           const r = w.foe;
-          r.flash = 1; r.sx = 0.78; r.sy = 1.18; r.ox += 16;
-          w.spawn({ type: "star", x: h.x, y: h.y, size: 40, life: 0.08, color: "255,250,230" });
-          for (let i = 0; i < 12; i++) w.spawn({ type: "spark", x: h.x, y: h.y, vx: rand(-620, -150), vy: rand(-300, 300), drag: 5, life: rand(0.12, 0.28), size: 3, color: "255,220,140" });
+          r.flash = 0.95; r.sx = 0.86; r.sy = 1.1; r.ox += 14;
+          w.spawn({ x: h.x, y: h.y, life: 0.09, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 22, k) });
+          // 맞은 자리에서 적 갑옷 조각이 튐 (적 색)
+          for (let i = 0; i < 6; i++) { const sz = rand(2, 4), rot = rand(0, 6);
+            w.spawn({ x: h.x, y: h.y, vx: rand(80, 320), vy: rand(-380, -120), g: 1300, drag: 0.6, ground: true, bounce: 0.3, life: rand(0.6, 0.9), vr: rand(-16, 16), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#e2553a", "#5b1d17") }); }
+          for (let i = 0; i < 7; i++) w.spawn({ type: "spark", x: h.x, y: h.y, vx: rand(-520, -140), vy: rand(-260, 260), drag: 6, life: rand(0.1, 0.22), size: 2.5, color: "255,220,140" });
         },
       },
       {
@@ -77,9 +80,13 @@ RECIPES.push(
         cap: { en: "*Freeze* for a beat, then send it *flying*.", ko: "잠깐 *멈췄다가*, 멀리 *날려* 버려요." },
         enter(w) { w.foe.hp = 40; },
         kill(w, r) {
-          w.hitstop(0.16); w.fly(r, 620, -560, 13); r.flash = 1.6; w.shake(0.45, 1);
-          for (let i = 0; i < 22; i++) { const a = rand(0, TAU), s = rand(200, 700); w.spawn({ type: "spark", x: r.x - 30, y: G - 55, vx: Math.cos(a) * s, vy: Math.sin(a) * s, drag: 4, life: rand(0.2, 0.45), size: 3, color: "255,220,150" }); }
-          w.spawn({ type: "ring", x: r.x - 30, y: G - 55, size: 10, size1: 95, life: 0.3, w: 8, color: "255,240,200" });
+          w.hitstop(0.14); w.fly(r, 300, -460, 6); r.flash = 0.6; r.tint = 0.5; w.shake(0.4, 1);
+          const x = r.x - 30, y = G - 60;
+          w.spawn({ x, y, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 46, k, "255,240,200") });
+          w.spawn({ type: "ring", x, y, size: 8, size1: 70, life: 0.28, w: 6, color: "255,200,120" });
+          for (let i = 0; i < 14; i++) { const sz = rand(2.5, 5.5), rot = rand(0, 6), a = rand(-2.6, 0.4), v = rand(260, 620);
+            w.spawn({ x, y, vx: Math.cos(a) * v * 0.8 + 120, vy: Math.sin(a) * v, g: 1200, drag: 0.4, ground: true, bounce: 0.3, life: rand(0.8, 1.2), vr: rand(-14, 14), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#f06a45", "#5b1d17") }); }
+          for (let i = 0; i < 16; i++) { const a = rand(0, TAU), s = rand(200, 620); w.spawn({ type: "spark", x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, drag: 4, life: rand(0.2, 0.42), size: 3, color: "255,214,140" }); }
           w.sfx.ping();
         },
       },

@@ -972,7 +972,8 @@
       if (app.pack && seg.rIndex != null) app.ri = seg.rIndex;
       // 단계가 바뀌면 장면을 새로 만들어 처음부터 보여 줌 (중간에 넘기지 않음)
       makeWorlds(seg.k === "split", seg.n);
-      if (seg.k === "step") { const s = R().steps[seg.n - 1]; if (s.enter) s.enter(app.worlds[0]); }
+      // 단계·첫 장면·전후 비교 모두 "그 단계까지 켠 상태"의 준비(enter)를 똑같이 적용 → 마지막 한 방이 보임
+      if (seg.k === "step" || seg.k === "hook" || seg.k === "split") { const s = R().steps[(seg.n || R().steps.length) - 1]; if (s && s.enter) for (const w of app.worlds) s.enter(w); }
       seg.fi = 0; app.autoT = 0;
       if (app.mode === "browse") { app.n = seg.n; app.split = false; renderPills(); }
       renderOverlay(seg);
