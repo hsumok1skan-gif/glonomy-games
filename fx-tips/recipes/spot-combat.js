@@ -267,7 +267,7 @@
 
     /* ───────── 3. 방어막 파괴 ───────── */
     {
-      id: "spot-combat-shield-break", cat: "combat", view: "3d",
+      id: "spot-combat-shield-break", cat: "combat", view: "3d", melee: true, polished: true,
       title: { en: "Make shield breaks feel *satisfying*", ko: "방어막 깨기를 *시원하게*" },
       intro: { en: "The shield breaks. It just *disappears*.", ko: "방어막이 깨졌는데 그냥 *사라져요*." },
       interval: 2.6, stepDur: 3.8,
@@ -348,6 +348,8 @@
           cap: { en: "Hits *ripple* across the hex cells. It *wobbles*.", ko: "맞은 자리부터 칸이 *번쩍*, 막이 *출렁*." },
           strike(w, s, x, y) {
             s.hit = 1; s.wob = 1;
+            w.spawn({ x: x - 30, y: y + 4, life: 0.16, draw: (ctx, p, k) => pxCrescent(ctx, p.x, p.y, 62, -2.1, 0.85, 12, k, "190,245,255") });
+            w.spawn({ x, y, life: 0.1, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 30, k, "200,255,255") });
             w.spawn({ type: "ring", x, y, size: 8, size1: 90, life: 0.35, w: 8, color: "150,255,250" });
             w.spawn({ type: "glow", x, y, size: 50, size1: 10, life: 0.4, color: "120,255,240" });
           },
@@ -391,10 +393,10 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "creak + glass burst",
           cap: { en: "A tense *creak*, then bright *glass* bursting.", ko: "*끼긱* 버티다가 *와장창*." },
-          strike(w) { w.sfx.thunk(); w.play(() => tn({ type: "sawtooth", f: 900, f2: 1600, dur: 0.45, vol: 0.05 })); },
+          strike(w) { w.sfx.thunk(); if (w.on("crack")) w.play(() => tn({ type: "sawtooth", f: 900, f2: 1600, dur: 0.45, vol: 0.05 })); },
           break(w) {
-            w.play(() => { nz({ type: "highpass", f: 5000, dur: 0.5, vol: 0.5 }); [2400, 3100, 3900].forEach((f, i) => tn({ type: "triangle", f, dur: 0.35, vol: 0.08, delay: i * 0.05 })); });
-            w.sfx.thud();
+            if (w.on("shatter")) w.play(() => { nz({ type: "highpass", f: 5000, dur: 0.5, vol: 0.5 }); [2400, 3100, 3900].forEach((f, i) => tn({ type: "triangle", f, dur: 0.35, vol: 0.08, delay: i * 0.05 })); });
+            if (w.on("freeze") || w.on("stagger")) w.sfx.thud(); else if (!w.on("shatter")) w.sfx.tock();
           },
         },
       ],
@@ -519,13 +521,13 @@
 
     /* ───────── 5. 궁극기 충전과 발사 ───────── */
     {
-      id: "spot-combat-ultimate", cat: "combat", view: "3d",
+      id: "spot-combat-ultimate", cat: "combat", view: "3d", polished: true,
       title: { en: "Make ultimates feel *ultimate*", ko: "궁극기를 *궁극기답게*" },
       intro: { en: "The ultimate. A *laser pointer*.", ko: "궁극기인데 *레이저 포인터* 같아요." },
       interval: 3.4, stepDur: 4.2,
       setup(w) {
         w.hero = w.actor("hero", { home: 118, h: 132 });
-        w.foe = w.actor("foe", { home: 424, h: 140 });
+        w.foe = w.actor("foe", { home: 400, h: 140 });
         w.beam = null; w.aura = 0; w.dim = 0; w.charging = false;
       },
       fire(w) {
@@ -554,10 +556,13 @@
         if (w.aura > 0) {
           const h = w.hero, x = h.x + h.ox, a = w.aura;
           ctx.save(); ctx.globalCompositeOperation = "lighter";
-          glow(ctx, x, G - 66, 120 * a, "255,170,60", 0.9 * a);
+          ctx.globalCompositeOperation = "source-over";
+          pxGlow(ctx, x, G - 66, 70 * a, "255,170,60", 0.55 * a);
+          // 불꽃 마름모가 발밑에서 솟아오름
           for (let i = 0; i < 9; i++) {
-            const ph = w.time * 7 + i * 1.7, fx = x + Math.sin(ph) * 34, fh = (90 + 50 * Math.sin(ph * 1.3)) * a;
-            glow(ctx, fx, G - 30 - fh * 0.7, 34 * a, i % 2 ? "255,220,120" : "200,140,255", 0.7 * a);
+            const ph = w.time * 7 + i * 1.7, fx = Math.round(x + Math.sin(ph) * 34), fh = (90 + 50 * Math.sin(ph * 1.3)) * a, fy = Math.round(G - 30 - fh * 0.7), r = Math.round(12 * a);
+            ctx.fillStyle = i % 2 ? "#ffd27a" : "#b88aff"; ctx.beginPath(); ctx.moveTo(fx, fy - r * 1.8); ctx.lineTo(fx + r, fy); ctx.lineTo(fx, fy + r); ctx.lineTo(fx - r, fy); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = "#fff4cc"; ctx.fillRect(fx - 2, fy - 2, 4, 4);
           }
           ctx.strokeStyle = `rgba(255,220,140,${0.8 * a})`; ctx.lineWidth = 3;
           ctx.beginPath(); ctx.ellipse(x, G + 2, 60 * a, 12 * a, 0, 0, TAU); ctx.stroke();
@@ -570,14 +575,15 @@
         ctx.save(); ctx.globalCompositeOperation = "lighter";
         if (!b.big) { ctx.strokeStyle = `rgba(255,230,120,${fade})`; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(b.x0, b.y); ctx.lineTo(b.x1, b.y); ctx.stroke(); }
         else {
-          const W = (36 + Math.sin(w.time * 70) * 6) * fade * b.grow;
-          [[W * 1.6, "200,120,255", 0.35], [W, "255,200,90", 0.75], [W * 0.45, "255,255,255", 1]].forEach(([wd, c, a]) => {
-            const g = ctx.createLinearGradient(0, b.y - wd, 0, b.y + wd);
-            g.addColorStop(0, `rgba(${c},0)`); g.addColorStop(0.5, `rgba(${c},${a})`); g.addColorStop(1, `rgba(${c},0)`);
-            ctx.fillStyle = g; ctx.fillRect(b.x0, b.y - wd, len, wd * 2);
+          // 픽셀 광선: 단색 띠 4겹 + 가장자리 톱니 + 양 끝 빛덩이
+          const W = (30 + Math.sin(w.time * 70) * 5) * fade * b.grow;
+          ctx.globalCompositeOperation = "source-over";
+          [[W * 1.5, "#3a1670"], [W * 1.15, "#9a4cff"], [W * 0.78, "#ffb640"], [W * 0.42, "#fff4cc"]].forEach(([wd, c], i) => {
+            ctx.fillStyle = c; ctx.fillRect(b.x0, b.y - wd, len, wd * 2);
+            if (i < 2) for (let x = b.x0; x < b.x1; x += 12) { const j = ((x * 7 + Math.floor(w.time * 30) * 13) % 9) - 4; ctx.fillRect(x, b.y - wd - 4 + j * 0.5, 6, 4); ctx.fillRect(x + 6, b.y + wd - j * 0.5, 6, 4); }
           });
-          glow(ctx, b.x0, b.y, W * 1.8, "255,220,140", 0.9);
-          glow(ctx, b.x1, b.y, W * 2.4, "255,200,120", 0.9);
+          pxGlow(ctx, b.x0, b.y, W * 1.6, "255,220,140", 1);
+          pxGlow(ctx, b.x1, b.y, W * 2.1, "255,200,120", 1);
         }
         ctx.restore();
       },
@@ -611,7 +617,21 @@
           cap: { en: "Where it lands, *sparks* gush and the floor *rings*.", ko: "맞는 곳에서 *불꽃*이 뿜고, 바닥에 *고리*." },
           release(w, h, f, bm) {
             w.spawn({ type: "ring", flat: true, x: bm.x1, y: G + 6, size: 20, size1: 240, life: 0.7, w: 12, color: "255,200,120" });
-            w.spawn({ type: "ring", x: bm.x1, y: bm.y, size: 10, size1: 120, life: 0.35, w: 10, color: "255,240,200" });
+            w.spawn({ x: bm.x1, y: bm.y, life: 0.18, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 54, k, "255,236,180") });
+            // 광선이 끝나갈 때: 적이 뒤로 날아가 쓰러짐
+            w.after(bm.life * 0.8, () => {
+              if (!f.alive) return;
+              w.hitstop(0.1); w.fly(f, 30, -520, 0, true); f.hp = 0; w.kill(f); w.shake(0.5, 1);
+              w.spawn({ x: f.x - 10, y: f.gy - 70, life: 0.2, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 70, k, "255,240,200") });
+              for (let i = 0; i < 16; i++) { const sz = rand(2.5, 5.5), rot = rand(0, 6), a = rand(-2.6, 0.4), v = rand(260, 640);
+                w.spawn({ x: f.x - 10, y: f.gy - 70, vx: Math.cos(a) * v * 0.8 + 160, vy: Math.sin(a) * v, g: 1200, ground: true, bounce: 0.3, life: rand(0.8, 1.2), vr: rand(-14, 14), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#f06a45", "#5b1d17") }); }
+              w.sfx.slam();
+            });
+          },
+          land(w, f) {
+            w.shake(0.25, 0);
+            for (let i = 0; i < 10; i++) { const dir = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: f.x + rand(-30, 30), y: G - 4, vx: dir * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,70,110" }); }
+            w.sfx.land();
           },
           update(w) {
             const b = w.beam; if (!b || b.t > b.life) return;
@@ -636,8 +656,10 @@
           cap: { en: "A rising *whine*, a *boom*, a roaring *blast*.", ko: "*위이잉* 차오르고, *쾅*, *우와앙*." },
           charge(w) { w.play(() => tn({ type: "sawtooth", f: 90, f2: 720, dur: 0.9, vol: 0.12 })); },
           release(w) {
-            w.sfx.boom();
-            w.play(() => nz({ type: "bandpass", f: 900, f2: 300, q: 0.8, dur: 0.9, vol: 0.45 }));
+            if (w.on("mega") || w.on("blast")) {
+              w.sfx.boom();
+              w.play(() => nz({ type: "bandpass", f: 900, f2: 300, q: 0.8, dur: 0.9, vol: 0.45 }));
+            } else w.sfx.magic();
           },
         },
       ],

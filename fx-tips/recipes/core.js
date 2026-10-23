@@ -1,4 +1,10 @@
 "use strict";
+// 처치 보상: 동전 3개가 튀어나와 통통
+function deathLoot(w, x) {
+  for (let i = 0; i < 3; i++) w.spawn({ type: "ghost", img: SPR.coin.c, top: true, w: 22, h: 22, alpha0: 1, add: false, x, y: G - 40, vx: rand(-200, 120), vy: rand(-560, -380), g: 1500, gy: G - 10, ground: true, bounce: 0.5, life: 1.6, hold: true });
+  w.spawn({ type: "star", x, y: G - 50, size: 14, life: 0.2, color: "255,230,140" });
+  w.sfx.chime(5);
+}
 /* 기본 레시피 20편 */
 RECIPES.push(
   {
@@ -547,11 +553,11 @@ RECIPES.push(
   },
 
   {
-    id: "shotgun", cat: "weapon", view: "side",
+    id: "shotgun", cat: "weapon", view: "side", polished: true, hookDur: 3.0, hookFires: [0.2, 1.1],
     title: { en: "Give a shotgun *kick*", ko: "샷건에 *반동* 넣기" },
     intro: { en: "Seven pellets. Zero *weight*.", ko: "탄이 일곱 발인데 *무게*가 없어요." },
     interval: 1.0, stepDur: 3.3,
-    setup(w) { w.hero = w.actor("hero"); w.foe = w.actor("foe", { home: 400 }); w.gun = { kick: 0, rot: 0 }; },
+    setup(w) { w.hero = w.actor("hero", { home: 165 }); w.foe = w.actor("foe", { home: 380, hp: 80 }); w.gun = { kick: 0, rot: 0 }; },
     fire(w) {
       const m = muzzle(w), pellets = [];
       for (let i = 0; i < 7; i++) {
@@ -581,15 +587,21 @@ RECIPES.push(
       {
         id: "kick", name: { en: "Body Recoil", ko: "몸까지 밀림" }, param: "hero −22px",
         cap: { en: "Big gun? Push the *whole body* back.", ko: "큰 총이면 *몸 전체*가 밀려야 해요." },
-        fire(w) { w.gun.kick = 26; w.gun.rot = -0.6; w.hero.ox -= 22; w.hero.sx = 0.9; w.hero.sy = 1.06; },
+        fire(w) {
+          w.gun.kick = 24; w.gun.rot = -0.5; w.hero.ox -= 16;
+          // 발밑 먼지: 몸이 밀린 게 보이게
+          for (let i = 0; i < 4; i++) w.spawn({ type: "smoke", x: w.hero.x - 10 + rand(-8, 8), y: G - 4, vx: -rand(60, 150), vy: rand(-30, -8), drag: 3, life: rand(0.3, 0.5), size: rand(6, 9), size1: rand(12, 16), color: "90,96,118" });
+        },
       },
       {
         id: "smoke", name: { en: "Muzzle Blast", ko: "총구 폭발" }, param: "flash + 6 puffs",
         cap: { en: "A *big flash*, then smoke that *lingers*.", ko: "*크게* 번쩍, 연기는 *남게*." },
         fire(w, m) {
-          w.spawn({ type: "glow", x: m.x + 16, y: m.y, size: 80, size1: 20, life: 0.09, color: "255,200,110" });
-          w.spawn({ type: "star", x: m.x + 20, y: m.y, size: 52, life: 0.06, color: "255,245,220" });
-          for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", x: m.x + rand(0, 20), y: m.y + rand(-6, 6), vx: rand(60, 220), vy: rand(-50, -10), drag: 2.5, size: rand(5, 9), size1: rand(18, 28), life: rand(0.6, 1), color: "190,190,200" });
+          // 큰 부채꼴 불꽃 + 위아래 갈래 + 남는 연기
+          w.spawn({ x: m.x + 2, y: m.y, life: 0.11, draw: (ctx, p, k) => pxMuzzle(ctx, p.x, p.y, 40, k) });
+          w.spawn({ x: m.x + 4, y: m.y, life: 0.08, draw: (ctx, p, k) => { pxMuzzle(ctx, p.x, p.y, 22, k, -0.35); pxMuzzle(ctx, p.x, p.y, 22, k, 0.35); } });
+          for (let i = 0; i < 10; i++) w.spawn({ type: "spark", x: m.x + 6, y: m.y, vx: rand(600, 1100), vy: rand(-320, 320), drag: 7, life: rand(0.06, 0.14), size: 2.5, color: "255,214,120" });
+          for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", x: m.x + rand(0, 20), y: m.y + rand(-6, 6), vx: rand(60, 220), vy: rand(-50, -10), drag: 2.5, size: rand(5, 9), size1: rand(18, 28), life: rand(0.6, 1), color: "150,152,168" });
         },
       },
       {
@@ -601,10 +613,24 @@ RECIPES.push(
         id: "hit", name: { en: "Pellet Pile-up", ko: "맞은 만큼 밀림" }, param: "+10px / pellet",
         cap: { en: "Every pellet *adds* knockback. Point blank = *flying*.", ko: "맞은 알마다 *더* 밀려요. 가까우면 *날아가요*." },
         hit(w, h) {
-          const f = w.foe; f.flash = 1; f.ox += 10; f.k = 5; f.sx = 0.85; f.sy = 1.12;
+          const f = w.foe; f.flash = Math.max(f.flash || 0, 0.6); f.ox += 8; f.k = 5;
+          w.spawn({ x: h.x, y: h.y, life: 0.08, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 16, k) });
+          for (let i = 0; i < 2; i++) { const sz = rand(2, 3.5), rot = rand(0, 6); w.spawn({ x: h.x, y: h.y, vx: rand(80, 300), vy: rand(-340, -100), g: 1300, ground: true, bounce: 0.3, life: rand(0.6, 0.9), vr: rand(-16, 16), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#e2553a", "#5b1d17") }); }
           sparks(w, h.x, h.y, 3, "255,230,160", [100, 400], Math.PI * 0.7, Math.PI * 1.3);
         },
-        kill(w, f) { w.fly(f, 700, -420, 16); },
+        kill(w, f) {
+          // 근거리 한 방: 크게 날아가서 떨어짐
+          w.hitstop(0.12); w.fly(f, 70, -480, 0, true); f.tint = 0.5; w.shake(0.45, 1);
+          const x = f.x - 30, y = G - 64;
+          w.spawn({ x, y, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 50, k, "255,240,200") });
+          for (let i = 0; i < 14; i++) { const sz = rand(2.5, 5.5), rot = rand(0, 6), a = rand(-2.4, 0.5), v = rand(260, 640);
+            w.spawn({ x, y, vx: Math.cos(a) * v * 0.8 + 160, vy: Math.sin(a) * v, g: 1200, ground: true, bounce: 0.3, life: rand(0.8, 1.2), vr: rand(-14, 14), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#f06a45", "#5b1d17") }); }
+        },
+        land(w, r) {
+          w.shake(0.22, 0);
+          for (let i = 0; i < 10; i++) { const dir = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: r.x + rand(-30, 30), y: G - 4, vx: dir * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,96,118" }); }
+          w.sfx.land();
+        },
       },
       {
         id: "pump", name: { en: "Pump Reload", ko: "펌프 장전" }, param: "reverse kick + shell",
@@ -720,11 +746,11 @@ RECIPES.push(
   },
 
   {
-    id: "bow", cat: "weapon", view: "side",
+    id: "bow", cat: "weapon", view: "side", polished: true, hookDur: 3.8, hookFires: [0.15, 1.5],
     title: { en: "Make a bow feel *tense*", ko: "활에 *긴장감* 넣기" },
     intro: { en: "Click. Arrow. *Meh.*", ko: "누르면 화살. *끝.*" },
     interval: 1.4, stepDur: 3.6,
-    setup(w) { w.hero = w.actor("hero"); w.foe = w.actor("foe", { home: 440 }); w.bow = { pull: 0, snap: 0 }; w.stuck = []; },
+    setup(w) { w.hero = w.actor("hero", { home: 150 }); w.foe = w.actor("foe", { home: 400, hp: 68 }); w.bow = { pull: 0, snap: 0 }; w.stuck = []; },
     fire(w) {
       const release = () => {
         const b = bowPt(w), o = { x: b.x + 10, y: b.y, vx: 1100, vy: 0, g: 0, draw: drawArrow };
@@ -787,8 +813,18 @@ RECIPES.push(
         id: "hit", name: { en: "Thunk Reaction", ko: "퍽 반응" }, param: "flash · feathers",
         cap: { en: "Flash, *flinch*, and a puff of *feathers*.", ko: "번쩍, *움찔*, 깃털이 *퐁*." },
         hit(w, p) {
-          const f = w.foe; f.flash = 1; f.ox += 12; f.sx = 0.86; f.sy = 1.1;
-          for (let i = 0; i < 5; i++) w.spawn({ type: "chunk", x: p.x, y: p.y, vx: rand(-160, 40), vy: rand(-220, -60), g: 300, drag: 3, vr: rand(-12, 12), life: rand(0.5, 0.9), size: 4, color: "251,113,133" });
+          const f = w.foe; f.flash = 0.7; f.ox += 12;
+          w.spawn({ x: p.x, y: p.y, life: 0.09, draw: (ctx, q, k) => pxImpact(ctx, q.x, q.y, 22, k) });
+          for (let i = 0; i < 5; i++) { const sz = rand(2, 3.5), rot = rand(0, 6); w.spawn({ x: p.x, y: p.y, vx: rand(-160, 120), vy: rand(-320, -100), g: 1300, ground: true, bounce: 0.3, life: rand(0.6, 0.9), vr: rand(-16, 16), draw: (ctx, q) => pxChip(ctx, q.x, q.y, sz, rot + q.rot, "#e2553a", "#5b1d17") }); }
+        },
+        kill(w, f) {
+          w.hitstop(0.12); w.fly(f, 60, -460, 0, true); f.tint = 0.5; w.shake(0.35, 1);
+          w.spawn({ x: f.x - 30, y: f.gy - 70, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 44, k, "255,240,200") });
+        },
+        land(w, f) {
+          w.shake(0.22, 0);
+          for (let i = 0; i < 10; i++) { const dir = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: f.x + rand(-30, 30), y: G - 4, vx: dir * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,96,118" }); }
+          w.sfx.land();
         },
       },
       {
@@ -872,14 +908,15 @@ RECIPES.push(
   },
 
   {
-    id: "death", cat: "combat", view: "side",
+    id: "death", cat: "combat", view: "side", polished: true, hookDur: 3.0,
     title: { en: "Make enemies die *satisfyingly*", ko: "적이 *시원하게* 죽게" },
     intro: { en: "Dead? It just *blinked out*.", ko: "죽은 건가? 그냥 *사라졌어요*." },
-    interval: 1.25, stepDur: 3.4,
-    setup(w) { w.hero = w.actor("hero"); w.foe = w.actor("foe", { home: 400, hp: 1 }); w.gun = { kick: 0, rot: 0 }; },
+    interval: 2.5, stepDur: 3.6,
+    setup(w) { w.hero = w.actor("hero", { home: 160 }); w.foe = w.actor("foe", { home: 370, hp: 1 }); w.gun = { kick: 0, rot: 0 }; },
     fire(w) {
+      if (!w.foe.alive) return;
       const m = muzzle(w); w.gun.kick = 10;
-      w.spawn({ type: "glow", x: m.x + 8, y: m.y, size: 30, size1: 6, life: 0.06, color: "255,210,120" });
+      w.spawn({ x: m.x + 2, y: m.y, life: 0.08, draw: (ctx, p, k) => pxMuzzle(ctx, p.x, p.y, 22, k) });
       w.shoot({ x: m.x, y: m.y, vx: 1700, vy: 0, len: 50, hitX: w.foe.x - 60, onHit: () => { const f = w.foe; if (f.alive) { f.hp = 0; w.kill(f); } } });
     },
     update(w, dt) { gunSpring(w, dt); },
@@ -896,39 +933,52 @@ RECIPES.push(
         kill(w, f) { w.hitstop(0.1); f.vib = 8; },
       },
       {
-        id: "pop", name: { en: "Pop", ko: "부풀었다 터짐" }, param: "1.3× → gone",
-        cap: { en: "Swell *bigger* for a beat, then *pop*.", ko: "한순간 *부풀었다가* *팡*." },
-        kill(w, f) { f.keep = true; f.alpha = 1; f.sx = 1.3; f.sy = 1.3; w.after(0.07, () => { f.alpha = 0; f.keep = false; }); },
+        id: "pop", name: { en: "Swell & Launch", ko: "부풀었다 날아감" }, param: "1.25× → fly",
+        cap: { en: "Swell for a beat, then get *launched*.", ko: "한순간 *부풀었다가* *훅* 날아가요." },
+        kill(w, f) {
+          // 사라지지 않고: 한순간 부풀었다가 뒤로 날아가 쓰러짐
+          f.keep = true; f.alpha = 1; f.sx = 1.25; f.sy = 1.25; f.tint = 0.5;
+          w.fly(f, 45, -470, 0, true);
+          w.spawn({ x: f.x - 20, y: f.gy - f.h / 2, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 48, k, "255,236,200") });
+        },
+        land(w, f) {
+          w.shake(0.25, 0);
+          for (let i = 0; i < 10; i++) { const dir = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: f.x + rand(-30, 30), y: G - 4, vx: dir * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,96,118" }); }
+          w.sfx.land();
+        },
       },
       {
         id: "burst", name: { en: "Burst Into Pieces", ko: "조각으로 흩어짐" }, param: "14 chunks",
         cap: { en: "Break into *pieces* the same color as the enemy.", ko: "적과 *같은 색* 조각으로 흩어져요." },
         kill(w, f) {
-          w.spawn({ type: "glow", x: f.x, y: f.gy - f.h / 2, size: 90, size1: 20, life: 0.2, color: "251,113,133" });
-          for (let i = 0; i < 14; i++) w.spawn({ type: "chunk", x: f.x + rand(-40, 40), y: f.gy - rand(10, f.h), vx: rand(-320, 420), vy: rand(-620, -200), g: 1600, ground: true, bounce: 0.3, vr: rand(-20, 20), life: rand(0.8, 1.2), size: rand(5, 10), color: pick(["251,113,133", "244,63,94", "15,23,42"]), hold: true });
+          const x = f.x - 10, y = f.gy - f.h / 2;
+          w.spawn({ type: "glow", x, y, size: 70, size1: 16, life: 0.2, color: "255,120,80" });
+          for (let i = 0; i < 18; i++) { const sz = rand(2.5, 6), rot = rand(0, 6), c = pick([["#f06a45", "#5b1d17"], ["#e2553a", "#3a120e"], ["#ffb36a", "#7a2a14"]]);
+            w.spawn({ x: x + rand(-24, 24), y: y + rand(-30, 30), vx: rand(-260, 460), vy: rand(-620, -180), g: 1500, ground: true, bounce: 0.3, vr: rand(-18, 18), life: rand(1, 1.5), hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, c[0], c[1]) }); }
+          for (let i = 0; i < 12; i++) { const a = rand(0, TAU), s = rand(200, 560); w.spawn({ type: "spark", x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, drag: 4, life: rand(0.2, 0.4), size: 3, color: "255,190,120" }); }
         },
       },
       {
         id: "ring", name: { en: "Shock Ring", ko: "충격 고리" }, param: "r 110 · 300ms",
         cap: { en: "A quick *ring* marks the exact spot.", ko: "짧은 *고리*가 그 자리를 찍어줘요." },
-        kill(w, f) { w.spawn({ type: "ring", x: f.x, y: f.gy - f.h / 2, size: 10, size1: 110, life: 0.3, w: 9, color: "255,240,240" }); },
+        kill(w, f) { w.spawn({ type: "ring", x: f.x - 10, y: f.gy - f.h / 2, size: 10, size1: 100, life: 0.3, w: 8, color: "255,230,210" }); },
       },
       {
         id: "remains", name: { en: "Leave a Mark", ko: "흔적 남기기" }, param: "decal 6s",
         cap: { en: "Leave a *stain*. The world should remember.", ko: "*얼룩*을 남겨요. 세상이 기억하게." },
-        kill(w, f) { w.spawn({ type: "ellipse", under: true, x: f.x, y: G + 2, size: 90, life: 6, color: "159,18,57", alpha: 0.55, hold: true, add: false }); },
+        kill(w, f) { if (!f.flying) w.spawn({ type: "ellipse", under: true, x: f.x, y: G + 2, size: 80, life: 2, color: "120,20,30", alpha: 0.55, hold: true, add: false }); },
+        land(w, f) { w.spawn({ type: "ellipse", under: true, x: f.x, y: G + 2, size: 80, life: 2, color: "120,20,30", alpha: 0.55, hold: true, add: false }); },
       },
       {
         id: "loot", name: { en: "Loot Pop", ko: "보상 튀어나옴" }, param: "3 coins · bounce",
         cap: { en: "Reward *pops out* and bounces. Death = *payday*.", ko: "보상이 *튀어나와* 통통. 처치 = *월급날*." },
-        kill(w, f) {
-          for (let i = 0; i < 3; i++) w.spawn({ type: "ghost", img: SPR.coin.c, top: true, w: 24, h: 24, alpha0: 1, add: false, x: f.x, y: f.gy - f.h / 2, vx: rand(-200, 120), vy: rand(-620, -420), g: 1500, gy: G - 10, ground: true, bounce: 0.5, life: 2.2, hold: true });
-        },
+        kill(w, f) { if (!f.flying) deathLoot(w, f.x); },
+        land(w, f) { deathLoot(w, f.x); },
       },
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "pop + squish",
         cap: { en: "A bright *pop* on top of a wet *squish*.", ko: "말랑한 *뿌직* 위에 경쾌한 *팡*." },
-        kill(w) { w.sfx.pop(); },
+        kill(w) { if (w.on("pop") || w.on("burst")) w.sfx.pop(); else w.sfx.tock(); },
       },
     ],
   },
@@ -1274,7 +1324,7 @@ RECIPES.push(
   },
 
   {
-    id: "levelup", cat: "rpg", view: "side",
+    id: "levelup", cat: "rpg", view: "side", polished: true,
     title: { en: "Make level-ups feel *earned*", ko: "레벨업을 *보상*답게" },
     intro: { en: "Level up. Did you even *notice*?", ko: "레벨업. *눈치*나 챘을까요?" },
     interval: 1.05, stepDur: 3.8,
@@ -1282,14 +1332,15 @@ RECIPES.push(
     fire(w) { w.emit("gain", 50); if (!w.on("orbs")) addXp(w, 50); },
     update(w, dt) {
       const x = w.xp;
-      if (x.lv0 !== x.lv) { if (x.lv0 && !w.on("text")) w.hero.oy = -30; x.lv0 = x.lv; } if (!w.on("fill")) { x.shown = x.v; x.over = false; } x.flash = Math.max(0, x.flash - dt * 3); },
+      if (x.lv0 !== x.lv) x.lv0 = x.lv; if (!w.on("fill")) { x.shown = x.v; x.over = false; } x.flash = Math.max(0, x.flash - dt * 3); },
     drawHud(w, ctx) {
       const x = w.xp, X = 80, Y = 322, W = 380, H = 12;
-      ctx.font = "800 18px 'JetBrains Mono', monospace"; ctx.textAlign = "left"; ctx.fillStyle = "#c6f432";
+      ctx.font = "700 18px Galmuri11, Galmuri, monospace"; ctx.textAlign = "left"; ctx.fillStyle = "#c6f432";
       ctx.fillText("LV " + x.lv, X - 60, Y + 13);
-      ctx.font = "700 13px 'JetBrains Mono', monospace";
-      ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.beginPath(); ctx.roundRect(X - 3, Y - 3, W + 6, H + 6, 5); ctx.fill();
-      ctx.fillStyle = "#38bdf8"; ctx.fillRect(X, Y, W * Math.max(0, x.shown) / 100, H);
+      ctx.font = "700 12px Galmuri11, Galmuri, monospace";
+      ctx.fillStyle = "#0b0f1c"; ctx.fillRect(X - 4, Y - 4, W + 8, H + 8); ctx.fillStyle = "#3d4560"; ctx.fillRect(X - 2, Y - 2, W + 4, H + 4); ctx.fillStyle = "#11162a"; ctx.fillRect(X, Y, W, H);
+      const fw = Math.round(W * Math.max(0, x.shown) / 100);
+      ctx.fillStyle = "#38bdf8"; ctx.fillRect(X, Y, fw, H); ctx.fillStyle = "#9ee6ff"; ctx.fillRect(X, Y, fw, 3); ctx.fillStyle = "#1a6fa0"; ctx.fillRect(X, Y + H - 3, fw, 3);
       if (w.on("fill")) { ctx.fillStyle = "#fff"; ctx.fillRect(X + W * Math.max(0, x.shown) / 100 - 3, Y, 3, H); }
       if (x.flash > 0) { ctx.fillStyle = `rgba(255,255,255,${x.flash})`; ctx.fillRect(X, Y, W, H); }
       ctx.fillStyle = "rgba(255,255,255,0.6)"; ctx.textAlign = "right"; ctx.fillText(`EXP ${Math.round(x.v)}/100`, X + W, Y - 8);
@@ -1321,11 +1372,12 @@ RECIPES.push(
       },
       {
         id: "text", name: { en: "LEVEL UP Pop", ko: "LEVEL UP 글자" }, param: "overshoot scale",
-        cap: { en: "Big words, *overshoot*, settle. And the hero *jumps*.", ko: "큰 글자가 *튀어나와* 자리 잡고, 주인공도 *폴짝*." },
+        cap: { en: "Big words, *overshoot*, settle. The hero *flashes*.", ko: "큰 글자가 *튀어나와* 자리 잡고, 주인공이 *번쩍*." },
         levelup(w, x) {
           w.spawn({ type: "text", text: "LEVEL UP", x: 270, y: 80, vy: -16, life: 1.4, size: 52, color: "#c6f432" });
           w.spawn({ type: "text", text: "LV " + x.lv, x: 270, y: 122, vy: -10, life: 1.4, size: 24, color: "#ffffff" });
-          w.hero.sx = 0.8; w.hero.sy = 1.25; w.tween(w.hero, { oy: -40 }, 0.15, "out", () => w.tween(w.hero, { oy: 0 }, 0.2, "in"));
+          w.hero.sx = 0.92; w.hero.sy = 1.1; w.hero.flash = 0.4;
+          w.spawn({ x: w.hero.x, y: G - 70, life: 0.2, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 60, k, "220,255,140") });
         },
       },
       {
@@ -1346,7 +1398,7 @@ RECIPES.push(
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising blips + fanfare",
         cap: { en: "Rising *blips*, then a short *fanfare*.", ko: "올라가는 *띠링*, 그리고 짧은 *팡파레*." },
-        levelup(w) { w.sfx.fanfare(); },
+        levelup(w) { if (w.on("text") || w.on("pillar")) w.sfx.fanfare(); else if (w.on("overflow")) w.sfx.chime(7); else w.sfx.tock(); },
       },
     ],
   },

@@ -1546,7 +1546,7 @@ function drawRig(ctx, R, a, w) {
   const k = R.k * a.h * 1.04, S = rigSolve(R, dirs, k);
   const foot = Math.max(...R.feet.map(f => S[f].end.y)), dx = -S.head.end.x * 0.4;
   ctx.save(); if (R.mirror) ctx.scale(-1, 1); ctx.translate(dx, -foot);
-  const sword = a.key === "hero" && !w.gun && RIG_MELEE.test(w.R.id);
+  const sword = a.key === "hero" && !w.gun && (w.R.melee || RIG_MELEE.test(w.R.id));
   for (const [name, lum] of R.order) {
     if (name === "sword" && !sword) continue;
     const p = R.parts[name], s = S[name];
@@ -1652,7 +1652,7 @@ function poseName(w, a) {
   if (a._air) { a._air = false; a._landAt = t; }
   if (t - (a._landAt ?? -9) < 0.12) { a.jumpFrame = 7; return "jump"; }
   const since = t - (rs.fire ?? -9), hitAgo = t - (rs.hit ?? -9), thr = t - (rs.thr ?? -9);
-  const sword = RIG_MELEE.test(w.R.id);
+  const sword = w.R.melee || RIG_MELEE.test(w.R.id);
   const hitNow = rs.hit != null && rs.hit >= (rs.fire ?? -9) - 0.01;
   if (thr >= 0 && thr < 0.5) return "cast";
   if (hitNow && hitAgo >= 0 && hitAgo < 0.38 && sword) return "slash";

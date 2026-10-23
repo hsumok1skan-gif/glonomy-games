@@ -579,7 +579,11 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising blips + fanfare",
           cap: { en: "Each flip *pitches up*. The rare gets a *fanfare*.", ko: "뒤집을수록 *음이 올라가고*, 희귀는 *팡파레*." },
           hold(w) { w.play(() => tn({ type: "sawtooth", f: 220, f2: 880, dur: 0.6, vol: 0.1 })); },
-          reveal(w, c) { if (c.rar === 2) { w.sfx.boom(); w.sfx.fanfare(); } else w.sfx.blip(c.i + 1); },
+          reveal(w, c) {
+            if (c.rar === 2 && w.on("burst")) { w.sfx.boom(); w.sfx.fanfare(); }
+            else if (c.rar === 2 && w.on("hold")) w.sfx.chime && w.sfx.chime(12);
+            else w.sfx.blip(c.i + 1);
+          },
         },
       ],
     },
@@ -704,9 +708,9 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "click + pop + blips",
           cap: { en: "*Click*, *pop*, rising *blips*, a *thunk*.", ko: "*딸깍*, *뻥*, *띠링띠링*, *쾅*." },
           press(w) { w.sfx.clickDown(); },
-          open(w) { w.sfx.pop(); w.sfx.chime(4); },
+          open(w) { if (w.on("pop")) { w.sfx.pop(); w.sfx.chime(4); } else w.sfx.tock(); },
           gain(w, ct) { w.sfx.blip((ct.n - 120) / 10); },
-          claim(w) { w.sfx.thunk(); },
+          claim(w) { if (w.on("stamp")) w.after(0.16, () => w.sfx.thunk()); else w.sfx.tock(); },
         },
       ],
     },
@@ -822,7 +826,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising blips + chime",
           cap: { en: "Each coin *pings* a little higher.", ko: "한 닢마다 *띵* 소리가 조금씩 높아져요." },
           arrive(w) { if (w.got % 2) w.sfx.blip(w.got / 3); },
-          done(w) { w.sfx.chime(7); },
+          done(w) { if (w.on("spark")) w.sfx.chime(7); },
         },
       ],
     },

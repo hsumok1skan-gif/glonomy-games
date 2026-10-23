@@ -1181,7 +1181,7 @@
           cap: { en: "Each pop goes *one note higher*.", ko: "터질 때마다 음이 *한 칸씩* 올라가요." },
           hit(w) { w.sfx.pop(); },
           pop(w, B, x, y, i) { w.sfx.blip(i + 1); },
-          chain(w) { w.sfx.fanfare(); },
+          chain(w) { if (w.on("chain")) w.sfx.fanfare(); },
         },
       ],
     },
