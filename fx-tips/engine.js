@@ -860,17 +860,18 @@ class World {
   slowmo(scale, sec) { this.ts = scale; this.slowTo = scale; this.slowT = sec; this.slowDur = sec; }
   flash(color, a) { this.flashC = color; this.flashA = Math.max(this.flashA, a); }
   vignette(a) { this.vig = Math.max(this.vig, a); }
-  fly(a, vx, vy, spin) { a.flying = true; a.vx = vx; a.vy = vy; a.spin = spin; }
+  // land: true 이면 화면 밖으로 사라지지 않고 바닥에 떨어져 한 번 튀고 멈춤 (그 뒤 일어나기)
+  fly(a, vx, vy, spin, land) { a.flying = true; a.vx = vx; a.vy = vy; a.spin = spin; a.land = !!land; a.bounced = false; }
   kill(a) {
     if (!a.alive) return;
     a.alive = false;
     this.emit("kill", a);
     if (!a.flying && !a.keep) a.alpha = 0;
-    this.after(a.flying ? 1.2 : 0.55, () => this.respawn(a));
+    this.after(a.flying ? (a.land ? 2.0 : 1.2) : 0.55, () => this.respawn(a));
   }
   respawn(a) {
     Object.assign(a, { alive: true, flying: false, x: a.home, ox: 0, oy: 0, rot: 0, vx: 0, vy: 0, spin: 0, alpha: 1,
-      flash: 0, tint: 0, burn: 0, keep: false, vib: 0, hp: a.maxHp, hpLag: a.maxHp, sx: 0.2, sy: 0.2 });
+      flash: 0, tint: 0, burn: 0, keep: false, land: false, vib: 0, hp: a.maxHp, hpLag: a.maxHp, sx: 0.2, sy: 0.2 });
   }
 
   update(rdt) {
@@ -921,7 +922,13 @@ class World {
       a.barShake = Math.max(0, a.barShake - dt);
       if (a.flying) {
         a.x += a.vx * dt; a.oy += a.vy * dt; a.vy += 1500 * dt; a.rot += a.spin * dt;
-        a.alpha = Math.max(0, a.alpha - dt * 0.9);
+        if (a.land) {
+          if (a.oy >= 0 && a.vy > 0) {
+            a.oy = 0;
+            if (!a.bounced && a.vy > 260) { a.bounced = true; a.vy *= -0.28; a.vx *= 0.45; this.emit("land", a); }
+            else { a.flying = false; a.vx = 0; a.vy = 0; a.rot = 0; a.keep = true; }
+          }
+        } else a.alpha = Math.max(0, a.alpha - dt * 0.9);
       }
     }
     if (this.R.update) this.R.update(this, dt);
@@ -1528,7 +1535,7 @@ const POSES = {
       // 시전: 4번째 장(손을 든 순간)부터 앞으로 내뻗기까지 한 번만 재생
       // 총: 겨눔은 4~7번(제자리로 돌아오는 장)을 재생 후 유지, 반동은 1~3번(총구가 튐)
       aim: { file: "hero-shoot-px.png", img: null, cw: 94, ch: 74, n: 8, from: 4, fps: 20, once: true, ax: 0.416, tips: SHOOT_TIPS },
-      recoil: { file: "hero-shoot-px.png", img: null, cw: 94, ch: 74, n: 4, from: 1, fps: 26, once: true, ax: 0.416, tips: SHOOT_TIPS },
+      recoil: { file: "hero-shoot-px.png", img: null, cw: 94, ch: 74, n: 2, from: 1, fps: 18, once: true, ax: 0.416, tips: SHOOT_TIPS },
       // 칼: 치켜든 채 대기(0~1번) → 내려베기(2~7번 한 번)
       windup: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 2, fps: 5, ax: 0.449, tip: [0.65, 0.25] },
       slash: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 8, from: 2, fps: 30, once: true, ax: 0.449, tip: [0.68, 0.63] },
@@ -1555,6 +1562,7 @@ const POSES = {
       fly: { file: "foe-fly-px.png", img: null, cw: 106, ch: 86, n: 31, from: 2, fps: 26, once: true, ax: 0.5, tip: [0.3, 0.3] },
       // 일어나기: 엎어진 자세 → 선 자세 8장 (날아갔다 떨어진 뒤)
       getup: { file: "foe-getup-px.png", img: null, cw: 91, ch: 86, n: 8, fps: 12, once: true, ax: 0.491, tip: [0.1, 0.5] },
+      down: { file: "foe-getup-px.png", img: null, cw: 91, ch: 86, n: 1, fps: 1, ax: 0.491, tip: [0.1, 0.5] },
       attack: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 32, from: 12, fps: 26, once: true, ax: 0.665, tip: [0.02, 0.5] } },
     f: {
     idle: { r: [0, 0, 77, 86], ax: 0.415, tip: [0.06, 0.6] },
@@ -1569,8 +1577,10 @@ function poseName(w, a) {
   const vx = a._pPrevOx != null ? (a.ox - a._pPrevOx) / Math.max(1e-3, w._rigDt || 1 / 60) : 0; a._pPrevOx = a.ox;
   if (a.key === "foe") {
     if (a.flying || a.oy < -10 || (!a.alive && Math.abs(a.rot || 0) > 0.2)) return "fly";
-    if (a.poseNow === "fly") a._getupAt = t;
-    if (a.alive !== false && t - (a._getupAt ?? -9) < 8 / 12 && a.poseNow !== "hurt") return "getup";
+    // 떨어진 뒤: 잠깐 엎어져 있다가(0.45초) 일어남
+    if (a.poseNow === "fly") a._getupAt = t + (a.land ? 0.45 : 0);
+    if (t < (a._getupAt ?? -9)) return "down";
+    if (t - (a._getupAt ?? -9) < 8 / 12 && a.poseNow !== "hurt") return "getup";
     if (a.tint > 0.15 || a.flash > 0.3 || a.vib > 0.5 || vx > 160) return "hurt";
     const h = w.hero; if (h && (h.tint > 0.3 || h.flash > 0.4)) return "attack";
     return "idle";
@@ -1591,7 +1601,7 @@ function poseName(w, a) {
 const POSE_MOVE = {
   idle: (u, t) => ({ sy: 1 + Math.sin(t * 2.4) * 0.012, rot: 0, dx: 0 }),
   aim: (u, t) => ({ sy: 1 + Math.sin(t * 2.2) * 0.008, rot: 0, dx: 0 }),
-  recoil: u => ({ sy: 1, rot: -0.06 * Math.exp(-u * 14), dx: -9 * Math.exp(-u * 12) }),
+  recoil: u => ({ sy: 1, rot: 0, dx: -3 * Math.exp(-u * 14) }),
   windup: u => ({ sy: 1 + 0.03 * Math.min(1, u / 0.25), rot: -0.07 * Math.min(1, u / 0.3), dx: -6 * Math.min(1, u / 0.3) }),
   slash: u => ({ sy: 1 - 0.04 * Math.exp(-u * 10), rot: 0.09 * Math.exp(-u * 7), dx: 16 * Math.exp(-u * 6) }),
   attack: u => ({ sy: 1, rot: -0.08 * Math.exp(-u * 7), dx: -16 * Math.exp(-u * 6) }),
@@ -1636,10 +1646,11 @@ function drawPoseActor(ctx, a, w) {
   };
   // 잔상: 바뀐 직후 0.12초 동안 이전 컷이 옅게 남아 동작이 이어져 보임
   const fade = 0.12;
-  if (a.posePrev && u < fade) frame(a.posePrev, u + 0.3, 0.55 * (1 - u / fade), name === "slash" || name === "attack" ? -10 : 0);
+  const noGhost = name === "fly" || name === "getup" || a.posePrev === "fly" || name === "recoil" || a.posePrev === "recoil";
+  if (a.posePrev && u < fade && !noGhost) frame(a.posePrev, u + 0.3, 0.55 * (1 - u / fade), name === "slash" || name === "attack" ? -10 : 0);
   const cur = frame(name, u, 1, 0);
   // 휘두르는 컷은 앞쪽으로 빠르게 번지는 잔상 2개를 더 깔아 속도감
-  if ((name === "slash" || name === "attack" || name === "dash") && u < 0.14) for (let i = 1; i <= 2; i++) frame(name, u, 0.22 * (1 - u / 0.14) / i, -i * 9);
+  if ((name === "slash" || name === "attack") && u < 0.1) for (let i = 1; i <= 2; i++) frame(name, u, 0.22 * (1 - u / 0.14) / i, -i * 9);
   x.setTransform(1, 0, 0, 1, 0, 0);
   const over = (col, al) => { if (al <= 0) return; x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
   // 번쩍임은 짧고 또렷하게: 처음 순간만 흰색, 그 뒤는 옅게

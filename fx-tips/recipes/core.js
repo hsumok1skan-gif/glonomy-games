@@ -2,11 +2,11 @@
 /* 기본 레시피 20편 */
 RECIPES.push(
   {
-    id: "gun", cat: "weapon", view: "side", polished: true,
+    id: "gun", cat: "weapon", view: "side", polished: true, hookDur: 2.7,
     title: { en: "Make gunshots *punchy*", ko: "총 쏘는 *손맛* 살리기" },
     intro: { en: "Feels like a *toy*.", ko: "장난감 총 같죠?" },
     interval: 0.5, stepDur: 3.2,
-    setup(w) { w.hero = w.actor("hero", { home: 150 }); w.foe = w.actor("foe", { home: 390 }); w.gun = { kick: 0, rot: 0 }; },
+    setup(w) { w.hero = w.actor("hero", { home: 165 }); w.foe = w.actor("foe", { home: 375 }); w.gun = { kick: 0, rot: 0 }; },
     fire(w) {
       const m = muzzle(w);
       const b = { x: m.x, y: m.y, vx: 1150, vy: 0, r: 5, color: "#e2e8f0", hitX: w.foe.x - 55 };
@@ -42,7 +42,9 @@ RECIPES.push(
         cap: { en: "Spin a casing out. *Let it stay* on the floor.", ko: "탄피를 돌려 날리고, 바닥에 *남겨요*." },
         fire(w, m) {
           w.spawn({ type: "shell", x: m.x - 34, y: m.y - 4, vx: rand(-150, -60), vy: rand(-360, -260), g: 1400, vr: rand(-30, -15),
-            ground: true, bounce: 0.35, life: 4, size: 8, color: "250,204,21", hold: true });
+            ground: true, bounce: 0.35, life: 4, size: 11, color: "250,204,21", hold: true });
+          // 탄피가 튀어나오는 순간 반짝
+          w.spawn({ type: "star", x: m.x - 34, y: m.y - 8, size: 7, life: 0.08, color: "255,240,180" });
         },
       },
       {
@@ -66,8 +68,8 @@ RECIPES.push(
       {
         id: "shake", name: { en: "Screen Kick", ko: "화면 반동" },
         cap: { en: "Nudge the *camera* with every shot.", ko: "쏠 때마다 *화면*도 같이 밀려요." },
-        fire(w) { w.shake(0.12, -1); },
-        hit(w) { w.shake(0.08); },
+        fire(w) { w.shake(0.2, -1); },
+        hit(w) { w.shake(0.14); },
       },
       {
         id: "sound", name: { en: "Layered Sound", ko: "겹친 소리" },
@@ -80,7 +82,7 @@ RECIPES.push(
         cap: { en: "*Freeze* for a beat, then send it *flying*.", ko: "잠깐 *멈췄다가*, 멀리 *날려* 버려요." },
         enter(w) { w.foe.hp = 40; },
         kill(w, r) {
-          w.hitstop(0.14); w.fly(r, 300, -460, 6); r.flash = 0.6; r.tint = 0.5; w.shake(0.4, 1);
+          w.hitstop(0.14); w.fly(r, 40, -500, 0, true); r.flash = 0.6; r.tint = 0.5; w.shake(0.4, 1);
           const x = r.x - 30, y = G - 60;
           w.spawn({ x, y, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 46, k, "255,240,200") });
           w.spawn({ type: "ring", x, y, size: 8, size1: 70, life: 0.28, w: 6, color: "255,200,120" });
@@ -88,6 +90,13 @@ RECIPES.push(
             w.spawn({ x, y, vx: Math.cos(a) * v * 0.8 + 120, vy: Math.sin(a) * v, g: 1200, drag: 0.4, ground: true, bounce: 0.3, life: rand(0.8, 1.2), vr: rand(-14, 14), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#f06a45", "#5b1d17") }); }
           for (let i = 0; i < 16; i++) { const a = rand(0, TAU), s = rand(200, 620); w.spawn({ type: "spark", x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, drag: 4, life: rand(0.2, 0.42), size: 3, color: "255,214,140" }); }
           w.sfx.ping();
+        },
+        // 바닥에 떨어지는 순간: 먼지 + 짧은 흔들림
+        land(w, r) {
+          w.shake(0.22, 0);
+          for (let i = 0; i < 10; i++) { const dir = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: r.x + rand(-30, 30), y: G - 4, vx: dir * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,96,118" }); }
+          for (let i = 0; i < 5; i++) { const sz = rand(2, 3.5), rot = rand(0, 6); w.spawn({ x: r.x + rand(-20, 20), y: G - 6, vx: rand(-160, 160), vy: rand(-320, -160), g: 1300, ground: true, bounce: 0.3, life: rand(0.7, 1), vr: rand(-12, 12), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#e2553a", "#5b1d17") }); }
+          w.sfx.land && w.sfx.land();
         },
       },
     ],
