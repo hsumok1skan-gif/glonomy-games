@@ -545,9 +545,9 @@ const NOSFX = new Proxy({}, { get: () => () => {} });
 
 /* ───────── 등장인물 ───────── */
 const ACTOR = {
-  hero: { spr: "hero", h: 140, home: 120 },
-  foe: { spr: "foe", h: 140, home: 420, hp: 100 },
-  crate: { spr: "crate", h: 90, home: 420 },
+  hero: { spr: "hero", h: 140, home: 150 },
+  foe: { spr: "foe", h: 140, home: 395, hp: 100 },
+  crate: { spr: "crate", h: 90, home: 395 },
   heroTop: { spr: "heroTop", h: 64, home: 130, top: true },
   foeTop: { spr: "foeTop", h: 60, home: 450, top: true, hp: 30 },
 };
@@ -1055,7 +1055,11 @@ class World {
       const r = { x: rx, y: ry, w: rw, h: rh };
       ctx.beginPath(); ctx.rect(r.x, r.y, r.w, r.h); ctx.clip();
       if (this.flashA > 0) { const pm = FX.pixelFx && FX._art && FX._art.hero; ctx.fillStyle = `rgba(${this.flashC},${pm ? Math.min(0.14, this.flashA * 0.3) : Math.min(1, this.flashA)})`; ctx.fillRect(r.x, r.y, r.w, r.h); }
-      if (this.vig > 0) {
+      if (this.vig > 0 && FX.pixelFx && FX._art && FX._art.hero) {
+        // 픽셀 모드: 가장자리만 3단 붉은 띠 (화면 전체를 덮지 않음)
+        const v = Math.min(0.8, this.vig);
+        for (const [d, a] of [[22, 0.18], [12, 0.32], [5, 0.5]]) { ctx.fillStyle = `rgba(200,30,40,${a * v})`; ctx.fillRect(r.x, r.y, r.w, d); ctx.fillRect(r.x, r.y + r.h - d, r.w, d); ctx.fillRect(r.x, r.y, d, r.h); ctx.fillRect(r.x + r.w - d, r.y, d, r.h); }
+      } else if (this.vig > 0) {
         const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
         const vg = ctx.createRadialGradient(cx, cy, Math.min(r.w, r.h) * 0.32, cx, cy, Math.max(r.w, r.h) * 0.62);
         vg.addColorStop(0, "rgba(220,38,38,0)"); vg.addColorStop(1, `rgba(220,38,38,${Math.min(0.9, this.vig)})`);
@@ -1209,11 +1213,11 @@ function drawPart(ctx, p) {
       ctx.beginPath(); ctx.moveTo(-s, -s * 0.6); ctx.lineTo(s * 0.7, -s); ctx.lineTo(s, s * 0.5); ctx.lineTo(-s * 0.4, s); ctx.closePath(); ctx.fill();
       ctx.restore(); break;
     case "text": {
-      const pop = p.age < 0.12 ? 1.5 - (p.age / 0.12) * 0.5 : 1;
+      const pop = p.age < 0.12 ? 1.3 - (p.age / 0.12) * 0.3 : 1;
       ctx.save(); ctx.translate(p.x, p.y); ctx.scale(pop, pop);
       ctx.globalAlpha = Math.min(1, rem * 3);
       const pxf = FX._art && FX._art.hero;
-      ctx.font = pxf ? `700 ${Math.round(p.size / 11) * 11 || 11}px Galmuri11, Galmuri, Pretendard, sans-serif` : `800 ${p.size}px Pretendard, "Apple SD Gothic Neo", sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = pxf ? `700 ${Math.min(44, Math.round(p.size / 11) * 11) || 11}px Galmuri11, Galmuri, Pretendard, sans-serif` : `800 ${p.size}px Pretendard, "Apple SD Gothic Neo", sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
       if (pxf) { ctx.fillStyle = "#07080d"; for (const [ox, oy] of [[-2, 0], [2, 0], [0, -2], [0, 2], [2, 2], [-2, 2], [2, -2], [-2, -2]]) ctx.fillText(p.text, ox, oy); ctx.fillStyle = p.color; ctx.fillText(p.text, 0, 0); }
       else { ctx.lineWidth = p.size * 0.18; ctx.strokeStyle = "rgba(10,12,20,0.9)"; ctx.lineJoin = "round"; ctx.strokeText(p.text, 0, 0); ctx.fillStyle = p.color; ctx.fillText(p.text, 0, 0); }
       ctx.restore(); break;
@@ -1366,6 +1370,14 @@ function pxCutLine(ctx, x, y, len, ang, k, c = "190,245,255") {
     ctx.strokeStyle = `rgb(${pxShade(c, 0.7)})`; ctx.lineWidth = 5 * fade; ctx.beginPath(); ctx.moveTo(x - dx * L / 2 + nx * gap * s, y - dy * L / 2 + ny * gap * s); ctx.lineTo(x + dx * L / 2 + nx * gap * s, y + dy * L / 2 + ny * gap * s); ctx.stroke();
   }
   ctx.strokeStyle = "#ffffff"; ctx.lineWidth = Math.max(1.5, 3 * fade); ctx.beginPath(); ctx.moveTo(x - dx * L / 2, y - dy * L / 2); ctx.lineTo(x + dx * L / 2, y + dy * L / 2); ctx.stroke();
+}
+// 캐릭터 잔상: 지금 동작 그대로 한 장 찍어 색을 입혀 남김 (픽셀 동작 컷용)
+function actorGhost(w, a, col = "#5ad6ff", life = 0.25, alpha = 0.55) {
+  a.keepSnap = true; const sn = a._snap; if (!sn) return;
+  const g = document.createElement("canvas"); g.width = sn.width; g.height = sn.height; const x = g.getContext("2d");
+  x.drawImage(sn, 0, 0); x.globalCompositeOperation = "source-atop"; x.fillStyle = col; x.fillRect(0, 0, g.width, g.height);
+  const [W, H] = a._snapWH, px = a.x + a.ox, py = a.gy + a.oy, fl = a.flip ? -1 : 1;
+  w.spawn({ x: px, y: py, life, draw: (ctx, p, k) => { const s = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.globalAlpha = alpha * (1 - k); ctx.save(); ctx.translate(p.x, p.y); ctx.scale(fl, 1); ctx.drawImage(g, -W / 2, -(H - 4), W, H); ctx.restore(); ctx.imageSmoothingEnabled = s; } });
 }
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }
@@ -1703,6 +1715,8 @@ function drawPoseActor(ctx, a, w) {
   over("#ffffff", a.flash > 0.88 ? 0.85 : a.flash * 0.28); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#ff6a1a", a.burn > 0 ? Math.min(1, a.burn) * (0.14 + 0.1 * Math.sin(performance.now() / 45)) : 0);
   const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = !P.pixel; ctx.shadowBlur = 0;
   ctx.drawImage(c, -W / 2, -(H - 4), W, H); ctx.imageSmoothingEnabled = sm;
+  // 잔상용으로 지금 모습을 보관 (actorGhost가 복사해 씀)
+  if (a.keepSnap) { const sn = a._snap || (a._snap = document.createElement("canvas")); if (sn.width !== c.width || sn.height !== c.height) { sn.width = c.width; sn.height = c.height; } const sx = sn.getContext("2d"); sx.clearRect(0, 0, sn.width, sn.height); sx.drawImage(c, 0, 0); a._snapWH = [W, H]; }
   // 손끝·총구 위치를 기억 (총알·주먹 효과가 여기서 나감)
   const { left, top, fw, fh, f, m, lift } = cur;
   a.rigHand = { x: (m.dx * dir) + left + f.tip[0] * fw, y: -lift + (top + f.tip[1] * fh) * m.sy, ang: name === "recoil" ? -0.35 : 0 };

@@ -66,7 +66,7 @@
   RECIPES.push(
     /* ───────── 1. 치명타 큰 숫자 ───────── */
     {
-      id: "spot-combat-crit", cat: "combat", view: "3d",
+      id: "spot-combat-crit", cat: "combat", view: "3d", polished: true,
       title: { en: "Make critical hits feel *massive*", ko: "치명타를 *묵직하게*" },
       intro: { en: "A critical hit. Same *tiny* number.", ko: "치명타인데 숫자가 *쥐꼬리*만 해요." },
       interval: 2.6, stepDur: 3.8,

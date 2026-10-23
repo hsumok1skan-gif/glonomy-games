@@ -497,7 +497,7 @@
 
     /* ───────── 3. 10연차 뽑기 ───────── */
     {
-      id: "spot-reward-gacha", cat: "ui", view: "ui",
+      id: "spot-reward-gacha", cat: "ui", view: "ui", polished: true,
       title: { en: "Make ten-pulls *build* to the rare", ko: "10연차를 *한 장씩* 쌓아 올리기" },
       intro: { en: "Ten cards flip at *once*. Rare? Who noticed.", ko: "열 장이 *한꺼번에* 뒤집혀요. 희귀 카드도 묻혀요." },
       interval: 3.2, stepDur: 4.2,

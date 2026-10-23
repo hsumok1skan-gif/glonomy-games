@@ -103,7 +103,7 @@ RECIPES.push(
   },
 
   {
-    id: "magic", cat: "weapon", view: "side",
+    id: "magic", cat: "weapon", view: "side", polished: true,
     title: { en: "Make spells feel *magical*", ko: "마법에 *한 방* 넣기" },
     intro: { en: "Just a *glowing dot*.", ko: "그냥 *점* 하나 날아가요." },
     interval: 1.05, stepDur: 3.4,
@@ -290,7 +290,7 @@ RECIPES.push(
   },
 
   {
-    id: "pickup", cat: "ui", view: "side",
+    id: "pickup", cat: "ui", view: "side", polished: true,
     title: { en: "Make pickups *satisfying*", ko: "줍는 *맛* 살리기" },
     intro: { en: "It just… *disappears*.", ko: "그냥… *사라져요*." },
     interval: 2.1, stepDur: 3.6,
@@ -398,7 +398,7 @@ RECIPES.push(
   },
 
   {
-    id: "hurt", cat: "combat", view: "side",
+    id: "hurt", cat: "combat", view: "side", polished: true,
     title: { en: "Make getting hit *readable*", ko: "맞았을 때 *확실하게*" },
     intro: { en: "Wait… did I just *get hit?*", ko: "방금… *맞은 거야?*" },
     interval: 1.25, stepDur: 3.4,
@@ -465,11 +465,11 @@ RECIPES.push(
   },
 
   {
-    id: "boom", cat: "combat", view: "side",
+    id: "boom", cat: "combat", view: "side", polished: true, hookDur: 3.2, hookFires: [0.2, 1.5],
     title: { en: "Make explosions *BIG*", ko: "폭발을 *크게*" },
     intro: { en: "That was… an *explosion?*", ko: "이게… *폭발*이라고?" },
     interval: 1.9, stepDur: 3.8,
-    setup(w) { w.hero = w.actor("hero"); w.hero.home = w.hero.x = 100; w.foe = w.actor("foe"); },
+    setup(w) { w.hero = w.actor("hero"); w.hero.home = w.hero.x = 130; w.foe = w.actor("foe"); },
     fire(w) {
       const c = w.hero; c.sx = 0.9; c.sy = 1.08;
       const x0 = c.x + 40, y0 = G - 90, tx = w.foe.x - 20, T = 0.62, g = 1300;
@@ -489,23 +489,25 @@ RECIPES.push(
       {
         id: "flash", name: { en: "White Frame", ko: "하얀 한 프레임" },
         cap: { en: "Start with *one white frame*.", ko: "첫 프레임은 *하얗게*." },
-        boom(w) { w.flash("255,250,235", 0.7); },
+        boom(w) { w.flash("255,250,235", 0.7); const r = w.foe; if (r.alive) r.flash = 0.9; },
       },
       {
         id: "ring", name: { en: "Shockwave", ko: "충격파" },
         cap: { en: "A *ring* that pushes everything *away*.", ko: "주변을 *밀어내는* 고리." },
         boom(w, e) {
-          w.spawn({ type: "ring", x: e.x, y: e.y - 30, size: 10, size1: 200, life: 0.42, w: 14, color: "255,236,200" });
+          w.spawn({ x: e.x, y: e.y - 36, life: 0.18, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 66, k, "255,226,170") });
+          w.spawn({ type: "ring", x: e.x, y: e.y - 30, size: 10, size1: 150, life: 0.38, w: 10, color: "255,210,150" });
           w.spawn({ type: "ring", x: e.x, y: e.y, size: 10, size1: 150, life: 0.35, w: 6, color: "255,200,120", flat: true });
           const r = w.foe; if (r.alive) { r.flash = 1; r.ox += 40; r.sx = 0.8; r.sy = 1.2; }
         },
-        kill(w, r) { w.fly(r, 380, -760, 9); },
+        kill(w, r) { w.fly(r, 60, -560, 0, true); r.tint = 0.5; },
       },
       {
         id: "fire", name: { en: "Fire → Smoke", ko: "불 → 연기" },
         cap: { en: "Fire *fades into smoke*. Smoke *lingers*.", ko: "불은 *연기로* 바뀌고, 연기는 *오래* 남아요." },
         boom(w, e) {
-          w.spawn({ type: "glow", x: e.x, y: e.y - 40, size: 110, size1: 40, life: 0.32, color: "255,170,60" });
+          // 불덩이: 계단식 빛 + 주황·노랑 불꽃 덩어리가 위로 솟구침
+          w.spawn({ type: "glow", x: e.x, y: e.y - 40, size: 80, size1: 30, life: 0.3, color: "255,170,60" });
           for (let i = 0; i < 16; i++) w.spawn({ type: "glow", x: e.x + rand(-20, 20), y: e.y - rand(10, 40), vx: rand(-240, 240), vy: rand(-340, -60), drag: 3.5, size: rand(22, 34), size1: 4, life: rand(0.35, 0.6), color: i % 3 ? "255,140,40" : "255,220,120" });
           w.after(0.12, () => {
             for (let i = 0; i < 12; i++) w.spawn({ type: "smoke", x: e.x + rand(-50, 50), y: e.y - rand(20, 80), vx: rand(-60, 60), vy: rand(-70, -25), drag: 1, size: rand(14, 22), size1: rand(40, 60), life: rand(1.1, 1.8), color: "70,70,82" });
@@ -516,7 +518,7 @@ RECIPES.push(
         id: "debris", name: { en: "Debris", ko: "파편" },
         cap: { en: "Throw *chunks*. Let them *bounce* and settle.", ko: "*파편*을 날리고, *통통* 튀다 멈추게." },
         boom(w, e) {
-          for (let i = 0; i < 16; i++) w.spawn({ type: "chunk", x: e.x, y: e.y - 14, vx: rand(-420, 420), vy: rand(-720, -260), g: 1600, ground: true, bounce: 0.35, vr: rand(-20, 20), life: rand(1.8, 2.6), size: rand(5, 10), color: pick(["120,82,50", "92,64,40", "160,120,70"]), hold: true });
+          for (let i = 0; i < 16; i++) { const sz = rand(3, 7), rot = rand(0, 6), c = pick([["#8a6a4a", "#3a2a1c"], ["#6a7596", "#2a2f42"], ["#a07850", "#4a3220"]]); w.spawn({ x: e.x, y: e.y - 14, vx: rand(-420, 420), vy: rand(-720, -260), g: 1600, ground: true, bounce: 0.35, vr: rand(-20, 20), life: rand(1.8, 2.6), hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, c[0], c[1]) }); }
           for (let i = 0; i < 12; i++) { const a = rand(-Math.PI, 0), s = rand(300, 800); w.spawn({ type: "spark", x: e.x, y: e.y - 20, vx: Math.cos(a) * s, vy: Math.sin(a) * s, drag: 4, life: rand(0.2, 0.4), size: 2.5, color: "255,210,140" }); }
         },
       },
@@ -1038,11 +1040,11 @@ RECIPES.push(
   },
 
   {
-    id: "dash", cat: "move", view: "side",
+    id: "dash", cat: "move", view: "side", polished: true,
     title: { en: "Make a dash feel *fast*", ko: "대시가 *빨라* 보이게" },
     intro: { en: "It moved. Did it feel *fast*?", ko: "움직이긴 했는데 *빨라* 보여요?" },
     interval: 1.55, stepDur: 3.3,
-    setup(w) { w.hero = w.actor("hero", { h: 110, home: 100 }); },
+    setup(w) { w.hero = w.actor("hero", { h: 110, home: 120 }); },
     fire(w) {
       if (w.busy) return;
       w.busy = true;
@@ -1059,23 +1061,23 @@ RECIPES.push(
       {
         id: "freeze", name: { en: "Start Freeze", ko: "출발 전 정지" }, param: "60ms",
         cap: { en: "Freeze for a *split second* before the dash. Contrast = speed.", ko: "출발 직전 *아주 잠깐* 멈춰요. 대비가 곧 속도." },
-        start(w, h) { w.hitstop(0.06); h.flash = 0.8; },
+        start(w, h) { w.hitstop(0.06); h.flash = 0.4; },
       },
       {
         id: "stretch", name: { en: "Stretch", ko: "늘어남" }, param: "1.5 × 0.7",
         cap: { en: "*Stretch* along the direction of motion.", ko: "움직이는 *방향으로 늘려요*." },
-        start(w, h) { h.sx = 1.5; h.sy = 0.7; },
-        dashing(w, h) { h.sx = Math.max(h.sx, 1.35); h.sy = Math.min(h.sy, 0.78); },
+        start(w, h) { h.sx = 1.25; h.sy = 0.85; },
+        dashing(w, h) { h.sx = Math.max(h.sx, 1.18); h.sy = Math.min(h.sy, 0.88); },
       },
       {
         id: "ghosts", name: { en: "Afterimages", ko: "잔상" }, param: "every frame · 250ms",
         cap: { en: "Leave *afterimages* behind. The eye reads the path.", ko: "*잔상*을 남겨요. 눈이 경로를 읽어요." },
-        dashing(w, h) { w.spawn({ type: "ghost", img: h.s.cyan, x: h.x + h.ox, y: h.gy + h.oy, w: h.w, h: h.h, sx: h.sx, sy: h.sy, life: 0.25, alpha0: 0.55, add: false }); },
+        dashing(w, h) { if (poseSet(h)) actorGhost(w, h, "#5ad6ff", 0.28, 0.6); else w.spawn({ type: "ghost", img: h.s.cyan, x: h.x + h.ox, y: h.gy + h.oy, w: h.w, h: h.h, sx: h.sx, sy: h.sy, life: 0.25, alpha0: 0.55, add: false }); },
       },
       {
         id: "lines", name: { en: "Speed Lines", ko: "속도선" }, param: "3 / frame",
         cap: { en: "Thin *speed lines* rushing past.", ko: "가는 *속도선*이 스쳐 지나가요." },
-        dashing(w, h) { for (let i = 0; i < 3; i++) w.spawn({ type: "spark", x: h.x + rand(-20, 80), y: h.gy - rand(8, h.h), vx: -rand(900, 1500), vy: 0, life: 0.12, size: 2, color: "255,255,255" }); },
+        dashing(w, h) { for (let i = 0; i < 4; i++) w.spawn({ type: "spark", x: h.x + rand(-20, 80), y: h.gy - rand(8, h.h), vx: -rand(1100, 1700), vy: 0, life: 0.14, size: 2.4, color: pick(["255,255,255", "140,220,255"]) }); },
       },
       {
         id: "burst", name: { en: "Launch Burst", ko: "출발 폭발" }, param: "ring + dust",

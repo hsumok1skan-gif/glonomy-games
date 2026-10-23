@@ -398,7 +398,7 @@
 
     /* ───────── 2. 특수 보석 조합 ───────── */
     {
-      id: "spot-casual-gem-combo", cat: "puzzle", view: "top",
+      id: "spot-casual-gem-combo", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make special gem combos *detonate*", ko: "특수 보석 조합을 *대폭발*로" },
       intro: { en: "Two specials meet. Gems just *disappear*.", ko: "특수 보석 둘이 만났는데 그냥 *사라져요*." },
       interval: 2.8, stepDur: 4.0,
@@ -964,7 +964,7 @@
 
     /* ───────── 8. 네 줄 동시 지우기 ───────── */
     {
-      id: "spot-casual-line-clear", cat: "puzzle", view: "top",
+      id: "spot-casual-line-clear", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make a 4-line clear feel *massive*", ko: "네 줄 지우기를 *거대하게*" },
       intro: { en: "Four lines at once. They just *vanish*.", ko: "네 줄을 한 번에 지웠는데 그냥 *없어져요*." },
       interval: 2.8, stepDur: 4.0,

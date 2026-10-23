@@ -67,7 +67,7 @@
   RECIPES.push(
     /* ───────── 전설 아이템 공개 ───────── */
     {
-      id: "spot-loot-reveal", cat: "ui", view: "3d",
+      id: "spot-loot-reveal", cat: "ui", view: "3d", polished: true,
       title: { en: "Turn a rare drop into a *show*", ko: "희귀 카드 공개를 *무대*처럼" },
       intro: { en: "Top-tier pull. Flipped like a *receipt*.", ko: "최고 등급인데 *영수증*처럼 넘어가요." },
       interval: 3.1, stepDur: 4.0,
