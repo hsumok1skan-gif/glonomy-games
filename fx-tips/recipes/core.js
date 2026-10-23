@@ -932,47 +932,58 @@ RECIPES.push(
   },
 
   {
-    id: "jump", cat: "move", view: "side",
+    id: "jump", cat: "move", view: "side", polished: true, hookDur: 2.6,
     title: { en: "Make jumping feel *fair*", ko: "점프가 *억울하지 않게*" },
     intro: { en: "Pressed jump. Fell anyway. *Rage.*", ko: "분명 눌렀는데 떨어졌다. *억울.*" },
     interval: 2.8, stepDur: 3.4,
+    // 발판 두 개 + 가운데 낭떠러지 (화면 안에 다 들어오게)
+    plats: [[104, 244], [320, 452]],
     drawFloor(w, ctx) {
-      for (const [a, b] of [[20, 230], [310, 520]]) {
-        ctx.fillStyle = "rgba(255,255,255,0.05)"; ctx.fillRect(a, G, b - a, 90);
-        ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.fillRect(a, G - 1, b - a, 2);
+      const P = w.R.plats;
+      // 낭떠러지: 바닥 아래로 갈수록 어두워지는 계단
+      for (let i = 0; i < 6; i++) { ctx.fillStyle = ["#121624", "#0e111c", "#0b0d16", "#080a11", "#06070c", "#040508"][i]; ctx.fillRect(P[0][1], G + i * 16 - 2, P[1][0] - P[0][1], 18); }
+      for (const [a, b] of P) {
+        // 돌 블록 발판: 윗면 밝은 줄, 벽돌 줄눈, 아래 어두운 그림자
+        ctx.fillStyle = "#2a2f42"; ctx.fillRect(a, G, b - a, 96);
+        ctx.fillStyle = "#3d4560"; ctx.fillRect(a, G, b - a, 8);
+        ctx.fillStyle = "#6a7596"; ctx.fillRect(a, G, b - a, 3);
+        ctx.fillStyle = "#1a1e2c";
+        for (let y = G + 8, r = 0; y < G + 96; y += 16, r++) { ctx.fillRect(a, y, b - a, 2); for (let x = a + (r % 2 ? 14 : 0); x < b; x += 28) ctx.fillRect(x, y, 2, 16); }
+        ctx.fillStyle = "#4b5577"; ctx.fillRect(a, G, 3, 96); ctx.fillStyle = "#151926"; ctx.fillRect(b - 3, G, 3, 96);
       }
       if (w.on("coyote")) {
-        ctx.fillStyle = "rgba(198,244,50,0.18)"; ctx.fillRect(230, G - 60, 26, 60);
-        ctx.font = "700 10px 'JetBrains Mono', monospace"; ctx.fillStyle = "rgba(198,244,50,0.9)"; ctx.textAlign = "center";
-        ctx.fillText("GRACE", 243, G + 16);
+        ctx.fillStyle = "rgba(198,244,50,0.22)"; ctx.fillRect(P[0][1], G - 64, 20, 64);
+        ctx.fillStyle = "rgba(198,244,50,0.9)"; ctx.fillRect(P[0][1], G - 64, 20, 2);
+        ctx.font = "700 11px Galmuri11, Galmuri, monospace"; ctx.fillStyle = "#c6f432"; ctx.textAlign = "center";
+        ctx.fillText("GRACE", P[0][1] + 10, G - 72);
       }
-      ctx.fillStyle = "rgba(255,255,255,0.18)";
-      for (const t of w.trail) ctx.fillRect(t[0] - 1.5, t[1] - 1.5, 3, 3);
+      ctx.fillStyle = "rgba(255,255,255,0.35)";
+      for (const t of w.trail) ctx.fillRect(Math.round(t[0]) - 2, Math.round(t[1]) - 2, 4, 4);
     },
-    setup(w) { w.hero = w.actor("hero", { h: 84, home: 70 }); w.J = { state: "idle" }; w.trail = []; },
+    setup(w) { w.hero = w.actor("hero", { h: 92, home: 126 }); w.J = { state: "idle" }; w.trail = []; w.cam.y = w.cam.ty = 46; },
     fire(w) {
-      const h = w.hero; h.alpha = 1; h.x = 70; h.oy = 0; w.trail = [];
-      w.J = { state: "run", vx: 260, vy: 0, air: false, lastGround: w.time, grace: 0, bufWin: 0, gMul: 1, pressed: false, jumped: false, bufPressed: false, buf: -9, done: false };
+      const h = w.hero; h.alpha = 1; h.x = 126; h.oy = 0; w.trail = [];
+      w.J = { state: "run", vx: 210, vy: 0, air: false, lastGround: w.time, grace: 0, bufWin: 0, gMul: 1, pressed: false, jumped: false, bufPressed: false, buf: -9, done: false };
     },
     update(w, dt) {
-      const h = w.hero, J = w.J;
+      const h = w.hero, J = w.J, P = w.R.plats;
       if (J.state !== "run") return;
       h.x += J.vx * dt;
-      const over = (h.x >= 20 && h.x <= 230) || (h.x >= 310 && h.x <= 520);
+      const over = (h.x >= P[0][0] && h.x <= P[0][1]) || (h.x >= P[1][0] && h.x <= P[1][1]);
       if (!J.air) { if (over) J.lastGround = w.time; else { J.air = true; J.vy = 0; } }
       const jump = v => { J.air = true; J.vy = v; J.jumped = true; w.emit("jump", h); };
-      if (!J.pressed && h.x >= 240) {
+      if (!J.pressed && h.x >= P[0][1] + 10) {
         J.pressed = true;
-        w.spawn({ type: "text", text: "JUMP", x: h.x, y: G + 30, life: 0.7, size: 15, color: "#c6f432" });
-        if (!J.air || w.time - J.lastGround <= J.grace) jump(-820);
+        w.spawn({ type: "text", text: "JUMP", x: h.x, y: G + 34, life: 0.7, size: 14, color: "#c6f432" });
+        if (!J.air || w.time - J.lastGround <= J.grace) jump(-700);
       }
       if (J.air) {
         const prev = h.oy;
         J.vy += 2200 * J.gMul * dt; h.oy += J.vy * dt;
         if (J.jumped) w.trail.push([h.x, G + h.oy - h.h / 2]);
-        if (J.jumped && !J.bufPressed && J.vy > 0 && h.oy > -70 && h.x > 300) {
+        if (J.jumped && !J.bufPressed && J.vy > 0 && h.oy > -70 && h.x > P[1][0]) {
           J.bufPressed = true; J.buf = w.time;
-          w.spawn({ type: "text", text: "JUMP", x: h.x, y: G + 30, life: 0.7, size: 15, color: "#c6f432" });
+          w.spawn({ type: "text", text: "JUMP", x: h.x, y: G + 34, life: 0.7, size: 14, color: "#c6f432" });
         }
         if (prev < 0 && h.oy >= 0 && over) {
           h.oy = 0; const v = J.vy; J.air = false; J.vy = 0; J.vx = 0;
@@ -1008,13 +1019,14 @@ RECIPES.push(
       {
         id: "dust", name: { en: "Dust Puffs", ko: "먼지" }, param: "takeoff + landing",
         cap: { en: "A puff of *dust* on takeoff and on landing.", ko: "뛸 때, 내릴 때 *먼지* 한 줌." },
-        jump(w, h) { dust(w, h.x, G, 4); },
-        land(w, h) { dust(w, h.x, G, 8); },
+        jump(w, h) { dust(w, h.x, G, 5, 0, "120,128,150"); },
+        land(w, h) { dust(w, h.x, G, 9, 0, "120,128,150"); },
       },
       {
         id: "land", name: { en: "Landing Weight", ko: "착지 무게" }, param: "kick ∝ fall speed",
         cap: { en: "Land *harder* from higher. The camera *dips* with you.", ko: "*높이* 떨어질수록 세게. 화면도 같이 *꿀렁*." },
-        land(w, h, v) { w.kick(0, v / 200); w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 10, size1: 60, life: 0.25, w: 4, color: "255,255,255" }); },
+        land(w, h, v) { w.kick(0, v / 200); w.shake(Math.min(0.3, v / 4000), 0); w.spawn({ type: "ring", flat: true, x: h.x, y: G, size: 10, size1: 70, life: 0.28, w: 5, color: "220,230,255" });
+          for (let i = 0; i < 5; i++) { const sz = rand(1.5, 3), rot = rand(0, 6); w.spawn({ x: h.x + rand(-14, 14), y: G - 3, vx: rand(-200, 200), vy: rand(-280, -120), g: 1300, ground: true, bounce: 0.3, life: rand(0.5, 0.8), vr: rand(-12, 12), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#6a7596", "#2a2f42") }); } },
       },
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "boing / tup",

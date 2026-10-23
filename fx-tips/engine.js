@@ -1612,7 +1612,7 @@ const POSES = {
 function poseSet(a) { if (a.top || !FX._art || FX.poses === false) return null; const P = POSES[a.key]; return P && P.img && FX._art[a.key] ? P : null; }
 function poseName(w, a) {
   const t = w.time, rs = w.rigState || {};
-  const vx = a._pPrevOx != null ? (a.ox - a._pPrevOx) / Math.max(1e-3, w._rigDt || 1 / 60) : 0; a._pPrevOx = a.ox;
+  const px = a.x + a.ox, vx = a._pPrevOx != null ? (px - a._pPrevOx) / Math.max(1e-3, w._rigDt || 1 / 60) : 0; a._pPrevOx = px;
   if (a.key === "foe") {
     if (a.flying || a.oy < -10 || (!a.alive && Math.abs(a.rot || 0) > 0.2)) return "fly";
     // 떨어진 뒤: 잠깐 엎어져 있다가(0.45초) 일어남
