@@ -1329,6 +1329,15 @@ function pxChip(ctx, x, y, s, rot, light, dark) {
   ctx.fillStyle = light; ctx.beginPath(); ctx.moveTo(-s, -s * 0.5); ctx.lineTo(s * 0.6, -s); ctx.lineTo(s * 0.1, 0); ctx.closePath(); ctx.fill();
   ctx.restore();
 }
+// 초승달 베기 자국: 두께가 가운데서 가장 두꺼운 띠, 바깥 어둡게 → 안쪽 흰 심지 (k: 0→1 동안 그어졌다 사라짐)
+function pxCrescent(ctx, x, y, r, a0, a1, th, k, c = "255,236,200") {
+  const grow = Math.min(1, k * 5), fade = k < 0.4 ? 1 : 1 - (k - 0.4) / 0.6; if (fade <= 0) return;
+  const end = a0 + (a1 - a0) * grow, n = 28;
+  for (const [kk, sh] of [[1, 0.5], [0.7, 0.85], [0.42, 1.25], [0.18, 1.8]]) {
+    ctx.fillStyle = `rgb(${pxShade(c, sh)})`;
+    for (let i = 0; i <= n; i++) { const u = i / n, ang = a0 + (end - a0) * u, w = th * kk * fade * Math.sin(Math.PI * Math.min(1, u * 1.05)); if (w < 0.6) continue; pxDisc(ctx, x + Math.cos(ang) * r, y + Math.sin(ang) * r, w / 2, ctx.fillStyle); }
+  }
+}
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }
 function pixFxBegin(ctx, OM, r) {
@@ -1581,7 +1590,7 @@ function poseName(w, a) {
     if (a.poseNow === "fly") a._getupAt = t + (a.land ? 0.45 : 0);
     if (t < (a._getupAt ?? -9)) return "down";
     if (t - (a._getupAt ?? -9) < 8 / 12 && a.poseNow !== "hurt") return "getup";
-    if (a.tint > 0.15 || a.flash > 0.3 || a.vib > 0.5 || vx > 160) return "hurt";
+    if (a.tint > 0.15 || a.flash > 0.3 || (a.vib > 0.5 && !(a.burn > 0)) || vx > 160) return "hurt";
     const h = w.hero; if (h && (h.tint > 0.3 || h.flash > 0.4)) return "attack";
     return "idle";
   }
@@ -1654,7 +1663,7 @@ function drawPoseActor(ctx, a, w) {
   x.setTransform(1, 0, 0, 1, 0, 0);
   const over = (col, al) => { if (al <= 0) return; x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
   // 번쩍임은 짧고 또렷하게: 처음 순간만 흰색, 그 뒤는 옅게
-  over("#ffffff", a.flash > 0.88 ? 0.85 : a.flash * 0.28); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#fb923c", a.burn > 0 ? 0.35 : 0);
+  over("#ffffff", a.flash > 0.88 ? 0.85 : a.flash * 0.28); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#ff6a1a", a.burn > 0 ? Math.min(1, a.burn) * (0.14 + 0.1 * Math.sin(performance.now() / 45)) : 0);
   const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = !P.pixel; ctx.shadowBlur = 0;
   ctx.drawImage(c, -W / 2, -(H - 4), W, H); ctx.imageSmoothingEnabled = sm;
   // 손끝·총구 위치를 기억 (총알·주먹 효과가 여기서 나감)
