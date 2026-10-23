@@ -324,11 +324,12 @@ function fxLoadImages() {
   for (const k in RIGS) { RIGS[k].img = null; RIGS[k].k = 0; }
   FX._art = {}; for (const k in art) if (!user[k]) FX._art[k] = true;
   const IM = Object.assign({}, art, user);
+  for (const k in POSES) { POSES[k].img = null; if (FX._art[k] && FX.poses !== false) IM["pose_" + k] = FX_ART_BASE + POSES[k].file; }
   if (FX.rig) for (const k in RIGS) if (FX._art[k]) IM["rig_" + k] = FX_ART_BASE + RIGS[k].file;
   const keys = Object.keys(IM).filter(k => IM[k]);
   return Promise.all(keys.map(k => new Promise(res => {
     const im = new Image(); im.crossOrigin = "anonymous";
-    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } if (k.startsWith("rig_")) { RIGS[k.slice(4)].img = im; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
+    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } if (k.startsWith("rig_")) { RIGS[k.slice(4)].img = im; return res(); } if (k.startsWith("pose_")) { POSES[k.slice(5)].img = im; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
     im.onerror = () => { console.warn("FX: could not load image for", k, IM[k]); res(); };
     im.src = IM[k];
   })));
@@ -1266,7 +1267,7 @@ const RIG_MELEE = /melee|sword|katana|slash|blade|parry|cleave|riposte|counter|c
 const RIG_HIT = /^(hit|strike|swing|slam|stab|cut|smash|impact|crit|kill|break|finish|parry)$/;
 const RIG_THROW = /^(cast|launch|release|throw|shoot|fire|shot|beam|blast)$/;
 function rigOf(a) { if (!FX.rig || a.top || !FX._art) return null; const R = RIGS[a.key]; return R && R.img && FX._art[a.key] ? R : null; }
-function rigOn(a) { return !!rigOf(a); }
+function rigOn(a) { return !!(rigOf(a) || poseSet(a)); }
 const rigEase = x => x <= 0 ? 0 : x >= 1 ? 1 : 1 - (1 - x) * (1 - x);
 function rigDirs(R, w, a) {
   const P = R.poses, base = Object.assign({}, P.idle), t = w.time, rs = w.rigState || {};
@@ -1345,6 +1346,66 @@ function drawRigActor(ctx, a, w) {
   ctx.drawImage(c, -W / 2, -(H - 4), W, H);
 }
 
+/* ───────── 동작 컷 (기본 그림: 동작별 완성 그림을 갈아 끼움) ─────────
+   r: 그림 속 위치 · ax: 몸통 가운데(가로 비율) · tip: 손끝/총구(비율) */
+const POSES = {
+  hero: { file: "hero-poses.webp", img: null, f: {
+    idle: { r: [0, 0, 349, 458], ax: 0.481, tip: [0.845, 0.527] },
+    aim: { r: [357, 0, 426, 458], ax: 0.381, tip: [0.995, 0.182] },
+    recoil: { r: [791, 0, 395, 446], ax: 0.399, tip: [0.96, 0.08] },
+    windup: { r: [1194, 0, 351, 464], ax: 0.449, tip: [0.897, 0.195] },
+    slash: { r: [1553, 0, 548, 387], ax: 0.364, tip: [0.739, 0.611] },
+    hurt: { r: [2109, 0, 392, 389], ax: 0.463, tip: [0.883, 0.532] },
+    dash: { r: [2509, 0, 406, 330], ax: 0.548, tip: [0.998, 0.405] },
+    cast: { r: [2923, 0, 415, 394], ax: 0.38, tip: [0.945, 0.18] } } },
+  foe: { file: "foe-poses.webp", img: null, f: {
+    idle: { r: [0, 0, 338, 563], ax: 0.492, tip: [0.12, 0.5] },
+    windup: { r: [346, 0, 392, 571], ax: 0.471, tip: [0.15, 0.3] },
+    attack: { r: [746, 0, 519, 514], ax: 0.476, tip: [0.02, 0.55] },
+    hurt: { r: [1273, 0, 375, 525], ax: 0.493, tip: [0.2, 0.4] },
+    fly: { r: [1656, 0, 477, 515], ax: 0.593, tip: [0.3, 0.3], lift: 0.25 } } },
+};
+function poseSet(a) { if (a.top || !FX._art || FX.poses === false) return null; const P = POSES[a.key]; return P && P.img && FX._art[a.key] ? P : null; }
+function poseName(w, a) {
+  const t = w.time, rs = w.rigState || {};
+  const vx = a._pPrevOx != null ? (a.ox - a._pPrevOx) / Math.max(1e-3, w._rigDt || 1 / 60) : 0; a._pPrevOx = a.ox;
+  if (a.key === "foe") {
+    if (a.flying || a.oy < -10 || (!a.alive && Math.abs(a.rot || 0) > 0.2)) return "fly";
+    if (a.tint > 0.15 || a.flash > 0.3 || a.vib > 0.5 || vx > 160) return "hurt";
+    const h = w.hero; if (h && (h.tint > 0.3 || h.flash > 0.4)) return "attack";
+    return "idle";
+  }
+  if (a.tint > 0.25 || (a.flash > 0.45 && !w.gun)) return "hurt";
+  if (w.gun) { const g = w.gun; return Math.abs(g.kick) > 3 || Math.abs(g.rot) > 0.05 ? "recoil" : "aim"; }
+  if (a.oy < -6) return "dash";
+  const since = t - (rs.fire ?? -9), hitAgo = t - (rs.hit ?? -9), thr = t - (rs.thr ?? -9);
+  const sword = RIG_MELEE.test(w.R.id);
+  const hitNow = rs.hit != null && rs.hit >= (rs.fire ?? -9) - 0.01;
+  if (hitNow && hitAgo >= 0 && hitAgo < 0.38) return sword ? "slash" : "dash";
+  if (thr >= 0 && thr < 0.4) return "cast";
+  if (vx > 150) return "dash";
+  if (sword && since >= 0 && since < 0.8 && !hitNow) return "windup";
+  return "idle";
+}
+function drawPoseActor(ctx, a, w) {
+  const P = poseSet(a), name = poseName(w, a), f = P.f[name] || P.f.idle, idle = P.f.idle;
+  const k = a.h / idle.r[3], fw = f.r[2] * k, fh = f.r[3] * k, lift = (f.lift || 0) * a.h;
+  const W = Math.ceil(a.h * 2.6), H = Math.ceil(a.h * 1.6), sc = 2;
+  if (!RIG_BUF.c) { RIG_BUF.c = document.createElement("canvas"); RIG_BUF.x = RIG_BUF.c.getContext("2d"); }
+  const c = RIG_BUF.c, x = RIG_BUF.x;
+  if (c.width !== W * sc || c.height !== H * sc) { c.width = W * sc; c.height = H * sc; }
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height);
+  x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.globalCompositeOperation = "source-over";
+  const left = -f.ax * fw, top = -fh - lift;
+  x.drawImage(P.img, f.r[0], f.r[1], f.r[2], f.r[3], left, top, fw, fh);
+  const over = (col, al) => { if (al <= 0) return; x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
+  over("#ffffff", a.flash); over("#ef4444", a.tint * 0.85); over("#fb923c", a.burn > 0 ? 0.35 : 0);
+  ctx.drawImage(c, -W / 2, -(H - 4), W, H);
+  // 손끝·총구 위치를 기억 (총알·주먹 효과가 여기서 나감)
+  a.rigHand = { x: left + f.tip[0] * fw, y: top + f.tip[1] * fh, ang: name === "recoil" ? -0.35 : 0 };
+  a.poseNow = name;
+}
+
 function drawActor(ctx, a, w) {
   if (a.alpha <= 0) return;
   const hide = a.blink > 0 && Math.floor(a.blink * 14) % 2 === 0;
@@ -1364,7 +1425,8 @@ function drawActor(ctx, a, w) {
   const rigged = w && a.key==="hero" && !a.top && !w.bare &&
     w.n===w.R.steps.length && (window.FXDirector || ["weapon-railgun","weapon-katana","magic"].includes(w.R.id)) &&
     !((FX.images || {}).hero || (FX._art && FX._art.hero)) && SPR.heroRigBody;
-  if (w && rigOn(a)) { drawRigActor(ctx, a, w); ctx.restore(); return; }
+  if (w && poseSet(a) && !rigOf(a)) { drawPoseActor(ctx, a, w); ctx.restore(); return; }
+  if (w && rigOf(a)) { drawRigActor(ctx, a, w); ctx.restore(); return; }
   if(rigged) drawStudioRigHero(ctx,a,w,top);
   else ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h);
   ctx.shadowBlur = 0;
@@ -1426,12 +1488,14 @@ const GUNW = 68;
 function rigWorld(c) { const h = c.rigHand; return { x: c.x + c.ox + h.x * c.sx, y: c.gy + c.oy + h.y * c.sy }; }
 function gripPt(w) { const c = w.hero; if (c && c.rigHand && rigOn(c)) return rigWorld(c); return { x: c.x + c.ox + c.w * fxPt("hand")[0], y: G - c.h * fxPt("hand")[1] * c.sy }; }
 function muzzle(w) {
+  if (w.hero && w.hero.rigHand && poseSet(w.hero) && !rigOf(w.hero)) return rigWorld(w.hero);
   const g = w.gun, p = gripPt(w), gh = GUNW * SPR.gun.c.height / SPR.gun.c.width;
   const r = gunRot(w), lx = (fxPt("gunMuzzle")[0] - fxPt("gunGrip")[0]) * GUNW - g.kick, ly = (fxPt("gunMuzzle")[1] - fxPt("gunGrip")[1]) * gh, c = Math.cos(r), s = Math.sin(r);
   return { x: p.x + lx * c - ly * s, y: p.y + lx * s + ly * c };
 }
 function gunRot(w) { const c = w.hero; return c && c.rigHand && rigOn(c) ? c.rigHand.ang : w.gun.rot; }
 function drawGun(w, ctx) {
+  if (w.hero && poseSet(w.hero) && !rigOf(w.hero)) return; // 동작 컷에 총이 이미 그려져 있음
   const g = w.gun, p = gripPt(w), img = SPR.gun.c, gh = GUNW * img.height / img.width;
   ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(gunRot(w));
   ctx.drawImage(img, -fxPt("gunGrip")[0] * GUNW - g.kick, -fxPt("gunGrip")[1] * gh, GUNW, gh);
