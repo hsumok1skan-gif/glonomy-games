@@ -963,7 +963,7 @@ RECIPES.push(
     setup(w) { w.hero = w.actor("hero", { h: 92, home: 126 }); w.J = { state: "idle" }; w.trail = []; w.cam.y = w.cam.ty = 46; },
     fire(w) {
       const h = w.hero; h.alpha = 1; h.x = 126; h.oy = 0; w.trail = [];
-      w.J = { state: "run", vx: 210, vy: 0, air: false, lastGround: w.time, grace: 0, bufWin: 0, gMul: 1, pressed: false, jumped: false, bufPressed: false, buf: -9, done: false };
+      w.J = { state: "run", vx: 190, vy: 0, air: false, lastGround: w.time, grace: 0, bufWin: 0, gMul: 1, pressed: false, jumped: false, bufPressed: false, buf: -9, done: false };
     },
     update(w, dt) {
       const h = w.hero, J = w.J, P = w.R.plats;
@@ -988,7 +988,7 @@ RECIPES.push(
         if (prev < 0 && h.oy >= 0 && over) {
           h.oy = 0; const v = J.vy; J.air = false; J.vy = 0; J.vx = 0;
           w.emit("land", h, v);
-          if (w.time - J.buf <= J.bufWin) { J.buf = -9; jump(-560); }
+          if (w.time - J.buf <= J.bufWin) { J.buf = -9; J.vx = 45; jump(-520); }
           else if (!J.done) { J.done = true; w.after(0.7, () => { w.tween(h, { alpha: 0 }, 0.25); J.state = "idle"; }); }
         }
         if (h.oy > 320) { J.state = "idle"; h.alpha = 0; }
@@ -1008,8 +1008,8 @@ RECIPES.push(
       {
         id: "squash", name: { en: "Squash & Stretch", ko: "늘었다 줄었다" }, param: "1.3 / 0.7",
         cap: { en: "*Stretch* on takeoff, *squash* on landing.", ko: "뛸 때 *늘어나고*, 내릴 때 *찌그러져요*." },
-        jump(w, h) { h.sx = 0.75; h.sy = 1.3; },
-        land(w, h) { h.sx = 1.3; h.sy = 0.7; },
+        jump(w, h) { h.sx = 0.92; h.sy = 1.1; },
+        land(w, h) { h.sx = 1.12; h.sy = 0.88; },
       },
       {
         id: "apex", name: { en: "Apex Hang", ko: "꼭대기에서 머묾" }, param: "½ gravity at peak",

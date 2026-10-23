@@ -1581,6 +1581,9 @@ const POSES = {
       hurt: { file: "hero-hurt-px.png", img: null, cw: 69, ch: 68, n: 26, from: 4, fps: 30, once: true, scale: 1.1, ax: 0.554, tip: [0.85, 0.5] },
       // 돌진: 제자리에서 달리는 8장 반복 (몸 이동은 엔진이 함)
       dash: { file: "hero-dash-px.png", img: null, cw: 90, ch: 70, n: 8, fps: 24, scale: 1.1, ax: 0.5, tip: [0.85, 0.5] },
+      // 달리기(반복) · 점프(자세를 높이·속도로 골라 씀: manual)
+      run: { file: "hero-run-px.png", img: null, cw: 81, ch: 88, n: 8, fps: 14, ax: 0.502, tip: [0.87, 0.4] },
+      jump: { file: "hero-jump-px.png", img: null, cw: 80, ch: 95, n: 8, fps: 1, manual: true, ax: 0.591, tip: [0.85, 0.5] },
       cast: { file: "hero-cast-px.png", img: null, cw: 82, ch: 75, n: 8, from: 3, fps: 22, once: true, ax: 0.426, tip: [0.945, 0.29] } },
     f: {
     idle: { r: [0, 0, 62, 75], ax: 0.46, tip: [0.847, 0.533] },
@@ -1625,13 +1628,18 @@ function poseName(w, a) {
   }
   if (a.tint > 0.25 || (a.flash > 0.45 && !w.gun)) return "hurt";
   if (w.gun) { const g = w.gun; return Math.abs(g.kick) > 3 || Math.abs(g.rot) > 0.05 ? "recoil" : "aim"; }
-  if (a.oy < -6) return "dash";
+  // 공중: 올라갈 때·꼭대기·떨어질 때 자세를 높이 변화로 고름, 착지 직후엔 무릎 굽힘
+  const vy = a._pPrevOy != null ? (a.oy - a._pPrevOy) / Math.max(1e-3, w._rigDt || 1 / 60) : 0; a._pPrevOy = a.oy;
+  if (a.oy < -6) { a._air = true; a.jumpFrame = vy < -380 ? 2 : vy < -120 ? 3 : vy < 120 ? 4 : vy < 380 ? 5 : 6; return "jump"; }
+  if (a._air) { a._air = false; a._landAt = t; }
+  if (t - (a._landAt ?? -9) < 0.12) { a.jumpFrame = 7; return "jump"; }
   const since = t - (rs.fire ?? -9), hitAgo = t - (rs.hit ?? -9), thr = t - (rs.thr ?? -9);
   const sword = RIG_MELEE.test(w.R.id);
   const hitNow = rs.hit != null && rs.hit >= (rs.fire ?? -9) - 0.01;
   if (hitNow && hitAgo >= 0 && hitAgo < 0.38) return sword ? "slash" : "dash";
   if (thr >= 0 && thr < 0.4) return "cast";
-  if (vx > 150) return "dash";
+  if (vx > 700) return "dash";
+  if (Math.abs(vx) > 40) return "run";
   if (sword && since >= 0 && since < 0.8 && !hitNow) return "windup";
   return "idle";
 }
@@ -1672,7 +1680,7 @@ function drawPoseActor(ctx, a, w) {
     const A = P.anims && P.anims[nm];
     if (A && A.img) {
       // 여러 장짜리 동작: 시간에 맞춰 칸을 넘김 (숨쉬기는 몸 움직임을 그림이 대신하니 크기 출렁임은 끔)
-      const i = A.once ? Math.min(A.n - 1, (A.from || 0) + Math.floor(age * A.fps)) : (A.from || 0) + Math.floor((t + a.home * 0.13) * A.fps) % A.n, aw = A.cw * k * (A.scale || 1), ah = A.ch * k * (A.scale || 1);
+      const i = A.manual ? (a.jumpFrame | 0) : A.once ? Math.min(A.n - 1, (A.from || 0) + Math.floor(age * A.fps)) : (A.from || 0) + Math.floor((t + a.home * 0.13) * A.fps) % A.n, aw = A.cw * k * (A.scale || 1), ah = A.ch * k * (A.scale || 1);
       x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.translate((m.dx + extraDx) * dir, 0);
       const left = -A.ax * aw, top = -ah;
       x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
