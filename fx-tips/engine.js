@@ -1441,6 +1441,8 @@ const POSES = {
       // 칼: 치켜든 채 대기(0~1번) → 내려베기(2~7번 한 번)
       windup: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 2, fps: 5, ax: 0.449, tip: [0.65, 0.25] },
       slash: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 8, from: 2, fps: 30, once: true, ax: 0.449, tip: [0.68, 0.63] },
+      // 맞음: 5번째 장(맞는 순간)부터 뒤로 밀렸다 돌아오기까지 (PixelLab 128칸 → 키가 조금 작아 1.1배)
+      hurt: { file: "hero-hurt-px.png", img: null, cw: 69, ch: 68, n: 26, from: 4, fps: 30, once: true, scale: 1.1, ax: 0.554, tip: [0.85, 0.5] },
       cast: { file: "hero-cast-px.png", img: null, cw: 82, ch: 75, n: 8, from: 3, fps: 22, once: true, ax: 0.426, tip: [0.945, 0.29] } },
     f: {
     idle: { r: [0, 0, 62, 75], ax: 0.46, tip: [0.847, 0.533] },
@@ -1514,7 +1516,7 @@ function drawPoseActor(ctx, a, w) {
     const A = P.anims && P.anims[nm];
     if (A && A.img) {
       // 여러 장짜리 동작: 시간에 맞춰 칸을 넘김 (숨쉬기는 몸 움직임을 그림이 대신하니 크기 출렁임은 끔)
-      const i = A.once ? Math.min(A.n - 1, (A.from || 0) + Math.floor(age * A.fps)) : (A.from || 0) + Math.floor((t + a.home * 0.13) * A.fps) % A.n, aw = A.cw * k, ah = A.ch * k;
+      const i = A.once ? Math.min(A.n - 1, (A.from || 0) + Math.floor(age * A.fps)) : (A.from || 0) + Math.floor((t + a.home * 0.13) * A.fps) % A.n, aw = A.cw * k * (A.scale || 1), ah = A.ch * k * (A.scale || 1);
       x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.translate((m.dx + extraDx) * dir, 0);
       const left = -A.ax * aw, top = -ah;
       x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
