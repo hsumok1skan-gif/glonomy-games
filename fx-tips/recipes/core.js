@@ -200,17 +200,17 @@ RECIPES.push(
   },
 
   {
-    id: "melee", cat: "combat", view: "side",
+    id: "melee", cat: "combat", view: "side", polished: true, hookDur: 3.4, hookFires: [0.2, 1.05],
     title: { en: "Make melee hits *heavy*", ko: "근접 공격 *묵직하게*" },
     intro: { en: "It touched. *That's it.*", ko: "닿긴 했는데… *끝?*" },
     interval: 1.0, stepDur: 3.4,
-    setup(w) { w.hero = w.actor("hero"); w.hero.home = w.hero.x = 110; w.foe = w.actor("foe"); },
+    setup(w) { w.hero = w.actor("hero", { home: 150 }); w.foe = w.actor("foe", { home: 365, hp: 50 }); },
     fire(w) {
       if (w.busy) return;
       w.busy = true;
       const c = w.hero;
       const strike = () => {
-        const at = { x: c.x + c.w / 2 + 10, y: G - 60 }, r = w.foe;
+        const r = w.foe, at = { x: r.x - 34, y: G - 70 };
         w.emit("swing", at);
         if (r.alive) {
           r.hp -= 25;
@@ -218,48 +218,53 @@ RECIPES.push(
           w.emit("hit", at);
           if (r.hp <= 0) w.kill(r);
         }
-        w.after(0.1, () => w.tween(c, { x: c.home }, 0.24, "inout", () => { w.busy = false; }));
+        w.after(0.16, () => w.tween(c, { x: c.home }, 0.26, "inout", () => { w.busy = false; }));
       };
-      const dash = () => w.tween(c, { x: w.foe.x - w.foe.w / 2 - c.w / 2 - 6 }, 0.09, "in", strike);
-      if (w.on("windup")) { w.emit("windup"); w.after(0.14, dash); } else dash();
+      const dash = () => w.tween(c, { x: w.foe.x - 92 }, 0.09, "in", strike);
+      if (w.on("windup")) { w.emit("windup"); w.after(0.16, dash); } else dash();
     },
     drawHud(w, ctx) { drawBar(ctx, w.foe); },
     steps: [
       {
         id: "windup", name: { en: "Wind-up", ko: "예비 동작" },
         cap: { en: "*Pull back* before you swing.", ko: "치기 전에 *살짝 뒤로*." },
-        windup(w) { const c = w.hero; w.tween(c, { x: c.home - 28 }, 0.13, "out"); c.sx = 1.12; c.sy = 0.86; },
+        windup(w) { const c = w.hero; w.tween(c, { x: c.home - 26 }, 0.14, "out"); },
       },
       {
         id: "arc", name: { en: "Slash Arc", ko: "궤적" },
         cap: { en: "*Draw the swing.* Just a few frames.", ko: "휘두른 *궤적*을 그려요. 아주 잠깐만." },
         swing(w, at) {
-          w.spawn({ type: "arc", under: true, x: at.x - 30, y: at.y, size: 70, life: 0.16, a0: -1.9, a1: 1.1, alpha: 0.75, color: "255,255,255" });
-          w.spawn({ type: "arc", under: true, x: at.x - 30, y: at.y, size: 56, life: 0.12, a0: -1.7, a1: 0.9, color: "253,224,71" });
+          // 머리 위에서 앞 아래로 떨어지는 초승달 (칼날 색)
+          w.spawn({ x: at.x - 34, y: at.y + 6, life: 0.2, draw: (ctx, p, k) => pxCrescent(ctx, p.x, p.y, 62, -2.1, 0.85, 13, k, "190,245,255") });
+          for (let i = 0; i < 5; i++) { const a = rand(-1.4, 0.6); w.spawn({ type: "spark", x: at.x - 34 + Math.cos(a) * 62, y: at.y + 6 + Math.sin(a) * 62, vx: Math.cos(a + 1.57) * rand(80, 200), vy: Math.sin(a + 1.57) * rand(80, 200), drag: 5, life: rand(0.12, 0.22), size: 2, color: "190,245,255" }); }
         },
       },
       {
         id: "hitstop", name: { en: "Hit Stop", ko: "멈칫" },
         cap: { en: "On contact, *both freeze*. The target *trembles*, fading out.", ko: "닿는 순간 *둘 다 멈칫*. 맞은 쪽은 *떨리다* 잦아들어요." },
-        hit(w) { w.hitstop(0.09); w.foe.vib = 7; },
+        hit(w) { w.hitstop(0.09); w.foe.vib = 6; },
       },
       {
         id: "flash", name: { en: "Impact Flash", ko: "충돌 섬광" },
-        cap: { en: "*White flash* + a *star* at the contact point.", ko: "*하얀 번쩍임*과 *별 모양 섬광*." },
+        cap: { en: "A *white flash* and a *spark star* where it hits.", ko: "맞은 자리에 *하얀 번쩍임*과 *불꽃 별*." },
         hit(w, at) {
-          w.foe.flash = 1.2;
-          w.spawn({ type: "star", x: at.x + 10, y: at.y, size: 72, life: 0.12, color: "255,255,255" });
-          w.spawn({ type: "glow", under: true, x: at.x + 10, y: at.y, size: 62, size1: 10, life: 0.15, color: "255,240,200" });
+          w.foe.flash = 0.95;
+          w.spawn({ x: at.x + 6, y: at.y, life: 0.12, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 34, k, "235,250,255") });
+          for (let i = 0; i < 6; i++) { const sz = rand(2, 4), rot = rand(0, 6); w.spawn({ x: at.x + 8, y: at.y, vx: rand(60, 300), vy: rand(-380, -140), g: 1300, drag: 0.6, ground: true, bounce: 0.3, life: rand(0.6, 0.9), vr: rand(-16, 16), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#e2553a", "#5b1d17") }); }
         },
       },
       {
         id: "knock", name: { en: "Knockback", ko: "밀려남" },
         cap: { en: "Push it *far*. Kick up *dust* where it slides.", ko: "*멀리* 밀고, 미끄러진 자리에 *먼지*." },
         hit(w) {
-          const r = w.foe; r.ox += 80; r.k = 3.2; r.sx = 0.82; r.sy = 1.14;
-          for (let i = 0; i < 7; i++) w.spawn({ type: "smoke", x: r.x - rand(0, 60), y: G - 4, vx: rand(40, 160), vy: rand(-50, -10), drag: 3, size: rand(6, 10), size1: rand(16, 24), life: rand(0.4, 0.7), color: "200,190,170" });
+          const r = w.foe; if (!r.alive) return; r.ox += 60; r.k = 3.2;
+          for (let i = 0; i < 7; i++) w.spawn({ type: "smoke", x: r.x - rand(0, 50), y: G - 4, vx: rand(40, 160), vy: rand(-50, -10), drag: 3, size: rand(6, 10), size1: rand(14, 22), life: rand(0.4, 0.7), color: "90,96,118" });
         },
-        kill(w, r) { w.fly(r, 520, -620, 11); },
+        kill(w, r) { r.ox = 0; w.fly(r, 25, -460, 0, true); r.tint = 0.5; },
+        land(w, r) {
+          w.shake(0.2, 0);
+          for (let i = 0; i < 10; i++) { const dir = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: r.x + rand(-30, 30), y: G - 4, vx: dir * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,96,118" }); }
+        },
       },
       {
         id: "shake", name: { en: "Shake", ko: "흔들림" },
@@ -271,6 +276,7 @@ RECIPES.push(
         cap: { en: "A *swish* on the swing, a *thud* on the hit.", ko: "휘두를 때 *쉭*, 맞을 때 *퍽*." },
         swing(w) { w.sfx.slash(); },
         hit(w) { w.sfx.thud(); },
+        land(w) { w.sfx.land(); },
       },
     ],
   },
