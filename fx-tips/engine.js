@@ -1432,7 +1432,9 @@ function drawRigActor(ctx, a, w) {
 const POSES = {
   hero: { file: "hero-px.png", img: null, pixel: true,
     // 여러 장짜리 동작(한 줄 시트: 칸 너비 cw, 높이 ch, n장, 초당 fps장)
-    anims: { idle: { file: "hero-idle-px.png", img: null, cw: 82, ch: 75, n: 8, fps: 7, ax: 0.455, tip: [0.82, 0.53] } },
+    anims: { idle: { file: "hero-idle-px.png", img: null, cw: 82, ch: 75, n: 8, fps: 7, ax: 0.455, tip: [0.82, 0.53] },
+      // 시전: 4번째 장(손을 든 순간)부터 앞으로 내뻗기까지 한 번만 재생
+      cast: { file: "hero-cast-px.png", img: null, cw: 82, ch: 75, n: 8, from: 3, fps: 22, once: true, ax: 0.426, tip: [0.945, 0.29] } },
     f: {
     idle: { r: [0, 0, 62, 75], ax: 0.46, tip: [0.847, 0.533] },
     aim: { r: [64, 0, 75, 73], ax: 0.357, tip: [0.993, 0.171] },
@@ -1505,7 +1507,7 @@ function drawPoseActor(ctx, a, w) {
     const A = P.anims && P.anims[nm];
     if (A && A.img) {
       // 여러 장짜리 동작: 시간에 맞춰 칸을 넘김 (숨쉬기는 몸 움직임을 그림이 대신하니 크기 출렁임은 끔)
-      const i = Math.floor((t + a.home * 0.13) * A.fps) % A.n, aw = A.cw * k, ah = A.ch * k;
+      const i = A.once ? Math.min(A.n - 1, (A.from || 0) + Math.floor(age * A.fps)) : Math.floor((t + a.home * 0.13) * A.fps) % A.n, aw = A.cw * k, ah = A.ch * k;
       x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.translate((m.dx + extraDx) * dir, 0);
       const left = -A.ax * aw, top = -ah;
       x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
