@@ -1443,6 +1443,8 @@ const POSES = {
       slash: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 8, from: 2, fps: 30, once: true, ax: 0.449, tip: [0.68, 0.63] },
       // 맞음: 5번째 장(맞는 순간)부터 뒤로 밀렸다 돌아오기까지 (PixelLab 128칸 → 키가 조금 작아 1.1배)
       hurt: { file: "hero-hurt-px.png", img: null, cw: 69, ch: 68, n: 26, from: 4, fps: 30, once: true, scale: 1.1, ax: 0.554, tip: [0.85, 0.5] },
+      // 돌진: 제자리에서 달리는 8장 반복 (몸 이동은 엔진이 함)
+      dash: { file: "hero-dash-px.png", img: null, cw: 90, ch: 70, n: 8, fps: 24, scale: 1.1, ax: 0.5, tip: [0.85, 0.5] },
       cast: { file: "hero-cast-px.png", img: null, cw: 82, ch: 75, n: 8, from: 3, fps: 22, once: true, ax: 0.426, tip: [0.945, 0.29] } },
     f: {
     idle: { r: [0, 0, 62, 75], ax: 0.46, tip: [0.847, 0.533] },
