@@ -1460,6 +1460,8 @@ const POSES = {
       // 공격: 팔을 젖힌 채(2~13번) → 발톱 휘두르기(14~20번) → 제자리(21~31번)
       windup: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 12, from: 2, fps: 8, ax: 0.665, tip: [0.28, 0.4] },
       hurt: { file: "foe-hurt-px.png", img: null, cw: 95, ch: 86, n: 39, from: 8, fps: 32, once: true, ax: 0.358, tip: [0.1, 0.4] },
+      // 날아감: 3번째 장(맞아 꺾임)부터 공중에서 뒤로 넘어가기까지 (마지막 장 유지)
+      fly: { file: "foe-fly-px.png", img: null, cw: 106, ch: 86, n: 31, from: 2, fps: 26, once: true, ax: 0.5, tip: [0.3, 0.3] },
       attack: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 32, from: 12, fps: 26, once: true, ax: 0.665, tip: [0.02, 0.5] } },
     f: {
     idle: { r: [0, 0, 77, 86], ax: 0.415, tip: [0.06, 0.6] },
