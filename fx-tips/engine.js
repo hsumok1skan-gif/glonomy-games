@@ -1429,11 +1429,15 @@ function drawRigActor(ctx, a, w) {
 
 /* ───────── 동작 컷 (기본 그림: 동작별 완성 그림을 갈아 끼움) ─────────
    r: 그림 속 위치 · ax: 몸통 가운데(가로 비율) · tip: 손끝/총구(비율) */
+const SHOOT_TIPS = [[0.92, 0.189], [0.899, 0.169], [0.78, 0.06], [0.69, 0.06], [0.941, 0.203], [0.941, 0.176], [0.952, 0.176], [0.931, 0.169]];
 const POSES = {
   hero: { file: "hero-px.png", img: null, pixel: true,
     // 여러 장짜리 동작(한 줄 시트: 칸 너비 cw, 높이 ch, n장, 초당 fps장)
     anims: { idle: { file: "hero-idle-px.png", img: null, cw: 82, ch: 75, n: 8, fps: 7, ax: 0.455, tip: [0.82, 0.53] },
       // 시전: 4번째 장(손을 든 순간)부터 앞으로 내뻗기까지 한 번만 재생
+      // 총: 겨눔은 4~7번(제자리로 돌아오는 장)을 재생 후 유지, 반동은 1~3번(총구가 튐)
+      aim: { file: "hero-shoot-px.png", img: null, cw: 94, ch: 74, n: 8, from: 4, fps: 20, once: true, ax: 0.416, tips: SHOOT_TIPS },
+      recoil: { file: "hero-shoot-px.png", img: null, cw: 94, ch: 74, n: 4, from: 1, fps: 26, once: true, ax: 0.416, tips: SHOOT_TIPS },
       cast: { file: "hero-cast-px.png", img: null, cw: 82, ch: 75, n: 8, from: 3, fps: 22, once: true, ax: 0.426, tip: [0.945, 0.29] } },
     f: {
     idle: { r: [0, 0, 62, 75], ax: 0.46, tip: [0.847, 0.533] },
@@ -1511,7 +1515,7 @@ function drawPoseActor(ctx, a, w) {
       x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.translate((m.dx + extraDx) * dir, 0);
       const left = -A.ax * aw, top = -ah;
       x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
-      return { left, top, fw: aw, fh: ah, f: { tip: A.tip }, m: { dx: m.dx, rot: 0, sy: 1 }, lift: 0 };
+      return { left, top, fw: aw, fh: ah, f: { tip: A.tips ? A.tips[i] : A.tip }, m: { dx: m.dx, rot: 0, sy: 1 }, lift: 0 };
     }
     const left = -f.ax * fw, top = -fh;
     x.globalAlpha = alpha; x.drawImage(P.img, f.r[0], f.r[1], f.r[2], f.r[3], left, top, fw, fh); x.globalAlpha = 1;
