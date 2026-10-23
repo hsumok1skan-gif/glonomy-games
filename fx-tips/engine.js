@@ -1026,7 +1026,7 @@ class World {
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
     // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
     const N = this.R.steps.length, glowA = N && this.n > 0 && !this.bare ? 0.9 * this.n / N : 0;
-    const gl = glowA > 0 ? bloomBegin(ctx, rx, ry, rw, rh) : null;
+    const gl = glowA > 0 && !(FX.pixelFx && FX._art && FX._art.hero) ? bloomBegin(ctx, rx, ry, rw, rh) : null;
     if (gl) {
       for (const p of this.shots) drawShot(gl, p);
       for (const p of this.parts) if (!p.under) drawPart(gl, p);
@@ -1040,7 +1040,7 @@ class World {
       ctx.save();
       const r = { x: rx, y: ry, w: rw, h: rh };
       ctx.beginPath(); ctx.rect(r.x, r.y, r.w, r.h); ctx.clip();
-      if (this.flashA > 0) { ctx.fillStyle = `rgba(${this.flashC},${Math.min(1, this.flashA)})`; ctx.fillRect(r.x, r.y, r.w, r.h); }
+      if (this.flashA > 0) { const pm = FX.pixelFx && FX._art && FX._art.hero; ctx.fillStyle = `rgba(${this.flashC},${pm ? Math.min(0.14, this.flashA * 0.3) : Math.min(1, this.flashA)})`; ctx.fillRect(r.x, r.y, r.w, r.h); }
       if (this.vig > 0) {
         const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
         const vg = ctx.createRadialGradient(cx, cy, Math.min(r.w, r.h) * 0.32, cx, cy, Math.max(r.w, r.h) * 0.62);
@@ -1066,6 +1066,7 @@ class World {
 /* ───────── 그리기 도우미 ───────── */
 let frameNo = 0;
 function glow(ctx, x, y, r, c, a) {
+  if (PIXMODE) return pxGlow(ctx, x, y, r * 0.75, c, a);
   const g = ctx.createRadialGradient(x, y, 0, x, y, r);
   g.addColorStop(0, `rgba(${c},${a})`); g.addColorStop(0.35, `rgba(${c},${a * 0.45})`); g.addColorStop(1, `rgba(${c},0)`);
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
@@ -1076,6 +1077,45 @@ function starPath(ctx, x, y, s) {
   ctx.moveTo(x, y - s); ctx.lineTo(x + t, y - t); ctx.lineTo(x + s, y); ctx.lineTo(x + t, y + t);
   ctx.lineTo(x, y + s); ctx.lineTo(x - t, y + t); ctx.lineTo(x - s, y); ctx.lineTo(x - t, y - t); ctx.closePath();
 }
+// 픽셀 모드용 효과 모양 (처리한 종류면 true)
+function drawPartPx(ctx, p, s, a, k, rem) {
+  const C = p.color || "255,255,255";
+  switch (p.type) {
+    case "glow": pxGlow(ctx, p.x, p.y, s * 0.8, C, a); return true;
+    case "star": { const sz = s * (0.6 + 0.4 * rem); ctx.globalAlpha = Math.min(1, a); pxPlus(ctx, p.x, p.y, sz, `rgb(${pxShade(C, 0.75)})`); pxPlus(ctx, p.x, p.y, sz * 0.55, `rgb(${pxShade(C, 1.5)})`); return true; }
+    case "spark": {
+      const dir = Math.atan2(p.vy, p.vx), len = Math.max(s * 2.4, Math.hypot(p.vx, p.vy) * 0.04);
+      ctx.globalAlpha = Math.min(1, a); ctx.lineCap = "butt";
+      ctx.strokeStyle = `rgb(${pxShade(C, 0.7)})`; ctx.lineWidth = Math.max(2, s * 1.1);
+      ctx.beginPath(); ctx.moveTo(p.x - Math.cos(dir) * len, p.y - Math.sin(dir) * len); ctx.lineTo(p.x, p.y); ctx.stroke();
+      pxDisc(ctx, p.x, p.y, Math.max(1.2, s * 0.8), `rgb(${pxShade(C, 1.5)})`);
+      if (s > 3 && k < 0.35) pxPlus(ctx, p.x, p.y, s * 1.6, `rgb(${pxShade(C, 1.3)})`);
+      return true;
+    }
+    case "ring": {
+      const r = Math.max(2, s), wdt = Math.max(2, (p.w || 6) * rem * 0.8);
+      ctx.globalAlpha = Math.min(1, a); ctx.lineCap = "butt";
+      const ell = (rr, lw, col) => { ctx.beginPath(); if (p.flat) ctx.ellipse(p.x, p.y, rr, rr * 0.24, 0, 0, TAU); else ctx.arc(p.x, p.y, rr, 0, TAU); ctx.lineWidth = lw; ctx.strokeStyle = col; ctx.stroke(); };
+      ell(r, wdt + 2, `rgb(${pxShade(C, 0.55)})`); ell(r, wdt, `rgb(${pxShade(C, 1)})`); if (k < 0.5) ell(r - wdt * 0.2, Math.max(1.5, wdt * 0.35), `rgb(${pxShade(C, 1.6)})`);
+      return true;
+    }
+    case "smoke": { ctx.globalAlpha = Math.min(0.75, a * 0.75); pxDisc(ctx, p.x, p.y, s * 0.85, `rgb(${pxShade(C, 0.55)})`); ctx.globalAlpha = Math.min(0.75, a * 0.6); pxDisc(ctx, p.x - s * 0.2, p.y - s * 0.2, s * 0.5, `rgb(${pxShade(C, 0.8)})`); return true; }
+    case "ellipse": { ctx.save(); ctx.translate(p.x, p.y); ctx.scale(1, p.round ? 1 : 0.22); pxGlow(ctx, 0, 0, s, C, a); ctx.restore(); return true; }
+    case "rays": {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); const n = p.n || 10; ctx.globalAlpha = Math.min(1, a); ctx.lineCap = "butt";
+      for (let i = 0; i < n; i++) { ctx.rotate(TAU / n); ctx.strokeStyle = `rgb(${pxShade(C, i % 2 ? 0.7 : 1.2)})`; ctx.lineWidth = i % 2 ? 2 : 3; ctx.beginPath(); ctx.moveTo(s * 0.2, 0); ctx.lineTo(s * (i % 2 ? 0.7 : 1), 0); ctx.stroke(); }
+      ctx.restore(); return true;
+    }
+    case "arc": {
+      ctx.globalAlpha = Math.min(1, a); ctx.lineCap = "butt";
+      ctx.strokeStyle = `rgb(${pxShade(C, 0.6)})`; ctx.lineWidth = Math.max(3, s * 0.42 * rem); ctx.beginPath(); ctx.arc(p.x, p.y, s, p.a0, p.a1); ctx.stroke();
+      ctx.strokeStyle = `rgb(${pxShade(C, 1.1)})`; ctx.lineWidth = Math.max(2, s * 0.24 * rem); ctx.beginPath(); ctx.arc(p.x, p.y, s * 0.98, p.a0 + 0.1, p.a1 - 0.05); ctx.stroke();
+      ctx.strokeStyle = `rgb(${pxShade(C, 1.7)})`; ctx.lineWidth = Math.max(1.5, s * 0.08 * rem); ctx.beginPath(); ctx.arc(p.x, p.y, s * 0.96, p.a0 + 0.25, p.a1 - 0.15); ctx.stroke();
+      return true;
+    }
+  }
+  return false;
+}
 function drawPart(ctx, p) {
   const k = p.age / p.life, rem = 1 - k;
   const s = p.size1 == null ? p.size : p.size + (p.size1 - p.size) * E.out(k);
@@ -1084,6 +1124,7 @@ function drawPart(ctx, p) {
   if (a <= 0 || s <= 0) return;
   ctx.globalCompositeOperation = p.add ? "lighter" : "source-over";
   ctx.globalAlpha = 1;
+  if (PIXMODE && drawPartPx(ctx, p, s, a, k, rem)) { ctx.globalAlpha = 1; return; }
   switch (p.type) {
     case "glow": glow(ctx, p.x, p.y, s, p.color, a); break;
     case "spark": {
@@ -1235,6 +1276,20 @@ function drawShadow(ctx, a) {
 const PIXBUF = { c: null, x: null };
 // 효과 층 픽셀화 (월드 2칸 = 1픽셀)
 const PFX = { c: null, x: null };
+let PIXMODE = false; // 픽셀 효과 층에 그리는 중이면 true → 효과를 계단식 명암·또렷한 모양으로
+// 픽셀용 그리기 도구: 색 [r,g,b] 문자열을 받아 밝기 단계(0.45/0.7/1/밝게)를 만듦
+function pxShade(c, k) { const v = String(c).split(",").map(Number); return v.map(x => Math.max(0, Math.min(255, Math.round(k > 1 ? x + (255 - x) * (k - 1) : x * k)))).join(","); }
+function pxDisc(ctx, x, y, r, col) { if (r <= 0.3) return; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); }
+// 계단식 빛: 바깥은 어둡고 성기게, 안쪽으로 갈수록 밝고 꽉 차게 (3~4단)
+function pxGlow(ctx, x, y, r, c, a) {
+  if (a <= 0.04 || r < 1) return;
+  r = Math.min(r, 60);
+  const steps = [[1, 0.5, 0.45 * a], [0.7, 0.8, 0.75 * a], [0.45, 1, a], [0.22, 1.6, a]];
+  for (const [kr, kc, al] of steps) { ctx.globalAlpha = Math.min(1, al); pxDisc(ctx, x, y, r * kr, `rgb(${pxShade(c, kc)})`); }
+  ctx.globalAlpha = 1;
+}
+// 십자 반짝이
+function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }
 function pixFxBegin(ctx, OM, r) {
   const M = ctx.getTransform(), unit = Math.hypot(M.a, M.b) * FX.pixelFx;
   const x0 = OM.a * r[0] + OM.e, y0 = OM.d * r[1] + OM.f, w = OM.a * r[2], h = OM.d * r[3];
@@ -1245,9 +1300,11 @@ function pixFxBegin(ctx, OM, r) {
   x.setTransform(M.a / unit, M.b / unit, M.c / unit, M.d / unit, (M.e - x0) / unit, (M.f - y0) / unit);
   c.fxLogicalWidth = (ctx.canvas.fxLogicalWidth || 540) / unit * (ctx.canvas.width / (ctx.canvas.fxLogicalWidth || 540));
   PFX.place = [x0, y0, W * unit, H * unit];
+  PIXMODE = true;
   return x;
 }
 function pixFxEnd(ctx) {
+  PIXMODE = false;
   const c = PFX.c, x = PFX.x, W = c.width, H = c.height;
   x.setTransform(1, 0, 0, 1, 0, 0);
   const im = x.getImageData(0, 0, W, H), d = im.data, PL = pixPalette(), cache = PIXBUF.cache || (PIXBUF.cache = new Map());
@@ -1551,7 +1608,8 @@ function drawPoseActor(ctx, a, w) {
   if ((name === "slash" || name === "attack" || name === "dash") && u < 0.14) for (let i = 1; i <= 2; i++) frame(name, u, 0.22 * (1 - u / 0.14) / i, -i * 9);
   x.setTransform(1, 0, 0, 1, 0, 0);
   const over = (col, al) => { if (al <= 0) return; x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
-  over("#ffffff", a.flash); over("#ef4444", a.tint * 0.85); over("#fb923c", a.burn > 0 ? 0.35 : 0);
+  // 번쩍임은 짧고 또렷하게: 처음 순간만 흰색, 그 뒤는 옅게
+  over("#ffffff", a.flash > 0.75 ? 0.9 : a.flash * 0.35); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#fb923c", a.burn > 0 ? 0.35 : 0);
   const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = !P.pixel; ctx.shadowBlur = 0;
   ctx.drawImage(c, -W / 2, -(H - 4), W, H); ctx.imageSmoothingEnabled = sm;
   // 손끝·총구 위치를 기억 (총알·주먹 효과가 여기서 나감)
