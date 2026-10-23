@@ -307,6 +307,8 @@ const FX = { style: "art", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 21
   bgFloor: 0.69,   // 배경 그림에서 바닥선 높이(위에서부터 비율)
   bgDim: 0.28,     // 배경을 얼마나 어둡게 눌러 둘지(효과가 돋보이게)
   rig: false,      // 관절 부품으로 움직이기 (시험용, 기본은 끔)
+  pixel: 0,        // 픽셀 크기(1픽셀 = 화면 몇 칸). 0이면 매끈하게
+  pixelLevels: 7,  // 색 단계 수(채널마다). 적을수록 픽셀 아트 느낌
 };
 // FX.style = "art" 일 때 쓰는 기본 그림 (FX Lab 기본 캐릭터·총·배경)
 const FX_ART_BASE = (() => { try { const s = document.currentScript && document.currentScript.src; if (s) return s.replace(/engine\.js.*$/, "") + "art/"; } catch (e) {} return "https://glonomy.com/fx-tips/art/"; })();
@@ -961,7 +963,31 @@ class World {
     }
   }
 
+  // 픽셀 모드: 장면 전체(배경·캐릭터·효과)를 작은 화면에 그린 뒤 색 단계를 줄이고 크게 키움
   draw(ctx) {
+    if (!FX.pixel) return this.drawRaw(ctx);
+    const [rx, ry, rw, rh] = this.view.r, P = FX.pixel, LW = ctx.canvas.fxLogicalWidth || 540;
+    const cw = Math.ceil(LW / P), ch = Math.ceil((ry + rh) / P) + 1;
+    const c = PIXBUF.c || (PIXBUF.c = document.createElement("canvas")), x = PIXBUF.x || (PIXBUF.x = c.getContext("2d", { willReadFrequently: true }));
+    if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; }
+    c.fxLogicalWidth = LW;
+    x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cw, ch); x.setTransform(1 / P, 0, 0, 1 / P, 0, 0);
+    this.drawRaw(x);
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    const X0 = Math.floor(rx / P), Y0 = Math.floor(ry / P), W = Math.ceil(rw / P), H = Math.ceil(rh / P);
+    const im = x.getImageData(X0, Y0, W, H), d = im.data, PL = pixPalette(), cache = PIXBUF.cache || (PIXBUF.cache = new Map());
+    for (let i = 0; i < d.length; i += 4) {
+      const key = (d[i] >> 3) << 10 | (d[i + 1] >> 3) << 5 | (d[i + 2] >> 3);
+      let c = cache.get(key);
+      if (c === undefined) { let best = 1e9; for (const p of PL) { const dr = d[i] - p[0], dg = d[i + 1] - p[1], db = d[i + 2] - p[2], e = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11; if (e < best) { best = e; c = p; } } cache.set(key, c); }
+      d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255;
+    }
+    x.putImageData(im, X0, Y0);
+    const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(c, X0, Y0, W, H, X0 * P, Y0 * P, W * P, H * P);
+    ctx.imageSmoothingEnabled = sm;
+  }
+  drawRaw(ctx) {
     const v = this.view, [rx, ry, rw, rh] = v.r;
     ctx.save();
     ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
@@ -1201,6 +1227,17 @@ function drawShadow(ctx, a) {
    부품 그림 한 장(art/hero-rig.webp, art/foe-rig.webp)에서 잘라 씀. 둘 다 오른쪽을 보게 그려 두고, 적은 그릴 때 뒤집음.
    r: 그림 속 위치 [x, y, w, h] · pv: 부모에 꽂히는 관절(비율) · end: 다음 관절(비율) · pts: 자식이 꽂히는 곳
    chain: [부품, 부모, 꽂는 곳(null=허리, "end"=부모 끝, 이름=부모 pts)] · 동작 = 뼈마다 향하는 방향(도, 0=오른쪽, 90=아래) */
+const PIXBUF = { c: null, x: null };
+// 픽셀 팔레트: 어두운 배경색 몇 개 + 색마다 어두움→밝음 4~5단계 (픽셀 아트처럼 끊어지는 명암)
+let PIXPAL = null;
+function pixPalette() {
+  if (PIXPAL) return PIXPAL;
+  const P = [[7, 9, 12], [14, 17, 24], [22, 26, 36], [34, 38, 52], [52, 56, 72], [84, 88, 104], [130, 134, 150], [190, 192, 204], [244, 244, 239]];
+  const hues = [0, 18, 32, 48, 80, 120, 150, 180, 200, 220, 260, 290, 320];
+  const hsl = (h, s, l) => { const a = s * Math.min(l, 1 - l), f = n => { const k = (n + h / 30) % 12; return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); }; return [f(0), f(8), f(4)].map(v => Math.round(v * 255)); };
+  for (const h of hues) for (const [s, l] of [[0.55, 0.13], [0.65, 0.25], [0.75, 0.42], [0.85, 0.6], [0.95, 0.78], [1, 0.92]]) P.push(hsl(h, s, l));
+  return (PIXPAL = P);
+}
 const RIGS = {
   hero: {
     file: "hero-rig.webp", img: null, k: 0,
