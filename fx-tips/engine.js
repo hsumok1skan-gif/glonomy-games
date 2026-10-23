@@ -1459,6 +1459,7 @@ const POSES = {
     anims: { idle: { file: "foe-idle-px.png", img: null, cw: 81, ch: 86, n: 25, fps: 12, ax: 0.416, tip: [0.06, 0.6] },
       // 공격: 팔을 젖힌 채(2~13번) → 발톱 휘두르기(14~20번) → 제자리(21~31번)
       windup: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 12, from: 2, fps: 8, ax: 0.665, tip: [0.28, 0.4] },
+      hurt: { file: "foe-hurt-px.png", img: null, cw: 95, ch: 86, n: 39, from: 8, fps: 32, once: true, ax: 0.358, tip: [0.1, 0.4] },
       attack: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 32, from: 12, fps: 26, once: true, ax: 0.665, tip: [0.02, 0.5] } },
     f: {
     idle: { r: [0, 0, 77, 86], ax: 0.415, tip: [0.06, 0.6] },
@@ -1507,6 +1508,9 @@ function drawPoseActor(ctx, a, w) {
   let name = poseName(w, a);
   // 너무 빨리 바뀌면 깜빡거려 보여서, 한 컷은 최소 0.07초 유지
   if (a.poseNow && name !== a.poseNow && t - (a.poseAt ?? -9) < 0.07 && name !== "hurt") name = a.poseNow;
+  // 한 번 재생하는 동작(맞음·공격·베기 등)은 끝까지 보여 줌 — 날아가기·새로 맞기만 끼어들 수 있음
+  const OA = P.anims && P.anims[a.poseNow];
+  if (OA && OA.once && name !== a.poseNow && name !== "fly" && !(name === "hurt" && a.poseNow !== "hurt") && t - (a.poseAt ?? -9) < (OA.n - (OA.from || 0)) / OA.fps) name = a.poseNow;
   if (a.poseNow !== name) { a.posePrev = a.poseNow; a.poseAt = t; a.poseNow = name; }
   const u = t - (a.poseAt ?? -9);
   const W = Math.ceil(a.h * 2.6), H = Math.ceil(a.h * 1.6), sc = 2;
