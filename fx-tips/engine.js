@@ -1387,25 +1387,55 @@ function poseName(w, a) {
   if (sword && since >= 0 && since < 0.8 && !hitNow) return "windup";
   return "idle";
 }
+// 컷이 몇 장뿐이어도 부드럽게: 바뀔 때 잔상(이전 컷이 짧게 겹침) + 컷마다 작은 움직임(반동·쏠림·숨쉬기)
+const POSE_MOVE = {
+  idle: (u, t) => ({ sy: 1 + Math.sin(t * 2.4) * 0.012, rot: 0, dx: 0 }),
+  aim: (u, t) => ({ sy: 1 + Math.sin(t * 2.2) * 0.008, rot: 0, dx: 0 }),
+  recoil: u => ({ sy: 1, rot: -0.06 * Math.exp(-u * 14), dx: -9 * Math.exp(-u * 12) }),
+  windup: u => ({ sy: 1 + 0.03 * Math.min(1, u / 0.25), rot: -0.07 * Math.min(1, u / 0.3), dx: -6 * Math.min(1, u / 0.3) }),
+  slash: u => ({ sy: 1 - 0.04 * Math.exp(-u * 10), rot: 0.09 * Math.exp(-u * 7), dx: 16 * Math.exp(-u * 6) }),
+  attack: u => ({ sy: 1, rot: -0.08 * Math.exp(-u * 7), dx: -16 * Math.exp(-u * 6) }),
+  hurt: u => ({ sy: 1, rot: (u < 0.25 ? -0.1 : -0.1 * Math.exp(-(u - 0.25) * 8)), dx: (Math.sin(u * 70) * 3) * Math.exp(-u * 6) }),
+  dash: u => ({ sy: 1 - 0.03, rot: 0.05, dx: 0 }),
+  cast: u => ({ sy: 1, rot: 0.04 * Math.exp(-u * 6), dx: 7 * Math.exp(-u * 8) }),
+  fly: u => ({ sy: 1, rot: 0, dx: 0 }),
+};
 function drawPoseActor(ctx, a, w) {
-  const P = poseSet(a), name = poseName(w, a), f = P.f[name] || P.f.idle, idle = P.f.idle;
-  const k = a.h / idle.r[3], fw = f.r[2] * k, fh = f.r[3] * k, lift = (f.lift || 0) * a.h;
+  const P = poseSet(a), idle = P.f.idle, t = w.time;
+  let name = poseName(w, a);
+  // 너무 빨리 바뀌면 깜빡거려 보여서, 한 컷은 최소 0.07초 유지
+  if (a.poseNow && name !== a.poseNow && t - (a.poseAt ?? -9) < 0.07 && name !== "hurt") name = a.poseNow;
+  if (a.poseNow !== name) { a.posePrev = a.poseNow; a.poseAt = t; a.poseNow = name; }
+  const u = t - (a.poseAt ?? -9);
   const W = Math.ceil(a.h * 2.6), H = Math.ceil(a.h * 1.6), sc = 2;
   if (!RIG_BUF.c) { RIG_BUF.c = document.createElement("canvas"); RIG_BUF.x = RIG_BUF.c.getContext("2d"); }
   const c = RIG_BUF.c, x = RIG_BUF.x;
   if (c.width !== W * sc || c.height !== H * sc) { c.width = W * sc; c.height = H * sc; }
-  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height);
-  x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.globalCompositeOperation = "source-over";
-  const left = -f.ax * fw, top = -fh - lift;
-  x.drawImage(P.img, f.r[0], f.r[1], f.r[2], f.r[3], left, top, fw, fh);
-  const over = (col, al) => { if (al <= 0) return; x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); x.globalCompositeOperation = "source-over";
+  const k = a.h / idle.r[3], dir = a.key === "foe" ? -1 : 1;
+  const frame = (nm, age, alpha, extraDx) => {
+    const f = P.f[nm] || idle, fw = f.r[2] * k, fh = f.r[3] * k, lift = (f.lift || 0) * a.h;
+    const m = (POSE_MOVE[nm] || POSE_MOVE.idle)(age, t + a.home * 0.01);
+    x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc);
+    x.translate((m.dx + extraDx) * dir, -lift); x.rotate(m.rot * dir); x.scale(1, m.sy);
+    const left = -f.ax * fw, top = -fh;
+    x.globalAlpha = alpha; x.drawImage(P.img, f.r[0], f.r[1], f.r[2], f.r[3], left, top, fw, fh); x.globalAlpha = 1;
+    return { left, top, fw, fh, f, m, lift };
+  };
+  // 잔상: 바뀐 직후 0.12초 동안 이전 컷이 옅게 남아 동작이 이어져 보임
+  const fade = 0.12;
+  if (a.posePrev && u < fade) frame(a.posePrev, u + 0.3, 0.55 * (1 - u / fade), name === "slash" || name === "attack" ? -10 : 0);
+  const cur = frame(name, u, 1, 0);
+  // 휘두르는 컷은 앞쪽으로 빠르게 번지는 잔상 2개를 더 깔아 속도감
+  if ((name === "slash" || name === "attack" || name === "dash") && u < 0.14) for (let i = 1; i <= 2; i++) frame(name, u, 0.22 * (1 - u / 0.14) / i, -i * 9);
+  x.setTransform(1, 0, 0, 1, 0, 0);
+  const over = (col, al) => { if (al <= 0) return; x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
   over("#ffffff", a.flash); over("#ef4444", a.tint * 0.85); over("#fb923c", a.burn > 0 ? 0.35 : 0);
   ctx.drawImage(c, -W / 2, -(H - 4), W, H);
   // 손끝·총구 위치를 기억 (총알·주먹 효과가 여기서 나감)
-  a.rigHand = { x: left + f.tip[0] * fw, y: top + f.tip[1] * fh, ang: name === "recoil" ? -0.35 : 0 };
-  a.poseNow = name;
+  const { left, top, fw, fh, f, m, lift } = cur;
+  a.rigHand = { x: (m.dx * dir) + left + f.tip[0] * fw, y: -lift + (top + f.tip[1] * fh) * m.sy, ang: name === "recoil" ? -0.35 : 0 };
 }
-
 function drawActor(ctx, a, w) {
   if (a.alpha <= 0) return;
   const hide = a.blink > 0 && Math.floor(a.blink * 14) % 2 === 0;
