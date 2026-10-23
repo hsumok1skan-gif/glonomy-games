@@ -1212,9 +1212,10 @@ function drawPart(ctx, p) {
       const pop = p.age < 0.12 ? 1.5 - (p.age / 0.12) * 0.5 : 1;
       ctx.save(); ctx.translate(p.x, p.y); ctx.scale(pop, pop);
       ctx.globalAlpha = Math.min(1, rem * 3);
-      ctx.font = `800 ${p.size}px Pretendard, "Apple SD Gothic Neo", sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.lineWidth = p.size * 0.18; ctx.strokeStyle = "rgba(10,12,20,0.9)"; ctx.lineJoin = "round";
-      ctx.strokeText(p.text, 0, 0); ctx.fillStyle = p.color; ctx.fillText(p.text, 0, 0);
+      const pxf = FX._art && FX._art.hero;
+      ctx.font = pxf ? `700 ${Math.round(p.size / 11) * 11 || 11}px Galmuri11, Galmuri, Pretendard, sans-serif` : `800 ${p.size}px Pretendard, "Apple SD Gothic Neo", sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      if (pxf) { ctx.fillStyle = "#07080d"; for (const [ox, oy] of [[-2, 0], [2, 0], [0, -2], [0, 2], [2, 2], [-2, 2], [2, -2], [-2, -2]]) ctx.fillText(p.text, ox, oy); ctx.fillStyle = p.color; ctx.fillText(p.text, 0, 0); }
+      else { ctx.lineWidth = p.size * 0.18; ctx.strokeStyle = "rgba(10,12,20,0.9)"; ctx.lineJoin = "round"; ctx.strokeText(p.text, 0, 0); ctx.fillStyle = p.color; ctx.fillText(p.text, 0, 0); }
       ctx.restore(); break;
     }
     case "ghost":

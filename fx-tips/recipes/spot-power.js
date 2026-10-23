@@ -4,16 +4,24 @@
   /* ───── 공통 도우미 (이 파일 안에서만) ───── */
   const part = (p, light, dark) => Object.assign(p, { light, dark });
   // 테마 배경: 가운데가 밝은 원형 그라디언트를 화면 가득
+  // 계단식(픽셀) 배경: 매끈한 그라디언트 대신 6단 동심원 띠 + 디더 점
+  const hx = c => [1, 3, 5].map(i => parseInt(c.substr(i, 2), 16));
   function backdrop(ctx, inner, outer, cy = 170, r = 340) {
-    const g = ctx.createRadialGradient(270, cy, 10, 270, cy, r);
-    g.addColorStop(0, inner); g.addColorStop(1, outer);
-    ctx.fillStyle = g; ctx.fillRect(-80, -80, 700, 520);
+    const A = hx(inner), B = hx(outer), N = 6;
+    ctx.fillStyle = outer; ctx.fillRect(-80, -80, 700, 520);
+    for (let i = N - 1; i >= 0; i--) {
+      const t = i / (N - 1), col = `rgb(${B.map((v, j) => Math.round(v + (A[j] - v) * (1 - t) * 0.85)).join(",")})`;
+      ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(270, cy, r * (0.22 + t * 0.78), r * (0.22 + t * 0.78) * 0.82, 0, 0, TAU); ctx.fill();
+      if (i > 0) { ctx.fillStyle = `rgb(${B.map((v, j) => Math.round(v + (A[j] - v) * (1 - (i - 0.5) / (N - 1)) * 0.85)).join(",")})`; const R = r * (0.22 + t * 0.78);
+        for (let k = 0; k < 90; k++) { const a = k / 90 * TAU, rr = R - 3 - (k % 3) * 3; ctx.fillRect(Math.round(270 + Math.cos(a) * rr), Math.round(cy + Math.sin(a) * rr * 0.82), 3, 3); } }
+    }
   }
   // 받침대: 어두운 타원 + 테두리 고리 두 줄
   function pedestal(ctx, x, y, rx, ry, fill, line) {
+    ctx.fillStyle = "#04060c"; ctx.beginPath(); ctx.ellipse(x, y + 4, rx + 4, ry + 3, 0, 0, TAU); ctx.fill();
     ctx.fillStyle = fill; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, TAU); ctx.fill();
-    ctx.strokeStyle = `rgba(${line},0.5)`; ctx.lineWidth = 2; ctx.stroke();
-    ctx.strokeStyle = `rgba(${line},0.22)`; ctx.beginPath(); ctx.ellipse(x, y, rx * 0.7, ry * 0.7, 0, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = `rgb(${line})`; ctx.globalAlpha = 0.7; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(x, y, rx - 2, ry - 1, 0, 0, TAU); ctx.stroke();
+    ctx.globalAlpha = 0.3; ctx.beginPath(); ctx.ellipse(x, y, rx * 0.68, ry * 0.68, 0, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1;
   }
   const mix3 = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(",");
   function bolts(w, x, y, n, cols, step = 22, spread = Math.PI) {
@@ -111,7 +119,7 @@
   RECIPES.push(
     /* ───────── 1. 파워업 획득 ───────── */
     {
-      id: "spot-power-orb", cat: "action", view: "3d",
+      id: "spot-power-orb", cat: "action", view: "3d", polished: true, hookDur: 3.1,
       title: { en: "Make power-ups feel *powerful*", ko: "파워업을 *힘 있게*" },
       intro: { en: "Grab the orb. It just *disappears*.", ko: "구슬을 먹었는데 그냥 *사라져요*." },
       interval: 2.8, stepDur: 4.0,
@@ -121,7 +129,7 @@
         w.aura = 0;
       },
       fire(w) {
-        const o = w.orb, h = w.hero, tx = h.x, ty = h.gy - 92;
+        const o = w.orb, h = w.hero, tx = h.x + 10, ty = h.gy - 92;
         Object.assign(o, { x: 410, y: 150, s: 1, vib: 0, fly: false, alive: true, t: 0 });
         const absorb = () => {
           o.alive = false; o.fly = false;
@@ -137,25 +145,25 @@
       update(w, dt) {
         const o = w.orb, h = w.hero;
         if (o.fly) { // 곡선 경로 (2차 베지어)
-          const t = o.t, u = 1 - t, cx = 380, cy = 30, tx = h.x, ty = h.gy - 92;
+          const t = o.t, u = 1 - t, cx = 380, cy = 30, tx = h.x + 10, ty = h.gy - 92;
           o.x = u * u * 410 + 2 * u * t * cx + t * t * tx; o.y = u * u * 150 + 2 * u * t * cy + t * t * ty;
         }
       },
       drawFloor(w, ctx) {
-        backdrop(ctx, "#1d3577", "#070b1c", 160);
+        backdrop(ctx, "#1d3577", "#060a18", 160);
         pedestal(ctx, 270, 286, 210, 36, "#0b1430", "120,170,255");
       },
       drawFront(w, ctx) {
+        // 구슬: 계단식 빛 + 4단 명암 구 + 흰 하이라이트, 아래 그림자
         const o = w.orb; if (!o.alive || o.s <= 0) return;
-        const bob = o.fly ? 0 : Math.sin(w.time * 3) * 6, v = o.vib ? rand(-o.vib, o.vib) : 0;
-        const x = o.x + v, y = o.y + bob + v * 0.6, r = 17 * o.s;
-        ctx.globalCompositeOperation = "lighter"; glow(ctx, x, y, r * 3, "90,170,255", 0.55); ctx.globalCompositeOperation = "source-over";
-        const g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.4, 2, x, y, r);
-        g.addColorStop(0, "#ffffff"); g.addColorStop(0.45, "#7cc4ff"); g.addColorStop(1, "#1f4fd0");
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
-        if (!o.fly) {
-          ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.beginPath(); ctx.ellipse(o.x, 286, 22 * o.s, 5, 0, 0, TAU); ctx.fill();
-        }
+        const bob = o.fly ? 0 : Math.round(Math.sin(w.time * 3) * 5), v = o.vib ? rand(-o.vib, o.vib) : 0;
+        const x = o.x + v, y = o.y + bob + v * 0.6, r = 16 * o.s;
+        if (!o.fly) { ctx.fillStyle = "#04060c"; ctx.beginPath(); ctx.ellipse(o.x, 286, 18 * o.s, 4, 0, 0, TAU); ctx.fill(); }
+        glow(ctx, x, y, r * 2.6, "90,170,255", 0.6);
+        for (const [k, c] of [[1, "#10318a"], [0.86, "#1f5fd8"], [0.66, "#4fa0ff"], [0.42, "#a8deff"]]) pxDisc(ctx, x + (1 - k) * r * 0.4, y - (1 - k) * r * 0.45, r * k, c);
+        pxDisc(ctx, x - r * 0.35, y - r * 0.4, Math.max(1.5, r * 0.16), "#ffffff");
+        // 구슬 둘레를 도는 작은 반짝이 2개
+        for (let i = 0; i < 2; i++) { const a = w.time * 3 + i * Math.PI; pxPlus(ctx, x + Math.cos(a) * r * 1.6, y + Math.sin(a) * r * 0.6, 3, "#cfeeff"); }
       },
       steps: [
         {
@@ -164,15 +172,15 @@
           launch(w, o) { w.tween(o, { vib: 5 }, 0.35, "in"); },
           update(w) {
             const o = w.orb;
-            if (o.fly) w.spawn({ type: "glow", x: o.x, y: o.y, size: 14, size1: 0, life: 0.3, color: "120,190,255" });
+            if (o.fly) { w.spawn({ type: "glow", x: o.x, y: o.y, size: 12, size1: 0, life: 0.28, color: "120,190,255" }); if (Math.random() < 0.6) w.spawn({ type: "star", x: o.x + rand(-6, 6), y: o.y + rand(-6, 6), size: 4, life: 0.3, color: "200,235,255" }); }
           },
         },
         {
-          id: "squash", name: { en: "Absorb Squash", ko: "흡수 찌그러짐" }, param: "stop 80ms · ×1.25",
+          id: "squash", name: { en: "Absorb Squash", ko: "흡수 찌그러짐" }, param: "stop 80ms · ×1.2",
           cap: { en: "*Freeze*, flash, *squash* the hero.", ko: "*멈칫*, 번쩍, 몸이 *꾹* 눌려요." },
           absorb(w, h) {
             w.hitstop(0.08);
-            h.flash = 1; h.sx = 1.28; h.sy = 0.74;
+            h.flash = 0.4; h.sx = 1.2; h.sy = 0.82;
           },
         },
         {
@@ -181,26 +189,29 @@
           absorb(w) { w.aura = 1.8; },
           update(w, dt) {
             if ((w.aura -= dt) <= 0) return;
-            const h = w.hero;
-            for (let i = 0; i < 3; i++) w.spawn({ type: "glow", under: true, x: h.x + rand(-34, 34), y: h.gy - rand(0, 140), vy: rand(-260, -120), size: rand(14, 24), size1: 0, life: 0.5, color: pick(["80,160,255", "160,220,255"]) });
+            const h = w.hero, k = Math.min(1, w.aura);
+            // 몸 둘레에서 솟는 픽셀 불꽃 (아래가 넓고 위로 갈수록 가늘게)
+            for (let i = 0; i < 6; i++) { const hgt = rand(16, 34), wid = rand(4, 8), col = pick(["#1f4fc0", "#2f6fe0", "#5aa8ff", "#a8deff"]);
+              w.spawn({ x: h.x + rand(-44, 44), y: h.gy - rand(0, 150), vy: rand(-300, -160), life: 0.5, draw: (ctx, p, kk) => { const s = 1 - kk; ctx.globalAlpha = k; ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(p.x - wid * s, p.y); ctx.lineTo(p.x, p.y - hgt * s); ctx.lineTo(p.x + wid * s, p.y); ctx.lineTo(p.x, p.y + wid * 0.8 * s); ctx.closePath(); ctx.fill(); } }); }
           },
         },
         {
           id: "burst", name: { en: "Energy Burst", ko: "기운 폭발" }, param: "rings 3 · bolts 6",
           cap: { en: "Blast *rings* and *lightning* out.", ko: "*고리*가 퍼지고 *번개*가 튀어요." },
           absorb(w, h, x, y) {
-            for (let i = 0; i < 3; i++) w.spawn({ type: "ring", flat: true, x, y: 286, size: 20, size1: 220 + i * 60, life: 0.6 + i * 0.15, w: 10, color: i ? "120,200,255" : "255,255,255" });
-            w.spawn({ type: "rays", under: true, x, y, n: 12, size: 50, size1: 230, vr: 1, life: 1.4, color: "110,180,255" });
+            for (let i = 0; i < 3; i++) w.spawn({ type: "ring", flat: true, x, y: 286, size: 20, size1: 200 + i * 55, life: 0.6 + i * 0.15, w: 9, color: i ? "120,200,255" : "235,248,255" });
+            w.spawn({ x, y, life: 0.2, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 60, k, "200,235,255") });
+            w.spawn({ type: "rays", x, y, n: 12, size: 50, size1: 200, vr: 1, life: 0.9, color: "110,180,255" });
             bolts(w, x, y, 6, ["150,210,255", "255,255,255"]);
-            w.shake(0.45); w.flash("170,210,255", 0.2);
+            w.shake(0.45);
           },
         },
         {
           id: "text", name: { en: "Stat Pop", ko: "능력치 팡" }, param: "text · stars 14",
           cap: { en: "Shout *POWER UP* and the stat *gain*.", ko: "*POWER UP*과 *오른 수치*를 크게." },
           absorb(w, h, x, y) {
-            w.spawn({ type: "text", x: 270, y: 56, text: "POWER UP!", size: 30, color: "#8fd0ff", life: 1.9 });
-            w.spawn({ type: "text", x: x + 110, y: y - 40, vy: -40, text: "ATK +50", size: 22, color: "#ffe066", life: 1.6 });
+            w.spawn({ type: "text", x: 300, y: 104, text: "POWER UP!", size: 33, color: "#8fd0ff", life: 1.9 });
+            w.spawn({ type: "text", x: x + 100, y: y - 34, vy: -40, text: "ATK +50", size: 22, color: "#ffe066", life: 1.6 });
             starBurst(w, x, y, 14, ["140,200,255", "255,255,255", "255,230,120"]);
           },
         },
