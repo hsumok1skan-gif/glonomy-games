@@ -1462,6 +1462,8 @@ const POSES = {
       hurt: { file: "foe-hurt-px.png", img: null, cw: 95, ch: 86, n: 39, from: 8, fps: 32, once: true, ax: 0.358, tip: [0.1, 0.4] },
       // 날아감: 3번째 장(맞아 꺾임)부터 공중에서 뒤로 넘어가기까지 (마지막 장 유지)
       fly: { file: "foe-fly-px.png", img: null, cw: 106, ch: 86, n: 31, from: 2, fps: 26, once: true, ax: 0.5, tip: [0.3, 0.3] },
+      // 일어나기: 엎어진 자세 → 선 자세 8장 (날아갔다 떨어진 뒤)
+      getup: { file: "foe-getup-px.png", img: null, cw: 91, ch: 86, n: 8, fps: 12, once: true, ax: 0.491, tip: [0.1, 0.5] },
       attack: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 32, from: 12, fps: 26, once: true, ax: 0.665, tip: [0.02, 0.5] } },
     f: {
     idle: { r: [0, 0, 77, 86], ax: 0.415, tip: [0.06, 0.6] },
@@ -1476,6 +1478,8 @@ function poseName(w, a) {
   const vx = a._pPrevOx != null ? (a.ox - a._pPrevOx) / Math.max(1e-3, w._rigDt || 1 / 60) : 0; a._pPrevOx = a.ox;
   if (a.key === "foe") {
     if (a.flying || a.oy < -10 || (!a.alive && Math.abs(a.rot || 0) > 0.2)) return "fly";
+    if (a.poseNow === "fly") a._getupAt = t;
+    if (a.alive !== false && t - (a._getupAt ?? -9) < 8 / 12 && a.poseNow !== "hurt") return "getup";
     if (a.tint > 0.15 || a.flash > 0.3 || a.vib > 0.5 || vx > 160) return "hurt";
     const h = w.hero; if (h && (h.tint > 0.3 || h.flash > 0.4)) return "attack";
     return "idle";
