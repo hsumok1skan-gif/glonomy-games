@@ -231,12 +231,20 @@ RECIPES.push(
         windup(w) { const c = w.hero; w.tween(c, { x: c.home - 26 }, 0.14, "out"); },
       },
       {
-        id: "arc", name: { en: "Slash Arc", ko: "궤적" },
-        cap: { en: "*Draw the swing.* Just a few frames.", ko: "휘두른 *궤적*을 그려요. 아주 잠깐만." },
+        id: "arc", name: { en: "Slash Wave", ko: "참격파" },
+        cap: { en: "Don't just swing. *Throw the slash* as a wave.", ko: "그냥 휘두르지 말고, *베기를 날려요*." },
         swing(w, at) {
-          // 머리 위에서 앞 아래로 떨어지는 초승달 (칼날 색)
-          w.spawn({ x: at.x - 34, y: at.y + 6, life: 0.2, draw: (ctx, p, k) => pxCrescent(ctx, p.x, p.y, 62, -2.1, 0.85, 13, k, "190,245,255") });
-          for (let i = 0; i < 5; i++) { const a = rand(-1.4, 0.6); w.spawn({ type: "spark", x: at.x - 34 + Math.cos(a) * 62, y: at.y + 6 + Math.sin(a) * 62, vx: Math.cos(a + 1.57) * rand(80, 200), vy: Math.sin(a + 1.57) * rand(80, 200), drag: 5, life: rand(0.12, 0.22), size: 2, color: "190,245,255" }); }
+          // 칼끝 궤적 + 앞으로 날아가는 거대한 초승달 참격파
+          w.spawn({ x: at.x - 34, y: at.y + 6, life: 0.16, draw: (ctx, p, k) => pxCrescent(ctx, p.x, p.y, 62, -2.1, 0.85, 12, k, "190,245,255") });
+          w.spawn({ x: at.x - 40, y: at.y - 4, vx: 620, life: 0.42, draw: (ctx, p, k) => pxWave(ctx, p.x, p.y, 66 + k * 26, 27, k) });
+          for (let i = 0; i < 16; i++) { const a = rand(-1.2, 1.2); w.spawn({ type: "spark", x: at.x - 40 + Math.cos(a) * 60, y: at.y - 4 + Math.sin(a) * 60, vx: rand(250, 700), vy: Math.sin(a) * rand(60, 220), drag: 4, life: rand(0.18, 0.36), size: rand(2, 3.4), color: pick(["160,235,255", "255,255,255", "90,170,255"]) }); }
+          w.shake(0.14, 1);
+        },
+        hit(w, at) {
+          // 몸을 사선으로 가르는 하얀 선 + 선을 따라 튀는 불티
+          const ang = -0.9;
+          w.spawn({ x: at.x + 30, y: at.y - 6, life: 0.32, draw: (ctx, p, k) => pxCutLine(ctx, p.x, p.y, 120, ang, k) });
+          for (let i = 0; i < 10; i++) { const t = rand(-55, 55); w.spawn({ type: "spark", x: at.x + 30 + Math.cos(ang) * t, y: at.y - 6 + Math.sin(ang) * t, vx: rand(-80, 260), vy: rand(-260, 120), drag: 5, life: rand(0.2, 0.4), size: 2.5, color: "200,245,255" }); }
         },
       },
       {

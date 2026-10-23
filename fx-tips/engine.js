@@ -920,6 +920,12 @@ class World {
       a.tint = Math.max(0, a.tint - dt * 2.5);
       a.blink = Math.max(0, a.blink - dt);
       a.barShake = Math.max(0, a.barShake - dt);
+      // 체력바: 깎인 만큼 하얗게 번쩍 → 노란 잔상이 잠깐 버텼다가 천천히 따라 내려감 (모든 효과 공통)
+      if (a.maxHp) {
+        if (a._hpPrev != null && a.hp < a._hpPrev) { a.barFlash = 0.14; a.barFlashFrom = a._hpPrev; if (!a.manualLag) a.lagWait = 0.38; a.barShake = Math.max(a.barShake, 0.15); }
+        a._hpPrev = a.hp; a.barFlash = Math.max(0, (a.barFlash || 0) - dt);
+        if (!a.manualLag) { if (a.hpLag < a.hp) a.hpLag = a.hp; if (a.lagWait > 0) a.lagWait -= dt; else a.hpLag += (a.hp - a.hpLag) * Math.min(1, dt * 3.2); }
+      }
       if (a.flying) {
         a.x += a.vx * dt; a.oy += a.vy * dt; a.vy += 1500 * dt; a.rot += a.spin * dt;
         if (a.land) {
@@ -1338,6 +1344,28 @@ function pxCrescent(ctx, x, y, r, a0, a1, th, k, c = "255,236,200") {
     for (let i = 0; i <= n; i++) { const u = i / n, ang = a0 + (end - a0) * u, w = th * kk * fade * Math.sin(Math.PI * Math.min(1, u * 1.05)); if (w < 0.6) continue; pxDisc(ctx, x + Math.cos(ang) * r, y + Math.sin(ang) * r, w / 2, ctx.fillStyle); }
   }
 }
+// 날아가는 참격파(월아천충 느낌): 두꺼운 초승달, 날 끝은 흰빛, 속은 짙은 색, 뒤로 잔상
+function pxWave(ctx, x, y, r, th, k, c = "120,215,255", dark = "16,26,64") {
+  const fade = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3; if (fade <= 0) return;
+  const a0 = -1.25, a1 = 1.25, n = 30, band = (rr, t, col, off = 0) => { ctx.fillStyle = col; for (let i = 0; i <= n; i++) { const u = i / n, ang = a0 + (a1 - a0) * u, w = t * fade * Math.pow(Math.sin(Math.PI * u), 0.6); if (w < 0.6) continue; pxDisc(ctx, x - off + Math.cos(ang) * rr, y + Math.sin(ang) * rr, w / 2, col); } };
+  for (let g = 3; g >= 1; g--) { ctx.globalAlpha = 0.18 * fade * (4 - g) / 3; band(r - 2, th, `rgb(${pxShade(c, 0.6)})`, g * 14); }
+  ctx.globalAlpha = 1;
+  band(r, th * 1.15, `rgb(${pxShade(c, 0.45)})`);
+  band(r + th * 0.12, th * 0.85, `rgb(${pxShade(c, 0.9)})`);
+  band(r - th * 0.18, th * 0.5, `rgb(${dark})`);
+  band(r + th * 0.36, th * 0.32, `rgb(${pxShade(c, 1.5)})`);
+  band(r + th * 0.46, th * 0.14, "rgb(255,255,255)");
+}
+// 몸을 가로지르는 베인 선: 하얗게 그어졌다가 양쪽으로 갈라지며 사라짐
+function pxCutLine(ctx, x, y, len, ang, k, c = "190,245,255") {
+  const grow = Math.min(1, k * 6), fade = k < 0.5 ? 1 : 1 - (k - 0.5) / 0.5; if (fade <= 0) return;
+  const dx = Math.cos(ang), dy = Math.sin(ang), L = len * grow, nx = -dy, ny = dx, gap = k * 6;
+  ctx.lineCap = "butt";
+  for (const s of [-1, 1]) {
+    ctx.strokeStyle = `rgb(${pxShade(c, 0.7)})`; ctx.lineWidth = 5 * fade; ctx.beginPath(); ctx.moveTo(x - dx * L / 2 + nx * gap * s, y - dy * L / 2 + ny * gap * s); ctx.lineTo(x + dx * L / 2 + nx * gap * s, y + dy * L / 2 + ny * gap * s); ctx.stroke();
+  }
+  ctx.strokeStyle = "#ffffff"; ctx.lineWidth = Math.max(1.5, 3 * fade); ctx.beginPath(); ctx.moveTo(x - dx * L / 2, y - dy * L / 2); ctx.lineTo(x + dx * L / 2, y + dy * L / 2); ctx.stroke();
+}
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }
 function pixFxBegin(ctx, OM, r) {
@@ -1737,15 +1765,28 @@ function drawShot(ctx, p) {
   }
   ctx.fillStyle = p.color || "#cbd5e1"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r || 3, 0, TAU); ctx.fill();
 }
+// 픽셀 체력바: 테두리 + 빨강(현재) + 노랑(잔상) + 흰색(방금 깎인 부분 번쩍), 위 밝은 줄·아래 어두운 줄
+function hpBarPx(ctx, a, x, y, bw, bh) {
+  const f = v => Math.round(bw * Math.max(0, Math.min(a.maxHp, v)) / a.maxHp);
+  x = Math.round(x); y = Math.round(y);
+  ctx.fillStyle = "#07080d"; ctx.fillRect(x - 3, y - 3, bw + 6, bh + 6);
+  ctx.fillStyle = "#3a3f52"; ctx.fillRect(x - 2, y - 2, bw + 4, bh + 4);
+  ctx.fillStyle = "#14161f"; ctx.fillRect(x, y, bw, bh);
+  const hp = f(a.hp), lag = f(Math.max(a.hp, a.hpLag ?? a.hp));
+  if (lag > hp) { ctx.fillStyle = "#f5b82e"; ctx.fillRect(x + hp, y, lag - hp, bh); ctx.fillStyle = "#ffe08a"; ctx.fillRect(x + hp, y, lag - hp, 2); }
+  if (a.barFlash > 0) { const from = f(a.barFlashFrom ?? a.hp); if (from > hp) { ctx.fillStyle = "#ffffff"; ctx.fillRect(x + hp, y - 1, from - hp, bh + 2); } }
+  if (hp > 0) {
+    ctx.fillStyle = "#d8322f"; ctx.fillRect(x, y, hp, bh);
+    ctx.fillStyle = "#ff6b5a"; ctx.fillRect(x, y, hp, 2);
+    ctx.fillStyle = "#8f1a1d"; ctx.fillRect(x, y + bh - 2, hp, 2);
+  }
+}
 function drawBar(ctx, a, lag) {
   if (!a.maxHp || !a.alive) return;
   const bw = 74, bh = 9;
   let x = a.x - bw / 2, y = a.gy - (a.top ? a.h / 2 : a.h) - 22;
   if (a.barShake > 0) { x += rand(-3, 3); y += rand(-2, 2); }
-  ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.beginPath(); ctx.roundRect(x - 3, y - 3, bw + 6, bh + 6, 6); ctx.fill();
-  if (lag) { ctx.fillStyle = "#facc15"; ctx.fillRect(x, y, bw * Math.max(0, a.hpLag) / a.maxHp, bh); }
-  ctx.fillStyle = "#ef4444"; ctx.fillRect(x, y, bw * Math.max(0, a.hp) / a.maxHp, bh);
-  ctx.fillStyle = "rgba(255,255,255,0.25)"; ctx.fillRect(x, y, bw * Math.max(0, a.hp) / a.maxHp, 3);
+  hpBarPx(ctx, a, x, y, bw, bh);
 }
 if (!CanvasRenderingContext2D.prototype.roundRect) {
   CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
@@ -1836,13 +1877,12 @@ function drawCube(ctx, gx, gy, hgt, cols, sx = 1, sy = 1) {
 }
 function drawBigBar(ctx, a, lag) {
   const bw = 190, bh = 13, x = a.x - bw / 2 + (a.barShake > 0 ? rand(-3, 3) : 0), y = a.gy - a.h - 34;
-  ctx.fillStyle = "rgba(0,0,0,0.65)"; ctx.beginPath(); ctx.roundRect(x - 3, y - 3, bw + 6, bh + 6, 5); ctx.fill();
-  if (lag) { ctx.fillStyle = "#facc15"; ctx.fillRect(x, y, bw * Math.max(0, a.hpLag) / a.maxHp, bh); }
-  ctx.fillStyle = "#ef4444"; ctx.fillRect(x, y, bw * Math.max(0, a.hp) / a.maxHp, bh);
+  hpBarPx(ctx, a, x, y, bw, bh);
   ctx.font = "700 12px 'JetBrains Mono', monospace"; ctx.fillStyle = "rgba(255,255,255,0.75)"; ctx.textAlign = "right";
   ctx.fillText(`HP ${Math.max(0, Math.round(a.hp))}/${a.maxHp}`, x + bw, y - 7);
 }
 function lagBar(a, dt) {
+  a.manualLag = true;
   if (a.hpLag < a.hp) a.hpLag = a.hp;
   if (a.lagWait > 0) a.lagWait -= dt; else a.hpLag += (a.hp - a.hpLag) * Math.min(1, dt * 3.5);
 }
