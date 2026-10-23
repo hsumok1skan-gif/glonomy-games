@@ -160,12 +160,12 @@
 
     /* ───────── 적 처치 폭발 ───────── */
     {
-      id: "spot-death-pop", cat: "combat", view: "3d", polished: true, hookDur: 3.2,
+      id: "spot-death-pop", cat: "combat", view: "3d", polished: true, hookDur: 3.4,
       title: { en: "Give every kill a *bang*", ko: "처치하는 순간 *펑* 터뜨리기" },
       intro: { en: "One cut and it just *blinks out*.", ko: "한 번 베면 그냥 *뿅* 없어져요." },
-      interval: 2.6, stepDur: 3.8,
+      interval: 3.0, stepDur: 3.8,
       setup(w) {
-        w.foe = w.actor("foe", { home: 270, h: 185, gy: G - 6 });
+        w.foe = w.actor("foe", { home: 235, h: 185, gy: G - 6 });
         w.swell = 0;
       },
       fire(w) {
@@ -174,17 +174,26 @@
         // 대각선 베기 자국 (RAW부터 있음)
         w.spawn({ x: cx, y: cy, life: 0.22, draw: (ctx, p, k) => pxCrescent(ctx, p.x - 30, p.y + 40, 95, -1.75, -0.2, 9, k, "255,240,220") });
         f.ox = 6; f.flash = 0.5;
-        const pop = () => {
-          f.alive = false; f.alpha = 0;
-          w.spawn({ type: "smoke", x: cx, y: cy, size: 16, size1: 30, life: 0.35, color: "70,40,40" });
-          w.emit("pop", cx, cy);
-          w.after(1.1, () => { w.respawn(f); w.swell = 0; });
+        // 날려 보냄 → 바닥에 떨어지는 순간 터짐
+        const launch = () => {
+          w.emit("launch", f, cx, cy);
+          f.sx = f.sy = 1; w.swell = 0; f.burn = w.on("swell") ? 1 : 0;
+          w.fly(f, 70, -400, 0, true); w.boomPending = true;
         };
-        if (w.on("swell")) { w.emit("swell", f, cx, cy); w.tween(w, { swell: 1 }, 0.6, "in", pop); } else w.after(0.22, pop);
+        if (w.on("swell")) { w.emit("swell", f, cx, cy); w.tween(w, { swell: 1 }, 0.6, "in", launch); } else w.after(0.18, launch);
       },
       update(w) {
         const f = w.foe;
-        if (f.alive && w.swell > 0) { f.sx = 1 + w.swell * 0.26; f.sy = 1 + w.swell * 0.18; f.burn = w.swell * 1.6; f.vib = w.swell * 4; f.vibAxis = "x"; if (w.swell > 0.86) f.flash = 0.7; }
+        if (w.boomPending && !f.flying) {
+          // 떨어진 자리에서 터짐
+          w.boomPending = false; const x = f.x, y = f.gy - 50;
+          f.alive = false; f.alpha = 0; f.burn = 0;
+          w.spawn({ type: "smoke", x, y, size: 16, size1: 30, life: 0.35, color: "70,40,40" });
+          w.emit("pop", x, y);
+          w.after(1.1, () => { w.respawn(f); w.swell = 0; });
+        }
+        if (f.alive && f.flying && f.burn > 0) { f.burn = 1.4; if (Math.random() < 0.6) w.spawn({ type: "spark", x: f.x + rand(-30, 30), y: f.gy + f.oy - rand(20, 90), vx: rand(-60, 60), vy: rand(-120, -40), drag: 2, life: 0.35, size: 2, color: "255,170,60" }); }
+        if (f.alive && !f.flying && w.swell > 0) { f.sx = 1 + w.swell * 0.26; f.sy = 1 + w.swell * 0.18; f.burn = w.swell * 1.6; f.vib = w.swell * 4; f.vibAxis = "x"; if (w.swell > 0.86) f.flash = 0.7; }
       },
       drawFloor(w, ctx) {
         const g = ctx.createRadialGradient(270, 200, 10, 270, 200, 330);
@@ -210,9 +219,10 @@
         {
           id: "stop", name: { en: "Kill Freeze", ko: "처치 정지" }, param: "stop 130ms · flash",
           cap: { en: "*Hold* the final frame. Flash it *bright*.", ko: "마지막 순간 *딱* 멈추고 *번쩍*." },
+          launch(w, f, x, y) { w.hitstop(0.12); f.flash = 0.45; w.shake(0.3); },
           pop(w, x, y) {
-            w.hitstop(0.13); w.zoomPunch(0.08); w.shake(0.5);
-            w.spawn({ x, y, life: 0.2, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 70, k, "255,220,170") });
+            w.hitstop(0.1); w.zoomPunch(0.08); w.shake(0.55);
+            w.spawn({ x, y, life: 0.22, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 74, k, "255,220,170") });
           },
         },
         {
@@ -248,7 +258,8 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hiss + crunch + boom",
           cap: { en: "A *hiss* builds, a *crunch*, a low *boom*.", ko: "*쉬익* 차오르다 *와작*, *쿵*." },
           swell(w) { w.play(() => nz({ type: "bandpass", f: 600, f2: 4000, q: 3, dur: 0.6, vol: 0.2 })); },
-          pop(w) { w.sfx.crit(); w.sfx.boom(); },
+          launch(w) { w.sfx.crit(); },
+          pop(w) { w.sfx.boom(); w.sfx.land(); },
         },
       ],
     },
