@@ -1455,7 +1455,9 @@ const POSES = {
     hurt: { r: [378, 0, 61, 65], ax: 0.488, tip: [0.959, 0.523] },
     dash: { r: [441, 0, 59, 53], ax: 0.533, tip: [0.992, 0.415] },
     cast: { r: [502, 0, 68, 68], ax: 0.384, tip: [0.993, 0.174] } } },
-  foe: { file: "foe-px.png", img: null, pixel: true, f: {
+  foe: { file: "foe-px.png", img: null, pixel: true,
+    anims: { idle: { file: "foe-idle-px.png", img: null, cw: 81, ch: 86, n: 25, fps: 12, ax: 0.416, tip: [0.06, 0.6] } },
+    f: {
     idle: { r: [0, 0, 77, 86], ax: 0.415, tip: [0.06, 0.6] },
     windup: { r: [79, 0, 83, 85], ax: 0.488, tip: [0.1, 0.4] },
     attack: { r: [164, 0, 113, 79], ax: 0.536, tip: [0.02, 0.58] },
