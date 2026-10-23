@@ -307,12 +307,13 @@ const FX = { style: "art", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 21
   bgFloor: 0.69,   // 배경 그림에서 바닥선 높이(위에서부터 비율)
   bgDim: 0.28,     // 배경을 얼마나 어둡게 눌러 둘지(효과가 돋보이게)
   rig: false,      // 관절 부품으로 움직이기 (시험용, 기본은 끔)
+  pixelFx: 2,      // 효과를 픽셀로: 월드 몇 칸을 1픽셀로 (0이면 매끈)
   pixel: 0,        // 픽셀 크기(1픽셀 = 화면 몇 칸). 0이면 매끈하게
   pixelLevels: 7,  // 색 단계 수(채널마다). 적을수록 픽셀 아트 느낌
 };
 // FX.style = "art" 일 때 쓰는 기본 그림 (FX Lab 기본 캐릭터·총·배경)
 const FX_ART_BASE = (() => { try { const s = document.currentScript && document.currentScript.src; if (s) return s.replace(/engine\.js.*$/, "") + "art/"; } catch (e) {} return "https://glonomy.com/fx-tips/art/"; })();
-const FX_ART = { images: { hero: FX_ART_BASE + "hero.webp", foe: FX_ART_BASE + "foe.webp", gun: FX_ART_BASE + "gun.webp", bg: FX_ART_BASE + "bg-ruins.webp" },
+const FX_ART = { images: { hero: FX_ART_BASE + "hero.webp", foe: FX_ART_BASE + "foe.webp", gun: FX_ART_BASE + "gun.webp", bg: FX_ART_BASE + "bg-ruins-px.png" },
   hand: [0.44, 0.73], gunGrip: [0.22, 0.5], gunMuzzle: [1.0, 0.27] };
 const FX_DOTPT = { hand: [0.27, 0.62], gunGrip: [0.28, 0.72], gunMuzzle: [0.98, 0.28] };
 const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? FX_ART[k] : FX_DOTPT[k]);
@@ -988,6 +989,7 @@ class World {
     ctx.imageSmoothingEnabled = sm;
   }
   drawRaw(ctx) {
+    const OM = ctx.getTransform();
     const v = this.view, [rx, ry, rw, rh] = v.r;
     ctx.save();
     ctx.beginPath(); ctx.rect(rx, ry, rw, rh); ctx.clip();
@@ -1001,7 +1003,7 @@ class World {
     ctx.translate(-270 - this.cam.x, -180 - this.cam.y);
 
     // 배경 그림 (카메라와 같이 흔들림). 바닥선이 G에 오도록 맞춤
-    if (art) { const c = SPR.bg.c, bw = 660, bh = bw * c.height / c.width; ctx.drawImage(c, 270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.fillStyle = "rgba(4,6,12," + FX.bgDim + ")"; ctx.fillRect(270 - bw / 2, G - FX.bgFloor * bh, bw, bh); }
+    if (art) { const c = SPR.bg.c, bw = 660, bh = bw * c.height / c.width, sm0 = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(c, 270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.fillStyle = "rgba(4,6,12," + FX.bgDim + ")"; ctx.fillRect(270 - bw / 2, G - FX.bgFloor * bh, bw, bh); ctx.imageSmoothingEnabled = sm0; }
     // 바닥
     if (this.R.drawFloor) this.R.drawFloor(this, ctx);
     else if (!art) {
@@ -1013,11 +1015,14 @@ class World {
     for (const a of this.actors) drawShadow(ctx, a);
     if (this.R.drawBack) this.R.drawBack(this, ctx);
     for (const a of this.actors) drawActor(ctx, a, this);
-    if (this.R.drawFront) this.R.drawFront(this, ctx);
-    for (const p of this.shots) drawShot(ctx, p);
-    for (const p of this.parts) if (!p.under) drawPart(ctx, p);
-    drawStudioHero(ctx,this);
-    if (window.FXDirector) FXDirector.overlay(ctx,this);
+    // 효과 층: 픽셀 그림이면 작은 화면에 따로 그려 경계를 또렷하게 + 색을 단계로 끊어서 얹음
+    const fx = FX.pixelFx && FX._art && FX._art.hero ? pixFxBegin(ctx, OM, v.r) : null, fc = fx || ctx;
+    if (this.R.drawFront) this.R.drawFront(this, fc);
+    for (const p of this.shots) drawShot(fc, p);
+    for (const p of this.parts) if (!p.under) drawPart(fc, p);
+    drawStudioHero(fc,this);
+    if (window.FXDirector) FXDirector.overlay(fc,this);
+    if (fx) pixFxEnd(ctx);
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
     // 발광(블룸): 이펙트(파티클·탄)만 따로 그려 흐리게 겹침. 켜진 레이어가 많을수록 강해져요
     const N = this.R.steps.length, glowA = N && this.n > 0 && !this.bare ? 0.9 * this.n / N : 0;
@@ -1228,6 +1233,45 @@ function drawShadow(ctx, a) {
    r: 그림 속 위치 [x, y, w, h] · pv: 부모에 꽂히는 관절(비율) · end: 다음 관절(비율) · pts: 자식이 꽂히는 곳
    chain: [부품, 부모, 꽂는 곳(null=허리, "end"=부모 끝, 이름=부모 pts)] · 동작 = 뼈마다 향하는 방향(도, 0=오른쪽, 90=아래) */
 const PIXBUF = { c: null, x: null };
+// 효과 층 픽셀화 (월드 2칸 = 1픽셀)
+const PFX = { c: null, x: null };
+function pixFxBegin(ctx, OM, r) {
+  const M = ctx.getTransform(), unit = Math.hypot(M.a, M.b) * FX.pixelFx;
+  const x0 = OM.a * r[0] + OM.e, y0 = OM.d * r[1] + OM.f, w = OM.a * r[2], h = OM.d * r[3];
+  const W = Math.max(1, Math.ceil(w / unit)), H = Math.max(1, Math.ceil(h / unit));
+  const c = PFX.c || (PFX.c = document.createElement("canvas")), x = PFX.x || (PFX.x = c.getContext("2d", { willReadFrequently: true }));
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, W, H); x.globalAlpha = 1; x.globalCompositeOperation = "source-over";
+  x.setTransform(M.a / unit, M.b / unit, M.c / unit, M.d / unit, (M.e - x0) / unit, (M.f - y0) / unit);
+  c.fxLogicalWidth = (ctx.canvas.fxLogicalWidth || 540) / unit * (ctx.canvas.width / (ctx.canvas.fxLogicalWidth || 540));
+  PFX.place = [x0, y0, W * unit, H * unit];
+  return x;
+}
+function pixFxEnd(ctx) {
+  const c = PFX.c, x = PFX.x, W = c.width, H = c.height;
+  x.setTransform(1, 0, 0, 1, 0, 0);
+  const im = x.getImageData(0, 0, W, H), d = im.data, PL = pixPalette(), cache = PIXBUF.cache || (PIXBUF.cache = new Map());
+  // 가장자리에서 얼마나 안쪽인지(0=테두리, 1, 2=속) → 테두리는 어둡게, 속은 밝게: 픽셀 아트식 명암 계단
+  const on = new Uint8Array(W * H); for (let i = 0, j = 0; j < on.length; i += 4, j++) on[j] = d[i + 3] >= 72 ? 1 : 0;
+  const depth = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) for (let x2 = 0; x2 < W; x2++) { const j = y * W + x2; if (!on[j]) continue;
+    let dd = 3; for (let r2 = 1; r2 <= 2 && dd === 3; r2++) for (const [ox, oy] of [[r2, 0], [-r2, 0], [0, r2], [0, -r2]]) { const X = x2 + ox, Y = y + oy; if (X < 0 || Y < 0 || X >= W || Y >= H || !on[Y * W + X]) { dd = r2 - 1; break; } }
+    depth[j] = dd; }
+  for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+    if (!on[j]) { d[i + 3] = 0; continue; }
+    const a = d[i + 3], dp = depth[j], k = (a < 150 ? 0.8 : 1) * (dp === 0 ? 0.58 : dp === 1 ? 0.85 : 1.12);
+    const r = Math.min(255, d[i] * k), g = Math.min(255, d[i + 1] * k), b = Math.min(255, d[i + 2] * k);
+    const key = (r >> 3) << 10 | (g >> 3) << 5 | (b >> 3);
+    let cc = cache.get(key);
+    if (cc === undefined) { let best = 1e9; for (const p of PL) { const dr = r - p[0], dg = g - p[1], db = b - p[2], e = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11; if (e < best) { best = e; cc = p; } } cache.set(key, cc); }
+    d[i] = cc[0]; d[i + 1] = cc[1]; d[i + 2] = cc[2]; d[i + 3] = 255;
+  }
+  x.putImageData(im, 0, 0);
+  const T = ctx.getTransform(); ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  const [px, py, pw, ph] = PFX.place; ctx.drawImage(c, px, py, pw, ph);
+  ctx.imageSmoothingEnabled = sm; ctx.restore(); ctx.setTransform(T);
+}
 // 픽셀 팔레트: 어두운 배경색 몇 개 + 색마다 어두움→밝음 4~5단계 (픽셀 아트처럼 끊어지는 명암)
 let PIXPAL = null;
 function pixPalette() {
@@ -1386,21 +1430,21 @@ function drawRigActor(ctx, a, w) {
 /* ───────── 동작 컷 (기본 그림: 동작별 완성 그림을 갈아 끼움) ─────────
    r: 그림 속 위치 · ax: 몸통 가운데(가로 비율) · tip: 손끝/총구(비율) */
 const POSES = {
-  hero: { file: "hero-poses.webp", img: null, f: {
-    idle: { r: [0, 0, 349, 458], ax: 0.481, tip: [0.845, 0.527] },
-    aim: { r: [357, 0, 426, 458], ax: 0.381, tip: [0.995, 0.182] },
-    recoil: { r: [791, 0, 395, 446], ax: 0.399, tip: [0.96, 0.08] },
-    windup: { r: [1194, 0, 351, 464], ax: 0.449, tip: [0.897, 0.195] },
-    slash: { r: [1553, 0, 548, 387], ax: 0.364, tip: [0.739, 0.611] },
-    hurt: { r: [2109, 0, 392, 389], ax: 0.463, tip: [0.883, 0.532] },
-    dash: { r: [2509, 0, 406, 330], ax: 0.548, tip: [0.998, 0.405] },
-    cast: { r: [2923, 0, 415, 394], ax: 0.38, tip: [0.945, 0.18] } } },
-  foe: { file: "foe-poses.webp", img: null, f: {
-    idle: { r: [0, 0, 338, 563], ax: 0.492, tip: [0.12, 0.5] },
-    windup: { r: [346, 0, 392, 571], ax: 0.471, tip: [0.15, 0.3] },
-    attack: { r: [746, 0, 519, 514], ax: 0.476, tip: [0.02, 0.55] },
-    hurt: { r: [1273, 0, 375, 525], ax: 0.493, tip: [0.2, 0.4] },
-    fly: { r: [1656, 0, 477, 515], ax: 0.593, tip: [0.3, 0.3], lift: 0.25 } } },
+  hero: { file: "hero-px.png", img: null, pixel: true, f: {
+    idle: { r: [0, 0, 62, 75], ax: 0.46, tip: [0.847, 0.533] },
+    aim: { r: [64, 0, 75, 73], ax: 0.357, tip: [0.993, 0.171] },
+    recoil: { r: [141, 0, 75, 78], ax: 0.419, tip: [0.86, 0.115] },
+    windup: { r: [218, 0, 60, 78], ax: 0.459, tip: [0.908, 0.179] },
+    slash: { r: [280, 0, 96, 64], ax: 0.313, tip: [0.651, 0.586] },
+    hurt: { r: [378, 0, 61, 65], ax: 0.488, tip: [0.959, 0.523] },
+    dash: { r: [441, 0, 59, 53], ax: 0.533, tip: [0.992, 0.415] },
+    cast: { r: [502, 0, 68, 68], ax: 0.384, tip: [0.993, 0.174] } } },
+  foe: { file: "foe-px.png", img: null, pixel: true, f: {
+    idle: { r: [0, 0, 77, 86], ax: 0.415, tip: [0.06, 0.6] },
+    windup: { r: [79, 0, 83, 85], ax: 0.488, tip: [0.1, 0.4] },
+    attack: { r: [164, 0, 113, 79], ax: 0.536, tip: [0.02, 0.58] },
+    hurt: { r: [279, 0, 74, 78], ax: 0.471, tip: [0.2, 0.4] },
+    fly: { r: [355, 0, 95, 78], ax: 0.583, tip: [0.3, 0.3], lift: 0.25 } } },
 };
 function poseSet(a) { if (a.top || !FX._art || FX.poses === false) return null; const P = POSES[a.key]; return P && P.img && FX._art[a.key] ? P : null; }
 function poseName(w, a) {
@@ -1448,7 +1492,7 @@ function drawPoseActor(ctx, a, w) {
   if (!RIG_BUF.c) { RIG_BUF.c = document.createElement("canvas"); RIG_BUF.x = RIG_BUF.c.getContext("2d"); }
   const c = RIG_BUF.c, x = RIG_BUF.x;
   if (c.width !== W * sc || c.height !== H * sc) { c.width = W * sc; c.height = H * sc; }
-  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); x.globalCompositeOperation = "source-over";
+  x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); x.globalCompositeOperation = "source-over"; x.imageSmoothingEnabled = !P.pixel;
   const k = a.h / idle.r[3], dir = a.key === "foe" ? -1 : 1;
   const frame = (nm, age, alpha, extraDx) => {
     const f = P.f[nm] || idle, fw = f.r[2] * k, fh = f.r[3] * k, lift = (f.lift || 0) * a.h;
@@ -1468,7 +1512,8 @@ function drawPoseActor(ctx, a, w) {
   x.setTransform(1, 0, 0, 1, 0, 0);
   const over = (col, al) => { if (al <= 0) return; x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
   over("#ffffff", a.flash); over("#ef4444", a.tint * 0.85); over("#fb923c", a.burn > 0 ? 0.35 : 0);
-  ctx.drawImage(c, -W / 2, -(H - 4), W, H);
+  const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = !P.pixel; ctx.shadowBlur = 0;
+  ctx.drawImage(c, -W / 2, -(H - 4), W, H); ctx.imageSmoothingEnabled = sm;
   // 손끝·총구 위치를 기억 (총알·주먹 효과가 여기서 나감)
   const { left, top, fw, fh, f, m, lift } = cur;
   a.rigHand = { x: (m.dx * dir) + left + f.tip[0] * fw, y: -lift + (top + f.tip[1] * fh) * m.sy, ang: name === "recoil" ? -0.35 : 0 };
