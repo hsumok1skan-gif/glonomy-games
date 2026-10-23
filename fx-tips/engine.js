@@ -1627,15 +1627,21 @@ const POSES = {
 function poseSet(a) { if (a.top || !FX._art || FX.poses === false) return null; const P = POSES[a.key]; return P && P.img && FX._art[a.key] ? P : null; }
 function poseName(w, a) {
   const t = w.time, rs = w.rigState || {};
-  const px = a.x + a.ox, vx = a._pPrevOx != null ? (px - a._pPrevOx) / Math.max(1e-3, w._rigDt || 1 / 60) : 0; a._pPrevOx = px;
+  // 실제 이동(x)과 맞아서 밀린 것(ox)을 따로 봄: 달리기·돌진은 이동으로만, 휘청은 밀림으로만
+  const dtp = Math.max(1e-3, w._rigDt || 1 / 60);
+  const vx = a._pPrevX != null ? (a.x - a._pPrevX) / dtp : 0; a._pPrevX = a.x;
+  const vox = a._pPrevOx != null ? (a.ox - a._pPrevOx) / dtp : 0; a._pPrevOx = a.ox;
   if (a.key === "foe") {
     if (a.flying || a.oy < -10 || (!a.alive && Math.abs(a.rot || 0) > 0.2)) return "fly";
     // 떨어진 뒤: 잠깐 엎어져 있다가(0.45초) 일어남
     if (a.poseNow === "fly") a._getupAt = t + (a.land ? 0.45 : 0);
     if (t < (a._getupAt ?? -9)) return "down";
     if (t - (a._getupAt ?? -9) < 8 / 12 && a.poseNow !== "hurt") return "getup";
-    if (a.tint > 0.15 || a.flash > 0.3 || (a.vib > 0.5 && !(a.burn > 0)) || vx > 160) return "hurt";
-    const h = w.hero; if (h && (h.tint > 0.3 || h.flash > 0.4)) return "attack";
+    // 적이 주인공에게 달려들면 공격 자세, 주인공이 맞으면 발톱 휘두르기
+    const h = w.hero;
+    if (h && (h.tint > 0.3 || h.flash > 0.4) && !(a.tint > 0.15)) return "attack";
+    if (vx < -160) return "windup";
+    if (a.tint > 0.15 || a.flash > 0.3 || (a.vib > 0.5 && !(a.burn > 0)) || vox > 160) return "hurt";
     return "idle";
   }
   if (a.tint > 0.25 || (a.flash > 0.45 && !w.gun)) return "hurt";
@@ -1648,8 +1654,8 @@ function poseName(w, a) {
   const since = t - (rs.fire ?? -9), hitAgo = t - (rs.hit ?? -9), thr = t - (rs.thr ?? -9);
   const sword = RIG_MELEE.test(w.R.id);
   const hitNow = rs.hit != null && rs.hit >= (rs.fire ?? -9) - 0.01;
-  if (hitNow && hitAgo >= 0 && hitAgo < 0.38) return sword ? "slash" : "dash";
-  if (thr >= 0 && thr < 0.4) return "cast";
+  if (thr >= 0 && thr < 0.5) return "cast";
+  if (hitNow && hitAgo >= 0 && hitAgo < 0.38 && sword) return "slash";
   if (vx > 700) return "dash";
   if (Math.abs(vx) > 40) return "run";
   if (sword && since >= 0 && since < 0.8 && !hitNow) return "windup";

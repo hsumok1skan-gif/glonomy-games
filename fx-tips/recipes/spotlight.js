@@ -153,7 +153,8 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rise + chord + boom",
           cap: { en: "A rising *hum*, a *crash*, a bright *chord*.", ko: "*웅~* 차오르다 *콰광*, 밝은 *화음*." },
           charge(w) { w.play(() => tn({ type: "sawtooth", f: 110, f2: 660, dur: 0.8, vol: 0.12 })); },
-          reveal(w) { w.sfx.boom(); w.sfx.fanfare(); },
+          // 소리는 화면에 보이는 만큼만: 폭발 효과가 켜졌을 때만 쾅·팡파레, 아니면 카드 뒤집는 '탁'
+          reveal(w) { if (w.on("shock")) w.sfx.boom(); else w.sfx.tock && w.sfx.tock(); if (w.on("rarity")) w.sfx.fanfare(); },
         },
       ],
     },
