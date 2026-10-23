@@ -327,12 +327,12 @@ function fxLoadImages() {
   for (const k in RIGS) { RIGS[k].img = null; RIGS[k].k = 0; }
   FX._art = {}; for (const k in art) if (!user[k]) FX._art[k] = true;
   const IM = Object.assign({}, art, user);
-  for (const k in POSES) { POSES[k].img = null; if (FX._art[k] && FX.poses !== false) IM["pose_" + k] = FX_ART_BASE + POSES[k].file; }
+  for (const k in POSES) { POSES[k].img = null; if (FX._art[k] && FX.poses !== false) { IM["pose_" + k] = FX_ART_BASE + POSES[k].file; for (const a in POSES[k].anims || {}) { POSES[k].anims[a].img = null; IM["anim_" + k + "_" + a] = FX_ART_BASE + POSES[k].anims[a].file; } } }
   if (FX.rig) for (const k in RIGS) if (FX._art[k]) IM["rig_" + k] = FX_ART_BASE + RIGS[k].file;
   const keys = Object.keys(IM).filter(k => IM[k]);
   return Promise.all(keys.map(k => new Promise(res => {
     const im = new Image(); im.crossOrigin = "anonymous";
-    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } if (k.startsWith("rig_")) { RIGS[k.slice(4)].img = im; return res(); } if (k.startsWith("pose_")) { POSES[k.slice(5)].img = im; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
+    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } if (k.startsWith("rig_")) { RIGS[k.slice(4)].img = im; return res(); } if (k.startsWith("pose_")) { POSES[k.slice(5)].img = im; return res(); } if (k.startsWith("anim_")) { const [, who, nm] = k.split("_"); POSES[who].anims[nm].img = im; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
     im.onerror = () => { console.warn("FX: could not load image for", k, IM[k]); res(); };
     im.src = IM[k];
   })));
@@ -1430,7 +1430,10 @@ function drawRigActor(ctx, a, w) {
 /* ───────── 동작 컷 (기본 그림: 동작별 완성 그림을 갈아 끼움) ─────────
    r: 그림 속 위치 · ax: 몸통 가운데(가로 비율) · tip: 손끝/총구(비율) */
 const POSES = {
-  hero: { file: "hero-px.png", img: null, pixel: true, f: {
+  hero: { file: "hero-px.png", img: null, pixel: true,
+    // 여러 장짜리 동작(한 줄 시트: 칸 너비 cw, 높이 ch, n장, 초당 fps장)
+    anims: { idle: { file: "hero-idle-px.png", img: null, cw: 82, ch: 75, n: 8, fps: 7, ax: 0.455, tip: [0.82, 0.53] } },
+    f: {
     idle: { r: [0, 0, 62, 75], ax: 0.46, tip: [0.847, 0.533] },
     aim: { r: [64, 0, 75, 73], ax: 0.357, tip: [0.993, 0.171] },
     recoil: { r: [141, 0, 75, 78], ax: 0.419, tip: [0.86, 0.115] },
@@ -1499,6 +1502,15 @@ function drawPoseActor(ctx, a, w) {
     const m = (POSE_MOVE[nm] || POSE_MOVE.idle)(age, t + a.home * 0.01);
     x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc);
     x.translate((m.dx + extraDx) * dir, -lift); x.rotate(m.rot * dir); x.scale(1, m.sy);
+    const A = P.anims && P.anims[nm];
+    if (A && A.img) {
+      // 여러 장짜리 동작: 시간에 맞춰 칸을 넘김 (숨쉬기는 몸 움직임을 그림이 대신하니 크기 출렁임은 끔)
+      const i = Math.floor((t + a.home * 0.13) * A.fps) % A.n, aw = A.cw * k, ah = A.ch * k;
+      x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.translate((m.dx + extraDx) * dir, 0);
+      const left = -A.ax * aw, top = -ah;
+      x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
+      return { left, top, fw: aw, fh: ah, f: { tip: A.tip }, m: { dx: m.dx, rot: 0, sy: 1 }, lift: 0 };
+    }
     const left = -f.ax * fw, top = -fh;
     x.globalAlpha = alpha; x.drawImage(P.img, f.r[0], f.r[1], f.r[2], f.r[3], left, top, fw, fh); x.globalAlpha = 1;
     return { left, top, fw, fh, f, m, lift };
