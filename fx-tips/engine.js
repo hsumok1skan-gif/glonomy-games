@@ -1456,7 +1456,10 @@ const POSES = {
     dash: { r: [441, 0, 59, 53], ax: 0.533, tip: [0.992, 0.415] },
     cast: { r: [502, 0, 68, 68], ax: 0.384, tip: [0.993, 0.174] } } },
   foe: { file: "foe-px.png", img: null, pixel: true,
-    anims: { idle: { file: "foe-idle-px.png", img: null, cw: 81, ch: 86, n: 25, fps: 12, ax: 0.416, tip: [0.06, 0.6] } },
+    anims: { idle: { file: "foe-idle-px.png", img: null, cw: 81, ch: 86, n: 25, fps: 12, ax: 0.416, tip: [0.06, 0.6] },
+      // 공격: 팔을 젖힌 채(2~13번) → 발톱 휘두르기(14~20번) → 제자리(21~31번)
+      windup: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 12, from: 2, fps: 8, ax: 0.665, tip: [0.28, 0.4] },
+      attack: { file: "foe-attack-px.png", img: null, cw: 142, ch: 86, n: 32, from: 12, fps: 26, once: true, ax: 0.665, tip: [0.02, 0.5] } },
     f: {
     idle: { r: [0, 0, 77, 86], ax: 0.415, tip: [0.06, 0.6] },
     windup: { r: [79, 0, 83, 85], ax: 0.488, tip: [0.1, 0.4] },
