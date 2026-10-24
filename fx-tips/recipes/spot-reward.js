@@ -1043,9 +1043,11 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "3 rising chimes",
           cap: { en: "Each star rings a *higher* note.", ko: "별마다 *한 음씩* 높아져요." },
+          // 별이 쾅 박힐 때만 쿵, 별마다 한 음씩 높은 띵, 마지막 팡파레는 마무리 연출과 함께
           land(w, s, i) {
-            w.sfx.thud(); w.sfx.chime(i * 4);
-            if (i === 2) w.sfx.fanfare();
+            if (w.on("slam")) w.play(() => { sBody(160, 0.12, 0.7); sSnap(0.3, 0, 2400); });
+            w.sfx.chime(i * 4);
+            if (i === 2 && w.on("finale")) w.sfx.fanfare();
           },
         },
       ],

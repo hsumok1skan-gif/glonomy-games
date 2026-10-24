@@ -157,17 +157,20 @@
 
     /* ───────── 2. 보스 등장 타이틀 ───────── */
     {
-      id: "spot-combat-boss-intro", cat: "duel", view: "3d",
+      id: "spot-combat-boss-intro", cat: "duel", view: "3d", polished: true,
       title: { en: "Make boss intros feel *epic*", ko: "보스 등장을 *웅장하게*" },
       intro: { en: "The boss shows up. Like a *pop-up*.", ko: "보스가 *팝업창*처럼 그냥 떠요." },
       interval: 3.4, stepDur: 4.2,
+      // 보스: 적 픽셀 그림을 크게(움직이는 동작 그대로). 바닥선 아래는 잘라서 솟아오르게
       setup(w) {
-        w.boss = { x: 270, rise: 0, vis: false, sy: 1, flash: 0, vib: 0 };
+        w.boss = { x: 270, rise: 0, vis: false, sy: 1, flash: 0, vib: 0, litT: -9 };
+        w.foe = w.actor("foe", { home: 280, h: 230 }); w.foe.alpha = 0;
         w.title = null; w.bars = 0;
       },
       fire(w) {
-        const b = w.boss, later = seq(w);
-        Object.assign(b, { rise: 0, vis: false, sy: 1, flash: 0, vib: 0 });
+        const b = w.boss, later = seq(w), f = w.foe;
+        Object.assign(b, { rise: 0, vis: false, sy: 1, flash: 0, vib: 0, litT: -9 });
+        w.respawn(f); Object.assign(f, { alpha: 0, sx: 1, sy: 1, oy: 0, clipY: null, forcePose: null });
         w.title = null; w.bars = 0;
         w.emit("intro", b);
         later(w.on("rise") ? 1.0 : 0.25, () => {
@@ -175,27 +178,30 @@
           w.emit("arrive", b);
           later(0.15, () => { w.title = { s: 1, t: 0 }; w.emit("banner", w.title); });
         });
-        later(3.0, () => { b.vis = false; w.title = null; w.bars = 0; });
+        later(3.0, () => { b.vis = false; w.title = null; w.bars = 0; f.alpha = 0; });
       },
       update(w, dt) {
-        const b = w.boss;
-        b.sy += (1 - b.sy) * Math.min(1, dt * 10); b.flash = Math.max(0, b.flash - dt * 5); b.vib = Math.max(0, b.vib - dt * 20);
+        const b = w.boss, f = w.foe;
+        b.vib = Math.max(0, b.vib - dt * 20);
+        if (b.vis) { f.alpha = 1; f.oy = b.rise * (f.h + 8); f.clipY = b.rise > 0.001 ? G + 4 : null; if (b.vib > 0) { f.vib = b.vib; f.vibAxis = "x"; } }
         if (w.title) w.title.t += dt;
       },
       drawFloor(w, ctx) {
         stage(ctx, 270, 170, "#4a0c1c", "#0d0306");
         plinth(ctx, 270, G + 6, 220, 38, "#1c0609", "rgba(255,90,110,0.45)");
-        if (w.boss.vis) { ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(270, G + 4, 110 * (1 - w.boss.rise), 14, 0, 0, TAU); ctx.fill(); }
       },
       drawBack(w, ctx) {
-        const b = w.boss; if (!b.vis) return;
-        const s = bossArt(), H = 240, W = H * s.c.width / s.c.height, vx = b.vib ? rand(-b.vib, b.vib) : 0;
-        ctx.save();
-        ctx.beginPath(); ctx.rect(-100, -100, 800, G + 106); ctx.clip();
-        ctx.translate(b.x + vx, G + 4 + b.rise * H * 1.05); ctx.scale(2 - b.sy, b.sy);
-        ctx.drawImage(s.c, -W / 2, -H, W, H);
-        if (b.flash > 0) { ctx.globalAlpha = Math.min(1, b.flash); ctx.drawImage(s.white, -W / 2, -H, W, H); }
-        ctx.restore();
+        const b = w.boss, lt = w.time - b.litT;
+        if (!b.vis || lt < 0 || lt > 2.6) return;
+        // 무대 조명: 칸 단위 붉은 빛기둥 3개가 위에서 꽂히고, 뒤로 붉은 오라
+        const a = Math.min(1, lt * 5) * (lt > 2.1 ? 1 - (lt - 2.1) / 0.5 : 1);
+        ctx.globalAlpha = Math.max(0, a) * 0.85; pxAura(ctx, b.x, G - 140, w.time * 0.4, 4, [[60, 8, 18], [120, 20, 36], [200, 50, 70], [255, 140, 140]], 34);
+        for (const [dx, wd] of [[-120, 18], [0, 46], [120, 18]]) for (let y = -60; y < G; y += 8) {
+          const f = (y + 60) / (G + 60), ww = Math.round(wd * (0.6 + 0.8 * f) / 2) * 2;
+          ctx.globalAlpha = Math.max(0, a) * (0.18 + 0.18 * f); ctx.fillStyle = "#ff4a5e"; ctx.fillRect(b.x + dx - ww / 2, y, ww, 8);
+          ctx.globalAlpha = Math.max(0, a) * (0.25 + 0.2 * f); ctx.fillStyle = "#ffb0b8"; ctx.fillRect(b.x + dx - ww / 6, y, Math.max(2, Math.round(ww / 3)), 8);
+        }
+        ctx.globalAlpha = 1;
       },
       drawHud(w, ctx) {
         if (w.bars > 0) {
@@ -224,6 +230,7 @@
           intro(w, b) {
             b.vis = true; b.rise = 1; b.vib = 3;
             w.tween(b, { rise: 0 }, 1.0, "out");
+            for (let i = 0; i < 10; i++) w.after(i * 0.09, () => { for (let k = 0; k < 2; k++) { const sz = rand(2.5, 5), rot = rand(0, 6); w.spawn({ x: b.x + rand(-80, 80), y: G - 4, vx: rand(-160, 160), vy: rand(-380, -160), g: 1300, ground: true, bounce: 0.3, vr: rand(-12, 12), life: 0.9, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#6a6560", "#2a2622") }); } });
             w.shake(0.3);
             for (let i = 0; i < 8; i++) w.after(i * 0.1, () => dust(w, b.x + rand(-90, 90), G, 3, 0, "120,60,70"));
           },
@@ -240,8 +247,9 @@
           id: "roar", name: { en: "Roar Wave", ko: "포효 파동" }, param: "rings 3 · squash .8",
           cap: { en: "*Roar*. Rings blast out, it *flexes*.", ko: "*크아앙!* 고리가 퍼지고 몸이 *움찔*." },
           arrive(w, b) {
-            b.sy = 0.8; b.flash = 0.8;
-            for (let i = 0; i < 3; i++) w.after(i * 0.12, () => w.spawn({ type: "ring", x: b.x, y: G - 150, size: 30, size1: 260, life: 0.5, w: 10, color: "255,110,110" }));
+            const f = w.foe; f.forcePose = "attack"; f.forceUntil = w.time + 0.7; f.flash = 0.5;
+            for (let i = 0; i < 3; i++) w.after(i * 0.12, () => w.spawn({ type: "ring", x: b.x - 30, y: G - 170, size: 30, size1: 260, life: 0.5, w: 10, color: "255,110,110" }));
+            for (let i = 0; i < 14; i++) { const a = Math.PI + rand(-0.8, 0.8); w.spawn({ type: "spark", x: b.x - 40, y: G - 175, vx: Math.cos(a) * rand(500, 900), vy: Math.sin(a) * rand(500, 900), drag: 3, life: rand(0.25, 0.4), size: 3, color: "255,170,170" }); }
             w.spawn({ type: "ring", flat: true, x: b.x, y: G + 4, size: 40, size1: 300, life: 0.7, w: 12, color: "255,160,140" });
             w.shake(0.6); w.flash("255,40,60", 0.16);
           },
@@ -250,17 +258,17 @@
           id: "light", name: { en: "Stage Lights", ko: "무대 조명" }, param: "beams 3 · rays 12",
           cap: { en: "*Spotlights* and *rays* behind it. Embers rise.", ko: "*조명*이 꽂히고, 뒤로 *빛줄기*, *불티*." },
           arrive(w, b) {
-            [-110, 0, 110].forEach(dx => w.spawn({ type: "beam", under: true, x: b.x + dx, y: G, size: dx ? 26 : 70, h: 420, life: 2.4, hold: true, color: "255,90,110" }));
-            w.spawn({ type: "rays", under: true, x: b.x, y: G - 120, n: 12, size: 60, size1: 280, vr: 0.4, life: 2.4, hold: true, color: "255,70,90" });
+            b.litT = w.time;
             for (let i = 0; i < 26; i++) w.spawn({ type: "glow", x: b.x + rand(-200, 200), y: G + rand(-10, 10), vy: rand(-140, -50), size: rand(3, 6), life: rand(1.4, 2.4), color: "255,150,90" });
           },
         },
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rumble + roar + slam",
           cap: { en: "Low *rumble*, a *roar*, a heavy *slam*.", ko: "낮은 *웅웅*, *포효*, 묵직한 *쾅*." },
-          intro(w) { w.play(() => nz({ f: 200, f2: 90, dur: 1.0, vol: 0.5 })); },
-          arrive(w) { w.play(() => { tn({ type: "sawtooth", f: 160, f2: 70, dur: 0.6, vol: 0.18 }); nz({ type: "bandpass", f: 500, f2: 250, q: 2, dur: 0.6, vol: 0.4 }); }); },
-          banner(w) { w.after(0.2, () => w.sfx.slam()); },
+          // 솟아오를 때만 땅울림, 포효 연출이 있을 때만 포효, 이름이 꽝 박힐 때만 쾅
+          intro(w) { if (w.on("rise")) w.play(() => { nz({ dur: 1.0, f: 260, f2: 120, vol: 0.55, att: 0.2, hold: 0.6 }); tn({ type: "sine", f: 42, f2: 34, dur: 1.0, vol: 0.45, att: 0.2, hold: 0.6 }); }); },
+          arrive(w) { if (w.on("roar")) w.play(() => { tn({ type: "sawtooth", f: 74, f2: 50, dur: 0.9, vol: 0.2, lp: 650, att: 0.05, hold: 0.4 }); tn({ type: "sawtooth", f: 111, f2: 76, dur: 0.9, vol: 0.13, lp: 850, det: 15, att: 0.05, hold: 0.4 }); nz({ dur: 0.9, type: "bandpass", f: 450, f2: 260, q: 1.2, vol: 0.45, att: 0.05, hold: 0.4, rv: 0.35 }); }); else w.sfx.land(); },
+          banner(w) { if (w.on("slam")) w.after(0.2, () => w.sfx.slam()); },
         },
       ],
     },

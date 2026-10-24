@@ -391,7 +391,8 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "click + pop + chime",
           cap: { en: "Low *click* down, bright *pop* up.", ko: "누를 땐 *딸깍*, 뗄 땐 *뽁*, *띵*." },
           press(w) { w.sfx.clickDown(); },
-          release(w) { w.sfx.clickUp(); w.sfx.pop(); w.sfx.chime(7); },
+          // 뗄 때 딸깍은 항상, 뽁은 튕길 때만, 반짝 화음은 꽃가루가 터질 때만
+          release(w) { w.sfx.clickUp(); if (w.on("squash")) w.sfx.pop(); if (w.on("confetti")) w.sfx.sparkle(); },
         },
       ],
     },

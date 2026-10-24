@@ -331,7 +331,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick + pitch climb",
           cap: { en: "A tiny *tick*, rising with the meter.", ko: "작은 *틱* 소리가 게이지 따라 올라가요." },
-          graze(w) { w.sfx.blip(1 + Math.floor(w.gz.meter * 12)); },
+          graze(w) { w.sfx.blip(w.on("meter") ? 1 + Math.floor(w.gz.meter * 12) : 1); },
         },
       ],
     },

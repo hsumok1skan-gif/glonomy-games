@@ -320,7 +320,7 @@ const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? 
 // 배경 그림을 깔 장르 (옆에서 본 장면만)
 function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
 const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
-const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px"];
+const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px"];
 // 픽셀 그림 한 장(또는 시트의 한 칸)을 또렷하게: 기준점(ax, ay)을 (x, y)에 두고 s배, rot만큼 돌려서
 function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0) {
   const im = PXSPR[name]; if (!im) return false;
@@ -1822,10 +1822,10 @@ const POSE_MOVE = {
 };
 // 칼 그림 위에 다른 무기를 겹쳐 그릴 때 쓰는 칸별 위치(그림 픽셀): [칼끝 x, y, 손잡이 x, y]
 // 망치처럼 칼이 아닌 무기는 손잡이→칼끝 방향으로 자루를 그리고 칼끝 자리에 머리를 얹어 칼날을 덮음
-function drawHeldHammer(x, gx, gy, tx, ty, alpha = 1) {
+function drawHeldHammer(x, gx, gy, tx, ty, alpha = 1, name = "wpn-hammer-px") {
   // 손잡이(16, 56)를 손에, 머리 쪽(위)을 칼끝 방향으로. 주인공 그림과 같은 픽셀 크기(1.41배)
   const ang = Math.atan2(ty - gy, tx - gx) + Math.PI / 2;
-  x.globalAlpha = alpha; pxSprite(x, "wpn-hammer-px", gx, gy, 1.41, ang, 16, 56); x.globalAlpha = 1;
+  x.globalAlpha = alpha; pxSprite(x, name, gx, gy, 1.41, ang, 16, 56); x.globalAlpha = 1;
 }
 function drawPoseActor(ctx, a, w) {
   const P = poseSet(a), idle = P.f.idle, t = w.time;
@@ -1857,10 +1857,10 @@ function drawPoseActor(ctx, a, w) {
       const left = -A.ax * aw, top = -ah;
       x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
       // 망치 레시피: 칼 대신 망치를 쥔 것처럼 겹쳐 그림 (칼 컷은 칼날 위에, 다른 컷은 손에서 땅 쪽으로 늘어뜨림)
-      if (w.R.weapon === "hammer" && a.key === "hero") {
-        const sx = aw / A.cw, sy = ah / A.ch;
-        if (A.wpn) { const q = A.wpn[i]; drawHeldHammer(x, left + q[2] * sx, top + q[3] * sy, left + q[0] * sx, top + q[1] * sy, alpha); }
-        else { const tp = A.tips ? A.tips[i] : A.tip, hx = left + tp[0] * aw, hy = top + tp[1] * ah; drawHeldHammer(x, hx, hy, hx + 26, hy + 44, alpha); }
+      if ((w.R.weapon === "hammer" || w.R.weapon === "axe") && a.key === "hero") {
+        const sx = aw / A.cw, sy = ah / A.ch, nm = "wpn-" + w.R.weapon + "-px";
+        if (A.wpn) { const q = A.wpn[i]; drawHeldHammer(x, left + q[2] * sx, top + q[3] * sy, left + q[0] * sx, top + q[1] * sy, alpha, nm); }
+        else { const tp = A.tips ? A.tips[i] : A.tip, hx = left + tp[0] * aw, hy = top + tp[1] * ah; drawHeldHammer(x, hx, hy, hx + 26, hy + 44, alpha, nm); }
       }
       return { left, top, fw: aw, fh: ah, f: { tip: A.tips ? A.tips[i] : A.tip }, m: { dx: m.dx, rot: 0, sy: 1 }, lift: 0 };
     }

@@ -110,91 +110,98 @@
   RECIPES.push(
     /* ───────── 1. 나무 베기 ───────── */
     {
-      id: "survival-chop", cat: "survival", view: "side",
+      id: "survival-chop", cat: "survival", view: "side", polished: true, melee: true, weapon: "axe", hookDur: 3.4, hookFires: [0.1, 0.8, 1.5, 2.2],
       title: { en: "Make tree chopping *satisfying*", ko: "나무 베기를 *시원하게*" },
       intro: { en: "Hit, hit, hit… it just *vanishes*.", ko: "툭, 툭, 툭… 나무가 *그냥 사라져요*." },
-      interval: 0.7, stepDur: 4.0,
+      interval: 0.75, stepDur: 4.2,
+      // 주인공이 칼 대신 도끼를 쥐고 찍음. 나무는 밤 숲 소나무 픽셀 그림
       setup(w) {
-        w.hero = w.actor("hero", { home: 140 });
-        w.axe = { rot: 0.3 };
-        w.T = { x: 262, hp: 4, rot: 0, wob: 0, notch: 0, down: false, a: 1, sc: 1, jx: 0, fl: 0 };
+        w.hero = w.actor("hero", { home: 182 });
+        w.T = { x: 280, hp: 4, rot: 0, wob: 0, notch: 0, down: false, a: 1, sc: 1, jx: 0, fl: 0 };
       },
       fire(w) {
         if (w.busy) return;
         w.busy = true;
-        const A = w.axe, T = w.T;
-        w.tween(A, { rot: -0.5 }, 0.12, "out", () => w.tween(A, { rot: 1.5 }, 0.07, "in", () => {
-          if (!T.down && T.a > 0.9) {
-            T.hp--; T.jx = 7; w.emit("chop", { x: T.x - 16, y: G - 88 }, T);
-            if (T.hp <= 0) {
-              T.down = true;
-              if (w.on("fall")) w.emit("fell", T); else T.a = 0;
-              w.after(1.7, () => { Object.assign(T, { hp: 4, rot: 0, a: 1, notch: 0, down: false, sc: 0.3 }); w.tween(T, { sc: 1 }, 0.3, "back"); });
+        const T = w.T, h = w.hero;
+        w.after(0.14, () => {
+          w.emit("swing");
+          w.after(0.07, () => {
+            if (!T.down && T.a > 0.9) {
+              T.hp--; T.jx = 6; w.emit("chop", { x: T.x - 6, y: G - 42 }, T);
+              if (T.hp <= 0) {
+                T.down = true;
+                if (w.on("fall")) w.emit("fell", T); else T.a = 0;
+                w.after(1.8, () => { Object.assign(T, { hp: 4, rot: 0, a: 1, notch: 0, down: false, sc: 0.3 }); w.tween(T, { sc: 1 }, 0.3, "back"); });
+              }
             }
-          }
-          w.after(0.1, () => w.tween(A, { rot: 0.3 }, 0.18, "inout", () => { w.busy = false; }));
-        }));
+            w.after(0.2, () => { w.busy = false; });
+          });
+        });
       },
       update(w, dt) { const T = w.T; T.wob *= Math.pow(0.03, dt); T.jx *= Math.pow(0.002, dt); T.fl = Math.max(0, T.fl - dt * 8); },
       drawBack(w, ctx) {
-        const T = w.T;
-        if (T.down) { rr(ctx, T.x - 15, G - 22, 30, 22, 3, "#7c4a1e", "rgba(0,0,0,0.3)", 2); ctx.fillStyle = "#fcd9a0"; ctx.fillRect(T.x - 13, G - 24, 26, 5); }
+        const T = w.T, S = 1.41;
+        if (T.down) pxSprite(ctx, "env-stump-px", T.x, G + 2, S * 1.4, 0, 10, 11);
         if (T.a <= 0) return;
-        ctx.save(); ctx.globalAlpha = T.a; ctx.translate(T.x + T.jx * Math.sin(w.time * 70), G); ctx.rotate(T.rot); ctx.scale(T.sc, T.sc);
-        rr(ctx, -14, -130, 28, 130, 4, T.fl > 0 ? "#fff3dc" : "#7c4a1e", "rgba(0,0,0,0.3)", 2);
-        if (T.notch > 0) { ctx.fillStyle = "#fcd9a0"; ctx.beginPath(); ctx.moveTo(-14, -98); ctx.lineTo(-14 + T.notch, -88); ctx.lineTo(-14, -78); ctx.closePath(); ctx.fill(); }
-        const sw = Math.sin(w.time * 30) * T.wob * 0.08;
-        ctx.rotate(sw);
-        [[0, -110, 70, "34,120,60"], [0, -160, 56, "46,150,72"], [0, -205, 40, "74,180,90"]].forEach(([cx, cy, r, c]) => {
-          ctx.fillStyle = `rgb(${c})`; ctx.beginPath(); ctx.moveTo(cx - r, cy); ctx.lineTo(cx, cy - r * 1.15); ctx.lineTo(cx + r, cy); ctx.closePath(); ctx.fill();
-          ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.beginPath(); ctx.moveTo(cx, cy - r * 1.15); ctx.lineTo(cx + r, cy); ctx.lineTo(cx, cy); ctx.closePath(); ctx.fill();
-        });
+        const sway = Math.sin(w.time * 30) * T.wob * 0.03;
+        ctx.save(); ctx.globalAlpha = T.a; ctx.translate(Math.round(T.x + T.jx * Math.sin(w.time * 70)), G); ctx.rotate(T.rot + sway); ctx.scale(T.sc, T.sc);
+        pxSprite(ctx, "env-pine-px", 0, 0, S, 0, 24, 127);
+        // 찍힌 홈: 줄기 왼쪽에 쐐기 모양으로 파이고, 속살은 밝은 나무색
+        if (T.notch > 0) {
+          const n = Math.min(4, T.notch);
+          ctx.fillStyle = "#1a1210"; ctx.beginPath(); ctx.moveTo(-5, -54); ctx.lineTo(-5 + n * 2.2, -42); ctx.lineTo(-5, -32); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = "#d8a874"; ctx.beginPath(); ctx.moveTo(-5, -51); ctx.lineTo(-5 + n * 1.8, -42); ctx.lineTo(-5, -35); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = "#f2d2a0"; ctx.fillRect(-5, -44, Math.max(1, n * 1.4), 2);
+        }
+        if (T.fl > 0) { ctx.globalAlpha = T.fl * 0.5; ctx.fillStyle = "#fff3dc"; ctx.fillRect(-5, -60, 10, 34); }
         ctx.restore();
       },
-      drawFront(w, ctx) { const h = w.hero; drawTool(ctx, h.x + h.ox + 28, G - 82, w.axe.rot, "axe"); },
       steps: [
         {
-          id: "chips", name: { en: "Wood Chips", ko: "나무 조각" }, param: "8 chips · bounce",
+          id: "chips", name: { en: "Wood Chips", ko: "나무 조각" }, param: "12 chips · bounce",
           cap: { en: "Every swing throws *wood chips*. They stay a while.", ko: "찍을 때마다 *나무 조각*이 튀어요." },
           chop(w, at) {
-            chips(w, at.x, at.y, 12, ["252,211,77", "217,160,90", "146,86,30"], [-420, -60], [4, 8]);
-            w.spawn({ type: "star", x: at.x, y: at.y, size: 34, life: 0.12, color: "255,236,190" });
+            for (let i = 0; i < 12; i++) { const sz = rand(2, 4.5), rot = rand(0, 6), c = pick([["#e8c088", "#7a4a24"], ["#c8925a", "#5a3418"], ["#f2d2a0", "#8a5a30"]]); w.spawn({ x: at.x, y: at.y, vx: rand(-380, -60), vy: rand(-420, -120), g: 1300, ground: true, bounce: 0.3, vr: rand(-16, 16), life: rand(1.2, 1.8), hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, c[0], c[1]) }); }
+            w.spawn({ x: at.x, y: at.y, life: 0.1, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 26, k, "255,236,190") });
           },
         },
         {
-          id: "notch", name: { en: "Growing Notch", ko: "파이는 자국" }, param: "+5px / hit",
+          id: "notch", name: { en: "Growing Notch", ko: "파이는 자국" }, param: "+1 / hit",
           cap: { en: "Cut a *notch* that grows. Show the progress.", ko: "칠 때마다 *홈이 깊어져요*. 진행이 보여요." },
-          chop(w, at, T) { T.notch += 6; },
+          chop(w, at, T) { T.notch += 1; },
         },
         {
-          id: "sway", name: { en: "Leaf Shake", ko: "나뭇잎 흔들림" }, param: "sway + 6 leaves",
-          cap: { en: "The *whole tree* shakes. Leaves *drift down*.", ko: "나무 *전체가 흔들리고*, 잎이 *팔랑*." },
+          id: "sway", name: { en: "Needle Shake", ko: "잎 흔들림" }, param: "sway + 8 needles",
+          cap: { en: "The *whole tree* shakes. Needles *drift down*.", ko: "나무 *전체가 흔들리고*, 잎이 *팔랑*." },
           chop(w, at, T) {
             T.wob = 1;
-            for (let i = 0; i < 6; i++) w.spawn({ type: "chunk", x: T.x + rand(-60, 60), y: G - rand(130, 220), vx: rand(-40, 40), vy: rand(-20, 20), g: 160, drag: 1.5, vr: rand(-6, 6), life: 1.6, size: 5, color: "74,180,90", hold: true });
+            for (let i = 0; i < 8; i++) { const sz = rand(1.5, 3), rot = rand(0, 6); w.spawn({ x: T.x + rand(-40, 40), y: G - rand(90, 170), vx: rand(-40, 40), vy: rand(-10, 20), g: 140, drag: 1.5, vr: rand(-6, 6), life: 1.6, hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#4a7a58", "#16302a") }); }
           },
         },
         {
           id: "stop", name: { en: "Bite", ko: "박히는 멈칫" }, param: "stop 60ms · shake",
           cap: { en: "The axe *bites* in. Freeze for a beat.", ko: "도끼가 *콱* 박혀요. 아주 잠깐 멈칫." },
-          chop(w, at, T) { w.hitstop(0.06); w.shake(0.16, 1); w.hero.ox -= 4; T.fl = 1; },
+          chop(w, at, T) { w.hitstop(0.06); w.shake(0.16, 1); T.fl = 1; },
         },
         {
           id: "fall", name: { en: "Timber!", ko: "쓰러짐" }, param: "ease-in 700ms",
           cap: { en: "Don't delete it. Let it *fall*, slow then fast.", ko: "지우지 말고 *쓰러뜨려요*. 천천히, 그리고 쿵." },
-          fell(w, T) { w.tween(T, { rot: 1.5 }, 0.7, "in", () => w.emit("land", T)); w.after(1.2, () => w.tween(T, { a: 0 }, 0.4)); },
+          fell(w, T) { w.tween(T, { rot: 1.52 }, 0.75, "in", () => w.emit("land", T)); w.after(1.3, () => w.tween(T, { a: 0 }, 0.4)); },
           land(w, T) {
             w.shake(0.55); w.hitstop(0.05);
-            for (let i = 0; i < 16; i++) w.spawn({ type: "smoke", under: true, x: T.x + rand(60, 230), y: G - 4, vx: rand(-90, 90), vy: rand(-90, -20), drag: 2, size: rand(10, 16), size1: rand(26, 40), life: rand(0.8, 1.3), color: "150,120,90" });
-            chips(w, T.x + 190, G - 40, 14, ["74,180,90", "46,150,72", "34,120,60"], [-200, 260], [5, 9]);
+            for (let i = 0; i < 16; i++) w.spawn({ type: "smoke", x: T.x + rand(60, 200), y: G - 4, vx: rand(-90, 90), vy: rand(-90, -20), drag: 2, size: rand(10, 16), size1: rand(22, 34), life: rand(0.8, 1.2), color: "80,88,96" });
+            for (let i = 0; i < 14; i++) { const sz = rand(2, 4), rot = rand(0, 6); w.spawn({ x: T.x + rand(80, 200), y: G - 10, vx: rand(-200, 260), vy: rand(-420, -120), g: 1200, ground: true, bounce: 0.3, vr: rand(-12, 12), life: 1.2, hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#4a7a58", "#16302a") }); }
           },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk / creak / slam",
-          cap: { en: "*Thunk* each hit. A *creak*, then a big *slam*.", ko: "찍을 땐 *턱*, 넘어갈 땐 *끼익… 쿵*." },
-          chop(w) { w.sfx.thunk(); },
-          fell(w) { w.sfx.creak(); },
-          land(w) { w.sfx.slam(); },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "thock / crack / crash",
+          cap: { en: "*Thock* each hit. Fibers *crack*, then a big *crash*.", ko: "찍을 땐 *턱*, 넘어갈 땐 *우지끈… 쿵*." },
+          // 도끼가 나무에 박힘: 딱 + 둔탁한 나무 울림
+          chop(w) { w.play(() => { sSnap(0.5, 0, 2400); sBody(190, 0.1, 0.75); nz({ dur: 0.07, type: "bandpass", f: 750, q: 1.6, vol: 0.45 }); tn({ type: "triangle", f: 420, f2: 360, dur: 0.12, vol: 0.06 }); }); },
+          // 쓰러질 때만: 섬유가 우지끈 찢기는 소리 + 낮은 신음
+          fell(w) { w.play(() => { let t = 0; for (let i = 0; i < 12; i++) { sSnap(0.12 + i * 0.015, t, 1400 + Math.random() * 1600); t += 0.07 * Math.pow(0.86, i); } tn({ type: "sawtooth", f: 70, f2: 48, dur: 0.7, vol: 0.06, lp: 400, att: 0.2 }); }); },
+          // 땅에 닿을 때: 쿵 + 잎이 쏴아
+          land(w) { w.sfx.slam(); w.play(() => nz({ dur: 0.8, type: "highpass", f: 2500, f2: 5000, vol: 0.15, att: 0.02, rv: 0.3 })); },
         },
       ],
     },

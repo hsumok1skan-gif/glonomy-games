@@ -1340,11 +1340,11 @@ RECIPES.push(
   },
 
   {
-    id: "rpg", cat: "rpg", view: "side",
+    id: "rpg", cat: "rpg", view: "side", polished: true, melee: true,
     title: { en: "Make RPG hits *land*", ko: "RPG 공격이 *꽂히게*" },
     intro: { en: "Attack. A bar gets shorter. *That's it.*", ko: "공격. 바가 줄어든다. *끝.*" },
     interval: 1.45, stepDur: 3.6,
-    setup(w) { w.hero = w.actor("hero", { home: 110, h: 120 }); w.foe = w.actor("foe", { home: 410, h: 170, hp: 300 }); w.turn = 0; },
+    setup(w) { w.hero = w.actor("hero", { home: 130 }); w.foe = w.actor("foe", { home: 390, h: 160, hp: 300 }); w.turn = 0; },
     fire(w) {
       if (w.busy) return;
       w.busy = true; w.turn++;
@@ -1364,14 +1364,14 @@ RECIPES.push(
       {
         id: "step", name: { en: "Step In", ko: "다가가서 때리기" }, param: "lunge 180px",
         cap: { en: "*Move* to attack. Distance makes the hit *readable*.", ko: "*다가가서* 때려요. 거리가 있어야 *읽혀요*." },
-        step(w, hit) { const h = w.hero; w.tween(h, { x: 290 }, 0.17, "in", () => { hit(); w.after(0.15, () => w.tween(h, { x: h.home }, 0.3, "inout", () => { w.busy = false; })); }); },
+        step(w, hit) { const h = w.hero; w.tween(h, { x: 268 }, 0.17, "in", () => { hit(); w.after(0.2, () => w.tween(h, { x: h.home }, 0.3, "inout", () => { w.busy = false; })); }); },
       },
       {
         id: "slash", name: { en: "Slash Marks", ko: "베기 자국" }, param: "2 crossing streaks",
         cap: { en: "Two *crossing streaks* right on the target.", ko: "대상 위에 *엇갈린 두 줄*." },
         hit(w, at) {
-          w.spawn({ type: "slash", x: at.x + 20, y: at.y, ang: -0.7, len: 70, size: 9, life: 0.22, color: "255,255,255" });
-          w.after(0.05, () => w.spawn({ type: "slash", x: at.x + 20, y: at.y, ang: 0.7, len: 70, size: 9, life: 0.22, color: "255,255,255" }));
+          w.spawn({ x: at.x + 14, y: at.y, life: 0.26, draw: (ctx, p, k) => pxCutLine(ctx, p.x, p.y, 96, -0.75, k) });
+          w.after(0.05, () => w.spawn({ x: at.x + 14, y: at.y, life: 0.26, draw: (ctx, p, k) => pxCutLine(ctx, p.x, p.y, 96, 0.75, k) }));
         },
       },
       {
@@ -1382,7 +1382,7 @@ RECIPES.push(
       {
         id: "shake", name: { en: "Target Shake", ko: "대상 떨림" }, param: "10px · fades 300ms",
         cap: { en: "Shake *the target*, not the screen. Big, then smaller.", ko: "화면 말고 *맞은 쪽*을 흔들어요. 크게 시작해서 작게." },
-        hit(w) { const f = w.foe; f.vib = 10; f.vibFade = 33; f.flash = 1; },
+        hit(w) { const f = w.foe; f.vib = 10; f.vibFade = 33; f.flash = 0.7; },
       },
       {
         id: "bar", name: { en: "HP Drain", ko: "체력 깎이는 모습" }, param: "lag 400ms",
@@ -1397,13 +1397,14 @@ RECIPES.push(
           if (!crit) return;
           w.flash("255,255,255", 0.55); w.zoomPunch(0.08); w.shake(0.35);
           w.spawn({ type: "text", text: "CRITICAL", x: 270, y: 60, vy: -20, life: 0.9, size: 46, color: "#c6f432" });
-          w.spawn({ type: "rays", x: at.x + 20, y: at.y, size: 160, n: 12, vr: 2, life: 0.5, color: "255,240,180" });
+          w.spawn({ x: at.x + 14, y: at.y, life: 0.22, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 70, k, "255,240,180") });
         },
       },
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "slash / crit",
         cap: { en: "Crits get their *own sound*. Never reuse the normal one.", ko: "치명타는 *전용 소리*. 일반 타격음 재활용 금지." },
-        hit(w, at, d, crit) { if (crit) w.sfx.crit(); else w.sfx.slashHit(); },
+        // 일반은 베는 "촥", 치명타 연출이 있을 때만 묵직한 "콰앙"
+        hit(w, at, d, crit) { if (crit && w.on("crit")) w.sfx.critBig(); else w.sfx.slashHit(); },
       },
     ],
   },
@@ -1680,7 +1681,7 @@ RECIPES.push(
         cap: { en: "*Scrape* while moving, *tock* on stop, *chime* on success.", ko: "밀 때 *스윽*, 멈출 때 *톡*, 성공하면 *띵*." },
         move(w) { w.sfx.scrape(); },
         stop(w) { w.sfx.tock(); },
-        goal(w) { w.sfx.chime(4); },
+        goal(w) { if (w.on("goal")) w.sfx.itemGet(); else w.sfx.chime(4); },
       },
     ],
   },

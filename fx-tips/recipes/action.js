@@ -52,63 +52,55 @@
   RECIPES.push(
     /* 1 ─ 패링 */
     {
-      id: "action-parry", cat: "action", view: "side",
+      id: "action-parry", cat: "action", view: "side", polished: true, melee: true, hookDur: 3.0,
       title: { en: "Make a parry feel *earned*", ko: "패링이 *짜릿하게*" },
       intro: { en: "Perfect timing. Looked like a *normal block*.", ko: "완벽한 타이밍인데 *그냥 막기* 같아요." },
-      interval: 1.4, stepDur: 3.6,
-      setup(w) {
-        ensureArt();
-        w.hero = w.actor("hero", { home: 170 }); w.sw = { rot: -0.2 };
-        w.foe = w.actor("action-knight", { home: 390 }); w.ks = { rot: -1.4 };
-      },
+      interval: 1.6, stepDur: 3.6,
+      setup(w) { w.hero = w.actor("hero", { home: 190 }); w.foe = w.actor("foe", { home: 380 }); },
       fire(w) {
         if (w.busy) return;
         w.busy = true;
-        const k = w.foe, at = { x: 268, y: G - 112 };
+        const k = w.foe, h = w.hero, at = { x: 262, y: G - 96 };
+        // 적: 발톱을 치켜들고 → 달려들며 내려침. 주인공: 칼로 쳐냄
+        k.forcePose = "windup"; k.forceUntil = w.time + 0.3;
         w.emit("windup", at);
-        w.tween(w.ks, { rot: -2.3 }, 0.24, "out", () => {
-          w.tween(w.sw, { rot: -1.25 }, 0.08, "out");
-          w.tween(k, { x: 330 }, 0.1, "in");
-          w.tween(w.ks, { rot: -0.45 }, 0.1, "in", () => {
-            k.ox += 8;
+        w.after(0.3, () => {
+          k.forcePose = "attack"; k.forceUntil = w.time + 0.4;
+          w.tween(k, { x: 318 }, 0.1, "in", () => {
             w.emit("parry", at);
-            w.after(0.25, () => {
-              w.tween(k, { x: k.home, rot: 0 }, 0.3, "inout", () => { w.busy = false; });
-              w.tween(w.ks, { rot: -1.4 }, 0.3, "inout"); w.tween(w.sw, { rot: -0.2 }, 0.3, "inout");
-            });
+            w.after(0.3, () => w.tween(k, { x: k.home }, 0.35, "inout", () => { w.busy = false; }));
           });
         });
       },
-      drawFront(w, ctx) { drawSword(ctx, w.foe, w.ks, 104); drawSword(ctx, w.hero, w.sw); },
       steps: [
         {
-          id: "ring", name: { en: "Timing Ring", ko: "타이밍 고리" }, param: "shrinks to 0 in 340ms",
+          id: "ring", name: { en: "Timing Ring", ko: "타이밍 고리" }, param: "shrinks to 0 in 400ms",
           cap: { en: "A ring *closes in* on the perfect frame.", ko: "고리가 *딱 맞는 순간*에 닫혀요." },
-          windup(w, at) { w.spawn({ type: "ring", x: at.x, y: at.y, size: 80, size1: 6, life: 0.34, w: 5, color: "198,244,50", hold: true }); },
+          windup(w, at) { w.spawn({ x: at.x, y: at.y, life: 0.4, draw: (ctx, p, k) => { const r = 70 * (1 - k) + 6; ctx.globalAlpha = 0.5 + 0.5 * k; ctx.strokeStyle = "#c6f432"; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1; pxPlus(ctx, p.x, p.y, 4, "#c6f432"); } }); },
         },
         {
-          id: "sparks", name: { en: "Clash Sparks", ko: "부딪힌 불꽃" }, param: "star + 22 sparks",
-          cap: { en: "Steel on steel: a *star* and a *spray* of sparks.", ko: "쇠와 쇠가 *챙*. 별 섬광과 불꽃." },
+          id: "sparks", name: { en: "Clash Sparks", ko: "부딪힌 불꽃" }, param: "flash star + 24 sparks",
+          cap: { en: "Blade meets claw: a *star* and a *spray* of sparks.", ko: "칼과 발톱이 *챙*. 별 섬광과 불꽃." },
           parry(w, at) {
-            w.spawn({ type: "star", x: at.x, y: at.y, size: 70, life: 0.16, color: "255,250,220" });
-            w.spawn({ type: "glow", x: at.x, y: at.y, size: 80, size1: 16, life: 0.22, color: "255,210,110" });
-            sparks(w, at.x, at.y, 22, "255,220,130", [250, 750]);
+            w.spawn({ x: at.x, y: at.y, life: 0.18, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 58, k, "255,244,200") });
+            w.spawn({ x: at.x - 30, y: at.y + 10, life: 0.16, draw: (ctx, p, k) => pxCrescent(ctx, p.x, p.y, 54, -2.2, 0.4, 14, k, "190,245,255") });
+            for (let i = 0; i < 24; i++) { const a = rand(-2.6, 0.6), v = rand(300, 800); w.spawn({ type: "spark", x: at.x, y: at.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: 4, g: 900, life: rand(0.2, 0.45), size: 2.5, color: pick(["255,226,140", "255,255,230", "255,170,80"]) }); }
           },
         },
         {
           id: "freeze", name: { en: "Freeze Both", ko: "둘 다 멈칫" }, param: "stop 120ms",
-          cap: { en: "Freeze *both* blades. Let the moment land.", ko: "*두 칼*을 같이 멈춰요. 순간이 박혀요." },
-          parry(w) { w.hitstop(0.12); w.foe.flash = 1; w.hero.flash = 0.6; },
+          cap: { en: "Freeze *both* fighters. Let the moment land.", ko: "*둘 다* 멈춰요. 순간이 박혀요." },
+          parry(w) { w.hitstop(0.12); w.foe.flash = 0.7; },
         },
         {
-          id: "recoil", name: { en: "Enemy Recoil", ko: "적이 튕겨남" }, param: "+70px · lean back",
-          cap: { en: "*Throw* the enemy off balance, blade flung *high*.", ko: "적은 *휘청*, 칼은 *위로* 튕겨요." },
-          parry(w) { const k = w.foe; k.ox += 70; k.k = 3; k.rot = 0.22; w.ks.rot = -2.8; },
+          id: "recoil", name: { en: "Enemy Recoil", ko: "적이 튕겨남" }, param: "+70px · stagger",
+          cap: { en: "*Throw* the enemy off balance.", ko: "적은 *휘청* 뒤로 밀려나요." },
+          parry(w) { const k = w.foe; k.forcePose = null; k.ox += 70; k.tint = 0.4; for (let i = 0; i < 6; i++) w.spawn({ type: "smoke", x: k.x + rand(-20, 30), y: G - 4, vx: rand(60, 200), vy: -rand(10, 40), drag: 3, life: 0.5, size: 7, size1: 14, color: "90,96,118" }); },
         },
         {
-          id: "flash", name: { en: "Screen Flash", ko: "화면 번쩍" }, param: "white .45 + label",
+          id: "flash", name: { en: "Screen Flash", ko: "화면 번쩍" }, param: "white .3 + label",
           cap: { en: "Flash the *screen*. Say it: *PARRY*.", ko: "*화면*이 번쩍, 글자로 *패링*." },
-          parry(w, at) { w.flash("255,255,255", 0.45); w.spawn({ type: "text", text: "PARRY", x: at.x, y: at.y - 60, vy: -15, life: 1.3, size: 34, color: "#c6f432", hold: true }); },
+          parry(w, at) { w.flash("255,255,255", 0.3); w.spawn({ type: "text", text: "PARRY!", x: at.x, y: at.y - 74, vy: -15, life: 1.2, size: 32, color: "#c6f432" }); },
         },
         {
           id: "shake", name: { en: "Sharp Shake", ko: "짧은 흔들림" }, param: "trauma .3 → right",
@@ -116,45 +108,41 @@
           parry(w) { w.shake(0.3, 1); },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "bright clang",
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "steel clang",
           cap: { en: "A *bright clang* that rings out.", ko: "길게 울리는 *챙~*." },
-          parry(w) { clang(w); },
+          // 막아 내는 순간: 딱 + 쇠가 길게 울리는 "챙~" (울림은 섬광이 있을 때만 길게)
+          parry(w) { w.play(() => { sSnap(0.8, 0, 3500); sBody(320, 0.06, 0.5); sMetal(1870, w.on("sparks") ? 0.9 : 0.25, 0.13, 0, 0.45); sMetal(2650, 0.4, 0.05, 0.01, 0.3); }); },
         },
       ],
     },
 
     /* 2 ─ 완벽한 회피 슬로모션 */
     {
-      id: "action-perfect-dodge", cat: "action", view: "side",
+      id: "action-perfect-dodge", cat: "action", view: "side", polished: true, melee: true, hookDur: 3.2,
       title: { en: "Reward a *last-second* dodge", ko: "*아슬아슬* 회피에 보상을" },
       intro: { en: "A frame-perfect dodge. Nobody *noticed*.", ko: "프레임 단위로 피했는데 *아무도 몰라요*." },
-      interval: 2.1, stepDur: 3.8,
-      setup(w) {
-        ensureArt();
-        w.hero = w.actor("hero", { home: 230 }); w.foe = w.actor("action-boss", { home: 420 });
-        w.bs = { rot: -1.2, col: "#c4b5fd" }; w.tintA = 0;
-      },
+      interval: 2.3, stepDur: 3.8,
+      setup(w) { w.hero = w.actor("hero", { home: 215 }); w.hero.keepSnap = true; w.foe = w.actor("foe", { home: 385 }); w.tintA = 0; },
       fire(w) {
         if (w.busy) return;
         w.busy = true;
-        const h = w.hero, b = w.foe;
-        w.tween(w.bs, { rot: -2.4 }, 0.2, "out", () => {
+        const h = w.hero, k = w.foe;
+        k.forcePose = "windup"; k.forceUntil = w.time + 0.26;
+        w.after(0.26, () => {
+          // 적이 달려들며 할퀴는 바로 그 순간 뒤로 빠짐
+          k.forcePose = "attack"; k.forceUntil = w.time + 0.45;
+          w.tween(k, { x: 290 }, 0.14, "in");
           w.emit("dodge", { x: h.x, y: G - 70 });
-          w.tween(h, { x: 105 }, 0.22, "out");
-          w.tween(b, { x: 360 }, 0.16, "in");
-          w.tween(w.bs, { rot: 0.9 }, 0.16, "in", () => w.after(0.25, () => {
-            w.tween(b, { x: b.home }, 0.3, "inout"); w.tween(w.bs, { rot: -1.2 }, 0.3, "inout");
-            w.tween(h, { x: h.home }, 0.3, "inout", () => { w.busy = false; });
-          }));
+          h.forcePose = "windup"; h.forceUntil = w.time + 0.5;
+          w.tween(h, { x: 110 }, 0.22, "out");
+          w.after(0.6, () => {
+            w.tween(k, { x: k.home }, 0.35, "inout");
+            w.tween(h, { x: h.home }, 0.35, "inout", () => { w.busy = false; });
+          });
         });
       },
       update(w, dt) { w.tintA = Math.max(0, w.tintA - dt * 0.9); },
-      drawFloor(w, ctx) {
-        ctx.fillStyle = "rgba(255,255,255,0.025)"; ctx.fillRect(-80, G, 700, 120);
-        ctx.fillStyle = "rgba(255,255,255,0.22)"; ctx.fillRect(-80, G - 1, 700, 1.5);
-        veil(ctx, "30,58,138", w.tintA * 0.45);
-      },
-      drawFront(w, ctx) { drawSword(ctx, w.foe, w.bs, 150); },
+      drawBack(w, ctx) { veil(ctx, "20,40,110", w.tintA * 0.5); },
       steps: [
         {
           id: "slowmo", name: { en: "Slow-mo", ko: "슬로모션" }, param: "×0.2 · 0.9s",
@@ -162,14 +150,14 @@
           dodge(w) { w.slowmo(0.2, 0.9); },
         },
         {
-          id: "tint", name: { en: "Cold Tint", ko: "차가운 색" }, param: "blue .45 behind",
+          id: "tint", name: { en: "Cold Tint", ko: "차가운 색" }, param: "blue .5 behind",
           cap: { en: "Tint the world *cold blue*. Time feels different.", ko: "배경을 *파랗게*. 시간이 달라진 느낌." },
           dodge(w) { w.tintA = 1; },
         },
         {
           id: "ghost", name: { en: "Afterimage", ko: "잔상" }, param: "ghost holds 0.8s",
           cap: { en: "Leave a *ghost* where the blow should've landed.", ko: "맞았어야 할 자리에 *잔상*을 남겨요." },
-          dodge(w) { const h = w.hero; w.spawn({ type: "ghost", img: h.s.cyan, x: h.x, y: G, w: h.w, h: h.h, life: 0.8, alpha0: 0.6, hold: true, add: false }); },
+          dodge(w) { actorGhost(w, w.hero, "#5ad6ff", 0.9, 0.7); },
         },
         {
           id: "ripple", name: { en: "Time Ripple", ko: "시간 파문" }, param: "ring r 10 → 170",
@@ -179,7 +167,7 @@
         {
           id: "label", name: { en: "Label", ko: "글자" }, param: "PERFECT",
           cap: { en: "*Tell* the player. They earned it.", ko: "*말해 줘요*. 잘한 거니까." },
-          dodge(w, p) { pop(w, "PERFECT", p.x, p.y - 90, 30, "#93c5fd", 1.2); },
+          dodge(w, p) { pop(w, "PERFECT", p.x - 30, p.y - 100, 30, "#93c5fd", 1.2); },
         },
         {
           id: "zoom", name: { en: "Zoom Punch", ko: "줌 펀치" }, param: "+9%",
@@ -187,9 +175,10 @@
           dodge(w) { w.zoomPunch(0.09); },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + low chime",
-          cap: { en: "A *whoosh*, then a deep, slowed *chime*.", ko: "*휙*, 그리고 낮게 늘어진 *띵~*." },
-          dodge(w) { w.sfx.dash(); w.sfx.chime(-14); },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + time drop",
+          cap: { en: "A *whoosh*, then time *drops* low.", ko: "*휙*, 그리고 시간이 *우웅~* 늘어져요." },
+          // 슬로모션이 걸릴 때만 낮게 가라앉는 "우웅~"
+          dodge(w) { w.sfx.dash(); if (w.on("slowmo")) w.play(() => { tn({ type: "sine", f: 260, f2: 70, dur: 0.9, vol: 0.2, rv: 0.4 }); nz({ dur: 0.9, f: 1800, f2: 200, vol: 0.18, rv: 0.4 }); }); },
         },
       ],
     },
