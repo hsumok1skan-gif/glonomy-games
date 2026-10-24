@@ -1095,7 +1095,7 @@ class World {
     const fx = FX.pixelFx && FX._art && FX._art.hero ? pixFxBegin(ctx, OM, v.r) : null, fc = fx || ctx;
     if (this.R.drawFront) this.R.drawFront(this, fc);
     for (const p of this.shots) drawShot(fc, p);
-    for (const p of this.parts) if (!p.under) drawPart(fc, p);
+    for (const p of this.parts) if (!p.under && !p.back) drawPart(fc, p); // back: 레시피가 drawFront 안에서 직접 그림(물체 뒤)
     drawStudioHero(fc,this);
     if (window.FXDirector && !this.R.polished) FXDirector.overlay(fc,this);
     if (fx) pixFxEnd(ctx);
@@ -1105,7 +1105,7 @@ class World {
     const gl = glowA > 0 && !(FX.pixelFx && FX._art && FX._art.hero) ? bloomBegin(ctx, rx, ry, rw, rh) : null;
     if (gl) {
       for (const p of this.shots) drawShot(gl, p);
-      for (const p of this.parts) if (!p.under) drawPart(gl, p);
+      for (const p of this.parts) if (!p.under && !p.back) drawPart(gl, p);
     }
     if (this.R.drawHud) this.R.drawHud(this, ctx);
     ctx.restore();
@@ -1175,7 +1175,7 @@ function drawPartPx(ctx, p, s, a, k, rem) {
     case "ring": {
       const r = Math.max(2, s), wdt = Math.max(2, (p.w || 6) * rem * 0.8);
       ctx.globalAlpha = Math.min(1, a); ctx.lineCap = "butt";
-      const ell = (rr, lw, col) => { ctx.beginPath(); if (p.flat) ctx.ellipse(p.x, p.y, rr, rr * 0.24, 0, 0, TAU); else ctx.arc(p.x, p.y, rr, 0, TAU); ctx.lineWidth = lw; ctx.strokeStyle = col; ctx.stroke(); };
+      const ell = (rr, lw, col) => { ctx.beginPath(); if (p.flat) ctx.ellipse(p.x, p.y, rr, rr * 0.24, 0, p.a0 ?? 0, p.a1 ?? TAU); else ctx.arc(p.x, p.y, rr, 0, TAU); ctx.lineWidth = lw; ctx.strokeStyle = col; ctx.stroke(); };
       ell(r, wdt + 2, `rgb(${pxShade(C, 0.55)})`); ell(r, wdt, `rgb(${pxShade(C, 1)})`); if (k < 0.5) ell(r - wdt * 0.2, Math.max(1.5, wdt * 0.35), `rgb(${pxShade(C, 1.6)})`);
       return true;
     }
@@ -1228,7 +1228,7 @@ function drawPart(ctx, p) {
       const width=Math.max(.6,(p.w||6)*rem),r=Math.max(2,s);
       ctx.save();ctx.lineCap="round";
       if(p.flat){
-        ctx.beginPath();ctx.ellipse(p.x,p.y,r,r*.22,0,0,TAU);
+        ctx.beginPath();ctx.ellipse(p.x,p.y,r,r*.22,0,p.a0??0,p.a1??TAU);
         ctx.lineWidth=width*2.4;ctx.strokeStyle=`rgba(${p.color},${a*.13})`;ctx.stroke();
         ctx.lineWidth=width*.75;ctx.strokeStyle=`rgba(${p.color},${a*.78})`;ctx.stroke();
       }else{

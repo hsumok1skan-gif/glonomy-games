@@ -1626,6 +1626,7 @@ RECIPES.push(
     },
     drawFront(w, ctx) {
       const B = w.B, x = 270, y = 230;
+      for (const p of w.parts) if (p.back) drawPart(ctx, p); // 버튼 뒤로 가려지는 효과
       ctx.save(); ctx.translate(x, y); ctx.scale(B.sx, B.sy);
       ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.beginPath(); ctx.ellipse(0, 26, 104 - B.press * 1.5, 30, 0, 0, TAU); ctx.fill();
       ctx.fillStyle = "#2a2f3a"; ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(0, 14, 100, 34, 0, 0, TAU); ctx.fill(); ctx.stroke();
@@ -1658,7 +1659,12 @@ RECIPES.push(
       {
         id: "ripple", name: { en: "Ripple", ko: "물결" }, param: "ring 100 → 190",
         cap: { en: "A *ripple* spreads from the button.", ko: "버튼에서 *물결*이 퍼져요." },
-        up(w) { w.spawn({ type: "ring", flat: true, x: 270, y: 244, size: 100, size1: 200, life: 0.4, w: 5, color: "248,113,113" }); },
+        up(w) {
+          // 바닥에 퍼지는 고리: 뒤쪽 반은 버튼에 가려지고, 앞쪽 반만 버튼 앞으로
+          const o = { type: "ring", flat: true, x: 270, y: 244, size: 100, size1: 200, life: 0.4, w: 5, color: "248,113,113" };
+          w.spawn({ ...o, back: true, a0: Math.PI, a1: TAU });
+          w.spawn({ ...o, a0: 0, a1: Math.PI });
+        },
       },
       {
         id: "sparkle", name: { en: "Sparkles", ko: "반짝이" }, param: "6 stars",
