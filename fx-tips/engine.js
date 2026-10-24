@@ -320,7 +320,7 @@ const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? 
 // 배경 그림을 깔 장르 (옆에서 본 장면만)
 function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
 const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
-const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px"];
+const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px"];
 // 픽셀 그림 한 장(또는 시트의 한 칸)을 또렷하게: 기준점(ax, ay)을 (x, y)에 두고 s배, rot만큼 돌려서
 function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0) {
   const im = PXSPR[name]; if (!im) return false;
@@ -625,6 +625,43 @@ const SFX = {
   clickUp() { tn({ type: "sine", f: 950, dur: 0.03, vol: 0.2 }); nz({ dur: 0.015, type: "bandpass", f: 4200, q: 2, vol: 0.2 }); },
   rattle() { for (let i = 0; i < 5; i++) { sSnap(0.12, i * 0.08, 2600); tn({ type: "square", f: 130 + i * 12, dur: 0.03, vol: 0.05, delay: i * 0.08, lp: 1500 }); } },
   boost() { nz({ dur: 0.8, type: "bandpass", f: 300, f2: 2600, q: 1, vol: 0.4, att: 0.1 }); tn({ type: "sawtooth", f: 80, f2: 170, dur: 0.8, vol: 0.06, lp: 900 }); },
+  // ── 활 ──
+  // 당기기: 줄이 늘어나며 나는 마찰음 (점점 촘촘해지는 미세한 딸깍임) + 활대가 휘는 낮은 신음
+  bowDraw() {
+    let t = 0; for (let i = 0; i < 22; i++) { const gap = 0.034 - i * 0.0011; nz({ dur: 0.012, type: "bandpass", f: 1500 + i * 40, q: 9, vol: 0.05 + i * 0.004, delay: t }); t += gap; }
+    tn({ type: "triangle", f: 84, f2: 104, dur: 0.5, vol: 0.05, att: 0.2 });
+  },
+  // 놓기: 딱 + 줄이 "퉁" 떨리는 낮은 음(배음 3개) + 바람 가르는 "슉"
+  bowRelease() {
+    sSnap(0.5, 0, 4200);
+    [[110, 0.45], [220, 0.2], [330, 0.1]].forEach(([f, v]) => tn({ type: "sine", f, f2: f * 0.94, dur: 0.24, vol: v }));
+    nz({ dur: 0.07, type: "bandpass", f: 2400, f2: 6500, q: 1.6, vol: 0.28, att: 0.01 });
+  },
+  // 화살 날아감: 지나가며 낮아지는 바람 소리
+  arrowFly() { nz({ dur: 0.22, type: "bandpass", f: 3200, f2: 900, q: 2.2, vol: 0.14, att: 0.04 }); },
+  // 갑옷에 꽂힘: 단단한 "탁" + 짧은 쇳소리 + 둔탁한 몸통
+  arrowHit() { sSnap(0.55, 0, 2600); sBody(210, 0.07, 0.6); sMetal(1250, 0.12, 0.05, 0, 0.15); nz({ dur: 0.05, type: "bandpass", f: 700, q: 2, vol: 0.3 }); },
+  // ── 상자 ──
+  // 들썩: 나무 상자가 바닥에 부딪는 "달그락" (점점 빨라짐)
+  woodRattle() { const ts = [0, 0.13, 0.23, 0.31, 0.37, 0.42]; ts.forEach((d, i) => { sBody(170 + i * 8, 0.05, 0.32, d); nz({ dur: 0.03, type: "bandpass", f: 900, q: 2, vol: 0.18, delay: d }); }); },
+  // 뚜껑 열림: 경첩 "끼익" + 뒤로 넘어가 닿는 "탁"
+  chestOpen() {
+    let t = 0; for (let i = 0; i < 9; i++) { nz({ dur: 0.016, type: "bandpass", f: 1900 - i * 70, q: 12, vol: 0.09, delay: t }); t += 0.018; }
+    tn({ type: "sawtooth", f: 520, f2: 380, dur: 0.16, vol: 0.025, lp: 2200 });
+    sBody(200, 0.06, 0.4, 0.17); nz({ dur: 0.03, type: "bandpass", f: 1000, q: 2, vol: 0.2, delay: 0.17 });
+  },
+  // 빛이 쏟아짐: 천천히 부풀어 오르는 맑은 화음
+  lightSwell() {
+    [523, 659, 784, 1047].forEach((f, i) => tn({ type: "sine", f, dur: 1.1, vol: 0.045, att: 0.35, delay: i * 0.03, rv: 0.5 }));
+    nz({ dur: 1, type: "bandpass", f: 5000, f2: 8000, q: 3, vol: 0.06, att: 0.4, rv: 0.4 });
+  },
+  // 아이템 획득: 종소리 네 음이 올라가고 마지막 음을 길게
+  itemGet() {
+    const bell = (f, d, l, v) => { tn({ type: "sine", f, dur: l, vol: v, delay: d, rv: 0.4 }); tn({ type: "sine", f: f * 2.01, dur: l * 0.6, vol: v * 0.35, delay: d, rv: 0.3 }); tn({ type: "triangle", f: f * 3, dur: l * 0.3, vol: v * 0.15, delay: d }); };
+    bell(784, 0, 0.18, 0.11); bell(988, 0.09, 0.18, 0.11); bell(1175, 0.18, 0.18, 0.11); bell(1568, 0.27, 0.9, 0.13);
+  },
+  // 동전 한 닢 바닥에 "찰"
+  coinClink(p = 1) { tn({ type: "triangle", f: 2600 * p, dur: 0.07, vol: 0.16 }); tn({ type: "triangle", f: 3900 * p, dur: 0.05, vol: 0.08 }); sSnap(0.08, 0, 6000); },
   // 치명타: 딱 + 깊고 무거운 쾅 + 갑옷 부서지는 콰직 + 짧은 울림 (맑은 "팅" 없음)
   critBig() {
     sSnap(0.9, 0, 2400); sBody(140, 0.32, 1); tn({ type: "sine", f: 62, f2: 30, dur: 0.55, vol: 0.75 });

@@ -1,27 +1,60 @@
 "use strict";
-// 픽셀 보물상자: 나무 판자 + 쇠띠·리벳 + 금 자물쇠. 뚜껑은 왼쪽 위 경첩으로 열림
+// 픽셀 보물상자 (정면): 몸통은 나무 판자 + 쇠띠·리벳 + 금 자물쇠.
+// 뚜껑은 뒤쪽 경첩으로 열림 → 열릴수록 바깥면은 납작해지고, 안쪽 면(어두운 나무)이 위로 일어섬
 function drawChestPx(ctx, C, w) {
-  ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fillRect(-78, -2, 156, 6);
+  const th = Math.max(0, Math.min(2.4, -C.lid)), inH = Math.round(46 * Math.sin(Math.min(th, 2.4))), frH = Math.round(38 * Math.max(0, Math.cos(th))), top = -66;
+  ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fillRect(-80, -2, 160, 6); ctx.fillRect(-70, 4, 140, 2);
+  // 뚜껑 안쪽 면 (경첩에서 위로 일어섬)
+  if (inH > 1) {
+    const y0 = top - inH;
+    ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-73, y0 - 2, 146, inH + 2);
+    ctx.fillStyle = "#4a2410"; ctx.fillRect(-70, y0, 140, inH);
+    ctx.fillStyle = "#2e160a"; for (let y = y0 + 9; y < top; y += 10) ctx.fillRect(-70, y, 140, 2);
+    ctx.fillStyle = "#6a3418"; ctx.fillRect(-70, y0, 140, 2);
+    for (const bx of [-58, 46]) { ctx.fillStyle = "#242a3c"; ctx.fillRect(bx, y0, 12, inH); ctx.fillStyle = "#3d4560"; ctx.fillRect(bx, y0, 12, 2); }
+    if (C.open) { ctx.fillStyle = "rgba(255,210,120,0.22)"; ctx.fillRect(-70, top - Math.min(inH, 14), 140, Math.min(inH, 14)); }
+  }
+  // 뚜껑 바깥 면 (닫혀 있을 때 둥근 덮개)
+  if (frH > 1) {
+    const y1 = top - inH, y0 = y1 - frH, k = frH / 38;
+    ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-73, y0, 146, frH + 1); ctx.fillRect(-66, y0 - Math.round(6 * k), 132, Math.round(6 * k) + 1);
+    ctx.fillStyle = "#8a4620"; ctx.fillRect(-70, y0 + 2, 140, frH - 3); ctx.fillRect(-63, y0 - Math.round(4 * k), 126, Math.round(6 * k));
+    ctx.fillStyle = "#b8682e"; ctx.fillRect(-63, y0 - Math.round(4 * k), 126, 2); ctx.fillRect(-70, y0 + 2, 140, 1);
+    ctx.fillStyle = "#5a2a12"; ctx.fillRect(-70, y0 + Math.round(frH * 0.55), 140, 2);
+    for (const bx of [-58, 46]) { ctx.fillStyle = "#1a1f30"; ctx.fillRect(bx - 1, y0 - Math.round(5 * k), 14, frH + Math.round(5 * k)); ctx.fillStyle = "#4a5578"; ctx.fillRect(bx, y0 - Math.round(4 * k), 12, frH + Math.round(4 * k) - 1); ctx.fillStyle = "#8d9cc4"; ctx.fillRect(bx, y0 - Math.round(4 * k), 12, 2); ctx.fillStyle = "#c8d6f5"; ctx.fillRect(bx + 4, y0 + Math.round(frH * 0.3), 4, 3); }
+    ctx.fillStyle = "#e8b84a"; ctx.fillRect(-10, y1 - Math.round(10 * k), 20, Math.round(10 * k));
+  }
   // 몸통
-  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-72, -66, 144, 66);
-  ctx.fillStyle = "#7a3e1c"; ctx.fillRect(-69, -63, 138, 60);
+  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-72, top, 144, 66);
+  ctx.fillStyle = "#7a3e1c"; ctx.fillRect(-69, top + 3, 138, 60);
   ctx.fillStyle = "#5a2a12"; for (let y = -48; y < -3; y += 15) ctx.fillRect(-69, y, 138, 3);
-  ctx.fillStyle = "#a65a2a"; ctx.fillRect(-69, -63, 138, 3);
-  if (C.open) { ctx.fillStyle = "#120806"; ctx.fillRect(-66, -66, 132, 8); ctx.fillStyle = "#ffd27a"; ctx.globalAlpha = 0.5 + 0.3 * Math.sin(w.time * 8); ctx.fillRect(-60, -66, 120, 3); ctx.globalAlpha = 1; }
-  // 쇠띠 + 리벳
-  for (const bx of [-58, 46]) { ctx.fillStyle = "#1a1f30"; ctx.fillRect(bx - 1, -66, 14, 66); ctx.fillStyle = "#4a5578"; ctx.fillRect(bx, -63, 12, 60); ctx.fillStyle = "#8d9cc4"; ctx.fillRect(bx, -63, 12, 2); ctx.fillStyle = "#c8d6f5"; for (const ry of [-55, -32, -11]) ctx.fillRect(bx + 4, ry, 4, 4); }
-  // 자물쇠
-  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-14, -52, 28, 28); ctx.fillStyle = "#e8b84a"; ctx.fillRect(-12, -50, 24, 24); ctx.fillStyle = "#fff0b0"; ctx.fillRect(-12, -50, 24, 3);
+  ctx.fillStyle = "#a65a2a"; ctx.fillRect(-69, top + 3, 138, 3);
+  // 열린 입구: 어두운 속 + 금화 더미 + 새어 나오는 빛
+  if (th > 0.3) {
+    ctx.fillStyle = "#120806"; ctx.fillRect(-68, top, 136, 10);
+    ctx.fillStyle = "#c8902a"; for (let i = 0; i < 14; i++) ctx.fillRect(-60 + i * 9, top + 5 - (i % 3), 6, 4);
+    ctx.fillStyle = "#ffe08a"; for (let i = 0; i < 14; i += 2) ctx.fillRect(-59 + i * 9, top + 4 - (i % 3), 2, 2);
+    ctx.fillStyle = "#fff0b0"; ctx.globalAlpha = 0.55 + 0.25 * Math.sin(w.time * 9); ctx.fillRect(-64, top, 128, 2); ctx.globalAlpha = 1;
+  }
+  for (const bx of [-58, 46]) { ctx.fillStyle = "#1a1f30"; ctx.fillRect(bx - 1, top, 14, 66); ctx.fillStyle = "#4a5578"; ctx.fillRect(bx, top + 3, 12, 60); ctx.fillStyle = "#8d9cc4"; ctx.fillRect(bx, top + 3, 12, 2); ctx.fillStyle = "#c8d6f5"; for (const ry of [-55, -32, -11]) ctx.fillRect(bx + 4, ry, 4, 4); }
+  // 자물쇠 (열리면 걸쇠가 아래로 늘어짐)
+  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-14, -52, 28, 28); ctx.fillStyle = "#e8b84a"; ctx.fillRect(-12, -50, 24, 24); ctx.fillStyle = "#fff0b0"; ctx.fillRect(-12, -50, 24, 3); ctx.fillStyle = "#a07020"; ctx.fillRect(-12, -29, 24, 3);
   ctx.fillStyle = "#3a2410"; ctx.fillRect(-3, -42, 6, 6); ctx.fillRect(-1, -37, 2, 6);
-  // 뚜껑
-  ctx.save(); ctx.translate(-72, -66); ctx.rotate(C.lid);
-  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(0, -36, 144, 36); ctx.fillRect(6, -42, 132, 8);
-  ctx.fillStyle = "#8a4620"; ctx.fillRect(3, -33, 138, 30); ctx.fillRect(9, -39, 126, 6);
-  ctx.fillStyle = "#b8682e"; ctx.fillRect(9, -39, 126, 3);
-  ctx.fillStyle = "#5a2a12"; ctx.fillRect(3, -18, 138, 3);
-  for (const bx of [13, 117]) { ctx.fillStyle = "#1a1f30"; ctx.fillRect(bx - 1, -42, 14, 42); ctx.fillStyle = "#4a5578"; ctx.fillRect(bx, -39, 12, 36); ctx.fillStyle = "#c8d6f5"; ctx.fillRect(bx + 4, -30, 4, 4); ctx.fillRect(bx + 4, -12, 4, 4); }
-  ctx.fillStyle = "#e8b84a"; ctx.fillRect(62, -8, 20, 8);
-  ctx.restore();
+  if (th > 0.3) { ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-6, -62, 12, 12); ctx.fillStyle = "#e8b84a"; ctx.fillRect(-4, -60, 8, 8); }
+}
+// 상자에서 솟는 빛기둥: 굵기가 다른 금빛 기둥 5개, 위로 갈수록 가늘고 옅게 (칸 단위)
+function chestBeams(ctx, x, y, t, a) {
+  const B = [[-46, 8, 0.7], [-24, 14, 0.9], [0, 22, 1.15], [24, 14, 0.85], [46, 8, 0.65]];
+  for (let i = 0; i < B.length; i++) {
+    const [dx, wd, hk] = B[i], H = Math.round((150 + 30 * Math.sin(t * 5 + i * 1.7)) * hk);
+    for (let s = 0; s < H; s += 6) {
+      const f = 1 - s / H, w2 = Math.max(2, Math.round(wd * (0.45 + 0.55 * f) / 2) * 2);
+      ctx.globalAlpha = a * f * 0.35; ctx.fillStyle = "#c8902a"; ctx.fillRect(x + dx - w2 / 2 - 2, y - s - 6, w2 + 4, 6);
+      ctx.globalAlpha = a * f * 0.6; ctx.fillStyle = "#ffd27a"; ctx.fillRect(x + dx - w2 / 2, y - s - 6, w2, 6);
+      if (w2 > 6) { ctx.globalAlpha = a * f * 0.85; ctx.fillStyle = "#fff4cc"; ctx.fillRect(x + dx - w2 / 6, y - s - 6, Math.max(2, Math.round(w2 / 3)), 6); }
+    }
+  }
+  ctx.globalAlpha = 1;
 }
 // 처치 보상: 동전 3개가 튀어나와 통통
 function deathLoot(w, x) {
@@ -806,7 +839,7 @@ RECIPES.push(
         id: "pull", name: { en: "Draw Tension", ko: "당기는 시간" }, param: "550ms",
         cap: { en: "Let the player *feel the pull* before the shot.", ko: "쏘기 전에 *당기는 맛*을 줘요." },
         pull(w) {
-          w.tween(w.bow, { pull: 1 }, 0.5, "out"); w.sfx.creak();
+          w.tween(w.bow, { pull: 1 }, 0.5, "out"); w.sfx.bowDraw();
           // 당기는 동안 빛가루가 화살촉으로 모임
           for (let i = 0; i < 10; i++) w.after(i * 0.04, () => { const a = rand(0, TAU), d = rand(40, 70), x = w.bowAt.x, y = w.bowAt.y; w.spawn({ type: "spark", seek: true, x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, tx: x, ty: y, life: 0.22, size: 2.5, color: "140,230,255" }); });
         },
@@ -864,10 +897,10 @@ RECIPES.push(
         },
       },
       {
-        id: "sound", name: { en: "Sound", ko: "소리" }, param: "creak / twang / thunk",
-        cap: { en: "*Creak* on draw, *twang* on release, *thunk* on hit.", ko: "당길 때 *끼익*, 놓을 때 *팅*, 맞을 때 *퍽*." },
-        release(w) { w.sfx.twang(); },
-        hit(w) { w.sfx.thunk(); },
+        id: "sound", name: { en: "Sound", ko: "소리" }, param: "creak / thrum / thock",
+        cap: { en: "*Creak* on draw, a low *thrum* and *whoosh* on release, *thock* on hit.", ko: "당길 때 *끼익*, 놓을 때 *퉁*·*슉*, 맞을 때 *탁*." },
+        release(w) { w.sfx.bowRelease(); w.after(0.04, () => w.sfx.arrowFly()); },
+        hit(w) { w.sfx.arrowHit(); },
       },
     ],
   },
@@ -1732,8 +1765,8 @@ RECIPES.push(
     id: "chest", cat: "ui", view: "side", polished: true,
     title: { en: "Make chests feel *epic*", ko: "상자 열기를 *두근거리게*" },
     intro: { en: "Opened. Item. *Okay?*", ko: "열렸다. 아이템. *그래서?*" },
-    interval: 2.6, stepDur: 3.8,
-    setup(w) { w.C = { lid: 0, wig: 0, wigT: 0, sx: 1, sy: 1, item: 0, open: false }; },
+    interval: 3.0, stepDur: 4.0,
+    setup(w) { w.C = { lid: 0, wig: 0, wigT: 0, hop: 0, sx: 1, sy: 1, item: 0, open: false }; },
     fire(w) {
       if (w.busy) return;
       w.busy = true;
@@ -1741,75 +1774,77 @@ RECIPES.push(
       const open = () => {
         C.open = true; C.openAt = w.time;
         w.emit("open", C);
-        if (!w.on("lid")) C.lid = -1.9;
+        if (!w.on("lid")) C.lid = -1.6;
         if (!w.on("item")) C.item = 1;
-        w.after(1.8, () => { C.open = false; C.lid = 0; C.item = 0; w.busy = false; });
+        w.after(2.2, () => { C.open = false; C.lid = 0; C.item = 0; w.busy = false; });
       };
-      if (w.on("wiggle")) { w.emit("wiggle", C); w.after(0.45, open); } else open();
+      if (w.on("wiggle")) { w.emit("wiggle", C); w.after(0.5, open); } else open();
     },
     update(w, dt) { const C = w.C, k = Math.min(1, dt * 12); C.sx += (1 - C.sx) * k; C.sy += (1 - C.sy) * k; },
-    // 상자 안 빛과 아이템은 칸 단위 픽셀로 또렷하게 (효과층 아래에 그림)
-    drawBack(w, ctx) {
-      const C = w.C, x = 270, y = G, ot = w.time - (C.openAt ?? -9);
-      // 빛줄기: 상자 입구에서 금빛 계단 빛이 솟았다가 잦아듦
-      if (C.open && w.on("rays") && ot < 1.6) {
-        const a = Math.min(1, ot * 6) * (ot > 1.1 ? 1 - (ot - 1.1) / 0.5 : 1);
-        ctx.globalAlpha = Math.max(0, a); pxAura(ctx, x, y - 70, w.time * 0.6, 3, [[90, 60, 10], [190, 140, 40], [255, 214, 110], [255, 246, 210]], 24); ctx.globalAlpha = 1;
-      }
-      if (C.item > 0) {
-        const iy = Math.round(y - 70 - C.item * 110 + Math.sin(w.time * 3) * 3), s = 1.2 + 1.3 * C.item;
-        if (w.on("rarity")) pxAura(ctx, x, iy, w.time, 2, [[58, 16, 92], [120, 52, 190], [196, 140, 255], [245, 225, 255]], 34);
-        pxSprite(ctx, "item-gem-px", x, iy, s, 0, 13, 12);
-        // 보석 주위로 반짝이는 십자 별
-        for (let i = 0; i < 4; i++) { const ph = w.time * 2 + i * 1.7, tw = Math.max(0, Math.sin(ph * 2)); if (tw < 0.3) continue; const a = i * TAU / 4 + 0.6, r = 38 * C.item; pxPlus(ctx, Math.round(x + Math.cos(a) * r), Math.round(iy + Math.sin(a) * r * 0.8), 2 + 4 * tw, "#ffffff"); }
-      }
-    },
     drawFront(w, ctx) {
-      const C = w.C, x = 270, y = G;
-      ctx.save(); ctx.translate(x, y); ctx.rotate(C.wig); ctx.scale(C.sx, C.sy);
+      const C = w.C, x = 270, y = G, ot = w.time - (C.openAt ?? -9);
+      ctx.save(); ctx.translate(x, y - Math.round(C.hop)); ctx.rotate(C.wig); ctx.scale(C.sx, C.sy);
       drawChestPx(ctx, C, w);
       ctx.restore();
+      // 빛기둥: 열리는 순간 솟았다가 서서히 잦아듦
+      if (C.open && w.on("rays") && ot < 2) chestBeams(ctx, x, y - 66, w.time, Math.min(1, ot * 5) * (ot > 1.3 ? Math.max(0, 1 - (ot - 1.3) / 0.7) : 1));
+      // 아이템: 상자 입구 아래로는 잘라서, 안에서 솟아오르게
+      if (C.item > 0) {
+        const iy = Math.round(y - 74 - C.item * 104 + (C.item > 0.98 ? Math.sin(w.time * 3) * 3 : 0));
+        ctx.save(); ctx.beginPath(); ctx.rect(x - 200, y - 400, 400, 334); ctx.clip();
+        if (w.on("rarity")) pxAura(ctx, x, iy, w.time, 2, [[58, 16, 92], [120, 52, 190], [196, 140, 255], [245, 225, 255]], 30);
+        pxSprite(ctx, "item-gem-px", x, iy, 2, 0, 13, 12);
+        ctx.restore();
+        for (let i = 0; i < 4; i++) { const tw = Math.max(0, Math.sin(w.time * 4 + i * 1.7)); if (tw < 0.3 || C.item < 0.9) continue; const a = i * TAU / 4 + 0.6; pxPlus(ctx, Math.round(x + Math.cos(a) * 40), Math.round(iy + Math.sin(a) * 32), 2 + 4 * tw, "#ffffff"); }
+      }
     },
     steps: [
       {
-        id: "wiggle", name: { en: "Anticipation Wiggle", ko: "열기 전 들썩" }, param: "450ms · rising",
+        id: "wiggle", name: { en: "Anticipation Wiggle", ko: "열기 전 들썩" }, param: "0.5s · rising hops",
         cap: { en: "Make it *wiggle* first. The wait is the fun.", ko: "열기 전에 *들썩들썩*. 기다림이 재미예요." },
-        wiggle(w, C) { C.wigT = 0.45; w.sfx.rattle(); },
-        update(w, dt) { const C = w.C; if (C.wigT > 0) { C.wigT -= dt; C.wig = Math.sin(w.time * 60) * 0.1 * (1 - C.wigT / 0.45); } else C.wig = 0; },
+        wiggle(w, C) {
+          C.wigT = 0.5;
+          // 점점 빨라지는 콩콩 뛰기
+          [0, 0.13, 0.23, 0.31, 0.37, 0.42].forEach((d, i) => w.after(d, () => { C.hop = 4 + i; w.tween(C, { hop: 0 }, 0.06, "in"); for (let k = 0; k < 2; k++) w.spawn({ type: "smoke", x: 270 + (k ? 1 : -1) * rand(50, 70), y: G - 3, vx: (k ? 1 : -1) * rand(30, 70), vy: -rand(10, 30), drag: 3, life: 0.35, size: 5, size1: 10, color: "90,96,118" }); }));
+        },
+        update(w, dt) { const C = w.C; if (C.wigT > 0) { C.wigT -= dt; C.wig = Math.sin(w.time * 50) * 0.06 * (1 - C.wigT / 0.5); } else C.wig = 0; },
       },
       {
-        id: "lid", name: { en: "Lid Burst", ko: "뚜껑 팡" }, param: "fly + bounce back",
-        cap: { en: "The lid *bursts* open, swings past, and *bounces back*.", ko: "뚜껑이 *팡* 열리고, 넘어갔다 *튕겨 돌아와요*." },
-        open(w, C) { C.lid = 0; C.sx = 1.15; C.sy = 0.85; w.tween(C, { lid: -2.4 }, 0.12, "out", () => w.tween(C, { lid: -1.9 }, 0.25, "back")); },
+        id: "lid", name: { en: "Lid Burst", ko: "뚜껑 활짝" }, param: "overshoot + settle",
+        cap: { en: "The lid *bursts* open, swings past, and *settles back*.", ko: "뚜껑이 *확* 젖혀졌다가 *살짝* 돌아와요." },
+        open(w, C) { C.lid = 0; C.sx = 1.1; C.sy = 0.9; w.tween(C, { lid: -2.2 }, 0.12, "out", () => w.tween(C, { lid: -1.6 }, 0.3, "back")); },
       },
       {
-        id: "rays", name: { en: "Light Rays", ko: "빛줄기" }, param: "12 rays · spin",
-        cap: { en: "*Light rays* spill out of the box.", ko: "상자 안에서 *빛*이 쏟아져요." },
-        open() {}, // 빛줄기는 drawBack에서 칸 단위로 그림
+        id: "rays", name: { en: "Light Pillars", ko: "빛기둥" }, param: "5 pillars · 2s",
+        cap: { en: "*Light* pours up out of the box.", ko: "상자 안에서 *빛기둥*이 솟아요." },
+        open() {},
       },
       {
-        id: "coins", name: { en: "Coin Fountain", ko: "동전 분수" }, param: "10 coins · bounce",
-        cap: { en: "Coins *fountain* out and *bounce* around.", ko: "동전이 *분수처럼* 튀어나와 *통통*." },
-        open(w) { for (let i = 0; i < 10; i++) w.spawn({ type: "ghost", img: SPR.coin.c, top: true, w: 22, h: 22, alpha0: 1, add: false, x: 270 + rand(-30, 30), y: G - 80, vx: rand(-260, 260), vy: rand(-760, -480), g: 1500, gy: G - 9, ground: true, bounce: 0.5, life: 1.7, hold: true }); },
-      },
-      {
-        id: "item", name: { en: "Item Reveal", ko: "아이템 등장" }, param: "rise 500ms",
-        cap: { en: "The item *rises* slowly. Let them look at it.", ko: "아이템은 *천천히* 떠올라요. 감상할 시간." },
-        open(w, C) { C.item = 0.01; w.tween(C, { item: 1 }, 0.5, "out"); },
-      },
-      {
-        id: "rarity", name: { en: "Rarity Flash", ko: "등급 색 번쩍" }, param: "purple = epic",
-        cap: { en: "Flash the *rarity color*. Purple means *epic*.", ko: "*등급 색*으로 번쩍. 보라는 *에픽*." },
-        open(w) { w.flash("168,85,247", 0.3); w.spawn({ x: 270, y: G - 80, life: 0.2, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 60, k, "214,170,255") }); },
-      },
-      {
-        id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / click / sparkle",
-        cap: { en: "*Rattle*, a light *click*, then a sparkling *chime*.", ko: "*달그락*, 가볍게 *딸깍*, 반짝이는 *띠리링*." },
-        // 뚜껑이 팡 열릴 때만 "팡", 아니면 덜컥. 반짝 소리는 아이템이 떠오를 때만
-        // 뚜껑이 열릴 때 가벼운 "딸깍", 아이템이 떠오를 때 "띠리링" 반짝 화음
+        id: "coins", name: { en: "Coin Fountain", ko: "동전 분수" }, param: "12 coins · spin · bounce",
+        cap: { en: "Coins *fountain* out, *spin*, and *bounce*.", ko: "동전이 *분수처럼* 튀어나와 *빙글빙글* 통통." },
         open(w) {
-          if (w.on("lid")) w.sfx.clickDown();
-          if (w.on("item") || w.on("rarity")) w.after(0.1, () => w.sfx.sparkle());
+          for (let i = 0; i < 12; i++) { const ph = rand(0, 4); w.spawn({ x: 270 + rand(-30, 30), y: G - 70, vx: rand(-260, 260), vy: rand(-760, -480), g: 1500, ground: true, gy: G - 10, bounce: 0.45, life: 1.8, hold: true, draw: (ctx, p) => pxSprite(ctx, "fx-coin-px", Math.round(p.x), Math.round(p.y), 2, 0, 6, 6, Math.floor(ph + p.age * 14) % 4, 12) }); }
+        },
+      },
+      {
+        id: "item", name: { en: "Item Reveal", ko: "아이템 등장" }, param: "rise 0.6s from inside",
+        cap: { en: "The item *rises* out of the box. Let them look.", ko: "아이템이 상자 *안에서* 천천히 떠올라요." },
+        open(w, C) { C.item = 0.01; w.tween(C, { item: 1 }, 0.6, "out"); },
+      },
+      {
+        id: "rarity", name: { en: "Rarity Aura", ko: "등급 오라" }, param: "purple = epic",
+        cap: { en: "A *rarity aura* blooms behind it. Purple means *epic*.", ko: "뒤로 *등급 오라*가 피어요. 보라는 *에픽*." },
+        open(w) { w.after(0.55, () => { w.flash("168,85,247", 0.25); w.spawn({ x: 270, y: G - 178, life: 0.22, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 56, k, "214,170,255") }); }); },
+      },
+      {
+        id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / creak / swell / jingle",
+        cap: { en: "*Rattle*, a hinge *creak*, light *swells*, an item *jingle*.", ko: "*달그락*, 경첩 *끼익*, 빛이 *화아*, 획득 *띠리링*." },
+        wiggle(w) { w.sfx.woodRattle(); },
+        open(w) {
+          if (w.on("lid")) w.sfx.chestOpen(); else w.sfx.tock();
+          if (w.on("rays")) w.sfx.lightSwell();
+          if (w.on("item") || w.on("rarity")) w.after(0.25, () => w.sfx.itemGet());
+          if (w.on("coins")) [0.42, 0.5, 0.57, 0.66, 0.78].forEach((d, i) => w.after(d, () => w.sfx.coinClink(1 + (i % 3) * 0.06)));
         },
       },
     ],
