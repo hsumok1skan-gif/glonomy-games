@@ -620,7 +620,7 @@ RECIPES.push(
         },
         kill(w, f) {
           // 근거리 한 방: 크게 날아가서 떨어짐
-          w.hitstop(0.12); w.fly(f, 70, -480, 0, true); f.tint = 0.5; w.shake(0.45, 1);
+          w.hitstop(0.12); w.fly(f, 70, -480, 0, true); f.tint = 0.5; w.shake(0.45, 1); w.sfx.crit();
           const x = f.x - 30, y = G - 64;
           w.spawn({ x, y, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 50, k, "255,240,200") });
           for (let i = 0; i < 14; i++) { const sz = rand(2.5, 5.5), rot = rand(0, 6), a = rand(-2.4, 0.5), v = rand(260, 640);
@@ -750,10 +750,11 @@ RECIPES.push(
     title: { en: "Make a bow feel *tense*", ko: "활에 *긴장감* 넣기" },
     intro: { en: "Click. Arrow. *Meh.*", ko: "누르면 화살. *끝.*" },
     interval: 1.4, stepDur: 3.6,
-    setup(w) { w.hero = w.actor("hero", { home: 150 }); w.foe = w.actor("foe", { home: 400, hp: 68 }); w.bow = { pull: 0, snap: 0 }; w.stuck = []; },
+    // 사람 없이 활만: 강철 리커브 활이 떠서 쏨
+    setup(w) { w.bowAt = { x: 150, y: G - 94 }; w.foe = w.actor("foe", { home: 400, hp: 68 }); w.bow = { pull: 0, snap: 0, ox: 0 }; w.stuck = []; },
     fire(w) {
       const release = () => {
-        const b = bowPt(w), o = { x: b.x + 10, y: b.y, vx: 1100, vy: 0, g: 0, draw: drawArrow };
+        const b = bowPt(w), o = { x: b.x + 24, y: b.y, vx: 1100, vy: 0, g: 0, draw: drawArrow };
         o.test = p => { const f = w.foe; return f.alive && p.x >= f.x - f.w / 2 + 14 && p.y > f.gy - f.h; };
         o.onHit = p => { const f = w.foe; if (!f.alive) return; f.hp -= 34; if (!w.on("hit")) f.ox += 8; w.emit("hit", p); if (f.hp <= 0) w.kill(f); };
         w.emit("release", o);
@@ -764,6 +765,7 @@ RECIPES.push(
     },
     update(w, dt) {
       w.bow.snap -= w.bow.snap * Math.min(1, dt * 14);
+      w.bow.ox -= w.bow.ox * Math.min(1, dt * 12);
       for (const s of w.stuck) s.wob *= Math.pow(0.02, dt);
       if (!w.foe.alive) w.stuck = [];
     },
@@ -777,22 +779,30 @@ RECIPES.push(
       {
         id: "pull", name: { en: "Draw Tension", ko: "당기는 시간" }, param: "550ms",
         cap: { en: "Let the player *feel the pull* before the shot.", ko: "쏘기 전에 *당기는 맛*을 줘요." },
-        pull(w) { w.tween(w.bow, { pull: 1 }, 0.5, "out"); w.hero.sx = 1.04; w.hero.sy = 0.96; w.sfx.creak(); },
+        pull(w) {
+          w.tween(w.bow, { pull: 1 }, 0.5, "out"); w.sfx.creak();
+          // 당기는 동안 빛가루가 화살촉으로 모임
+          for (let i = 0; i < 10; i++) w.after(i * 0.04, () => { const a = rand(0, TAU), d = rand(40, 70), x = w.bowAt.x + 30, y = w.bowAt.y; w.spawn({ type: "spark", seek: true, x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, tx: x, ty: y, life: 0.22, size: 2.5, color: "140,230,255" }); });
+        },
       },
       {
         id: "tremble", name: { en: "Full-draw Tremble", ko: "끝까지 당기면 떨림" }, param: "±1.5px",
         cap: { en: "At full draw, *tremble* a little. Strength has a limit.", ko: "끝까지 당기면 *살짝 떨려요*. 힘을 쓰는 중이니까." },
-        update(w) { if (w.bow.pull > 0.85) w.hero.ox = rand(-1.5, 1.5); },
+        update(w) { if (w.bow.pull > 0.85) w.bow.ox = rand(-1.5, 1.5); },
       },
       {
         id: "snap", name: { en: "String Snap", ko: "줄 튕김" }, param: "−14px overshoot",
         cap: { en: "The string *snaps past* center, then settles.", ko: "줄이 *앞으로 튕겼다가* 제자리로." },
-        release(w) { w.bow.snap = -14; w.hero.ox -= 4; const b = bowPt(w); w.spawn({ type: "spark", x: b.x, y: b.y, vx: 600, vy: 0, life: 0.08, size: 2, color: "255,255,255" }); },
+        release(w) {
+          w.bow.snap = -14; w.bow.ox = -6; const b = bowPt(w);
+          w.spawn({ x: b.x + 30, y: b.y, life: 0.08, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 18, k, "180,240,255") });
+          for (let i = 0; i < 6; i++) w.spawn({ type: "spark", x: b.x + 20, y: b.y, vx: rand(400, 800), vy: rand(-160, 160), drag: 6, life: 0.12, size: 2, color: "160,235,255" });
+        },
       },
       {
         id: "arc", name: { en: "Gravity Arc", ko: "포물선" }, param: "g 900 · nose follows",
         cap: { en: "Arrows *arc*, and the tip *follows the curve*.", ko: "화살은 *포물선*으로, 촉은 *곡선을 따라* 숙여요." },
-        release(w, o) { o.g = 900; o.vy = -330; o.align = true; },
+        release(w, o) { o.g = 900; o.vy = -240; o.align = true; },
       },
       {
         id: "trail", name: { en: "Wind Trail", ko: "바람 꼬리" }, param: "thin streak",
@@ -800,7 +810,7 @@ RECIPES.push(
         update(w) {
           for (const p of w.shots) if (p.draw === drawArrow) {
             const a = p.align ? Math.atan2(p.vy, p.vx) : 0;
-            w.spawn({ type: "spark", x: p.x - Math.cos(a) * 50, y: p.y - Math.sin(a) * 50, vx: -p.vx * 0.05, vy: -p.vy * 0.05, life: 0.18, size: 1.4, color: "255,255,255" });
+            w.spawn({ type: "spark", x: p.x - Math.cos(a) * 58, y: p.y - Math.sin(a) * 58, vx: -p.vx * 0.05, vy: -p.vy * 0.05, life: 0.2, size: 2, color: "140,230,255" });
           }
         },
       },
@@ -818,7 +828,7 @@ RECIPES.push(
           for (let i = 0; i < 5; i++) { const sz = rand(2, 3.5), rot = rand(0, 6); w.spawn({ x: p.x, y: p.y, vx: rand(-160, 120), vy: rand(-320, -100), g: 1300, ground: true, bounce: 0.3, life: rand(0.6, 0.9), vr: rand(-16, 16), draw: (ctx, q) => pxChip(ctx, q.x, q.y, sz, rot + q.rot, "#e2553a", "#5b1d17") }); }
         },
         kill(w, f) {
-          w.hitstop(0.12); w.fly(f, 60, -460, 0, true); f.tint = 0.5; w.shake(0.35, 1);
+          w.hitstop(0.12); w.fly(f, 60, -460, 0, true); f.tint = 0.5; w.shake(0.35, 1); w.sfx.crit();
           w.spawn({ x: f.x - 30, y: f.gy - 70, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 44, k, "255,240,200") });
         },
         land(w, f) {
@@ -976,9 +986,10 @@ RECIPES.push(
         land(w, f) { deathLoot(w, f.x); },
       },
       {
-        id: "sound", name: { en: "Sound", ko: "소리" }, param: "pop + squish",
-        cap: { en: "A bright *pop* on top of a wet *squish*.", ko: "말랑한 *뿌직* 위에 경쾌한 *팡*." },
-        kill(w) { if (w.on("pop") || w.on("burst")) w.sfx.pop(); else w.sfx.tock(); },
+        id: "sound", name: { en: "Sound", ko: "소리" }, param: "shot + crunch + thud",
+        cap: { en: "A heavy *crunch* on the kill, a *thud* on landing.", ko: "처치 순간 묵직한 *콰직*, 떨어질 때 *쿵*." },
+        fire(w) { w.sfx.gun(); },
+        kill(w) { if (w.on("pop") || w.on("burst")) w.sfx.crit(); else w.sfx.hit(); },
       },
     ],
   },

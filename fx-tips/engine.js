@@ -460,6 +460,22 @@ function drawStudioRigHero(ctx,a,w,top) {
 
 /* ───────── 소리 (파일 없이 합성) ───────── */
 const AU = { ctx: null };
+// 소리 버스: 메인 → 압축기, 잔향(짧은 방 울림) 보내기 버스를 따로 둠
+function audioBus(c) {
+  AU.out = c.createGain(); AU.out.gain.value = 0.23; // voice-over safe default, lift as needed in CapCut
+  const comp = c.createDynamicsCompressor();
+  comp.threshold.value = -14; comp.knee.value = 8; comp.ratio.value = 5; comp.attack.value = 0.002; comp.release.value = 0.12;
+  AU.out.connect(comp); comp.connect(c.destination);
+  const n = c.sampleRate, b = c.createBuffer(1, n, n), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  AU.noise = b;
+  // 잔향: 1.4초 동안 줄어드는 잡음으로 만든 공간 울림
+  const L = Math.floor(n * 1.4), ir = c.createBuffer(2, L, n);
+  for (let ch = 0; ch < 2; ch++) { const q = ir.getChannelData(ch); for (let i = 0; i < L; i++) q[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / L, 3.2); }
+  const cv = c.createConvolver(); cv.buffer = ir;
+  AU.rv = c.createGain(); AU.rv.gain.value = 0.5;
+  AU.rv.connect(cv); cv.connect(AU.out);
+}
 function audioInit() {
   try {
     if (!AU.ctx) {
@@ -467,79 +483,125 @@ function audioInit() {
       if (!C) return;
       const c = new C();
       AU.ctx = c;
-      AU.out = c.createGain(); AU.out.gain.value = 0.23; // voice-over safe default, lift as needed in CapCut
-      const comp = c.createDynamicsCompressor();
-      AU.out.connect(comp); comp.connect(c.destination);
-      const n = c.sampleRate, b = c.createBuffer(1, n, n), d = b.getChannelData(0);
-      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
-      AU.noise = b;
+      audioBus(c);
     }
     if (AU.ctx.state !== "running") AU.ctx.resume();
   } catch (e) {}
 }
-function env(g, t, vol, dur) {
+function env(g, t, vol, dur, att = 0.003, hold = 0) {
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(vol, t + 0.003);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), t + att);
+  if (hold > 0) g.gain.setValueAtTime(Math.max(0.0002, vol), t + att + hold);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(att + hold + 0.005, dur));
 }
-function nz({ dur = 0.1, type = "lowpass", f = 1000, f2, q = 0.7, vol = 0.4, delay = 0 }) {
+function sendTo(g, rv) { g.connect(AU.out); if (rv && AU.rv) { const s = AU.ctx.createGain(); s.gain.value = rv; g.connect(s); s.connect(AU.rv); } }
+// 잡음: 필터 종류·주파수 이동·잔향(rv)·어택(att)
+function nz({ dur = 0.1, type = "lowpass", f = 1000, f2, q = 0.7, vol = 0.4, delay = 0, rv = 0, att, hold = 0 }) {
   const c = AU.ctx; if (!c) return;
   const t = c.currentTime + delay;
   const s = c.createBufferSource(); s.buffer = AU.noise;
   const fl = c.createBiquadFilter(); fl.type = type; fl.Q.value = q;
   fl.frequency.setValueAtTime(f, t);
   if (f2) fl.frequency.exponentialRampToValueAtTime(f2, t + dur);
-  const g = c.createGain(); env(g, t, vol, dur);
-  s.connect(fl); fl.connect(g); g.connect(AU.out);
+  const g = c.createGain(); env(g, t, vol, dur, att, hold);
+  s.connect(fl); fl.connect(g); sendTo(g, rv);
   s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
 }
-function tn({ type = "sine", f = 440, f2, dur = 0.1, vol = 0.3, delay = 0 }) {
+// 음: 파형·음높이 이동·저역필터(lp→lp2)·잔향·어택
+function tn({ type = "sine", f = 440, f2, dur = 0.1, vol = 0.3, delay = 0, rv = 0, att, lp, lp2, det = 0, hold = 0 }) {
   const c = AU.ctx; if (!c) return;
   const t = c.currentTime + delay;
-  const o = c.createOscillator(); o.type = type;
+  const o = c.createOscillator(); o.type = type; if (det) o.detune.value = det;
   o.frequency.setValueAtTime(f, t);
   if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
-  const g = c.createGain(); env(g, t, vol, dur);
-  o.connect(g); g.connect(AU.out);
+  const g = c.createGain(); env(g, t, vol, dur, att, hold);
+  if (lp) { const fl = c.createBiquadFilter(); fl.type = "lowpass"; fl.frequency.setValueAtTime(lp, t); if (lp2) fl.frequency.exponentialRampToValueAtTime(lp2, t + dur); o.connect(fl); fl.connect(g); }
+  else o.connect(g);
+  sendTo(g, rv);
   o.start(t); o.stop(t + dur + 0.05);
 }
+// 쇳소리·종소리: 정수배가 아닌 배음을 겹침
+function sMetal(f, dur, vol, delay = 0, rv = 0.25) {
+  [[1, 1], [2.76, 0.55], [5.4, 0.32], [8.93, 0.18]].forEach(([m, a], i) => tn({ type: "sine", f: f * m, dur: dur / (1 + i * 0.6), vol: vol * a, delay, rv }));
+}
+// 몸통 타격: 사인 음이 확 떨어지는 "쿵"
+function sBody(f, dur, vol, delay = 0) { tn({ type: "sine", f, f2: Math.max(30, f * 0.3), dur, vol, delay }); }
+// 맨 앞 딱 소리
+function sSnap(vol = 0.5, delay = 0, f = 3500) { nz({ dur: 0.022, type: "highpass", f, vol, delay, att: 0.001 }); }
+const sR1 = (a = 0.06) => 1 + (Math.random() * 2 - 1) * a;
 const SFX = {
-  gun(p = 1) { nz({ dur: 0.07, type: "highpass", f: 2000 * p, vol: 0.7 }); tn({ type: "square", f: 170 * p, f2: 40, dur: 0.13, vol: 0.28 }); nz({ dur: 0.28, f: 700, f2: 120, vol: 0.35 }); },
-  hit(p = 1) { tn({ f: 200 * p, f2: 55, dur: 0.11, vol: 0.55 }); nz({ dur: 0.05, type: "bandpass", f: 2600, q: 2, vol: 0.35 }); },
-  ping() { tn({ type: "triangle", f: 1500, f2: 1350, dur: 0.4, vol: 0.22 }); tn({ f: 2250, dur: 0.25, vol: 0.08 }); tn({ f: 70, f2: 35, dur: 0.3, vol: 0.6 }); },
-  charge() { tn({ f: 220, f2: 880, dur: 0.36, vol: 0.14 }); nz({ dur: 0.36, type: "bandpass", f: 400, f2: 2400, q: 4, vol: 0.12 }); },
-  magic() { tn({ type: "triangle", f: 880, f2: 440, dur: 0.18, vol: 0.16 }); nz({ dur: 0.22, type: "bandpass", f: 1800, f2: 700, q: 3, vol: 0.2 }); },
-  burst() { nz({ dur: 0.35, f: 2400, f2: 200, vol: 0.5 }); tn({ f: 320, f2: 70, dur: 0.25, vol: 0.4 }); tn({ type: "triangle", f: 1320, f2: 660, dur: 0.25, vol: 0.12 }); },
-  slash() { nz({ dur: 0.13, type: "bandpass", f: 4200, f2: 900, q: 1.6, vol: 0.5 }); },
-  thud() { tn({ f: 140, f2: 38, dur: 0.2, vol: 0.8 }); nz({ dur: 0.12, f: 900, vol: 0.45 }); },
-  blip(n = 1) { const f = 620 * Math.pow(2, Math.min(n - 1, 14) / 12); tn({ type: "triangle", f, dur: 0.1, vol: 0.22 }); tn({ f: f * 2, dur: 0.07, vol: 0.08, delay: 0.015 }); },
-  hurt() { tn({ type: "square", f: 320, f2: 110, dur: 0.16, vol: 0.18 }); nz({ dur: 0.1, type: "bandpass", f: 1400, q: 1.5, vol: 0.35 }); tn({ f: 90, f2: 50, dur: 0.15, vol: 0.5 }); },
-  toss() { nz({ dur: 0.2, type: "bandpass", f: 700, f2: 1600, q: 2, vol: 0.15 }); },
-  boom() { nz({ dur: 1.1, f: 900, f2: 80, vol: 0.9 }); tn({ f: 85, f2: 28, dur: 0.7, vol: 0.9 }); nz({ dur: 0.12, type: "highpass", f: 2500, vol: 0.35 }); },
-  shotgun() { nz({ dur: 0.1, type: "highpass", f: 1200, vol: 0.8 }); tn({ type: "square", f: 120, f2: 35, dur: 0.22, vol: 0.4 }); nz({ dur: 0.5, f: 900, f2: 100, vol: 0.6 }); },
-  pump() { nz({ dur: 0.03, type: "bandpass", f: 2500, q: 2, vol: 0.4 }); nz({ dur: 0.04, type: "bandpass", f: 1500, q: 2, vol: 0.45, delay: 0.09 }); tn({ type: "square", f: 900, dur: 0.02, vol: 0.08, delay: 0.09 }); },
-  smg(p = 1) { nz({ dur: 0.04, type: "highpass", f: 2600 * p, vol: 0.4 }); tn({ type: "square", f: 220 * p, f2: 70, dur: 0.06, vol: 0.15 }); },
-  tick() { nz({ dur: 0.025, type: "bandpass", f: 3200, q: 2, vol: 0.2 }); },
-  creak() { tn({ type: "sawtooth", f: 90, f2: 150, dur: 0.5, vol: 0.04 }); },
-  twang() { tn({ type: "triangle", f: 230, f2: 150, dur: 0.28, vol: 0.3 }); nz({ dur: 0.15, type: "bandpass", f: 900, f2: 300, q: 2, vol: 0.2 }); },
-  thunk() { tn({ f: 170, f2: 60, dur: 0.12, vol: 0.6 }); nz({ dur: 0.06, type: "bandpass", f: 600, q: 1.5, vol: 0.4 }); },
-  slam() { tn({ f: 70, f2: 28, dur: 0.55, vol: 0.95 }); nz({ dur: 0.75, f: 500, f2: 60, vol: 0.9 }); nz({ dur: 0.08, type: "highpass", f: 3000, vol: 0.3 }); },
-  jump() { tn({ type: "square", f: 300, f2: 620, dur: 0.1, vol: 0.1 }); },
-  land() { tn({ f: 130, f2: 60, dur: 0.08, vol: 0.35 }); nz({ dur: 0.06, f: 700, vol: 0.25 }); },
-  dash() { nz({ dur: 0.18, type: "bandpass", f: 600, f2: 3200, q: 2, vol: 0.4 }); },
-  skid() { nz({ dur: 0.22, type: "bandpass", f: 2400, f2: 700, q: 1, vol: 0.22 }); },
-  pop() { tn({ f: 480, f2: 960, dur: 0.07, vol: 0.3 }); nz({ dur: 0.05, type: "highpass", f: 3000, vol: 0.2 }); nz({ dur: 0.18, f: 900, f2: 200, vol: 0.35, delay: 0.03 }); },
-  crit() { tn({ f: 140, f2: 38, dur: 0.25, vol: 0.85 }); nz({ dur: 0.15, type: "bandpass", f: 4000, f2: 900, q: 1.5, vol: 0.5 }); tn({ type: "triangle", f: 1400, f2: 700, dur: 0.3, vol: 0.18 }); },
-  slashHit() { nz({ dur: 0.1, type: "bandpass", f: 4200, f2: 900, q: 1.6, vol: 0.45 }); tn({ f: 200, f2: 55, dur: 0.11, vol: 0.5 }); },
-  chime(n = 0) { const f = 1320 * Math.pow(2, n / 12); tn({ f, dur: 0.5, vol: 0.14 }); tn({ f: f * 1.5, dur: 0.35, vol: 0.06, delay: 0.04 }); },
-  fanfare() { [0, 4, 7, 12, 16].forEach((st, i) => tn({ type: "triangle", f: 523 * Math.pow(2, st / 12), dur: 0.28, vol: 0.17, delay: i * 0.085 })); },
-  swish() { nz({ dur: 0.08, type: "bandpass", f: 2000, f2: 4200, q: 2, vol: 0.18 }); },
-  scrape() { nz({ dur: 0.16, type: "bandpass", f: 420, f2: 260, q: 3, vol: 0.3 }); },
-  tock() { tn({ f: 320, f2: 170, dur: 0.07, vol: 0.32 }); },
-  clickDown() { tn({ f: 170, dur: 0.035, vol: 0.4 }); nz({ dur: 0.02, type: "bandpass", f: 1800, q: 2, vol: 0.3 }); },
-  clickUp() { tn({ f: 900, dur: 0.03, vol: 0.22 }); nz({ dur: 0.015, type: "bandpass", f: 4200, q: 2, vol: 0.2 }); },
-  rattle() { for (let i = 0; i < 5; i++) tn({ type: "square", f: 130 + i * 12, dur: 0.03, vol: 0.07, delay: i * 0.08 }); },
-  boost() { nz({ dur: 0.8, type: "bandpass", f: 300, f2: 2400, q: 1, vol: 0.4 }); tn({ type: "sawtooth", f: 80, f2: 170, dur: 0.8, vol: 0.05 }); },
+  // 총: 딱 + 쿵 + 중역 펑 + 짧은 울림
+  gun(p = 1) { sSnap(0.8, 0, 3000 * p); sBody(190 * p, 0.14, 0.75); nz({ dur: 0.1, type: "bandpass", f: 1400 * p, f2: 380, q: 1.2, vol: 0.55 }); nz({ dur: 0.38, f: 900, f2: 140, vol: 0.18, rv: 0.35, delay: 0.01 }); },
+  // 맞음: 둔탁한 퍽 + 갑옷 바스락
+  hit(p = 1) { sBody(170 * p, 0.12, 0.75); nz({ dur: 0.06, type: "bandpass", f: 2200 * p, q: 1.2, vol: 0.45 }); nz({ dur: 0.05, type: "highpass", f: 5000, vol: 0.15, delay: 0.005 }); },
+  ping() { sMetal(1480, 0.5, 0.12); sBody(80, 0.3, 0.6); },
+  // 기 모으기: 위로 차오르는 웅 + 모래 같은 반짝임
+  charge() { tn({ type: "sawtooth", f: 110, f2: 440, dur: 0.42, vol: 0.09, lp: 600, lp2: 3200, att: 0.25 }); tn({ type: "sine", f: 220, f2: 880, dur: 0.42, vol: 0.12, att: 0.3 }); nz({ dur: 0.4, type: "bandpass", f: 800, f2: 5000, q: 3, vol: 0.12, att: 0.3 }); },
+  // 마법: 맑은 화음이 반짝 + 쉭
+  magic() { [1, 1.5, 2.01].forEach((m, i) => tn({ type: "sine", f: 880 * m * sR1(0.02), f2: 1320 * m, dur: 0.3, vol: 0.09, delay: i * 0.02, rv: 0.4 })); nz({ dur: 0.22, type: "bandpass", f: 6000, f2: 1600, q: 2, vol: 0.18, rv: 0.3 }); },
+  burst() { sSnap(0.6); sBody(260, 0.2, 0.6); nz({ dur: 0.4, f: 3000, f2: 200, vol: 0.45, rv: 0.3 }); sMetal(1320, 0.3, 0.06); },
+  // 베기: 바람 가르는 쉭 (위로 올라갔다 내려옴)
+  slash() { nz({ dur: 0.16, type: "bandpass", f: 1800, f2: 5200, q: 2.2, vol: 0.4, att: 0.04 }); nz({ dur: 0.08, type: "highpass", f: 6000, vol: 0.18, delay: 0.06 }); },
+  // 무거운 쿵: 낮은 몸통 + 먼지
+  thud() { sSnap(0.3, 0, 2000); sBody(120, 0.3, 0.95); nz({ dur: 0.25, f: 700, f2: 120, vol: 0.4, rv: 0.25 }); },
+  // 동전·점수: 짧은 두 음 (아래→위)
+  blip(n = 1) { const f = 880 * Math.pow(2, Math.min(n - 1, 14) / 12); tn({ type: "square", f, dur: 0.05, vol: 0.07, lp: 4000 }); tn({ type: "square", f: f * 1.335, dur: 0.16, vol: 0.07, delay: 0.05, lp: 5000, rv: 0.15 }); },
+  hurt() { sSnap(0.4); sBody(160, 0.16, 0.7); tn({ type: "square", f: 300, f2: 120, dur: 0.14, vol: 0.12, lp: 1800 }); nz({ dur: 0.1, type: "bandpass", f: 1400, q: 1.5, vol: 0.3 }); },
+  toss() { nz({ dur: 0.22, type: "bandpass", f: 600, f2: 1800, q: 2, vol: 0.18, att: 0.06 }); },
+  // 폭발: 딱 + 깊은 저음 + 퍼지는 우르릉 + 탁탁 튀는 잔불 + 울림
+  boom() {
+    sSnap(0.8, 0, 2500); sBody(95, 0.9, 0.85); tn({ type: "sine", f: 55, f2: 28, dur: 1.1, vol: 0.7 });
+    nz({ dur: 1.4, f: 1600, f2: 70, vol: 0.85, rv: 0.45 }); nz({ dur: 0.3, type: "bandpass", f: 900, q: 0.8, vol: 0.5 });
+    for (let i = 0; i < 7; i++) nz({ dur: 0.03, type: "highpass", f: 2500 + Math.random() * 3000, vol: 0.18, delay: 0.12 + Math.random() * 0.6 });
+  },
+  // 샷건: 총보다 크고 낮게, 꼬리가 김
+  shotgun() { sSnap(0.9, 0, 2200); sBody(150, 0.24, 1); nz({ dur: 0.14, type: "bandpass", f: 1000, f2: 300, q: 1, vol: 0.7 }); nz({ dur: 0.7, f: 1100, f2: 90, vol: 0.4, rv: 0.45, delay: 0.01 }); },
+  // 펌프: 철-컥 (쇳소리 두 번)
+  pump() { sSnap(0.2, 0, 2500); sMetal(1900, 0.06, 0.08); sBody(260, 0.04, 0.3); sSnap(0.25, 0.1, 1800); sMetal(1300, 0.08, 0.1, 0.1); sBody(180, 0.05, 0.35, 0.1); },
+  smg(p = 1) { sSnap(0.45, 0, 3200 * p); sBody(230 * p, 0.06, 0.35); nz({ dur: 0.06, type: "bandpass", f: 1600 * p, q: 1.2, vol: 0.25 }); },
+  tick() { nz({ dur: 0.02, type: "bandpass", f: 3600, q: 2, vol: 0.22 }); },
+  // 활 당기기: 줄과 나무가 끼익 (잘게 끊긴 마찰음)
+  creak() { for (let i = 0; i < 10; i++) nz({ dur: 0.03, type: "bandpass", f: 900 + i * 60, q: 6, vol: 0.06 + i * 0.006, delay: i * 0.045 }); tn({ type: "sawtooth", f: 70, f2: 95, dur: 0.48, vol: 0.025, lp: 500 }); },
+  // 활 놓기: 줄 퉁 + 바람 가름
+  twang() { tn({ type: "sawtooth", f: 165, f2: 140, dur: 0.32, vol: 0.18, lp: 2600, lp2: 400 }); tn({ type: "triangle", f: 330, f2: 300, dur: 0.22, vol: 0.12 }); sSnap(0.3, 0, 2500); nz({ dur: 0.2, type: "bandpass", f: 1200, f2: 4000, q: 2.5, vol: 0.22, att: 0.02, delay: 0.02 }); },
+  // 화살 꽂힘: 툭 + 짧은 떨림
+  thunk() { sSnap(0.5, 0, 2200); sBody(240, 0.08, 0.7); nz({ dur: 0.05, type: "bandpass", f: 800, q: 2, vol: 0.4 }); tn({ type: "triangle", f: 190, f2: 170, dur: 0.18, vol: 0.06, delay: 0.02 }); },
+  slam() { sSnap(0.8, 0, 1800); sBody(85, 0.6, 1); nz({ dur: 0.8, f: 700, f2: 60, vol: 0.85, rv: 0.4 }); for (let i = 0; i < 6; i++) nz({ dur: 0.04, type: "bandpass", f: 1200 + Math.random() * 1800, q: 2, vol: 0.14, delay: 0.1 + Math.random() * 0.4 }); },
+  jump() { nz({ dur: 0.1, type: "bandpass", f: 700, f2: 1800, q: 2, vol: 0.14, att: 0.02 }); },
+  // 착지: 쿵 + 흙먼지
+  land() { sBody(140, 0.1, 0.55); nz({ dur: 0.14, f: 900, f2: 200, vol: 0.32 }); },
+  dash() { nz({ dur: 0.22, type: "bandpass", f: 500, f2: 3800, q: 1.8, vol: 0.4, att: 0.03 }); sBody(200, 0.06, 0.25); },
+  skid() { nz({ dur: 0.24, type: "bandpass", f: 2600, f2: 800, q: 1, vol: 0.2 }); },
+  // 뽁: 짧게 올라가는 물방울 소리
+  pop(p = 1) { tn({ type: "sine", f: 380 * p * sR1(), f2: 1100 * p, dur: 0.06, vol: 0.4 }); sSnap(0.2, 0, 4000); },
+  crit() { sSnap(0.8); sBody(150, 0.28, 1); nz({ dur: 0.16, type: "bandpass", f: 4200, f2: 900, q: 1.5, vol: 0.45 }); sMetal(1400, 0.4, 0.08); },
+  slashHit() { nz({ dur: 0.1, type: "bandpass", f: 3800, f2: 1200, q: 1.6, vol: 0.4 }); sSnap(0.5); sBody(190, 0.12, 0.7); },
+  // 종: 맑은 금속 배음 + 울림
+  chime(n = 0) { sMetal(1320 * Math.pow(2, n / 12), 0.7, 0.1, 0, 0.4); },
+  // 팡파레: 금관 느낌 (톱니파+필터), 올라가는 세 음 뒤 화음을 길게
+  fanfare() {
+    const note = (st, d, l, v = 0.08) => [-7, 7].forEach(dt => tn({ type: "sawtooth", f: 523 * Math.pow(2, st / 12), dur: l, vol: v, delay: d, lp: 3200, lp2: 1400, att: 0.015, det: dt, rv: 0.3 }));
+    note(0, 0, 0.12); note(4, 0.1, 0.12); note(7, 0.2, 0.12);
+    [12, 16, 19].forEach(st => note(st, 0.32, 0.6, 0.06));
+  },
+  swish() { nz({ dur: 0.1, type: "bandpass", f: 1800, f2: 4600, q: 2, vol: 0.2, att: 0.03 }); },
+  scrape() { nz({ dur: 0.18, type: "bandpass", f: 460, f2: 260, q: 3, vol: 0.3 }); },
+  // 톡: 작은 나무 소리
+  tock() { tn({ type: "sine", f: 760, f2: 520, dur: 0.045, vol: 0.28 }); sSnap(0.12, 0, 3000); },
+  clickDown() { tn({ type: "sine", f: 190, dur: 0.035, vol: 0.4 }); nz({ dur: 0.02, type: "bandpass", f: 1800, q: 2, vol: 0.3 }); },
+  clickUp() { tn({ type: "sine", f: 950, dur: 0.03, vol: 0.2 }); nz({ dur: 0.015, type: "bandpass", f: 4200, q: 2, vol: 0.2 }); },
+  rattle() { for (let i = 0; i < 5; i++) { sSnap(0.12, i * 0.08, 2600); tn({ type: "square", f: 130 + i * 12, dur: 0.03, vol: 0.05, delay: i * 0.08, lp: 1500 }); } },
+  boost() { nz({ dur: 0.8, type: "bandpass", f: 300, f2: 2600, q: 1, vol: 0.4, att: 0.1 }); tn({ type: "sawtooth", f: 80, f2: 170, dur: 0.8, vol: 0.06, lp: 900 }); },
+  // 유리 깨짐: 쩍 + 잘게 흩어지는 유리 조각 소리 + 바닥에 떨어지는 짤랑
+  glass() {
+    sSnap(0.9, 0, 4000); nz({ dur: 0.35, type: "highpass", f: 3500, f2: 7000, vol: 0.35, rv: 0.3 }); sBody(300, 0.08, 0.4);
+    for (let i = 0; i < 16; i++) sMetal(2600 + Math.random() * 3400, 0.08 + Math.random() * 0.18, 0.05, Math.random() * 0.35, 0.3);
+    for (let i = 0; i < 8; i++) sMetal(3000 + Math.random() * 2500, 0.06, 0.03, 0.45 + Math.random() * 0.5, 0.2);
+  },
+  // 금 가는 소리: 짧은 딱딱이가 빨라짐
+  crackle() { let t = 0; for (let i = 0; i < 9; i++) { sSnap(0.12 + i * 0.02, t, 2500 + i * 300); t += 0.06 * Math.pow(0.82, i); } },
+  // 광선: 지잉 굵은 톱니 + 흔들리는 잡음 (dur 동안)
+  beam(dur = 1) { const h = dur * 0.7; tn({ type: "sawtooth", f: 82, dur, vol: 0.13, lp: 1200, att: 0.03, hold: h }); tn({ type: "sawtooth", f: 164, dur, vol: 0.08, lp: 2400, det: 12, att: 0.03, hold: h }); nz({ dur, type: "bandpass", f: 1400, f2: 700, q: 0.9, vol: 0.28, att: 0.03, rv: 0.3, hold: h }); },
 };
 const NOSFX = new Proxy({}, { get: () => () => {} });
 
@@ -1847,16 +1909,67 @@ function paw(w) { const c = w.hero; if (c && c.rigHand && rigOn(c)) return rigWo
 
 /* ───────── 레시피용 도우미 ───────── */
 function gunSpring(w, dt) { const g = w.gun; g.kick -= g.kick * Math.min(1, dt * 16); g.rot -= g.rot * Math.min(1, dt * 12); }
-function bowPt(w) { const h = w.hero; return { x: h.x + h.ox + 46, y: G - 72 }; }
+function bowPt(w) {
+  if (w.bowAt) return { x: w.bowAt.x + (w.bow.ox || 0) - 10, y: w.bowAt.y + Math.sin(w.time * 2.2) * 3 };
+  const h = w.hero; return { x: h.x + h.ox + 46, y: G - 72 };
+}
+// 화살: 강철 대 + 푸른 빛 촉 + 깃
 function drawArrowAt(ctx, x, y, rot, alpha = 1) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.globalAlpha = alpha;
-  ctx.strokeStyle = "#e5e7eb"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-50, 0); ctx.lineTo(6, 0); ctx.stroke();
-  ctx.fillStyle = "#e5e7eb"; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(2, -6); ctx.lineTo(2, 6); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#fb7185"; ctx.beginPath(); ctx.moveTo(-50, 0); ctx.lineTo(-58, -7); ctx.lineTo(-42, 0); ctx.lineTo(-58, 7); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#2a3350"; ctx.fillRect(-56, -2.5, 62, 5);
+  ctx.fillStyle = "#c9d3e8"; ctx.fillRect(-55, -1.5, 60, 3);
+  ctx.fillStyle = "#1c4f7a"; ctx.beginPath(); ctx.moveTo(20, 0); ctx.lineTo(4, -8); ctx.lineTo(8, 0); ctx.lineTo(4, 8); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#5ad6ff"; ctx.beginPath(); ctx.moveTo(17, 0); ctx.lineTo(6, -5); ctx.lineTo(9, 0); ctx.lineTo(6, 5); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#e8fbff"; ctx.fillRect(9, -1, 6, 2);
+  ctx.fillStyle = "#3a6fae"; ctx.beginPath(); ctx.moveTo(-56, 0); ctx.lineTo(-66, -9); ctx.lineTo(-48, -2); ctx.lineTo(-48, 2); ctx.lineTo(-66, 9); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#9ae8ff"; ctx.fillRect(-62, -4, 8, 2); ctx.fillRect(-62, 2, 8, 2);
   ctx.restore();
 }
 function drawArrow(ctx, p) { drawArrowAt(ctx, p.x, p.y, p.align ? Math.atan2(p.vy, p.vx) : 0); }
+// 강철 리커브 활: 활대는 앞으로 휘고 끝이 다시 말림, 빛나는 룬과 수정 끝
+function drawBowPx(w, ctx) {
+  const B = w.bow, bob = Math.sin(w.time * 2.2) * 3, bx = w.bowAt.x + (B.ox || 0), by = w.bowAt.y + bob, k = B.pull, pull = k * 40 + B.snap, L = 84 * (1 - k * 0.04);
+  // 활대: 손잡이가 가장 앞, 끝으로 갈수록 뒤로 휘고, 맨 끝은 다시 앞으로 말림(리커브)
+  const pt = (t, sg) => { const q = Math.max(0, (t - 0.78) / 0.22); return [bx - 30 * t * t - k * 12 * t * t + 20 * q * q, by + sg * t * L]; };
+  const glow = 0.5 + 0.5 * k + 0.15 * Math.sin(w.time * 6);
+  // 바닥 그림자
+  ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.fillRect(bx - 34, G - 3, 52, 4); ctx.fillRect(bx - 24, G - 5, 32, 2);
+  for (const sg of [-1, 1]) {
+    const N = 46;
+    for (let pass = 0; pass < 3; pass++) for (let i = 0; i <= N; i++) {
+      const t = i / N, [x, y] = pt(t, sg), th = 13 - 8 * t;
+      if (pass === 0) { ctx.fillStyle = "#121726"; ctx.fillRect(x - th / 2 - 2, y - 3, th + 4, 6); }
+      else if (pass === 1) { ctx.fillStyle = t < 0.5 ? "#4a5578" : "#5d6b96"; ctx.fillRect(x - th / 2, y - 2, th, 4); }
+      else { ctx.fillStyle = "#d4e0fa"; ctx.fillRect(x + th / 2 - 3, y - 1, 2, 2); ctx.fillStyle = "#2a3150"; ctx.fillRect(x - th / 2, y - 1, 2, 2); }
+    }
+    // 활대 가운데 홈을 따라 빛나는 룬
+    for (const t of [0.22, 0.38, 0.54, 0.68]) { const [x, y] = pt(t, sg); ctx.globalAlpha = Math.min(1, glow); ctx.fillStyle = "#5ad6ff"; ctx.fillRect(x - 2, y - 3, 3, 6); ctx.fillStyle = "#d8f8ff"; ctx.fillRect(x - 1, y - 1, 1, 2); ctx.globalAlpha = 1; }
+    // 날개 장식: 손잡이 쪽에서 앞으로 뻗은 칼날 모양
+    const [wx, wy] = pt(0.16, sg);
+    ctx.fillStyle = "#121726"; ctx.beginPath(); ctx.moveTo(wx + 2, wy - sg * 2); ctx.lineTo(wx + 20, wy + sg * 4); ctx.lineTo(wx + 4, wy + sg * 9); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#8d9cc4"; ctx.beginPath(); ctx.moveTo(wx + 4, wy); ctx.lineTo(wx + 16, wy + sg * 4); ctx.lineTo(wx + 5, wy + sg * 6); ctx.closePath(); ctx.fill();
+    // 끝 수정
+    const [tx, ty] = pt(1, sg);
+    ctx.fillStyle = "#123a5c"; ctx.beginPath(); ctx.moveTo(tx + 2, ty + sg * 13); ctx.lineTo(tx + 8, ty); ctx.lineTo(tx + 2, ty - sg * 5); ctx.lineTo(tx - 4, ty); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#5ad6ff"; ctx.fillRect(tx, ty - 1, 4, 4); ctx.fillStyle = "#e8fdff"; ctx.fillRect(tx + 1, ty, 2, 2);
+  }
+  // 손잡이: 가죽 감기 + 금테 + 가운데 보석
+  ctx.fillStyle = "#121726"; ctx.fillRect(bx - 8, by - 17, 16, 34);
+  ctx.fillStyle = "#5a3020"; ctx.fillRect(bx - 6, by - 15, 12, 30);
+  ctx.fillStyle = "#7a4630"; for (let yy = -13; yy < 15; yy += 6) ctx.fillRect(bx - 6, by + yy, 12, 2);
+  ctx.fillStyle = "#e8b84a"; ctx.fillRect(bx - 7, by - 17, 14, 4); ctx.fillRect(bx - 7, by + 13, 14, 4);
+  ctx.fillStyle = "#ff4a6a"; ctx.fillRect(bx + 3, by - 3, 5, 6); ctx.fillStyle = "#ffd0da"; ctx.fillRect(bx + 4, by - 2, 2, 2);
+  // 줄: 활 끝 → 오늬(당긴 만큼 뒤로)
+  const [ux, uy] = pt(1, -1), [lx, ly] = pt(1, 1), nx = Math.min(ux, lx) - pull;
+  ctx.strokeStyle = k > 0.3 ? "#d6f6ff" : "#a8bce0"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(ux, uy); ctx.lineTo(nx, by); ctx.lineTo(lx, ly); ctx.stroke();
+  if (k > 0.02) {
+    drawArrowAt(ctx, nx + 62, by, 0);
+    if (k > 0.5) pxGlow(ctx, nx + 78, by, 8 + 8 * k, "140,230,255", k * 0.9);
+  }
+}
 function drawBow(w, ctx) {
+  if (w.bowAt) return drawBowPx(w, ctx);
   const b = bowPt(w), pull = w.bow.pull * 34 + w.bow.snap;
   ctx.save(); ctx.translate(b.x, b.y);
   ctx.strokeStyle = "#a16207"; ctx.lineWidth = 7; ctx.lineCap = "round";

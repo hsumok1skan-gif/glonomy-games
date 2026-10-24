@@ -1179,8 +1179,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch +1 per pop",
           cap: { en: "Each pop goes *one note higher*.", ko: "터질 때마다 음이 *한 칸씩* 올라가요." },
-          hit(w) { w.sfx.pop(); },
-          pop(w, B, x, y, i) { w.sfx.blip(i + 1); },
+          hit(w) { w.sfx.tock(); },
+          pop(w, B, x, y, i) { w.sfx.pop(Math.pow(2, i / 12)); },
           chain(w) { if (w.on("chain")) w.sfx.fanfare(); },
         },
       ],

@@ -576,13 +576,15 @@
           reveal(w, c) { if (c.rar === 2) confetti(w, 50); },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising blips + fanfare",
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "flips pitch up + fanfare",
           cap: { en: "Each flip *pitches up*. The rare gets a *fanfare*.", ko: "뒤집을수록 *음이 올라가고*, 희귀는 *팡파레*." },
-          hold(w) { w.play(() => tn({ type: "sawtooth", f: 220, f2: 880, dur: 0.6, vol: 0.1 })); },
+          hold(w) { w.play(() => { tn({ type: "sawtooth", f: 110, f2: 440, dur: 0.6, vol: 0.09, lp: 500, lp2: 3000, att: 0.4 }); nz({ dur: 0.6, type: "bandpass", f: 800, f2: 5000, q: 3, vol: 0.1, att: 0.4 }); }); },
+          // 카드 한 장: 짧은 착 + 한 칸씩 올라가는 톡
           reveal(w, c) {
-            if (c.rar === 2 && w.on("burst")) { w.sfx.boom(); w.sfx.fanfare(); }
-            else if (c.rar === 2 && w.on("hold")) w.sfx.chime && w.sfx.chime(12);
-            else w.sfx.blip(c.i + 1);
+            w.play(() => { nz({ dur: 0.05, type: "bandpass", f: 2600, q: 1.5, vol: 0.2 }); tn({ type: "triangle", f: 660 * Math.pow(2, c.i / 12), dur: 0.08, vol: 0.14 }); });
+            if (c.rar === 2 && w.on("burst")) { w.sfx.burst(); w.sfx.fanfare(); }
+            else if (c.rar === 2 && w.on("hold")) w.sfx.chime(12);
+            else if (c.rar === 1 && w.on("rarity")) w.sfx.chime(4);
           },
         },
       ],
@@ -708,9 +710,9 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "click + pop + blips",
           cap: { en: "*Click*, *pop*, rising *blips*, a *thunk*.", ko: "*딸깍*, *뻥*, *띠링띠링*, *쾅*." },
           press(w) { w.sfx.clickDown(); },
-          open(w) { if (w.on("pop")) { w.sfx.pop(); w.sfx.chime(4); } else w.sfx.tock(); },
+          open(w) { if (w.on("pop")) { w.play(() => { sSnap(0.6, 0, 2400); sBody(260, 0.08, 0.6); nz({ dur: 0.1, type: "bandpass", f: 900, q: 1, vol: 0.4 }); }); w.sfx.magic(); } else w.sfx.tock(); },
           gain(w, ct) { w.sfx.blip((ct.n - 120) / 10); },
-          claim(w) { if (w.on("stamp")) w.after(0.16, () => w.sfx.thunk()); else w.sfx.tock(); },
+          claim(w) { if (w.on("stamp")) w.after(0.16, () => w.sfx.thud()); else w.sfx.tock(); },
         },
       ],
     },

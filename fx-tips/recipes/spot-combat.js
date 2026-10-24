@@ -391,11 +391,16 @@
           },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "creak + glass burst",
-          cap: { en: "A tense *creak*, then bright *glass* bursting.", ko: "*끼긱* 버티다가 *와장창*." },
-          strike(w) { w.sfx.thunk(); if (w.on("crack")) w.play(() => tn({ type: "sawtooth", f: 900, f2: 1600, dur: 0.45, vol: 0.05 })); },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "clang + crackle + shatter",
+          cap: { en: "A ringing *clang*, *cracks* racing, then *glass* bursting.", ko: "*쨍* 막히고, *쩌적* 금 가고, *와장창*." },
+          // 칼이 막에 막힘: 베는 소리 + 막이 울리는 "징"
+          strike(w) {
+            w.sfx.slashHit();
+            w.play(() => { sMetal(520, 0.6, 0.1, 0, 0.4); tn({ type: "sine", f: 440, f2: 380, dur: 0.5, vol: 0.12, rv: 0.4 }); });
+            if (w.on("crack")) w.play(() => SFX.crackle());
+          },
           break(w) {
-            if (w.on("shatter")) w.play(() => { nz({ type: "highpass", f: 5000, dur: 0.5, vol: 0.5 }); [2400, 3100, 3900].forEach((f, i) => tn({ type: "triangle", f, dur: 0.35, vol: 0.08, delay: i * 0.05 })); });
+            if (w.on("shatter")) w.play(() => SFX.glass());
             if (w.on("freeze") || w.on("stagger")) w.sfx.thud(); else if (!w.on("shatter")) w.sfx.tock();
           },
         },
@@ -654,12 +659,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rise + boom + roar",
           cap: { en: "A rising *whine*, a *boom*, a roaring *blast*.", ko: "*위이잉* 차오르고, *쾅*, *우와앙*." },
-          charge(w) { w.play(() => tn({ type: "sawtooth", f: 90, f2: 720, dur: 0.9, vol: 0.12 })); },
+          // 모으기: 오라가 있으면 길게 차오르는 웅~, 없으면 짧은 쉭
+          charge(w) {
+            if (w.on("aura")) w.play(() => { tn({ type: "sawtooth", f: 70, f2: 560, dur: 0.9, vol: 0.12, lp: 400, lp2: 3200, att: 0.6 }); tn({ type: "sine", f: 140, f2: 1120, dur: 0.9, vol: 0.1, att: 0.6 }); nz({ dur: 0.9, type: "bandpass", f: 500, f2: 6000, q: 2.5, vol: 0.14, att: 0.6 }); });
+            else w.sfx.swish();
+          },
           release(w) {
-            if (w.on("mega") || w.on("blast")) {
-              w.sfx.boom();
-              w.play(() => nz({ type: "bandpass", f: 900, f2: 300, q: 0.8, dur: 0.9, vol: 0.45 }));
-            } else w.sfx.magic();
+            if (w.on("mega")) w.play(() => { sSnap(0.9, 0, 2200); sBody(90, 0.5, 1); SFX.beam(1.2); });
+            else w.play(() => tn({ type: "sawtooth", f: 1760, dur: 0.6, vol: 0.035, lp: 3500, att: 0.01 })); // 가는 레이저: 찌이~
+            if (w.on("blast")) w.play(() => { nz({ dur: 1, f: 1400, f2: 120, vol: 0.5, rv: 0.4 }); for (let i = 0; i < 10; i++) sSnap(0.12, 0.05 + i * 0.1, 2500 + Math.random() * 2000); });
           },
         },
       ],
