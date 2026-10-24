@@ -1626,7 +1626,9 @@ RECIPES.push(
     },
     drawFront(w, ctx) {
       const B = w.B, x = 270, y = 230;
-      for (const p of w.parts) if (p.back) drawPart(ctx, p); // 버튼 뒤로 가려지는 효과
+      // 버튼 뒤로 가려지는 효과 (그린 뒤 합성 방식·투명도를 원래대로 돌려놓아야 버튼이 불투명하게 덮음)
+      ctx.save(); for (const p of w.parts) if (p.back) drawPart(ctx, p); ctx.restore();
+      ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
       ctx.save(); ctx.translate(x, y); ctx.scale(B.sx, B.sy);
       ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.beginPath(); ctx.ellipse(0, 26, 104 - B.press * 1.5, 30, 0, 0, TAU); ctx.fill();
       ctx.fillStyle = "#2a2f3a"; ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(0, 14, 100, 34, 0, 0, TAU); ctx.fill(); ctx.stroke();
