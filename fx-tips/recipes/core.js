@@ -872,41 +872,40 @@ RECIPES.push(
   },
 
   {
-    id: "hammer", cat: "combat", view: "side", polished: true, hookDur: 3.6, hookFires: [0.15, 1.75],
+    id: "hammer", cat: "combat", view: "side", polished: true, melee: true, weapon: "hammer", hookDur: 3.6, hookFires: [0.15, 1.75],
     title: { en: "Make a hammer *HEAVY*", ko: "망치를 *무겁게*" },
     intro: { en: "It's a hammer. It feels like a *pillow*.", ko: "망치인데 *베개* 같아요." },
     interval: 1.7, stepDur: 3.6,
-    // 사람 없이 망치만: 떠 있는 전투 망치가 내려침
-    setup(w) { w.hamAt = { x: 238, y: G - 90 }; w.foe = w.actor("foe", { home: 390, hp: 68 }); w.ham = { rot: -0.5, heat: 0 }; },
+    // 주인공이 칼 대신 망치를 쥐고 휘두름 (칼 동작 그림 위에 망치를 겹쳐 그림)
+    setup(w) { w.hero = w.actor("hero", { home: 225 }); w.foe = w.actor("foe", { home: 395, hp: 68 }); w.ham = { rot: -0.5, heat: 0 }; },
     fire(w) {
       if (w.busy) return;
       w.busy = true;
-      const swing = () => w.tween(w.ham, { rot: w.hamAt ? 2.13 : 2.19 }, 0.07, "in", () => {
-        const at = { x: hammerPivot(w).x + (w.hamAt ? 110 : 97), y: G };
+      const swing = () => { w.emit("swing"); w.tween(w.ham, { rot: 2.19 }, 0.07, "in", () => {
+        const at = { x: w.hero.x + w.hero.ox + 92, y: G };
         w.emit("slam", at);
         const f = w.foe;
         if (f.alive) { f.hp -= 34; if (!w.on("wave")) f.ox += 10; w.emit("hit", at); if (f.hp <= 0) w.kill(f); }
         w.after(0.28, () => w.tween(w.ham, { rot: -0.5 }, 0.35, "inout", () => { w.busy = false; }));
         w.tween(w.ham, { heat: 0 }, 0.5, "out");
-      });
+      }); };
       if (w.on("antic")) { w.emit("antic"); w.after(0.3, swing); } else swing();
     },
-    drawFront(w, ctx) { drawHammer(w, ctx); },
     drawHud(w, ctx) { drawBar(ctx, w.foe); },
     steps: [
       {
         id: "antic", name: { en: "Long Wind-up", ko: "길게 들어 올리기" }, param: "260ms back",
         cap: { en: "Heavy = *slow up*, *fast down*.", ko: "무거우면 *천천히 올리고*, *빠르게 내려요*." },
         antic(w) {
-          w.tween(w.ham, { rot: -1.4, heat: 1 }, 0.26, "out");
-          // 들어 올리는 동안 불티가 머리로 모임
-          for (let i = 0; i < 8; i++) w.after(i * 0.03, () => { const p = hammerPivot(w), a = -1.4 - Math.PI / 2, hx = p.x + Math.cos(a) * 132, hy = p.y + Math.sin(a) * 132, b = rand(0, TAU), d = rand(30, 60); w.spawn({ type: "spark", seek: true, x: hx + Math.cos(b) * d, y: hy + Math.sin(b) * d, tx: hx, ty: hy, life: 0.2, size: 2.5, color: "255,170,80" }); });
+          w.tween(w.ham, { rot: -1.4, heat: 1 }, 0.26, "out"); w.hero.ox -= 8;
+          // 들어 올리는 동안 불티가 치켜든 망치 머리로 모임
+          for (let i = 0; i < 8; i++) w.after(i * 0.03, () => { const hx = w.hero.x - 40, hy = G - 150, b = rand(0, TAU), d = rand(30, 60); w.spawn({ type: "spark", seek: true, x: hx + Math.cos(b) * d, y: hy + Math.sin(b) * d, tx: hx, ty: hy, life: 0.2, size: 2.5, color: "255,170,80" }); });
         },
       },
       {
         id: "smear", name: { en: "Smear Frame", ko: "잔상 한 장" }, param: "140ms arc",
         cap: { en: "One *smeared* frame sells the speed.", ko: "*뭉개진* 한 장이 속도를 말해줘요." },
-        slam(w) { const p = hammerPivot(w); w.spawn({ x: p.x, y: p.y, life: 0.16, draw: (ctx, q, k) => pxCrescent(ctx, q.x, q.y, 134, -2.6, 0.6, 26, k, "255,214,160") }); },
+        slam(w) { const h = w.hero; w.spawn({ x: h.x + h.ox + 4, y: G - 70, life: 0.16, draw: (ctx, q, k) => pxCrescent(ctx, q.x, q.y, 82, -2.5, 0.75, 24, k, "255,214,160") }); },
       },
       {
         id: "stop", name: { en: "Heavy Hit Stop", ko: "묵직한 멈춤" }, param: "150ms + target shake",
@@ -1792,13 +1791,13 @@ RECIPES.push(
         open(w) { w.flash("168,85,247", 0.45); w.spawn({ type: "ring", x: 270, y: G - 120, size: 20, size1: 200, life: 0.5, w: 8, color: "192,132,252" }); },
       },
       {
-        id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / burst / chime",
-        cap: { en: "*Rattle*, *burst*, then a sparkling *chime*.", ko: "*달그락*, *팡*, 반짝이는 *띠링*." },
+        id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / click / sparkle",
+        cap: { en: "*Rattle*, a light *click*, then a sparkling *chime*.", ko: "*달그락*, 가볍게 *딸깍*, 반짝이는 *띠리링*." },
         // 뚜껑이 팡 열릴 때만 "팡", 아니면 덜컥. 반짝 소리는 아이템이 떠오를 때만
+        // 뚜껑이 열릴 때 가벼운 "딸깍", 아이템이 떠오를 때 "띠리링" 반짝 화음
         open(w) {
-          if (w.on("lid") || w.on("rays")) w.sfx.burst(); else w.play(() => { sSnap(0.3, 0, 1800); sBody(200, 0.08, 0.5); });
-          if (w.on("coins")) for (let i = 0; i < 6; i++) w.after(0.25 + i * 0.07, () => w.play(() => sMetal(2200 + Math.random() * 900, 0.12, 0.05)));
-          if (w.on("item") || w.on("rarity")) w.after(0.15, () => w.sfx.chime(7));
+          if (w.on("lid")) w.sfx.clickDown();
+          if (w.on("item") || w.on("rarity")) w.after(0.1, () => w.sfx.sparkle());
         },
       },
     ],

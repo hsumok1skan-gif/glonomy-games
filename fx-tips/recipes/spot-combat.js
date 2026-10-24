@@ -865,141 +865,127 @@
           },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "beep + ping + clank",
-          cap: { en: "Lock-on *beeps*, then a crisp *ping*.", ko: "조준은 *삑삑*, 명중은 *팅!*" },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "beep + heavy crit",
+          cap: { en: "Lock-on *beeps*, then a heavy *crunch*.", ko: "조준은 *삑삑*, 명중은 묵직한 *콰앙*." },
           // 조준 표시가 있을 때만 삑삑, 명중음은 효과 크기에 맞춰
           aim(w) { if (w.on("marker")) [0, 0.13, 0.26].forEach((d, i) => w.play(() => tn({ type: "square", f: 1200 + i * 200, dur: 0.05, vol: 0.06, delay: d, lp: 4000 }))); },
-          hit(w) { if (w.on("ping")) w.play(() => sMetal(1760, 0.6, 0.12, 0, 0.4)); if (w.on("snap")) w.sfx.crit(); else w.sfx.hit(); },
+          // 약점 치명타: 무겁게 "콰앙" (효과가 있을 때만, 없으면 평범한 맞는 소리)
+          hit(w) { if (w.on("ping") || w.on("snap")) w.sfx.critBig(); else w.sfx.hit(); },
         },
       ],
     },
 
-    /* ───────── 8. 포털로 적 소환 ───────── */
+    /* ───────── 8. 소환진에서 적 등장 ───────── */
     {
       id: "spot-combat-portal", cat: "combat", view: "3d", polished: true,
       title: { en: "Make enemy spawns feel *ominous*", ko: "적 등장을 *불길하게*" },
       intro: { en: "An enemy spawns. It just *blinks* in.", ko: "적이 나오는데 그냥 *뿅* 하고 생겨요." },
-      interval: 3.0, stepDur: 4.0,
+      interval: 3.4, stepDur: 4.2,
       setup(w) {
-        w.mob = { x: 270, y: 0, a: 0, sx: 1, sy: 1, flash: 0 };
-        w.circ = 0; w.rift = 0; w.riftY = 74;
+        w.foe = w.actor("foe", { home: 270, h: 150 });
+        w.foe.alpha = 0; w.circ = 0; w.riseT = 0;
       },
       fire(w) {
-        const m = w.mob, later = seq(w);
-        Object.assign(m, { y: 0, a: 0, sx: 1, sy: 1, flash: 0 });
-        w.circ = 0; w.rift = 0;
-        w.emit("summon", m);
-        later(w.on("circle") ? 0.7 : 0.2, () => {
-          w.emit("open", m);
-          const land = () => { m.y = 0; w.emit("land", m); };
-          if (w.on("rift")) { m.a = 1; m.y = w.riftY - G; w.tween(m, { y: 0 }, 0.32, "in", land); }
-          else { m.a = 1; land(); }
+        const f = w.foe, later = seq(w);
+        w.respawn(f); Object.assign(f, { alpha: 0, sx: 1, sy: 1, oy: 0, clipY: null, forcePose: null });
+        w.circ = 0; w.riseT = 0;
+        w.emit("summon", f);
+        later(w.on("circle") ? 0.75 : 0.25, () => {
+          f.alpha = 1;
+          w.emit("emerge", f);
+          if (w.on("rise")) {
+            // 바닥선 아래는 잘라서, 소환진 속에서 천천히 솟아오르게
+            f.oy = f.h + 6; f.clipY = G + 4; w.riseT = 1;
+            w.tween(f, { oy: 0 }, 1.0, "out", () => { f.clipY = null; w.riseT = 0; w.emit("arrive", f); });
+          } else w.emit("arrive", f);
         });
-        later(2.5, () => { w.tween(m, { a: 0 }, 0.3); w.tween(w, { circ: 0 }, 0.3); });
+        later(2.9, () => { w.tween(f, { alpha: 0 }, 0.3); w.tween(w, { circ: 0 }, 0.3); });
       },
       update(w, dt) {
-        const m = w.mob;
-        m.sx += (1 - m.sx) * Math.min(1, dt * 10); m.sy += (1 - m.sy) * Math.min(1, dt * 10); m.flash = Math.max(0, m.flash - dt * 4);
+        const f = w.foe;
+        if (w.riseT > 0) { f.vib = 1.6; f.vibAxis = "x"; }
       },
       drawFloor(w, ctx) {
-        stage(ctx, 270, 150, "#4a0c44", "#0c020b");
-        plinth(ctx, 270, G + 8, 230, 38, "#1a0518", "rgba(255,120,230,0.35)");
+        stage(ctx, 270, 150, "#3a0a36", "#0a0209");
+        plinth(ctx, 270, G + 8, 230, 38, "#160414", "rgba(255,120,230,0.3)");
         const c = w.circ;
-        ctx.strokeStyle = "rgba(255,140,230,0.5)"; ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "rgba(255,140,230,0.35)"; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.ellipse(270, G + 6, 90, 18, 0, 0, TAU); ctx.stroke();
         if (c <= 0) return;
-        ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.translate(270, G + 6); ctx.scale(1, 0.21);
-        ctx.strokeStyle = `rgba(255,90,220,${c})`; ctx.lineWidth = 9;
-        ctx.beginPath(); ctx.arc(0, 0, 118 * c, 0, TAU * c); ctx.stroke();
+        // 소환진: 굵은 바깥 고리 + 안쪽 고리 + 도는 별 + 바깥 룬 점
+        ctx.save(); ctx.translate(270, G + 6); ctx.scale(1, 0.21);
+        ctx.strokeStyle = "#5a0a50"; ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(0, 0, 118 * c, 0, TAU * c); ctx.stroke();
+        ctx.strokeStyle = "#ff5ad6"; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, 0, 118 * c, 0, TAU * c); ctx.stroke();
         ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(0, 0, 86 * c, 0, TAU); ctx.stroke();
         ctx.rotate(w.time * 1.2);
-        ctx.strokeStyle = `rgba(255,190,250,${c})`; ctx.lineWidth = 5;
+        ctx.strokeStyle = "#ffb8f2"; ctx.lineWidth = 5;
         for (let k = 0; k < 2; k++) { ctx.beginPath(); for (let i = 0; i < 4; i++) { const a = k * Math.PI / 3 + i * TAU / 3; ctx[i ? "lineTo" : "moveTo"](Math.cos(a) * 86 * c, Math.sin(a) * 86 * c); } ctx.stroke(); }
-        for (let i = 0; i < 12; i++) { const a = i * TAU / 12; ctx.fillStyle = `rgba(255,170,240,${c})`; ctx.fillRect(Math.cos(a) * 102 * c - 5, Math.sin(a) * 102 * c - 5, 10, 10); }
+        for (let i = 0; i < 12; i++) { const a = i * TAU / 12; ctx.fillStyle = i % 2 ? "#ffb8f2" : "#ff5ad6"; ctx.fillRect(Math.cos(a) * 102 * c - 6, Math.sin(a) * 102 * c - 6, 12, 12); }
         ctx.restore();
-        pxGlow(ctx, 270, G, 70 * c, "255,60,200", 0.35 * c);
+        pxGlow(ctx, 270, G, 60 * c, "255,60,200", 0.3 * c);
       },
       drawBack(w, ctx) {
-        const m = w.mob, r = w.rift, ry = w.riftY;
-        if (r > 0) {
-          // 균열: 들쭉날쭉한 테두리가 꿈틀대는 층 4겹(분홍 → 보라 → 짙은 보라 → 검은 속) + 안에서 도는 빛가루
-          ctx.save(); ctx.translate(270, ry);
-          pxGlow(ctx, 0, 0, 70 * r, "255,60,210", 0.45);
-          const t = w.time, jag = (R, Hh, amp, col, ph) => {
-            ctx.fillStyle = col; ctx.beginPath();
-            for (let i = 0; i <= 28; i++) { const a = i * TAU / 28, j = 1 - amp * (0.5 + 0.5 * Math.sin(i * 2.7 + t * 9 + ph)) * (i % 2 ? 1 : 0.35); ctx.lineTo(Math.round(Math.cos(a) * R * r * j / 2) * 2, Math.round(Math.sin(a) * Hh * r * j / 2) * 2); }
-            ctx.fill();
-          };
-          jag(104, 34, 0.28, "#ff5ad6", 0); jag(92, 29, 0.22, "#b02aa8", 1.3); jag(80, 24, 0.2, "#4a0a4a", 2.1); jag(66, 18, 0.18, "#08000a", 3);
-          for (let i = 0; i < 10; i++) { const a = t * 2.4 + i * TAU / 10, d = (0.3 + 0.6 * ((i * 37) % 10) / 10) * r; ctx.fillStyle = i % 3 ? "#d860ff" : "#ffd0f6"; ctx.fillRect(Math.round(Math.cos(a) * 60 * d) - 2, Math.round(Math.sin(a) * 15 * d) - 2, 4, 4); }
-          ctx.restore();
+        // 솟아오르는 동안 소환진 안쪽이 검붉게 뚫린 구멍처럼 보임
+        if (w.riseT > 0) {
+          ctx.fillStyle = "#8a2aa0"; ctx.beginPath(); ctx.ellipse(270, G + 4, 74, 14, 0, 0, TAU); ctx.fill();
+          ctx.fillStyle = "#08000a"; ctx.beginPath(); ctx.ellipse(270, G + 5, 66, 11, 0, 0, TAU); ctx.fill();
         }
-        if (m.a <= 0) return;
-        const s = SPR.foe, H = 160, W = H * s.c.width / s.c.height;
-        ctx.save();
-        if (r > 0) { ctx.beginPath(); ctx.rect(-100, ry, 800, 500); ctx.clip(); }
-        ctx.globalAlpha = m.a;
-        ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.beginPath(); ctx.ellipse(m.x, G + 2, 46 * m.sx, 8, 0, 0, TAU); ctx.fill();
-        ctx.translate(m.x, G + m.y); ctx.scale(m.sx, m.sy);
-        ctx.drawImage(s.c, -W / 2, -H, W, H);
-        if (m.flash > 0) { ctx.globalAlpha = Math.min(1, m.flash) * m.a; ctx.drawImage(s.white, -W / 2, -H, W, H); }
-        ctx.restore();
       },
       steps: [
         {
-          id: "circle", name: { en: "Summon Circle", ko: "소환진" }, param: "0.6s draw-in · spin",
+          id: "circle", name: { en: "Summon Circle", ko: "소환진" }, param: "0.7s draw-in · spin",
           cap: { en: "Draw a glowing *summoning circle* first.", ko: "먼저 바닥에 *소환진*이 그려져요." },
-          summon(w) { w.tween(w, { circ: 1 }, 0.6, "out"); },
+          summon(w) { w.tween(w, { circ: 1 }, 0.65, "out"); },
         },
         {
-          id: "rift", name: { en: "Rift Tear", ko: "균열 찢기" }, param: "pop 0.25s · 6 bolts",
-          cap: { en: "*Tear* a rift in the air. It *drops* out of it.", ko: "허공이 *쫙* 찢기고, 그 안에서 *툭* 떨어져요." },
-          open(w) {
-            w.tween(w, { rift: 1 }, 0.25, "back");
-            for (let i = 0; i < 6; i++) bolt(w, 270 + rand(-60, 60), w.riftY, rand(0, TAU), 4, 14, "255,170,250", 2.5, 0.35);
+          id: "rise", name: { en: "Rise From Below", ko: "땅에서 솟아오름" }, param: "1.0s · tremble",
+          cap: { en: "It *rises* out of the circle, slow and *shaking*.", ko: "소환진 속에서 *천천히*, *덜덜* 떨며 솟아올라요." },
+          emerge(w) {
+            for (let i = 0; i < 10; i++) w.after(i * 0.09, () => { w.shake(0.12); for (let k = 0; k < 2; k++) w.spawn({ type: "smoke", x: 270 + rand(-60, 60), y: G - 2, vx: rand(-60, 60), vy: rand(-50, -15), drag: 2, life: rand(0.5, 0.8), size: rand(8, 12), size1: rand(16, 24), color: "70,40,80" }); });
           },
         },
         {
-          id: "slam", name: { en: "Landing Slam", ko: "착지 쿵" }, param: "squash .65 · trauma .5",
-          cap: { en: "*Squash* on landing. Floor *cracks*, dust flies.", ko: "착지에 *찌그러지고*, 바닥이 *쩍*, 먼지 *풀풀*." },
-          land(w, m) {
-            m.sx = 1.4; m.sy = 0.65; w.shake(0.5);
-            dust(w, m.x, G, 16, 0, "160,110,160");
-            for (let i = 0; i < 6; i++) w.spawn({ type: "crack", under: true, add: false, x: m.x, y: G + 6, pts: [[0, 0], [Math.cos(i) * 60, Math.sin(i) * 10], [Math.cos(i) * 110, Math.sin(i) * 16 + rand(-4, 4)]], w: 3, life: 1.8, hold: true, color: "20,0,20" });
-          },
-        },
-        {
-          id: "burst", name: { en: "Energy Burst", ko: "기운 폭발" }, param: "beam · rays 12 · ring",
-          cap: { en: "A *pillar* of light and a magenta *burst*.", ko: "*빛기둥*이 솟고 분홍빛이 *팡*." },
-          land(w, m) {
-            m.flash = 1;
-            w.spawn({ type: "beam", x: m.x, y: G, size: 60, h: 420, life: 0.6, color: "255,90,220" });
-            w.spawn({ type: "rays", under: true, x: m.x, y: G - 70, n: 12, size: 40, size1: 240, vr: 0.8, life: 1.4, hold: true, color: "255,80,210" });
-            w.spawn({ type: "ring", flat: true, x: m.x, y: G + 6, size: 30, size1: 280, life: 0.6, w: 12, color: "255,150,240" });
-            sparks(w, m.x, G - 40, 26, "255,170,250", [250, 650], -Math.PI, 0);
-          },
-        },
-        {
-          id: "close", name: { en: "Portal Implode", ko: "포털 닫힘" }, param: "suck 16 · 0.15s",
-          cap: { en: "The rift *slams shut*, sucking the light back.", ko: "균열이 빛을 *빨아들이며* *뚝* 닫혀요." },
-          land(w) {
-            w.after(0.3, () => {
-              w.tween(w, { rift: 0 }, 0.15, "in");
-              for (let i = 0; i < 16; i++) { const a = rand(0, TAU); w.spawn({ type: "glow", seek: true, x: 270 + Math.cos(a) * 140, y: w.riftY + Math.sin(a) * 50, tx: 270, ty: w.riftY, size: 8, life: 0.3, color: "255,150,240" }); }
-              w.spawn({ type: "ring", x: 270, y: w.riftY, size: 10, size1: 90, life: 0.3, w: 6, color: "255,230,255" });
+          id: "flames", name: { en: "Dark Flames", ko: "검은 불길" }, param: "1.2s · tongues",
+          cap: { en: "Black-violet *flames* lick up around it.", ko: "검보랏빛 *불길*이 몸을 타고 *넘실*." },
+          emerge(w) {
+            for (let i = 0; i < 36; i++) w.after(i * 0.035, () => {
+              const x = 270 + rand(-66, 66), sz = rand(10, 18), col = pick([["#2a0a2e", "#8a2aa0"], ["#4a0a4a", "#ff5ad6"], ["#1a0420", "#b84ad8"]]);
+              w.spawn({ x, y: G - 2, vx: rand(-20, 20), vy: rand(-260, -160), drag: 1.5, life: rand(0.45, 0.7), draw: (ctx, p, k) => {
+                const s = sz * (1 - k * 0.7), X = Math.round(p.x), Y = Math.round(p.y);
+                ctx.fillStyle = col[0]; ctx.beginPath(); ctx.moveTo(X, Y - s * 2.2); ctx.lineTo(X + s, Y); ctx.lineTo(X, Y + s * 0.8); ctx.lineTo(X - s, Y); ctx.closePath(); ctx.fill();
+                ctx.fillStyle = col[1]; ctx.beginPath(); ctx.moveTo(X, Y - s * 1.3); ctx.lineTo(X + s * 0.5, Y); ctx.lineTo(X, Y + s * 0.4); ctx.lineTo(X - s * 0.5, Y); ctx.closePath(); ctx.fill();
+              } });
             });
           },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "hum + tear + slam",
-          cap: { en: "A low *hum*, a *tearing* rip, a heavy *thud*.", ko: "낮은 *웅~*, *찌익* 찢기고, *쿵*." },
-          // 소환진이 그려질 때만 웅~, 균열이 찢어질 때만 찌익, 착지는 효과 크기에 맞춰
+          id: "roar", name: { en: "Roar", ko: "포효" }, param: "attack pose · shockwave",
+          cap: { en: "Fully out, it *roars*. The air *shakes*.", ko: "다 나오면 *포효*. 공기가 *쩌렁* 울려요." },
+          arrive(w, f) {
+            f.forcePose = "attack"; f.forceUntil = w.time + 0.55;
+            w.shake(0.5); w.zoomPunch(0.08);
+            w.spawn({ type: "ring", flat: true, x: 270, y: G + 4, size: 30, size1: 280, life: 0.6, w: 10, color: "255,120,230" });
+            // 입에서 뻗는 포효 줄기
+            for (let i = 0; i < 12; i++) { const a = Math.PI + rand(-0.7, 0.7); w.spawn({ type: "spark", x: f.x - 30, y: G - f.h * 0.72, vx: Math.cos(a) * rand(500, 900), vy: Math.sin(a) * rand(500, 900), drag: 3, life: rand(0.25, 0.4), size: 3, color: "255,170,240" }); }
+            for (let i = 0; i < 14; i++) { const d = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: 270 + d * rand(20, 60), y: G - 4, vx: d * rand(140, 320), vy: rand(-40, -10), drag: 2.5, life: rand(0.5, 0.8), size: rand(8, 12), size1: rand(18, 26), color: "90,60,100" }); }
+          },
+        },
+        {
+          id: "eyes", name: { en: "Eye Glint", ko: "눈빛 번쩍" }, param: "red glint · 0.3s",
+          cap: { en: "Last, the eyes *glint* red.", ko: "마지막에 눈이 *빨갛게* 번쩍." },
+          arrive(w, f) {
+            w.after(0.12, () => w.spawn({ x: f.x - 22, y: G - f.h * 0.8, life: 0.4, draw: (ctx, p, k) => { const s = 18 * (1 - k * 0.6); pxPlus(ctx, p.x, p.y, s, "#ff2a2a"); pxPlus(ctx, p.x, p.y, s * 0.5, "#ffe0e0"); } }));
+          },
+        },
+        {
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "hum + rumble + roar",
+          cap: { en: "A low *hum*, a ground *rumble*, then a *roar*.", ko: "낮은 *웅~*, 땅이 *우르르*, 그리고 *크아앙*." },
           summon(w) { if (w.on("circle")) w.play(() => { tn({ type: "sawtooth", f: 55, f2: 110, dur: 0.75, vol: 0.1, lp: 300, lp2: 900, att: 0.4 }); tn({ type: "sine", f: 110, f2: 220, dur: 0.75, vol: 0.08, att: 0.4, rv: 0.4 }); }); },
-          open(w) { if (w.on("rift")) w.play(() => { nz({ type: "bandpass", f: 4000, f2: 500, q: 1.2, dur: 0.32, vol: 0.45 }); for (let i = 0; i < 5; i++) sSnap(0.15, i * 0.05, 3000 + i * 400); }); else w.sfx.tock(); },
-          land(w) {
-            if (w.on("slam")) w.sfx.slam(); else w.sfx.land();
-            if (w.on("burst")) w.sfx.magic();
-            if (w.on("close")) w.after(0.3, () => w.play(() => { tn({ type: "sine", f: 600, f2: 90, dur: 0.18, vol: 0.25 }); sSnap(0.3, 0.17, 2000); }));
+          emerge(w) { if (w.on("rise")) w.play(() => { nz({ dur: 1.0, f: 260, f2: 140, vol: 0.5, att: 0.2, hold: 0.6 }); tn({ type: "sine", f: 45, f2: 38, dur: 1.0, vol: 0.4, att: 0.2, hold: 0.6 }); }); },
+          // 포효: 낮은 톱니 두 겹 + 거친 잡음 (포효 연출이 있을 때만)
+          arrive(w) {
+            if (w.on("roar")) w.play(() => { tn({ type: "sawtooth", f: 82, f2: 58, dur: 0.75, vol: 0.18, lp: 700, att: 0.05, hold: 0.3 }); tn({ type: "sawtooth", f: 123, f2: 86, dur: 0.75, vol: 0.12, lp: 900, det: 15, att: 0.05, hold: 0.3 }); nz({ dur: 0.75, type: "bandpass", f: 500, f2: 300, q: 1.2, vol: 0.4, att: 0.05, hold: 0.3, rv: 0.3 }); });
+            else w.sfx.land();
           },
         },
       ],

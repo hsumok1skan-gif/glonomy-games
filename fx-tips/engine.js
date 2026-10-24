@@ -592,6 +592,19 @@ const SFX = {
   clickUp() { tn({ type: "sine", f: 950, dur: 0.03, vol: 0.2 }); nz({ dur: 0.015, type: "bandpass", f: 4200, q: 2, vol: 0.2 }); },
   rattle() { for (let i = 0; i < 5; i++) { sSnap(0.12, i * 0.08, 2600); tn({ type: "square", f: 130 + i * 12, dur: 0.03, vol: 0.05, delay: i * 0.08, lp: 1500 }); } },
   boost() { nz({ dur: 0.8, type: "bandpass", f: 300, f2: 2600, q: 1, vol: 0.4, att: 0.1 }); tn({ type: "sawtooth", f: 80, f2: 170, dur: 0.8, vol: 0.06, lp: 900 }); },
+  // 치명타: 딱 + 깊고 무거운 쾅 + 갑옷 부서지는 콰직 + 짧은 울림 (맑은 "팅" 없음)
+  critBig() {
+    sSnap(0.9, 0, 2400); sBody(140, 0.32, 1); tn({ type: "sine", f: 62, f2: 30, dur: 0.55, vol: 0.75 });
+    nz({ dur: 0.18, type: "bandpass", f: 1800, f2: 500, q: 1, vol: 0.6 }); nz({ dur: 0.6, f: 1400, f2: 90, vol: 0.4, rv: 0.4, delay: 0.01 });
+    for (let i = 0; i < 5; i++) sSnap(0.14, 0.03 + i * 0.035, 1800 + Math.random() * 1500);
+  },
+  // 메달·금속판이 바닥에 놓임: 짧고 단단한 "착" (울림 없음)
+  clack(p = 1) { tn({ type: "triangle", f: 2300 * p, dur: 0.035, vol: 0.12 }); tn({ type: "triangle", f: 3500 * p, dur: 0.025, vol: 0.06 }); sBody(320 * p, 0.05, 0.35); nz({ dur: 0.02, type: "highpass", f: 5000, vol: 0.15 }); },
+  // 아이템 획득: 위로 올라가는 반짝 화음 + 사르르
+  sparkle() {
+    [0, 4, 7, 12, 16].forEach((st, i) => tn({ type: "triangle", f: 1047 * Math.pow(2, st / 12), dur: 0.22, vol: 0.06, delay: i * 0.045, rv: 0.4 }));
+    nz({ dur: 0.5, type: "bandpass", f: 7000, f2: 4000, q: 2, vol: 0.12, att: 0.1, rv: 0.3 });
+  },
   // 유리 깨짐: 쩍 + 잘게 흩어지는 유리 조각 소리 + 바닥에 떨어지는 짤랑
   glass() {
     sSnap(0.9, 0, 4000); nz({ dur: 0.35, type: "highpass", f: 3500, f2: 7000, vol: 0.35, rv: 0.3 }); sBody(300, 0.08, 0.4);
@@ -1640,6 +1653,7 @@ function drawRigActor(ctx, a, w) {
 /* ───────── 동작 컷 (기본 그림: 동작별 완성 그림을 갈아 끼움) ─────────
    r: 그림 속 위치 · ax: 몸통 가운데(가로 비율) · tip: 손끝/총구(비율) */
 const SHOOT_TIPS = [[0.92, 0.189], [0.899, 0.169], [0.78, 0.06], [0.69, 0.06], [0.941, 0.203], [0.941, 0.176], [0.952, 0.176], [0.931, 0.169]];
+const SWORD_WPN = [[26, 3, 50.9, 16], [29, 9, 54.7, 20], [33, 11, 52.8, 30.8], [82, 79, 61.8, 59.6], [80, 81, 60, 61.5], [88, 79, 66.5, 61.1], [86, 77, 62.8, 61.3], [93, 79, 68.4, 65.7]];
 const POSES = {
   hero: { file: "hero-px.png", img: null, pixel: true,
     // 여러 장짜리 동작(한 줄 시트: 칸 너비 cw, 높이 ch, n장, 초당 fps장)
@@ -1649,8 +1663,8 @@ const POSES = {
       aim: { file: "hero-shoot-px.png", img: null, cw: 94, ch: 74, n: 8, from: 4, fps: 20, once: true, ax: 0.416, tips: SHOOT_TIPS },
       recoil: { file: "hero-shoot-px.png", img: null, cw: 94, ch: 74, n: 2, from: 1, fps: 18, once: true, ax: 0.416, tips: SHOOT_TIPS },
       // 칼: 치켜든 채 대기(0~1번) → 내려베기(2~7번 한 번)
-      windup: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 2, fps: 5, ax: 0.449, tip: [0.65, 0.25] },
-      slash: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 8, from: 2, fps: 30, once: true, ax: 0.449, tip: [0.68, 0.63] },
+      windup: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 2, fps: 5, ax: 0.449, tip: [0.65, 0.25], wpn: SWORD_WPN },
+      slash: { file: "hero-sword-px.png", img: null, cw: 103, ch: 99, n: 8, from: 2, fps: 30, once: true, ax: 0.449, tip: [0.68, 0.63], wpn: SWORD_WPN },
       // 맞음: 5번째 장(맞는 순간)부터 뒤로 밀렸다 돌아오기까지 (PixelLab 128칸 → 키가 조금 작아 1.1배)
       hurt: { file: "hero-hurt-px.png", img: null, cw: 69, ch: 68, n: 26, from: 4, fps: 30, once: true, scale: 1.1, ax: 0.554, tip: [0.85, 0.5] },
       // 돌진: 제자리에서 달리는 8장 반복 (몸 이동은 엔진이 함)
@@ -1736,11 +1750,34 @@ const POSE_MOVE = {
   cast: u => ({ sy: 1, rot: 0.04 * Math.exp(-u * 6), dx: 7 * Math.exp(-u * 8) }),
   fly: u => ({ sy: 1, rot: 0, dx: 0 }),
 };
+// 칼 그림 위에 다른 무기를 겹쳐 그릴 때 쓰는 칸별 위치(그림 픽셀): [칼끝 x, y, 손잡이 x, y]
+// 망치처럼 칼이 아닌 무기는 손잡이→칼끝 방향으로 자루를 그리고 칼끝 자리에 머리를 얹어 칼날을 덮음
+function drawHeldHammer(x, gx, gy, tx, ty, alpha = 1) {
+  const dx = tx - gx, dy = ty - gy, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+  x.save(); x.globalAlpha = alpha; x.translate(gx, gy); x.rotate(Math.atan2(uy, ux));
+  // 자루 (손 뒤로 조금 나옴)
+  x.fillStyle = "#121726"; x.fillRect(-12, -4.5, L + 12, 9);
+  x.fillStyle = "#6a3f22"; x.fillRect(-11, -3, L + 10, 6); x.fillStyle = "#9a6236"; x.fillRect(-11, -3, L + 10, 2);
+  x.fillStyle = "#e8b84a"; x.fillRect(L - 8, -4, 4, 8);
+  x.fillStyle = "#8d9cc4"; x.fillRect(-14, -4, 4, 8);
+  // 머리: 자루와 수직인 강철 덩어리 (앞쪽은 타격면, 뒤쪽은 뿔)
+  x.translate(L, 0);
+  x.fillStyle = "#121726"; x.fillRect(-10, -22, 22, 44);
+  x.beginPath(); x.moveTo(-6, -22); x.lineTo(1, -34); x.lineTo(8, -22); x.closePath(); x.fill();
+  x.fillStyle = "#56638c"; x.fillRect(-8, -20, 18, 40);
+  x.fillStyle = "#3d4766"; x.beginPath(); x.moveTo(-4, -20); x.lineTo(1, -30); x.lineTo(6, -20); x.closePath(); x.fill();
+  x.fillStyle = "#c8d6f5"; x.fillRect(-8, -20, 3, 40);
+  x.fillStyle = "#2a3150"; x.fillRect(7, -20, 3, 40);
+  x.fillStyle = "#121726"; x.fillRect(-12, 18, 26, 10); x.fillStyle = "#8d9cc4"; x.fillRect(-10, 20, 22, 6); x.fillStyle = "#e6eeff"; x.fillRect(-10, 24, 22, 2);
+  x.fillStyle = "#ff8a3a"; x.fillRect(-2, -12, 4, 6); x.fillRect(-2, -2, 4, 8); x.fillRect(-2, 10, 4, 4);
+  x.restore();
+}
 function drawPoseActor(ctx, a, w) {
   const P = poseSet(a), idle = P.f.idle, t = w.time;
   let name = poseName(w, a);
   // 너무 빨리 바뀌면 깜빡거려 보여서, 한 컷은 최소 0.07초 유지
   if (a.poseNow && name !== a.poseNow && t - (a.poseAt ?? -9) < 0.07 && name !== "hurt") name = a.poseNow;
+  if (a.forcePose && t < (a.forceUntil ?? 0)) name = a.forcePose;
   // 한 번 재생하는 동작(맞음·공격·베기 등)은 끝까지 보여 줌 — 날아가기·새로 맞기만 끼어들 수 있음
   const OA = P.anims && P.anims[a.poseNow];
   if (OA && OA.once && name !== a.poseNow && name !== "fly" && !(name === "hurt" && a.poseNow !== "hurt") && t - (a.poseAt ?? -9) < (OA.n - (OA.from || 0)) / OA.fps) name = a.poseNow;
@@ -1764,6 +1801,12 @@ function drawPoseActor(ctx, a, w) {
       x.setTransform(sc, 0, 0, sc, W / 2 * sc, (H - 4) * sc); x.translate((m.dx + extraDx) * dir, 0);
       const left = -A.ax * aw, top = -ah;
       x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
+      // 망치 레시피: 칼 대신 망치를 쥔 것처럼 겹쳐 그림 (칼 컷은 칼날 위에, 다른 컷은 손에서 땅 쪽으로 늘어뜨림)
+      if (w.R.weapon === "hammer" && a.key === "hero") {
+        const sx = aw / A.cw, sy = ah / A.ch;
+        if (A.wpn) { const q = A.wpn[i]; drawHeldHammer(x, left + q[2] * sx, top + q[3] * sy, left + q[0] * sx, top + q[1] * sy, alpha); }
+        else { const tp = A.tips ? A.tips[i] : A.tip, hx = left + tp[0] * aw, hy = top + tp[1] * ah; drawHeldHammer(x, hx, hy, hx + 26, hy + 44, alpha); }
+      }
       return { left, top, fw: aw, fh: ah, f: { tip: A.tips ? A.tips[i] : A.tip }, m: { dx: m.dx, rot: 0, sy: 1 }, lift: 0 };
     }
     const left = -f.ax * fw, top = -fh;
@@ -1793,6 +1836,8 @@ function drawActor(ctx, a, w) {
   if (a.alpha <= 0) return;
   const hide = a.blink > 0 && Math.floor(a.blink * 14) % 2 === 0;
   ctx.save();
+  // clipY: 이 높이 아래는 안 그림 (땅속에서 솟아오르는 등장)
+  if (a.clipY != null) { ctx.beginPath(); ctx.rect(-2000, -2000, 5000, a.clipY + 2000); ctx.clip(); }
   ctx.globalAlpha = a.alpha * (hide ? 0.2 : 1);
   // 맞는 순간 떨림: 땅에선 좌우, 공중에선 상하, 점점 작게
   const vb = a.vib > 0 ? ((frameNo & 1) ? 1 : -1) * a.vib : 0;
