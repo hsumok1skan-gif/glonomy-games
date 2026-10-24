@@ -1,4 +1,28 @@
 "use strict";
+// 픽셀 보물상자: 나무 판자 + 쇠띠·리벳 + 금 자물쇠. 뚜껑은 왼쪽 위 경첩으로 열림
+function drawChestPx(ctx, C, w) {
+  ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fillRect(-78, -2, 156, 6);
+  // 몸통
+  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-72, -66, 144, 66);
+  ctx.fillStyle = "#7a3e1c"; ctx.fillRect(-69, -63, 138, 60);
+  ctx.fillStyle = "#5a2a12"; for (let y = -48; y < -3; y += 15) ctx.fillRect(-69, y, 138, 3);
+  ctx.fillStyle = "#a65a2a"; ctx.fillRect(-69, -63, 138, 3);
+  if (C.open) { ctx.fillStyle = "#120806"; ctx.fillRect(-66, -66, 132, 8); ctx.fillStyle = "#ffd27a"; ctx.globalAlpha = 0.5 + 0.3 * Math.sin(w.time * 8); ctx.fillRect(-60, -66, 120, 3); ctx.globalAlpha = 1; }
+  // 쇠띠 + 리벳
+  for (const bx of [-58, 46]) { ctx.fillStyle = "#1a1f30"; ctx.fillRect(bx - 1, -66, 14, 66); ctx.fillStyle = "#4a5578"; ctx.fillRect(bx, -63, 12, 60); ctx.fillStyle = "#8d9cc4"; ctx.fillRect(bx, -63, 12, 2); ctx.fillStyle = "#c8d6f5"; for (const ry of [-55, -32, -11]) ctx.fillRect(bx + 4, ry, 4, 4); }
+  // 자물쇠
+  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(-14, -52, 28, 28); ctx.fillStyle = "#e8b84a"; ctx.fillRect(-12, -50, 24, 24); ctx.fillStyle = "#fff0b0"; ctx.fillRect(-12, -50, 24, 3);
+  ctx.fillStyle = "#3a2410"; ctx.fillRect(-3, -42, 6, 6); ctx.fillRect(-1, -37, 2, 6);
+  // 뚜껑
+  ctx.save(); ctx.translate(-72, -66); ctx.rotate(C.lid);
+  ctx.fillStyle = "#1a0f0a"; ctx.fillRect(0, -36, 144, 36); ctx.fillRect(6, -42, 132, 8);
+  ctx.fillStyle = "#8a4620"; ctx.fillRect(3, -33, 138, 30); ctx.fillRect(9, -39, 126, 6);
+  ctx.fillStyle = "#b8682e"; ctx.fillRect(9, -39, 126, 3);
+  ctx.fillStyle = "#5a2a12"; ctx.fillRect(3, -18, 138, 3);
+  for (const bx of [13, 117]) { ctx.fillStyle = "#1a1f30"; ctx.fillRect(bx - 1, -42, 14, 42); ctx.fillStyle = "#4a5578"; ctx.fillRect(bx, -39, 12, 36); ctx.fillStyle = "#c8d6f5"; ctx.fillRect(bx + 4, -30, 4, 4); ctx.fillRect(bx + 4, -12, 4, 4); }
+  ctx.fillStyle = "#e8b84a"; ctx.fillRect(62, -8, 20, 8);
+  ctx.restore();
+}
 // 처치 보상: 동전 3개가 튀어나와 통통
 function deathLoot(w, x) {
   for (let i = 0; i < 3; i++) w.spawn({ type: "ghost", img: SPR.coin.c, top: true, w: 22, h: 22, alpha0: 1, add: false, x, y: G - 40, vx: rand(-200, 120), vy: rand(-560, -380), g: 1500, gy: G - 10, ground: true, bounce: 0.5, life: 1.6, hold: true });
@@ -741,6 +765,7 @@ RECIPES.push(
         cap: { en: "Fast guns need *short* sounds. Vary the pitch or it *drones*.", ko: "연사는 *짧은* 소리로. 음높이를 바꿔야 *안 지겨워요*." },
         fire(w) { w.sfx.smg(rand(0.9, 1.1)); },
         hit(w) { w.sfx.tick(); },
+        kill(w) { w.sfx.hit(0.8); },
       },
     ],
   },
@@ -847,20 +872,22 @@ RECIPES.push(
   },
 
   {
-    id: "hammer", cat: "combat", view: "side",
+    id: "hammer", cat: "combat", view: "side", polished: true, hookDur: 3.6, hookFires: [0.15, 1.75],
     title: { en: "Make a hammer *HEAVY*", ko: "망치를 *무겁게*" },
     intro: { en: "It's a hammer. It feels like a *pillow*.", ko: "망치인데 *베개* 같아요." },
     interval: 1.7, stepDur: 3.6,
-    setup(w) { w.hero = w.actor("hero", { home: 170 }); w.foe = w.actor("foe", { home: 390 }); w.ham = { rot: -0.5 }; },
+    // 사람 없이 망치만: 떠 있는 전투 망치가 내려침
+    setup(w) { w.hamAt = { x: 238, y: G - 90 }; w.foe = w.actor("foe", { home: 390, hp: 68 }); w.ham = { rot: -0.5, heat: 0 }; },
     fire(w) {
       if (w.busy) return;
       w.busy = true;
-      const swing = () => w.tween(w.ham, { rot: 2.19 }, 0.07, "in", () => {
-        const at = { x: hammerPivot(w).x + 97, y: G };
+      const swing = () => w.tween(w.ham, { rot: w.hamAt ? 2.13 : 2.19 }, 0.07, "in", () => {
+        const at = { x: hammerPivot(w).x + (w.hamAt ? 110 : 97), y: G };
         w.emit("slam", at);
         const f = w.foe;
         if (f.alive) { f.hp -= 34; if (!w.on("wave")) f.ox += 10; w.emit("hit", at); if (f.hp <= 0) w.kill(f); }
         w.after(0.28, () => w.tween(w.ham, { rot: -0.5 }, 0.35, "inout", () => { w.busy = false; }));
+        w.tween(w.ham, { heat: 0 }, 0.5, "out");
       });
       if (w.on("antic")) { w.emit("antic"); w.after(0.3, swing); } else swing();
     },
@@ -870,17 +897,24 @@ RECIPES.push(
       {
         id: "antic", name: { en: "Long Wind-up", ko: "길게 들어 올리기" }, param: "260ms back",
         cap: { en: "Heavy = *slow up*, *fast down*.", ko: "무거우면 *천천히 올리고*, *빠르게 내려요*." },
-        antic(w) { w.tween(w.ham, { rot: -1.4 }, 0.26, "out"); w.hero.sx = 1.1; w.hero.sy = 0.88; },
+        antic(w) {
+          w.tween(w.ham, { rot: -1.4, heat: 1 }, 0.26, "out");
+          // 들어 올리는 동안 불티가 머리로 모임
+          for (let i = 0; i < 8; i++) w.after(i * 0.03, () => { const p = hammerPivot(w), a = -1.4 - Math.PI / 2, hx = p.x + Math.cos(a) * 132, hy = p.y + Math.sin(a) * 132, b = rand(0, TAU), d = rand(30, 60); w.spawn({ type: "spark", seek: true, x: hx + Math.cos(b) * d, y: hy + Math.sin(b) * d, tx: hx, ty: hy, life: 0.2, size: 2.5, color: "255,170,80" }); });
+        },
       },
       {
         id: "smear", name: { en: "Smear Frame", ko: "잔상 한 장" }, param: "140ms arc",
         cap: { en: "One *smeared* frame sells the speed.", ko: "*뭉개진* 한 장이 속도를 말해줘요." },
-        slam(w) { const p = hammerPivot(w); w.spawn({ type: "arc", under: true, x: p.x, y: p.y, size: 128, life: 0.14, a0: -2.2, a1: 0.65, alpha: 0.75, color: "255,255,255" }); },
+        slam(w) { const p = hammerPivot(w); w.spawn({ x: p.x, y: p.y, life: 0.16, draw: (ctx, q, k) => pxCrescent(ctx, q.x, q.y, 134, -2.6, 0.6, 26, k, "255,214,160") }); },
       },
       {
         id: "stop", name: { en: "Heavy Hit Stop", ko: "묵직한 멈춤" }, param: "150ms + target shake",
         cap: { en: "Freeze *longer* for heavy hits. The target *trembles*, fading out.", ko: "무거울수록 *오래* 멈춰요. 맞은 쪽은 *떨리다가* 잦아들어요." },
-        hit(w) { w.hitstop(0.15); const f = w.foe; f.vib = 9; f.vibAxis = "x"; f.flash = 1; },
+        hit(w, at) {
+          w.hitstop(0.15); const f = w.foe; f.vib = 9; f.vibAxis = "x"; f.flash = 0.8;
+          w.spawn({ x: at.x, y: G - 20, life: 0.16, draw: (ctx, q, k) => pxImpact(ctx, q.x, q.y, 54, k, "255,226,170") });
+        },
       },
       {
         id: "wave", name: { en: "Ground Shockwave", ko: "땅 충격파" }, param: "ring + dust + cracks",
@@ -892,7 +926,12 @@ RECIPES.push(
           w.spawn({ type: "crack", under: true, x: at.x, y: G + 1, pts, w: 2.5, life: 4, color: "0,0,0", hold: true, add: false });
         },
         hit(w) { const f = w.foe; f.ox += 30; f.sx = 0.82; f.sy = 1.15; },
-        kill(w, f) { w.fly(f, 260, -900, 8); },
+        kill(w, f) { w.fly(f, 15, -600, 0, true); f.tint = 0.5; w.sfx.crit(); },
+        land(w, f) {
+          w.shake(0.25, 0);
+          for (let i = 0; i < 10; i++) { const dir = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: f.x + rand(-30, 30), y: G - 4, vx: dir * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,96,118" }); }
+          w.sfx.land();
+        },
       },
       {
         id: "zoom", name: { en: "Zoom Punch", ko: "줌 펀치" }, param: "+7% → back",
@@ -907,12 +946,14 @@ RECIPES.push(
       {
         id: "rocks", name: { en: "Flying Rocks", ko: "튀는 돌" }, param: "10 chunks",
         cap: { en: "Throw some *rocks*. Let gravity do the rest.", ko: "*돌 조각*을 튀기고, 나머진 중력에 맡겨요." },
-        slam(w, at) { for (let i = 0; i < 10; i++) w.spawn({ type: "chunk", x: at.x + rand(-10, 10), y: G - 4, vx: rand(-300, 300), vy: rand(-650, -300), g: 1700, ground: true, bounce: 0.35, vr: rand(-20, 20), life: rand(1.4, 2.2), size: rand(4, 8), color: pick(["120,113,108", "87,83,78", "168,162,158"]), hold: true }); },
+        slam(w, at) { for (let i = 0; i < 12; i++) { const sz = rand(3, 6), rot = rand(0, 6), c = pick([["#8a8378", "#3a3530"], ["#6a6560", "#2a2622"], ["#a8a29e", "#4a4540"]]); w.spawn({ x: at.x + rand(-10, 10), y: G - 4, vx: rand(-300, 300), vy: rand(-650, -300), g: 1700, ground: true, bounce: 0.35, vr: rand(-20, 20), life: rand(1.4, 2.2), hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, c[0], c[1]) }); } },
       },
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "low boom + crack",
         cap: { en: "Low *boom*, a sharp *crack*, then a short *rumble*.", ko: "낮은 *쿵*, 날카로운 *빡*, 짧은 *울림*." },
-        slam(w) { w.sfx.slam(); },
+        // 바닥 효과가 있을 때만 "쿵", 아니면 쇠가 부딪는 짧은 퍽
+        antic(w) { w.play(() => { nz({ dur: 0.26, type: "bandpass", f: 300, f2: 900, q: 1.5, vol: 0.18, att: 0.15 }); tn({ type: "sine", f: 90, f2: 140, dur: 0.26, vol: 0.12, att: 0.15 }); }); },
+        slam(w) { if (w.on("wave") || w.on("shake")) w.sfx.slam(); else w.sfx.hit(0.8); w.play(() => sMetal(420, 0.4, 0.08)); },
       },
     ],
   },
@@ -1260,7 +1301,7 @@ RECIPES.push(
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising roar",
         cap: { en: "A *rising roar* sells the push.", ko: "*올라가는 굉음*이 밀어주는 느낌을 줘요." },
-        boost(w) { w.sfx.boost(); },
+        boost(w) { if (w.on("lines") || w.on("streaks") || w.on("fov")) w.sfx.boost(); else w.sfx.dash(); },
       },
     ],
   },
@@ -1688,7 +1729,7 @@ RECIPES.push(
   },
 
   {
-    id: "chest", cat: "ui", view: "side",
+    id: "chest", cat: "ui", view: "side", polished: true,
     title: { en: "Make chests feel *epic*", ko: "상자 열기를 *두근거리게*" },
     intro: { en: "Opened. Item. *Okay?*", ko: "열렸다. 아이템. *그래서?*" },
     interval: 2.6, stepDur: 3.8,
@@ -1715,12 +1756,7 @@ RECIPES.push(
         ctx.save(); ctx.translate(x, iy); ctx.rotate(Math.sin(w.time * 3) * 0.15); const g = SPR.gem.c; ctx.drawImage(g, -s / 2, -s / 2 * g.height / g.width, s, s * g.height / g.width); ctx.restore();
       }
       ctx.save(); ctx.translate(x, y); ctx.rotate(C.wig); ctx.scale(C.sx, C.sy);
-      ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.beginPath(); ctx.ellipse(0, 2, 80, 10, 0, 0, TAU); ctx.fill();
-      rr(ctx, -70, -70, 140, 70, 10, "#92400e", null);
-      ctx.fillStyle = "#facc15"; ctx.fillRect(-70, -44, 140, 8); ctx.fillRect(-8, -50, 16, 22);
-      ctx.save(); ctx.translate(-70, -70); ctx.rotate(C.lid);
-      rr(ctx, 0, -40, 140, 40, 12, "#b45309", null); ctx.fillStyle = "#facc15"; ctx.fillRect(0, -14, 140, 8);
-      ctx.restore();
+      drawChestPx(ctx, C, w);
       ctx.restore();
     },
     steps: [
@@ -1758,7 +1794,12 @@ RECIPES.push(
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / burst / chime",
         cap: { en: "*Rattle*, *burst*, then a sparkling *chime*.", ko: "*달그락*, *팡*, 반짝이는 *띠링*." },
-        open(w) { w.sfx.burst(); w.after(0.15, () => w.sfx.chime(7)); },
+        // 뚜껑이 팡 열릴 때만 "팡", 아니면 덜컥. 반짝 소리는 아이템이 떠오를 때만
+        open(w) {
+          if (w.on("lid") || w.on("rays")) w.sfx.burst(); else w.play(() => { sSnap(0.3, 0, 1800); sBody(200, 0.08, 0.5); });
+          if (w.on("coins")) for (let i = 0; i < 6; i++) w.after(0.25 + i * 0.07, () => w.play(() => sMetal(2200 + Math.random() * 900, 0.12, 0.05)));
+          if (w.on("item") || w.on("rarity")) w.after(0.15, () => w.sfx.chime(7));
+        },
       },
     ],
   },

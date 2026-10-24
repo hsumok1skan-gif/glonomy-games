@@ -768,7 +768,7 @@
 
     /* ───────── 7. 약점 / 헤드샷 ───────── */
     {
-      id: "spot-combat-weakpoint", cat: "combat", view: "3d",
+      id: "spot-combat-weakpoint", cat: "combat", view: "3d", polished: true,
       title: { en: "Make weak-point hits feel *precise*", ko: "약점 명중을 *정확하게*" },
       intro: { en: "Weak point hit. Felt like the *knee*.", ko: "약점을 맞혔는데 *무릎* 맞은 느낌이에요." },
       interval: 2.6, stepDur: 3.8,
@@ -787,7 +787,7 @@
         w.emit("aim", m);
         later(w.on("marker") ? 0.55 : 0.4, () => {
           const p = muzzle(w), tx = w.wp.x, ty = w.wp.y, sp = 1100, d = Math.hypot(tx - p.x, ty - p.y);
-          w.gun.kick = 12; w.gun.rec = 0.12; w.sfx.gun();
+          w.gun.kick = 12; w.gun.rec = 0.12; w.sfx.gun(); w.spawn({ x: p.x + 2, y: p.y, life: 0.08, draw: (ctx, q, k) => pxMuzzle(ctx, q.x, q.y, 22, k, Math.atan2(ty - p.y, tx - p.x)) });
           w.shoot({ x: p.x, y: p.y, vx: (tx - p.x) / d * sp, vy: (ty - p.y) / d * sp, len: 46, lw: 4, hitX: tx, onHit: () => {
             f.ox = 18; f.hp -= 30; m.on = false;
             if (!w.on("bonus")) w.spawn({ type: "text", x: tx, y: ty - 34, text: "×2", size: 20, color: "#ffffff", life: 1.4 });
@@ -833,6 +833,7 @@
           hit(w, f, x, y) {
             w.hitstop(0.06);
             w.spawn({ type: "ring", x, y, size: 4, size1: 46, life: 0.25, w: 3, color: "255,255,255" });
+            w.spawn({ x, y, life: 0.1, draw: (ctx, q, k) => pxImpact(ctx, q.x, q.y, 26, k, "255,250,210") });
             for (let i = 0; i < 4; i++) w.spawn({ type: "spark", x, y, vx: Math.cos(i * TAU / 4) * 900, vy: Math.sin(i * TAU / 4) * 900, drag: 12, size: 3, life: 0.2, color: "255,250,200" });
           },
         },
@@ -840,9 +841,9 @@
           id: "snap", name: { en: "Head Snap", ko: "고개 젖힘" }, param: "tilt .2 · 10 chips",
           cap: { en: "The head *snaps* back. *Chips* fly off.", ko: "고개가 *휙* 젖혀지고 *파편*이 튀어요." },
           hit(w, f, x, y) {
-            f.flash = 1; f.ox = 26; f.rot = 0.2;
+            f.flash = 0.6; f.ox = 26; f.rot = 0.2;
             w.tween(f, { rot: 0 }, 0.5, "out");
-            for (let i = 0; i < 10; i++) w.spawn({ type: "chunk", x, y, vx: rand(80, 420), vy: rand(-420, -80), g: 1300, vr: rand(-12, 12), ground: true, bounce: 0.4, size: rand(4, 7), life: 1.2, hold: true, color: pick(["150,205,95", "96,150,60"]) });
+            for (let i = 0; i < 12; i++) { const sz = rand(2.5, 5), rot = rand(0, 6), c = pick([["#f06a45", "#5b1d17"], ["#e2553a", "#3a120e"]]); w.spawn({ x, y, vx: rand(80, 420), vy: rand(-420, -80), g: 1300, vr: rand(-12, 12), ground: true, bounce: 0.4, life: 1.2, hold: true, draw: (ctx, q) => pxChip(ctx, q.x, q.y, sz, rot + q.rot, c[0], c[1]) }); }
           },
         },
         {
@@ -866,15 +867,16 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "beep + ping + clank",
           cap: { en: "Lock-on *beeps*, then a crisp *ping*.", ko: "조준은 *삑삑*, 명중은 *팅!*" },
-          aim(w) { [0, 0.13, 0.26].forEach((d, i) => w.play(() => tn({ type: "square", f: 1200 + i * 200, dur: 0.05, vol: 0.06, delay: d }))); },
-          hit(w) { w.sfx.ping(); w.sfx.crit(); },
+          // 조준 표시가 있을 때만 삑삑, 명중음은 효과 크기에 맞춰
+          aim(w) { if (w.on("marker")) [0, 0.13, 0.26].forEach((d, i) => w.play(() => tn({ type: "square", f: 1200 + i * 200, dur: 0.05, vol: 0.06, delay: d, lp: 4000 }))); },
+          hit(w) { if (w.on("ping")) w.play(() => sMetal(1760, 0.6, 0.12, 0, 0.4)); if (w.on("snap")) w.sfx.crit(); else w.sfx.hit(); },
         },
       ],
     },
 
     /* ───────── 8. 포털로 적 소환 ───────── */
     {
-      id: "spot-combat-portal", cat: "combat", view: "3d",
+      id: "spot-combat-portal", cat: "combat", view: "3d", polished: true,
       title: { en: "Make enemy spawns feel *ominous*", ko: "적 등장을 *불길하게*" },
       intro: { en: "An enemy spawns. It just *blinks* in.", ko: "적이 나오는데 그냥 *뿅* 하고 생겨요." },
       interval: 3.0, stepDur: 4.0,
@@ -915,17 +917,21 @@
         for (let k = 0; k < 2; k++) { ctx.beginPath(); for (let i = 0; i < 4; i++) { const a = k * Math.PI / 3 + i * TAU / 3; ctx[i ? "lineTo" : "moveTo"](Math.cos(a) * 86 * c, Math.sin(a) * 86 * c); } ctx.stroke(); }
         for (let i = 0; i < 12; i++) { const a = i * TAU / 12; ctx.fillStyle = `rgba(255,170,240,${c})`; ctx.fillRect(Math.cos(a) * 102 * c - 5, Math.sin(a) * 102 * c - 5, 10, 10); }
         ctx.restore();
-        glow(ctx, 270, G, 120 * c, "255,60,200", 0.35 * c);
+        pxGlow(ctx, 270, G, 70 * c, "255,60,200", 0.35 * c);
       },
       drawBack(w, ctx) {
         const m = w.mob, r = w.rift, ry = w.riftY;
         if (r > 0) {
+          // 균열: 들쭉날쭉한 테두리가 꿈틀대는 층 4겹(분홍 → 보라 → 짙은 보라 → 검은 속) + 안에서 도는 빛가루
           ctx.save(); ctx.translate(270, ry);
-          glow(ctx, 0, 0, 140 * r, "255,60,210", 0.6);
-          ctx.fillStyle = "#08000a"; ctx.beginPath();
-          for (let i = 0; i <= 24; i++) { const a = i * TAU / 24, j = i % 2 ? 0.82 : 1; ctx.lineTo(Math.cos(a) * 92 * r * j, Math.sin(a) * 26 * r * j); }
-          ctx.fill();
-          ctx.strokeStyle = "rgba(255,150,240,0.95)"; ctx.lineWidth = 3; ctx.stroke();
+          pxGlow(ctx, 0, 0, 70 * r, "255,60,210", 0.45);
+          const t = w.time, jag = (R, Hh, amp, col, ph) => {
+            ctx.fillStyle = col; ctx.beginPath();
+            for (let i = 0; i <= 28; i++) { const a = i * TAU / 28, j = 1 - amp * (0.5 + 0.5 * Math.sin(i * 2.7 + t * 9 + ph)) * (i % 2 ? 1 : 0.35); ctx.lineTo(Math.round(Math.cos(a) * R * r * j / 2) * 2, Math.round(Math.sin(a) * Hh * r * j / 2) * 2); }
+            ctx.fill();
+          };
+          jag(104, 34, 0.28, "#ff5ad6", 0); jag(92, 29, 0.22, "#b02aa8", 1.3); jag(80, 24, 0.2, "#4a0a4a", 2.1); jag(66, 18, 0.18, "#08000a", 3);
+          for (let i = 0; i < 10; i++) { const a = t * 2.4 + i * TAU / 10, d = (0.3 + 0.6 * ((i * 37) % 10) / 10) * r; ctx.fillStyle = i % 3 ? "#d860ff" : "#ffd0f6"; ctx.fillRect(Math.round(Math.cos(a) * 60 * d) - 2, Math.round(Math.sin(a) * 15 * d) - 2, 4, 4); }
           ctx.restore();
         }
         if (m.a <= 0) return;
@@ -987,9 +993,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hum + tear + slam",
           cap: { en: "A low *hum*, a *tearing* rip, a heavy *thud*.", ko: "낮은 *웅~*, *찌익* 찢기고, *쿵*." },
-          summon(w) { w.play(() => tn({ type: "sawtooth", f: 70, f2: 140, dur: 0.7, vol: 0.08 })); },
-          open(w) { w.play(() => nz({ type: "bandpass", f: 3000, f2: 400, q: 1.5, dur: 0.35, vol: 0.4 })); },
-          land(w) { w.sfx.slam(); w.sfx.magic(); },
+          // 소환진이 그려질 때만 웅~, 균열이 찢어질 때만 찌익, 착지는 효과 크기에 맞춰
+          summon(w) { if (w.on("circle")) w.play(() => { tn({ type: "sawtooth", f: 55, f2: 110, dur: 0.75, vol: 0.1, lp: 300, lp2: 900, att: 0.4 }); tn({ type: "sine", f: 110, f2: 220, dur: 0.75, vol: 0.08, att: 0.4, rv: 0.4 }); }); },
+          open(w) { if (w.on("rift")) w.play(() => { nz({ type: "bandpass", f: 4000, f2: 500, q: 1.2, dur: 0.32, vol: 0.45 }); for (let i = 0; i < 5; i++) sSnap(0.15, i * 0.05, 3000 + i * 400); }); else w.sfx.tock(); },
+          land(w) {
+            if (w.on("slam")) w.sfx.slam(); else w.sfx.land();
+            if (w.on("burst")) w.sfx.magic();
+            if (w.on("close")) w.after(0.3, () => w.play(() => { tn({ type: "sine", f: 600, f2: 90, dur: 0.18, vol: 0.25 }); sSnap(0.3, 0.17, 2000); }));
+          },
         },
       ],
     },

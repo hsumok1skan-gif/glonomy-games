@@ -951,8 +951,9 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thud + fanfare + ting",
           cap: { en: "Metal *clank*, a *fanfare*, a bright *ting*.", ko: "*철컹*, *팡파레*, 맑은 *팅*." },
-          land(w) { w.sfx.thud(); },
-          unlock(w) { w.sfx.fanfare(); w.after(0.75, () => w.sfx.chime(9)); },
+          // 떨어질 때만 철컹, 팡파레는 영광 연출, 맑은 팅은 반짝임 쓸기와 함께
+          land(w) { if (w.on("drop")) w.play(() => { sBody(150, 0.12, 0.7); sMetal(980, 0.5, 0.12, 0, 0.35); }); },
+          unlock(w) { if (w.on("glory") || w.on("banner")) w.sfx.fanfare(); else w.sfx.tock(); if (w.on("shine")) w.after(0.75, () => w.sfx.chime(9)); },
         },
       ],
     },

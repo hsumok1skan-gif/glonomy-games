@@ -1979,15 +1979,40 @@ function drawBow(w, ctx) {
   ctx.restore();
   if (w.bow.pull > 0.02) drawArrowAt(ctx, b.x - pull + 50, b.y, 0);
 }
-function hammerPivot(w) { const h = w.hero; return { x: h.x + h.ox + 30, y: G - 70 + (1 - h.sy) * 50 }; }
+function hammerPivot(w) {
+  if (w.hamAt) return { x: w.hamAt.x + (w.hamAt.ox || 0), y: w.hamAt.y + Math.sin(w.time * 2) * 3 };
+  const h = w.hero; return { x: h.x + h.ox + 30, y: G - 70 + (1 - h.sy) * 50 };
+}
+// 픽셀 전투 망치: 손잡이 가죽 감기 + 강철 머리(앞은 타격면, 뒤는 뿔) + 달아오르는 룬
 function drawHammer(w, ctx) {
-  const p = hammerPivot(w), L = 120;
+  const p = hammerPivot(w), L = 120, heat = Math.min(1, w.ham.heat || 0);
   ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(w.ham.rot);
-  ctx.fillStyle = "#a16207"; ctx.strokeStyle = "rgba(0,0,0,0.3)"; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.roundRect(-5, -L, 10, L + 10, 4); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = "#64748b"; ctx.beginPath(); ctx.roundRect(-30, -L - 22, 60, 36, 6); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = "rgba(255,255,255,0.25)"; ctx.fillRect(-24, -L - 17, 48, 6);
+  // 자루
+  ctx.fillStyle = "#121726"; ctx.fillRect(-7, -L, 14, L + 16);
+  ctx.fillStyle = "#6a3f22"; ctx.fillRect(-5, -L, 10, L + 12);
+  ctx.fillStyle = "#9a6236"; ctx.fillRect(-5, -L, 3, L + 12);
+  ctx.fillStyle = "#3a2418"; ctx.fillRect(-6, -34, 12, 40);
+  ctx.fillStyle = "#5a3826"; for (let y = -32; y < 6; y += 6) ctx.fillRect(-6, y, 12, 2);
+  // 자루 끝 쇠뭉치 + 보석
+  ctx.fillStyle = "#121726"; ctx.fillRect(-9, 8, 18, 12); ctx.fillStyle = "#8d9cc4"; ctx.fillRect(-7, 10, 14, 8); ctx.fillStyle = "#ff8a3a"; ctx.fillRect(-2, 12, 4, 4);
+  // 금띠
+  ctx.fillStyle = "#e8b84a"; ctx.fillRect(-8, -L + 8, 16, 5);
+  // 머리: 테두리 → 강철 → 위쪽 밝은 면 → 아래 어두운 면
+  const hy = -L - 30;
+  ctx.fillStyle = "#121726"; ctx.fillRect(-34, hy - 2, 74, 42);
+  ctx.beginPath(); ctx.moveTo(-34, hy + 6); ctx.lineTo(-56, hy + 19); ctx.lineTo(-34, hy + 32); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#56638c"; ctx.fillRect(-32, hy, 70, 38);
+  ctx.fillStyle = "#3d4766"; ctx.beginPath(); ctx.moveTo(-32, hy + 9); ctx.lineTo(-50, hy + 19); ctx.lineTo(-32, hy + 29); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#c8d6f5"; ctx.fillRect(-32, hy, 70, 4);
+  ctx.fillStyle = "#2a3150"; ctx.fillRect(-32, hy + 32, 70, 6);
+  // 타격면(앞): 두꺼운 쇠판
+  ctx.fillStyle = "#121726"; ctx.fillRect(36, hy - 6, 12, 50); ctx.fillStyle = "#8d9cc4"; ctx.fillRect(38, hy - 4, 8, 46); ctx.fillStyle = "#e6eeff"; ctx.fillRect(44, hy - 4, 2, 46);
+  // 룬: 평소엔 은은하게, 내려칠 때 달아오름
+  ctx.globalAlpha = 0.55 + 0.45 * heat; ctx.fillStyle = heat > 0.5 ? "#ffd27a" : "#ff8a3a";
+  ctx.fillRect(-18, hy + 15, 6, 8); ctx.fillRect(-6, hy + 11, 6, 16); ctx.fillRect(6, hy + 15, 6, 8); ctx.fillRect(18, hy + 13, 6, 12);
+  ctx.globalAlpha = 1;
   ctx.restore();
+  if (heat > 0.05) { const a = w.ham.rot - Math.PI / 2; pxGlow(ctx, p.x + Math.cos(a) * (L + 12), p.y + Math.sin(a) * (L + 12), 26 + 20 * heat, "255,150,60", 0.5 * heat); }
 }
 // 매치3 보석 모양
 const GEM_COL = ["244,63,94", "56,189,248", "74,222,128", "250,204,21", "192,132,252"];

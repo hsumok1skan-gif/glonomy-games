@@ -610,9 +610,10 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk + rising chord",
           cap: { en: "Solid *thunk*, then a *rising* chime.", ko: "묵직한 *턱*, 그리고 *올라가는* 띠링." },
+          // 블록이 놓이는 턱은 항상, 올라가는 띠링은 PERFECT 연출이 있을 때만
           land(w) {
-            w.sfx.thunk();
-            [0, 4, 7, 12].forEach((n, i) => w.after(i * 0.06, () => w.sfx.chime(n)));
+            w.play(() => { sBody(180, 0.09, 0.6); sSnap(0.25, 0, 2200); nz({ dur: 0.05, type: "bandpass", f: 900, q: 1.5, vol: 0.3 }); });
+            if (w.on("text") || w.on("rings")) [0, 4, 7, 12].forEach((n, i) => w.after(i * 0.06, () => w.sfx.chime(n)));
           },
         },
       ],
@@ -783,10 +784,12 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle + thunk + coins",
           cap: { en: "*Rattle*, *clunk* ×3, a shower of *dings*.", ko: "*드르륵*, *철컥* 세 번, *짤랑짤랑*." },
           spin(w) { w.sfx.rattle(); },
-          stop(w) { w.sfx.thunk(); },
+          // 릴 멈춤: 철컥 (쇳소리 + 툭)
+          stop(w) { w.play(() => { sSnap(0.3, 0, 2000); sBody(220, 0.06, 0.5); sMetal(1300, 0.08, 0.06); }); },
+          // 팡파레는 JACKPOT 글자와, 짤랑짤랑은 동전이 쏟아질 때만
           win(w) {
-            w.sfx.fanfare();
-            for (let i = 0; i < 10; i++) w.after(i * 0.07, () => w.sfx.chime(12 + (i % 3) * 2));
+            if (w.on("jackpot")) w.sfx.fanfare(); else w.sfx.chime(7);
+            if (w.on("coins")) for (let i = 0; i < 12; i++) w.after(0.1 + i * 0.06, () => w.play(() => sMetal(2200 + Math.random() * 1200, 0.14, 0.05)));
           },
         },
       ],
