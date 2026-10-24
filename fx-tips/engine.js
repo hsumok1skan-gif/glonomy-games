@@ -320,6 +320,37 @@ const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? 
 // 배경 그림을 깔 장르 (옆에서 본 장면만)
 function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
 const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
+const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px"];
+// 픽셀 그림 한 장(또는 시트의 한 칸)을 또렷하게: 기준점(ax, ay)을 (x, y)에 두고 s배, rot만큼 돌려서
+function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0) {
+  const im = PXSPR[name]; if (!im) return false;
+  const w = fw || im.naturalWidth, h = im.naturalHeight, sm = ctx.imageSmoothingEnabled;
+  ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(im, frame * w, 0, w, h, -ax * s, -ay * s, w * s, h * s);
+  ctx.restore(); ctx.imageSmoothingEnabled = sm; return true;
+}
+// 칸 단위로 찍는 등급 오라: 계단식 빛줄기(길고 짧게 번갈아) + 가운데 빛 + 바깥 점 고리. 작은 칸에 그려 확대
+const AURA_BUF = {};
+function pxAura(ctx, x, y, t, cell, pal, R = 26) {
+  const N = R * 2 + 1, c = AURA_BUF.c || (AURA_BUF.c = document.createElement("canvas"));
+  if (c.width !== N) { c.width = N; c.height = N; AURA_BUF.x = c.getContext("2d"); }
+  const g = AURA_BUF.x, im = g.createImageData(N, N), d = im.data, rot = t * 0.5;
+  const set = (i, col) => { d[i] = col[0]; d[i + 1] = col[1]; d[i + 2] = col[2]; d[i + 3] = 255; };
+  for (let py = 0; py < N; py++) for (let px = 0; px < N; px++) {
+    const dx = px - R, dy = py - R, r = Math.hypot(dx, dy), a = Math.atan2(dy, dx), i = (py * N + px) * 4;
+    if (r < 4) { set(i, pal[3]); continue; }
+    if (r < 6.5) { set(i, pal[2]); continue; }
+    let best = 9, long = true;
+    for (let k = 0; k < 8; k++) { const ra = rot + k * Math.PI / 4, da = Math.abs(Math.atan2(Math.sin(a - ra), Math.cos(a - ra))); if (da < best) { best = da; long = k % 2 === 0; } }
+    const len = long ? R - 1 : R * 0.62, wid = (long ? 0.32 : 0.24) * (1 - r / len) + 0.03;
+    if (r < len && best < wid) { set(i, best < wid * 0.45 ? pal[2] : pal[1]); continue; }
+    if (Math.abs(r - (R - 3)) < 1.2) { const k = Math.round((a - rot * 0.6) / (TAU / 12)), ka = k * TAU / 12 + rot * 0.6; if (Math.abs(Math.atan2(Math.sin(a - ka), Math.cos(a - ka))) < 0.09) { set(i, (((k + Math.floor(t * 6)) % 3) + 3) % 3 === 0 ? pal[3] : pal[1]); continue; } }
+    if (r < 10 && (px + py) % 2 === 0) set(i, pal[0]);
+  }
+  g.putImageData(im, 0, 0);
+  const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(c, x - (R + 0.5) * cell, y - (R + 0.5) * cell, N * cell, N * cell); ctx.imageSmoothingEnabled = sm;
+}
 function fxLoadImages() {
   // "art" 스타일이면 기본 그림을 깔고, 직접 넣은 그림이 있으면 그걸 우선
   const user = FX.images || {}, art = FX.style === "art" ? FX_ART.images : {};
@@ -329,10 +360,12 @@ function fxLoadImages() {
   const IM = Object.assign({}, art, user);
   for (const k in POSES) { POSES[k].img = null; if (FX._art[k] && FX.poses !== false) { IM["pose_" + k] = FX_ART_BASE + POSES[k].file; for (const a in POSES[k].anims || {}) { POSES[k].anims[a].img = null; IM["anim_" + k + "_" + a] = FX_ART_BASE + POSES[k].anims[a].file; } } }
   if (FX.rig) for (const k in RIGS) if (FX._art[k]) IM["rig_" + k] = FX_ART_BASE + RIGS[k].file;
+  // 손으로 찍은 픽셀 무기·아이템 (주인공 팔레트)
+  for (const n of PXSPR_FILES) IM["px_" + n] = FX_ART_BASE + n + ".png";
   const keys = Object.keys(IM).filter(k => IM[k]);
   return Promise.all(keys.map(k => new Promise(res => {
     const im = new Image(); im.crossOrigin = "anonymous";
-    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } if (k.startsWith("rig_")) { RIGS[k.slice(4)].img = im; return res(); } if (k.startsWith("pose_")) { POSES[k.slice(5)].img = im; return res(); } if (k.startsWith("anim_")) { const [, who, nm] = k.split("_"); POSES[who].anims[nm].img = im; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
+    im.onload = () => { const c = mk(im.naturalWidth, im.naturalHeight, x => x.drawImage(im, 0, 0)); if (k === "bg") { SPR.bg = { c }; return res(); } if (k.startsWith("rig_")) { RIGS[k.slice(4)].img = im; return res(); } if (k.startsWith("pose_")) { POSES[k.slice(5)].img = im; return res(); } if (k.startsWith("anim_")) { const [, who, nm] = k.split("_"); POSES[who].anims[nm].img = im; return res(); } if (k.startsWith("px_")) { PXSPR[k.slice(3)] = im; return res(); } SPR[k] = { c, white: tinted(c, "#ffffff"), red: tinted(c, "#ef4444"), orange: tinted(c, "#fb923c"), cyan: tinted(c, "#67e8f9") }; res(); };
     im.onerror = () => { console.warn("FX: could not load image for", k, IM[k]); res(); };
     im.src = IM[k];
   })));
@@ -1753,24 +1786,9 @@ const POSE_MOVE = {
 // 칼 그림 위에 다른 무기를 겹쳐 그릴 때 쓰는 칸별 위치(그림 픽셀): [칼끝 x, y, 손잡이 x, y]
 // 망치처럼 칼이 아닌 무기는 손잡이→칼끝 방향으로 자루를 그리고 칼끝 자리에 머리를 얹어 칼날을 덮음
 function drawHeldHammer(x, gx, gy, tx, ty, alpha = 1) {
-  const dx = tx - gx, dy = ty - gy, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
-  x.save(); x.globalAlpha = alpha; x.translate(gx, gy); x.rotate(Math.atan2(uy, ux));
-  // 자루 (손 뒤로 조금 나옴)
-  x.fillStyle = "#121726"; x.fillRect(-12, -4.5, L + 12, 9);
-  x.fillStyle = "#6a3f22"; x.fillRect(-11, -3, L + 10, 6); x.fillStyle = "#9a6236"; x.fillRect(-11, -3, L + 10, 2);
-  x.fillStyle = "#e8b84a"; x.fillRect(L - 8, -4, 4, 8);
-  x.fillStyle = "#8d9cc4"; x.fillRect(-14, -4, 4, 8);
-  // 머리: 자루와 수직인 강철 덩어리 (앞쪽은 타격면, 뒤쪽은 뿔)
-  x.translate(L, 0);
-  x.fillStyle = "#121726"; x.fillRect(-10, -22, 22, 44);
-  x.beginPath(); x.moveTo(-6, -22); x.lineTo(1, -34); x.lineTo(8, -22); x.closePath(); x.fill();
-  x.fillStyle = "#56638c"; x.fillRect(-8, -20, 18, 40);
-  x.fillStyle = "#3d4766"; x.beginPath(); x.moveTo(-4, -20); x.lineTo(1, -30); x.lineTo(6, -20); x.closePath(); x.fill();
-  x.fillStyle = "#c8d6f5"; x.fillRect(-8, -20, 3, 40);
-  x.fillStyle = "#2a3150"; x.fillRect(7, -20, 3, 40);
-  x.fillStyle = "#121726"; x.fillRect(-12, 18, 26, 10); x.fillStyle = "#8d9cc4"; x.fillRect(-10, 20, 22, 6); x.fillStyle = "#e6eeff"; x.fillRect(-10, 24, 22, 2);
-  x.fillStyle = "#ff8a3a"; x.fillRect(-2, -12, 4, 6); x.fillRect(-2, -2, 4, 8); x.fillRect(-2, 10, 4, 4);
-  x.restore();
+  // 손잡이(16, 56)를 손에, 머리 쪽(위)을 칼끝 방향으로. 주인공 그림과 같은 픽셀 크기(1.41배)
+  const ang = Math.atan2(ty - gy, tx - gx) + Math.PI / 2;
+  x.globalAlpha = alpha; pxSprite(x, "wpn-hammer-px", gx, gy, 1.41, ang, 16, 56); x.globalAlpha = 1;
 }
 function drawPoseActor(ctx, a, w) {
   const P = poseSet(a), idle = P.f.idle, t = w.time;
@@ -1955,62 +1973,32 @@ function paw(w) { const c = w.hero; if (c && c.rigHand && rigOn(c)) return rigWo
 /* ───────── 레시피용 도우미 ───────── */
 function gunSpring(w, dt) { const g = w.gun; g.kick -= g.kick * Math.min(1, dt * 16); g.rot -= g.rot * Math.min(1, dt * 12); }
 function bowPt(w) {
-  if (w.bowAt) return { x: w.bowAt.x + (w.bow.ox || 0) - 10, y: w.bowAt.y + Math.sin(w.time * 2.2) * 3 };
+  if (w.bowAt) return { x: w.bowAt.x + (w.bow.ox || 0) - 10, y: Math.round(w.bowAt.y + Math.sin(w.time * 2.2) * 3) };
   const h = w.hero; return { x: h.x + h.ox + 46, y: G - 72 };
 }
-// 화살: 강철 대 + 푸른 빛 촉 + 깃
+// 화살: 손으로 찍은 픽셀 화살 (가운데 기준, 촉이 앞)
 function drawArrowAt(ctx, x, y, rot, alpha = 1) {
-  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.globalAlpha = alpha;
-  ctx.fillStyle = "#2a3350"; ctx.fillRect(-56, -2.5, 62, 5);
-  ctx.fillStyle = "#c9d3e8"; ctx.fillRect(-55, -1.5, 60, 3);
-  ctx.fillStyle = "#1c4f7a"; ctx.beginPath(); ctx.moveTo(20, 0); ctx.lineTo(4, -8); ctx.lineTo(8, 0); ctx.lineTo(4, 8); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#5ad6ff"; ctx.beginPath(); ctx.moveTo(17, 0); ctx.lineTo(6, -5); ctx.lineTo(9, 0); ctx.lineTo(6, 5); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#e8fbff"; ctx.fillRect(9, -1, 6, 2);
-  ctx.fillStyle = "#3a6fae"; ctx.beginPath(); ctx.moveTo(-56, 0); ctx.lineTo(-66, -9); ctx.lineTo(-48, -2); ctx.lineTo(-48, 2); ctx.lineTo(-66, 9); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#9ae8ff"; ctx.fillRect(-62, -4, 8, 2); ctx.fillRect(-62, 2, 8, 2);
-  ctx.restore();
+  const a0 = ctx.globalAlpha; ctx.globalAlpha = a0 * alpha;
+  if (!pxSprite(ctx, "wpn-arrow-px", x, y, 1.41, rot, 30, 4.5)) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.fillStyle = "#c9d3e8"; ctx.fillRect(-50, -1.5, 60, 3); ctx.restore(); }
+  ctx.globalAlpha = a0;
 }
 function drawArrow(ctx, p) { drawArrowAt(ctx, p.x, p.y, p.align ? Math.atan2(p.vy, p.vx) : 0); }
-// 강철 리커브 활: 활대는 앞으로 휘고 끝이 다시 말림, 빛나는 룬과 수정 끝
+// 활: 손으로 찍은 픽셀 활 4칸(당김 0·⅓·⅔·끝). 줄은 활 끝 → 오늬로 직접 그음
+const BOW_TIPS = [[23, 6, 23, 106], [20.3, 6.7, 20.3, 105.3], [17.6, 7.3, 17.6, 104.7], [15, 8, 15, 104]];
 function drawBowPx(w, ctx) {
-  const B = w.bow, bob = Math.sin(w.time * 2.2) * 3, bx = w.bowAt.x + (B.ox || 0), by = w.bowAt.y + bob, k = B.pull, pull = k * 40 + B.snap, L = 84 * (1 - k * 0.04);
-  // 활대: 손잡이가 가장 앞, 끝으로 갈수록 뒤로 휘고, 맨 끝은 다시 앞으로 말림(리커브)
-  const pt = (t, sg) => { const q = Math.max(0, (t - 0.78) / 0.22); return [bx - 30 * t * t - k * 12 * t * t + 20 * q * q, by + sg * t * L]; };
-  const glow = 0.5 + 0.5 * k + 0.15 * Math.sin(w.time * 6);
-  // 바닥 그림자
-  ctx.fillStyle = "rgba(0,0,0,0.35)"; ctx.fillRect(bx - 34, G - 3, 52, 4); ctx.fillRect(bx - 24, G - 5, 32, 2);
-  for (const sg of [-1, 1]) {
-    const N = 46;
-    for (let pass = 0; pass < 3; pass++) for (let i = 0; i <= N; i++) {
-      const t = i / N, [x, y] = pt(t, sg), th = 13 - 8 * t;
-      if (pass === 0) { ctx.fillStyle = "#121726"; ctx.fillRect(x - th / 2 - 2, y - 3, th + 4, 6); }
-      else if (pass === 1) { ctx.fillStyle = t < 0.5 ? "#4a5578" : "#5d6b96"; ctx.fillRect(x - th / 2, y - 2, th, 4); }
-      else { ctx.fillStyle = "#d4e0fa"; ctx.fillRect(x + th / 2 - 3, y - 1, 2, 2); ctx.fillStyle = "#2a3150"; ctx.fillRect(x - th / 2, y - 1, 2, 2); }
-    }
-    // 활대 가운데 홈을 따라 빛나는 룬
-    for (const t of [0.22, 0.38, 0.54, 0.68]) { const [x, y] = pt(t, sg); ctx.globalAlpha = Math.min(1, glow); ctx.fillStyle = "#5ad6ff"; ctx.fillRect(x - 2, y - 3, 3, 6); ctx.fillStyle = "#d8f8ff"; ctx.fillRect(x - 1, y - 1, 1, 2); ctx.globalAlpha = 1; }
-    // 날개 장식: 손잡이 쪽에서 앞으로 뻗은 칼날 모양
-    const [wx, wy] = pt(0.16, sg);
-    ctx.fillStyle = "#121726"; ctx.beginPath(); ctx.moveTo(wx + 2, wy - sg * 2); ctx.lineTo(wx + 20, wy + sg * 4); ctx.lineTo(wx + 4, wy + sg * 9); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "#8d9cc4"; ctx.beginPath(); ctx.moveTo(wx + 4, wy); ctx.lineTo(wx + 16, wy + sg * 4); ctx.lineTo(wx + 5, wy + sg * 6); ctx.closePath(); ctx.fill();
-    // 끝 수정
-    const [tx, ty] = pt(1, sg);
-    ctx.fillStyle = "#123a5c"; ctx.beginPath(); ctx.moveTo(tx + 2, ty + sg * 13); ctx.lineTo(tx + 8, ty); ctx.lineTo(tx + 2, ty - sg * 5); ctx.lineTo(tx - 4, ty); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "#5ad6ff"; ctx.fillRect(tx, ty - 1, 4, 4); ctx.fillStyle = "#e8fdff"; ctx.fillRect(tx + 1, ty, 2, 2);
-  }
-  // 손잡이: 가죽 감기 + 금테 + 가운데 보석
-  ctx.fillStyle = "#121726"; ctx.fillRect(bx - 8, by - 17, 16, 34);
-  ctx.fillStyle = "#5a3020"; ctx.fillRect(bx - 6, by - 15, 12, 30);
-  ctx.fillStyle = "#7a4630"; for (let yy = -13; yy < 15; yy += 6) ctx.fillRect(bx - 6, by + yy, 12, 2);
-  ctx.fillStyle = "#e8b84a"; ctx.fillRect(bx - 7, by - 17, 14, 4); ctx.fillRect(bx - 7, by + 13, 14, 4);
-  ctx.fillStyle = "#ff4a6a"; ctx.fillRect(bx + 3, by - 3, 5, 6); ctx.fillStyle = "#ffd0da"; ctx.fillRect(bx + 4, by - 2, 2, 2);
-  // 줄: 활 끝 → 오늬(당긴 만큼 뒤로)
-  const [ux, uy] = pt(1, -1), [lx, ly] = pt(1, 1), nx = Math.min(ux, lx) - pull;
-  ctx.strokeStyle = k > 0.3 ? "#d6f6ff" : "#a8bce0"; ctx.lineWidth = 2;
+  const B = w.bow, S = 1.41, bob = Math.sin(w.time * 2.2) * 3, bx = Math.round(w.bowAt.x + (B.ox || 0)), by = Math.round(w.bowAt.y + bob), k = B.pull, pull = k * 40 + B.snap;
+  const fi = Math.max(0, Math.min(3, Math.round(k * 3))), T = BOW_TIPS[fi];
+  // 바닥 그림자 (칸 모양)
+  ctx.fillStyle = "rgba(0,0,0,0.38)"; ctx.fillRect(bx - 40, G - 3, 56, 4); ctx.fillRect(bx - 30, G - 5, 36, 2);
+  const ux = bx + (T[0] - 30) * S, uy = by + (T[1] - 56) * S, lx = bx + (T[2] - 30) * S, ly = by + (T[3] - 56) * S, nx = Math.round(Math.min(ux, lx) - pull);
+  // 줄: 뒤쪽에 깔고 활을 위에
+  ctx.strokeStyle = k > 0.3 ? "#9eeaf4" : "#4f8a94"; ctx.lineWidth = 1.6; ctx.lineCap = "butt";
   ctx.beginPath(); ctx.moveTo(ux, uy); ctx.lineTo(nx, by); ctx.lineTo(lx, ly); ctx.stroke();
+  pxSprite(ctx, "wpn-bow-px", bx, by, S, 0, 30, 56, fi, 44);
   if (k > 0.02) {
-    drawArrowAt(ctx, nx + 62, by, 0);
-    if (k > 0.5) pxGlow(ctx, nx + 78, by, 8 + 8 * k, "140,230,255", k * 0.9);
+    pxSprite(ctx, "wpn-arrow-px", nx, by, S, 0, 1, 4.5);
+    // 끝까지 당기면 촉에 작은 빛 십자
+    if (k > 0.5) { const hx = Math.round(nx + 43 * S), s2 = 3 + 5 * k * (0.8 + 0.2 * Math.sin(w.time * 20)); pxPlus(ctx, hx, by, s2, "#68d6e4"); pxPlus(ctx, hx, by, s2 * 0.45, "#e8fdff"); }
   }
 }
 function drawBow(w, ctx) {

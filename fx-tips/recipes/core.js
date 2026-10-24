@@ -779,7 +779,7 @@ RECIPES.push(
     setup(w) { w.bowAt = { x: 150, y: G - 94 }; w.foe = w.actor("foe", { home: 400, hp: 68 }); w.bow = { pull: 0, snap: 0, ox: 0 }; w.stuck = []; },
     fire(w) {
       const release = () => {
-        const b = bowPt(w), o = { x: b.x + 24, y: b.y, vx: 1100, vy: 0, g: 0, draw: drawArrow };
+        const b = bowPt(w), o = { x: b.x - 10, y: b.y, vx: 1100, vy: 0, g: 0, draw: drawArrow };
         o.test = p => { const f = w.foe; return f.alive && p.x >= f.x - f.w / 2 + 14 && p.y > f.gy - f.h; };
         o.onHit = p => { const f = w.foe; if (!f.alive) return; f.hp -= 34; if (!w.on("hit")) f.ox += 8; w.emit("hit", p); if (f.hp <= 0) w.kill(f); };
         w.emit("release", o);
@@ -794,8 +794,9 @@ RECIPES.push(
       for (const s of w.stuck) s.wob *= Math.pow(0.02, dt);
       if (!w.foe.alive) w.stuck = [];
     },
+    // 활은 주인공 그림처럼 또렷하게(효과층 아래), 꽂힌 화살은 효과층에
+    drawBack(w, ctx) { drawBow(w, ctx); },
     drawFront(w, ctx) {
-      drawBow(w, ctx);
       const f = w.foe;
       for (const s of w.stuck) drawArrowAt(ctx, f.x + f.ox + s.dx, f.gy + f.oy + s.dy, s.rot + Math.sin(w.time * 45) * s.wob, f.alpha);
     },
@@ -807,7 +808,7 @@ RECIPES.push(
         pull(w) {
           w.tween(w.bow, { pull: 1 }, 0.5, "out"); w.sfx.creak();
           // 당기는 동안 빛가루가 화살촉으로 모임
-          for (let i = 0; i < 10; i++) w.after(i * 0.04, () => { const a = rand(0, TAU), d = rand(40, 70), x = w.bowAt.x + 30, y = w.bowAt.y; w.spawn({ type: "spark", seek: true, x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, tx: x, ty: y, life: 0.22, size: 2.5, color: "140,230,255" }); });
+          for (let i = 0; i < 10; i++) w.after(i * 0.04, () => { const a = rand(0, TAU), d = rand(40, 70), x = w.bowAt.x, y = w.bowAt.y; w.spawn({ type: "spark", seek: true, x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, tx: x, ty: y, life: 0.22, size: 2.5, color: "140,230,255" }); });
         },
       },
       {
@@ -1738,7 +1739,7 @@ RECIPES.push(
       w.busy = true;
       const C = w.C;
       const open = () => {
-        C.open = true;
+        C.open = true; C.openAt = w.time;
         w.emit("open", C);
         if (!w.on("lid")) C.lid = -1.9;
         if (!w.on("item")) C.item = 1;
@@ -1747,13 +1748,24 @@ RECIPES.push(
       if (w.on("wiggle")) { w.emit("wiggle", C); w.after(0.45, open); } else open();
     },
     update(w, dt) { const C = w.C, k = Math.min(1, dt * 12); C.sx += (1 - C.sx) * k; C.sy += (1 - C.sy) * k; },
+    // 상자 안 빛과 아이템은 칸 단위 픽셀로 또렷하게 (효과층 아래에 그림)
+    drawBack(w, ctx) {
+      const C = w.C, x = 270, y = G, ot = w.time - (C.openAt ?? -9);
+      // 빛줄기: 상자 입구에서 금빛 계단 빛이 솟았다가 잦아듦
+      if (C.open && w.on("rays") && ot < 1.6) {
+        const a = Math.min(1, ot * 6) * (ot > 1.1 ? 1 - (ot - 1.1) / 0.5 : 1);
+        ctx.globalAlpha = Math.max(0, a); pxAura(ctx, x, y - 70, w.time * 0.6, 3, [[90, 60, 10], [190, 140, 40], [255, 214, 110], [255, 246, 210]], 24); ctx.globalAlpha = 1;
+      }
+      if (C.item > 0) {
+        const iy = Math.round(y - 70 - C.item * 110 + Math.sin(w.time * 3) * 3), s = 1.2 + 1.3 * C.item;
+        if (w.on("rarity")) pxAura(ctx, x, iy, w.time, 2, [[58, 16, 92], [120, 52, 190], [196, 140, 255], [245, 225, 255]], 34);
+        pxSprite(ctx, "item-gem-px", x, iy, s, 0, 13, 12);
+        // 보석 주위로 반짝이는 십자 별
+        for (let i = 0; i < 4; i++) { const ph = w.time * 2 + i * 1.7, tw = Math.max(0, Math.sin(ph * 2)); if (tw < 0.3) continue; const a = i * TAU / 4 + 0.6, r = 38 * C.item; pxPlus(ctx, Math.round(x + Math.cos(a) * r), Math.round(iy + Math.sin(a) * r * 0.8), 2 + 4 * tw, "#ffffff"); }
+      }
+    },
     drawFront(w, ctx) {
       const C = w.C, x = 270, y = G;
-      if (C.item > 0) {
-        const iy = y - 70 - C.item * 110, s = 30 + C.item * 26;
-        if (w.on("rarity")) { ctx.globalCompositeOperation = "lighter"; glow(ctx, x, iy, s * 1.6, "168,85,247", 0.8); ctx.globalCompositeOperation = "source-over"; }
-        ctx.save(); ctx.translate(x, iy); ctx.rotate(Math.sin(w.time * 3) * 0.15); const g = SPR.gem.c; ctx.drawImage(g, -s / 2, -s / 2 * g.height / g.width, s, s * g.height / g.width); ctx.restore();
-      }
       ctx.save(); ctx.translate(x, y); ctx.rotate(C.wig); ctx.scale(C.sx, C.sy);
       drawChestPx(ctx, C, w);
       ctx.restore();
@@ -1773,7 +1785,7 @@ RECIPES.push(
       {
         id: "rays", name: { en: "Light Rays", ko: "빛줄기" }, param: "12 rays · spin",
         cap: { en: "*Light rays* spill out of the box.", ko: "상자 안에서 *빛*이 쏟아져요." },
-        open(w) { w.spawn({ type: "rays", under: true, x: 270, y: G - 80, size: 190, n: 12, vr: 0.9, life: 1.6, color: "253,224,71" }); w.spawn({ type: "glow", under: true, x: 270, y: G - 70, size: 120, size1: 60, life: 0.8, color: "253,224,71" }); },
+        open() {}, // 빛줄기는 drawBack에서 칸 단위로 그림
       },
       {
         id: "coins", name: { en: "Coin Fountain", ko: "동전 분수" }, param: "10 coins · bounce",
@@ -1788,7 +1800,7 @@ RECIPES.push(
       {
         id: "rarity", name: { en: "Rarity Flash", ko: "등급 색 번쩍" }, param: "purple = epic",
         cap: { en: "Flash the *rarity color*. Purple means *epic*.", ko: "*등급 색*으로 번쩍. 보라는 *에픽*." },
-        open(w) { w.flash("168,85,247", 0.45); w.spawn({ type: "ring", x: 270, y: G - 120, size: 20, size1: 200, life: 0.5, w: 8, color: "192,132,252" }); },
+        open(w) { w.flash("168,85,247", 0.3); w.spawn({ x: 270, y: G - 80, life: 0.2, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 60, k, "214,170,255") }); },
       },
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / click / sparkle",

@@ -949,11 +949,11 @@
           },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "clack + fanfare",
-          cap: { en: "A crisp *clack* on landing, then a *fanfare*.", ko: "떨어질 때 *착, 착*, 그리고 *팡파레*." },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "fanfare",
+          cap: { en: "Just one bright *fanfare* when it unlocks.", ko: "업적이 열릴 때 *디디디딩* 팡파레 하나만." },
           // 떨어질 때만 철컹, 팡파레는 영광 연출, 맑은 팅은 반짝임 쓸기와 함께
-          // 떨어져 통통 튈 때: 짧고 단단한 "착, 착"
-          land(w) { if (w.on("drop")) { w.sfx.clack(); w.after(0.16, () => w.sfx.clack(1.08)); } },
+          // 떨어질 땐 소리 없이, 업적이 열릴 때 팡파레만
+          land() {},
           unlock(w) { if (w.on("glory") || w.on("banner")) w.sfx.fanfare(); else w.sfx.tock(); },
         },
       ],
