@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FBF6EC">
+<title>Tomorrow Bag</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="9" width="22" height="20" rx="6" fill="var(--accent)"/><path d="M11 9 V7 a5 5 0 0 1 10 0 V9" fill="none" stroke="var(--ink)" stroke-width="2.4"/><rect x="10" y="17" width="12" height="7" rx="2.5" fill="var(--soft)"/><path d="M13 20.5 l2 2 l4 -4" fill="none" stroke="var(--sub)" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span>Tomorrow Bag</span>
+    </div>
+    <button class="icon-btn" type="button" data-act="share" aria-label="가족에게 보내기">📤</button>
+    <button class="btn small" type="button" data-act="go" data-to="help">방법</button>
+  </header>
+  <div id="store-warn" class="warn-bar" role="alert">이 브라우저에 저장할 수 없습니다. 창을 닫으면 넣은 내용이 사라질 수 있어요. 내보내기로 따로 보관해 주세요.</div>
+  <nav id="kids" class="kids" aria-label="아이 고르기"></nav>
+
+  <main>
+    <section id="screen-bag" class="screen on" aria-label="가방"><div id="bag-root"></div></section>
+    <section id="screen-week" class="screen" aria-label="시간표"><div id="week-root"></div></section>
+    <section id="screen-packs" class="screen" aria-label="꾸러미"><div id="packs-root"></div></section>
+    <section id="screen-log" class="screen" aria-label="기록"><div id="log-root"></div></section>
+    <section id="screen-more" class="screen" aria-label="설정"><div id="more-root"></div></section>
+    <section id="screen-help" class="screen" aria-label="방법">
+      <h1>쓰는 방법</h1>
+      <p class="muted">초등학생 아이의 내일 가방을 시간표와 알림장으로 챙기는 앱입니다.</p>
+      <div class="card">
+        <h3>1. 아이와 시간표 넣기 (처음 한 번)</h3>
+        <p>더보기에서 아이를 넣고, 시간표 탭에서 요일·교시 칸을 눌러 과목을 고릅니다. 방과후·학원도 요일마다 시간과 데리러 갈 사람과 함께 넣습니다.</p>
+        <h3>2. 알림장 준비물 넣기 (그날그날)</h3>
+        <p>가방 화면의 <b>+ 알림장</b>을 눌러 날짜를 고르고 준비물을 넣거나 자주 나오는 준비물을 눌러 고릅니다.</p>
+        <h3>3. 저녁에 가방 체크</h3>
+        <p>가방 화면에 내일 가방이 저절로 만들어집니다. 물건 옆에 왜 필요한지(몇 교시 무슨 과목, 무슨 학원)가 적혀 있어요. 챙긴 것을 누르고 <b>다 쌌어요</b>를 누르면 기록이 남습니다.</p>
+        <h3>4. 기록 다시 보기</h3>
+        <p>기록 탭에서 챙김률, 요일별 챙김, 자주 빠뜨린 것을 봅니다.</p>
+      </div>
+      <div class="card">
+        <h3>개인정보</h3>
+        <p>기록은 이 기기 브라우저에만 저장됩니다. 서버로 보내지 않습니다. 브라우저 데이터를 지우면 함께 지워지니 더보기 → 내보내기로 백업해 두세요.</p>
+      </div>
+      <h2>도움말 한 줄</h2>
+      <div id="help-tips"></div>
+      <button class="btn wide" type="button" data-act="go" data-to="bag">가방으로 돌아가기</button>
+    </section>
+  </main>
+
+  <nav class="tabs" aria-label="화면">
+    <button class="tab on" type="button" data-act="go" data-to="bag"><span class="ti">🎒</span>가방</button>
+    <button class="tab" type="button" data-act="go" data-to="week"><span class="ti">🗓️</span>시간표</button>
+    <button class="tab" type="button" data-act="go" data-to="packs"><span class="ti">🧺</span>꾸러미</button>
+    <button class="tab" type="button" data-act="go" data-to="log"><span class="ti">📈</span>기록</button>
+    <button class="tab" type="button" data-act="go" data-to="more"><span class="ti">⚙️</span>더보기</button>
+  </nav>
+</div>
+
+<!-- 아이 넣기·고치기 -->
+<div id="sheet-kid" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-kid" role="dialog" aria-label="아이">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2 id="kid-title">아이 넣기</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <label class="f" for="kid-name">이름 (부르는 이름)</label>
+    <input id="kid-name" type="text" maxlength="40" autocomplete="off" placeholder="예: 하윤">
+    <div class="err" id="kid-err"></div>
+    <label class="f" for="kid-grade">학년</label>
+    <select id="kid-grade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option><option value="4">4학년</option><option value="5">5학년</option><option value="6">6학년</option></select>
+    <label class="f" for="kid-periods">하루 최대 교시</label>
+    <select id="kid-periods"><option value="4">4교시</option><option value="5">5교시</option><option value="6" selected>6교시</option><option value="7">7교시</option></select>
+    <div class="row" style="margin-top:16px">
+      <button class="btn danger" type="button" id="kid-del" data-act="kid-del">지우기</button>
+      <span class="spacer"></span>
+      <button class="btn main" type="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 시간표 칸 고르기 -->
+<div id="sheet-cell" class="dim" data-sheet="1" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-label="과목 고르기">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2 id="cell-title">월요일 1교시</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <p class="muted">과목을 누르면 바로 들어갑니다. 과목의 준비물은 꾸러미 탭에서 고칩니다.</p>
+    <div id="cell-picks" class="pick-grid"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" type="button" data-act="cell-clear">빈 칸으로</button>
+      <span class="spacer"></span>
+      <button class="btn" type="button" data-act="cell-copy">이 요일 전체를 다른 요일로 복사</button>
+    </div>
+    <div id="cell-copy-row" class="chips" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- 방과후 넣기 -->
+<div id="sheet-after" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-after" role="dialog" aria-label="방과후">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2 id="after-title">방과후 넣기</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <label class="f" for="after-pack">무엇</label>
+    <select id="after-pack"></select>
+    <label class="f" for="after-time">시작 시각</label>
+    <input id="after-time" type="time" value="15:00">
+    <div class="err" id="after-err"></div>
+    <label class="f" for="after-who">데리러 갈 사람</label>
+    <select id="after-who"></select>
+    <div class="row" style="margin-top:16px">
+      <button class="btn danger" type="button" id="after-del" data-act="after-del">지우기</button>
+      <span class="spacer"></span>
+      <button class="btn main" type="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 알림장 준비물 -->
+<div id="sheet-note" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-note" role="dialog" aria-label="알림장 준비물">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2 id="note-head">알림장 준비물</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <label class="f" for="note-date">가져갈 날</label>
+    <input id="note-date" type="date">
+    <label class="f" for="note-title">무엇 때문에 (적지 않아도 됩니다)</label>
+    <input id="note-title" type="text" maxlength="40" placeholder="예: 미술 만들기">
+    <label class="f" for="note-add">준비물</label>
+    <div class="row">
+      <input id="note-add" type="text" maxlength="40" placeholder="예: 휴지 심 2개" autocomplete="off">
+      <button class="btn" type="button" data-act="note-add">넣기</button>
+    </div>
+    <div class="err" id="note-err"></div>
+    <div id="note-items" class="chips" style="margin-top:8px"></div>
+    <label class="f" for="note-cat">자주 나오는 준비물에서 고르기</label>
+    <select id="note-cat"></select>
+    <div id="note-supplies" class="chips" style="margin-top:8px"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn danger" type="button" id="note-del" data-act="note-del">지우기</button>
+      <span class="spacer"></span>
+      <button class="btn main" type="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 꾸러미 고치기 -->
+<div id="sheet-pack" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-pack" role="dialog" aria-label="꾸러미">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2 id="pack-title">꾸러미</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <div class="row">
+      <div style="width:84px"><label class="f" for="pack-icon">그림</label><input id="pack-icon" type="text" maxlength="4"></div>
+      <div style="flex:1"><label class="f" for="pack-name">이름</label><input id="pack-name" type="text" maxlength="40"></div>
+    </div>
+    <label class="f" for="pack-kind">종류</label>
+    <select id="pack-kind"><option value="subj">수업 과목</option><option value="acad">방과후·학원</option></select>
+    <div class="err" id="pack-err"></div>
+    <label class="f" for="pack-add">늘 챙기는 물건</label>
+    <div class="row">
+      <input id="pack-add" type="text" maxlength="40" placeholder="예: 리코더" autocomplete="off">
+      <button class="btn" type="button" data-act="pack-add">넣기</button>
+    </div>
+    <div id="pack-items" class="items-edit" style="margin-top:8px"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn danger" type="button" id="pack-del" data-act="pack-del">지우기</button>
+      <span class="spacer"></span>
+      <button class="btn main" type="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 행사 꾸러미 붙이기 -->
+<div id="sheet-event" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-event" role="dialog" aria-label="행사 꾸러미">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2>행사 꾸러미 붙이기</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <p class="muted">행사를 고르고 날짜를 정하면 준비물이 그날 알림장 준비물로 들어갑니다.</p>
+    <div id="event-list" class="pick-grid"></div>
+    <div id="event-items" class="muted" style="margin-top:8px"></div>
+    <label class="f" for="event-date">행사 날</label>
+    <input id="event-date" type="date">
+    <div class="err" id="event-err"></div>
+    <button class="btn main wide" type="submit" style="margin-top:16px">그날 가방에 넣기</button>
+  </form>
+</div>
+
+<!-- 내보내기·가져오기 -->
+<div id="sheet-backup" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-backup" role="dialog" aria-label="내보내기와 가져오기">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2>내보내기 · 가져오기</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <label class="f" for="export-text">내보내기 글 (모든 아이·시간표·꾸러미·기록)</label>
+    <textarea id="export-text" readonly></textarea>
+    <button class="btn wide" type="button" data-act="copy-export" style="margin-top:8px">글 복사</button>
+    <label class="f" for="restore-text">가져오기 — 내보내기 글을 붙여 넣으세요</label>
+    <textarea id="restore-text" placeholder="내보내기로 복사한 글을 여기에 붙여 넣으세요"></textarea>
+    <div class="err" id="restore-err"></div>
+    <button class="btn main wide" type="submit" style="margin-top:8px">가져와서 바꾸기</button>
+  </form>
+</div>
+
+<!-- 처음 안내 -->
+<div id="ov-welcome" class="dim center" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-label="처음 안내">
+    <svg class="welcome-art" viewBox="0 0 140 140" aria-hidden="true">
+      <circle cx="70" cy="74" r="62" fill="var(--soft)"/>
+      <rect x="34" y="44" width="72" height="74" rx="20" fill="var(--accent)"/>
+      <path d="M52 44 V36 a18 18 0 0 1 36 0 V44" fill="none" stroke="var(--ink)" stroke-width="6"/>
+      <rect x="46" y="76" width="48" height="28" rx="9" fill="var(--surface)"/>
+      <path d="M58 90 l8 8 l16 -16" fill="none" stroke="var(--sub)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="30" y="20" width="22" height="16" rx="4" fill="var(--gold)" transform="rotate(-14 41 28)"/>
+      <rect x="90" y="18" width="20" height="20" rx="4" fill="var(--sub)" transform="rotate(12 100 28)"/>
+    </svg>
+    <h1 style="text-align:center">내일 가방, 시간표가 챙겨 줘요</h1>
+    <p class="muted" style="text-align:center">시간표와 알림장을 넣으면 내일 가방에 넣을 물건이 저절로 모이고, 물건마다 왜 필요한지 보여 줍니다.</p>
+    <button class="btn main wide" type="button" data-act="welcome-start" style="margin-top:12px">우리 아이 넣고 시작</button>
+    <button class="btn wide" type="button" data-act="welcome-sample" style="margin-top:8px">예시로 둘러보기</button>
+    <p class="tiny" style="text-align:center">기록은 이 기기 브라우저에만 저장됩니다.</p>
+  </div>
+</div>
+
+<!-- 한 번 더 묻기 -->
+<div id="ov-confirm" class="dim center" aria-hidden="true">
+  <div class="sheet" role="alertdialog" aria-labelledby="confirm-msg">
+    <p id="confirm-msg" style="font-weight:700;font-size:var(--t-4)">정말 지울까요?</p>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" type="button" data-act="confirm-no">아니요</button>
+      <span class="spacer"></span>
+      <button class="btn main" type="button" id="confirm-yes" data-act="confirm-yes">네</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"><span id="toast-msg"></span><button type="button" id="toast-undo" data-act="undo">되돌리기</button></div>
+
+<script src="./data.js"></script>
+<script src="./store.js"></script>
+<script src="./logic.js"></script>
+<script src="./ui.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

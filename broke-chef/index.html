@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1f78c8">
+<title>한끼 계산기 — 자취생 식비 챌린지</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body class="font-m">
+<a class="skip" href="#main">본문으로</a>
+<header class="top">
+  <h1 class="brand"><span class="brand-mark" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M12 2.5v19M10 8v3M14 8v3"/></svg></span> 한끼 계산기</h1>
+  <button type="button" class="ghost" data-act="go" data-to="help">방법</button>
+</header>
+
+<div id="store-warn" class="warn-bar" role="alert" hidden>저장이 안 되는 환경이다. 창을 닫으면 기록이 사라지니 설정 → 내보내기로 옮겨 두자.</div>
+
+<main id="main">
+  <!-- 0. 내 냉장고 (첫 화면, 양문형 냉장고) -->
+  <section id="screen-fridge" class="view screen" aria-labelledby="h-fridge" hidden>
+    <h2 id="h-fridge" class="sr">내 냉장고</h2>
+    <div id="fridge" class="fridge">
+      <div class="view fridge-in" id="fridge-in" hidden>
+        <div class="seg fridge-mode">
+          <button type="button" data-act="fridge-mode" data-mode="shelf" id="fm-shelf" aria-pressed="true">📝 칸별 메모</button>
+          <button type="button" data-act="fridge-mode" data-mode="photo" id="fm-photo" aria-pressed="false">📷 사진으로 보기</button>
+        </div>
+        <div id="fridge-shelves" class="view step in fridge-cols"></div>
+        <div id="fridge-photo-in" class="view step fridge-photo-in" hidden></div>
+      </div>
+      <div class="door left" id="door-l">
+        <p class="door-tag">냉동실</p>
+        <div id="door-l-note" class="note"></div>
+        <div class="magnets">
+          <button type="button" class="magnet" data-act="go" data-to="home"><span class="mag-img m1" aria-hidden="true"></span>식비 계산</button>
+          <button type="button" class="magnet" data-act="go" data-to="chal"><span class="mag-img m2" aria-hidden="true"></span>챌린지</button>
+        </div>
+        <button type="button" class="handle" data-act="fridge-door" aria-label="냉동실 문 열기"></button>
+      </div>
+      <div class="door right" id="door-r">
+        <p class="door-tag">냉장실</p>
+        <div id="door-r-note" class="note"></div>
+        <div class="magnets">
+          <button type="button" class="magnet" data-act="photo-open"><span class="mag-img m3" aria-hidden="true"></span>내 냉장고 보기</button>
+          <button type="button" class="magnet" data-act="go" data-to="menu"><span class="mag-img m4" aria-hidden="true"></span>집밥 메뉴</button>
+          <button type="button" class="magnet" data-act="go" data-to="ing"><span class="mag-img m5" aria-hidden="true"></span>재료 값</button>
+        </div>
+        <button type="button" class="handle" data-act="fridge-door" aria-label="냉장실 문 열기"></button>
+      </div>
+    </div>
+    <div class="btn-pair">
+      <button type="button" class="primary big" id="btn-fridge-door" data-act="fridge-door">🚪 냉장고 열기</button>
+      <button type="button" class="big" data-act="photo-take">📷 사진 찍기</button>
+    </div>
+    <div id="fridge-exp"></div>
+  </section>
+
+  <!-- 1. 식비 계산 (오늘) -->
+  <section id="screen-home" class="view screen" aria-labelledby="h-home" hidden>
+    <h2 id="h-home" class="sr">식비 계산</h2>
+    <div id="home-chal"></div>
+    <div id="home-today"></div>
+    <div class="btn-pair">
+      <button type="button" class="primary big" id="btn-price-open" data-act="price-open">🧾 장 본 값 넣기</button>
+      <button type="button" class="big" id="btn-spend-open" data-act="spend-new">+ 식비 쓰기</button>
+    </div>
+    <div id="home-body"></div>
+  </section>
+
+  <!-- 2. 챌린지 -->
+  <section id="screen-chal" class="view screen" aria-labelledby="h-chal" hidden>
+    <div class="bar">
+      <h2 id="h-chal">식비 챌린지</h2>
+      <div class="bar-btns">
+        <button type="button" class="primary" data-act="spend-new">+ 식비 쓰기</button>
+        <button type="button" data-act="chal-open">챌린지 고르기</button>
+      </div>
+    </div>
+    <div id="chal-now"></div>
+    <div id="chal-spends"></div>
+    <div id="chal-past"></div>
+  </section>
+
+  <!-- 3. 재료 -->
+  <section id="screen-ing" class="view screen" aria-labelledby="h-ing" hidden>
+    <div class="bar">
+      <h2 id="h-ing">재료</h2>
+      <div class="bar-btns">
+        <button type="button" class="primary" data-act="ing-new">+ 재료</button>
+        <button type="button" data-act="tpl-open" data-tab="ing">목록에서 고르기</button>
+      </div>
+    </div>
+    <div class="filters">
+      <label class="field"><span>찾기</span><input id="ing-q" type="search" maxlength="30" placeholder="재료 이름" autocomplete="off"></label>
+      <label class="field"><span>종류</span><select id="ing-cat"></select></label>
+      <label class="field"><span>정렬</span>
+        <select id="ing-sort">
+          <option value="name">이름순</option>
+          <option value="missing">값 없는 것 먼저</option>
+          <option value="old">값 오래된 순</option>
+          <option value="recent">최근 바뀐 순</option>
+          <option value="unit">100g·개당 비싼 순</option>
+        </select>
+      </label>
+    </div>
+    <div id="ing-list"></div>
+  </section>
+
+  <!-- 4. 집밥 메뉴 -->
+  <section id="screen-menu" class="view screen" aria-labelledby="h-menu" hidden>
+    <div class="bar">
+      <h2 id="h-menu">집밥 메뉴</h2>
+      <div class="bar-btns">
+        <button type="button" class="primary" data-act="menu-new">+ 메뉴</button>
+        <button type="button" data-act="tpl-open" data-tab="menu">메뉴 예시에서</button>
+      </div>
+    </div>
+    <div class="filters">
+      <label class="field"><span>찾기</span><input id="menu-q" type="search" maxlength="30" placeholder="메뉴 이름" autocomplete="off"></label>
+      <label class="field"><span>정렬</span>
+        <select id="menu-sort">
+          <option value="rate">사 먹는 값과 가까운 순</option>
+          <option value="name">이름순</option>
+          <option value="cost">한 끼 값 비싼 순</option>
+          <option value="margin">아낀 돈 적은 순</option>
+        </select>
+      </label>
+    </div>
+    <div id="menu-sum" class="card soft"></div>
+    <div id="menu-list"></div>
+  </section>
+
+  <!-- 5. 기록 -->
+  <section id="screen-hist" class="view screen" aria-labelledby="h-hist" hidden>
+    <div class="bar"><h2 id="h-hist">재료 값 기록</h2></div>
+    <div class="month-nav">
+      <button type="button" data-act="hist-prev" aria-label="이전 달">◀</button>
+      <strong id="hist-month"></strong>
+      <button type="button" data-act="hist-next" aria-label="다음 달">▶</button>
+    </div>
+    <div class="filters">
+      <label class="field"><span>재료</span><select id="hist-ing"></select></label>
+    </div>
+    <div id="hist-sum"></div>
+    <div id="hist-list"></div>
+  </section>
+
+  <!-- 6. 설정 -->
+  <section id="screen-more" class="view screen" aria-labelledby="h-more" hidden>
+    <div class="bar"><h2 id="h-more">설정</h2></div>
+    <form id="settings-form" class="card" novalidate>
+      <h3>집밥 기준</h3>
+      <label class="field"><span>알뜰 기준 (%) — 한 끼 값이 사 먹는 값의 이 % 이하면 '알뜰'</span><input id="set-target" type="number" inputmode="decimal" min="5" max="90" step="1"><em class="err"></em></label>
+      <label class="field"><span>비쌈 기준 (%) — 이 % 이상이면 사 먹는 값과 별 차이 없음</span><input id="set-warn" type="number" inputmode="decimal" min="6" max="99" step="1"><em class="err"></em></label>
+      <label class="field"><span>값 확인 주기 (일) — 이보다 오래된 재료 값은 '확인할 때'</span><input id="set-stale" type="number" inputmode="numeric" min="1" max="365" step="1"><em class="err"></em></label>
+      <h3>화면</h3>
+      <label class="field"><span>글자 크기</span>
+        <select id="set-font"><option value="s">작게</option><option value="m">보통</option><option value="l">크게</option></select>
+      </label>
+      <label class="field"><span>화면 색</span>
+        <select id="set-theme"><option value="light">밝게</option><option value="auto">기기 따라</option><option value="dark">어둡게</option></select>
+      </label>
+      <label class="check"><input id="set-motion" type="checkbox"> <span>움직임 줄이기</span></label>
+      <p class="hint" id="set-saved" aria-live="polite"></p>
+    </form>
+
+    <div class="card">
+      <h3>기록 옮기기</h3>
+      <p class="hint">기록은 이 기기 브라우저에만 저장된다. 어디로도 보내지 않는다. 기기를 바꾸거나 브라우저 데이터를 지우면 사라지니 내보내기 글을 따로 보관하자.</p>
+      <div class="btn-row">
+        <button type="button" data-act="backup">내보내기·가져오기</button>
+        <button type="button" data-act="sample">예시 자취방 넣기</button>
+        <button type="button" data-act="sample-del">예시 지우기</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>계산 점검</h3>
+      <p class="hint">이 앱의 계산이 예시와 같은 값을 내는지 열 때마다 확인한다.</p>
+      <ul id="selftest" class="test-list"></ul>
+    </div>
+
+    <div class="card danger-zone">
+      <h3>전체 지우기</h3>
+      <p class="hint">재료·메뉴·값 기록·챌린지·식비 기록·냉장고 칸 메모·음식·사진을 모두 지운다. 설정은 남는다.</p>
+      <button type="button" class="danger" data-act="clear-all">기록 전체 지우기</button>
+    </div>
+  </section>
+
+  <!-- 7. 방법 -->
+  <section id="screen-help" class="view screen" aria-labelledby="h-help" hidden>
+    <div class="bar"><h2 id="h-help">방법</h2><div class="bar-btns"><button type="button" data-act="go" data-to="fridge">냉장고로</button></div></div>
+    <div class="card">
+      <h3>이 앱은</h3>
+      <p>혼자 사는 자취생을 위한 식비 챌린지 앱이다. '한 달 10만원', '두 달 30만원'처럼 기간과 식비 목표를 정하고, 쓴 식비를 넣으면 <b>남은 돈과 오늘 쓸 수 있는 돈</b>이 바로 나온다. 장 본 재료 값을 넣으면 챌린지 식비와 함께 <b>집밥 한 끼 값도 다시 계산</b>해, 사 먹을 때보다 얼마나 아끼는지 보여 준다.</p>
+    </div>
+    <div class="card">
+      <h3>쓰는 순서</h3>
+      <ol class="steps">
+        <li><b>냉장고</b>: 처음 화면은 양문형 냉장고다. 문에 붙은 자석 버튼으로 식비 계산·챌린지·집밥 메뉴로 가고, 손잡이나 '냉장고 열기'를 누르면 문이 열려 칸이 보인다. 칸을 누르면 그 칸 메모와 들어 있는 음식·유통기한을 적는다.</li>
+        <li><b>사진 찍기</b>: 냉장고 안을 찍어 두면 '내 냉장고 보기'와 열린 냉장고의 '사진으로 보기'에서 냉장고를 열지 않고도 무엇이 있었는지 본다. 사진은 최근 4장까지 이 기기에만 남는다.</li>
+        <li><b>챌린지</b>: 기간과 식비 목표를 고른다. 12가지 중에서 고르거나 직접 정한다.</li>
+        <li><b>식비 쓰기</b>: 배달·외식·편의점·카페처럼 밥에 쓴 돈을 그날그날 넣는다.</li>
+        <li><b>장 본 값 넣기</b>: 장 본 재료 값을 넣으면 챌린지 식비에 더해지고, 그 재료가 들어가는 집밥 메뉴의 한 끼 값이 저장 전에 다시 계산된다.</li>
+        <li><b>집밥 메뉴</b>: 자주 해 먹는 메뉴의 재료와 양, 밖에서 사 먹으면 드는 값을 적는다. 예시 메뉴 20개를 불러와 고쳐 써도 된다.</li>
+        <li><b>한 끼 먹었다</b>: 집밥을 먹은 날 누르면 아낀 돈이 챌린지에 쌓인다.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>낱말</h3>
+      <dl class="terms">
+        <dt>식비 챌린지</dt><dd>정한 기간(한 달·두 달 …) 동안 밥에 쓰는 돈을 목표 안으로 지키는 도전. 끝나는 날 다음 날 성공·실패가 정해진다.</dd>
+        <dt>하루 쓸 수 있는 돈</dt><dd>남은 돈 ÷ 오늘을 포함한 남은 날. 원 아래는 버린다.</dd>
+        <dt>한 끼 값</dt><dd>집밥 한 그릇에 들어가는 재료 값과 그 밖의 비용의 합.</dd>
+        <dt>사 먹으면</dt><dd>같은 메뉴를 밖에서 사 먹거나 배달하면 드는 값. 직접 적는다.</dd>
+        <dt>아낀 돈</dt><dd>사 먹으면 드는 값 − 한 끼 값. 한 끼 먹었다를 누를 때마다 쌓인다.</dd>
+        <dt>유통기한 표시</dt><dd>지남(빨강) · 오늘까지 · D-3 안쪽(주황) · 그보다 넉넉함(초록). 날짜를 비우면 표시하지 않는다.</dd>
+        <dt>수율</dt><dd>산 재료에서 손질 뒤 실제로 먹는 비율. 80% 면 100g 을 먹으려고 125g 어치를 산 셈이다.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>조작</h3>
+      <p>휴대폰은 모두 손가락으로 누른다. 컴퓨터는 Tab 으로 옮겨 다니고 엔터로 저장한다. 열린 창은 Esc 로 닫는다.</p>
+      <p>기록은 이 기기 브라우저에만 저장된다. 어디로도 보내지 않는다.</p>
+    </div>
+    <div class="card">
+      <h3>식비 한 줄 30</h3>
+      <ol id="help-tips" class="tips"></ol>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="화면">
+  <!-- 탭 아이콘: 한 벌로 맞춘 선 아이콘(선 1.8, 색은 currentColor 라 고른 탭은 --accent) -->
+  <button type="button" data-act="go" data-to="fridge"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M12 2.5v19M10 8v3M14 8v3"/></svg></span>냉장고</button>
+  <button type="button" data-act="go" data-to="home"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><rect x="8" y="5.5" width="8" height="4" rx="1"/><path d="M8.5 13.5h.01M12 13.5h.01M15.5 13.5h.01M8.5 17.5h.01M12 17.5h.01M15.5 17.5h.01" stroke-width="2.4"/></svg></span>식비</button>
+  <button type="button" data-act="go" data-to="chal"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span>챌린지</button>
+  <button type="button" data-act="go" data-to="ing"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.8 9.2a3 3 0 0 0-4.3 0l-6 9a.9.9 0 0 0 1.3 1.3l9-6a3 3 0 0 0 0-4.3z"/><path d="M15 9l3.5-3.5M15.5 6.5l.8-3.5M17.5 8.5l3.5-.8M8.5 14l1.5 1.5"/></svg></span>재료</button>
+  <button type="button" data-act="go" data-to="menu"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6.5"/><circle cx="10" cy="14" r="2"/><path d="M14.6 9.4l6-6"/></svg></span>집밥</button>
+  <button type="button" data-act="go" data-to="hist"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3.5v16.5h16.5"/><path d="M7.5 15.5l3.5-4.5 3 2.5 5-6.5"/></svg></span>기록</button>
+  <button type="button" data-act="go" data-to="more"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.8"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span>설정</button>
+</nav>
+
+<div id="backdrop" class="view backdrop" data-act="close" hidden></div>
+
+<!-- 8. 장 본 값 넣기 -->
+<section id="sheet-price" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-price" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-price">장 본 값 넣기</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sheet-body">
+    <div id="price-pick" class="view step in">
+      <label class="field"><span>어떤 재료를 샀나요?</span><input id="price-q" type="search" maxlength="30" placeholder="재료 이름으로 찾기" autocomplete="off"></label>
+      <div id="price-pick-list" class="pick-list"></div>
+    </div>
+    <form id="price-form" class="view step" novalidate hidden>
+      <div id="price-current" class="card soft"></div>
+      <div class="row2">
+        <label class="field"><span>산 값 (원)</span><input id="price-won" type="number" inputmode="numeric" min="1" max="100000000" step="1"><em class="err"></em></label>
+        <div class="field"><span id="lb-price-qty">산 양</span>
+          <div class="qty-unit"><input id="price-qty" type="number" inputmode="decimal" min="0" step="any" aria-labelledby="lb-price-qty"><select id="price-unit" aria-label="산 양 단위"></select></div>
+          <em class="err"></em>
+        </div>
+      </div>
+      <label class="check" id="price-spend-wrap"><input id="price-spend" type="checkbox" checked> <span>이 값을 챌린지 식비(장보기)에도 더하기</span></label>
+      <div id="price-preview" aria-live="polite"></div>
+      <div class="sheet-actions">
+        <button type="button" data-act="price-back">다른 재료</button>
+        <button type="submit" class="primary">이 값으로 바꾸기</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- 9. 재료 넣기·고치기 -->
+<section id="sheet-ing" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-ing-sheet" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-ing-sheet">재료</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <form id="ing-form" class="sheet-body" novalidate>
+    <label class="field"><span>이름</span><input id="ing-name" type="text" maxlength="30" autocomplete="off"><em class="err"></em></label>
+    <label class="field"><span>종류</span><select id="ing-cat-in"></select></label>
+    <div class="row2">
+      <label class="field"><span>산 값 (원)</span><input id="ing-price" type="number" inputmode="numeric" min="1" max="100000000" step="1"><em class="err"></em></label>
+      <div class="field"><span id="lb-ing-qty">산 양</span>
+        <div class="qty-unit"><input id="ing-qty" type="number" inputmode="decimal" min="0" step="any" aria-labelledby="lb-ing-qty"><select id="ing-unit" aria-label="산 양 단위"></select></div>
+        <em class="err"></em>
+      </div>
+    </div>
+    <label class="field"><span>수율 (%) — 손질 뒤 먹는 비율. 버리는 것이 없으면 100</span><input id="ing-yield" type="number" inputmode="numeric" min="1" max="100" step="1"><em class="err"></em></label>
+    <p id="ing-calc" class="hint" aria-live="polite"></p>
+    <p id="ing-used" class="hint"></p>
+    <div class="sheet-actions">
+      <button type="button" class="danger" id="ing-del" data-act="ing-del">지우기</button>
+      <button type="submit" class="primary">저장</button>
+    </div>
+  </form>
+</section>
+
+<!-- 10. 메뉴 넣기·고치기 -->
+<section id="sheet-menu" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-menu-sheet" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-menu-sheet">메뉴</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <form id="menu-form" class="sheet-body" novalidate>
+    <label class="field"><span>메뉴 이름</span><input id="menu-name" type="text" maxlength="30" autocomplete="off"><em class="err"></em></label>
+    <div class="row2">
+      <label class="field"><span>사 먹으면 (원)</span><input id="menu-price" type="number" inputmode="numeric" min="1" max="10000000" step="1"><em class="err"></em></label>
+      <label class="field"><span>그 밖의 비용 (원)</span><input id="menu-extra" type="number" inputmode="numeric" min="0" max="1000000" step="1"><em class="err"></em></label>
+    </div>
+    <h3>들어가는 재료 <small>(한 그릇 기준)</small></h3>
+    <div id="menu-lines"></div>
+    <em class="err" id="menu-lines-err"></em>
+    <button type="button" data-act="line-add" class="wide">+ 재료 줄</button>
+    <label class="field"><span>메모 (선택)</span><input id="menu-memo" type="text" maxlength="80" autocomplete="off"></label>
+    <div id="menu-live" class="card soft" aria-live="polite"></div>
+    <div class="sheet-actions">
+      <button type="button" class="danger" id="menu-del" data-act="menu-del">지우기</button>
+      <button type="submit" class="primary">저장</button>
+    </div>
+  </form>
+</section>
+
+<!-- 11. 메뉴 자세히 -->
+<section id="sheet-detail" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-detail" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-detail">한 끼 값</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sheet-body" id="detail-body"></div>
+</section>
+
+<!-- 12. 목록에서 고르기 -->
+<section id="sheet-tpl" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-tpl" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-tpl">목록에서 고르기</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sheet-body">
+    <div class="seg" role="tablist">
+      <button type="button" role="tab" data-act="tpl-tab" data-tab="ing" id="tpl-tab-ing">재료 159</button>
+      <button type="button" role="tab" data-act="tpl-tab" data-tab="menu" id="tpl-tab-menu">메뉴 예시 20</button>
+    </div>
+    <div class="filters">
+      <label class="field"><span>찾기</span><input id="tpl-q" type="search" maxlength="30" placeholder="이름" autocomplete="off"></label>
+      <label class="field" id="tpl-cat-wrap"><span>종류</span><select id="tpl-cat"></select></label>
+    </div>
+    <div id="tpl-list" class="view step in" role="tabpanel"></div>
+  </div>
+</section>
+
+<!-- 13. 내보내기·가져오기 -->
+<section id="sheet-backup" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-backup" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-backup">내보내기·가져오기</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sheet-body">
+    <h3>내보내기</h3>
+    <p class="hint">아래 글이 모든 기록이다. 복사해 메모·메일 등 안전한 곳에 붙여 둔다.</p>
+    <label class="sr" for="export-text">내보내기 글</label>
+    <textarea id="export-text" rows="5" readonly></textarea>
+    <button type="button" data-act="copy" class="wide">글로 복사</button>
+    <h3>가져오기</h3>
+    <p class="hint">내보낸 글을 붙여 넣으면 지금 기록을 그 글로 <b>모두 바꾼다</b>.</p>
+    <div class="field">
+      <label for="restore-text">붙여 넣을 글</label>
+      <textarea id="restore-text" rows="5" placeholder="{ 로 시작하는 글을 통째로"></textarea>
+      <em class="err"></em>
+    </div>
+    <button type="button" data-act="restore" class="primary wide">가져오기</button>
+  </div>
+</section>
+
+<!-- 14. 식비 쓰기 -->
+<section id="sheet-spend" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-spend" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-spend">식비 쓰기</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <form id="spend-form" class="sheet-body" novalidate>
+    <div class="field"><span id="lb-spend-kind">어디에 썼나요?</span>
+      <div id="spend-kinds" class="kind-grid" role="radiogroup" aria-labelledby="lb-spend-kind"></div>
+    </div>
+    <div class="row2">
+      <label class="field"><span>쓴 돈 (원)</span><input id="spend-amount" type="number" inputmode="numeric" min="1" max="10000000" step="1"><em class="err"></em></label>
+      <label class="field"><span>날짜</span><input id="spend-date" type="date"><em class="err"></em></label>
+    </div>
+    <div id="spend-quick" class="quick-row" aria-label="자주 쓰는 값"></div>
+    <label class="field"><span>메모 (선택)</span><input id="spend-memo" type="text" maxlength="40" autocomplete="off" placeholder="예: 학식, 치킨 반반"></label>
+    <div id="spend-preview" class="card soft" aria-live="polite"></div>
+    <div class="sheet-actions">
+      <button type="button" class="danger" id="spend-del" data-act="spend-del">지우기</button>
+      <button type="submit" class="primary">저장</button>
+    </div>
+  </form>
+</section>
+
+<!-- 15. 챌린지 고르기 -->
+<section id="sheet-chal" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-chal-sheet" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-chal-sheet">챌린지 고르기</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sheet-body">
+    <div id="chal-presets" class="pick-list"></div>
+    <form id="chal-form" class="card" novalidate>
+      <h3>직접 정하기</h3>
+      <label class="field"><span>이름 (비우면 '○달 ○만원')</span><input id="chal-name" type="text" maxlength="30" autocomplete="off"><em class="err"></em></label>
+      <div class="row2">
+        <label class="field"><span>식비 목표 (원)</span><input id="chal-budget" type="number" inputmode="numeric" min="1000" max="100000000" step="1000"><em class="err"></em></label>
+        <label class="field"><span>기간</span>
+          <select id="chal-months"><option value="1">한 달</option><option value="2">두 달</option><option value="3">석 달</option><option value="4">넉 달</option><option value="6">여섯 달</option><option value="12">일 년</option></select>
+        </label>
+      </div>
+      <label class="field"><span>시작일</span><input id="chal-start" type="date"><em class="err"></em></label>
+      <p id="chal-calc" class="hint" aria-live="polite"></p>
+      <div class="sheet-actions">
+        <button type="submit" class="primary">이 챌린지 시작</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- 19. 냉장고 칸 (메모·음식·유통기한) -->
+<section id="sheet-shelf" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-shelf" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-shelf">냉장고 칸</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sheet-body">
+    <form id="shelf-memo-form" novalidate>
+      <div class="field">
+        <label for="shelf-memo">이 칸 메모 (무엇을 어디에 두었나, 200자까지)</label>
+        <textarea id="shelf-memo" class="plain" rows="3" maxlength="200" placeholder="예: 왼쪽 반찬통은 엄마 반찬, 오른쪽은 먹다 남은 것"></textarea>
+        <em class="err"></em>
+      </div>
+      <div class="sheet-actions"><button type="submit">메모 저장</button></div>
+    </form>
+    <div class="sec-head"><h3 id="shelf-count">들어 있는 음식</h3><small>유통기한이 가까운 것부터</small></div>
+    <div id="shelf-items"></div>
+    <form id="item-form" class="card" novalidate>
+      <h3 id="h-item">음식 넣기</h3>
+      <div class="row2">
+        <label class="field"><span>음식 이름</span><input id="item-name" type="text" maxlength="30" autocomplete="off" placeholder="예: 두부"><em class="err"></em></label>
+        <label class="field"><span>양·메모 (선택)</span><input id="item-qty" type="text" maxlength="20" autocomplete="off" placeholder="예: 반 모"><em class="err"></em></label>
+      </div>
+      <label class="field"><span>유통기한 (선택)</span><input id="item-exp" type="date"><em class="err"></em></label>
+      <div id="item-quick" class="quick-row" aria-label="유통기한 빨리 넣기"></div>
+      <div class="sheet-actions">
+        <button type="button" id="item-cancel" data-act="item-cancel" hidden>고치기 그만</button>
+        <button type="submit" class="primary" id="item-save">이 칸에 넣기</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- 20. 내 냉장고 보기 (사진) -->
+<section id="sheet-photo" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-photo" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-photo">내 냉장고 보기</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sheet-body">
+    <div id="photo-view"></div>
+    <div class="row2">
+      <label class="field"><span>새 사진 이름표</span><select id="photo-label"></select></label>
+      <div class="field"><span>&nbsp;</span><button type="button" class="primary" data-act="photo-take">📷 사진 찍기·고르기</button></div>
+    </div>
+    <p class="hint">사진은 이 기기 브라우저에만 저장되고 최근 4장까지 남는다. 휴대폰에서는 카메라가 바로 열린다.</p>
+    <div id="photo-thumbs" class="thumbs"></div>
+  </div>
+</section>
+<input id="photo-input" type="file" accept="image/*" capture="environment" hidden>
+
+<!-- 16. 장 본 값 결과 -->
+<section id="ov-impact" class="view overlay" role="dialog" aria-modal="true" aria-labelledby="h-impact" tabindex="-1" hidden>
+  <div class="ov-box">
+    <h2 id="h-impact">재료 값을 바꿨다</h2>
+    <div id="impact-body"></div>
+    <div class="sheet-actions">
+      <button type="button" data-act="impact-menus">집밥 메뉴 보기</button>
+      <button type="button" class="primary" data-act="close">확인</button>
+    </div>
+  </div>
+</section>
+
+<!-- 17. 확인 -->
+<section id="ov-confirm" class="view overlay" role="alertdialog" aria-modal="true" aria-labelledby="h-confirm" tabindex="-1" hidden>
+  <div class="ov-box">
+    <h2 id="h-confirm">정말 할까요?</h2>
+    <p id="confirm-text"></p>
+    <div class="sheet-actions">
+      <button type="button" data-act="confirm-cancel">그만두기</button>
+      <button type="button" class="danger" id="confirm-ok" data-act="confirm-ok">지우기</button>
+    </div>
+  </div>
+</section>
+
+<!-- 18. 처음 안내 -->
+<section id="ov-welcome" class="view overlay welcome" role="dialog" aria-modal="true" aria-labelledby="h-welcome" tabindex="-1" hidden>
+  <div class="ov-box welcome-sheet">
+    <div class="welcome-head">
+    <div class="welcome-art" aria-hidden="true">
+      <svg class="welcome-fridge" viewBox="0 0 140 150" width="140" height="150" focusable="false">
+        <ellipse class="wf-shadow" cx="70" cy="144" rx="50" ry="4"/>
+        <rect class="wf-body" x="22" y="8" width="96" height="132" rx="12"/>
+        <line class="wf-seam" x1="70" y1="12" x2="70" y2="136"/>
+        <rect class="wf-handle" x="60" y="44" width="5" height="34" rx="2.5"/>
+        <rect class="wf-handle" x="75" y="44" width="5" height="34" rx="2.5"/>
+        <rect class="wf-panel" x="30" y="18" width="30" height="16" rx="4"/>
+        <circle class="wf-mag a" cx="40" cy="96" r="6"/>
+        <rect class="wf-mag b" x="90" y="92" width="14" height="10" rx="3"/>
+        <rect class="wf-foot" x="32" y="138" width="12" height="5" rx="2"/>
+        <rect class="wf-foot" x="96" y="138" width="12" height="5" rx="2"/>
+      </svg>
+    </div>
+      <h2 id="h-welcome">한끼 계산기에 어서 와요</h2>
+    </div>
+    <ol class="steps">
+      <li>첫 화면은 내 냉장고다. 문을 열어 칸마다 무엇이 있는지·유통기한을 적고, 사진을 찍어 두면 열지 않고도 본다.</li>
+      <li>'한 달 10만원'처럼 식비 챌린지를 고른다.</li>
+      <li>밥에 쓴 돈과 장 본 값을 넣으면 남은 돈과 오늘 쓸 수 있는 돈이 나온다.</li>
+      <li>집밥 메뉴를 적어 두면 한 끼 값과 사 먹을 때보다 아낀 돈이 보인다.</li>
+    </ol>
+    <p class="hint">기록은 이 기기 브라우저에만 저장된다.</p>
+    <div class="sheet-actions">
+      <button type="button" data-act="welcome-empty">빈 상태로 시작</button>
+      <button type="button" data-act="welcome-chal">챌린지부터 고르기</button>
+      <button type="button" class="primary" data-act="welcome-sample">예시 자취방으로 둘러보기</button>
+    </div>
+  </div>
+</section>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden><span id="toast-text"></span><button type="button" id="toast-undo" data-act="undo" hidden>되돌리기</button></div>
+
+<script src="./data.js"></script>
+<script src="./calc.js"></script>
+<script src="./store.js"></script>
+<script src="./ui.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

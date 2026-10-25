@@ -1,0 +1,22 @@
+{
+  "name": "한끼 계산기 — 자취생 식비 챌린지",
+  "short_name": "한끼 계산기",
+  "description": "기간 식비 챌린지와 장 본 값으로 집밥 한 끼 값을 함께 보는 자취생 식비 앱. 기록은 이 기기 브라우저에만 저장된다.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3f8fc",
+  "theme_color": "#1f78c8",
+  "categories": ["finance", "lifestyle", "food"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%231f78c8'/%3E%3Cpath d='M96 250h320c0 96-72 166-160 166S96 346 96 250z' fill='%23f3f8fc'/%3E%3Cpath d='M150 250c10-60 56-96 106-96s96 36 106 96z' fill='%23ffffff'/%3E%3Crect x='200' y='416' width='112' height='28' rx='12' fill='%23ff8c42'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
