@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1E1A2E">
+  <title>Kettle Spirits</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 1. 시작 -->
+  <section id="scr-title" class="screen">
+    <div class="title-art" aria-hidden="true">
+      <div class="steam s1"></div><div class="steam s2"></div><div class="steam s3"></div>
+      <div class="pot-big">🫖</div>
+      <div class="title-leaves"><span>🌿</span><span>🌼</span><span>🍋</span><span>🍒</span></div>
+    </div>
+    <div class="title-side">
+      <h1 class="logo">Kettle Spirits</h1>
+      <p class="tagline">같은 찻잎 셋을 모아 차를 우리고,<br>성난 계절 정령들을 달래는 찻집 이야기</p>
+      <div class="menu-main">
+        <button id="btn-continue" class="btn primary hidden">이어하기</button>
+        <div class="menu-row">
+          <button id="btn-start" class="btn primary">시작</button>
+          <button id="btn-daily" class="btn daily-btn"><span id="daily-label">오늘의 도전</span><small id="daily-sub" class="daily-sub"></small></button>
+        </div>
+        <div class="menu-grid">
+          <button id="btn-help" class="btn">방법</button>
+          <button id="btn-settings" class="btn">설정</button>
+          <button id="btn-upgrade" class="btn">찻집 개량</button>
+          <button id="btn-codex" class="btn">도감</button>
+          <button id="btn-achv" class="btn">업적</button>
+          <button id="btn-stats" class="btn">기록</button>
+        </div>
+      </div>
+      <p class="ginkgo-line">은행잎 <b id="title-ginkgo">0</b> · 최고 <b id="title-best">-</b></p>
+    </div>
+  </section>
+
+  <!-- 2. 방법 -->
+  <section id="scr-help" class="screen sub">
+    <header class="sub-head"><button class="btn small btn-back">← 돌아가기</button><h2>방법</h2></header>
+    <div class="sub-body scroll" id="help-body">
+      <div class="help-cols">
+        <div class="card">
+          <h3>목표</h3>
+          <p>봄·여름·가을·겨울 네 계절, 모두 12단계를 지나 마지막 우두머리 정령을 달래면 이깁니다. 평온이 0이 되면 찻집 문을 닫습니다.</p>
+          <h3>차 우리기</h3>
+          <p>오른쪽 선반의 찻잎을 누르면 아래 주전자 칸으로 들어갑니다. <b>같은 잎 3장</b>이 모이면 차가 우러나 그 잎의 효과가 납니다.</p>
+          <p>주전자 칸이 가득 차면 <b>넘쳐서</b> 주전자가 비워지고 평온이 깎입니다.</p>
+          <h3>정령의 차례</h3>
+          <p>잎을 하나 담을 때마다 정령 머리 위 숫자가 1씩 줄고, 0이 되면 예고한 행동을 합니다. 💢 화풀이 · 🍂 낙엽 넣기 · 🛡 막이 · 😤 화 돋우기 · 🔒 선반 잠그기 · 💧 화 되찾기 · 🌀 꿰뚫는 화풀이.</p>
+        </div>
+        <div class="card">
+          <h3>조작</h3>
+          <p><b>휴대폰</b>: 가로로 들고 잎·버튼을 누릅니다.</p>
+          <p><b>키보드</b>: 방향키로 고르고 Enter·Space 로 담기 · Q W E R / A S D F / Z X C V 로 선반 칸 바로 담기 · K 찻잔 기술 · 싸움 중 1 2 3 도우미 · B 주머니 · Esc 멈춤 · 고르기 화면에서는 1 2 3.</p>
+          <h3>찻잔 기운과 기술</h3>
+          <p>차를 우릴 때마다 찻잔 기운이 찹니다. 다 차면 오른쪽 아래 기술 버튼을 쓸 수 있습니다. 기술은 주전자마다 다릅니다.</p>
+          <h3>도우미</h3>
+          <p>선반 옆 버튼 셋은 차례를 쓰지 않습니다. ↩ 되돌리기: 마지막에 담은 잎을 선반으로(우러나거나 넘친 뒤에는 안 됨, 정령의 남은 수는 그대로) · 🔀 섞기: 잠기지 않은 선반 잎을 다시 뽑기 · 🗑 덜어내기: 주전자 맨 끝 잎 1장 버리기. 판마다 하나씩 들고 시작하고, 장터에서 엽전으로 더 삽니다.</p>
+          <h3>판 사이</h3>
+          <p>판이 끝나면 은행잎을 받아 <b>찻집 개량</b>에서 새 잎과 주전자를 엽니다.</p>
+          <h3>오늘의 도전</h3>
+          <p>하루 한 번, 날짜로 정해진 같은 판을 합니다. 백자 주전자로 개량 없이 시작하고, 그날의 <b>바람</b> 하나가 규칙을 바꿉니다. 끝나면 결과 화면의 <b>결과 복사</b>로 문구를 나눌 수 있습니다.</p>
+        </div>
+        <div class="card wide">
+          <h3>찻잎</h3>
+          <div id="help-leaves" class="leaf-table"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 설정 -->
+  <section id="scr-settings" class="screen sub">
+    <header class="sub-head"><button class="btn small btn-back">← 돌아가기</button><h2>설정</h2></header>
+    <div class="sub-body scroll">
+      <div id="settings-list" class="settings-list"></div>
+      <div class="card danger-zone">
+        <p>은행잎·해금·업적·기록을 모두 지웁니다. 되돌릴 수 없습니다.</p>
+        <button id="btn-wipe" class="btn danger">기록 지우기</button>
+        <div id="wipe-confirm" class="confirm hidden">
+          <span>정말 지울까요?</span>
+          <button id="btn-wipe-yes" class="btn danger">지우기</button>
+          <button id="btn-wipe-no" class="btn">그만두기</button>
+        </div>
+      </div>
+      <p class="note">기록은 이 기기 브라우저에만 저장되고 어디로도 보내지 않습니다.</p>
+    </div>
+  </section>
+
+  <!-- 4. 주전자 고르기 -->
+  <section id="scr-pot" class="screen sub">
+    <header class="sub-head"><button class="btn small btn-back">← 돌아가기</button><h2>주전자 고르기</h2></header>
+    <div class="sub-body">
+      <div id="pot-list" class="pot-list"></div>
+      <div class="pot-foot"><p id="pot-desc" class="note"></p><button id="btn-go" class="btn primary">찻집 열기</button></div>
+    </div>
+  </section>
+
+  <!-- 5. 길 고르기 -->
+  <section id="scr-map" class="screen sub">
+    <header class="sub-head"><button id="btn-map-menu" class="btn small" aria-label="잠시 멈춤">Ⅱ 멈춤</button><h2 id="map-title">봄 마당</h2><span id="map-hp" class="badge hp-b">평온 40/40</span><span id="map-coins" class="badge coin">엽전 0</span></header>
+    <div class="sub-body">
+      <div id="map-path" class="map-path"></div>
+      <p id="map-sub" class="note center"></p>
+      <div id="node-list" class="node-list"></div>
+    </div>
+  </section>
+
+  <!-- 6. 싸움 -->
+  <section id="scr-battle" class="screen">
+    <header id="hud">
+      <div class="hp-wrap">
+        <span class="lbl">평온</span>
+        <div class="bar"><div id="hp-fill" class="fill"></div></div>
+        <b id="hp-text">40/40</b>
+        <span id="shield-badge" class="badge shield">🛡 0</span>
+      </div>
+      <div class="hud-mid"><span id="hud-stage">봄 마당 · 1/12</span></div>
+      <div class="hud-right">
+        <span id="hud-coins" class="badge coin">엽전 0</span>
+        <button id="btn-bag" class="btn small">주머니</button>
+        <button id="btn-pause" class="btn small" aria-label="잠시 멈춤">Ⅱ</button>
+      </div>
+    </header>
+    <div id="arena">
+      <div id="spirits" aria-label="정령"></div>
+      <div class="shelf-wrap">
+        <div class="shelf-row">
+          <div id="shelf" aria-label="찻잎 선반"></div>
+          <div id="tools" class="tools" aria-label="도우미">
+            <button id="btn-tool-undo" class="btn tool" data-act="tool:undo" disabled><span class="t-sym">↩</span><span class="t-name">되돌리기</span><span class="t-n" id="tool-n-undo">0</span></button>
+            <button id="btn-tool-shuffle" class="btn tool" data-act="tool:shuffle" disabled><span class="t-sym">🔀</span><span class="t-name">섞기</span><span class="t-n" id="tool-n-shuffle">0</span></button>
+            <button id="btn-tool-pop" class="btn tool" data-act="tool:pop" disabled><span class="t-sym">🗑</span><span class="t-name">덜어내기</span><span class="t-n" id="tool-n-pop">0</span></button>
+          </div>
+        </div>
+        <div id="hint-line" class="hint-line"></div>
+      </div>
+    </div>
+    <footer id="trayrow">
+      <div id="tray" aria-label="주전자 칸"></div>
+      <button id="btn-skill" class="btn skill" disabled>
+        <span class="skill-ring"><span id="skill-fill"></span></span>
+        <span id="skill-name">한숨 돌리기</span>
+      </button>
+    </footer>
+  </section>
+
+  <!-- 8. 쉼터 -->
+  <section id="scr-rest" class="screen sub">
+    <header class="sub-head"><h2>쉼터</h2><span id="rest-hp" class="badge hp-b">평온</span></header>
+    <div class="sub-body">
+      <p class="note center">툇마루에 앉아 잠시 숨을 고릅니다. 하나를 고르세요.</p>
+      <div id="rest-list" class="choice-list"></div>
+    </div>
+  </section>
+
+  <!-- 9. 장터 -->
+  <section id="scr-shop" class="screen sub">
+    <header class="sub-head"><h2>장터</h2><span id="shop-coins" class="badge coin">엽전 0</span><button id="btn-leave" class="btn small primary">떠나기 →</button></header>
+    <div class="sub-body">
+      <div id="shop-list" class="shop-list"></div>
+    </div>
+  </section>
+
+  <!-- 10. 길에서 만난 일 -->
+  <section id="scr-event" class="screen sub">
+    <header class="sub-head"><h2 id="event-title">길에서 만난 일</h2><span id="event-hp" class="badge hp-b">평온</span></header>
+    <div class="sub-body">
+      <div class="card event-card"><p id="event-text"></p></div>
+      <div id="event-list" class="choice-list"></div>
+    </div>
+  </section>
+
+  <!-- 12. 결과 -->
+  <section id="scr-result" class="screen sub">
+    <div class="sub-body result-body">
+      <h2 id="result-title" class="result-title">찻집을 지켰습니다</h2>
+      <p id="result-daily" class="note center hidden"></p>
+      <div id="result-list" class="result-list"></div>
+      <div id="result-achv" class="result-achv"></div>
+      <div class="row-btns">
+        <button id="btn-again" class="btn primary">다시 하기</button>
+        <button id="btn-share" class="btn">결과 복사</button>
+        <button id="btn-home" class="btn">처음으로</button>
+      </div>
+      <textarea id="share-box" class="share-box hidden" readonly rows="6" aria-label="결과 문구"></textarea>
+    </div>
+  </section>
+
+  <!-- 13. 도감 -->
+  <section id="scr-codex" class="screen sub">
+    <header class="sub-head"><button class="btn small btn-back">← 돌아가기</button><h2>도감</h2>
+      <div id="codex-tabs" class="tabs">
+        <button class="btn small tab" data-tab="spirit">정령</button>
+        <button class="btn small tab" data-tab="leaf">찻잎</button>
+        <button class="btn small tab" data-tab="relic">찻잔</button>
+        <button class="btn small tab" data-tab="pot">주전자</button>
+      </div>
+    </header>
+    <div class="sub-body scroll"><div id="codex-list" class="codex-list"></div></div>
+  </section>
+
+  <!-- 14. 업적 -->
+  <section id="scr-achv" class="screen sub">
+    <header class="sub-head"><button class="btn small btn-back">← 돌아가기</button><h2>업적</h2><span id="achv-count" class="badge">0/24</span></header>
+    <div class="sub-body scroll"><div id="achv-list" class="codex-list"></div></div>
+  </section>
+
+  <!-- 15. 기록 -->
+  <section id="scr-stats" class="screen sub">
+    <header class="sub-head"><button class="btn small btn-back">← 돌아가기</button><h2>기록</h2></header>
+    <div class="sub-body scroll"><div id="stats-list" class="stats-list"></div></div>
+  </section>
+
+  <!-- 16. 찻집 개량 -->
+  <section id="scr-upgrade" class="screen sub">
+    <header class="sub-head"><button class="btn small btn-back">← 돌아가기</button><h2>찻집 개량</h2><span id="upgrade-ginkgo" class="badge coin">은행잎 0</span></header>
+    <div class="sub-body scroll"><div id="upgrade-list" class="codex-list"></div></div>
+  </section>
+
+  <!-- 7. 보상 고르기 (겹침) -->
+  <div id="ov-reward" class="overlay">
+    <div class="sheet">
+      <h2 id="reward-title">정령이 고마워합니다</h2>
+      <p id="reward-sub" class="note center">하나를 고르세요.</p>
+      <div id="reward-list" class="reward-list"></div>
+      <div class="row-btns">
+        <button id="btn-reroll" class="btn small hidden">다시 뽑기</button>
+        <button id="btn-skip" class="btn small">건너뛰기 (엽전 +5)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. 잠시 멈춤 (겹침) -->
+  <div id="ov-pause" class="overlay">
+    <div class="sheet small">
+      <h2>잠시 멈춤</h2>
+      <div class="col-btns">
+        <button id="btn-resume" class="btn primary">계속하기</button>
+        <button id="btn-pause-help" class="btn">방법</button>
+        <button id="btn-pause-settings" class="btn">설정</button>
+        <button id="btn-quit" class="btn danger">그만두기</button>
+      </div>
+      <p id="quit-note" class="note center hidden">한 번 더 누르면 이번 판을 끝냅니다.</p>
+    </div>
+  </div>
+
+  <!-- 17. 주머니 (겹침) -->
+  <div id="ov-bag" class="overlay">
+    <div class="sheet">
+      <h2>찻잎 주머니</h2>
+      <div id="bag-list" class="bag-list"></div>
+      <div id="bag-relics" class="bag-relics"></div>
+      <div class="row-btns"><button id="btn-bag-close" class="btn primary">닫기</button></div>
+    </div>
+  </div>
+
+  <!-- 첫 판 안내 -->
+  <div id="ov-tut" class="tut hidden" role="dialog" aria-live="polite">
+    <p id="tut-text"></p>
+    <div class="row-btns">
+      <button id="btn-tut-next" class="btn small primary">알겠어요</button>
+      <button id="btn-tut-skip" class="btn small">다시 보지 않기</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <div id="fx" aria-hidden="true"></div>
+</div>
+
+<div id="rotate">
+  <div class="rot-icon">📱</div>
+  <p>가로로 돌려 주세요</p>
+  <p class="note">Kettle Spirits 는 가로 화면에서 합니다.</p>
+</div>
+
+<script src="./data.js"></script>
+<script src="./audio.js"></script>
+<script src="./game.js"></script>
+<script src="./ui.js"></script>
+</body>
+</html>

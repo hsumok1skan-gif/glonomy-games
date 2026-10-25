@@ -1,0 +1,22 @@
+{
+  "name": "Kettle Spirits",
+  "short_name": "Kettle Spirits",
+  "description": "같은 찻잎 셋을 모아 차를 우리고 성난 계절 정령들을 달래는 가로 화면 퍼즐 로그라이트. 기록은 이 기기 브라우저에만 저장된다.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#1E1A2E",
+  "theme_color": "#1E1A2E",
+  "categories": ["games", "puzzle"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%231E1A2E'/%3E%3Cellipse cx='256' cy='312' rx='150' ry='120' fill='%23FFB86B'/%3E%3Crect x='196' y='166' width='120' height='40' rx='16' fill='%23E8924A'/%3E%3Cpath d='M406 290c50 0 60 70 10 80' stroke='%23FFB86B' stroke-width='28' fill='none'/%3E%3Cpath d='M106 300l-60-50' stroke='%23FFB86B' stroke-width='28' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='312' r='44' fill='%237FD6B5'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
