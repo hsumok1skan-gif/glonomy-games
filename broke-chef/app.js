@@ -119,6 +119,7 @@ function refreshOpen() {
   if (isOpen('sheet-detail')) renderDetail();
   if (isOpen('sheet-spend')) renderSpendPreview();
   if (isOpen('sheet-price') && !App.priceIng) renderPricePick();
+  if (isOpen('ov-result') && chalById(App.resultId)) renderResult(chalById(App.resultId));
 }
 
 // ---------- 알림 ----------
@@ -417,15 +418,29 @@ function quitChallenge() {
 }
 // 끝나는 날이 지난 챌린지는 쓴 돈으로 성공·실패를 정한다
 function settleChallenges() {
-  var today = Calc.today(), msgs = [];
+  var today = Calc.today(), msgs = [], done = [];
   App.state.challenges.forEach(function (ch) {
     if (ch.status !== 'active' || Calc.daysBetween(ch.end, today) <= 0) return;
     ch.spent = spentIn(ch);
     ch.status = ch.spent <= ch.budget ? 'won' : 'lost';
+    done.push(ch);
     msgs.push(ch.status === 'won' ? '🎉 ' + ch.name + ' 성공! ' + won(ch.budget - ch.spent) + ' 남겼다' : ch.name + ' 은(는) ' + won(ch.spent - ch.budget) + ' 넘었다. 다음 챌린지로 다시!');
   });
-  if (msgs.length) { save(); toast(msgs.join(' / ')); }
+  if (msgs.length) {
+    save();
+    toast(msgs.join(' / '));
+    // 알림 한 줄은 놓치기 쉬우니, 가장 늦게 끝난 챌린지를 결과 창으로 크게 보여 준다 (R-05)
+    showResult(done.sort(function (a, b) { return a.end.localeCompare(b.end); })[done.length - 1], done.length - 1);
+  }
   return msgs.length;
+}
+// 챌린지 끝 결과 창
+function showResult(ch, others) {
+  if (!ch) return;
+  App.resultId = ch.id;
+  App.resultOthers = others || 0;
+  renderResult(ch);
+  openLayer('ov-result');
 }
 
 // ---------- 집밥 한 끼 ----------
@@ -1364,7 +1379,7 @@ var ACTIONS = {
     a.classList.remove('flash'); void a.offsetWidth; a.classList.add('flash');
     renderSpendPreview();
   },
-  'chal-open': function () { openChalSheet(); },
+  'chal-open': function () { if (isOpen('ov-result')) closeLayer('ov-result'); openChalSheet(); },
   'chal-preset': function (d) {
     var p = CHALLENGE_PRESETS[+d.i];
     if (p) startChallenge(p.name, p.budget, p.months, Calc.today());

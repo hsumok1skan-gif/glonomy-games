@@ -408,6 +408,47 @@ function renderChal() {
   }).join('');
 }
 
+// ---------- 챌린지 끝 결과 창 (R-05) ----------
+// 성공/실패 제목 + 다섯 줄: 쓴 돈/목표, 남긴 돈 또는 넘은 돈, 지킨 날, 기간 중 가장 많이 쓴 날·종류, 집밥 끼니·아낀 돈
+function renderResult(ch) {
+  var spent = ch.spent != null ? ch.spent : spentIn(ch);
+  var winRun = ch.status === 'won', diff = ch.budget - spent;
+  var days = chalDays(ch);
+  var good = days.filter(function (d) { return d.state === 'good'; }).length;
+  var best = 0, run = 0;
+  days.forEach(function (d) { run = d.state === 'good' ? run + 1 : 0; if (run > best) best = run; });
+  var top = days.reduce(function (a, d) { return d.spent > (a ? a.spent : 0) ? d : a; }, null);
+  var spends = spendsIn(ch);
+  var kind = SPEND_KINDS.map(function (k) {
+    return { k: k, sum: spends.filter(function (x) { return x.kind === k.key; }).reduce(function (a, x) { return a + x.amount; }, 0) };
+  }).sort(function (a, b) { return b.sum - a.sum; })[0];
+  var meals = mealsIn(ch);
+  var saved = meals.reduce(function (a, x) { return a + Math.max(0, x.out - x.cost); }, 0);
+  var usedPct = ch.budget > 0 ? spent / ch.budget * 100 : 0;
+  $('h-result').textContent = winRun ? '🎉 챌린지 성공!' : '챌린지 실패 — 다음엔 해낸다';
+  function row(lv, icon, label, value, sub) {
+    return '<li class="lv-' + lv + '"><span class="res-icon" aria-hidden="true">' + icon + '</span><span class="res-name">' + label +
+      (sub ? '<small>' + sub + '</small>' : '') + '</span><b>' + value + '</b></li>';
+  }
+  $('result-body').innerHTML =
+    '<div class="result-hero ' + (winRun ? 'won' : 'lost') + '">' +
+      '<span class="result-badge" aria-hidden="true">' + (winRun ? '🏆' : '💪') + '</span>' +
+      '<p><b>' + esc(ch.name) + '</b><small>' + Calc.shortDay(ch.start) + ' ~ ' + Calc.shortDay(ch.end) + ' · ' + days.length + '일</small></p>' +
+    '</div>' +
+    '<ul class="impact result-list">' +
+      row(usedPct <= 100 ? 'good' : 'bad', '🧾', '쓴 돈 / 목표', won(spent) + ' / ' + won(ch.budget), pct(usedPct) + ' 썼다') +
+      row(diff >= 0 ? 'good' : 'bad', diff >= 0 ? '💰' : '⚠️', diff >= 0 ? '남긴 돈' : '넘은 돈', won(Math.abs(diff)),
+        diff >= 0 ? '목표 안에서 끝냈다' : '목표보다 더 썼다') +
+      row(good * 2 >= days.length ? 'good' : 'mid', '📅', '지킨 날', good + ' / ' + days.length + '일',
+        '하루 기준 ' + won(dayBase(ch)) + ' 이하 · 가장 긴 연속 ' + best + '일') +
+      row(top ? 'mid' : 'good', '📈', '가장 많이 쓴 날', top ? Calc.shortDay(top.date) + ' ' + won(top.spent) : '없음',
+        kind && kind.sum > 0 ? '가장 많이 쓴 종류 ' + kind.k.icon + ' ' + esc(kind.k.key) + ' ' + won(kind.sum) : '넣은 식비가 없다') +
+      row(meals.length ? 'good' : 'none', '🍳', '먹은 집밥', meals.length + '끼', saved > 0 ? '사 먹었으면 ' + won(saved) + ' 더 들었다' : '집밥을 먹으면 아낀 돈이 쌓인다') +
+    '</ul>' +
+    '<p class="hint">' + (winRun ? '같은 목표로 한 번 더, 아니면 조금 낮춰 도전해 보자.' : '하루 기준을 넘긴 날이 많았다. 목표를 조금 올리거나 집밥을 늘려 다시 해 보자.') +
+      (App.resultOthers > 0 ? ' 다른 챌린지 ' + App.resultOthers + '개도 끝났다 — 챌린지 기록에서 본다.' : '') + '</p>';
+}
+
 // ---------- 14. 식비 쓰기 시트 ----------
 function renderSpendKinds(chosen) {
   $('spend-kinds').innerHTML = SPEND_KINDS.map(function (k) {
@@ -953,7 +994,14 @@ function renderFridge() {
   var ch = activeChal();
   if (ch) {
     var st = chalInfo(ch);
-    $('door-l-note').innerHTML = '<b>🎯 ' + esc(ch.name) + '</b><small>남은 돈 ' + won(st.left) + '</small><small>오늘 ' + won(st.perDay) + '까지</small>';
+    // R-04: 오늘 쓸 수 있는 돈을 큰 숫자로, 쓴 비율을 원형 게이지로 (둘레 100 짜리 원이라 dasharray 가 곧 %)
+    var used = Math.max(0, Math.min(100, st.usedPct)), big = won(st.perDay);
+    $('door-l-note').innerHTML = '<b>🎯 ' + esc(ch.name) + '</b>' +
+      '<span class="note-row"><svg class="note-ring lv-' + st.pace + '" viewBox="0 0 36 36" aria-hidden="true">' +
+        '<circle class="ring-bg" cx="18" cy="18" r="15.9155"/>' +
+        '<circle class="ring-val" cx="18" cy="18" r="15.9155" stroke-dasharray="' + used.toFixed(1) + ' 100"/></svg>' +
+        '<small>오늘 쓸 돈<br>' + pct(st.usedPct) + ' 씀</small></span>' +
+      '<b class="note-big">' + big.replace(/원$/, '') + '<small>원</small></b>';
   } else {
     $('door-l-note').innerHTML = '<b>🎯 챌린지 없음</b><small>\'한 달 10만원\'부터</small>';
   }
