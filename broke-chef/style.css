@@ -47,7 +47,7 @@ body {
   margin: 0; background: var(--bg); color: var(--ink);
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
   line-height: 1.5; overflow-x: hidden;
-  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 body.font-s { font-size: 14px; }
 body.font-m { font-size: 16px; }
@@ -65,7 +65,7 @@ p { margin: 6px 0; }
 .hint { color: var(--ink2); font-size: .9em; }
 .warn-text { color: var(--bad); }
 
-/* 머리·탭 */
+/* 머리 (H-11: 아래 탭 줄은 없앴다. 화면 사이는 냉장고 자석·문 안쪽 메뉴·설정의 '모든 화면'으로 오간다) */
 .top {
   position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
   padding: 8px 14px; background: linear-gradient(180deg, var(--card), var(--bg)); border-bottom: 1px solid var(--line);
@@ -75,20 +75,21 @@ p { margin: 6px 0; }
 .brand-mark { color: var(--accent); }
 .warn-bar { background: var(--bad); color: #fff; padding: 8px 14px; font-size: .9em; }
 main { max-width: 760px; margin: 0 auto; padding: 12px 14px 20px; }
-.tabs {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
-  background: var(--card); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-.tabs button {
-  border: 0; border-radius: 0; background: transparent; box-shadow: none; display: flex; flex-direction: column;
-  align-items: center; gap: 0; padding: 6px 2px; min-height: 58px; font-size: .78em; color: var(--ink2);
-}
-.tabs button span { display: grid; place-items: center; height: 26px; line-height: 1; }
 .ico { display: block; width: 24px; height: 24px; flex: none; }
-.tabs button .ico { transition: transform .12s ease; }
-.tabs button[aria-current="page"] .ico { transform: translateY(-1px); stroke-width: 2.1; }
-.tabs button[aria-current="page"] { color: var(--accent); font-weight: 700; }
-.tabs button[aria-current="page"]::after { content: ""; width: 26px; height: 3px; border-radius: 3px; background: var(--accent); margin-top: 2px; }
+/* 첫 화면은 냉장고만: 머리 띠도 숨긴다 */
+body.on-fridge .top { display: none; }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent); }
+.back-btn .ico { width: 20px; height: 20px; stroke-width: 2.16; }
+/* 설정 안 '모든 화면': 탭 줄에 있던 선 아이콘 한 벌을 그대로 옮겼다. 지금 화면(aria-current)은 강조색 */
+.nav-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.nav-list button {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 2px; min-height: 64px;
+  font-size: var(--fs-1); color: var(--ink2); border: 2px solid transparent; border-radius: 20px;
+}
+.nav-list button span { display: grid; place-items: center; height: 26px; line-height: 1; }
+.nav-list button .ico { transition: transform .12s ease; }
+.nav-list button[aria-current="page"] { color: var(--accent); font-weight: 700; background: color-mix(in srgb, var(--accent) 10%, var(--card)); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.nav-list button[aria-current="page"] .ico { transform: translateY(-1px); stroke-width: 2.1; }
 
 /* 버튼 */
 button {
@@ -299,6 +300,25 @@ textarea { resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospa
 .thumb { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; min-width: 0; font-size: .78em; }
 .thumb img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 8px; }
 .thumb.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+/* 사진 글자 읽기 (H-08) */
+.ocr-head { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 6px; font-size: var(--fs-2); }
+.ocr-bar { height: 10px; border-radius: var(--pill); background: var(--card); overflow: hidden; }
+.ocr-bar span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--accent); transition: width var(--t); }
+.ocr-file { font-size: var(--fs-2); }
+.ocr-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--fs-2); max-height: 30vh; overflow-y: auto; }
+/* H-09 유통기한 읽기: 칸 시트의 사진 버튼과 '넣을까요?' 카드 (UI참고 — 알림 줄 왼쪽의 굵은 색 막대) */
+.ocr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 4px 0 8px; }
+.ocr-row .hint { flex: 1 1 180px; font-size: var(--fs-1); }
+.ocr-ask { border-left: 5px solid var(--accent2); background: var(--soft); box-shadow: none; }
+.ocr-out .ocr-ask { padding: 10px 12px; border-radius: 14px; margin: 0 0 10px; }
+.ocr-q { margin: 0 0 8px; font-size: var(--fs-2); line-height: 1.5; }
+.ocr-q b { font-size: var(--fs-4); font-weight: 800; color: var(--ink); letter-spacing: .02em; }
+.ocr-read summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: var(--fs-2); color: var(--ink2); }
+/* H-10 설정의 정보·라이선스 카드 */
+.license-list { list-style: none; padding: 0; margin: 8px 0 0; font-size: var(--fs-2); }
+.license-list li { padding: 4px 0; overflow-wrap: anywhere; line-height: 1.5; }
+.license-more .license-list { font-size: var(--fs-1); color: var(--ink2); }
+.info-card code { font-size: var(--fs-1); overflow-wrap: anywhere; }
 textarea.plain { font-family: inherit; font-size: 1em; }
 .row.compact > .badge { flex: none; }
 @media (max-width: 400px) {
@@ -369,6 +389,7 @@ textarea.plain { font-family: inherit; font-size: 1em; }
 .step { transform: translateX(14px); }
 .step.in { transform: none; }
 .backdrop { position: fixed; inset: 0; background: rgba(12, 30, 48, .4); z-index: 40; }
+.backdrop.soft { background: rgba(12, 30, 48, .14); }
 .sheet {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: 92vh; display: flex; flex-direction: column;
   background: var(--bg); border-radius: 18px 18px 0 0; box-shadow: 0 -6px 30px rgba(0, 0, 0, .25);
@@ -580,16 +601,43 @@ h3 { font-size: var(--fs-4); font-weight: 800; letter-spacing: -.01em; }
   }
 }
 
-/* 아래 탭: 화면 아래에 떠 있는 둥근 띠. 고른 탭은 옅은 강조색 알약 + 강조색 테두리 (UI참고 첫째 그림의 고른 줄) */
-.tabs {
-  left: 10px; right: 10px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); max-width: 760px; margin: 0 auto;
-  border: 0; border-radius: 26px; padding: 4px; box-shadow: 0 8px 28px rgba(20, 60, 100, .16);
+/* H-11: 아래 탭 줄을 없앴다. 첫 화면은 냉장고 하나가 화면을 채운다 (UI참고 첫째 그림 — 한 화면에 하나만, 고른 것만 강조) */
+.toast { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+body.on-fridge main { padding-top: 10px; padding-bottom: 10px; }
+body.on-fridge .fridge { height: clamp(420px, calc(100vh - 24px), 820px); height: clamp(420px, calc(100dvh - 24px), 820px); margin: 0; }
+@media (min-width: 760px) {
+  body.on-fridge .fridge { --fh: clamp(520px, calc(100vh - 24px), 820px); height: var(--fh); margin: 0 auto; }
 }
-body { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
-.tabs button { border-radius: 20px; min-height: 56px; font-size: var(--fs-1); border: 2px solid transparent; }
-.tabs button[aria-current="page"] { background: color-mix(in srgb, var(--accent) 10%, var(--card)); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
-.tabs button[aria-current="page"]::after { content: none; }
-.toast { bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+/* 문 위쪽 줄: 문 이름 + 둥근 ⚙ 자석(설정) */
+.door-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.magnet.mini { flex: none; width: 44px; height: 44px; padding: 0; border-radius: 50%; justify-content: center; color: var(--accent); }
+.magnet.mini .ico { width: 22px; height: 22px; }
+.magnet .mag-emoji { display: grid; place-items: center; width: 36px; height: 36px; margin-bottom: 2px; font-size: 1.5em; line-height: 1; }
+/* 문 안쪽 메뉴: 위에 칸별·유통기한·사진 고르기 띠, 아래에 붙은 사진 찍기·문 닫기 */
+.fridge-in { display: flex; flex-direction: column; }
+.fridge-mode { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.fridge-mode button { padding: 6px 4px; font-size: var(--fs-2); min-width: 0; }
+.fridge-exp .row { background: var(--card); }
+.fridge-start .start-card { margin: 0 0 8px; padding: 10px 12px; }
+.fridge-start .start-step small { display: none; }
+.in-menu {
+  position: sticky; bottom: -10px; display: grid; grid-template-columns: 3fr 2fr; gap: 8px; margin: auto -10px -10px; padding: 10px;
+  background: linear-gradient(180deg, transparent, var(--card) 30%);
+}
+.in-menu button { min-width: 0; font-weight: 700; }
+/* 사진에서 읽은 글자 (H-11): 이름 고르기 버튼, 읽힌 글자 전체 + 전체 복사 */
+.ocr-sub { margin: 10px 0 6px; font-size: var(--fs-2); font-weight: 700; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-row .hint { flex-basis: 100%; margin: 0; font-size: var(--fs-1); }
+.chip { padding: 6px 14px; font-size: var(--fs-2); background: var(--card); box-shadow: 0 1px 3px rgba(20, 60, 100, .12); max-width: 100%; overflow-wrap: anywhere; }
+.chip.on { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.chip.own { background: transparent; border: 1px dashed var(--ink2); box-shadow: none; color: var(--ink2); }
+.ocr-out .field { margin-top: 8px; }
+.ocr-out .wide { margin-top: 10px; }
+.ocr-all { margin-top: 12px; }
+.ocr-all .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ocr-all .sec-head h3 { margin: 0; font-size: var(--fs-3); }
+.ocr-all .ocr-text { background: var(--card); border-radius: 14px; padding: 8px 12px; margin: 6px 0 0; }
 
 /* 시트·창: 크게 둥근 위 모서리 + 끌어내리는 손잡이 모양 */
 .sheet { border-radius: 28px 28px 0 0; }
@@ -626,7 +674,7 @@ body { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
 /* 인쇄: 지금 화면 목록만 (집밥 한 끼 값·챌린지 식비·값 기록) */
 @media print {
   @page { margin: 12mm; }
-  .top, .tabs, .toast, .backdrop, .sheet, .overlay, .bar-btns, .filters, .row-btn, button.big, .warn-bar, .skip,
+  .top, .toast, .backdrop, .sheet, .overlay, .bar-btns, .filters, .row-btn, button.big, .warn-bar, .skip,
   .empty-btns, .card.tip, .month-nav button, .todo button, button.wide, .meter, .btn-row, .chal-cta button, .fridge, .thumbs, .start-card { display: none !important; }
   .chal-meter { border: 1px solid #000; }
   .chal-meter i { background: #999 !important; }

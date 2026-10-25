@@ -946,7 +946,6 @@ function renderFridge() {
   var box = $('fridge');
   box.classList.toggle('open', open);
   showFridgeIn(open);
-  $('btn-fridge-door').textContent = open ? '🚪 냉장고 닫기' : '🚪 냉장고 열기';
   document.querySelectorAll('#fridge .handle').forEach(function (h) {
     h.setAttribute('aria-label', (h.closest('.left') ? '냉동실' : '냉장실') + ' 문 ' + (open ? '닫기' : '열기'));
   });
@@ -962,7 +961,7 @@ function renderFridge() {
   var photo = latestPhoto();
   $('door-r-note').innerHTML = soon.length
     ? '<b class="warn-text">⏰ 유통기한 ' + soon.length + '개</b><small>' + esc(soon.slice(0, 2).map(function (x) { return x.name; }).join(', ')) + (soon.length > 2 ? ' 외' : '') + '</small>'
-    : '<b>🧊 음식 ' + fr.items.length + '개</b><small>' + (photo ? '사진: ' + photoAgo(photo) : '사진을 찍어 두자') + '</small>';
+    : '<b>🧊 음식 ' + fr.items.length + '개</b><small>' + (!fr.items.length ? '손잡이를 눌러 열자' : photo ? '사진: ' + photoAgo(photo) : '사진을 찍어 두자') + '</small>';
   // 문 안쪽: 칸별 메모
   var cols = ['L', 'R'].map(function (side) {
     return '<div class="fridge-col ' + (side === 'L' ? 'freezer' : 'chiller') + '"><p class="col-tag">' + (side === 'L' ? '냉동실' : '냉장실') + '</p>' +
@@ -978,22 +977,25 @@ function renderFridge() {
       }).join('') + '</div>';
   }).join('');
   $('fridge-shelves').innerHTML = cols;
+  // 문 안쪽 메뉴: 지금 고른 것 (칸별 / 유통기한 / 사진)
+  document.querySelectorAll('.fridge-mode button').forEach(function (b) {
+    b.setAttribute('aria-pressed', b.dataset.mode === App.fridgeMode ? 'true' : 'false');
+  });
   // 문 안쪽: 사진으로 보기
-  $('fm-shelf').setAttribute('aria-pressed', App.fridgeMode === 'shelf' ? 'true' : 'false');
-  $('fm-photo').setAttribute('aria-pressed', App.fridgeMode === 'photo' ? 'true' : 'false');
   $('fridge-photo-in').innerHTML = photo
     ? '<img class="photo-big" src="' + photo.data + '" alt="' + esc(photo.label) + ' 사진, ' + photoAgo(photo) + '"><p class="hint">' + esc(photo.label) + ' · ' + Calc.shortDay(photo.date) + ' · ' + photoAgo(photo) + '</p>' +
       btn({ act: 'photo-open', label: '사진 모두 보기', cls: 'small' })
     : emptyBox(ART.noPhoto, '아직 찍은 사진이 없다', '냉장고 안을 찍어 두면 문을 열지 않고도 무엇이 있었는지 본다.', [
         { act: 'photo-take', label: '📷 사진 찍기', cls: 'primary' }
       ]);
+  // 문 안쪽 맨 위: 처음 5분 시작 단계 (H-11 로 닫힌 냉장고 아래에서 문 안쪽으로 옮겼다)
   $('fridge-start').innerHTML = startCardHtml();
-  // 아래: 유통기한 가까운 음식
+  // 문 안쪽: 유통기한 가까운 음식 (H-11 로 첫 화면 아래에서 문 안쪽 메뉴로 옮겼다)
   var exp = $('fridge-exp');
   var dated = fr.items.filter(function (x) { return x.exp; }).sort(byExp);
   if (!fr.items.length) {
-    exp.innerHTML = emptyBox(ART.fridgeEmpty, '냉장고가 아직 비어 있다', '문을 열고 칸을 눌러 무엇이 들어 있는지와 유통기한을 적어 두자. 장 보기 전에 열어 보면 같은 것을 또 사지 않는다.', [
-      { act: 'fridge-door', label: '🚪 냉장고 열기', cls: 'primary' },
+    exp.innerHTML = emptyBox(ART.fridgeEmpty, '냉장고가 아직 비어 있다', '칸을 눌러 무엇이 들어 있는지와 유통기한을 적거나, 날짜가 찍힌 곳을 사진으로 찍어 두자. 장 보기 전에 열어 보면 같은 것을 또 사지 않는다.', [
+      { act: 'shelf-open', label: '칸 열어 넣기', cls: 'primary', data: { id: FRIDGE_SHELVES[0].id } },
       { act: 'sample', label: '예시 자취방으로 둘러보기' }
     ]);
     return;
