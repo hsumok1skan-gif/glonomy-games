@@ -253,6 +253,8 @@ textarea { resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospa
 }
 .door.right .note { transform: rotate(1.5deg); background: color-mix(in srgb, var(--good) 14%, var(--card)); }
 .note small { color: var(--ink2); overflow-wrap: anywhere; }
+/* 메모지 글은 낱말 중간에서 끊지 않는다 ('챌린지 없/음' 막기, V-05) */
+.note b, .note small { word-break: keep-all; }
 .magnets { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
 .magnet { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 6px 4px; font-size: .86em; font-weight: 700; border-radius: 16px; box-shadow: var(--shadow); }
 .magnet span { font-size: 1.4em; line-height: 1.2; }
@@ -305,7 +307,7 @@ textarea.plain { font-family: inherit; font-size: 1em; }
   .door.left { padding-right: 34px; }
   .door.left .handle { right: -10px; }
   .door.right { padding-left: 46px; }
-  .note b { word-break: keep-all; }
+  .note b, .note small { word-break: keep-all; }
   .shelf { padding: 5px 6px; }
 }
 
@@ -473,7 +475,8 @@ input, select, textarea { border-radius: 14px; background: var(--card); }
 .top { background: var(--bg); border-bottom: 0; box-shadow: none; padding: 10px 16px 4px; }
 .brand { font-size: var(--fs-4); font-weight: 800; display: flex; align-items: center; gap: 8px; }
 .brand-mark { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--card); box-shadow: var(--shadow); font-size: var(--fs-3); color: var(--accent); }
-.brand-mark .ico { width: 20px; height: 20px; }
+/* 20px 로 줄여도 아래 탭 아이콘(24px · 1.8)과 같은 1.8px 선으로 보이게 1.8 × 24/20 */
+.brand-mark .ico { width: 20px; height: 20px; stroke-width: 2.16; }
 main { padding: 6px 16px 24px; }
 
 /* 화면 제목: 크고 굵게 왼쪽에 (UI참고 둘째 그림의 큰 제목 자리) */
@@ -530,6 +533,14 @@ h3 { font-size: var(--fs-4); font-weight: 800; letter-spacing: -.01em; }
 .magnet { border-radius: 20px; background: var(--card); border-color: transparent; }
 .shelf { border-radius: 14px; border-color: transparent; border-bottom-width: 1px; box-shadow: 0 1px 3px rgba(20, 60, 100, .08); background: var(--card); }
 .fridge-col { border: 0; border-radius: 18px; }
+/* V-09: 넓은 화면에서는 냉장고를 그림 비율(941:1672)대로 묶어 가운데 둔다. 높이에서 폭을 구해 문 그림이 가로로 퍼지지 않는다 */
+@media (min-width: 760px) {
+  .fridge {
+    --fh: clamp(520px, 72vh, 720px);
+    height: var(--fh); width: calc(var(--fh) * 941 / 1672); max-width: 440px; aspect-ratio: 941 / 1672;
+    margin: 4px auto 12px;
+  }
+}
 
 /* 아래 탭: 화면 아래에 떠 있는 둥근 띠. 고른 탭은 옅은 강조색 알약 + 강조색 테두리 (UI참고 첫째 그림의 고른 줄) */
 .tabs {
@@ -552,21 +563,27 @@ body { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
   .sheet { border-radius: 28px; }
 }
 
-/* 처음 안내: 가운데 창 대신 아래에서 올라오는 시트. 위쪽 양문형 냉장고(#fridge)가 옅은 덮개 너머로 보인다 (V-04) */
-.overlay.welcome { align-items: flex-end; padding: 0; background: rgba(12, 30, 48, .16); }
-.welcome-sheet {
-  max-width: 640px; max-height: 62vh; border-radius: 28px 28px 0 0; padding: 0 18px calc(14px + env(safe-area-inset-bottom, 0px));
+/* 처음 안내: 가운데 창 대신 아래에서 올라오는 시트. 위쪽 양문형 냉장고(#fridge)가 옅은 덮개 너머로 보인다 (V-04)
+   V-07: 시트를 화면 높이 46% 까지로 줄여 360x640 에서 #fridge 윗부분 약 64%(70~345px)가 가리지 않는다. 덮개 알파 .14 */
+#ov-welcome.overlay { align-items: flex-end; padding: 0; background: rgba(12, 30, 48, .14); }
+#ov-welcome .ov-box.welcome-sheet {
+  max-width: 640px; max-height: 46vh; border-radius: 28px 28px 0 0; padding: 0 16px calc(10px + env(safe-area-inset-bottom, 0px));
   transform: translateY(40px); box-shadow: 0 -6px 30px rgba(0, 0, 0, .22);
 }
-.overlay.in .welcome-sheet { transform: none; }
-.welcome-sheet::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 8px auto 6px; }
-.welcome-head { display: flex; align-items: center; gap: 14px; }
+#ov-welcome.overlay.in .welcome-sheet { transform: none; }
+.welcome-sheet::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 8px auto 4px; }
+.welcome-head { display: flex; align-items: center; gap: 12px; }
 .welcome-head .welcome-art { flex: none; }
-.welcome-sheet .welcome-fridge { width: 120px; margin: 0; }
-.welcome-head h2 { font-size: var(--fs-5); font-weight: 800; line-height: 1.2; margin: 0; }
-.welcome-sheet .steps { font-size: var(--fs-2); margin: 10px 0 6px; }
-.welcome-sheet .sheet-actions { position: sticky; bottom: 0; background: var(--bg); margin: 10px 0 0; padding: 8px 0 4px; }
-.welcome-sheet .sheet-actions button { flex: 1 1 160px; }
+.welcome-sheet .welcome-fridge { width: 64px; margin: 0; }
+.welcome-head h2 { font-size: var(--fs-4); font-weight: 800; line-height: 1.25; margin: 0; }
+.welcome-sheet .steps { font-size: var(--fs-2); margin: 8px 0 4px; }
+.welcome-sheet .hint { margin: 0; }
+.welcome-sheet .sheet-actions {
+  position: sticky; bottom: 0; background: var(--bg); margin: 8px 0 0; padding: 8px 0 2px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.welcome-sheet .sheet-actions button { min-width: 0; }
+.welcome-sheet .sheet-actions button.primary { grid-column: 1 / -1; }
 
 /* 인쇄: 지금 화면 목록만 (집밥 한 끼 값·챌린지 식비·값 기록) */
 @media print {

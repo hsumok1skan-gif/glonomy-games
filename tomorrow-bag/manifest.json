@@ -1,0 +1,21 @@
+{
+  "name": "Tomorrow Bag",
+  "short_name": "Tomorrow Bag",
+  "description": "시간표와 알림장으로 초등학생 아이의 내일 가방을 챙기는 앱",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF6EC",
+  "theme_color": "#FBF6EC",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FBF6EC'/%3E%3Crect x='5' y='9' width='22' height='20' rx='6' fill='%23E8573C'/%3E%3Cpath d='M11 9 V7 a5 5 0 0 1 10 0 V9' fill='none' stroke='%232A2622' stroke-width='2.4'/%3E%3Crect x='10' y='17' width='12' height='7' rx='2.5' fill='%23FDE8E1'/%3E%3Cpath d='M13 20.5 l2 2 l4 -4' fill='none' stroke='%232E8C7E' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

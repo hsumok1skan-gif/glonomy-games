@@ -191,6 +191,37 @@ var Logic = (function () {
     return out;
   }
 
+  // 꾸러미 찾기·거르기·정렬: 이름이나 물건에 찾는 말이 든 것, 종류(all/subj/acad), 순서(base/name/many)
+  function findPacks(packs, q, kind, sort) {
+    var t = norm(q).toLowerCase();
+    var list = packs.filter(function (p) {
+      if (kind && kind !== 'all' && p.kind !== kind) return false;
+      if (!t) return true;
+      return p.name.toLowerCase().indexOf(t) >= 0 || p.items.some(function (x) { return x.toLowerCase().indexOf(t) >= 0; });
+    });
+    if (sort === 'name') list.sort(function (a, b) { return a.name.localeCompare(b.name, 'ko'); });
+    else if (sort === 'many') list.sort(function (a, b) { return b.items.length - a.items.length || a.name.localeCompare(b.name, 'ko'); });
+    return list;
+  }
+
+  // 기록 날짜별 거르기(all/miss/full)·정렬(new/old/low)·물건 찾기(빠진 물건 이름)
+  function filterHistory(list, show, sort, q) {
+    var t = norm(q).toLowerCase();
+    function pct(h) { return h.total ? h.done / h.total : 0; }
+    var out = list.filter(function (h) {
+      if (show === 'miss' && !h.missed.length) return false;
+      if (show === 'full' && h.missed.length) return false;
+      if (t && !h.missed.some(function (m) { return m.toLowerCase().indexOf(t) >= 0; })) return false;
+      return true;
+    });
+    out.sort(function (a, b) {
+      if (sort === 'low') return pct(a) - pct(b) || (a.date < b.date ? 1 : -1);
+      if (sort === 'old') return a.date < b.date ? -1 : 1;
+      return a.date < b.date ? 1 : -1;
+    });
+    return out;
+  }
+
   // 가족에게 보낼 글
   function shareText(state, kid, bag) {
     var done = state.checks[checkKey(kid.id, bag.date)] || [];
@@ -257,7 +288,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel,
     buildBag: buildBag, progress: progress, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    summary: summary, byWeekday: byWeekday, shareText: shareText, selfTest: selfTest, findPack: findPack, norm: norm,
+    summary: summary, byWeekday: byWeekday, findPacks: findPacks, filterHistory: filterHistory, shareText: shareText, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

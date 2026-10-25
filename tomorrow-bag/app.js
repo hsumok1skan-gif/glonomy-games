@@ -4,6 +4,8 @@
   var S = null;                 // 저장되는 데이터
   var V = {                     // 화면 상태 (저장하지 않음)
     screen: 'bag', offset: 0, range: '30',
+    packQ: '', packKind: 'all', packSort: 'base',      // 꾸러미 찾기·거르기·정렬
+    histQ: '', histShow: 'all', histSort: 'new',       // 기록 날짜별 찾기·거르기·정렬
     cell: null, after: null, note: null, pack: null, eventPick: null, kidEdit: null
   };
   var undoSnap = null;
@@ -55,7 +57,7 @@
     var t = todayKey();
     UI.renderBag(S, V, kid, bagKey(), t);
     UI.renderWeek(S, V, kid, t);
-    UI.renderPacks(S);
+    UI.renderPacks(S, V);
     UI.renderLog(S, V, kid, t);
     UI.renderMore(S, kid);
   }
@@ -663,6 +665,13 @@
       save(); renderAll(); UI.toast('바꿨어요');
     },
     'range': function (b) { V.range = b.getAttribute('data-r'); renderAll(); },
+    'pack-kind': function (b) { V.packKind = b.getAttribute('data-v'); renderAll(); },
+    'pack-q-clear': function () {
+      V.packQ = ''; V.packKind = 'all'; renderAll();
+      var el = $('pack-q'); if (el) { try { el.focus(); } catch (e) { /* 포커스 못 해도 된다 */ } }
+    },
+    'hist-show': function (b) { V.histShow = b.getAttribute('data-v'); renderAll(); },
+    'hist-clear': function () { V.histQ = ''; V.histShow = 'all'; renderAll(); },
     'to-daily': function (b) { addDaily(b.getAttribute('data-name'), true); },
     'hist-open': function (b) {
       var d = b.getAttribute('data-date');
@@ -780,6 +789,7 @@
   function onChange(e) {
     var t = e.target;
     if (t.id === 'note-cat' && V.note) UI.renderSupplies(t.value, V.note.items);
+    if (t.getAttribute && t.getAttribute('data-view')) { V[t.getAttribute('data-view')] = t.value; renderAll(); }
     if (t.getAttribute && t.getAttribute('data-set') === 'switchHour') {
       S.settings.switchHour = +t.value;
       V.offset = 0;
@@ -787,6 +797,13 @@
       UI.toast('바꿨어요');
     }
     if (t.classList && t.classList.contains('bad')) t.classList.remove('bad');
+  }
+
+  // 찾는 말: 칠 때마다 목록만 다시 그린다 (화면 전체를 다시 그리면 입력란 포커스가 빠진다)
+  function onInput(e) {
+    var t = e.target;
+    if (t.id === 'pack-q') { V.packQ = t.value; UI.renderPackList(S, V); }
+    else if (t.id === 'hist-q') { V.histQ = t.value; UI.renderHistList(null, V); }
   }
 
   // 날짜가 바뀌면(자정 넘김, 오래 켜 둔 화면) 다시 계산
@@ -803,6 +820,8 @@
   }
 
   function init() {
+    var ml = $('manifest-link');  // 홈 화면 추가 (웹 주소로 열었을 때만)
+    if (ml && /^https?:$/.test(location.protocol)) ml.setAttribute('href', ml.getAttribute('data-href'));
     var r = Store.load();
     S = r.data;
     if (!r.ok) $('store-warn').classList.add('on');
@@ -814,6 +833,7 @@
     document.addEventListener('submit', onSubmit);
     document.addEventListener('keydown', onKey);
     document.addEventListener('change', onChange);
+    document.addEventListener('input', onInput);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
     setInterval(tick, 60000);
     if (!S.settings.welcomed) UI.openSheet('ov-welcome');

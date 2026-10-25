@@ -6,6 +6,8 @@ var UI = (function () {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  // 보내기 아이콘 — index.html 머리 버튼과 같은 선 SVG
+  var SHARE_IC = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" stroke="var(--muted)"/></svg>';
 
   // ---- 전환: 화면·시트·겹침 창은 모두 이 함수를 거친다 (CSS 의 --dur 0.22초, 움직임 줄이기면 0) ----
   function transit(el, on) {
@@ -191,7 +193,7 @@ var UI = (function () {
     }
 
     h += '<button class="btn main wide" type="button" data-act="bag-done" style="margin-top:8px"' + (noItems ? ' disabled' : '') + '>' + (hist ? '다시 기록하기' : '다 쌌어요') + '</button>';
-    h += '<button class="btn wide subtle" type="button" data-act="share" style="margin-top:8px">📤 가족에게 보낼 글 복사</button>';
+    h += '<button class="btn wide subtle" type="button" data-act="share" style="margin-top:8px">' + SHARE_IC + '가족에게 보낼 글 복사</button>';
     root.innerHTML = h;
   }
 
@@ -270,7 +272,7 @@ var UI = (function () {
   }
 
   // ---- 꾸러미 ----
-  function renderPacks(S) {
+  function renderPacks(S, V) {
     var h = '<h1>꾸러미</h1><p class="muted">과목·학원마다 늘 챙기는 물건 묶음입니다. 우리 학교·학원에 맞게 고치세요.</p>';
     h += '<div class="row wrap"><button class="btn main" type="button" data-act="pack-new">+ 새 꾸러미</button><button class="btn" type="button" data-act="event-new">행사 꾸러미 붙이기</button></div>';
     h += '<h2>매일 챙길 것</h2><div class="card"><div class="chips">';
@@ -280,15 +282,18 @@ var UI = (function () {
     if (!S.daily.length) h += miniEmpty('🧴', '매일 챙길 것이 비어 있어요. 기본 다섯 가지를 넣거나 아래에 직접 넣어 주세요.', { act: 'daily-default', label: '기본 넣기' });
     h += '</div><form id="form-daily" class="row" style="margin-top:8px"><input id="daily-add" type="text" maxlength="40" placeholder="예: 물티슈" aria-label="매일 챙길 것 넣기"><button class="btn" type="submit">넣기</button></form><div class="err" id="daily-err"></div></div>';
 
-    var kinds = [['subj', '수업 과목'], ['acad', '방과후 · 학원']];
-    kinds.forEach(function (kd) {
-      var list = S.packs.filter(function (p) { return p.kind === kd[0]; });
-      h += '<h2>' + kd[1] + ' <span class="tiny">' + list.length + '개</span></h2>';
-      if (!list.length) h += emptyBox('pack', '꾸러미가 없어요', '새 꾸러미를 만들어 늘 챙기는 물건을 넣어 두세요.', [{ act: 'pack-new', label: '+ 새 꾸러미' }]);
-      list.forEach(function (p) {
-        h += '<button class="card pack btn" type="button" data-act="pack-edit" data-id="' + p.id + '"><span class="ic">' + esc(p.icon) + '</span><span><span class="nm">' + esc(p.name) + '</span><br><span class="tiny">' + esc(p.items.join(', ') || '물건 없음') + '</span></span></button>';
-      });
-    });
+    // 찾기·거르기·정렬 (찾는 말을 칠 때는 아래 목록만 다시 그려 입력란 포커스가 그대로다)
+    h += '<h2>꾸러미 찾기</h2><div class="card finder no-print">' +
+      '<input id="pack-q" type="search" maxlength="40" placeholder="꾸러미 이름이나 물건 (예: 물병)" aria-label="꾸러미 찾기" value="' + esc(V.packQ) + '">' +
+      '<div class="seg wrap" role="group" aria-label="종류 거르기">' +
+      [['all', '모두'], ['subj', '수업 과목'], ['acad', '방과후 · 학원']].map(function (o) {
+        return '<button class="chip' + (V.packKind === o[0] ? ' on' : '') + '" type="button" data-act="pack-kind" data-v="' + o[0] + '" aria-pressed="' + (V.packKind === o[0]) + '">' + o[1] + '</button>';
+      }).join('') + '</div>' +
+      '<label class="f" for="pack-sort">늘어놓는 순서</label><select id="pack-sort" data-view="packSort">' +
+      [['base', '넣은 순서'], ['name', '이름 가나다순'], ['many', '물건 많은 순']].map(function (o) {
+        return '<option value="' + o[0] + '"' + (V.packSort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+      }).join('') + '</select></div>';
+    h += '<div id="pack-list"></div>';
 
     h += '<h2>요일마다 챙길 것</h2><div class="card">';
     if (!S.rules.length) h += miniEmpty('📅', '요일마다 챙길 것이 없어요. 실내화 주머니 같은 기본 규칙을 넣어 보세요.', { act: 'rules-default', label: '기본 규칙 넣기' });
@@ -297,6 +302,44 @@ var UI = (function () {
     });
     h += '</div>';
     $('packs-root').innerHTML = h;
+    renderPackList(S, V);
+  }
+
+  // 꾸러미 목록: 찾는 말·종류·순서를 거친 것만
+  function renderPackList(S, V) {
+    var root = $('pack-list');
+    if (!root) return;
+    var q = Logic.norm(V.packQ);
+    var found = Logic.findPacks(S.packs, q, V.packKind, V.packSort);
+    var h = '';
+    if (q || V.packKind !== 'all') {
+      h += '<p class="tiny" aria-live="polite">' + found.length + '개 찾음 / 모두 ' + S.packs.length + '개</p>';
+      if (!found.length) {
+        root.innerHTML = h + miniEmpty('🔍', (q ? '‘' + q + '’' : '이 종류') + '에 맞는 꾸러미가 없어요. 다른 말로 찾거나 새로 만들어 보세요.', { act: 'pack-q-clear', label: '찾기 지우기' });
+        return;
+      }
+    }
+    var kinds = [['subj', '수업 과목'], ['acad', '방과후 · 학원']];
+    kinds.forEach(function (kd) {
+      if (V.packKind !== 'all' && V.packKind !== kd[0]) return;
+      var list = found.filter(function (p) { return p.kind === kd[0]; });
+      if (q && !list.length) return;
+      h += '<h2>' + kd[1] + ' <span class="tiny">' + list.length + '개</span></h2>';
+      if (!list.length) h += emptyBox('pack', '꾸러미가 없어요', '새 꾸러미를 만들어 늘 챙기는 물건을 넣어 두세요.', [{ act: 'pack-new', label: '+ 새 꾸러미' }]);
+      list.forEach(function (p) {
+        h += '<button class="card pack btn" type="button" data-act="pack-edit" data-id="' + p.id + '"><span class="ic">' + esc(p.icon) + '</span><span><span class="nm">' + mark(p.name, q) + '</span><br><span class="tiny">' + (p.items.length ? p.items.map(function (x) { return mark(x, q); }).join(', ') : '물건 없음') + '</span></span></button>';
+      });
+    });
+    root.innerHTML = h;
+  }
+
+  // 찾는 말에 맞은 부분을 <mark> 로
+  function mark(s, q) {
+    var t = String(s);
+    if (!q) return esc(t);
+    var i = t.toLowerCase().indexOf(q.toLowerCase());
+    if (i < 0) return esc(t);
+    return esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length));
   }
 
   function renderPackItems(items) {
@@ -373,15 +416,44 @@ var UI = (function () {
     });
     h += '</div>';
 
-    h += '<h2>날짜별</h2><div class="card">';
-    sm.list.slice().reverse().forEach(function (x) {
+    // 날짜별: 거르기(모두·빠진 날만·다 챙긴 날)·정렬·빠진 물건 찾기
+    h += '<h2>날짜별</h2><div class="card finder no-print">' +
+      '<div class="seg wrap" role="group" aria-label="날짜 거르기">' +
+      [['all', '모두'], ['miss', '빠진 날만'], ['full', '다 챙긴 날']].map(function (o) {
+        return '<button class="chip' + (V.histShow === o[0] ? ' on' : '') + '" type="button" data-act="hist-show" data-v="' + o[0] + '" aria-pressed="' + (V.histShow === o[0]) + '">' + o[1] + '</button>';
+      }).join('') + '</div>' +
+      '<div class="row wrap"><input id="hist-q" type="search" maxlength="40" placeholder="빠진 물건 찾기 (예: 리코더)" aria-label="빠진 물건 찾기" value="' + esc(V.histQ) + '">' +
+      '<select id="hist-sort" data-view="histSort" aria-label="늘어놓는 순서">' +
+      [['new', '최근 날 먼저'], ['old', '오래된 날 먼저'], ['low', '챙김률 낮은 순']].map(function (o) {
+        return '<option value="' + o[0] + '"' + (V.histSort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+      }).join('') + '</select></div></div>';
+    h += '<div class="card" id="hist-list"></div>';
+    root.innerHTML = h;
+    renderHistList(sm.list, V);
+  }
+
+  // 날짜별 목록만 다시 그리기 (찾는 말을 칠 때 입력란을 그대로 두려고)
+  var histBase = [];
+  function renderHistList(list, V) {
+    if (list) histBase = list;
+    var root = $('hist-list');
+    if (!root) return;
+    var q = Logic.norm(V.histQ);
+    var rows = Logic.filterHistory(histBase, V.histShow, V.histSort, q);
+    var h = '';
+    if (V.histShow !== 'all' || q) h += '<p class="tiny" aria-live="polite">' + rows.length + '일 / 모두 ' + histBase.length + '일</p>';
+    if (!rows.length) {
+      var why = q ? '‘' + q + '’을(를) 빠뜨린 날이 없어요.' : (V.histShow === 'miss' ? '이 기간 빠뜨린 날이 없어요. 아주 잘하고 있어요!' : '이 기간 다 챙긴 날이 아직 없어요.');
+      root.innerHTML = h + miniEmpty('🔍', why + ' 거르기를 풀면 모든 날이 보여요.', { act: 'hist-clear', label: '거르기 풀기' });
+      return;
+    }
+    rows.forEach(function (x) {
       h += '<div class="hist-row"><span style="flex:1"><b>' + Logic.shortLabel(x.date) + '</b> <span class="tiny">' + x.done + '/' + x.total + '</span>' +
-        (x.missed.length ? '<br><span class="tiny">빠짐: ' + esc(x.missed.join(', ')) + '</span>' : '') + '</span>' +
+        (x.missed.length ? '<br><span class="tiny">빠짐: ' + x.missed.map(function (m) { return mark(m, q); }).join(', ') + '</span>' : '') + '</span>' +
         '<span class="pill' + (x.missed.length ? ' miss' : '') + '">' + (x.total ? Math.round(x.done * 100 / x.total) : 0) + '%</span>' +
         '<button class="btn small" type="button" data-act="hist-open" data-date="' + x.date + '">보기</button>' +
         '<button class="btn small danger" type="button" data-act="hist-del" data-date="' + x.date + '" aria-label="' + Logic.shortLabel(x.date) + ' 기록 지우기">지우기</button></div>';
     });
-    h += '</div>';
     root.innerHTML = h;
   }
 
@@ -448,7 +520,7 @@ var UI = (function () {
     $: $, esc: esc, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     renderKids: renderKids, renderBag: renderBag, renderWeek: renderWeek, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow,
-    renderPacks: renderPacks, renderPackItems: renderPackItems, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
+    renderPacks: renderPacks, renderPackList: renderPackList, renderHistList: renderHistList, renderPackItems: renderPackItems, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderLog: renderLog, renderMore: renderMore, renderHelp: renderHelp
   };
 })();

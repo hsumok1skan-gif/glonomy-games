@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#FBF6EC">
 <title>Tomorrow Bag</title>
+<!-- 홈 화면 추가: file:// 에서는 브라우저가 manifest 를 막아 오류를 내므로 app.js 가 웹 주소일 때만 href 를 건다 -->
+<link rel="manifest" id="manifest-link" data-href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tomorrow Bag">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -14,7 +18,7 @@
       <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="9" width="22" height="20" rx="6" fill="var(--accent)"/><path d="M11 9 V7 a5 5 0 0 1 10 0 V9" fill="none" stroke="var(--ink)" stroke-width="2.4"/><rect x="10" y="17" width="12" height="7" rx="2.5" fill="var(--soft)"/><path d="M13 20.5 l2 2 l4 -4" fill="none" stroke="var(--sub)" stroke-width="2.2" stroke-linecap="round"/></svg>
       <span>Tomorrow Bag</span>
     </div>
-    <button class="icon-btn" type="button" data-act="share" aria-label="가족에게 보내기">📤</button>
+    <button class="icon-btn" type="button" data-act="share" aria-label="가족에게 보내기"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" stroke="var(--muted)"/></svg></button>
     <button class="btn small" type="button" data-act="go" data-to="help">방법</button>
   </header>
   <div id="store-warn" class="warn-bar" role="alert">이 브라우저에 저장할 수 없습니다. 창을 닫으면 넣은 내용이 사라질 수 있어요. 내보내기로 따로 보관해 주세요.</div>
@@ -50,11 +54,11 @@
   </main>
 
   <nav class="tabs" aria-label="화면">
-    <button class="tab on" type="button" data-act="go" data-to="bag"><span class="ti">🎒</span>가방</button>
-    <button class="tab" type="button" data-act="go" data-to="week"><span class="ti">🗓️</span>시간표</button>
-    <button class="tab" type="button" data-act="go" data-to="packs"><span class="ti">🧺</span>꾸러미</button>
-    <button class="tab" type="button" data-act="go" data-to="log"><span class="ti">📈</span>기록</button>
-    <button class="tab" type="button" data-act="go" data-to="more"><span class="ti">⚙️</span>더보기</button>
+    <button class="tab on" type="button" data-act="go" data-to="bag"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="13" rx="3.5"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><rect class="ic-dot" x="9" y="13.5" width="6" height="3.5" rx="1.2" fill="var(--accent)" stroke="none"/></svg></span>가방</button>
+    <button class="tab" type="button" data-act="go" data-to="week"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="3"/><path d="M4 10.5h16M9 4v4M15 4v4"/><circle class="ic-dot" cx="15.5" cy="15" r="1.8" fill="var(--accent)" stroke="none"/></svg></span>시간표</button>
+    <button class="tab" type="button" data-act="go" data-to="packs"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.6 8.6a2 2 0 0 1-2 1.4H7.6a2 2 0 0 1-2-1.4Z"/><path d="M8.5 10l3-5.5M15.5 10l-3-5.5M10 14v2.5M14 14v2.5"/><circle class="ic-dot" cx="12" cy="4.5" r="1.4" fill="var(--accent)" stroke="none"/></svg></span>꾸러미</button>
+    <button class="tab" type="button" data-act="go" data-to="log"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 17v-4M12 17V8M17 17v-6"/><circle class="ic-dot" cx="17" cy="6.5" r="1.8" fill="var(--accent)" stroke="none"/></svg></span>기록</button>
+    <button class="tab" type="button" data-act="go" data-to="more"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5.5"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/><circle class="ic-dot" cx="12" cy="12" r="2" fill="var(--accent)" stroke="none"/></svg></span>더보기</button>
   </nav>
 </div>
 
