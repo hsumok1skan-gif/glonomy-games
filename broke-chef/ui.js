@@ -1010,6 +1010,21 @@ function renderFridge() {
   $('door-r-note').innerHTML = soon.length
     ? '<b class="warn-text">⏰ 유통기한 ' + soon.length + '개</b><small>' + esc(soon.slice(0, 2).map(function (x) { return x.name; }).join(', ')) + (soon.length > 2 ? ' 외' : '') + '</small>'
     : '<b>🧊 음식 ' + fr.items.length + '개</b><small>' + (!fr.items.length ? '손잡이를 눌러 열자' : photo ? '사진: ' + photoAgo(photo) : '사진을 찍어 두자') + '</small>';
+  // R-06: 닫힌 문 메모지 아래에 다음 할 일 하나 (시작 단계 가운데 첫 미완료). 문이 열렸거나 네 단계를 다 하면 숨긴다
+  var steps = startSteps(), nextIdx = -1;
+  steps.some(function (s, i) { if (!s.done) { nextIdx = i; return true; } return false; });
+  var dn = $('door-next');
+  if (nextIdx < 0) {
+    dn.innerHTML = '';
+    dn.hidden = true;
+  } else {
+    var ns = steps[nextIdx], doneN = steps.filter(function (s) { return s.done; }).length;
+    dn.innerHTML = '<p class="dn-head"><span class="start-no" aria-hidden="true">' + (nextIdx + 1) + '</span>' +
+        '<small>다음 할 일 · ' + doneN + ' / ' + steps.length + '</small></p>' +
+      '<b class="dn-title">' + ns.title + '</b>' +
+      btn(Object.assign({}, ns.btn, { cls: 'small primary', aria: (nextIdx + 1) + '단계 ' + ns.title + ' ' + ns.btn.label }));
+    dn.hidden = open;
+  }
   // 문 안쪽: 칸별 메모
   var cols = ['L', 'R'].map(function (side) {
     return '<div class="fridge-col ' + (side === 'L' ? 'freezer' : 'chiller') + '"><p class="col-tag">' + (side === 'L' ? '냉동실' : '냉장실') + '</p>' +
