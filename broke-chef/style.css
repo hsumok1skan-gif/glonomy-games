@@ -509,7 +509,8 @@ h3 { font-size: var(--fs-4); font-weight: 800; letter-spacing: -.01em; }
 .chal .hint, .chal small, .chal .chal-head small, .chal .chal-big small { color: color-mix(in srgb, var(--accent-ink) 78%, transparent); }
 .chal-big { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
 .chal-big span { flex-direction: column-reverse; }
-.chal-big b { font-size: var(--fs-6); font-weight: 800; line-height: 1.05; }
+.chal-big b { font-size: var(--fs-6); font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.chal-big b.rolling { opacity: .92; } /* R-01 숫자가 굴러가는 동안 */
 .chal-big span + span b { font-size: var(--fs-5); }
 .chal .warn-text { color: var(--accent-ink); text-decoration: underline wavy var(--accent2); }
 .chal-meter { background: color-mix(in srgb, var(--accent-ink) 25%, transparent); height: 10px; }
@@ -520,6 +521,43 @@ h3 { font-size: var(--fs-4); font-weight: 800; letter-spacing: -.01em; }
 .chal .badge.lv-good { background: var(--accent-ink); color: var(--good); }
 .chal .btn-row button { background: var(--accent-ink); color: var(--accent); border-color: transparent; box-shadow: none; font-weight: 700; }
 .chal .btn-row button.primary { background: color-mix(in srgb, var(--accent-ink) 18%, transparent); color: var(--accent-ink); }
+.streak-line { display: inline-block; margin: 6px 0 2px; padding: 4px 12px; border-radius: var(--pill); font-weight: 700; background: color-mix(in srgb, var(--accent-ink) 16%, transparent); }
+
+/* R-02 날짜 판: 7칸 격자, 지킨 날 상추색·넘은 날 토마토색·남은 날 옅은 칸, 오늘은 강조색 테두리 */
+.chal-board h3 small { color: var(--ink2); font-weight: 400; }
+.chal-days { list-style: none; margin: 8px 0 4px; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.day {
+  display: flex; align-items: center; justify-content: center; aspect-ratio: 1; min-height: 32px; border-radius: 12px;
+  font-size: var(--fs-1); font-weight: 700; font-variant-numeric: tabular-nums; overflow: hidden;
+}
+.day.good { background: var(--good); color: #fff; }
+.day.bad { background: var(--bad); color: #fff; }
+.day.bad, .dot.bad { animation: none; border-color: transparent !important; } /* 입력 오류 .bad 흔들림을 받지 않는다 */
+.day.future { background: var(--soft); color: var(--ink2); font-weight: 400; }
+.day.today { outline: 3px solid var(--accent); outline-offset: 2px; }
+.day-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+.dot.good { background: var(--good); }
+.dot.bad { background: var(--bad); }
+.dot.future { background: var(--soft); border: 1px solid var(--line); }
+
+/* R-03 처음 5분 시작 단계: 줄마다 동그란 번호, 끝낸 줄은 상추색 ✓ 동그라미, 다음 할 줄만 옅은 강조색 알약 (UI참고 둘째 그림의 카드 모서리 ✓ 동그라미) */
+.start-card { padding: 14px 16px; }
+.start-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.start-head h3 { margin: 0; font-size: var(--fs-4); font-weight: 800; }
+.start-head small { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
+.start-meter { height: 8px; border-radius: var(--pill); background: var(--soft); overflow: hidden; margin: 8px 0 6px; }
+.start-meter i { display: block; height: 100%; border-radius: var(--pill); background: var(--good); transition: width var(--t) ease; }
+.start-steps { list-style: none; margin: 0; padding: 0; }
+.start-step { display: flex; align-items: center; gap: 10px; padding: 6px 8px; margin: 2px -8px; border-radius: 18px; }
+.start-step.next { background: color-mix(in srgb, var(--accent) 9%, var(--card)); }
+.start-no {
+  flex: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-2); font-weight: 800; background: var(--soft); color: var(--ink2);
+}
+.start-step.next .start-no { background: var(--accent); color: var(--accent-ink); }
+.start-step.done .start-no { background: var(--good); color: #fff; }
+.start-step.done .todo-tx b { color: var(--ink2); text-decoration: line-through; font-weight: 600; }
+.start-step button { flex: none; }
 
 /* 고르기 띠(칸별 메모/사진, 재료/메뉴 예시): 옅은 홈 안에서 고른 쪽만 흰 알약으로 떠오른다 */
 .seg { background: var(--soft); border-radius: var(--pill); padding: 4px; gap: 4px; }
@@ -589,7 +627,7 @@ body { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
 @media print {
   @page { margin: 12mm; }
   .top, .tabs, .toast, .backdrop, .sheet, .overlay, .bar-btns, .filters, .row-btn, button.big, .warn-bar, .skip,
-  .empty-btns, .card.tip, .month-nav button, .todo button, button.wide, .meter, .btn-row, .chal-cta button, .fridge, .thumbs { display: none !important; }
+  .empty-btns, .card.tip, .month-nav button, .todo button, button.wide, .meter, .btn-row, .chal-cta button, .fridge, .thumbs, .start-card { display: none !important; }
   .chal-meter { border: 1px solid #000; }
   .chal-meter i { background: #999 !important; }
   body { background: #fff; color: #000; padding: 0; font-size: 10.5pt !important; line-height: 1.35; }
@@ -600,6 +638,8 @@ body { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
   .card, .row, .hrow, .empty { border: 1px solid #999; }
   .chal { background: #fff !important; }
   .chal::after { display: none; }
+  .day { border: 1px solid #999; background: #fff !important; }
+  .day.bad { border: 2px solid #000 !important; text-decoration: line-through; }
   .row-main { padding: 3px 6px; min-height: 0; }
   .badge { background: none !important; border: 1px solid #000; }
   .bars { height: 90px; }

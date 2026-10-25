@@ -145,7 +145,8 @@ var Store = (function () {
     d.history = (o.history || []).filter(function (h) { return h && Calc.isDay(h.date) && typeof h.name === 'string'; }).slice(-1500);
     d.challenges = (o.challenges || []).map(function (c) {
       return { id: c.id, name: c.name.trim(), budget: Math.round(c.budget), months: clampNum(c.months, 1, 12, 1),
-        start: c.start, end: c.end, status: c.status, spent: isNum(c.spent) ? c.spent : null, sample: c.sample === true };
+        start: c.start, end: c.end, status: c.status, spent: isNum(c.spent) ? c.spent : null, sample: c.sample === true,
+        streakSeen: typeof c.streakSeen === 'string' ? c.streakSeen.slice(0, 20) : '' };
     });
     // 진행 중은 하나만 둔다(뒤의 것을 남긴다)
     var act = d.challenges.filter(function (c) { return c.status === 'active'; });

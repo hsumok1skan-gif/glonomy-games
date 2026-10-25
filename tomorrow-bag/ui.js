@@ -7,7 +7,7 @@ var UI = (function () {
     });
   }
   // 보내기 아이콘 — index.html 머리 버튼과 같은 선 SVG
-  var SHARE_IC = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" stroke="var(--muted)"/></svg>';
+  var SHARE_IC = '<svg class="ic ic-share" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" stroke="var(--muted)"/></svg>';
 
   // ---- 전환: 화면·시트·겹침 창은 모두 이 함수를 거친다 (CSS 의 --dur 0.22초, 움직임 줄이기면 0) ----
   function transit(el, on) {
@@ -116,6 +116,20 @@ var UI = (function () {
   }
 
   // ---- 가방 ----
+  // 며칠 뒤 준비물 카드: 가방 날짜 다음 날부터 7일 안의 알림장, 없으면 빈 글
+  function upcomingCard(S, kid, k, todayKey) {
+    var list = Logic.upcoming(S, kid, k, 7);
+    if (!list.length) return '';
+    var h = '<div class="card" id="bag-upcoming"><div class="muted" style="font-weight:800">며칠 뒤 준비물 · 미리 사 둘 것</div>';
+    list.forEach(function (n) {
+      var diff = Math.round((Logic.fromKey(n.date) - Logic.fromKey(todayKey)) / 86400000);
+      h += '<div class="row" style="margin-top:6px"><span class="pill miss">D-' + diff + '</span>' +
+        '<span style="flex:1"><b>' + Logic.shortLabel(n.date) + '</b> ' + esc(n.title || '알림장') + '<br><span class="tiny">' + esc(n.items.join(', ')) + '</span></span>' +
+        '<button class="btn small" type="button" data-act="note-edit" data-id="' + n.id + '">고치기</button></div>';
+    });
+    return h + '</div>';
+  }
+
   function renderBag(S, V, kid, k, todayKey) {
     var root = $('bag-root');
     if (!kid) {
@@ -139,7 +153,8 @@ var UI = (function () {
     if (V.offset !== 0) h += '<button class="btn small subtle" type="button" data-act="day-now">↺ 지금 챙길 가방으로</button>';
 
     if (!bag.school) {
-      root.innerHTML = h + emptyBox('rest', '이날은 쉬는 날이에요', '주말이나 쉬는 날로 넣어 둔 날입니다. 다음 학교 가는 날 가방을 보세요.', [{ act: 'day-next', label: '다음 학교 가는 날' }]);
+      root.innerHTML = h + emptyBox('rest', '이날은 쉬는 날이에요', '주말이나 쉬는 날로 넣어 둔 날입니다. 다음 학교 가는 날 가방을 보세요.', [{ act: 'day-next', label: '다음 학교 가는 날' }]) +
+        upcomingCard(S, kid, k, todayKey);
       return;
     }
     if (!hasWeek && !bag.items.some(function (it) { return it.group === 'note'; })) {
@@ -147,6 +162,7 @@ var UI = (function () {
         { act: 'go', label: '시간표 넣기', extra: ' data-to="week"' }, { act: 'note-new', label: '+ 알림장 준비물' }]);
       h += '<h2>매일 챙길 것</h2>';
       h += checkList(bag, done);
+      h += upcomingCard(S, kid, k, todayKey);
       root.innerHTML = h;
       return;
     }
@@ -191,6 +207,7 @@ var UI = (function () {
       });
       h += '</div>';
     }
+    h += upcomingCard(S, kid, k, todayKey);
 
     h += '<button class="btn main wide" type="button" data-act="bag-done" style="margin-top:8px"' + (noItems ? ' disabled' : '') + '>' + (hist ? '다시 기록하기' : '다 쌌어요') + '</button>';
     h += '<button class="btn wide subtle" type="button" data-act="share" style="margin-top:8px">' + SHARE_IC + '가족에게 보낼 글 복사</button>';
@@ -199,14 +216,23 @@ var UI = (function () {
 
   function checkList(bag, done) {
     var h = '', last = '';
+    // 무리마다 챙긴 수/전체 (무리 머리의 g-count, 다 챙기면 all-done)
+    var cnt = {};
+    bag.items.forEach(function (it) {
+      var c = cnt[it.group] || (cnt[it.group] = { d: 0, t: 0 });
+      c.t++;
+      if (done.indexOf(it.name) >= 0) c.d++;
+    });
     bag.items.forEach(function (it) {
       if (it.group !== last) {
         last = it.group;
-        h += '<div class="group-title g-' + it.group + '"><span class="dot"></span>' + Logic.GROUP_NAME[it.group] + '</div>';
+        var c = cnt[it.group];
+        h += '<div class="group-title g-' + it.group + (c.d === c.t ? ' all-done' : '') + '"><span class="dot"></span>' + Logic.GROUP_NAME[it.group] +
+          '<span class="g-count" aria-label="' + c.t + '개 가운데 ' + c.d + '개 챙김">' + c.d + '/' + c.t + '</span></div>';
       }
       var on = done.indexOf(it.name) >= 0;
       h += '<button class="check' + (on ? ' done' : '') + '" type="button" data-act="check" data-name="' + esc(it.name) + '" aria-pressed="' + on + '">' +
-        '<span class="box">' + (on ? '✓' : '') + '</span><span><span class="nm">' + esc(it.name) + '</span>' +
+        '<span class="box">' + (on ? '✓' : '') + '</span><span class="it-ic" aria-hidden="true">' + esc(it.icon || '🎒') + '</span><span><span class="nm">' + esc(it.name) + '</span>' +
         '<span class="src">' + esc(it.sources.join(' · ')) + '</span></span></button>';
     });
     if (!bag.items.length) h += miniEmpty('🎒', '이날 챙길 물건이 아직 없어요. 알림장 준비물을 넣어 보세요.', { act: 'note-new', label: '+ 알림장 준비물' });

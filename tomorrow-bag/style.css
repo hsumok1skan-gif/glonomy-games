@@ -170,6 +170,10 @@ body.reduce .ring .fg { transition: none; }
 .g-class .dot { background: var(--sub); }
 .g-after .dot { background: var(--violet); }
 .g-daily .dot { background: var(--muted); }
+.group-title .g-count { margin-left: auto; font-size: var(--t-1); font-weight: 800; padding: 2px 8px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--muted); }
+.group-title.all-done { color: var(--sub); }
+.group-title.all-done .g-count { background: var(--sub); border-color: var(--sub); color: var(--on-accent); }
+.group-title.all-done .g-count::before { content: '✓ '; }
 
 .check {
   width: 100%;
@@ -192,6 +196,8 @@ body.reduce .ring .fg { transition: none; }
   font-weight: 900; color: var(--on-accent);
   transition: background var(--dur), border-color var(--dur);
 }
+.check .it-ic { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 10px; background: var(--soft); font-size: 20px; line-height: 1; }
+.check.done .it-ic { opacity: 0.55; }
 .check .nm { font-weight: 700; display: block; }
 .check .src { font-size: var(--t-1); color: var(--muted); display: block; }
 .check.done { background: var(--subsoft); }
@@ -268,9 +274,11 @@ body.reduce .check.pop .box { animation: none; }
 }
 .tab .ti { width: 24px; height: 24px; line-height: 1; }
 .tab.on { color: var(--accent); }
-/* 아이콘: 직접 그린 선 SVG. 쉴 때 --muted, 고른 탭은 --accent */
-.ic { display: block; width: 100%; height: 100%; transition: stroke var(--dur); }
-.tab.on .ic { stroke: var(--accent); }
+/* 아이콘: 직접 그린 선 SVG. 선·점이 currentColor 라 .tab 글자색(쉴 때 --muted, 고른 탭 --accent)을 따른다 */
+.ic { display: block; width: 100%; height: 100%; transition: color var(--dur); }
+.tab .ti { color: var(--muted); }
+.tab.on .ti { color: var(--accent); }
+.ic-share { color: var(--accent); }
 .icon-btn .ic { display: inline-block; width: 22px; height: 22px; vertical-align: middle; }
 .btn .ic { display: inline-block; width: 20px; height: 20px; vertical-align: -4px; margin-right: 6px; }
 .tab:active { transform: scale(0.92); }
@@ -348,18 +356,37 @@ mark { background: var(--soft); color: var(--ink); font-weight: 800; border-radi
 .warn-bar.on { display: block; }
 
 .welcome-art { width: 140px; height: 140px; display: block; margin: 8px auto; }
+#ov-welcome h1 { text-align: center; word-break: keep-all; overflow-wrap: break-word; text-wrap: balance; }
 .tip { font-size: var(--t-2); padding: 8px 10px; border-left: 3px solid var(--accent); background: var(--surface); border-radius: 8px; margin: 6px 0; }
 .done-burst { animation: burst 0.5s ease-out; }
 @keyframes burst { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 body.reduce .done-burst { animation: none; }
 
 @media (min-width: 720px) {
+  /* 넓은 화면: 양옆 바탕에 브랜드 색 면과 점 무늬, 가운데 앱은 흰 면으로 띄운다 */
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--line) 1.5px, transparent 0),
+      linear-gradient(160deg, var(--soft) 0%, var(--bg) 55%, var(--subsoft) 100%);
+    background-size: 22px 22px, 100% 100%;
+    background-attachment: fixed;
+  }
+  #app {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 0;
+    box-shadow: 0 10px 40px rgba(42, 38, 34, 0.12), 0 2px 0 var(--line);
+  }
+  .top { background: var(--surface); }
+  .tabs { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
   main { padding-top: 24px; }
   .pick-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 380px) {
   .week { grid-template-columns: 26px repeat(5, minmax(0, 1fr)); gap: 3px; }
   .stat b { font-size: var(--t-4); }
+  #ov-welcome h1 { font-size: var(--t-4); }
 }
 @media print {
   .tabs, .top, .kids, .toast, .no-print { display: none !important; }

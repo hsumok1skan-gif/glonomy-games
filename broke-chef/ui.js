@@ -95,19 +95,86 @@ function paceLine(ch, st) {
   if (st.pace === 'mid') return '고르게 썼다면 지금까지 ' + won(st.expected) + '. ' + won(st.spent - st.expected) + ' 빠르다.';
   return '고르게 썼다면 지금까지 ' + won(st.expected) + '. ' + won(st.expected - st.spent) + ' 여유가 있다.';
 }
+// 숫자를 from 에서 to 로 굴리며 won() 글로 바꾼다 (300~800ms, 움직임 줄이기면 바로)
+function animateNumber(el, from, to, ms) {
+  if (!el) return;
+  cancelAnimationFrame(el._numRaf);
+  if (!isFinite(from) || !isFinite(to) || from === to || reduced()) { el.textContent = won(to); return; }
+  ms = Math.max(300, Math.min(800, ms || 600));
+  var t0 = null;
+  el.textContent = won(from);
+  el.classList.add('rolling');
+  function step(now) {
+    if (t0 == null) t0 = now;
+    var k = Math.min(1, (now - t0) / ms);
+    var e = 1 - Math.pow(1 - k, 3); // 끝에서 천천히
+    el.textContent = won(k < 1 ? from + (to - from) * e : to);
+    if (k < 1) el._numRaf = requestAnimationFrame(step);
+    else el.classList.remove('rolling');
+  }
+  el._numRaf = requestAnimationFrame(step);
+}
+function numAttr(n) { return n != null && isFinite(n) ? String(Math.round(n)) : ''; }
+// 챌린지 하루 기준: 목표를 기간 날 수로 나눈 값(원 아래 버림)
+function dayBase(ch) { return Math.floor(ch.budget / Calc.periodDays(ch.start, ch.end)); }
+// 챌린지 기간의 날마다 그날 쓴 돈 합과 하루 기준을 견준다: good(기준 이하)·bad(넘음)·future(오늘 뒤)
+function chalDays(ch) {
+  var base = dayBase(ch), today = Calc.today(), sums = {};
+  spendsIn(ch).forEach(function (x) { sums[x.date] = (sums[x.date] || 0) + x.amount; });
+  var out = [], total = Calc.periodDays(ch.start, ch.end);
+  for (var i = 0; i < total; i++) {
+    var d = Calc.addDays(ch.start, i), spent = sums[d] || 0;
+    out.push({ date: d, spent: spent, today: d === today, state: d > today ? 'future' : spent <= base ? 'good' : 'bad' });
+  }
+  return out;
+}
+// 오늘(챌린지가 끝났으면 마지막 날)부터 거꾸로 이어진 good 날 수. 오늘을 넘었으면 0
+function streakOf(ch, days) {
+  days = days || chalDays(ch);
+  var today = Calc.today();
+  if (today < ch.start) return 0;
+  var i = Math.min(days.length, Calc.daysBetween(ch.start, today) + 1) - 1, n = 0;
+  for (; i >= 0 && days[i].state === 'good'; i--) n++;
+  return n;
+}
+var STREAK_MARKS = [3, 7, 14];
+var DAY_TEXT = { good: '지킴', bad: '넘음', future: '아직' };
+// 챌린지 화면의 날짜 판: 기간 날 수만큼 칸, 지킨 날 초록·넘은 날 빨강·남은 날 옅게, 오늘은 테두리
+function chalDaysHtml(ch) {
+  var days = chalDays(ch), base = dayBase(ch);
+  var good = days.filter(function (d) { return d.state === 'good'; }).length;
+  var bad = days.filter(function (d) { return d.state === 'bad'; }).length;
+  return '<div class="card chal-board"><h3>날짜 판 <small>하루 기준 ' + won(base) + '</small></h3>' +
+    '<ol class="chal-days">' + days.map(function (d, i) {
+      var p = d.date.split('-'), label = i === 0 || p[2] === '01' ? (+p[1]) + '/' + (+p[2]) : String(+p[2]);
+      return '<li class="day ' + d.state + (d.today ? ' today' : '') + '" aria-label="' + Calc.shortDay(d.date) + (d.today ? ' 오늘' : '') + ' ' + DAY_TEXT[d.state] +
+        (d.state === 'future' ? '' : ' ' + won(d.spent)) + '"' + (d.today ? ' aria-current="date"' : '') + '>' + label + '</li>';
+    }).join('') + '</ol>' +
+    '<p class="hint day-legend"><span class="dot good"></span>지킨 날 ' + good + ' · <span class="dot bad"></span>넘은 날 ' + bad +
+      ' · <span class="dot future"></span>남은 날 ' + (days.length - good - bad) + '</p></div>';
+}
+function streakLine(ch, st) {
+  if (st.upcoming || st.ended) return '';
+  var n = streakOf(ch);
+  return '<p class="streak-line">' + (n > 0 ? '🔥 ' + n + '일 연속 지킴 <small>하루 ' + won(dayBase(ch)) + ' 이하</small>'
+    : '오늘 하루 기준 ' + won(dayBase(ch)) + '을 넘었다. 내일 다시 연속을 쌓자') + '</p>';
+}
 // 진행 중 챌린지 카드 (오늘·챌린지 화면이 같이 쓴다)
+// App.chalFrom: 저장 직전 값. 있으면 data-from 에 넣어 그린 뒤 rollChalNums 가 굴린다.
 function chalCard(ch, big) {
   var st = chalInfo(ch);
+  var f = App.chalFrom && App.chalFrom.id === ch.id ? App.chalFrom : { left: st.left, perDay: st.perDay, usedPct: st.usedPct };
   var meals = mealsIn(ch);
   var saved = meals.reduce(function (a, x) { return a + Math.max(0, x.out - x.cost); }, 0);
   return '<div class="card chal pace-' + st.pace + '">' +
     '<div class="chal-head"><h3>🎯 ' + esc(ch.name) + '</h3><small>' + Calc.shortDay(ch.start) + ' ~ ' + Calc.shortDay(ch.end) +
       (st.upcoming ? ' · 곧 시작' : ' · ' + st.passed + '/' + st.total + '일째') + '</small></div>' +
-    '<div class="chal-big"><span><small>남은 돈</small><b class="' + (st.left < 0 ? 'warn-text' : '') + '">' + won(st.left) + '</b></span>' +
-      '<span><small>오늘 쓸 수 있는 돈</small><b>' + won(st.perDay) + '</b></span></div>' +
-    '<div class="chal-meter" aria-hidden="true"><i class="used lv-' + st.pace + '" style="width:' + Math.min(100, st.usedPct) + '%"></i><b class="time" style="left:' + Math.min(100, st.timePct) + '%"></b></div>' +
+    '<div class="chal-big"><span><small>남은 돈</small><b class="' + (st.left < 0 ? 'warn-text' : '') + '" data-from="' + numAttr(f.left) + '" data-to="' + numAttr(st.left) + '">' + won(st.left) + '</b></span>' +
+      '<span><small>오늘 쓸 수 있는 돈</small><b data-from="' + numAttr(f.perDay) + '" data-to="' + numAttr(st.perDay) + '">' + won(st.perDay) + '</b></span></div>' +
+    '<div class="chal-meter" aria-hidden="true"><i class="used lv-' + st.pace + '" data-from="' + Math.min(100, f.usedPct || 0) + '" data-to="' + Math.min(100, st.usedPct) + '" style="width:' + Math.min(100, st.usedPct) + '%"></i><b class="time" style="left:' + Math.min(100, st.timePct) + '%"></b></div>' +
     '<p class="hint">' + won(st.spent) + ' / ' + won(ch.budget) + ' (' + pct(st.usedPct) + ') · <span class="badge lv-' + st.pace + '">' + PACE_TEXT[st.pace] + '</span></p>' +
     '<p class="pace-line">' + paceLine(ch, st) + '</p>' +
+    streakLine(ch, st) +
     (big || meals.length ? '<p class="hint">🍳 집밥 ' + meals.length + '끼 · 사 먹었으면 ' + won(saved) + ' 더 들었다</p>' : '') +
     (big ? '' : '<div class="btn-row">' + btn({ act: 'spend-new', label: '+ 식비 쓰기', cls: 'small primary' }) + btn({ act: 'go', label: '챌린지 보기', cls: 'small', data: { to: 'chal' } }) + '</div>') +
   '</div>';
@@ -184,11 +251,48 @@ var ART = {
   search: '<span class="emoji-art">🔍</span>'
 };
 
+// 처음 5분 시작 단계 (R-03): 챌린지 → 첫 식비 → 메뉴 예시 → 장 본 값. 예시 자취방(sample) 식비·값 기록은 직접 한 것으로 세지 않는다
+function startSteps() {
+  var st = App.state;
+  function mine(list) { return list.some(function (x) { return !x.sample; }); }
+  return [
+    { key: 'chal', title: '챌린지 고르기', text: '\'한 달 10만원\'처럼 기간과 목표를 정한다',
+      done: st.challenges.length > 0, act: 'chal-open', btn: { act: 'chal-open', label: '고르기' } },
+    { key: 'spend', title: '첫 식비 넣기', text: '오늘 밥에 쓴 돈 하나면 남은 돈이 나온다',
+      done: mine(st.spends), act: 'spend-new', btn: { act: 'spend-new', label: '넣기' } },
+    { key: 'menu', title: '메뉴 예시 하나 넣기', text: '자취 집밥 ' + MENU_TEMPLATES.length + '개 가운데 하나를 고른다',
+      done: st.menus.length > 0, act: 'tpl-open menu', btn: { act: 'tpl-open', label: '고르기', data: { tab: 'menu' } } },
+    { key: 'price', title: '장 본 값 넣기', text: '산 값을 넣으면 한 끼 값과 남은 돈이 다시 계산된다',
+      done: mine(st.history), act: 'price-open', btn: { act: 'price-open', label: '넣기' } }
+  ];
+}
+// 냉장고·식비 화면 맨 위 카드. 네 단계를 다 하면 그리지 않는다
+function startCardHtml() {
+  var steps = startSteps();
+  var n = steps.filter(function (s) { return s.done; }).length;
+  if (n === steps.length) return '';
+  var next = steps.filter(function (s) { return !s.done; })[0];
+  return '<div class="card start-card" role="group" aria-label="처음 5분 시작 단계">' +
+    '<div class="start-head"><h3>처음 5분, 네 단계면 된다</h3><small>' + n + ' / ' + steps.length + '</small></div>' +
+    '<div class="start-meter" role="progressbar" aria-valuemin="0" aria-valuemax="' + steps.length + '" aria-valuenow="' + n + '" aria-label="시작 단계 ' + n + '개 끝냄">' +
+      '<i style="width:' + Math.round(n / steps.length * 100) + '%"></i></div>' +
+    '<ol class="start-steps">' + steps.map(function (s, i) {
+      var cls = s.done ? ' done' : s === next ? ' next' : '';
+      return '<li class="start-step' + cls + '" data-step="' + s.key + '">' +
+        '<span class="start-no" aria-hidden="true">' + (s.done ? '✓' : i + 1) + '</span>' +
+        '<span class="todo-tx"><b>' + s.title + (s.done ? ' <small class="sr">끝냄</small>' : '') + '</b><small>' + s.text + '</small></span>' +
+        (s.done ? '<span class="badge soft">끝</span>'
+          : btn(Object.assign({}, s.btn, { cls: 'small' + (s === next ? ' primary' : ''), aria: s.title + ' ' + s.btn.label }))) +
+      '</li>';
+    }).join('') + '</ol></div>';
+}
+
 // ---------- 1. 오늘 ----------
 function renderHome() {
   var st = App.state, s = st.settings, today = Calc.today();
   var top = $('home-today'), body = $('home-body'), chalBox = $('home-chal');
   var ch = activeChal();
+  $('home-start').innerHTML = startCardHtml();
   $('btn-price-open').hidden = st.ingredients.length === 0;
   chalBox.innerHTML = ch ? chalCard(ch, false) : (st.ingredients.length || st.menus.length || st.spends.length
     ? '<div class="card chal-cta"><p><b>🎯 아직 진행 중인 식비 챌린지가 없다</b><br><small class="hint">\'한 달 10만원\'처럼 기간과 목표를 정하면 오늘 쓸 수 있는 돈이 나온다.</small></p>' +
@@ -275,7 +379,7 @@ function renderChal() {
       return { k: k, sum: spends.filter(function (x) { return x.kind === k.key; }).reduce(function (a, x) { return a + x.amount; }, 0) };
     }).filter(function (x) { return x.sum > 0; }).sort(function (a, b) { return b.sum - a.sum; });
     var maxK = byKind.length ? byKind[0].sum : 1;
-    now.innerHTML = chalCard(ch, true) +
+    now.innerHTML = chalCard(ch, true) + chalDaysHtml(ch) +
       (byKind.length ? '<div class="card"><h3>어디에 썼나</h3><ul class="kinds">' + byKind.map(function (x) {
         return '<li><span>' + x.k.icon + ' ' + esc(x.k.key) + '</span><b>' + won(x.sum) + '<small>' + pct(x.sum / Math.max(1, info.spent) * 100) + '</small></b>' +
           '<span class="meter"><i class="lv-good" style="width:' + (x.sum / maxK * 100) + '%"></i></span></li>';
@@ -595,7 +699,10 @@ function renderPricePick() {
   list.sort(function (a, b) { return (Calc.hasPrice(a) ? 1 : 0) - (Calc.hasPrice(b) ? 1 : 0); });
   var box = $('price-pick-list');
   if (!App.state.ingredients.length) {
-    box.innerHTML = emptyBox(ART.ing, '넣을 재료가 없다', '먼저 재료를 하나 넣는다.', [{ act: 'ing-new', label: '+ 재료 넣기', cls: 'primary' }]);
+    box.innerHTML = emptyBox(ART.ing, '넣을 재료가 없다', '먼저 재료를 하나 넣는다. 목록 ' + ING_TEMPLATES.length + '개에서 고르면 산 양·단위가 채워진다.', [
+      { act: 'tpl-open', label: '목록에서 고르기', cls: 'primary', data: { tab: 'ing' } },
+      { act: 'ing-new', label: '+ 재료 넣기' }
+    ]);
     return;
   }
   if (!list.length) {
@@ -880,6 +987,7 @@ function renderFridge() {
     : emptyBox(ART.noPhoto, '아직 찍은 사진이 없다', '냉장고 안을 찍어 두면 문을 열지 않고도 무엇이 있었는지 본다.', [
         { act: 'photo-take', label: '📷 사진 찍기', cls: 'primary' }
       ]);
+  $('fridge-start').innerHTML = startCardHtml();
   // 아래: 유통기한 가까운 음식
   var exp = $('fridge-exp');
   var dated = fr.items.filter(function (x) { return x.exp; }).sort(byExp);

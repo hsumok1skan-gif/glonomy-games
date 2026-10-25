@@ -84,13 +84,14 @@ var Logic = (function () {
   function buildBag(state, kid, k) {
     var map = {};
     var order = [];
-    function add(name, src, group) {
+    // icon: 처음 나온 출처의 그림 (꾸러미면 pk.icon, 알림장 📝, 요일 규칙 📅, 매일 🎒)
+    function add(name, src, group, icon) {
       var n = norm(name);
       if (!n) return;
       var key = n.toLowerCase();
       var it = map[key];
       if (!it) {
-        it = { name: n, sources: [], group: group };
+        it = { name: n, sources: [], group: group, icon: icon || '🎒' };
         map[key] = it;
         order.push(it);
       }
@@ -103,25 +104,25 @@ var Logic = (function () {
     var pickups = [];
 
     (state.notes || []).forEach(function (n) {
-      if (n.kid === kid.id && n.date === k) n.items.forEach(function (x) { add(x, n.title ? '알림장 · ' + n.title : '알림장', 'note'); });
+      if (n.kid === kid.id && n.date === k) n.items.forEach(function (x) { add(x, n.title ? '알림장 · ' + n.title : '알림장', 'note', '📝'); });
     });
     (state.rules || []).forEach(function (r) {
-      if (r.on && r.dow === w) add(r.item, DATA.DOW[w] + '요일', 'rule');
+      if (r.on && r.dow === w) add(r.item, DATA.DOW[w] + '요일', 'rule', '📅');
     });
     if (day) {
       day.p.forEach(function (pid, i) {
         var pk = pid ? findPack(state.packs, pid) : null;
         periods.push(pk ? pk.name : '');
-        if (pk) pk.items.forEach(function (x) { add(x, (i + 1) + '교시 ' + pk.name, 'class'); });
+        if (pk) pk.items.forEach(function (x) { add(x, (i + 1) + '교시 ' + pk.name, 'class', pk.icon); });
       });
       day.after.slice().sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); }).forEach(function (a) {
         var pk = findPack(state.packs, a.packId);
         if (!pk) return;
-        pk.items.forEach(function (x) { add(x, '방과후 ' + pk.name, 'after'); });
+        pk.items.forEach(function (x) { add(x, '방과후 ' + pk.name, 'after', pk.icon); });
         pickups.push({ time: a.time || '', name: pk.name, icon: pk.icon, who: a.who || '' });
       });
     }
-    (state.daily || []).forEach(function (x) { add(x, '매일', 'daily'); });
+    (state.daily || []).forEach(function (x) { add(x, '매일', 'daily', '🎒'); });
 
     order.sort(function (a, b) { return GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group); });
     return { date: k, items: order, periods: periods, pickups: pickups, school: isSchoolDay(k, state.settings.holidays) };
@@ -222,6 +223,15 @@ var Logic = (function () {
     return out;
   }
 
+  // 며칠 뒤 준비물: fromKey 다음 날부터 days 일 안의 그 아이 알림장을 날짜순으로 (미리 사 둘 것)
+  function upcoming(state, kid, fromKey, days) {
+    if (!kid) return [];
+    var end = addDays(fromKey, days || 7);
+    return (state.notes || []).filter(function (n) {
+      return n.kid === kid.id && n.date > fromKey && n.date <= end;
+    }).sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+  }
+
   // 가족에게 보낼 글
   function shareText(state, kid, bag) {
     var done = state.checks[checkKey(kid.id, bag.date)] || [];
@@ -268,6 +278,7 @@ var Logic = (function () {
     eq('합친 물건 수', bag.items.length, 7);
     eq('물병 출처 수', bottle ? bottle.sources.length : 0, 4);
     eq('맨 위 물건 (알림장 먼저)', bag.items[0].name, '색종이');
+    eq('알림장 물건 그림', bag.items[0].icon, '📝');
     eq('챙김 진행률', progress(st, kid, bag).pct, 29); // 2/7 = 28.6% → 29
     // 5) 기록 요약: 10/10, 8/10, 5/5 → 23/25 = 92%, 다 챙긴 날 2, 연속 1
     var sm = summary([
@@ -280,6 +291,16 @@ var Logic = (function () {
     eq('연속 다 챙긴 날', sm.streak, 1);
     // 6) 없는 날짜 거르기
     eq('2026-02-30 은 없는 날', validKey('2026-02-30'), false);
+    // 7) 며칠 뒤 준비물: 10/26 가방 기준, 그날(10/26)·8일 뒤(11/3)·다른 아이는 빼고 10/28·11/2 두 개, 날짜순
+    var up = upcoming({ notes: [
+      { kid: 'k', date: '2026-11-02', items: ['돗자리'] },
+      { kid: 'k', date: '2026-10-26', items: ['색종이'] },
+      { kid: 'k', date: '2026-11-03', items: ['휴지 심'] },
+      { kid: 'x', date: '2026-10-27', items: ['풀'] },
+      { kid: 'k', date: '2026-10-28', items: ['리코더'] }
+    ] }, { id: 'k' }, '2026-10-26', 7);
+    eq('며칠 뒤 준비물 수', up.length, 2);
+    eq('며칠 뒤 준비물 첫 날', up.length ? up[0].date : '', '2026-10-28');
     return res;
   }
 
@@ -288,7 +309,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel,
     buildBag: buildBag, progress: progress, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    summary: summary, byWeekday: byWeekday, findPacks: findPacks, filterHistory: filterHistory, shareText: shareText, selfTest: selfTest, findPack: findPack, norm: norm,
+    summary: summary, byWeekday: byWeekday, findPacks: findPacks, filterHistory: filterHistory, upcoming: upcoming, shareText: shareText, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

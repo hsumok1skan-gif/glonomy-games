@@ -21,6 +21,7 @@ var App = {
   undo: null,         // 되돌리기용 직전 상태(글)
   confirmFn: null,
   flash: null,
+  chalFrom: null,     // 저장 직전 챌린지 남은 돈·오늘 쓸 돈 (숫자 굴리기)
   lastDay: null,
   toastTimer: 0
 };
@@ -222,12 +223,14 @@ function submitPrice() {
   var toChal = !!ch && $('price-spend').checked && Calc.inPeriod(day, ch.start, ch.end);
   // 챌린지 변화는 식비를 더하기 전에 센다
   var html = (toChal ? chalDeltaHtml(ch, p) : '') + impactHtml(old, next, rows);
+  markChalFrom();
   ing.price = p; ing.buyQty = q; ing.buyUnit = u; ing.updated = day;
   pushHistory(ing, old);
   if (toChal) addSpend({ date: day, amount: p, kind: '장보기', memo: ing.name });
   save();
   App.flash = ing.id;
   closeLayer('sheet-price');
+  rollChalNums();
   App.priceIng = null;
   showImpact(html, rows.map(function (r) { return r.m.id; }));
   toast(ing.name + ' 값을 바꿨다' + (toChal ? ' · 장보기 ' + won(p) + ' 더함' : ''));
@@ -244,6 +247,31 @@ function renderImpact() {
   var cheap = rows.filter(function (r) { return r.i.margin > 0; }).sort(function (a, b) { return b.i.margin - a.i.margin; })[0];
   $('impact-body').innerHTML = lastImpact.head +
     (cheap ? '<p class="hint">💡 지금 가장 많이 아끼는 메뉴는 <b>' + esc(cheap.m.name) + '</b> (한 끼 ' + won(cheap.i.margin) + ' 아낌)</p>' : '');
+}
+
+// ---------- 챌린지 숫자 굴리기 ----------
+// 바꾸기 직전에 부른다. 그 뒤 그리는 chalCard 가 이 값을 data-from 에 넣는다.
+function markChalFrom() {
+  var ch = activeChal();
+  if (!ch) { App.chalFrom = null; return; }
+  var st = chalInfo(ch);
+  App.chalFrom = { id: ch.id, left: st.left, perDay: st.perDay, usedPct: st.usedPct };
+}
+// 화면을 그린 다음 부른다: 남은 돈·오늘 쓸 돈이 바뀌기 전 값에서 굴러가고 막대가 차오른다
+function rollChalNums() {
+  App.chalFrom = null;
+  document.querySelectorAll('#home-chal .chal-big b[data-from], #chal-now .chal-big b[data-from]').forEach(function (el) {
+    var f = el.dataset.from, t = el.dataset.to;
+    if (f === '' || t === '' || f === t) return;
+    animateNumber(el, Number(f), Number(t), 600);
+  });
+  if (reduced()) return;
+  document.querySelectorAll('#home-chal .chal-meter i[data-from], #chal-now .chal-meter i[data-from]').forEach(function (el) {
+    if (el.dataset.from === el.dataset.to) return;
+    el.style.width = el.dataset.from + '%';
+    void el.offsetWidth; // 앞 값으로 한 번 그려야 막대 transition 이 걸린다
+    el.style.width = el.dataset.to + '%';
+  });
 }
 
 // ---------- 식비 쓰기 ----------
@@ -280,25 +308,43 @@ function submitSpend() {
   if (amt == null || !dayOk) return;
   var memo = $('spend-memo').value.trim().replace(/\s+/g, ' ').slice(0, 40);
   var x = App.editSpendId ? spendById(App.editSpendId) : null;
+  markChalFrom();
   if (x) {
     x.amount = amt; x.date = day; x.kind = App.spendKind; x.memo = memo;
   } else {
     x = addSpend({ date: day, amount: amt, kind: App.spendKind, memo: memo });
   }
   App.flash = x.id;
+  var mark = streakMark();
   save();
   closeLayer('sheet-spend');
+  rollChalNums();
   var ch = activeChal();
-  toast(App.spendKind + ' ' + won(amt) + ' 넣었다' + (ch && Calc.inPeriod(day, ch.start, ch.end) ? ' · 남은 돈 ' + won(chalInfo(ch).left) : ''));
+  toast(App.spendKind + ' ' + won(amt) + ' 넣었다' + (ch && Calc.inPeriod(day, ch.start, ch.end) ? ' · 남은 돈 ' + won(chalInfo(ch).left) : '') +
+    (mark ? ' · 🔥 ' + mark + '일 연속 지킴!' : ''));
+}
+// 연속 지킨 날이 3·7·14 가 되면 그 연속에 한 번만 알린다 (연속 첫날:n 을 챌린지에 적어 둔다)
+function streakMark() {
+  var ch = activeChal();
+  if (!ch) return 0;
+  var n = streakOf(ch);
+  if (STREAK_MARKS.indexOf(n) < 0) return 0;
+  var today = Calc.today(), last = today > ch.end ? ch.end : today;
+  var key = Calc.addDays(last, -(n - 1)) + ':' + n;
+  if (ch.streakSeen === key) return 0;
+  ch.streakSeen = key;
+  return n;
 }
 function deleteSpend() {
   var x = App.editSpendId ? spendById(App.editSpendId) : null;
   if (!x) return;
   askConfirm('식비를 지울까요?', Calc.shortDay(x.date) + ' ' + x.kind + ' ' + won(x.amount) + ' 을(를) 지운다.', '지우기', function () {
     rememberUndo();
+    markChalFrom();
     App.state.spends = App.state.spends.filter(function (s) { return s.id !== x.id; });
     save();
     closeLayer('sheet-spend');
+    rollChalNums();
     toast('식비를 지웠다', true);
   });
 }
@@ -381,11 +427,13 @@ function eatMeal(id) {
   if (!m) return;
   var info = menuInfo(m);
   rememberUndo(); // 잘못 눌렀거나 두 번 눌렀을 때 알림의 되돌리기로 뺀다
+  markChalFrom();
   App.state.meals.push({ id: newId('e'), date: Calc.today(), menuId: m.id, name: m.name, cost: Math.round(info.cost), out: m.price, sample: false });
   if (App.state.meals.length > 3000) App.state.meals.splice(0, App.state.meals.length - 3000);
   save();
   App.flash = m.id;
   refreshOpen();
+  rollChalNums();
   toast(m.name + ' 한 끼' + (info.margin > 0 ? ' · 사 먹을 때보다 ' + won(info.margin) + ' 아꼈다' : ' 기록했다'), true);
 }
 function mealById(id) {

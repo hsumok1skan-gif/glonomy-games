@@ -566,6 +566,9 @@
     var hs = S.settings.holidays;
     var next = Logic.bagDate(now(), S.settings);
     S.notes.push({ id: Store.uid('n'), kid: id, date: next, title: '미술 만들기', items: ['휴지 심 2개', '색종이'] });
+    // 며칠 뒤 준비물 카드가 보이게, 학교 가는 날 3번 뒤 알림장 하나
+    var later = Logic.nextSchoolDay(Logic.nextSchoolDay(Logic.nextSchoolDay(next, hs), hs), hs);
+    if (Logic.addDays(next, 7) >= later) S.notes.push({ id: Store.uid('n'), kid: id, date: later, title: '현장체험', items: ['돗자리', '물병', '모자'] });
     // 지난 학교 가는 날 8일 기록 (빠뜨린 것이 섞이게)
     var k = Logic.toKey(now());
     var miss = [[], ['리코더'], [], ['체육복', '물병'], [], [], ['숙제'], []];
