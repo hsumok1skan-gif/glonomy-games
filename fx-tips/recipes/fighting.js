@@ -356,7 +356,7 @@
 
     /* 4 ─ 벽 바운드 */
     {
-      id: "fighting-wall-bounce", cat: "fighting", view: "side", melee: true,
+      id: "fighting-wall-bounce", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a wall bounce *slam*", ko: "벽 바운드를 *쾅*" },
       intro: { en: "It touches the wall and *politely* returns.", ko: "벽에 닿고 *얌전히* 돌아와요." },
       interval: 1.4, stepDur: 3.8,
@@ -427,7 +427,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slam + crumble",
           cap: { en: "A deep *slam*, then a little *crumble*.", ko: "묵직한 *쾅*, 뒤에 *부스스*." },
           launch(w) { w.sfx.thud(); },
-          wall(w) { w.sfx.slam(); w.sfx.rattle(); },
+          wall(w) { if (w.on("impact") || w.on("crack")) w.sfx.slam(); else w.sfx.thud(); if (w.on("debris")) w.play(() => { for (let i = 0; i < 6; i++) sSnap(0.12, 0.05 + i * 0.06, 1800 + i * 300); }); },
         },
       ],
     },

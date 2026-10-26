@@ -204,7 +204,7 @@
 
     /* ───────── 2. 손님 만족도 ───────── */
     {
-      id: "sim-mood", cat: "sim", view: "iso",
+      id: "sim-mood", cat: "sim", view: "iso", polished: true,
       title: { en: "Show customer *mood* at a glance", ko: "손님 *기분*이 한눈에 보이게" },
       intro: { en: "Happy? Angry? *No idea.*", ko: "좋은 건지 화난 건지 *모르겠어요*." },
       interval: 0.75, stepDur: 3.6,

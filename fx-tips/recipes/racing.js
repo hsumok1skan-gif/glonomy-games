@@ -449,7 +449,7 @@
 
     /* 5 ─ 결승선 */
     {
-      id: "racing-finish", cat: "racing", view: "3d",
+      id: "racing-finish", cat: "racing", view: "3d", polished: true,
       title: { en: "Make the finish line *matter*", ko: "결승선을 *기억에 남게*" },
       intro: { en: "Race over. Feels like *any other second*.", ko: "끝났는데 *평소랑 똑같아요*." },
       interval: 2.2, stepDur: 4.0,
@@ -508,7 +508,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "fanfare",
           cap: { en: "A short *fanfare*. Earned.", ko: "짧은 *빰빠밤*. 받을 자격 있어요." },
-          finish(w) { w.sfx.fanfare(); w.sfx.burst(); },
+          finish(w) { if (w.on("text") || w.on("rank")) w.sfx.fanfare(); else w.sfx.chime(7); if (w.on("confetti")) w.sfx.sparkle(); },
         },
       ],
     },

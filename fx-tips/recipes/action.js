@@ -592,7 +592,7 @@
 
     /* 8 ─ 내려찍기 */
     {
-      id: "action-plunge", cat: "action", view: "side", melee: true,
+      id: "action-plunge", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a plunging attack *crash*", ko: "내려찍기를 *쿠웅*" },
       intro: { en: "Fell from the sky. Landed like a *feather*.", ko: "하늘에서 떨어졌는데 *깃털*처럼 내려앉아요." },
       interval: 1.6, stepDur: 3.8,
@@ -661,7 +661,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whistle → slam",
           cap: { en: "A falling *whistle*, then a *slam*.", ko: "떨어지는 *휘이*, 그리고 *쾅*." },
           dive(w) { w.play(() => tn({ f: 1400, f2: 500, dur: 0.14, vol: 0.12 })); },
-          impact(w) { w.sfx.slam(); },
+          impact(w) { if (w.on("wave") || w.on("crater")) w.sfx.slam(); else w.sfx.thud(); },
         },
       ],
     },

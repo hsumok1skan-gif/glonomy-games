@@ -357,7 +357,7 @@
 
     /* 4 ─ 분노 */
     {
-      id: "duel-enrage", cat: "duel", view: "side",
+      id: "duel-enrage", cat: "duel", view: "side", polished: true,
       title: { en: "Show the boss is *enraged*", ko: "보스가 *분노*한 게 보이게" },
       intro: { en: "Enraged. Says the *log*.", ko: "분노했대요. *로그*에만요." },
       interval: 2.0, stepDur: 3.8,
@@ -376,12 +376,13 @@
           });
         });
       },
-      update(w) { if (!w.rage) w.boss.tint = 0; },
+      update(w) { if (!w.rage) { w.boss.tint = 0; w.boss.burn = 0; } },
       steps: [
         {
           id: "tint", name: { en: "Red Pulse", ko: "붉은 맥박" }, param: "tint .45±.25 · 14Hz",
           cap: { en: "Pulse the boss *red*. Like it's *boiling*.", ko: "보스가 *붉게* 맥박 쳐요. *끓는* 것처럼." },
-          update(w) { if (w.rage) w.boss.tint = 0.45 + 0.25 * Math.sin(w.time * 14); },
+          // 픽셀 적은 '맞음' 표시(tint) 대신 붉은 불길(burn)로 끓게 해서, 맞은 자세가 나오지 않게
+          update(w) { if (w.rage) { const v = 0.45 + 0.25 * Math.sin(w.time * 14); if (poseSet(w.boss)) w.boss.burn = v * 1.6; else w.boss.tint = v; } },
         },
         {
           id: "steam", name: { en: "Steam", ko: "김 뿜기" }, param: "30 puffs/s",
@@ -410,7 +411,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "growl + hurt",
           cap: { en: "A low *growl* starts it. Hits get *meaner*.", ko: "낮은 *그르릉*으로 시작. 맞는 소리도 *세게*." },
-          rage(w) { growl(w); },
+          rage(w) { if (w.on("tint") || w.on("steam")) growl(w); },
           hit(w) { w.sfx.hurt(); w.sfx.thud(); },
         },
       ],

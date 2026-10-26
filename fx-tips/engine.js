@@ -1021,6 +1021,18 @@ class World {
     return a;
   }
   spawn(p) {
+    // 옛 그림(로우폴리)으로 잔상을 찍으려 하면, 그 인물의 지금 픽셀 동작을 그대로 찍어 같은 색으로 남김
+    if (p.type === "ghost" && p.img) for (const a of this.actors) {
+      if (!poseSet(a) || !a.s) continue;
+      const k = Object.keys(a.s).find(k => a.s[k] === p.img); if (!k) continue;
+      a.keepSnap = true; if (!a._snap) return { age: 0, life: 0 };
+      const col = { white: "#ffffff", red: "#ef4444", cyan: "#5ad6ff", orange: "#fb923c", c: "#9aa0b4" }[k] || "#5ad6ff";
+      const g = document.createElement("canvas"); g.width = a._snap.width; g.height = a._snap.height; const x = g.getContext("2d");
+      x.drawImage(a._snap, 0, 0); x.globalCompositeOperation = "source-atop"; x.fillStyle = col; x.fillRect(0, 0, g.width, g.height);
+      const [W, H] = a._snapWH, fl = a.flip ? -1 : 1, al = p.alpha0 || 0.6, sx0 = 1;
+      return this.spawn({ x: p.x, y: p.y, vx: p.vx || 0, vy: p.vy || 0, drag: p.drag || 0, life: p.life || 0.4, hold: p.hold, under: p.under,
+        draw: (ctx, q, kk) => { const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.globalAlpha = al * (1 - kk); ctx.save(); ctx.translate(q.x, q.y); ctx.scale(fl * sx0, 1); ctx.drawImage(g, -W / 2, -(H - 4), W, H); ctx.restore(); ctx.imageSmoothingEnabled = sm; } });
+    }
     const q = Object.assign({ x: 0, y: 0, vx: 0, vy: 0, g: 0, drag: 0, life: 0.5, age: 0, size: 4, color: "255,255,255", type: "circle", rot: 0, vr: 0 }, p);
     if (q.add == null) q.add = ["glow", "spark", "star", "ring", "arc", "slash", "beam", "rays"].includes(q.type);
     if (q.seek) { q.x0 = q.x; q.y0 = q.y; }

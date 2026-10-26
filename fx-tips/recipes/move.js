@@ -391,7 +391,7 @@
 
     /* 5. 활공 */
     {
-      id: "move-glide", cat: "move", view: "side",
+      id: "move-glide", cat: "move", view: "side", polished: true,
       title: { en: "Make gliding feel *airborne*", ko: "활공이 *떠 있게*" },
       intro: { en: "Slowly falling. Is it *flying*?", ko: "천천히 떨어지긴 하는데 *나는* 느낌?" },
       interval: 2.8, stepDur: 3.8,

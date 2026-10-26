@@ -628,7 +628,7 @@
 
     /* ───────── 7. 목마름 (탑다운) ───────── */
     {
-      id: "survival-thirst", cat: "survival", view: "top",
+      id: "survival-thirst", cat: "survival", view: "top", polished: true,
       title: { en: "Make thirst feel *dry*", ko: "목마름이 *바싹* 느껴지게" },
       intro: { en: "A drop disappears. *So what?*", ko: "물방울 하나 사라짐. *그래서?*" },
       interval: 0.6, stepDur: 4.0,

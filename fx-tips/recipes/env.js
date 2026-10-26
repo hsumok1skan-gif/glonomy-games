@@ -513,7 +513,7 @@
 
     // ───────────────────────── 5. 물결 (위에서)
     {
-      id: "env-ripple", cat: "env", view: "top",
+      id: "env-ripple", cat: "env", view: "top", polished: true,
       title: { en: "Make water *ripple*", ko: "물결을 *번지게*" },
       intro: { en: "A stone hits the pond. *Plop*. Gone.", ko: "돌이 연못에 퐁. 그리고 *끝*." },
       interval: 0.9, stepDur: 3.6,

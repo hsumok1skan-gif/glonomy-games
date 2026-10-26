@@ -445,7 +445,7 @@
 
     /* 5. 건설 진행 */
     {
-      id: "strategy-construct", cat: "strategy", view: "iso",
+      id: "strategy-construct", cat: "strategy", view: "iso", polished: true,
       title: { en: "Make construction *visible*", ko: "건설 중인 걸 *눈에 보이게*" },
       intro: { en: "Building… *where?*", ko: "짓는 중이래요… *어디서요?*" },
       interval: 3.0, stepDur: 4.0,

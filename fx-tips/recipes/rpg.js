@@ -150,7 +150,7 @@
   RECIPES.push(
     /* 1. 시전 마법진 */
     {
-      id: "rpg-cast-circle", cat: "rpg", view: "side",
+      id: "rpg-cast-circle", cat: "rpg", view: "side", polished: true,
       title: { en: "Make spellcasting *build up*", ko: "주문 시전에 *뜸* 들이기" },
       intro: { en: "Hero stands still. A dot flies. *Spell?*", ko: "가만히 서 있다가 점 하나. *이게 주문?*" },
       interval: 1.5, stepDur: 3.8,
@@ -227,9 +227,9 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hum → whoosh → boom",
           cap: { en: "A rising *hum*, a *whoosh*, a *boom*.", ko: "올라가는 *웅*, 나가는 *휙*, 맞으면 *팡*." },
-          cast(w) { w.sfx.charge(); },
-          release(w) { w.sfx.magic(); },
-          hit(w) { w.sfx.burst(); },
+          cast(w) { if (w.on("circle") || w.on("spin")) w.sfx.charge(); },
+          release(w) { if (w.on("pillar")) w.sfx.beam(0.5); else w.sfx.magic(); },
+          hit(w) { if (w.on("impact")) w.sfx.burst(); else w.sfx.hit(); },
         },
       ],
     },
