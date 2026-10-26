@@ -393,7 +393,7 @@
 
     /* ───────── 4. 건축 조각 놓기 ───────── */
     {
-      id: "survival-build", cat: "survival", view: "side",
+      id: "survival-build", cat: "survival", view: "side", polished: true,
       title: { en: "Make building *snap*", ko: "건축이 *착* 붙게" },
       intro: { en: "Walls just *appear*. No weight.", ko: "벽이 그냥 *생겨요*. 무게가 없어요." },
       interval: 0.8, stepDur: 3.8,
@@ -421,9 +421,7 @@
         }
         for (const p of w.pieces) {
           ctx.save(); ctx.translate(p.x, p.y + p.oy); ctx.scale(p.sx, p.sy);
-          rr(ctx, -30, -60, 60, 60, 4, "#a16207", "rgba(0,0,0,0.35)", 2);
-          ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fillRect(-30, -41, 60, 3); ctx.fillRect(-30, -21, 60, 3);
-          ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.fillRect(-30, -60, 60, 4);
+          if (!pxSprite(ctx, "env-crate-px", -30, -60, 2, 0, 0, 0)) rr(ctx, -30, -60, 60, 60, 4, "#a16207", "rgba(0,0,0,0.35)", 2);
           if (p.flash > 0) { ctx.strokeStyle = `rgba(198,244,50,${p.flash})`; ctx.lineWidth = 5; ctx.strokeRect(-30, -60, 60, 60); ctx.fillStyle = `rgba(255,255,255,${p.flash * 0.5})`; ctx.fillRect(-30, -60, 60, 60); }
           ctx.restore();
         }
@@ -462,7 +460,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk + tick",
           cap: { en: "A wooden *thunk* plus a tiny *click*.", ko: "나무 *쿵* 위에 작은 *딸깍*." },
-          snap(w) { w.sfx.thunk(); w.sfx.clickDown(); },
+          snap(w) { w.play(() => { sBody(180, 0.09, 0.6); nz({ dur: 0.06, type: "bandpass", f: 750, q: 1.6, vol: 0.35 }); }); if (w.on("flash")) w.sfx.clickUp(); },
         },
       ],
     },

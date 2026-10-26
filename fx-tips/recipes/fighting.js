@@ -129,7 +129,7 @@
   RECIPES.push(
     /* 1 ─ 맞기 / 막기 / 카운터 */
     {
-      id: "fighting-hit-block-counter", cat: "fighting", view: "side", polished: true, melee: true,
+      id: "fighting-hit-block-counter", cat: "fighting", view: "side", melee: true, polished: true, melee: true,
       title: { en: "Make hit, block, counter *read apart*", ko: "맞기·막기·카운터를 *한눈에*" },
       intro: { en: "Hit? Blocked? Counter? *Can't tell.*", ko: "맞은 건지 막은 건지 *모르겠어요*." },
       interval: 0.7, stepDur: 3.8,
@@ -200,7 +200,7 @@
 
     /* 2 ─ 콤보 카운터 */
     {
-      id: "fighting-combo-counter", cat: "fighting", view: "side",
+      id: "fighting-combo-counter", cat: "fighting", view: "side", melee: true, polished: true, melee: true,
       title: { en: "Make the combo counter *climb*", ko: "콤보 숫자가 *달아오르게*" },
       intro: { en: "Five hits. The number just *sits there*.", ko: "다섯 대 때렸는데 숫자가 *가만히* 있어요." },
       interval: 1.7, stepDur: 3.8,
@@ -274,14 +274,14 @@
         {
           id: "sound", name: { en: "Rising Pitch", ko: "올라가는 음" }, param: "+2 semitones / hit",
           cap: { en: "Each hit plays *a step higher*.", ko: "때릴 때마다 음이 *한 칸씩* 올라가요." },
-          hit(w, C) { w.sfx.blip(C.n * 2); w.sfx.hit(1 + C.n * 0.04); },
+          hit(w, C) { w.sfx.hit(1 + C.n * 0.04); if (w.on("bump") || w.on("grow")) w.sfx.blip(C.n * 2); },
         },
       ],
     },
 
     /* 3 ─ 띄우기 + 저글 */
     {
-      id: "fighting-launcher", cat: "fighting", view: "side",
+      id: "fighting-launcher", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a launcher *lift*", ko: "띄우기를 *높이 높이*" },
       intro: { en: "It's a launcher. It *hops*.", ko: "띄우기 기술인데 *깡충* 뛰어요." },
       interval: 1.5, stepDur: 4.0,
@@ -356,7 +356,7 @@
 
     /* 4 ─ 벽 바운드 */
     {
-      id: "fighting-wall-bounce", cat: "fighting", view: "side",
+      id: "fighting-wall-bounce", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a wall bounce *slam*", ko: "벽 바운드를 *쾅*" },
       intro: { en: "It touches the wall and *politely* returns.", ko: "벽에 닿고 *얌전히* 돌아와요." },
       interval: 1.4, stepDur: 3.8,
@@ -434,7 +434,7 @@
 
     /* 5 ─ 바닥 바운드 */
     {
-      id: "fighting-ground-bounce", cat: "fighting", view: "side",
+      id: "fighting-ground-bounce", cat: "fighting", view: "side", melee: true,
       title: { en: "Spike them into the *floor*", ko: "바닥에 *내리꽂기*" },
       intro: { en: "Smashed down. Floor *didn't notice*.", ko: "내리꽂았는데 바닥은 *모른 척*." },
       interval: 1.5, stepDur: 3.8,
@@ -512,7 +512,7 @@
 
     /* 6 ─ 잡기 */
     {
-      id: "fighting-throw", cat: "fighting", view: "side",
+      id: "fighting-throw", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a throw feel *heavy*", ko: "잡기를 *묵직하게*" },
       intro: { en: "Grab… and it *slides* behind you.", ko: "잡았는데… 뒤로 *스르륵*." },
       interval: 1.6, stepDur: 4.0,
@@ -593,7 +593,7 @@
 
     /* 7 ─ 필살기 컷인 */
     {
-      id: "fighting-super-cutin", cat: "fighting", view: "side",
+      id: "fighting-super-cutin", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a super move *stop the world*", ko: "필살기에 *컷인* 넣기" },
       intro: { en: "Biggest move in the game. Looks like a *jab*.", ko: "최강 기술인데 *잽*처럼 보여요." },
       interval: 2.2, stepDur: 4.2,
@@ -673,7 +673,7 @@
 
     /* 8 ─ 슈퍼 게이지 */
     {
-      id: "fighting-meter-fill", cat: "fighting", view: "side",
+      id: "fighting-meter-fill", cat: "fighting", view: "side", melee: true,
       title: { en: "Make the super meter *fill up*", ko: "필살 게이지가 *차오르게*" },
       intro: { en: "The meter just *jumps*. Nobody looks at it.", ko: "게이지가 *툭툭* 바뀌어요. 아무도 안 봐요." },
       interval: 0.75, stepDur: 4.0,
@@ -747,7 +747,7 @@
     },
     /* 9 ─ 가드 크러시 */
     {
-      id: "fighting-guard-crush", cat: "fighting", view: "side",
+      id: "fighting-guard-crush", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a guard break *shatter*", ko: "가드 크러시를 *와장창*" },
       intro: { en: "The guard broke. Looked like a *normal hit*.", ko: "가드가 깨졌는데 *그냥 맞은* 것 같아요." },
       interval: 0.7, stepDur: 4.0,
@@ -839,7 +839,7 @@
 
     /* 10 ─ 저스트 가드 */
     {
-      id: "fighting-just-defend", cat: "fighting", view: "side",
+      id: "fighting-just-defend", cat: "fighting", view: "side", melee: true,
       title: { en: "Reward a perfect block with a *flash*", ko: "저스트 가드에 *번쩍* 보상" },
       intro: { en: "Frame-perfect block. Felt like *any block*.", ko: "딱 맞춰 막았는데 *평범한 막기* 같아요." },
       interval: 0.9, stepDur: 3.8,
@@ -899,7 +899,7 @@
 
     /* 11 ─ 라운드 시작 */
     {
-      id: "fighting-round-start", cat: "fighting", view: "side",
+      id: "fighting-round-start", cat: "fighting", view: "side", melee: true,
       title: { en: "Start the round with a *bang*", ko: "라운드 시작을 *쾅*" },
       intro: { en: "\"ROUND 1. FIGHT.\" Like a *memo*.", ko: "\"ROUND 1. FIGHT.\" *공지사항* 같아요." },
       interval: 2.0, stepDur: 4.0,
@@ -973,7 +973,7 @@
 
     /* 12 ─ KO 멈춤 + 슬로모션 */
     {
-      id: "fighting-ko-slowmo", cat: "fighting", view: "side",
+      id: "fighting-ko-slowmo", cat: "fighting", view: "side", melee: true,
       title: { en: "Make the K.O. *land*", ko: "K.O.를 *제대로* 꽂기" },
       intro: { en: "Fight's over. Nobody *noticed*.", ko: "경기가 끝났는데 *아무도 몰라요*." },
       interval: 2.0, stepDur: 4.2,
@@ -1044,7 +1044,7 @@
 
     /* 13 ─ 깎기 데미지 */
     {
-      id: "fighting-chip-damage", cat: "fighting", view: "side",
+      id: "fighting-chip-damage", cat: "fighting", view: "side", melee: true,
       title: { en: "Make chip damage *visible*", ko: "가드 데미지를 *보이게*" },
       intro: { en: "Blocking still costs HP. *Where did it go?*", ko: "막아도 체력이 닳아요. *어디서?*" },
       interval: 0.55, stepDur: 3.6,
@@ -1106,7 +1106,7 @@
 
     /* 14 ─ 세기별 타격 불꽃 */
     {
-      id: "fighting-spark-strength", cat: "fighting", view: "side",
+      id: "fighting-spark-strength", cat: "fighting", view: "side", melee: true,
       title: { en: "Size hit sparks by *strength*", ko: "약·중·강 불꽃을 *다르게*" },
       intro: { en: "Light, medium, heavy. *Same spark.*", ko: "약·중·강인데 *불꽃이 똑같아요*." },
       interval: 0.7, stepDur: 3.8,
@@ -1168,7 +1168,7 @@
 
     /* 15 ─ 막을 때 밀어내기 */
     {
-      id: "fighting-block-pushback", cat: "fighting", view: "side",
+      id: "fighting-block-pushback", cat: "fighting", view: "side", melee: true,
       title: { en: "Push both apart on *block*", ko: "막으면 *서로 밀려나게*" },
       intro: { en: "Blocked, and they stay *glued* together.", ko: "막았는데 둘이 *딱 붙어* 있어요." },
       interval: 0.9, stepDur: 3.6,
@@ -1230,7 +1230,7 @@
 
     /* 16 ─ 입력 표시 / 커맨드 궤적 */
     {
-      id: "fighting-input-display", cat: "fighting", view: "side",
+      id: "fighting-input-display", cat: "fighting", view: "side", melee: true,
       title: { en: "Show the *motion* input", ko: "커맨드 입력을 *보여주기*" },
       intro: { en: "Down, forward, punch. *You'd never know.*", ko: "↓↘→+P 했는데 *아무도 몰라요*." },
       interval: 1.2, stepDur: 4.0,
@@ -1328,7 +1328,7 @@
     },
     /* 17 ─ 필살 기술 궤적 */
     {
-      id: "fighting-special-trail", cat: "fighting", view: "side",
+      id: "fighting-special-trail", cat: "fighting", view: "side", melee: true,
       title: { en: "Give a special move a *trail*", ko: "필살 기술에 *잔상* 남기기" },
       intro: { en: "A rising uppercut. Looks like a *jump*.", ko: "솟구치는 어퍼컷인데 *점프* 같아요." },
       interval: 1.4, stepDur: 4.0,
@@ -1405,7 +1405,7 @@
 
     /* 18 ─ 대시 캔슬 */
     {
-      id: "fighting-dash-cancel", cat: "fighting", view: "side",
+      id: "fighting-dash-cancel", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a dash cancel *snap*", ko: "대시 캔슬을 *착*" },
       intro: { en: "Hit, dash, hit. Was that a *cancel?*", ko: "치고, 대시, 또 치고. *캔슬*이었나?" },
       interval: 1.2, stepDur: 4.0,
@@ -1475,7 +1475,7 @@
 
     /* 19 ─ 공중 콤보 */
     {
-      id: "fighting-air-combo", cat: "fighting", view: "side",
+      id: "fighting-air-combo", cat: "fighting", view: "side", melee: true,
       title: { en: "Keep an air combo *afloat*", ko: "공중 콤보를 *띄워 두기*" },
       intro: { en: "Air combo. Both just *fall* through it.", ko: "공중 콤보인데 둘 다 *그냥 떨어져요*." },
       interval: 1.5, stepDur: 4.2,
@@ -1546,7 +1546,7 @@
 
     /* 20 ─ 낙법 */
     {
-      id: "fighting-tech-recovery", cat: "fighting", view: "side",
+      id: "fighting-tech-recovery", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a tech recovery *flash*", ko: "낙법을 *번쩍* 보이게" },
       intro: { en: "Knocked down. Gets up *very slowly*.", ko: "넘어지면 *세월아 네월아* 일어나요." },
       interval: 1.6, stepDur: 4.0,
@@ -1617,7 +1617,7 @@
 
     /* 21 ─ 슈퍼 아머 */
     {
-      id: "fighting-super-armor", cat: "fighting", view: "side",
+      id: "fighting-super-armor", cat: "fighting", view: "side", melee: true,
       title: { en: "Show super armor *tanking* hits", ko: "슈퍼 아머가 *버티는* 게 보이게" },
       intro: { en: "Hit lands. It doesn't flinch. *Bug?*", ko: "맞았는데 꿈쩍도 안 해요. *버그?*" },
       interval: 0.6, stepDur: 3.6,
@@ -1677,7 +1677,7 @@
 
     /* 22 ─ 기상 리버설 */
     {
-      id: "fighting-wakeup-reversal", cat: "fighting", view: "side",
+      id: "fighting-wakeup-reversal", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a wake-up reversal *explode*", ko: "기상 반격을 *폭발*하게" },
       intro: { en: "Gets up, uppercuts. *Just happened.*", ko: "일어나서 어퍼컷. *그냥 그랬어요*." },
       interval: 1.7, stepDur: 4.0,
@@ -1750,7 +1750,7 @@
 
     /* 23 ─ 퍼펙트 KO */
     {
-      id: "fighting-perfect-ko", cat: "fighting", view: "side",
+      id: "fighting-perfect-ko", cat: "fighting", view: "side", melee: true,
       title: { en: "Celebrate a *PERFECT*", ko: "*퍼펙트* 승리 축하하기" },
       intro: { en: "Won without a scratch. *Same as any win.*", ko: "한 대도 안 맞고 이겼는데 *평범해요*." },
       interval: 2.0, stepDur: 4.2,
@@ -1830,7 +1830,7 @@
 
     /* 24 ─ 시간 초과 */
     {
-      id: "fighting-time-over", cat: "fighting", view: "side",
+      id: "fighting-time-over", cat: "fighting", view: "side", melee: true,
       title: { en: "Make TIME OVER *tense*", ko: "타임 오버에 *긴장감*" },
       intro: { en: "The clock hits zero. Fight *just stops*.", ko: "시간이 0이 되면 *그냥 멈춰요*." },
       interval: 2.6, stepDur: 4.2,
@@ -2076,7 +2076,7 @@
 
     /* 27 ─ 회복 가능한 빨간 체력 */
     {
-      id: "fighting-red-health", cat: "fighting", view: "side",
+      id: "fighting-red-health", cat: "fighting", view: "side", melee: true,
       title: { en: "Show *recoverable* red health", ko: "되찾을 수 있는 *빨간 체력*" },
       intro: { en: "Every hit is *gone forever*. No reason to back off.", ko: "맞으면 *영영* 끝. 물러날 이유가 없어요." },
       interval: 1.3, stepDur: 4.0,
@@ -2141,7 +2141,7 @@
 
     /* 28 ─ 기절 */
     {
-      id: "fighting-dizzy", cat: "fighting", view: "side",
+      id: "fighting-dizzy", cat: "fighting", view: "side", melee: true,
       title: { en: "Make a stun *dizzy*", ko: "기절을 *빙글빙글*" },
       intro: { en: "It's stunned. It's just… *standing there*.", ko: "기절했는데… 그냥 *서 있어요*." },
       interval: 1.9, stepDur: 4.0,
@@ -2217,7 +2217,7 @@
 
     /* 29 ─ 장풍 상쇄 */
     {
-      id: "fighting-projectile-clash", cat: "fighting", view: "side",
+      id: "fighting-projectile-clash", cat: "fighting", view: "side", melee: true,
       title: { en: "Make projectiles *collide*", ko: "장풍끼리 *부딪치게*" },
       intro: { en: "Two fireballs meet and… *vanish*.", ko: "장풍 두 개가 만나서… *사라져요*." },
       interval: 1.2, stepDur: 3.8,
@@ -2281,7 +2281,7 @@
 
     /* 30 ─ 세기별 히트스톱 */
     {
-      id: "fighting-hitstop-scale", cat: "fighting", view: "side",
+      id: "fighting-hitstop-scale", cat: "fighting", view: "side", melee: true,
       title: { en: "Scale hit stop by *strength*", ko: "히트스톱을 *세기별로*" },
       intro: { en: "Jab or haymaker? They feel *the same*.", ko: "잽이나 강펀치나 *똑같은 느낌*." },
       interval: 0.8, stepDur: 3.8,

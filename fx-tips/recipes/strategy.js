@@ -277,7 +277,7 @@
 
     /* 3. 공격 명령 */
     {
-      id: "strategy-attack", cat: "strategy", view: "top",
+      id: "strategy-attack", cat: "strategy", view: "top", polished: true,
       title: { en: "Make attack orders *aggressive*", ko: "공격 명령을 *공격적으로*" },
       intro: { en: "Attack! …it looks like a *move*.", ko: "공격! …근데 *이동*처럼 보여요." },
       interval: 0.9, stepDur: 3.5,

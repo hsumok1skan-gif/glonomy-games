@@ -447,7 +447,7 @@
 
     /* ───────── 4. 회복 물약 마시기 ───────── */
     {
-      id: "spot-power-potion", cat: "rpg", view: "3d",
+      id: "spot-power-potion", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make healing feel *refreshing*", ko: "회복 물약을 *시원하게*" },
       intro: { en: "Drink it. The bar just *jumps*.", ko: "마셨는데 체력 바만 *툭* 올라가요." },
       interval: 2.8, stepDur: 4.0,
@@ -538,14 +538,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "glug ×2 + shimmer",
           cap: { en: "Two *glugs*, then a bright *shimmer*.", ko: "*꿀꺽* 두 번, 맑은 *띠링~*." },
           gulp(w) { w.play(() => tn({ type: "sine", f: 300, f2: 140, dur: 0.12, vol: 0.25 })); },
-          heal(w) { w.sfx.chime(3); w.sfx.chime(7); w.sfx.boost(); },
+          heal(w) { if (w.on("wave") || w.on("fill")) w.sfx.lightSwell(); if (w.on("sparkle")) w.sfx.sparkle(); else w.sfx.chime(5); },
         },
       ],
     },
 
     /* ───────── 5. 차원문 열기 ───────── */
     {
-      id: "spot-power-portal", cat: "rpg", view: "3d",
+      id: "spot-power-portal", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make portals open with *awe*", ko: "차원문을 *압도적으로*" },
       intro: { en: "The portal opens. Just a *purple disc*.", ko: "문이 열렸는데 그냥 *보라 원판*." },
       interval: 3.0, stepDur: 4.0,
@@ -648,8 +648,9 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ticks + tear + drone",
           cap: { en: "Rune *ticks*, a *tear*, a deep *drone*.", ko: "*틱틱틱*, *찌직*, 낮은 *웅웅*." },
-          charge(w) { for (let i = 0; i < 5; i++) w.after(i * 0.12, () => w.sfx.tick()); },
-          open(w) { w.sfx.boom(); w.sfx.magic(); w.play(() => tn({ type: "sawtooth", f: 70, f2: 55, dur: 1.4, vol: 0.12 })); },
+          charge(w) { if (w.on("runes")) for (let i = 0; i < 5; i++) w.after(i * 0.12, () => w.sfx.tick()); },
+          // 찢어질 때만 찌직, 소용돌이가 돌 때 낮은 웅웅, 파편이 튈 때만 쾅
+          open(w) { if (w.on("tear")) w.play(() => { nz({ type: "bandpass", f: 4000, f2: 500, q: 1.2, dur: 0.32, vol: 0.45 }); for (let i = 0; i < 5; i++) sSnap(0.15, i * 0.05, 3000 + i * 400); }); if (w.on("vortex")) w.play(() => tn({ type: "sawtooth", f: 70, f2: 55, dur: 1.4, vol: 0.12, lp: 600, att: 0.2, hold: 0.8 })); if (w.on("debris")) w.sfx.burst(); else w.sfx.magic(); },
         },
       ],
     },
@@ -744,7 +745,7 @@
 
     /* ───────── 7. 아이템 합성 (같은 등급 둘 → 상위 등급) ───────── */
     {
-      id: "spot-power-fusion", cat: "rpg", view: "3d",
+      id: "spot-power-fusion", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make item fusion feel *epic*", ko: "아이템 합성을 *짜릿하게*" },
       intro: { en: "Two gems merge. A bigger one *appears*.", ko: "보석 둘이 합쳐지고 큰 게 *짠*." },
       interval: 2.8, stepDur: 4.0,
@@ -824,7 +825,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + crash + ding",
           cap: { en: "A *whoosh*, a *crash*, rising *dings*.", ko: "*슈욱*, *쨍강*, 올라가는 *띵띵띵*." },
           windup(w) { w.after(0.42, () => w.sfx.dash()); },
-          merge(w) { w.sfx.crit(); for (let i = 0; i < 3; i++) w.after(0.2 + i * 0.16, () => w.sfx.chime(4 + i * 2)); },
+          merge(w) { if (w.on("clash")) w.sfx.critBig(); else w.sfx.hit(); if (w.on("tier")) for (let i = 0; i < 3; i++) w.after(0.2 + i * 0.16, () => w.sfx.chime(4 + i * 2)); if (w.on("shards")) w.after(0.05, () => w.sfx.glass()); },
         },
       ],
     },

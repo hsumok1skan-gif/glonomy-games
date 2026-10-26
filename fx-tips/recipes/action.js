@@ -64,7 +64,7 @@
   RECIPES.push(
     /* 1 ─ 패링 */
     {
-      id: "action-parry", cat: "action", view: "side", polished: true, melee: true, hookDur: 3.0,
+      id: "action-parry", cat: "action", view: "side", melee: true, polished: true, melee: true, hookDur: 3.0,
       title: { en: "Make a parry feel *earned*", ko: "패링이 *짜릿하게*" },
       intro: { en: "Perfect timing. Looked like a *normal block*.", ko: "완벽한 타이밍인데 *그냥 막기* 같아요." },
       interval: 1.6, stepDur: 3.6,
@@ -130,7 +130,7 @@
 
     /* 2 ─ 완벽한 회피 슬로모션 */
     {
-      id: "action-perfect-dodge", cat: "action", view: "side", polished: true, melee: true, hookDur: 3.2,
+      id: "action-perfect-dodge", cat: "action", view: "side", melee: true, polished: true, melee: true, hookDur: 3.2,
       title: { en: "Reward a *last-second* dodge", ko: "*아슬아슬* 회피에 보상을" },
       intro: { en: "A frame-perfect dodge. Nobody *noticed*.", ko: "프레임 단위로 피했는데 *아무도 몰라요*." },
       interval: 2.3, stepDur: 3.8,
@@ -197,7 +197,7 @@
 
     /* 3 ─ 리포스트 / 처형 */
     {
-      id: "action-riposte", cat: "action", view: "side", polished: true, melee: true, hookDur: 3.4, hookFires: [0.15, 1.75],
+      id: "action-riposte", cat: "action", view: "side", melee: true, polished: true, melee: true, hookDur: 3.4, hookFires: [0.15, 1.75],
       title: { en: "Make an execution *brutal*", ko: "처형 일격을 *잔혹하게*" },
       intro: { en: "Opening! …and it's a *normal stab*.", ko: "빈틈! …인데 *평범한 찌르기*." },
       interval: 1.6, stepDur: 3.8,
@@ -287,7 +287,7 @@
 
     /* 4 ─ 스태미나 바 */
     {
-      id: "action-stamina", cat: "action", view: "side", polished: true,
+      id: "action-stamina", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make stamina *readable*", ko: "스태미나가 *눈에 들어오게*" },
       intro: { en: "Why can't I swing? *No idea.*", ko: "왜 안 휘둘러지지? *모르겠어요*." },
       interval: 0.42, stepDur: 4.2,
@@ -364,7 +364,7 @@
 
     /* 5 ─ 모아 베기 */
     {
-      id: "action-charged-heavy", cat: "action", view: "side",
+      id: "action-charged-heavy", cat: "action", view: "side", melee: true, polished: true, melee: true,
       title: { en: "Show the *charge* on a heavy attack", ko: "강공격 *모으는 맛*" },
       intro: { en: "Holding the button… is it *doing anything?*", ko: "버튼 누르는 중… *모이고 있는 거야?*" },
       interval: 2.2, stepDur: 4.0,
@@ -437,15 +437,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising chime / crit",
           cap: { en: "Each tier chimes *higher*. Release with a *crack*.", ko: "단계마다 *한 음씩 높게*. 놓을 때 *쾅*." },
-          tier(w, n) { w.sfx.chime(n * 4); },
-          hit(w) { w.sfx.crit(); },
+          tier(w, n) { if (w.on("tiers")) w.sfx.chime(n * 4); },
+          hit(w) { if (w.on("release")) w.sfx.critBig(); else w.sfx.slashHit(); },
         },
       ],
     },
 
     /* 6 ─ 1-2-3 콤보 */
     {
-      id: "action-combo-chain", cat: "action", view: "side",
+      id: "action-combo-chain", cat: "action", view: "side", melee: true,
       title: { en: "Make a combo *build up*", ko: "콤보가 *쌓이는 맛*" },
       intro: { en: "Hit, hit, hit. All *exactly the same*.", ko: "퍽, 퍽, 퍽. *다 똑같아요*." },
       interval: 0.5, stepDur: 3.6,
@@ -517,7 +517,7 @@
 
     /* 7 ─ 띄우기 */
     {
-      id: "action-launcher", cat: "action", view: "side",
+      id: "action-launcher", cat: "action", view: "side", melee: true,
       title: { en: "Make a launcher send them *sky-high*", ko: "띄우기 공격을 *하늘 높이*" },
       intro: { en: "Launched? It just *hopped*.", ko: "띄운 거야? *깡충* 뛴 것 같아요." },
       interval: 1.7, stepDur: 3.8,
@@ -592,7 +592,7 @@
 
     /* 8 ─ 내려찍기 */
     {
-      id: "action-plunge", cat: "action", view: "side",
+      id: "action-plunge", cat: "action", view: "side", melee: true,
       title: { en: "Make a plunging attack *crash*", ko: "내려찍기를 *쿠웅*" },
       intro: { en: "Fell from the sky. Landed like a *feather*.", ko: "하늘에서 떨어졌는데 *깃털*처럼 내려앉아요." },
       interval: 1.6, stepDur: 3.8,
@@ -757,7 +757,7 @@
 
     /* 10 ─ 백스탭 */
     {
-      id: "action-backstab", cat: "action", view: "side",
+      id: "action-backstab", cat: "action", view: "side", melee: true,
       title: { en: "Make a backstab feel *sneaky*", ko: "등 찌르기를 *은밀하게*" },
       intro: { en: "Snuck up behind it. Felt like a *regular hit*.", ko: "뒤로 몰래 갔는데 *그냥 공격* 같아요." },
       interval: 1.8, stepDur: 3.8,
@@ -832,7 +832,7 @@
 
     /* 11 ─ 위험 공격 예고 */
     {
-      id: "action-telegraph", cat: "action", view: "side",
+      id: "action-telegraph", cat: "action", view: "side", melee: true,
       title: { en: "Warn before an *unblockable*", ko: "막을 수 없는 공격은 *미리 경고*" },
       intro: { en: "Unblockable! …nobody *told me*.", ko: "막기 불가! …*말을 해줘야죠*." },
       interval: 2.0, stepDur: 4.0,
@@ -921,7 +921,7 @@
 
     /* 12 ─ 체간(자세) 붕괴 */
     {
-      id: "action-posture", cat: "action", view: "side",
+      id: "action-posture", cat: "action", view: "side", melee: true,
       title: { en: "Make a posture break *shatter*", ko: "자세 무너뜨리기를 *와장창*" },
       intro: { en: "The gauge filled. *Then what?*", ko: "게이지가 다 찼는데… *그래서?*" },
       interval: 0.6, stepDur: 4.0,
@@ -1004,7 +1004,7 @@
 
     /* 13 ─ 회복 물약 */
     {
-      id: "action-flask", cat: "action", view: "side",
+      id: "action-flask", cat: "action", view: "side", melee: true,
       title: { en: "Make healing feel *restorative*", ko: "회복이 *살아나는* 느낌" },
       intro: { en: "HP went up. *That's all?*", ko: "체력이 올랐네요. *그게 다?*" },
       interval: 1.8, stepDur: 3.8,
@@ -1093,7 +1093,7 @@
 
     /* 14 ─ 무적 구르기 */
     {
-      id: "action-roll", cat: "action", view: "side",
+      id: "action-roll", cat: "action", view: "side", melee: true,
       title: { en: "Show the *i-frames* in a roll", ko: "구르기의 *무적 시간* 보여주기" },
       intro: { en: "It went through me. *Did I get hit?*", ko: "뚫고 지나갔는데… *맞은 거야?*" },
       interval: 1.5, stepDur: 3.8,
@@ -1175,7 +1175,7 @@
 
     /* 15 ─ 달리기 먼지 */
     {
-      id: "action-sprint", cat: "action", view: "side",
+      id: "action-sprint", cat: "action", view: "side", melee: true,
       title: { en: "Make sprinting feel *fast*", ko: "전력 질주가 *빠르게*" },
       intro: { en: "Sprinting. Looks like *sliding on ice*.", ko: "달리는 중인데 *얼음 위를 미끄러져요*." },
       interval: 1.7, stepDur: 3.6,
@@ -1237,7 +1237,7 @@
 
     /* 16 ─ 무기 궤적 */
     {
-      id: "action-weapon-trail", cat: "action", view: "side",
+      id: "action-weapon-trail", cat: "action", view: "side", melee: true,
       title: { en: "Give a sword swing a *trail*", ko: "칼 휘두르기에 *궤적* 그리기" },
       intro: { en: "The blade moved. Your eye *missed it*.", ko: "칼이 움직였는데 *눈이 못 따라가요*." },
       interval: 1.2, stepDur: 3.6,
@@ -1321,7 +1321,7 @@
 
     /* 17 ─ 가드 브레이크 */
     {
-      id: "action-guard-break", cat: "action", view: "side",
+      id: "action-guard-break", cat: "action", view: "side", melee: true,
       title: { en: "Make a guard break *hurt*", ko: "가드가 깨질 때 *아프게*" },
       intro: { en: "Shield's gone? I *didn't notice*.", ko: "방패가 깨졌다고? *몰랐어요*." },
       interval: 1.0, stepDur: 4.0,
@@ -1424,7 +1424,7 @@
 
     /* 18 ─ 분노 모드 */
     {
-      id: "action-rage", cat: "action", view: "side",
+      id: "action-rage", cat: "action", view: "side", melee: true,
       title: { en: "Make rage mode feel *dangerous*", ko: "분노 모드가 *위험해 보이게*" },
       intro: { en: "Rage mode ON. Looks *exactly the same*.", ko: "분노 모드 켰는데 *똑같아요*." },
       interval: 2.6, stepDur: 4.0,
@@ -1498,7 +1498,7 @@
 
     /* 19 ─ 마무리 카메라 */
     {
-      id: "action-finisher-cam", cat: "action", view: "side",
+      id: "action-finisher-cam", cat: "action", view: "side", melee: true,
       title: { en: "Frame the *final blow*", ko: "마지막 일격을 *영화처럼*" },
       intro: { en: "The boss is dead. The camera *didn't care*.", ko: "보스가 죽었는데 카메라는 *무덤덤*." },
       interval: 2.0, stepDur: 4.0,
@@ -1575,7 +1575,7 @@
 
     /* 20 ─ 적 경직 */
     {
-      id: "action-stagger", cat: "action", view: "side",
+      id: "action-stagger", cat: "action", view: "side", melee: true,
       title: { en: "Make an interrupt *stagger*", ko: "공격을 끊으면 *휘청*하게" },
       intro: { en: "I hit it mid-swing. It just… *stopped*.", ko: "기 모을 때 쳤는데 그냥… *멈췄어요*." },
       interval: 1.6, stepDur: 3.8,
@@ -1724,7 +1724,7 @@
 
     /* 22 ─ 벽꽝 */
     {
-      id: "action-wall-splat", cat: "action", view: "side",
+      id: "action-wall-splat", cat: "action", view: "side", melee: true,
       title: { en: "Make a wall hit *splat*", ko: "벽에 *철퍼덕* 박히게" },
       intro: { en: "Knocked into a wall. It just *stopped*.", ko: "벽까지 날렸는데 그냥 *멈췄어요*." },
       interval: 1.8, stepDur: 4.0,
@@ -1804,7 +1804,7 @@
 
     /* 23 ─ 슬라이딩 */
     {
-      id: "action-slide", cat: "action", view: "side",
+      id: "action-slide", cat: "action", view: "side", melee: true,
       title: { en: "Make a slide feel *close*", ko: "슬라이딩을 *아슬아슬하게*" },
       intro: { en: "Slid under it. Felt like *nothing happened*.", ko: "밑으로 빠져나갔는데 *아무 일도* 없어요." },
       interval: 1.8, stepDur: 3.8,
@@ -1881,7 +1881,7 @@
 
     /* 24 ─ 갈고리 당기기 */
     {
-      id: "action-grapple", cat: "action", view: "side",
+      id: "action-grapple", cat: "action", view: "side", melee: true,
       title: { en: "Make a grapple *yank*", ko: "갈고리로 *확* 끌어오기" },
       intro: { en: "Hooked it. It *floated* over.", ko: "걸었는데 *둥둥* 떠서 와요." },
       interval: 1.8, stepDur: 3.8,
@@ -1968,7 +1968,7 @@
 
     /* 25 ─ 패배 화면 */
     {
-      id: "action-defeat", cat: "action", view: "side",
+      id: "action-defeat", cat: "action", view: "side", melee: true,
       title: { en: "Make defeat feel *heavy*", ko: "패배 화면을 *묵직하게*" },
       intro: { en: "Died. A *text box* popped up.", ko: "죽었어요. *글자*가 툭 떴어요." },
       interval: 3.0, stepDur: 4.2,

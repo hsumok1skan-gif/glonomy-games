@@ -95,7 +95,7 @@
   RECIPES.push(
     /* 1 ─────────────────────────────── */
     {
-      id: "puzzle-line-clear", cat: "puzzle", view: "ui",
+      id: "puzzle-line-clear", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make line clears *explode*", ko: "줄 지우기를 *시원하게*" },
       intro: { en: "Two lines gone. Like they were *never there*.", ko: "두 줄이 사라졌는데 *원래 없던 것* 같아요." },
       interval: 1.4, stepDur: 3.6,
@@ -171,8 +171,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "burst + thud",
           cap: { en: "*Crack* on clear, *thud* when the stack lands.", ko: "지울 때 *파삭*, 내려앉을 때 *쿵*." },
-          clear(w) { w.sfx.burst(); },
-          collapse(w) { w.after(0.2, () => w.sfx.thud()); },
+          clear(w) { if (w.on("shards") || w.on("pop")) w.play(() => { sSnap(0.5, 0, 3500); for (let i = 0; i < 6; i++) sSnap(0.15, 0.02 + i * 0.03, 2500 + i * 300); }); else w.sfx.tock(); },
+          collapse(w) { if (w.on("drop")) w.after(0.2, () => w.sfx.thud()); },
         },
       ],
     },

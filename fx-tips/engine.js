@@ -320,7 +320,7 @@ const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? 
 // 배경 그림을 깔 장르 (옆에서 본 장면만)
 function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
 const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
-const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px", "wpn-pickaxe-px", "env-rock-px", "wpn-longsword-px"];
+const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px", "wpn-pickaxe-px", "env-rock-px", "wpn-longsword-px", "env-crate-px"];
 // 픽셀 그림 한 장(또는 시트의 한 칸)을 또렷하게: 기준점(ax, ay)을 (x, y)에 두고 s배, rot만큼 돌려서
 function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0) {
   const im = PXSPR[name]; if (!im) return false;
@@ -1968,6 +1968,7 @@ function drawActor(ctx, a, w) {
   if (w && poseSet(a) && !rigOf(a)) { drawPoseActor(ctx, a, w); ctx.restore(); return; }
   if (w && rigOf(a)) { drawRigActor(ctx, a, w); ctx.restore(); return; }
   if(rigged) drawStudioRigHero(ctx,a,w,top);
+  else if (a.key === "crate" && PXSPR["env-crate-px"] && FX.style === "art") { const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(PXSPR["env-crate-px"], -a.h / 2, top, a.h, a.h); ctx.imageSmoothingEnabled = sm; }
   else { const pxl = FX._art && FX._art[a.key], sm = ctx.imageSmoothingEnabled; if (pxl) ctx.imageSmoothingEnabled = false; ctx.drawImage(a.s.c,-a.w/2,top,a.w,a.h); ctx.imageSmoothingEnabled = sm; }
   ctx.shadowBlur = 0;
   if (a.flash > 0) { ctx.globalAlpha = Math.min(1, a.flash) * a.alpha; ctx.drawImage(a.s.white, -a.w / 2, top, a.w, a.h); }

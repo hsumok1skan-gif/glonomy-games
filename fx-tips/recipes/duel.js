@@ -208,7 +208,7 @@
 
     /* 2 ─ 보스 체력바 등장 */
     {
-      id: "duel-hpintro", cat: "duel", view: "side",
+      id: "duel-hpintro", cat: "duel", view: "side", polished: true,
       title: { en: "Make the boss bar *fill in*", ko: "보스 체력바를 *채우며* 등장" },
       intro: { en: "The bar just… *is there*.", ko: "체력바가 그냥… *떠 있어요*." },
       interval: 2.2, stepDur: 3.8,
@@ -269,7 +269,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising ticks + thud",
           cap: { en: "Ticks *climb in pitch*, then a heavy *thud*.", ko: "*띡띡띡* 올라가다 마지막에 *쿵*." },
           tick(w, i) { w.sfx.blip(i * 3); },
-          full(w) { w.sfx.thud(); },
+          full(w) { if (w.on("flash")) w.sfx.thud(); else w.sfx.tock(); },
         },
       ],
     },

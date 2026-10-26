@@ -321,7 +321,7 @@
 
     /* ───────── 3. 콤보 끊김 ───────── */
     {
-      id: "casual-combo-break", cat: "casual", view: "ui",
+      id: "casual-combo-break", cat: "casual", view: "ui", polished: true,
       title: { en: "Make a combo break *hurt*", ko: "콤보 끊김을 *아프게*" },
       intro: { en: "23 combo… *0*. Nobody noticed.", ko: "23콤보가 *0*. 아무도 몰라요." },
       interval: 2.4, stepDur: 3.8,
