@@ -110,7 +110,7 @@
   RECIPES.push(
     /* 1. 유닛 선택 고리 */
     {
-      id: "strategy-select", cat: "strategy", view: "top",
+      id: "strategy-select", cat: "strategy", view: "top", polished: true,
       title: { en: "Make unit selection *obvious*", ko: "유닛 선택을 *한눈에*" },
       intro: { en: "Which one did I *click?*", ko: "방금 *누구*를 고른 거죠?" },
       interval: 0.9, stepDur: 3.4,

@@ -622,7 +622,7 @@
 
     /* ───────── 4. 3-2-1-GO 카운트다운 ───────── */
     {
-      id: "spot-casual-countdown", cat: "ui", view: "ui",
+      id: "spot-casual-countdown", cat: "ui", view: "ui", polished: true,
       title: { en: "Make a countdown *hype* the start", ko: "카운트다운으로 *두근두근*" },
       intro: { en: "3, 2, 1, GO. Numbers just *swap*.", ko: "3, 2, 1, GO. 숫자만 *바뀌어요*." },
       interval: 3.0, stepDur: 4.0,
@@ -697,8 +697,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising beeps + boom",
           cap: { en: "Beeps *climb* in pitch. GO *booms*.", ko: "*삑* 소리가 점점 높게, GO에서 *쾅*." },
-          tick(w, c, i) { w.sfx.blip(1 + i * 3); w.sfx.tock(); },
-          go(w) { w.sfx.boom(); w.sfx.fanfare(); },
+          tick(w, c, i) { w.sfx.blip(1 + i * 3); if (w.on("slam")) w.sfx.tock(); },
+          go(w) { if (w.on("boom")) { w.sfx.burst(); w.sfx.fanfare(); } else w.sfx.chime(12); },
         },
       ],
     },
@@ -798,7 +798,7 @@
 
     /* ───────── 6. 승리 화면 ───────── */
     {
-      id: "spot-casual-victory", cat: "ui", view: "ui",
+      id: "spot-casual-victory", cat: "ui", view: "ui", polished: true,
       title: { en: "Make the victory screen *celebrate*", ko: "승리 화면을 *축제*처럼" },
       intro: { en: "You won. A trophy just *appears*.", ko: "이겼는데 트로피가 그냥 *나타나요*." },
       interval: 3.0, stepDur: 4.0,
@@ -868,9 +868,11 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thud + fanfare + pops",
           cap: { en: "Heavy *thud*, a *fanfare*, firework *pops*.", ko: "*쿵*, *빰빠밤*, 불꽃 *팡팡*." },
+          // 트로피가 쿵 떨어질 때만 쿵, 띠가 펼쳐질 때 팡파레, 불꽃놀이가 있을 때만 팡팡
           land(w) {
-            w.sfx.thud(); w.sfx.fanfare();
-            [0.31, 0.56, 0.81].forEach(t => w.after(t, () => w.sfx.burst()));
+            if (w.on("drop")) w.sfx.thud(); else w.sfx.tock();
+            if (w.on("unfurl")) w.sfx.fanfare();
+            if (w.on("fireworks")) [0.31, 0.56, 0.81].forEach(t => w.after(t, () => w.play(() => { sSnap(0.4, 0, 3000); nz({ dur: 0.4, type: "highpass", f: 2500, f2: 6000, vol: 0.2, rv: 0.4 }); })));
           },
         },
       ],

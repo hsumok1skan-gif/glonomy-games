@@ -150,7 +150,7 @@
   RECIPES.push(
     /* 1 ─ 드리프트 불꽃 */
     {
-      id: "racing-drift", cat: "racing", view: "3d",
+      id: "racing-drift", cat: "racing", view: "3d", polished: true,
       title: { en: "Make drifts *sizzle*", ko: "드리프트를 *지글지글*하게" },
       intro: { en: "The car turns. *That's it.*", ko: "차가 꺾여요. *그게 끝*이에요." },
       interval: 1.7, stepDur: 3.8,
@@ -221,7 +221,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "screech / whoosh",
           cap: { en: "A *screech* on entry, a *whoosh* on release.", ko: "들어갈 때 *끼익*, 놓을 때 *슝*." },
           start(w) { w.sfx.skid(); w.after(0.25, () => w.sfx.skid()); },
-          release(w) { w.sfx.boost(); },
+          release(w) { if (w.on("release")) w.sfx.boost(); else w.sfx.dash(); },
         },
       ],
     },

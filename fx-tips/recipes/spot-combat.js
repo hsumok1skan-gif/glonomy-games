@@ -417,7 +417,7 @@
 
     /* ───────── 4. 완벽한 패링 ───────── */
     {
-      id: "spot-combat-parry", cat: "duel", view: "3d",
+      id: "spot-combat-parry", cat: "duel", view: "3d", polished: true, melee: true,
       title: { en: "Make perfect parries feel *godlike*", ko: "완벽한 패링을 *짜릿하게*" },
       intro: { en: "Perfect timing. It feels like a *bump*.", ko: "타이밍은 완벽한데 그냥 *툭* 막혀요." },
       interval: 2.8, stepDur: 4.0,
@@ -425,39 +425,24 @@
         w.hero = w.actor("hero", { home: 196, h: 134 });
         w.foe = w.actor("foe", { home: 344, h: 142 });
         w.freeze = 0;
-        w.bl = { fa: -2.6, ha: -1.25 };
       },
+      // 적: 발톱을 치켜들었다 달려들며 내려침 → 주인공: 칼로 쳐냄 (그림 동작 그대로)
       fire(w) {
-        const h = w.hero, f = w.foe, b = w.bl, later = seq(w);
+        const h = w.hero, f = w.foe, later = seq(w);
         w.respawn(f); f.sx = f.sy = 1; f.k = 10; w.freeze = 0;
-        Object.assign(b, { fa: -2.6, ha: -1.25 });
-        // 고블린이 칼을 치켜들고 → 내려침, 영웅은 칼을 세워 막음
-        w.tween(f, { ox: 26 }, 0.4, "out");
-        w.tween(b, { fa: -0.9 }, 0.4, "out");
-        w.tween(b, { ha: -0.95 }, 0.3, "out");
-        w.spawn({ type: "glow", x: f.x - 20, y: f.gy - 100, size: 26, size1: 6, life: 0.4, color: "255,80,80" });
+        f.forcePose = "windup"; f.forceUntil = w.time + 0.44;
+        h.forcePose = "windup"; h.forceUntil = w.time + 0.44;
+        w.spawn({ x: f.x - 26, y: f.gy - 112, life: 0.4, draw: (ctx, p, k) => { const s = 6 + 6 * Math.sin(k * Math.PI); pxPlus(ctx, p.x, p.y, s, "#ff3a3a"); pxPlus(ctx, p.x, p.y, s * 0.4, "#ffe0e0"); } });
         later(0.44, () => {
-          w.tween(b, { fa: -2.75 }, 0.13, "in");
+          f.forcePose = "attack"; f.forceUntil = w.time + 0.4;
           w.tween(f, { ox: -62 }, 0.13, "in", () => {
             const x = h.x + 44, y = G - 92;
-            f.ox = -40; h.ox = -8; b.fa = -2.2; b.ha = -1.2;
-            w.tween(b, { fa: -2.6, ha: -0.95 }, 0.35, "out");
+            f.ox = -40; h.ox = -8;
+            h.forcePose = "slash"; h.forceUntil = w.time + 0.3;
             if (!w.on("perfect")) w.spawn({ type: "text", x, y: y - 44, text: "parry", size: 16, color: "#cbd5e1", life: 0.9 });
             w.emit("parry", h, f, x, y);
           });
         });
-      },
-      drawFront(w, ctx) {
-        const h = w.hero, f = w.foe, b = w.bl;
-        const blade = (x, y, a, len, col) => {
-          ctx.lineCap = "round"; ctx.strokeStyle = "#2a2f3a"; ctx.lineWidth = 9;
-          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len); ctx.stroke();
-          ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.stroke();
-          ctx.strokeStyle = "#6b4426"; ctx.lineWidth = 7;
-          ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * 12, y - Math.sin(a) * 12); ctx.lineTo(x, y); ctx.stroke();
-        };
-        if (f.alive !== false) blade(f.x + f.ox - 24, G - 92, b.fa, 70, "#c9ced8");
-        blade(h.x + h.ox + 16, G - 58, b.ha, 76, "#eef2fa");
       },
       update(w, dt) { if (w.freeze > 0) w.freeze = Math.max(0, w.freeze - dt * 1.6); },
       drawFloor(w, ctx) {
@@ -477,8 +462,8 @@
           cap: { en: "Blades *clash*. A fan of *sparks* bursts out.", ko: "칼날이 *챙!* 부딪히고 *불꽃*이 쫙." },
           parry(w, h, f, x, y) {
             sparks(w, x, y, 30, "255,220,140", [300, 900], -2.4, 0.6);
-            w.spawn({ type: "arc", x: x - 30, y, size: 46, a0: -1.3, a1: 1.1, life: 0.22, color: "220,235,255" });
-            w.spawn({ type: "glow", x, y, size: 44, size1: 8, life: 0.3, color: "255,230,170" });
+            w.spawn({ x: x - 30, y, life: 0.18, draw: (ctx, p, k) => pxCrescent(ctx, p.x, p.y, 50, -1.4, 1.1, 14, k, "200,240,255") });
+            w.spawn({ x, y, life: 0.16, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 44, k, "255,240,200") });
           },
         },
         {
@@ -504,9 +489,11 @@
           cap: { en: "Then *counter*: dash through, cut it *white*.", ko: "바로 *반격*! 스쳐 지나가며 *번쩍* 베요." },
           parry(w, h, f) {
             w.after(0.1, () => {
-              for (let i = 0; i < 4; i++) w.spawn({ type: "ghost", img: SPR.hero.cyan, x: h.x + i * 32, y: G, w: h.w, h: h.h, alpha0: 0.55 - i * 0.1, life: 0.4 });
-              h.ox = 130; f.flash = 1; f.tint = 1; f.ox = 100;
-              w.spawn({ type: "slash", x: f.x + 30, y: G - 80, ang: -0.25, len: 140, size: 14, life: 0.3, color: "255,255,255" });
+              actorGhost(w, h, "#5ad6ff", 0.4, 0.6);
+              h.forcePose = "slash"; h.forceUntil = w.time + 0.3;
+              w.tween(h, { ox: 130 }, 0.08, "out", () => actorGhost(w, h, "#5ad6ff", 0.35, 0.4));
+              f.flash = 0.8; f.tint = 1; f.ox = 100;
+              w.spawn({ x: f.x + 20, y: G - 80, life: 0.3, draw: (ctx, p, k) => pxCutLine(ctx, p.x, p.y, 150, -0.25, k) });
               w.flash("230,240,255", 0.25); w.shake(0.5, 1);
             });
           },
@@ -523,10 +510,10 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clang + whoosh",
           cap: { en: "A bright *clang*, then a *whoosh* and a slash.", ko: "맑은 *챙~*, 이어서 *휙* 베는 소리." },
+          // 막는 순간 쇠 울림 "챙~", 반격이 있을 때만 "휙·촥"
           parry(w) {
-            w.play(() => { tn({ type: "triangle", f: 2300, f2: 2100, dur: 0.7, vol: 0.16 }); tn({ type: "triangle", f: 3450, dur: 0.4, vol: 0.06 }); });
-            w.sfx.ping();
-            w.after(0.1, () => { w.sfx.dash(); w.sfx.slashHit(); });
+            w.play(() => { sSnap(0.8, 0, 3500); sBody(320, 0.06, 0.5); sMetal(2100, w.on("clash") ? 0.9 : 0.3, 0.13, 0, 0.45); });
+            if (w.on("counter")) w.after(0.1, () => { w.sfx.dash(); w.sfx.slashHit(); });
           },
         },
       ],
@@ -683,7 +670,7 @@
 
     /* ───────── 6. 콤보 마무리 ───────── */
     {
-      id: "spot-combat-combo", cat: "fighting", view: "3d",
+      id: "spot-combat-combo", cat: "fighting", view: "3d", polished: true,
       title: { en: "Make combo finishers feel *explosive*", ko: "콤보 마무리를 *화끈하게*" },
       intro: { en: "Six hits. The finisher? A *tap*.", ko: "여섯 대 때렸는데 마무리가 *톡*." },
       interval: 2.8, stepDur: 4.0,
@@ -768,8 +755,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch +2 per hit",
           cap: { en: "Each hit rings *higher*. The finisher *booms*.", ko: "칠수록 소리가 *올라가고*, 마무리는 *쾅*." },
-          hit(w, f, n) { w.sfx.hit(1 + n * 0.08); w.sfx.blip(n * 2); },
-          finish(w) { w.sfx.crit(); w.sfx.boom(); },
+          hit(w, f, n) { w.sfx.slashHit(); if (w.on("counter")) w.sfx.blip(n * 2); },
+          finish(w) { if (w.on("finale")) { w.sfx.critBig(); w.sfx.boom(); } else w.sfx.crit(); },
         },
       ],
     },
@@ -1001,7 +988,7 @@
 
     /* ───────── 9. 마지막 일격 슬로모션 ───────── */
     {
-      id: "spot-combat-final-kill", cat: "duel", view: "3d",
+      id: "spot-combat-final-kill", cat: "duel", view: "3d", polished: true,
       title: { en: "Make the final kill feel *cinematic*", ko: "마지막 일격을 *영화처럼*" },
       intro: { en: "The final boss falls. Like *any* grunt.", ko: "최종 보스가 *아무* 적처럼 쓰러져요." },
       interval: 3.4, stepDur: 4.2,
@@ -1099,7 +1086,7 @@
           cap: { en: "A sharp *slash*, then a deep, slow *boom*.", ko: "날카로운 *슥*, 이어서 낮고 긴 *쿠웅*." },
           kill(w) {
             w.sfx.slashHit();
-            w.play(() => { tn({ f: 60, f2: 24, dur: 1.6, vol: 0.8 }); nz({ f: 400, f2: 60, dur: 1.4, vol: 0.5 }); });
+            if (w.on("impact") || w.on("ko")) w.play(() => { tn({ f: 60, f2: 24, dur: 1.6, vol: 0.8 }); nz({ f: 400, f2: 60, dur: 1.4, vol: 0.5, rv: 0.4 }); });
           },
         },
       ],

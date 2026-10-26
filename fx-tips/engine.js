@@ -320,7 +320,7 @@ const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? 
 // 배경 그림을 깔 장르 (옆에서 본 장면만)
 function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
 const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
-const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px"];
+const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px", "wpn-pickaxe-px", "env-rock-px"];
 // 픽셀 그림 한 장(또는 시트의 한 칸)을 또렷하게: 기준점(ax, ay)을 (x, y)에 두고 s배, rot만큼 돌려서
 function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0) {
   const im = PXSPR[name]; if (!im) return false;
@@ -1033,7 +1033,11 @@ class World {
   flash(color, a) { this.flashC = color; this.flashA = Math.max(this.flashA, a); }
   vignette(a) { this.vig = Math.max(this.vig, a); }
   // land: true 이면 화면 밖으로 사라지지 않고 바닥에 떨어져 한 번 튀고 멈춤 (그 뒤 일어나기)
-  fly(a, vx, vy, spin, land) { a.flying = true; a.vx = vx; a.vy = vy; a.spin = spin; a.land = !!land; a.bounced = false; }
+  fly(a, vx, vy, spin, land) {
+    // 픽셀 동작 그림이 있는 인물은 빙글빙글 돌며 화면 밖으로 사라지지 않고, 날아갔다가 바닥에 떨어져 쓰러짐
+    if (poseSet(a) && !a.top) { land = true; spin = 0; vx = Math.max(-140, Math.min(140, vx)); vy = Math.max(-680, Math.min(-300, vy)); }
+    a.flying = true; a.vx = vx; a.vy = vy; a.spin = spin; a.land = !!land; a.bounced = false;
+  }
   kill(a) {
     if (!a.alive) return;
     a.alive = false;
@@ -1103,7 +1107,17 @@ class World {
         if (a.land) {
           if (a.oy >= 0 && a.vy > 0) {
             a.oy = 0;
-            if (!a.bounced && a.vy > 260) { a.bounced = true; a.vy *= -0.28; a.vx *= 0.45; this.emit("land", a); }
+            if (!a.bounced && a.vy > 260) {
+              a.bounced = true; a.vy *= -0.28; a.vx *= 0.45;
+              const own = this.R.steps.some(st => this.steps.has(st.id) && typeof st.land === "function");
+              this.emit("land", a);
+              // 레시피가 따로 정하지 않았으면: 떨어진 자리에 먼지 + 쿵 (완성 단계에서만)
+              if (!own && !this.bare && this.n > 0) {
+                this.shake(0.2, 0);
+                for (let i = 0; i < 8; i++) { const d = i % 2 ? 1 : -1; this.spawn({ type: "smoke", x: a.x + rand(-30, 30), y: a.gy - 4, vx: d * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 13), size1: rand(14, 20), color: "90,96,118" }); }
+                this.sfx.land();
+              }
+            }
             else { a.flying = false; a.vx = 0; a.vy = 0; a.rot = 0; a.keep = true; }
           }
         } else a.alpha = Math.max(0, a.alpha - dt * 0.9);
@@ -1272,6 +1286,8 @@ function drawPartPx(ctx, p, s, a, k, rem) {
   const C = p.color || "255,255,255";
   switch (p.type) {
     case "glow": pxGlow(ctx, p.x, p.y, s * 0.8, C, a); return true;
+    // 베기 자국: 흰 심 + 양옆 색 테두리가 벌어지는 픽셀 칼자국 (모든 레시피 공통)
+    case "slash": { if (p.age == null || p.life == null) return false; ctx.globalAlpha = Math.min(1, a * 1.4); pxCutLine(ctx, p.x, p.y, p.len * 2, p.ang, k, C === "255,255,255" ? "190,245,255" : C); ctx.globalAlpha = 1; return true; }
     case "star": { const sz = s * (0.6 + 0.4 * rem); ctx.globalAlpha = Math.min(1, a); pxPlus(ctx, p.x, p.y, sz, `rgb(${pxShade(C, 0.75)})`); pxPlus(ctx, p.x, p.y, sz * 0.55, `rgb(${pxShade(C, 1.5)})`); return true; }
     case "spark": {
       const dir = Math.atan2(p.vy, p.vx), len = Math.max(s * 2.4, Math.hypot(p.vx, p.vy) * 0.04);
@@ -1852,14 +1868,15 @@ const POSE_MOVE = {
 function drawHeldHammer(x, gx, gy, tx, ty, alpha = 1, name = "wpn-hammer-px") {
   // 손잡이(16, 56)를 손에, 머리 쪽(위)을 칼끝 방향으로. 주인공 그림과 같은 픽셀 크기(1.41배)
   const ang = Math.atan2(ty - gy, tx - gx) + Math.PI / 2;
-  x.globalAlpha = alpha; pxSprite(x, name, gx, gy, 1.41, ang, 16, 56); x.globalAlpha = 1;
+  const ax = name === "wpn-pickaxe-px" ? 24 : 16;
+  x.globalAlpha = alpha; pxSprite(x, name, gx, gy, 1.41, ang, ax, 56); x.globalAlpha = 1;
 }
 function drawPoseActor(ctx, a, w) {
   const P = poseSet(a), idle = P.f.idle, t = w.time;
   let name = poseName(w, a);
   // 너무 빨리 바뀌면 깜빡거려 보여서, 한 컷은 최소 0.07초 유지
   if (a.poseNow && name !== a.poseNow && t - (a.poseAt ?? -9) < 0.07 && name !== "hurt") name = a.poseNow;
-  if (a.forcePose && t < (a.forceUntil ?? 0)) name = a.forcePose;
+  if (a.forcePose && (t < (a.forceUntil ?? 0) || a.forceFrames > 0)) { name = a.forcePose; if (a.forceFrames > 0) a.forceFrames--; }
   // 한 번 재생하는 동작(맞음·공격·베기 등)은 끝까지 보여 줌 — 날아가기·새로 맞기만 끼어들 수 있음
   const OA = P.anims && P.anims[a.poseNow];
   if (OA && OA.once && name !== a.poseNow && name !== "fly" && !(name === "hurt" && a.poseNow !== "hurt") && t - (a.poseAt ?? -9) < (OA.n - (OA.from || 0)) / OA.fps) name = a.poseNow;
@@ -1884,7 +1901,7 @@ function drawPoseActor(ctx, a, w) {
       const left = -A.ax * aw, top = -ah;
       x.globalAlpha = alpha; x.drawImage(A.img, i * A.cw, 0, A.cw, A.ch, left, top, aw, ah); x.globalAlpha = 1;
       // 망치 레시피: 칼 대신 망치를 쥔 것처럼 겹쳐 그림 (칼 컷은 칼날 위에, 다른 컷은 손에서 땅 쪽으로 늘어뜨림)
-      if ((w.R.weapon === "hammer" || w.R.weapon === "axe") && a.key === "hero") {
+      if (w.R.weapon && a.key === "hero") {
         const sx = aw / A.cw, sy = ah / A.ch, nm = "wpn-" + w.R.weapon + "-px";
         if (A.wpn) { const q = A.wpn[i]; drawHeldHammer(x, left + q[2] * sx, top + q[3] * sy, left + q[0] * sx, top + q[1] * sy, alpha, nm); }
         else { const tp = A.tips ? A.tips[i] : A.tip, hx = left + tp[0] * aw, hy = top + tp[1] * ah; drawHeldHammer(x, hx, hy, hx + 26, hy + 44, alpha, nm); }

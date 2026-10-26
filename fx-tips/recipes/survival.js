@@ -208,45 +208,49 @@
 
     /* ───────── 2. 바위 캐기 ───────── */
     {
-      id: "survival-mine", cat: "survival", view: "side",
+      id: "survival-mine", cat: "survival", view: "side", polished: true, melee: true, weapon: "pickaxe", hookDur: 3.6, hookFires: [0.1, 0.7, 1.3, 1.9, 2.5],
       title: { en: "Make mining *crunchy*", ko: "바위 캐기를 *단단하게*" },
       intro: { en: "Tink. Tink. Rock *gone*.", ko: "톡. 톡. 바위가 *없어졌어요*." },
       interval: 0.65, stepDur: 3.8,
       setup(w) {
         ensure();
-        w.hero = w.actor("hero", { home: 130 });
-        w.rock = w.actor("survival-rock", { home: 320 });
+        w.hero = w.actor("hero", { home: 190 });
+        w.rock = w.actor("survival-rock", { home: 300 }); w.rock.alpha = 0; // 그림은 픽셀 바위로 직접
         w.rock.cracks = [];
         w.pick = { rot: -0.3 };
       },
       fire(w) {
         if (w.busy) return;
         w.busy = true;
-        const P = w.pick, R = w.rock;
-        w.tween(P, { rot: -0.9 }, 0.12, "out", () => w.tween(P, { rot: 1.95 }, 0.07, "in", () => {
+        const R = w.rock;
+        w.after(0.14, () => { w.emit("swing"); w.after(0.07, () => {
           if (R.alive) {
             R.hp -= 20; R.ox = 7;
-            w.emit("hit", { x: R.x - 80, y: G - 46 }, R);
-            if (R.hp <= 0) { R.cracks = []; w.kill(R); }
+            w.emit("hit", { x: R.x - 54, y: G - 36 }, R);
+            if (R.hp <= 0) { R.cracks = []; w.kill(R); R.alpha = 0; w.after(0.6, () => { R.alpha = 0; }); }
           }
-          w.after(0.08, () => w.tween(P, { rot: -0.3 }, 0.2, "inout", () => { w.busy = false; }));
-        }));
+          w.after(0.2, () => { w.busy = false; });
+        }); });
       },
-      drawFront(w, ctx) {
-        const R = w.rock, h = w.hero;
-        if (R.alive) {
-          ctx.strokeStyle = "rgba(15,15,20,0.9)"; ctx.lineWidth = 3; ctx.lineJoin = "round";
-          for (const c of R.cracks) { ctx.beginPath(); c.forEach((q, i) => ctx[i ? "lineTo" : "moveTo"](R.x + R.ox + q[0], G + q[1])); ctx.stroke(); }
-        }
-        drawTool(ctx, h.x + h.ox + 28, G - 82, w.pick.rot, "pick");
+      update(w) { const R = w.rock; if (R.alive) R.alpha = 0; },
+      drawBack(w, ctx) {
+        const R = w.rock; if (!R.alive) return;
+        const vb = R.vib > 0 ? ((frameNo & 1) ? 1 : -1) * R.vib : 0;
+        ctx.save(); ctx.translate(Math.round(R.x + R.ox + vb), G + 2); ctx.scale(R.sx, R.sy);
+        pxSprite(ctx, "env-rock-px", 0, 0, 1.6, 0, 40, 63);
+        if (R.flash > 0.05) { ctx.globalAlpha = R.flash * 0.5; ctx.globalCompositeOperation = "lighter"; pxSprite(ctx, "env-rock-px", 0, 0, 1.6, 0, 40, 63); ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1; }
+        ctx.restore();
+        ctx.strokeStyle = "#141419"; ctx.lineWidth = 3; ctx.lineJoin = "miter";
+        for (const c of R.cracks) { ctx.beginPath(); c.forEach((q, i) => ctx[i ? "lineTo" : "moveTo"](Math.round(R.x + R.ox + q[0] * 0.8), Math.round(G + q[1] * 0.8))); ctx.stroke(); }
       },
+
       steps: [
         {
           id: "sparks", name: { en: "Sparks", ko: "불똥" }, param: "10 sparks",
           cap: { en: "Steel on stone *throws sparks*.", ko: "쇠가 돌에 닿으면 *불똥*이 튀어요." },
           hit(w, at) {
-            sparks(w, at.x, at.y, 10, "255,220,150", [250, 650], Math.PI * 0.75, Math.PI * 1.45);
-            w.spawn({ type: "star", x: at.x, y: at.y, size: 30, life: 0.08, color: "255,250,230" });
+            sparks(w, at.x, at.y, 12, "255,220,150", [250, 650], Math.PI * 0.75, Math.PI * 1.45);
+            w.spawn({ x: at.x, y: at.y, life: 0.09, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 24, k, "255,240,200") });
           },
         },
         {
@@ -260,7 +264,7 @@
         {
           id: "chunks", name: { en: "Stone Chips", ko: "돌 부스러기" }, param: "6 chips",
           cap: { en: "*Gray chips* fly back toward you.", ko: "*돌 부스러기*가 이쪽으로 튀어요." },
-          hit(w, at) { chips(w, at.x, at.y, 6, ["148,163,184", "100,116,139", "203,213,225"]); },
+          hit(w, at) { for (let i = 0; i < 7; i++) { const sz = rand(2, 4.5), rot = rand(0, 6), c = pick([["#9aa0b4", "#34364a"], ["#6c7088", "#262838"]]); w.spawn({ x: at.x, y: at.y, vx: rand(-380, -60), vy: rand(-420, -120), g: 1300, ground: true, bounce: 0.3, vr: rand(-16, 16), life: rand(1, 1.4), hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, c[0], c[1]) }); } },
         },
         {
           id: "squash", name: { en: "Rock Reacts", ko: "바위 반응" }, param: "flash · squash .9",
@@ -271,11 +275,11 @@
           id: "shatter", name: { en: "Shatter + Ore", ko: "와르르 + 광석" }, param: "18 chunks · 3 ore",
           cap: { en: "Last hit: *burst apart* and pop out the *ore*.", ko: "마지막엔 *와르르*, *광석*이 톡 튀어나와요." },
           kill(w, R) {
-            chips(w, R.x, G - 50, 18, ["148,163,184", "100,116,139", "71,85,105"], [-420, 420], [6, 12]);
-            chips(w, R.x, G - 50, 3, ["251,191,36"], [-200, 200], [9, 11]);
+            for (let i = 0; i < 20; i++) { const sz = rand(3, 7), rot = rand(0, 6), c = pick([["#9aa0b4", "#34364a"], ["#6c7088", "#262838"], ["#b8bdcc", "#4a4c60"]]); w.spawn({ x: R.x + rand(-30, 30), y: G - rand(20, 70), vx: rand(-420, 420), vy: rand(-700, -200), g: 1500, ground: true, bounce: 0.3, vr: rand(-16, 16), life: rand(1.2, 1.8), hold: true, draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, c[0], c[1]) }); }
+            for (let i = 0; i < 3; i++) { const rot = rand(0, 6); w.spawn({ x: R.x, y: G - 50, vx: rand(-200, 200), vy: rand(-620, -420), g: 1500, ground: true, bounce: 0.45, vr: rand(-10, 10), life: 1.8, hold: true, draw: (ctx, p) => { pxChip(ctx, p.x, p.y, 6, rot + p.rot, "#ffd27a", "#8a5a10"); pxPlus(ctx, p.x, p.y - 6, 3 + 2 * Math.sin(p.age * 20), "#fff4cc"); } }); }
             for (let i = 0; i < 12; i++) w.spawn({ type: "smoke", under: true, x: R.x + rand(-60, 60), y: G - rand(10, 60), vx: rand(-120, 120), vy: rand(-80, -10), drag: 2, size: 14, size1: 38, life: rand(0.8, 1.2), color: "120,125,140" });
             w.spawn({ type: "ring", flat: true, x: R.x, y: G, size: 20, size1: 170, life: 0.5, w: 10, color: "226,232,240" });
-            w.spawn({ type: "glow", under: true, x: R.x, y: G - 50, size: 40, size1: 140, life: 0.4, color: "251,191,36" });
+            w.spawn({ x: R.x, y: G - 50, life: 0.2, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 70, k, "255,226,160") });
             txt(w, R.x, G - 140, "+3", 34, "#fbbf24");
             w.shake(0.5); w.hitstop(0.12);
           },
@@ -283,8 +287,10 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clink + thud",
           cap: { en: "A bright *clink* on top of a dull *thud*.", ko: "둔한 *퍽* 위에 맑은 *깡*." },
-          hit(w) { w.sfx.thunk(); w.play(() => tn({ type: "triangle", f: rand(1700, 2000), f2: 1400, dur: 0.12, vol: 0.18 })); },
-          kill(w) { w.sfx.boom(); },
+          // 곡괭이가 돌에 박힘: 둔한 퍽 + 쇠가 튀는 깡 (불똥이 있을 때만 맑게)
+          hit(w) { w.play(() => { sSnap(0.5, 0, 2600); sBody(170, 0.08, 0.6); if (w.on("sparks")) sMetal(1800 + Math.random() * 300, 0.14, 0.07); }); },
+          // 바위가 부서질 때: 와르르 (부서지는 효과가 있을 때만 크게)
+          kill(w) { if (w.on("shatter")) w.play(() => { sSnap(0.8, 0, 2000); sBody(110, 0.35, 0.9); nz({ dur: 0.7, f: 1600, f2: 200, vol: 0.5, rv: 0.3 }); for (let i = 0; i < 9; i++) sSnap(0.12, 0.05 + Math.random() * 0.5, 1500 + Math.random() * 2000); }); else w.sfx.hit(0.8); },
         },
       ],
     },

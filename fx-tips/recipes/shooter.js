@@ -338,7 +338,7 @@
 
     /* 2 ─ 피격 판정점 보이기 */
     {
-      id: "shooter-hitbox", cat: "shooter", view: "top",
+      id: "shooter-hitbox", cat: "shooter", view: "top", polished: true,
       title: { en: "Show the *real hitbox*", ko: "*진짜 판정점* 보여 주기" },
       intro: { en: "The ship is big. The hitbox is a *dot*. Who knew?", ko: "기체는 큰데 판정은 *점* 하나. 누가 알아요?" },
       interval: 2.6, stepDur: 4.0,

@@ -22,7 +22,19 @@
     ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.fillRect(8, -5, L - 24, 2);
     ctx.restore();
   }
-  const drawSword = (ctx, a, s, L = SWL) => { if (a.alpha <= 0) return; const p = hand(a); blade(ctx, p.x, p.y, angOf(a, s.rot), L, s.col, s.glowA || 0, s.glowC, a.alpha); };
+  // 픽셀 동작 그림이 있는 인물(주인공·적)은 칼을 따로 그리지 않고, 칼 각도의 움직임을 동작 그림으로 바꿔 보여 줌
+  //  - 높이 치켜들면 준비 자세, 빠르게 앞으로 휘두르면 베기(적은 할퀴기) 자세. 칼에 모인 빛은 손 위치에 칸 단위로
+  const drawSword = (ctx, a, s, L = SWL) => {
+    if (a.alpha <= 0) return;
+    if (poseSet(a)) {
+      const v = s.rot - (s._prev ?? s.rot); s._prev = s.rot;
+      if (v > 0.12) { a.forcePose = a.key === "foe" ? "attack" : "slash"; a.forceFrames = 16; }
+      else if (s.rot < -0.9 && !(a.forceFrames > 0)) { a.forcePose = "windup"; a.forceFrames = 2; }
+      if (s.glowA > 0) { const p = hand(a); pxGlow(ctx, p.x, p.y - 30, 24 + 26 * s.glowA, s.glowC || "255,200,90", 0.7 * s.glowA); }
+      return;
+    }
+    const p = hand(a); blade(ctx, p.x, p.y, angOf(a, s.rot), L, s.col, s.glowA || 0, s.glowC, a.alpha);
+  };
   // 로우폴리 적: 붉은 기사, 보라색 보스
   function ensureArt() {
     if (!ACTOR["action-knight"]) {
@@ -185,14 +197,14 @@
 
     /* 3 ─ 리포스트 / 처형 */
     {
-      id: "action-riposte", cat: "action", view: "side",
+      id: "action-riposte", cat: "action", view: "side", polished: true, melee: true, hookDur: 3.4, hookFires: [0.15, 1.75],
       title: { en: "Make an execution *brutal*", ko: "처형 일격을 *잔혹하게*" },
       intro: { en: "Opening! …and it's a *normal stab*.", ko: "빈틈! …인데 *평범한 찌르기*." },
       interval: 1.6, stepDur: 3.8,
       setup(w) {
         ensureArt();
         w.hero = w.actor("hero", { home: 130 }); w.sw = { rot: 0.3 };
-        w.foe = w.actor("action-knight", { home: 380, hp: 200 }); w.mark = 0; w.dim = 0;
+        w.foe = w.actor("foe", { home: 380, hp: 120 }); w.mark = 0; w.dim = 0;
       },
       fire(w) {
         if (w.busy) return;
@@ -208,7 +220,6 @@
       },
       update(w, dt) {
         const k = w.foe;
-        if (k.alive && !k.flying) { k.rot = -0.28; k.sy = Math.min(k.sy, 0.9); }
         w.dim = Math.max(0, w.dim - dt * 1.5);
       },
       drawFloor(w, ctx) {
@@ -220,8 +231,10 @@
         const k = w.foe;
         if (w.mark > 0 && k.alive) {
           const y = k.gy - k.h - 52, s = 12 + Math.sin(w.time * 10) * 2;
-          ctx.globalCompositeOperation = "lighter"; glow(ctx, k.x, y, 34, "248,113,113", 0.7); ctx.globalCompositeOperation = "source-over";
-          ctx.fillStyle = "#fee2e2"; ctx.beginPath(); ctx.moveTo(k.x, y - s); ctx.lineTo(k.x + s, y); ctx.lineTo(k.x, y + s); ctx.lineTo(k.x - s, y); ctx.closePath(); ctx.fill();
+          pxGlow(ctx, k.x - 20, y, 22, "248,80,80", 0.6);
+          ctx.fillStyle = "#3a0a0a"; ctx.beginPath(); ctx.moveTo(k.x - 20, y - s - 2); ctx.lineTo(k.x - 20 + s + 2, y); ctx.lineTo(k.x - 20, y + s + 2); ctx.lineTo(k.x - 20 - s - 2, y); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = "#ff5a5a"; ctx.beginPath(); ctx.moveTo(k.x - 20, y - s); ctx.lineTo(k.x - 20 + s, y); ctx.lineTo(k.x - 20, y + s); ctx.lineTo(k.x - 20 - s, y); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = "#ffe0e0"; ctx.fillRect(k.x - 22, y - 4, 4, 4);
         }
       },
       drawHud(w, ctx) { drawBar(ctx, w.foe); },
@@ -234,7 +247,9 @@
         {
           id: "pause", name: { en: "Long Freeze", ko: "긴 멈춤" }, param: "stop 250ms",
           cap: { en: "Hold the stab for a *quarter second*. Savor it.", ko: "찌른 채로 *0.25초*. 음미하게." },
-          stab(w) { w.hitstop(0.25); w.foe.flash = 1.2; w.foe.vib = 6; },
+          stab(w) { w.hitstop(0.25); w.foe.flash = 0.8; w.foe.vib = 6; },
+          kill(w, k) { w.fly(k, 40, -520, 0, true); k.tint = 0.5; },
+          land(w, k) { w.shake(0.25, 0); for (let i = 0; i < 10; i++) { const d = i % 2 ? 1 : -1; w.spawn({ type: "smoke", x: k.x + rand(-30, 30), y: G - 4, vx: d * rand(60, 160), vy: rand(-40, -10), drag: 3, life: rand(0.4, 0.7), size: rand(8, 14), size1: rand(14, 22), color: "90,96,118" }); } w.sfx.land(); },
         },
         {
           id: "pierce", name: { en: "Pierce Line", ko: "꿰뚫는 선" }, param: "slash 180px",
@@ -248,8 +263,8 @@
           id: "spray", name: { en: "Crimson Spray", ko: "붉은 분출" }, param: "26 sparks forward",
           cap: { en: "Spray *crimson* out the far side.", ko: "반대편으로 *붉게* 뿜어져요." },
           stab(w, at) {
-            sparks(w, at.x + 60, at.y, 26, "239,68,68", [200, 700], -0.6, 0.6);
-            w.spawn({ type: "glow", x: at.x + 40, y: at.y, size: 80, size1: 20, life: 0.3, color: "220,38,38" });
+            for (let i = 0; i < 18; i++) { const sz = rand(2, 4.5), rot = rand(0, 6), a = rand(-0.7, 0.5), v = rand(240, 680); w.spawn({ x: at.x + 50, y: at.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 1100, ground: true, bounce: 0.2, life: rand(0.6, 1), vr: rand(-14, 14), draw: (ctx, p) => pxChip(ctx, p.x, p.y, sz, rot + p.rot, "#e2553a", "#5b1d17") }); }
+            sparks(w, at.x + 60, at.y, 14, "239,68,68", [200, 700], -0.6, 0.6);
           },
         },
         {
@@ -265,7 +280,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crit thud + ring",
           cap: { en: "A heavy *thunk* with a ringing tail.", ko: "묵직한 *푹*, 뒤에 울림." },
-          stab(w) { w.sfx.crit(); },
+          stab(w) { if (w.on("pause") || w.on("pierce")) w.sfx.critBig(); else w.sfx.hit(); },
         },
       ],
     },
@@ -824,7 +839,7 @@
       setup(w) {
         ensureArt();
         w.hero = w.actor("hero", { home: 120 });
-        w.foe = w.actor("action-boss", { home: 420 }); w.bs = { rot: -1.0, col: "#c4b5fd" };
+        w.foe = w.actor("foe", { h: 190, home: 420 }); w.bs = { rot: -1.0, col: "#c4b5fd" };
         w.warn = 0; w.zone = 0;
       },
       fire(w) {
@@ -913,7 +928,7 @@
       setup(w) {
         ensureArt();
         w.hero = w.actor("hero", { home: 225 }); w.sw = { rot: 0.4 };
-        w.foe = w.actor("action-knight", { home: 370 }); w.foe.maxHp = 0;
+        w.foe = w.actor("foe", { home: 370 }); w.foe.maxHp = 0;
         w.ps = { v: 0, shown: 0, broken: 0 };
       },
       fire(w) {
@@ -1313,7 +1328,7 @@
       setup(w) {
         ensureArt();
         w.hero = w.actor("hero", { home: 180 });
-        w.foe = w.actor("action-knight", { home: 390 }); w.ks = { rot: -1.4 };
+        w.foe = w.actor("foe", { home: 390 }); w.ks = { rot: -1.4 };
         w.gd = { v: 100, lag: 100, stun: 0, gone: false };
       },
       fire(w) {
@@ -1567,7 +1582,7 @@
       setup(w) {
         ensureArt();
         w.hero = w.actor("hero", { home: 150 }); w.sw = { rot: 0.4 };
-        w.foe = w.actor("action-knight", { home: 390 }); w.ks = { rot: -1.4, glowC: "248,113,113", glowA: 0 };
+        w.foe = w.actor("foe", { home: 390 }); w.ks = { rot: -1.4, glowC: "248,113,113", glowA: 0 };
         w.wob = 0;
       },
       fire(w) {
@@ -1960,7 +1975,7 @@
       setup(w) {
         ensureArt();
         w.hero = w.actor("hero", { home: 220 });
-        w.foe = w.actor("action-boss", { home: 420 }); w.bs = { rot: -1.0, col: "#c4b5fd" };
+        w.foe = w.actor("foe", { h: 190, home: 420 }); w.bs = { rot: -1.0, col: "#c4b5fd" };
         w.ds = { on: false, t: 0, dark: 0 };
       },
       fire(w) {
