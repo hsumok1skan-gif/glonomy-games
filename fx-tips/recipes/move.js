@@ -216,7 +216,7 @@
 
     /* 3. 2단 점프 */
     {
-      id: "move-doublejump", cat: "move", view: "side",
+      id: "move-doublejump", cat: "move", view: "side", polished: true,
       title: { en: "Make the double jump *visible*", ko: "2단 점프가 *보이게*" },
       intro: { en: "It jumped again. *Off what?*", ko: "공중에서 또 뛰었는데 *뭘 밟은 거죠?*" },
       interval: 1.9, stepDur: 3.4,
@@ -292,7 +292,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hop / higher hop",
           cap: { en: "Second jump sounds *higher* than the first.", ko: "두 번째 점프는 *더 높은* 음으로." },
           jump(w) { w.sfx.jump(); },
-          djump(w) { w.play(() => tn({ type: "square", f: 520, f2: 1040, dur: 0.12, vol: 0.1 })); },
+          djump(w) { w.play(() => tn({ type: "square", f: 520, f2: 1040, dur: 0.12, vol: 0.08, lp: 3000 })); if (w.on("puff")) w.play(() => nz({ dur: 0.16, f: 1600, f2: 300, vol: 0.25 })); },
           land(w) { w.sfx.land(); },
         },
       ],

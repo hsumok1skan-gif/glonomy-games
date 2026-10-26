@@ -391,7 +391,7 @@
 
     // 2 ─ 팀 색과 외곽선
     {
-      id: "army-colors", cat: "army", view: "top",
+      id: "army-colors", cat: "army", view: "top", polished: true,
       title: { en: "Tell teams apart *at a glance*", ko: "우리 편을 *한눈에*" },
       intro: { en: "Who's who? *No idea.*", ko: "누가 누구 편이죠? *모르겠어요*." },
       interval: 0.5, stepDur: 3.4,

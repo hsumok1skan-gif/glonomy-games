@@ -682,7 +682,7 @@
 
     /* 6 ─ 적 탄 읽히게 */
     {
-      id: "shooter-readable", cat: "shooter", view: "top",
+      id: "shooter-readable", cat: "shooter", view: "top", polished: true,
       title: { en: "Make enemy bullets *readable*", ko: "적 탄을 *잘 보이게*" },
       intro: { en: "Busy screen. Which ones *kill you?*", ko: "화면이 정신없어요. 뭐가 *위험하죠?*" },
       interval: 0.45, stepDur: 3.6,

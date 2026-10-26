@@ -276,7 +276,7 @@
 
     /* 3 ─ 페이즈 전환 */
     {
-      id: "duel-phase", cat: "duel", view: "side",
+      id: "duel-phase", cat: "duel", view: "side", polished: true,
       title: { en: "Make phase 2 an *event*", ko: "2페이즈를 *사건*으로" },
       intro: { en: "Half HP. It changed color. *Okay?*", ko: "체력 절반. 색이 바뀌었네. *그래서?*" },
       interval: 2.4, stepDur: 4.0,
@@ -294,12 +294,16 @@
       update(w, dt) { w.bubble = Math.max(0, w.bubble - dt); },
       drawFront(w, ctx) {
         const b = w.boss;
-        drawOver(ctx, b, SPR["duel-boss2"].c, w.ph); heroSword(w, ctx);
+        // 픽셀 적 그림이면 옛 그림을 덮지 않고, 몸에 붉은 불길(burn)을 입혀 2페이즈를 보여 줌
+        if (poseSet(b)) b.burn = w.ph > 0.05 ? w.ph : 0; else drawOver(ctx, b, SPR["duel-boss2"].c, w.ph);
+        heroSword(w, ctx);
         if (w.bubble > 0) {
           const c = chest(b), r = 130 + Math.sin(w.time * 20) * 3, a = Math.min(1, w.bubble * 3);
-          ctx.globalCompositeOperation = "lighter"; glow(ctx, c.x + 10, c.y, r, "251,113,133", 0.25 * a);
-          ctx.strokeStyle = `rgba(255,200,210,${0.7 * a})`; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(c.x + 10, c.y, r * 0.8, 0, TAU); ctx.stroke();
-          ctx.globalCompositeOperation = "source-over";
+          // 보호막: 칸 단위 육각 껍질 (테두리 점선 + 안쪽 옅은 빛)
+          pxGlow(ctx, c.x + 10, c.y, r * 0.5, "251,113,133", 0.25 * a);
+          ctx.globalAlpha = 0.85 * a; ctx.fillStyle = "#ffc8d2";
+          for (let i = 0; i < 36; i++) { const an = i * TAU / 36 + w.time * 0.6, rr2 = r * 0.8; if (i % 3 === 2) continue; ctx.fillRect(Math.round(c.x + 10 + Math.cos(an) * rr2) - 2, Math.round(c.y + Math.sin(an) * rr2) - 2, 4, 4); }
+          ctx.globalAlpha = 1;
         }
       },
       drawHud(w, ctx) {
@@ -346,7 +350,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hit + rising hum",
           cap: { en: "Cut to *silence*, then a *rising* hum and a slam.", ko: "*뚝* 끊겼다가, *웅~* 차오르고 *쿵*." },
-          phase(w) { w.sfx.crit(); w.after(0.3, () => w.sfx.charge()); w.after(1.2, () => w.sfx.slam()); },
+          phase(w) { w.sfx.critBig(); if (w.on("morph") || w.on("lift")) w.after(0.3, () => w.sfx.charge()); if (w.on("lift")) w.after(1.2, () => w.sfx.slam()); },
         },
       ],
     },

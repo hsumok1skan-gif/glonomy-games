@@ -281,7 +281,7 @@
 
     /* 3 ─ 띄우기 + 저글 */
     {
-      id: "fighting-launcher", cat: "fighting", view: "side", melee: true,
+      id: "fighting-launcher", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a launcher *lift*", ko: "띄우기를 *높이 높이*" },
       intro: { en: "It's a launcher. It *hops*.", ko: "띄우기 기술인데 *깡충* 뛰어요." },
       interval: 1.5, stepDur: 4.0,
@@ -347,7 +347,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh up · pops",
           cap: { en: "A *whoosh* going up, *pops* in the air.", ko: "올라갈 때 *휘익*, 공중에서 *팡팡*." },
-          launch(w) { w.sfx.crit(); w.play(() => nz({ type: "bandpass", f: 500, f2: 3000, q: 2, dur: 0.3, vol: 0.3 })); },
+          launch(w) { w.sfx.critBig(); if (w.on("streak") || w.on("lift")) w.play(() => nz({ type: "bandpass", f: 500, f2: 3000, q: 2, dur: 0.3, vol: 0.3, att: 0.05 })); },
           juggle(w) { w.sfx.hit(1.2); },
           land(w) { w.sfx.land(); },
         },

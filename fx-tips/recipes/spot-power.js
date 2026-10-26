@@ -655,7 +655,7 @@
 
     /* ───────── 6. 제작 성공 ───────── */
     {
-      id: "spot-power-craft", cat: "sim", view: "3d",
+      id: "spot-power-craft", cat: "sim", view: "3d", polished: true,
       title: { en: "Make crafting feel *rewarding*", ko: "제작 성공을 *뿌듯하게*" },
       intro: { en: "Four items in. One *pops* out. Meh.", ko: "재료 넷이 들어가고 하나가 *툭* 나와요." },
       interval: 3.0, stepDur: 4.0,
@@ -735,8 +735,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whirl + pop + jingle",
           cap: { en: "A *whirl*, a *pop*, a happy *jingle*.", ko: "*휘리릭*, *뽕*, 신나는 *딴따단*." },
-          orbit(w) { w.play(() => tn({ type: "triangle", f: 300, f2: 1200, dur: 0.95, vol: 0.12 })); },
-          fuse(w) { w.sfx.pop(); w.sfx.fanfare(); },
+          orbit(w) { if (w.on("orbit")) w.sfx.charge(); },
+          fuse(w) { w.sfx.pop(); if (w.on("rays")) w.sfx.lightSwell(); if (w.on("banner")) w.after(0.2, () => w.sfx.itemGet()); },
         },
       ],
     },

@@ -445,7 +445,7 @@
 
     /* 6 ─ 1-2-3 콤보 */
     {
-      id: "action-combo-chain", cat: "action", view: "side", melee: true,
+      id: "action-combo-chain", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a combo *build up*", ko: "콤보가 *쌓이는 맛*" },
       intro: { en: "Hit, hit, hit. All *exactly the same*.", ko: "퍽, 퍽, 퍽. *다 똑같아요*." },
       interval: 0.5, stepDur: 3.6,

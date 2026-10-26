@@ -399,7 +399,7 @@
 
     /* ───────── 4. 피버 모드 ───────── */
     {
-      id: "casual-fever", cat: "casual", view: "ui",
+      id: "casual-fever", cat: "casual", view: "ui", polished: true,
       title: { en: "Make fever mode *explode*", ko: "피버 모드를 *터지게*" },
       intro: { en: "Gauge full. *Fever?* Where?", ko: "게이지 꽉 참. *피버*… 어디요?" },
       interval: 2.6, stepDur: 3.8,
@@ -473,7 +473,7 @@
           id: "sound", name: { en: "Fever Sound", ko: "피버 소리" }, param: "sweep + fanfare",
           cap: { en: "A rising *whoosh* into a *fanfare*.", ko: "*슈우욱* 올라가서 *빠밤*." },
           hit(w) { w.sfx.blip(w.g / 10); },
-          start(w) { w.sfx.boost(); w.sfx.fanfare(); },
+          start(w) { if (w.on("bg") || w.on("rays")) w.sfx.boost(); if (w.on("banner")) w.sfx.fanfare(); else w.sfx.chime(7); },
         },
       ],
     },

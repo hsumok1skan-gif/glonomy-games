@@ -386,7 +386,7 @@
 
     /* 4 ─ 충돌 */
     {
-      id: "racing-crunch", cat: "racing", view: "side",
+      id: "racing-crunch", cat: "racing", view: "side", polished: true,
       title: { en: "Make crashes *crunch*", ko: "충돌에 *우지끈* 넣기" },
       intro: { en: "Two cars touch. Like *bumper stickers*.", ko: "부딪혔는데 *스티커*끼리 닿은 느낌." },
       interval: 1.6, stepDur: 3.6,
@@ -442,7 +442,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thud + glass",
           cap: { en: "A deep *crunch* plus high *glass tinkle*.", ko: "묵직한 *쾅* 위에 *쨍그랑*." },
-          crash(w) { w.sfx.crit(); w.play(() => { nz({ type: "highpass", f: 5000, dur: 0.35, vol: 0.3, delay: 0.05 }); tn({ type: "triangle", f: 2600, f2: 2200, dur: 0.2, vol: 0.08, delay: 0.08 }); }); },
+          crash(w) { w.play(() => { sSnap(0.9, 0, 2000); sBody(110, 0.35, 1); nz({ dur: 0.5, f: 1400, f2: 150, vol: 0.6, rv: 0.3 }); }); if (w.on("debris") || w.on("crumple")) w.after(0.04, () => w.sfx.glass()); },
         },
       ],
     },

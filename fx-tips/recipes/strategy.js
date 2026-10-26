@@ -370,7 +370,7 @@
 
     /* 4. 건물 배치 미리보기 */
     {
-      id: "strategy-place", cat: "strategy", view: "iso",
+      id: "strategy-place", cat: "strategy", view: "iso", polished: true,
       title: { en: "Show *where* you can build", ko: "*지을 수 있는 곳*을 보여주기" },
       intro: { en: "Can I build here? *No idea.*", ko: "여기 지어도 돼요? *모르겠어요.*" },
       interval: 0.8, stepDur: 3.6,
