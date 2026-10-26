@@ -504,7 +504,7 @@
 
     /* 4 ─ 파워업 */
     {
-      id: "shooter-powerup", cat: "shooter", view: "top",
+      id: "shooter-powerup", cat: "shooter", view: "top", polished: true,
       title: { en: "Make power-ups *feel big*", ko: "파워업을 *크게* 느끼게" },
       intro: { en: "Got the item. Shot changed. *Did it?*", ko: "아이템 먹었는데… 뭐가 *바뀐 거죠?*" },
       interval: 1.8, stepDur: 3.8,
@@ -589,7 +589,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "fanfare",
           cap: { en: "A short *fanfare*. The ear gets the news too.", ko: "짧은 *빰빠밤*. 귀도 소식을 들어요." },
-          power(w) { w.sfx.fanfare(); },
+          power(w) { if (w.on("text") || w.on("burst")) w.sfx.fanfare(); else w.sfx.itemGet(); },
         },
       ],
     },

@@ -238,7 +238,7 @@
 
     // ───────────────────────── 2. 눈
     {
-      id: "env-snow", cat: "env", view: "side",
+      id: "env-snow", cat: "env", view: "side", polished: true,
       title: { en: "Let snow *pile up*", ko: "눈이 *쌓이게*" },
       intro: { en: "It snows forever. The ground *never changes*.", ko: "계속 오는데 땅은 *그대로*예요." },
       interval: 0.9, stepDur: 4.0,

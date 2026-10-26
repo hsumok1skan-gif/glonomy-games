@@ -320,7 +320,7 @@ const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? 
 // 배경 그림을 깔 장르 (옆에서 본 장면만)
 function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
 const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
-const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px", "wpn-pickaxe-px", "env-rock-px"];
+const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px", "wpn-pickaxe-px", "env-rock-px", "wpn-longsword-px"];
 // 픽셀 그림 한 장(또는 시트의 한 칸)을 또렷하게: 기준점(ax, ay)을 (x, y)에 두고 s배, rot만큼 돌려서
 function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0) {
   const im = PXSPR[name]; if (!im) return false;
@@ -328,6 +328,14 @@ function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0
   ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.imageSmoothingEnabled = false;
   ctx.drawImage(im, frame * w, 0, w, h, -ax * s, -ay * s, w * s, h * s);
   ctx.restore(); ctx.imageSmoothingEnabled = sm; return true;
+}
+// 픽셀 그림을 한 가지 색으로 칠한 사본 (잔상·발광용, 한 번 만들어 보관)
+const PXTINT = {};
+function pxTint(name, col) {
+  const k = name + col; if (PXTINT[k]) return PXTINT[k]; const im = PXSPR[name]; if (!im) return null;
+  const c = document.createElement("canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight; const x = c.getContext("2d");
+  x.drawImage(im, 0, 0); x.globalCompositeOperation = "source-atop"; x.fillStyle = col; x.fillRect(0, 0, c.width, c.height);
+  return (PXTINT[k] = c);
 }
 // 칸 단위로 찍는 등급 오라: 계단식 빛줄기(길고 짧게 번갈아) + 가운데 빛 + 바깥 점 고리. 작은 칸에 그려 확대
 const AURA_BUF = {};

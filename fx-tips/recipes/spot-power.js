@@ -349,7 +349,7 @@
 
     /* ───────── 3. 무기 마법 부여 ───────── */
     {
-      id: "spot-power-enchant", cat: "rpg", view: "3d",
+      id: "spot-power-enchant", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make enchanting feel *magical*", ko: "마법 부여를 *신비롭게*" },
       intro: { en: "Enchant done. It just turns *blue*.", ko: "마법을 걸었는데 그냥 *파래져요*." },
       interval: 2.9, stepDur: 4.0,
@@ -384,17 +384,15 @@
           }
         };
         ring(false);
-        if (s.edge > 0) { // 칼 테두리 발광: 하늘색 실루엣을 조금 크게, 더하기 합성
-          const k = 1.1 + 0.04 * Math.sin(w.time * 8);
-          ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.filter = "blur(6px)"; ctx.globalAlpha = 0.8;
-          ctx.drawImage(art.cyan, 270 - W * k / 2, 168 + bob - H * k / 2, W * k, H * k);
-          ctx.restore();
-        }
-        ctx.drawImage(art.c, x, y, W, H);
-        if (s.fill > 0) { // 아래에서 위로 차오르는 얼음빛
-          ctx.save(); ctx.beginPath(); ctx.rect(x - 5, y + H * (1 - s.fill), W + 10, H * s.fill + 5); ctx.clip();
-          ctx.globalAlpha = 0.38; ctx.drawImage(art.cyan, x, y, W, H); ctx.restore();
-        }
+        // 픽셀 장검 (주인공 팔레트). 테두리 발광은 하늘색 실루엣을 한 칸씩 바깥으로 겹쳐서
+        const px = PXSPR["wpn-longsword-px"], sc = H / 62, sx0 = Math.round(270 - 15.5 * sc), sy0 = Math.round(168 + bob - H / 2);
+        if (px) {
+          const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false;
+          if (s.edge > 0) { const t = pxTint("wpn-longsword-px", "#8fe8ff"), o = Math.round(sc * (1 + 0.5 * Math.sin(w.time * 8))); ctx.globalAlpha = 0.85; for (const [dx, dy] of [[-o, 0], [o, 0], [0, -o], [0, o]]) ctx.drawImage(t, sx0 + dx, sy0 + dy, 31 * sc, 62 * sc); ctx.globalAlpha = 1; }
+          ctx.drawImage(px, sx0, sy0, 31 * sc, 62 * sc);
+          if (s.fill > 0) { ctx.save(); ctx.beginPath(); ctx.rect(sx0 - 5, sy0 + H * (1 - s.fill), 31 * sc + 10, H * s.fill + 5); ctx.clip(); ctx.globalAlpha = 0.45; ctx.drawImage(pxTint("wpn-longsword-px", "#9fe8ff"), sx0, sy0, 31 * sc, 62 * sc); ctx.restore(); }
+          ctx.imageSmoothingEnabled = sm;
+        } else ctx.drawImage(art.c, x, y, W, H);
         ring(true);
       },
       steps: [
@@ -440,8 +438,9 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hum + chime + crack",
           cap: { en: "A rising *hum*, icy *crack*, a *chime*.", ko: "차오르는 *웅~*, *쩡*, 맑은 *딩*." },
-          orbit(w) { w.play(() => tn({ type: "sine", f: 220, f2: 880, dur: 0.85, vol: 0.14 })); },
-          enchant(w) { w.sfx.crit(); w.sfx.chime(6); },
+          orbit(w) { if (w.on("orbit")) w.sfx.charge(); },
+          // 서리가 감길 때만 얼음 "쩡", 빛이 고동칠 때 맑은 종
+          enchant(w) { if (w.on("frost")) w.play(() => { sSnap(0.5, 0, 5000); sMetal(2600, 0.5, 0.1, 0, 0.5); nz({ dur: 0.4, type: "highpass", f: 5000, vol: 0.12, rv: 0.4 }); }); if (w.on("pulse") || w.on("edge")) w.sfx.chime(6); else w.sfx.magic(); },
         },
       ],
     },

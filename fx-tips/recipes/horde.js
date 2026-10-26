@@ -76,7 +76,7 @@
   RECIPES.push(
     /* 1 ─ 넉백 웨이브 */
     {
-      id: "horde-knockback", cat: "horde", view: "top",
+      id: "horde-knockback", cat: "horde", view: "top", polished: true,
       title: { en: "Shove the *whole horde* back", ko: "몰려든 적을 *한 번에* 밀어내기" },
       intro: { en: "The pulse fires. Nobody *moves*.", ko: "기술을 썼는데 아무도 *안 밀려요*." },
       interval: 1.2, stepDur: 3.6,
@@ -139,7 +139,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "burst + thud",
           cap: { en: "One *whump* for the wave, not thirty.", ko: "서른 번 말고, 파동에 *쿵* 한 번." },
-          pulse(w) { w.sfx.burst(); w.sfx.thud(); },
+          pulse(w) { if (w.on("ring") || w.on("push")) { w.sfx.thud(); w.play(() => nz({ dur: 0.4, f: 1800, f2: 200, vol: 0.35, rv: 0.3 })); } else w.sfx.tock(); },
         },
       ],
     },

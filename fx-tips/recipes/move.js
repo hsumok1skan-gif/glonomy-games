@@ -39,7 +39,7 @@
   RECIPES.push(
     /* 1. 벽 점프 */
     {
-      id: "move-walljump", cat: "move", view: "side",
+      id: "move-walljump", cat: "move", view: "side", polished: true,
       title: { en: "Make wall jumps *snap*", ko: "벽 점프가 *착착* 붙게" },
       intro: { en: "Bouncing up the walls like a *pinball*.", ko: "벽을 타는데 *핀볼*처럼 밋밋하게 튕겨요." },
       interval: 2.2, stepDur: 3.6,

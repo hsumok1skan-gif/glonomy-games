@@ -228,7 +228,7 @@
 
     /* 2 ─ 부스트 발판 */
     {
-      id: "racing-boost-pad", cat: "racing", view: "3d",
+      id: "racing-boost-pad", cat: "racing", view: "3d", polished: true,
       title: { en: "Make boost pads *kick*", ko: "부스트 발판에 *한 방* 넣기" },
       intro: { en: "Drove over it. Did it *work*?", ko: "밟긴 했는데… *된 건가요*?" },
       interval: 1.5, stepDur: 3.6,
@@ -301,7 +301,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "zap + roar",
           cap: { en: "A bright *zap* on contact, then the *roar*.", ko: "닿을 때 *찌잉*, 그다음 *부우웅*." },
-          boost(w) { w.sfx.magic(); w.sfx.boost(); },
+          boost(w) { if (w.on("glow") || w.on("lit")) w.play(() => tn({ type: "sawtooth", f: 1200, f2: 2400, dur: 0.12, vol: 0.05, lp: 5000 })); if (w.on("lurch") || w.on("wake")) w.sfx.boost(); else w.sfx.dash(); },
         },
       ],
     },

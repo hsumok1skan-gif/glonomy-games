@@ -313,7 +313,7 @@
   RECIPES.push(
     // 1 ─ 앞줄 충돌
     {
-      id: "army-clash", cat: "army", view: "iso",
+      id: "army-clash", cat: "army", view: "iso", polished: true,
       title: { en: "Make the front lines *collide*", ko: "두 군대가 *쾅* 부딪히게" },
       intro: { en: "Two blocks slide together. *Politely.*", ko: "두 덩어리가 스르륵 붙어요. *얌전하게*." },
       interval: 1.3, stepDur: 3.6,
@@ -384,7 +384,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clang × rows",
           cap: { en: "A *clang* per row, each pitch a bit off.", ko: "줄마다 *챙*, 음높이는 조금씩 다르게." },
-          clash(w) { w.sfx.slashHit(); w.sfx.hit(rand(0.8, 1.2)); },
+          clash(w) { w.sfx.hit(rand(0.8, 1.2)); if (w.on("spark")) w.play(() => { sMetal(1700 * rand(0.9, 1.1), 0.3, 0.08); sMetal(2300 * rand(0.9, 1.1), 0.25, 0.05, 0.05); }); },
         },
       ],
     },

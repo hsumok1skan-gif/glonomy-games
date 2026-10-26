@@ -287,7 +287,7 @@
 
     /* 4 ─ 스태미나 바 */
     {
-      id: "action-stamina", cat: "action", view: "side",
+      id: "action-stamina", cat: "action", view: "side", polished: true,
       title: { en: "Make stamina *readable*", ko: "스태미나가 *눈에 들어오게*" },
       intro: { en: "Why can't I swing? *No idea.*", ko: "왜 안 휘둘러지지? *모르겠어요*." },
       interval: 0.42, stepDur: 4.2,

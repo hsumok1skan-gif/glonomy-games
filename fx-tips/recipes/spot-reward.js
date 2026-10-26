@@ -1162,7 +1162,7 @@
 
     /* ───────── 9. 알 부화 ───────── */
     {
-      id: "spot-reward-hatch", cat: "rpg", view: "3d",
+      id: "spot-reward-hatch", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make egg hatches feel *alive*", ko: "알 부화를 *살아 있게*" },
       intro: { en: "The egg *vanishes*. A pet appears.", ko: "알이 *사라지고* 펫이 그냥 나와요." },
       interval: 3.0, stepDur: 4.0,
@@ -1243,9 +1243,10 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tock + crack + chirp",
           cap: { en: "Shell *tocks*, a *crack*, a happy *chirp*.", ko: "*톡톡*, *빠직*, 그리고 *삐약*." },
-          wobble(w) { for (let i = 0; i < 4; i++) w.after(i * 0.2, () => w.sfx.tock()); },
+          wobble(w) { if (w.on("wobble")) for (let i = 0; i < 4; i++) w.after(i * 0.2, () => w.sfx.tock()); },
           hatch(w) {
-            w.sfx.crit();
+            if (w.on("cracks") || w.on("burst")) w.play(() => { sSnap(0.7, 0, 3200); for (let i = 0; i < 4; i++) sSnap(0.2, 0.02 + i * 0.03, 2500 + i * 400); }); else w.sfx.tock();
+            if (w.on("reveal") || w.on("joy"))
             w.after(0.2, () => w.play(() => { tn({ type: "triangle", f: 1400, f2: 2100, dur: 0.09, vol: 0.2 }); tn({ type: "triangle", f: 1600, f2: 2400, dur: 0.09, vol: 0.2, delay: 0.12 }); }));
           },
         },

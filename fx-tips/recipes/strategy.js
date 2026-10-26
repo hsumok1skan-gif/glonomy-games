@@ -192,7 +192,7 @@
 
     /* 2. 이동 명령 표시 */
     {
-      id: "strategy-move", cat: "strategy", view: "top",
+      id: "strategy-move", cat: "strategy", view: "top", polished: true,
       title: { en: "Make move orders *readable*", ko: "이동 명령을 *또렷하게*" },
       intro: { en: "Clicked the ground. *Did they hear me?*", ko: "땅을 찍었는데… *알아들은 거야?*" },
       interval: 1.1, stepDur: 3.6,
