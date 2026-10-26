@@ -14,6 +14,8 @@ var App = {
   ocrPick: { shelf: null, photo: null },
   stack: [],          // 열린 시트·겹침 창 id (위가 끝)
   priceIng: null,     // 장 본 값 넣기에서 고른 재료
+  priceCart: [],      // R-08 장바구니: { ingId, price, buyQty, buyUnit } — 저장하면 비운다
+  chalSuggest: null,  // R-09 챌린지 시트에서 고른 '지난달 식비'(원). 시트를 열 때마다 비운다
   editIngId: null,
   editSpendId: null,  // 식비 쓰기에서 고치는 기록
   spendKind: '장보기',
@@ -119,6 +121,7 @@ function refreshOpen() {
   if (isOpen('sheet-detail')) renderDetail();
   if (isOpen('sheet-spend')) renderSpendPreview();
   if (isOpen('sheet-price') && !App.priceIng) renderPricePick();
+  if (isOpen('sheet-price')) renderPricePreview();
   if (isOpen('ov-result') && chalById(App.resultId)) renderResult(chalById(App.resultId));
 }
 
@@ -205,43 +208,85 @@ function showPriceStep() {
   toggleView(ing ? pick : form, false, true);
   toggleView(ing ? form : pick, true);
   clearErrs($('price-form'));
-  if (!ing) { renderPricePick(); return; }
+  if (!ing) { renderPricePick(); renderPricePreview(); return; }
   $('price-current').innerHTML = '<b>' + esc(ing.name) + '</b><br><small>지금 ' + (Calc.hasPrice(ing) ? buyText(ing) + ' · ' + unitPriceText(ing) + (ing.updated ? ' · ' + Calc.shortDay(ing.updated) + ' 값' : '') : '값 없음') + '</small>';
-  $('price-won').value = '';
+  // 장바구니에 담은 재료를 다시 고르면 담은 값을 채워 고치게 한다
+  var inCart = cartIndex(ing.id) >= 0 ? App.priceCart[cartIndex(ing.id)] : null;
+  $('price-won').value = inCart ? inCart.price : '';
   $('price-won').placeholder = Calc.hasPrice(ing) ? String(ing.price) : '예: 3500';
-  $('price-qty').value = ing.buyQty;
-  unitOptions($('price-unit'), Calc.unitsFor(ing.buyUnit), ing.buyUnit);
+  $('price-qty').value = inCart ? inCart.buyQty : ing.buyQty;
+  unitOptions($('price-unit'), Calc.unitsFor(ing.buyUnit), inCart ? inCart.buyUnit : ing.buyUnit);
   renderPricePreview();
 }
-function submitPrice() {
-  var form = $('price-form');
-  clearErrs(form);
+// 지금 넣은 산 값·산 양을 검사해 { price, buyQty, buyUnit } 로 (틀리면 칸에 알리고 null)
+function readPriceForm() {
+  clearErrs($('price-form'));
   var ing = ingById(App.priceIng);
-  if (!ing) return;
+  if (!ing) return null;
   var p = checkNum($('price-won'), 1, 100000000, '산 값', true);
   var q = checkNum($('price-qty'), 0.01, 100000, '산 양', false);
   var u = $('price-unit').value;
-  if (p == null || q == null) return;
-  if (Calc.dimOf(u) !== Calc.dimOf(ing.buyUnit)) { fieldErr($('price-unit'), '처음 단위와 같은 종류로 고른다.'); return; }
-  var old = Object.assign({}, ing);
-  var next = Object.assign({}, ing, { price: p, buyQty: q, buyUnit: u });
-  var rows = impactOf(old, next);
+  if (p == null || q == null) return null;
+  if (Calc.dimOf(u) !== Calc.dimOf(ing.buyUnit)) { fieldErr($('price-unit'), '처음 단위와 같은 종류로 고른다.'); return null; }
+  return { ingId: ing.id, price: p, buyQty: q, buyUnit: u };
+}
+function cartIndex(ingId) {
+  for (var i = 0; i < App.priceCart.length; i++) if (App.priceCart[i].ingId === ingId) return i;
+  return -1;
+}
+// R-08: 지금 재료 값을 장바구니에 담고(같은 재료면 바꾸고) 고르기 단계로 돌아간다
+function addToCart() {
+  var c = readPriceForm();
+  if (!c) return;
+  var i = cartIndex(c.ingId);
+  if (i >= 0) App.priceCart[i] = c; else App.priceCart.push(c);
+  var name = ingById(c.ingId).name;
+  App.priceIng = null;
+  $('price-q').value = '';
+  showPriceStep();
+  toast(name + ' ' + won(c.price) + ' 담음 · 장바구니 ' + App.priceCart.length + '개');
+}
+function removeFromCart(i) {
+  if (!(i >= 0 && i < App.priceCart.length)) return;
+  App.priceCart.splice(i, 1);
+  renderPricePreview();
+}
+function submitPrice() {
+  var c = readPriceForm();
+  if (!c) return;
+  var i = cartIndex(c.ingId);
+  if (i >= 0) App.priceCart[i] = c; else App.priceCart.push(c);
+  commitPrices();
+}
+// 장바구니를 모두 저장한다: 재료 값 기록은 재료마다, 챌린지 식비(장보기)는 합계 한 건, 결과 창은 한 번
+function commitPrices() {
+  var all = priceChanges(null);
+  if (!all.news.length) return;
+  var rows = impactOf(all.olds, all.news);
   var day = Calc.today();
   var ch = activeChal();
   var toChal = !!ch && $('price-spend').checked && Calc.inPeriod(day, ch.start, ch.end);
+  var olds = all.olds.map(function (g) { return Object.assign({}, g); });
+  var names = all.news.map(function (n) { return n.name; });
   // 챌린지 변화는 식비를 더하기 전에 센다
-  var html = (toChal ? chalDeltaHtml(ch, p) : '') + impactHtml(old, next, rows);
+  var html = (names.length > 1 ? '<p class="hint">장 한 번 · 재료 ' + names.length + '개 · 합계 <b>' + won(all.total) + '</b></p>' : '') +
+    (toChal ? chalDeltaHtml(ch, all.total) : '') + impactHtml(olds, all.news, rows);
   markChalFrom();
-  ing.price = p; ing.buyQty = q; ing.buyUnit = u; ing.updated = day;
-  pushHistory(ing, old);
-  if (toChal) addSpend({ date: day, amount: p, kind: '장보기', memo: ing.name });
+  all.news.forEach(function (n, k) {
+    var ing = all.olds[k];
+    ing.price = n.price; ing.buyQty = n.buyQty; ing.buyUnit = n.buyUnit; ing.updated = day;
+    pushHistory(ing, olds[k]);
+  });
+  var memo = names.length > 1 ? names[0] + ' 외 ' + (names.length - 1) + '개' : names[0];
+  if (toChal) addSpend({ date: day, amount: all.total, kind: '장보기', memo: memo });
   save();
-  App.flash = ing.id;
+  App.flash = all.olds[all.olds.length - 1].id;
+  App.priceCart = [];
   closeLayer('sheet-price');
   rollChalNums();
   App.priceIng = null;
   showImpact(html, rows.map(function (r) { return r.m.id; }));
-  toast(ing.name + ' 값을 바꿨다' + (toChal ? ' · 장보기 ' + won(p) + ' 더함' : ''));
+  toast((names.length > 1 ? '재료 ' + names.length + '개' : names[0]) + ' 값을 바꿨다' + (toChal ? ' · 장보기 ' + won(all.total) + ' 더함' : ''));
 }
 // 결과 창: 장 본 값 하나로 바뀐 챌린지와 집밥 메뉴
 var lastImpact = { head: '', ids: [] };
@@ -368,6 +413,7 @@ function openChalSheet() {
   $('chal-budget').value = '';
   $('chal-months').value = '1';
   $('chal-start').value = Calc.today();
+  App.chalSuggest = null;
   renderChalSheet();
   openLayer('sheet-chal');
 }
@@ -382,6 +428,13 @@ function startChallenge(name, budget, months, start) {
     closeAllLayers();
     setScreen('chal');
     var st = chalInfo(ch);
+    // R-09: 첫 식비를 아직 안 넣었으면 챌린지 화면으로 옮긴 뒤 바로 식비 쓰기 시트를 연다 (시작 단계 2 / 4)
+    var spendStep = startSteps().filter(function (s) { return s.key === 'spend'; })[0];
+    if (spendStep && !spendStep.done) {
+      openSpend(null);
+      toast(name + ' 시작! 다음은 첫 식비 넣기 — 오늘 쓸 수 있는 돈 ' + won(st.perDay), !!cur);
+      return;
+    }
     toast(name + ' 시작! 오늘 쓸 수 있는 돈 ' + won(st.perDay), !!cur);
   };
   var cur = activeChal();
@@ -1475,6 +1528,9 @@ var ACTIONS = {
   'price-for': function (d) { openPrice(d.id); },
   'price-pick': function (d) { App.priceIng = d.id; showPriceStep(); },
   'price-back': function () { App.priceIng = null; showPriceStep(); },
+  'price-cart-add': function () { addToCart(); },
+  'price-cart-del': function (d) { removeFromCart(Number(d.i)); },
+  'price-cart-save': function () { commitPrices(); },
   'ing-new': function () { openIng(null, null); },
   'ing-edit': function (d) { openIng(d.id, null); },
   'ing-del': deleteIng,
@@ -1514,6 +1570,11 @@ var ACTIONS = {
   'chal-preset': function (d) {
     var p = CHALLENGE_PRESETS[+d.i];
     if (p) startChallenge(p.name, p.budget, p.months, Calc.today());
+  },
+  // R-09: '지난달 식비' 범위를 고르면 그보다 낮은 가장 가까운 한 달 챌린지를 추천한다
+  'chal-suggest': function (d) {
+    App.chalSuggest = Number(d.v) || null;
+    renderChalSheet();
   },
   'chal-quit': quitChallenge,
   'tpl-open': function (d) { openTpl(d.tab); },
@@ -1606,6 +1667,7 @@ function bind() {
   $('price-form').addEventListener('submit', function (e) { e.preventDefault(); submitPrice(); });
   $('price-form').addEventListener('input', renderPricePreview);
   $('price-form').addEventListener('change', renderPricePreview);
+  $('price-spend').addEventListener('change', renderPricePreview);
   $('price-q').addEventListener('input', renderPricePick);
   $('ing-form').addEventListener('submit', function (e) { e.preventDefault(); submitIng(); });
   $('ing-form').addEventListener('input', renderIngCalc);

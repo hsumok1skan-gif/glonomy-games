@@ -1520,6 +1520,17 @@
       o.g.fillStyle = m;
       o.g.fillRect(0, 0, w, hk);
       o.g.restore();
+      // 밝은 외곽 빛: 흐린 가장자리 뒤에 빛나는 고리를 깔아 어두운 판과 떼어 놓는다 (V-09)
+      o.g.save();
+      o.g.globalCompositeOperation = 'destination-over';
+      o.g.shadowColor = 'rgba(210,240,255,0.95)';
+      o.g.shadowBlur = Math.max(4, hk * 0.08);
+      o.g.strokeStyle = 'rgba(225,245,255,0.7)';
+      o.g.lineWidth = Math.max(2, hk * 0.04);
+      o.g.beginPath();
+      o.g.arc(w / 2, hk / 2, hk * 0.4, 0, Math.PI * 2);
+      o.g.stroke();
+      o.g.restore();
     }
     if (tint) {
       o.g.save();
@@ -1542,9 +1553,9 @@
     var blobs = [[0, 0, 1], [-0.45, 0.15, 0.7], [0.45, 0.2, 0.72], [0.05, -0.4, 0.66]];
     // 밝은 테두리(림 라이트): 덩어리 겉모양 바깥에만 고리를 남겨 어두운 바탕과 떼어 놓는다
     var rim = offscreen(size, size);
-    var rw = Math.max(3, rk * 0.16);
+    var rw = Math.max(3, rk * 0.2);
     var i;
-    rim.g.fillStyle = rim.g.strokeStyle = shade(color, 0.8, 0.9);
+    rim.g.fillStyle = rim.g.strokeStyle = shade(color, 0.85, 0.95);
     rim.g.lineWidth = rw;
     for (i = 0; i < blobs.length; i++) {
       rim.g.beginPath();
@@ -2077,7 +2088,7 @@
     cx.fillStyle = bg.vignette;
     cx.fillRect(0, 0, W, H);
     // 떠오르는 글자: 처음에 커졌다 줄며 떠오르고 흐려진다. 큰 값은 더 크게
-    var fbase = Math.max(14, lh * 0.18);
+    var fbase = Math.max(16, lh * 0.22);
     cx.textAlign = 'center';
     cx.lineJoin = 'round';
     for (i = 0; i < r.floats.length; i++) {
@@ -2087,7 +2098,7 @@
       var punch = calm ? 1 : (age < 0.1 ? 1 + 0.5 * (1 - age / 0.1) : 1);
       cx.font = '900 ' + Math.round(fbase * (f.size || 1) * punch) + 'px system-ui, sans-serif';
       cx.globalAlpha = Math.max(0, Math.min(1, f.life / 0.4));
-      cx.lineWidth = 4;
+      cx.lineWidth = Math.max(4, fbase * 0.2);
       cx.strokeStyle = 'rgba(8,6,20,0.8)';
       cx.strokeText(f.text, f.x * sx, f.lane * lh + lh * 0.25 - rise);
       cx.fillStyle = f.color;

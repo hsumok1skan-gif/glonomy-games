@@ -248,9 +248,9 @@
     'squad.hint': 'Bring up to three gardeners. The <span class="tag-front">front row</span> holds spirits in place, and the <span class="tag-back">back row</span> attacks from afar.',
     'squad.go': 'Go ▶',
     // 전투
-    'plant.0': '<span aria-hidden="true">🌱</span> Plant lane 1',
-    'plant.1': '<span aria-hidden="true">🌱</span> Plant lane 2',
-    'plant.2': '<span aria-hidden="true">🌱</span> Plant lane 3',
+    'plant.0': '<span aria-hidden="true">🌱</span> <span class="pl-long">Plant lane 1</span><span class="pl-short">Lane 1</span>',
+    'plant.1': '<span aria-hidden="true">🌱</span> <span class="pl-long">Plant lane 2</span><span class="pl-short">Lane 2</span>',
+    'plant.2': '<span aria-hidden="true">🌱</span> <span class="pl-long">Plant lane 3</span><span class="pl-short">Lane 3</span>',
     // 결과 (제목·다시 하기는 ui.js showResult 가 T 로 채운다)
     'res.change': 'Change Orchard & Gardeners',
     'res.share': 'Copy Result',

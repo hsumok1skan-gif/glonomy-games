@@ -486,14 +486,40 @@ function chalDeltaHtml(ch, delta) {
 }
 
 // ---------- 15. 챌린지 고르기 시트 ----------
+// R-09: 지난달 식비(v)보다 낮으면서 가장 가까운 한 달 프리셋 번호. 낮은 것이 없으면 가장 적은 한 달 프리셋
+function suggestPreset(v) {
+  var best = -1, low = -1;
+  CHALLENGE_PRESETS.forEach(function (p, i) {
+    if (p.months !== 1) return;
+    if (low < 0 || p.budget < CHALLENGE_PRESETS[low].budget) low = i;
+    if (p.budget < v && (best < 0 || p.budget > CHALLENGE_PRESETS[best].budget)) best = i;
+  });
+  return best >= 0 ? best : low;
+}
 function renderChalSheet() {
   var today = Calc.today();
+  var v = App.chalSuggest, rec = v ? suggestPreset(v) : -1;
+  Array.prototype.forEach.call(document.querySelectorAll('#chal-quiz [data-act="chal-suggest"]'), function (b) {
+    var on = v != null && Number(b.dataset.v) === v;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  $('chal-quiz-out').textContent = rec >= 0
+    ? '지난달보다 조금만 줄여 보자 — \'' + CHALLENGE_PRESETS[rec].name + '\' 을(를) 추천한다. 고르면 바로 첫 식비 넣기로 간다.'
+    : '';
   $('chal-presets').innerHTML = '<p class="count">고르면 오늘부터 시작한다</p>' + CHALLENGE_PRESETS.map(function (p, i) {
     var end = Calc.challengeEnd(today, p.months);
     var days = Calc.periodDays(today, end);
-    return '<button type="button" class="pick preset" data-act="chal-preset" data-i="' + i + '"><b>' + esc(p.name) + '</b><small>' +
+    var isRec = i === rec;
+    return '<button type="button" class="pick preset' + (isRec ? ' recommend' : '') + '" data-act="chal-preset" data-i="' + i + '"' +
+      (isRec ? ' aria-describedby="chal-quiz-out"' : '') + '><b>' + esc(p.name) +
+      (isRec ? ' <span class="badge rec">추천</span>' : '') + '</b><small>' +
       esc(p.note) + '<br>' + days + '일 · 하루 ' + won(Math.floor(p.budget / days)) + ' · ' + Calc.shortDay(end) + '까지</small></button>';
   }).join('');
+  if (rec >= 0) {
+    var rb = document.querySelector('#chal-presets .pick.recommend');
+    try { rb.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { /* 없어도 된다 */ }
+  }
   renderChalCalc();
 }
 function renderChalCalc() {
@@ -775,21 +801,34 @@ function priceDraft() {
   return Object.assign({}, ing, { price: p, buyQty: q, buyUnit: u });
 }
 // 바뀌기 전·뒤 비교. 장 본 값 미리보기와 결과 창이 같이 쓴다.
+// 재료 하나 또는 배열(R-08 장바구니)을 받는다. 여러 재료를 쓰는 메뉴는 한 줄로, 담은 값을 모두 바꾼 한 끼 값을 보인다.
 function impactOf(oldIng, newIng) {
-  var finder = function (id) { return id === newIng.id ? newIng : ingById(id); };
-  return usedBy(oldIng.id).map(function (m) {
+  var olds = [].concat(oldIng), news = [].concat(newIng);
+  var finder = function (id) {
+    for (var i = 0; i < news.length; i++) if (news[i].id === id) return news[i];
+    return ingById(id);
+  };
+  var seen = {}, menus = [];
+  olds.forEach(function (g) {
+    usedBy(g.id).forEach(function (m) { if (!seen[m.id]) { seen[m.id] = true; menus.push(m); } });
+  });
+  return menus.map(function (m) {
     return { m: m, before: menuInfo(m), after: menuInfo(m, finder) };
   }).sort(function (a, b) { return (b.after.rate || 0) - (a.after.rate || 0); });
 }
-function impactHtml(oldIng, newIng, rows) {
+function impactHead(oldIng, newIng) {
   var oUp = Calc.unitPrice(oldIng), nUp = Calc.unitPrice(newIng);
   var ch = Calc.changePct(oUp, nUp);
-  var crossed = rows.filter(function (r) { return r.after.level === 'bad' && r.before.level !== 'bad'; }).length;
-  var html = '<p class="impact-head"><b>' + esc(newIng.name) + '</b> ' + unitText(Calc.dimOf(newIng.buyUnit)) + ' ' +
+  return '<p class="impact-head"><b>' + esc(newIng.name) + '</b> ' + unitText(Calc.dimOf(newIng.buyUnit)) + ' ' +
     (oUp != null ? won(unitPriceShown(oUp, oldIng.buyUnit)) + ' → ' : '') + '<b>' + won(unitPriceShown(nUp, newIng.buyUnit)) + '</b> ' +
     '<span class="chg ' + (ch == null ? '' : ch > 0.05 ? 'up' : ch < -0.05 ? 'down' : '') + '">' + signPct(ch) + '</span></p>';
-  if (!rows.length) return html + '<p class="hint">아직 이 재료를 쓰는 집밥 메뉴가 없다. 메뉴에 넣으면 한 끼 값에 들어간다.</p>';
-  html += '<p class="hint">집밥 메뉴 ' + rows.length + '개의 한 끼 값이 바뀐다' + (crossed ? ' · <b class="warn-text">새로 \'비쌈\'이 되는 메뉴 ' + crossed + '개</b>' : '') + '</p>';
+}
+function impactHtml(oldIng, newIng, rows) {
+  var olds = [].concat(oldIng), news = [].concat(newIng);
+  var crossed = rows.filter(function (r) { return r.after.level === 'bad' && r.before.level !== 'bad'; }).length;
+  var html = news.map(function (n, i) { return impactHead(olds[i], n); }).join('');
+  if (!rows.length) return html + '<p class="hint">아직 ' + (news.length > 1 ? '담은 재료를' : '이 재료를') + ' 쓰는 집밥 메뉴가 없다. 메뉴에 넣으면 한 끼 값에 들어간다.</p>';
+  html += '<p class="hint">' + (news.length > 1 ? '재료 ' + news.length + '개로 ' : '') + '집밥 메뉴 ' + rows.length + '개의 한 끼 값이 바뀐다' + (crossed ? ' · <b class="warn-text">새로 \'비쌈\'이 되는 메뉴 ' + crossed + '개</b>' : '') + '</p>';
   html += '<ul class="impact">' + rows.map(function (r) {
     var b = r.before, a = r.after;
     return '<li class="lv-' + a.level + '"><span class="imp-name">' + esc(r.m.name) + '<small>한 끼 ' + won(b.cost) + ' → ' + won(a.cost) + '</small></span>' +
@@ -798,19 +837,56 @@ function impactHtml(oldIng, newIng, rows) {
   }).join('') + '</ul>';
   return html;
 }
+// 장바구니(R-08)와 지금 넣는 값을 합친 바뀜. 지금 값이 같은 재료를 담은 것보다 먼저다.
+function priceChanges(draft) {
+  var olds = [], news = [], total = 0;
+  App.priceCart.forEach(function (c) {
+    var g = ingById(c.ingId);
+    if (!g || (draft && draft.id === g.id)) return;
+    olds.push(g);
+    news.push(Object.assign({}, g, { price: c.price, buyQty: c.buyQty, buyUnit: c.buyUnit }));
+    total += c.price;
+  });
+  if (draft) { olds.push(ingById(draft.id)); news.push(draft); total += draft.price; }
+  return { olds: olds, news: news, total: total };
+}
+function renderPriceCart() {
+  // 담은 뒤 지운 재료는 보이지 않고 저장에도 들어가지 않는다 (priceChanges 와 같다)
+  var cart = App.priceCart.filter(function (c) { return ingById(c.ingId); }), box = $('price-cart');
+  box.hidden = !cart.length;
+  $('price-cart-save').hidden = !cart.length || !!App.priceIng;
+  $('price-submit').textContent = cart.length ? '담은 ' + cart.length + '개와 함께 저장' : '이 값으로 바꾸기';
+  if (!cart.length) { $('price-cart-list').innerHTML = ''; return; }
+  var total = 0;
+  $('price-cart-list').innerHTML = App.priceCart.map(function (c, i) {
+    var g = ingById(c.ingId);
+    if (!g) return '';
+    total += c.price;
+    return '<li' + (c.ingId === App.priceIng ? ' class="now"' : '') + '><span class="pc-name"><b>' + esc(g.name) + '</b><small>' + fmtQty(c.buyQty) + c.buyUnit +
+      (c.ingId === App.priceIng ? ' · 지금 고치는 중' : '') + '</small></span><b class="pc-won">' + won(c.price) + '</b>' +
+      '<button type="button" class="icon" data-act="price-cart-del" data-i="' + i + '" aria-label="' + esc(g.name) + ' 장바구니에서 빼기">✕</button></li>';
+  }).join('');
+  $('h-price-cart').textContent = '장바구니 ' + cart.length + '개';
+  $('price-cart-total').textContent = won(total);
+}
 function renderPricePreview() {
+  renderPriceCart();
   var ing = ingById(App.priceIng);
   var box = $('price-preview');
-  if (!ing) { box.innerHTML = ''; return; }
   var ch = activeChal();
-  $('price-spend-wrap').hidden = !ch;
-  var d = priceDraft();
-  if (!d) {
+  var d = ing ? priceDraft() : null;
+  var all = priceChanges(d);
+  $('price-spend-wrap').hidden = !ch || (!ing && !all.news.length);
+  if (!ing && !all.news.length) { box.innerHTML = ''; return; }
+  if (ing && !d && !all.news.length) {
     box.innerHTML = '<p class="hint">산 값과 산 양을 넣으면, 저장하기 전에 ' + (ch ? '챌린지 남은 돈과 ' : '') + '집밥 메뉴 한 끼 값이 어떻게 바뀌는지 여기 보인다. (쓰는 메뉴 ' + usedBy(ing.id).length + '개)</p>';
     return;
   }
-  var chHtml = ch && $('price-spend').checked && Calc.inPeriod(Calc.today(), ch.start, ch.end) ? chalDeltaHtml(ch, d.price) : '';
-  box.innerHTML = '<div class="card soft">' + chHtml + impactHtml(ing, d, impactOf(ing, d)) + '</div>';
+  // 챌린지는 장바구니 합계로, 메뉴는 담은 재료 모두를 바꾼 한 목록으로
+  var chHtml = ch && $('price-spend').checked && Calc.inPeriod(Calc.today(), ch.start, ch.end) ? chalDeltaHtml(ch, all.total) : '';
+  box.innerHTML = '<div class="card soft">' + (all.news.length > 1 ? '<p class="hint">담은 재료 ' + all.news.length + '개 · 합계 <b>' + won(all.total) + '</b></p>' : '') +
+    chHtml + impactHtml(all.olds, all.news, impactOf(all.olds, all.news)) +
+    (ing && !d ? '<p class="hint">지금 재료 값을 넣으면 여기에 더해진다.</p>' : '') + '</div>';
 }
 
 // ---------- 8. 재료 시트의 바로 계산 ----------

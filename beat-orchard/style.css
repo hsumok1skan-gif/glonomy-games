@@ -366,6 +366,13 @@ button.icon-btn { flex: 0 0 auto; min-width: 46px; padding: 0 10px; font-size: 0
 }
 /* 좁은 가로 화면(844×390 등)은 열 폭이 64~72px 라 글자를 조금 줄여 '1번 줄 심기' 를 한 줄에 담는다 (V-01) */
 @media (max-width: 960px) { .plant-bar button { font-size: 0.72rem; padding: 4px 2px; letter-spacing: -0.02em; } }
+/* 라벨: 보통은 '1번 줄 심기', 낮은 가로 화면(max-height 560px)은 '1줄 심기' 로 줄여 한 덩어리로 (V-05) */
+.plant-bar .pl-short { display: none; }
+.plant-bar .pl-short { white-space: nowrap; }
+@media (max-height: 560px) {
+  .plant-bar .pl-long { display: none; }
+  .plant-bar .pl-short { display: inline; }
+}
 /* 기술 버튼은 오른쪽 열에 위아래로 (오른손 엄지) */
 .skill-bar { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
 .skill-bar button {
@@ -379,8 +386,8 @@ button.icon-btn { flex: 0 0 auto; min-width: 46px; padding: 0 10px; font-size: 0
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--cd) * 100%);
   background: rgba(0, 0, 10, 0.55); pointer-events: none; transition: height 0.15s linear;
 }
-/* 쿨타임 중: 기본 disabled 흐림(0.45·회색)은 약하게, 그림·이름·남은 초가 막 아래에서도 읽히게 (V-02) */
-.skill-bar button:disabled { opacity: 0.8; filter: none; }
+/* 쿨타임 중: 기본 disabled 흐림(0.45·회색)은 약하게, 그림·이름·남은 초가 막 위에서 읽히게 (V-02, V-04, V-08) */
+.skill-bar button:disabled { opacity: 0.85; filter: none; }
 .skill-bar .sk-em { font-size: 1.3rem; position: relative; z-index: 1; }
 .skill-bar .sk-name { font-weight: 800; position: relative; z-index: 1; }
 .skill-bar .sk-state { font-size: 0.68rem; color: #fff; font-weight: 800; position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7); }

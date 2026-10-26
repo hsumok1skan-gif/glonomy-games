@@ -300,13 +300,21 @@
           <em class="err"></em>
         </div>
       </div>
-      <label class="check" id="price-spend-wrap"><input id="price-spend" type="checkbox" checked> <span>이 값을 챌린지 식비(장보기)에도 더하기</span></label>
-      <div id="price-preview" aria-live="polite"></div>
       <div class="sheet-actions">
         <button type="button" data-act="price-back">다른 재료</button>
-        <button type="submit" class="primary">이 값으로 바꾸기</button>
+        <button type="button" data-act="price-cart-add">장바구니에 담기</button>
+        <button type="submit" class="primary" id="price-submit">이 값으로 바꾸기</button>
       </div>
     </form>
+    <!-- R-08 장바구니: 한 번 장 본 재료 여러 개를 담아 합계로 한 번에 저장 -->
+    <div id="price-cart" class="price-cart" hidden>
+      <h3 id="h-price-cart">장바구니</h3>
+      <ul id="price-cart-list" class="pc-list"></ul>
+      <p class="pc-sum"><span>합계</span><b id="price-cart-total">0원</b></p>
+      <button type="button" class="primary big" id="price-cart-save" data-act="price-cart-save">담은 것 한 번에 저장</button>
+    </div>
+    <label class="check" id="price-spend-wrap"><input id="price-spend" type="checkbox" checked> <span>이 값을 챌린지 식비(장보기)에도 더하기</span></label>
+    <div id="price-preview" aria-live="polite"></div>
   </div>
 </section>
 
@@ -430,6 +438,18 @@
 <section id="sheet-chal" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-chal-sheet" tabindex="-1" hidden>
   <div class="sheet-head"><h2 id="h-chal-sheet">챌린지 고르기</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
   <div class="sheet-body">
+    <div id="chal-quiz" class="card chal-quiz" role="group" aria-labelledby="h-chal-quiz">
+      <h3 id="h-chal-quiz">지난달 식비는 얼마쯤?</h3>
+      <p class="hint">고르면 그보다 조금 적은 한 달 챌린지를 추천한다</p>
+      <div class="chip-row quiz-row">
+        <button type="button" class="chip" data-act="chal-suggest" data-v="120000" aria-pressed="false">12만원 아래</button>
+        <button type="button" class="chip" data-act="chal-suggest" data-v="180000" aria-pressed="false">12~18만원</button>
+        <button type="button" class="chip" data-act="chal-suggest" data-v="250000" aria-pressed="false">18~25만원</button>
+        <button type="button" class="chip" data-act="chal-suggest" data-v="300000" aria-pressed="false">25~30만원</button>
+        <button type="button" class="chip" data-act="chal-suggest" data-v="400000" aria-pressed="false">30만원 넘게</button>
+      </div>
+      <p id="chal-quiz-out" class="hint" aria-live="polite"></p>
+    </div>
     <div id="chal-presets" class="pick-list"></div>
     <form id="chal-form" class="card" novalidate>
       <h3>직접 정하기</h3>
