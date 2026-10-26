@@ -517,7 +517,7 @@
 
     /* 7 ─ 띄우기 */
     {
-      id: "action-launcher", cat: "action", view: "side", melee: true,
+      id: "action-launcher", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a launcher send them *sky-high*", ko: "띄우기 공격을 *하늘 높이*" },
       intro: { en: "Launched? It just *hopped*.", ko: "띄운 거야? *깡충* 뛴 것 같아요." },
       interval: 1.7, stepDur: 3.8,
@@ -584,7 +584,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising whoosh",
           cap: { en: "A *rising whoosh*. Pitch goes up with it.", ko: "*올라가는* 휘익. 음도 같이 올라가요." },
-          launch(w) { w.sfx.hit(); w.play(() => nz({ dur: 0.35, type: "bandpass", f: 500, f2: 3500, q: 2, vol: 0.4 })); },
+          launch(w) { w.sfx.slashHit(); if (w.on("streak") || w.on("arc")) w.play(() => nz({ dur: 0.35, type: "bandpass", f: 500, f2: 3500, q: 2, vol: 0.35, att: 0.05 })); },
           land(w) { w.sfx.land(); },
         },
       ],

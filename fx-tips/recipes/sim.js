@@ -151,7 +151,7 @@
   RECIPES.push(
     /* ───────── 1. 수입 팝업 ───────── */
     {
-      id: "sim-income", cat: "sim", view: "iso",
+      id: "sim-income", cat: "sim", view: "iso", polished: true,
       title: { en: "Make income *pop*", ko: "수입 숫자를 *톡톡* 튀게" },
       intro: { en: "Money goes up. *From where?*", ko: "돈은 오르는데, *어디서* 벌었죠?" },
       interval: 0.7, stepDur: 3.4,
@@ -197,7 +197,7 @@
           arrive(w) { w.S.bump = 1; } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "cha-ching / tick",
           cap: { en: "A *cha-ching* per sale, a tiny *tick* per coin.", ko: "팔 때 *짤랑*, 동전마다 작게 *틱*." },
-          sale(w, p) { w.sfx.chime(p.amt >= 50 ? 7 : 0); },
+          sale(w, p) { if (w.on("coins") || w.on("pop")) w.sfx.coinClink(p.amt >= 50 ? 1.12 : 1); else w.sfx.tock(); },
           arrive(w) { w.sfx.tick(); } },
       ],
     },

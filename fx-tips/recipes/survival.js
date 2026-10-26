@@ -551,7 +551,7 @@
 
     /* ───────── 6. 배고픔 경고 ───────── */
     {
-      id: "survival-hunger", cat: "survival", view: "side",
+      id: "survival-hunger", cat: "survival", view: "side", polished: true,
       title: { en: "Make hunger *hard to ignore*", ko: "배고픔을 *못 본 척 못 하게*" },
       intro: { en: "Hunger: 10%. Did you *notice?*", ko: "배고픔 10%. *눈치채셨어요?*" },
       interval: 0.6, stepDur: 4.0,
@@ -621,7 +621,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "low growl / crunch",
           cap: { en: "A *low growl* when hungry, a *crunch* when eating.", ko: "배고프면 *꾸르륵*, 먹으면 *와삭*." },
           drain(w, H) { if (H.v < 40) w.play(() => tn({ type: "sawtooth", f: 70, f2: 48, dur: 0.5, vol: 0.12 })); },
-          eat(w) { w.play(() => nz({ dur: 0.12, type: "bandpass", f: 2200, q: 1, vol: 0.4 })); w.sfx.chime(4); },
+          eat(w) { w.play(() => { nz({ dur: 0.08, type: "bandpass", f: 2200, q: 1, vol: 0.35 }); nz({ dur: 0.08, type: "bandpass", f: 1800, q: 1, vol: 0.3, delay: 0.12 }); }); if (w.on("eat")) w.after(0.25, () => w.sfx.chime(4)); },
         },
       ],
     },

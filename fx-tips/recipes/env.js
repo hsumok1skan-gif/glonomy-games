@@ -423,7 +423,7 @@
 
     // ───────────────────────── 4. 물웅덩이
     {
-      id: "env-puddle", cat: "env", view: "side",
+      id: "env-puddle", cat: "env", view: "side", polished: true,
       title: { en: "Make puddles *splash*", ko: "물웅덩이 *철벅*" },
       intro: { en: "He lands in water. The water *doesn't care*.", ko: "물에 뛰어들었는데 물이 *반응이 없어요*." },
       interval: 1.0, stepDur: 3.6,

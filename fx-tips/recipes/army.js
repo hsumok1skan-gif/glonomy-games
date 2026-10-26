@@ -467,7 +467,7 @@
 
     // 3 ─ 드래그 선택
     {
-      id: "army-select", cat: "army", view: "top",
+      id: "army-select", cat: "army", view: "top", polished: true,
       title: { en: "Make box-select *feel good*", ko: "드래그 선택을 *기분 좋게*" },
       intro: { en: "Did it select? *Hard to tell.*", ko: "선택된 거야? *잘 모르겠어요*." },
       interval: 1.25, stepDur: 3.6,

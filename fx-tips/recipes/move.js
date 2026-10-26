@@ -300,7 +300,7 @@
 
     /* 4. 난간 잡기 */
     {
-      id: "move-ledgegrab", cat: "move", view: "side",
+      id: "move-ledgegrab", cat: "move", view: "side", polished: true,
       title: { en: "Make ledge grabs *catch*", ko: "난간 잡기에 *손맛*을" },
       intro: { en: "It grabbed the ledge. Or *teleported*?", ko: "난간을 잡은 건지 *순간이동*한 건지." },
       interval: 2.0, stepDur: 3.5,
@@ -382,7 +382,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk / grunt / tup",
           cap: { en: "A *thunk* on the grab, a *tup* on top.", ko: "잡을 때 *턱*, 올라서면 *툭*." },
-          grab(w) { w.sfx.thunk(); },
+          grab(w) { w.play(() => { sSnap(0.4, 0, 2200); sBody(200, 0.06, 0.45); }); if (w.on("crumbs")) w.play(() => { for (let i = 0; i < 4; i++) sSnap(0.1, 0.05 + i * 0.06, 2000 + i * 300); }); },
           pull(w) { w.sfx.swish(); },
           top(w) { w.sfx.land(); },
         },

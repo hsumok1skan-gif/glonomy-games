@@ -759,7 +759,7 @@
 
     /* 7 ─ 보스 탄막 피어나기 */
     {
-      id: "shooter-bloom", cat: "shooter", view: "top",
+      id: "shooter-bloom", cat: "shooter", view: "top", polished: true,
       title: { en: "Let boss patterns *bloom*", ko: "보스 탄막을 *꽃처럼*" },
       intro: { en: "A ring of bullets. *Flat* and dull.", ko: "총알 한 바퀴. *밋밋해요*." },
       interval: 1.7, stepDur: 4.0,
@@ -831,8 +831,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "charge + burst",
           cap: { en: "A *rising hum*, then a *burst*.", ko: "*위잉* 모으고, *팡* 터져요." },
-          tele(w) { w.sfx.charge(); },
-          release(w) { w.sfx.burst(); },
+          tele(w) { if (w.on("tele") || w.on("ramp")) w.sfx.charge(); },
+          release(w) { if (w.on("petal") || w.on("recoil")) w.sfx.burst(); else w.sfx.magic(); },
         },
       ],
     },

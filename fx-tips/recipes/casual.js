@@ -480,7 +480,7 @@
 
     /* ───────── 5. 탭 타깃 ───────── */
     {
-      id: "casual-tap", cat: "casual", view: "ui",
+      id: "casual-tap", cat: "casual", view: "ui", polished: true,
       title: { en: "Make tap targets *satisfying*", ko: "터치 타깃 *손맛 있게*" },
       intro: { en: "Tap. It's gone. *Did I hit it?*", ko: "톡. 없어짐. *맞힌 거예요?*" },
       interval: 0.55, stepDur: 3.3,
@@ -547,7 +547,7 @@
         {
           id: "sound", name: { en: "Pop Sound", ko: "퐁 소리" }, param: "pop + pitch ±",
           cap: { en: "A crisp *pop*, a little different each time.", ko: "*퐁*. 매번 살짝 다른 높이로." },
-          tap(w) { w.sfx.pop(); w.sfx.blip(rand(3, 8)); },
+          tap(w) { w.sfx.pop(); if (w.on("score")) w.sfx.blip(rand(3, 8)); },
         },
       ],
     },

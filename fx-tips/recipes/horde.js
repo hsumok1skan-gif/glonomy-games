@@ -232,7 +232,7 @@
 
     /* 3 ─ 경험치 보석 빨아들이기 */
     {
-      id: "horde-gem-vacuum", cat: "horde", view: "top",
+      id: "horde-gem-vacuum", cat: "horde", view: "top", polished: true,
       title: { en: "Make XP gems *want* you", ko: "경험치 보석이 *빨려 오게*" },
       intro: { en: "Gems slide over. Like *luggage*.", ko: "보석이 *짐짝*처럼 미끄러져 와요." },
       interval: 0.7, stepDur: 3.6,

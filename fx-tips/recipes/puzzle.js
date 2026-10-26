@@ -272,7 +272,7 @@
 
     /* 3 ─────────────────────────────── */
     {
-      id: "puzzle-spin-bonus", cat: "puzzle", view: "ui",
+      id: "puzzle-spin-bonus", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Reward the *tricky spin*", ko: "어려운 회전엔 *보상*을" },
       intro: { en: "A hard trick. Scored like a *normal drop*.", ko: "어려운 기술인데 *보통 착지*랑 똑같아요." },
       interval: 1.5, stepDur: 3.8,
@@ -363,7 +363,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swish / crit / chime",
           cap: { en: "*Whip* on the turn, a *crack* on lock, then a chime.", ko: "돌 때 *휙*, 맞을 때 *딱*, 이어서 *띠링*." },
           turn(w) { w.sfx.swish(); },
-          lock(w) { w.sfx.crit(); w.after(0.12, () => w.sfx.chime(5)); },
+          lock(w) { w.play(() => { sSnap(0.5, 0, 3000); sBody(220, 0.07, 0.5); }); if (w.on("banner")) w.after(0.12, () => w.sfx.fanfare()); else if (w.on("points")) w.after(0.12, () => w.sfx.chime(5)); },
         },
       ],
     },
