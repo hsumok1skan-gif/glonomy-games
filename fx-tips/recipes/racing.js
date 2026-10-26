@@ -515,7 +515,7 @@
 
     /* 6 ─ 랩 타임 */
     {
-      id: "racing-lap-split", cat: "racing", view: "ui",
+      id: "racing-lap-split", cat: "racing", view: "ui", polished: true,
       title: { en: "Make lap times *readable*", ko: "랩 타임을 *한눈에*" },
       intro: { en: "Lap done. The timer just *resets*.", ko: "한 바퀴 돌았는데 시계만 *0으로*." },
       interval: 2.1, stepDur: 4.0,
@@ -603,14 +603,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "chime · +7 if best",
           cap: { en: "A *chime*. Higher pitch for a new best.", ko: "*띵*. 최고 기록이면 더 높게." },
-          lap(w, l) { w.sfx.chime(l.best ? 7 : 0); },
+          lap(w, l) { w.sfx.tick(); if (w.on("best") && l.best) w.sfx.chime(7); },
         },
       ],
     },
 
     /* 7 ─ 순위 변동 */
     {
-      id: "racing-position", cat: "racing", view: "3d",
+      id: "racing-position", cat: "racing", view: "3d", polished: true,
       title: { en: "Make P3 → P2 *feel earned*", ko: "3위 → 2위를 *뿌듯하게*" },
       intro: { en: "You passed someone. The number *just changed*.", ko: "추월했는데 숫자만 *슬쩍* 바뀌어요." },
       interval: 1.8, stepDur: 3.8,
@@ -694,7 +694,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + 2 blips",
           cap: { en: "A *whoosh* past, then a rising *blip-blip*.", ko: "*휙* 지나가고, 올라가는 *띠링*." },
-          pass(w) { w.sfx.dash(); w.after(0.15, () => w.sfx.blip(5)); w.after(0.25, () => w.sfx.blip(9)); },
+          pass(w) { w.sfx.dash(); if (w.on("flip") || w.on("punch")) { w.after(0.15, () => w.sfx.blip(5)); w.after(0.25, () => w.sfx.blip(9)); } },
         },
       ],
     },

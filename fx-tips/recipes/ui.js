@@ -452,7 +452,7 @@
 
     /* 5 ───── 슬라이더 드래그 ───── */
     {
-      id: "ui-slider", cat: "ui", view: "ui",
+      id: "ui-slider", cat: "ui", view: "ui", polished: true,
       title: { en: "Make a slider *grabbable*", ko: "슬라이더를 *잡는 맛*" },
       intro: { en: "Drag… drag… *jump* to the end.", ko: "끌었는데… 놓으면 *뚝* 이동." },
       interval: 1.05, stepDur: 3.4,
@@ -544,7 +544,7 @@
         {
           id: "sound", name: { en: "Rising Ticks", ko: "올라가는 틱" }, param: "pitch = value",
           cap: { en: "Tick on every notch. *Higher value, higher pitch.*", ko: "눈금마다 틱. *값이 클수록 높은 음*." },
-          notch(w, S, n) { w.sfx.blip(n + 1); },
+          notch(w, S, n) { if (w.on("notch")) w.sfx.tick(); },
           grab(w) { w.sfx.clickDown(); },
           release(w) { w.sfx.clickUp(); },
         },
@@ -965,7 +965,7 @@
 
     /* 11 ───── 로딩 바 ───── */
     {
-      id: "ui-loading", cat: "ui", view: "ui",
+      id: "ui-loading", cat: "ui", view: "ui", polished: true,
       title: { en: "Make loading feel *faster*", ko: "로딩을 *빨라 보이게*" },
       intro: { en: "Stuck… stuck… *jump*.", ko: "멈춤… 멈춤… *뚝* 점프." },
       interval: 1.9, stepDur: 3.8,
@@ -1039,7 +1039,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick / 10% + chime",
           cap: { en: "Soft *ticks* while filling, a *chime* when done.", ko: "채우는 동안 *틱틱*, 끝나면 *딩*." },
           ten(w) { w.sfx.tick(); },
-          done(w) { w.sfx.chime(7); },
+          done(w) { if (w.on("finish")) w.sfx.chime(7); },
         },
       ],
     },
@@ -1349,7 +1349,7 @@
 
     /* 16 ───── 툴팁 ───── */
     {
-      id: "ui-tooltip", cat: "ui", view: "ui",
+      id: "ui-tooltip", cat: "ui", view: "ui", polished: true,
       title: { en: "Point the *tooltip* at its item", ko: "툴팁이 *가리키게*" },
       intro: { en: "Which item is this text *about?*", ko: "이 설명, *어느 아이템* 거예요?" },
       interval: 1.8, stepDur: 3.8,
@@ -1898,7 +1898,7 @@
 
     /* 23 ───── 설정 저장 ───── */
     {
-      id: "ui-saved", cat: "ui", view: "ui",
+      id: "ui-saved", cat: "ui", view: "ui", polished: true,
       title: { en: "Show that settings *stuck*", ko: "설정이 *저장된 게* 보이게" },
       intro: { en: "Tapped Save. *Did it save?*", ko: "저장 눌렀는데… *된 거예요?*" },
       interval: 1.9, stepDur: 3.8,
@@ -1975,7 +1975,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick… chime",
           cap: { en: "Quiet *tick* on tap, warm *chime* when done.", ko: "누를 때 *틱*, 끝나면 따뜻한 *딩*." },
           press(w) { w.sfx.clickDown(); },
-          saved(w) { w.sfx.chime(4); },
+          saved(w) { if (w.on("check")) w.sfx.chime(4); else w.sfx.tick(); },
         },
       ],
     },

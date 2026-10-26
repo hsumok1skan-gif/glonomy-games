@@ -1534,7 +1534,7 @@
 
     /* 18. 움직이는 발판 */
     {
-      id: "move-platform", cat: "move", view: "side",
+      id: "move-platform", cat: "move", view: "side", polished: true,
       title: { en: "Let moving platforms *carry* you", ko: "움직이는 발판이 *태워 가게*" },
       intro: { en: "Stood on it. It *slid away* underneath.", ko: "올라탔는데 발판만 *쏙* 빠져나가요." },
       interval: 2.8, stepDur: 4.0,
@@ -1612,7 +1612,7 @@
 
     /* 19. 한쪽 발판 통과 */
     {
-      id: "move-dropthrough", cat: "move", view: "side",
+      id: "move-dropthrough", cat: "move", view: "side", polished: true,
       title: { en: "Make drop-through *readable*", ko: "통과 발판을 *티 나게*" },
       intro: { en: "Passed right through the floor. *Bug?*", ko: "바닥을 그냥 뚫고 지나가요. *버그?*" },
       interval: 2.0, stepDur: 3.6,

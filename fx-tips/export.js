@@ -1,7 +1,7 @@
 "use strict";
 /* 받아 간 사람이 그대로 열어 쓰는 실행 파일 만들기 (사이트와 코드 안내 페이지가 같이 씀) */
 window.FXExport = (() => {
-  const V = "20261024sfx";
+  const V = "202610261215";
   const plain = s => String(s).replace(/\*/g, "");
   const close = "<" + "/script>", open = "<" + "script>", cm = t => "<" + "!-- " + t + " --" + ">";
 

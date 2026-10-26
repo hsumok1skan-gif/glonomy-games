@@ -1376,7 +1376,7 @@
 
     // 14 ─ 미니맵 핑
     {
-      id: "army-ping", cat: "army", view: "ui",
+      id: "army-ping", cat: "army", view: "ui", polished: true,
       title: { en: "Make minimap alerts *impossible to miss*", ko: "미니맵 알림을 *놓칠 수 없게*" },
       intro: { en: "Something happened. *Somewhere.*", ko: "어딘가에서… *무슨 일이*." },
       interval: 1.8, stepDur: 4.0,
@@ -1454,7 +1454,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "two-tone alert",
           cap: { en: "A *two-tone* alert. Learnable in one hearing.", ko: "*딩-동* 두 음. 한 번 들으면 외워요." },
-          ping(w) { w.sfx.chime(0); w.after(0.15, () => w.sfx.chime(-5)); },
+          ping(w) { if (w.on("rings") || w.on("flash")) { w.sfx.chime(0); w.after(0.15, () => w.sfx.chime(-5)); } },
         },
       ],
     },
@@ -2042,7 +2042,7 @@
 
     // 22 ─ 군중 데미지 숫자
     {
-      id: "army-numbers", cat: "army", view: "top",
+      id: "army-numbers", cat: "army", view: "top", polished: true,
       title: { en: "Tame damage numbers over *crowds*", ko: "떼거리 데미지 숫자 *정리하기*" },
       intro: { en: "Numbers *everywhere*. Read any?", ko: "숫자가 *우수수*. 하나라도 읽혀요?" },
       interval: 0.35, stepDur: 3.8,
@@ -2120,7 +2120,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick · crit",
           cap: { en: "Quiet *ticks*. Only crits get a *punch*.", ko: "작은 *틱틱*. 치명타만 *퍽*." },
-          hit(w, u, d, crit) { if (crit) w.sfx.crit(); else w.sfx.tick(); },
+          hit(w, u, d, crit) { w.sfx.tick(); },
         },
       ],
     },

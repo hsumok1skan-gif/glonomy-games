@@ -1561,7 +1561,7 @@
 
     /* 19. 육각 이동 범위 */
     {
-      id: "strategy-hex", cat: "strategy", view: "top",
+      id: "strategy-hex", cat: "strategy", view: "top", polished: true,
       title: { en: "Make move range *readable*", ko: "이동 범위를 *한눈에*" },
       intro: { en: "Blue tiles. Then… *teleport?*", ko: "파란 칸, 그리고… *순간이동?*" },
       interval: 1.7, stepDur: 3.8,
@@ -1642,7 +1642,7 @@
         {
           id: "sound", name: { en: "Tick Ripple + Taps", ko: "틱틱 + 톡톡" }, param: "tick / ring · tap / hop",
           cap: { en: "*Ticks* ripple out, *taps* on each hop.", ko: "퍼질 때 *틱틱*, 뛸 때 *톡톡*." },
-          show(w) { for (let i = 1; i <= 3; i++) w.after(i * 0.06, () => w.sfx.blip(i * 2)); },
+          show(w) { if (w.on("ripple") || w.on("pop")) for (let i = 1; i <= 3; i++) w.after(i * 0.06, () => w.sfx.tick()); },
           step(w) { w.sfx.tock(); },
           land(w) { w.sfx.land(); },
         },
@@ -1651,7 +1651,7 @@
 
     /* 20. 공격 범위 */
     {
-      id: "strategy-range", cat: "strategy", view: "iso",
+      id: "strategy-range", cat: "strategy", view: "iso", polished: true,
       title: { en: "Make attack range *clear*", ko: "공격 범위를 *분명하게*" },
       intro: { en: "Red tiles. *Who can I hit?*", ko: "빨간 칸. *누굴 칠 수 있죠?*" },
       interval: 1.7, stepDur: 3.8,
@@ -1729,7 +1729,7 @@
           cap: { en: "A *sweep* out, a *beep* per target.", ko: "퍼질 때 *슥*, 표적마다 *삑*." },
           show(w) {
             w.sfx.swish();
-            w.foes.filter(f => f.inR).forEach((f, i) => w.after(0.25 + i * 0.1, () => w.play(() => tn({ type: "square", f: 1200, dur: 0.05, vol: 0.08 }))));
+            if (w.on("targets")) w.foes.filter(f => f.inR).forEach((f, i) => w.after(0.25 + i * 0.1, () => w.play(() => tn({ type: "square", f: 1200, dur: 0.05, vol: 0.08 }))));
           },
         },
       ],
@@ -2130,7 +2130,7 @@
 
     /* 26. 미니맵 */
     {
-      id: "strategy-minimap", cat: "strategy", view: "ui",
+      id: "strategy-minimap", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make the minimap *talk*", ko: "미니맵이 *말하게*" },
       intro: { en: "Dots. Lots of dots. *So?*", ko: "점, 점, 점. *그래서요?*" },
       interval: 1.5, stepDur: 3.8,
@@ -2211,7 +2211,7 @@
         {
           id: "sound", name: { en: "Sonar Blip", ko: "소나 삑" }, param: "ping · 1.2kHz",
           cap: { en: "A *sonar blip* for every event.", ko: "사건마다 *소나 삑*." },
-          event(w) { w.play(() => { tn({ f: 1200, f2: 1150, dur: 0.35, vol: 0.12 }); tn({ f: 1200, dur: 0.2, vol: 0.05, delay: 0.18 }); }); },
+          event(w) { if (w.on("ping") || w.on("blink")) w.play(() => { tn({ f: 1200, f2: 1150, dur: 0.35, vol: 0.12 }); tn({ f: 1200, dur: 0.2, vol: 0.05, delay: 0.18 }); }); },
         },
       ],
     },

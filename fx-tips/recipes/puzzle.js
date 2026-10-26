@@ -630,7 +630,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "chime / arpeggio",
           cap: { en: "A soft *chime*. A full row plays a *run*.", ko: "정답엔 *띵*, 한 줄 완성엔 *띠리링*." },
-          input(w) { w.sfx.chime(0); },
+          input(w) { w.sfx.tock(); if (w.on("green")) w.sfx.chime(0); },
           row(w) { if (w.on("wave")) [0, 4, 7, 12].forEach((n, i) => w.after(i * 0.06, () => w.sfx.chime(n))); },
         },
       ],
@@ -826,7 +826,7 @@
   RECIPES.push(
     /* 8 ─────────────────────────────── */
     {
-      id: "puzzle-hint-glow", cat: "puzzle", view: "top",
+      id: "puzzle-hint-glow", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make hints *impossible to miss*", ko: "힌트를 *놓칠 수 없게*" },
       intro: { en: "There's a hint. A thin box. *Where?*", ko: "힌트가 떴는데 얇은 테두리뿐. *어디?*" },
       interval: 1.4, stepDur: 3.6,
@@ -897,7 +897,7 @@
         {
           id: "sound", name: { en: "Soft Ping", ko: "작은 딩동" }, param: "2 notes · quiet",
           cap: { en: "A quiet *ding-dong*. A nudge, not an alarm.", ko: "조용히 *딩동*. 경보 말고 귀띔." },
-          show(w) { w.sfx.chime(7); w.after(0.15, () => w.sfx.chime(3)); },
+          show(w) { if (w.on("pulse") || w.on("arrow")) w.sfx.chime(7); },
         },
       ],
     },
@@ -1385,7 +1385,7 @@
 
     /* 14 ─────────────────────────────── */
     {
-      id: "puzzle-jigsaw-snap", cat: "puzzle", view: "ui",
+      id: "puzzle-jigsaw-snap", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make puzzle pieces *snap*", ko: "퍼즐 조각을 *딸깍*" },
       intro: { en: "Drag, stop. *Is it in?*", ko: "끌어서, 멈춤. *들어간 거예요?*" },
       interval: 1.3, stepDur: 3.6,
@@ -1664,7 +1664,7 @@
 
     /* 16 ─────────────────────────────── */
     {
-      id: "puzzle-pair-match", cat: "puzzle", view: "ui",
+      id: "puzzle-pair-match", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make card pairs *celebrate*", ko: "카드 짝 맞추기를 *신나게*" },
       intro: { en: "A pair! They just... *vanish*.", ko: "짝을 찾았는데... 그냥 *사라져요*." },
       interval: 1.6, stepDur: 3.8,
@@ -1750,7 +1750,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "flick / chime pair",
           cap: { en: "Paper *flick* on flip. Two-note *chime* on match.", ko: "뒤집을 땐 *착*, 짝이면 *띵동*." },
           flip(w) { w.sfx.swish(); },
-          match(w) { w.sfx.chime(0); w.after(0.09, () => w.sfx.chime(7)); },
+          match(w) { w.sfx.tock(); if (w.on("link") || w.on("burst")) { w.sfx.chime(0); w.after(0.09, () => w.sfx.chime(7)); } },
         },
       ],
     },

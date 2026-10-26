@@ -620,7 +620,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "low growl / crunch",
           cap: { en: "A *low growl* when hungry, a *crunch* when eating.", ko: "배고프면 *꾸르륵*, 먹으면 *와삭*." },
-          drain(w, H) { if (H.v < 40) w.play(() => tn({ type: "sawtooth", f: 70, f2: 48, dur: 0.5, vol: 0.12 })); },
+          drain(w, H) { if (H.v < 40 && w.on("growl")) w.play(() => tn({ type: "sawtooth", f: 70, f2: 48, dur: 0.5, vol: 0.12 })); },
           eat(w) { w.play(() => { nz({ dur: 0.08, type: "bandpass", f: 2200, q: 1, vol: 0.35 }); nz({ dur: 0.08, type: "bandpass", f: 1800, q: 1, vol: 0.3, delay: 0.12 }); }); if (w.on("eat")) w.after(0.25, () => w.sfx.chime(4)); },
         },
       ],
@@ -2049,7 +2049,7 @@
 
     /* ───────── 24. 무거운 가방 ───────── */
     {
-      id: "survival-overweight", cat: "survival", view: "side",
+      id: "survival-overweight", cat: "survival", view: "side", polished: true,
       title: { en: "Make a heavy bag *feel* heavy", ko: "무거운 가방이 *무겁게*" },
       intro: { en: "120% weight. Walks like *nothing*.", ko: "무게 120%인데 *가뿐하게* 걸어요." },
       interval: 0.55, stepDur: 4.0,

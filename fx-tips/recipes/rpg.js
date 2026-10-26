@@ -332,7 +332,7 @@
 
     /* 3. 마나 소모 */
     {
-      id: "rpg-mana", cat: "rpg", view: "side",
+      id: "rpg-mana", cat: "rpg", view: "side", polished: true,
       title: { en: "Make mana *cost* something", ko: "마나가 *닳는 게* 보이게" },
       intro: { en: "The blue bar moved. *Did it?*", ko: "파란 바가… *줄었나?*" },
       interval: 0.9, stepDur: 3.8,
@@ -894,7 +894,7 @@
 
     /* 10. 장비 비교 */
     {
-      id: "rpg-equip", cat: "rpg", view: "ui",
+      id: "rpg-equip", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make gear swaps *comparable*", ko: "장비 교체를 *비교되게*" },
       intro: { en: "Numbers changed. *Better or worse?*", ko: "숫자는 바뀌었는데… *좋아진 거예요?*" },
       interval: 1.5, stepDur: 3.8,
@@ -981,7 +981,7 @@
           equip(w, it, old) {
             w.sfx.thunk();
             const up = it.st.reduce((a, b) => a + b) >= old.st.reduce((a, b) => a + b);
-            w.play(() => tn({ type: "triangle", f: up ? 660 : 520, f2: up ? 990 : 330, dur: 0.2, vol: 0.18, delay: 0.1 }));
+            if (w.on("arrows") || w.on("delta")) w.play(() => tn({ type: "triangle", f: up ? 660 : 520, f2: up ? 990 : 330, dur: 0.2, vol: 0.18, delay: 0.1 }));
           },
         },
       ],
@@ -1656,14 +1656,14 @@
 
     /* 19. 턴 순서 바 */
     {
-      id: "rpg-turn-order", cat: "rpg", view: "side",
+      id: "rpg-turn-order", cat: "rpg", view: "side", polished: true,
       title: { en: "Make turn order *readable*", ko: "턴 순서가 *읽히게*" },
       intro: { en: "Icons shuffle. *Whose turn is it?*", ko: "아이콘이 바뀌었는데, *누구 차례예요?*" },
       interval: 1.1, stepDur: 3.8,
       setup(w) {
         w.U = [
           { a: w.actor("hero", { home: 100, h: 115 }), spr: "hero", col: "#e5e7eb", ally: true },
-          { a: w.actor("hero", { home: 190, h: 105 }), spr: "hero", col: "#60a5fa", ally: true, blue: true },
+          { a: Object.assign(w.actor("hero", { home: 190, h: 105 }), { chill: 0.3 }), spr: "hero", col: "#60a5fa", ally: true, blue: true },
           { a: w.actor("foe", { home: 380, h: 120 }), spr: "foe", col: "#86efac" },
           { a: w.actor("foe", { home: 470, h: 100 }), spr: "foe", col: "#86efac" },
         ];
@@ -1682,7 +1682,7 @@
         });
       },
       drawBack(w, ctx) { w.emit("back", ctx, w.U[w.Qu[0]]); },
-      drawFront(w, ctx) { const u = w.U[1]; overlay(ctx, u.a, tintSpr("hero", "#3b82f6").c, 0.55); },
+      drawFront(w, ctx) { const u = w.U[1]; if (!poseSet(u.a)) overlay(ctx, u.a, tintSpr("hero", "#3b82f6").c, 0.55); },
       drawHud(w, ctx) {
         panel(ctx, 100, 44, 340, 52, 26, "rgba(20,22,30,0.85)");
         const order = [...w.U].sort((a, b) => b.sc - a.sc);
@@ -1735,7 +1735,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "high ally · low foe",
           cap: { en: "Bright tick for allies. Low *tock* for enemies.", ko: "아군은 맑게 *틱*, 적은 낮게 *톡*." },
-          turn(w, cur) { if (cur.ally) w.sfx.chime(2); else w.sfx.tock(); },
+          turn(w, cur) { w.sfx.tock(); },
         },
       ],
     },

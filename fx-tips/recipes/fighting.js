@@ -2089,7 +2089,7 @@
 
     /* 27 ─ 회복 가능한 빨간 체력 */
     {
-      id: "fighting-red-health", cat: "fighting", view: "side", melee: true,
+      id: "fighting-red-health", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Show *recoverable* red health", ko: "되찾을 수 있는 *빨간 체력*" },
       intro: { en: "Every hit is *gone forever*. No reason to back off.", ko: "맞으면 *영영* 끝. 물러날 이유가 없어요." },
       interval: 1.3, stepDur: 4.0,
@@ -2147,7 +2147,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hurt · soft tick",
           cap: { en: "A hurt *grunt*, and a soft *tick* as it heals.", ko: "맞으면 *윽*, 차오를 땐 작은 *똑*." },
           hurt(w) { w.sfx.hurt(); },
-          update(w) { const h = w.hero; if (w.since > 0.4 && w.rec > h.hp + 0.5 && Math.random() < 0.05) w.sfx.tick(); },
+          update(w) { const h = w.hero; if (w.on("regen") && w.since > 0.4 && w.rec > h.hp + 0.5 && Math.random() < 0.05) w.sfx.tick(); },
         },
       ],
     },

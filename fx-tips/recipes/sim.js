@@ -852,7 +852,7 @@
 
     /* ───────── 11. 방치형 큰 숫자 ───────── */
     {
-      id: "sim-bignum", cat: "sim", view: "ui",
+      id: "sim-bignum", cat: "sim", view: "ui", polished: true,
       title: { en: "Make *huge numbers* readable", ko: "*엄청 큰 숫자*를 읽히게" },
       intro: { en: "1,284,019,337… *how much is that?*", ko: "1,284,019,337… *그래서 얼마예요?*" },
       interval: 0.7, stepDur: 3.6,
@@ -912,7 +912,7 @@
           } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick · boom on unit",
           cap: { en: "Soft *ticks*, a deep *boom* on a new unit.", ko: "평소엔 *틱틱*, 단위 바뀌면 *쿵*." },
-          gain(w) { w.sfx.tick(); }, unit(w, N, t) { w.sfx.slam(); w.sfx.chime(t * 2); } },
+          gain(w) { w.sfx.tick(); }, unit(w, N, t) { if (w.on("punch")) w.sfx.thunk(); if (w.on("suffix")) w.sfx.chime(t * 2); } },
       ],
     },
 
@@ -1547,7 +1547,7 @@
 
     /* ───────── 21. 창고 가득 경고 ───────── */
     {
-      id: "sim-storage", cat: "sim", view: "iso",
+      id: "sim-storage", cat: "sim", view: "iso", polished: true,
       title: { en: "Make *storage full* impossible to miss", ko: "*창고 가득*을 놓칠 수 없게" },
       intro: { en: "Full. Crates vanish. *Nobody notices.*", ko: "꽉 찼어요. 상자가 사라져요. *아무도 몰라요.*" },
       interval: 0.7, stepDur: 3.8,
@@ -1612,13 +1612,13 @@
           reject(w) { w.vignette(0.45); } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk · buzz",
           cap: { en: "Stored: *thunk*. Rejected: a dull *buzz*.", ko: "들어가면 *쿵*, 튕기면 *부-*." },
-          store(w) { w.sfx.thunk(); }, reject(w) { w.play(() => tn({ type: "square", f: 110, dur: 0.22, vol: 0.12 })); } },
+          store(w) { w.sfx.thunk(); }, reject(w) { if (w.on("shake") || w.on("warn")) w.play(() => tn({ type: "square", f: 110, dur: 0.22, vol: 0.12 })); } },
       ],
     },
 
     /* ───────── 22. 시세 등락 ───────── */
     {
-      id: "sim-stock", cat: "sim", view: "ui",
+      id: "sim-stock", cat: "sim", view: "ui", polished: true,
       title: { en: "Make prices feel *alive*", ko: "시세가 *살아 움직이게*" },
       intro: { en: "A line. A number. *Up or down?*", ko: "선 하나, 숫자 하나. *올랐어요 내렸어요?*" },
       interval: 0.55, stepDur: 3.4,
@@ -1672,7 +1672,7 @@
           tick(w, S) { S.flash = 1; S.bump = 1; } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "high up · low down",
           cap: { en: "*High blip* up, *low blip* down. Eyes free.", ko: "오르면 *높게 띡*, 내리면 *낮게 뚝*." },
-          tick(w, S) { w.play(() => tn({ type: "triangle", f: S.dir > 0 ? 1320 : 330, f2: S.dir > 0 ? 1760 : 250, dur: 0.1, vol: 0.18 })); } },
+          tick(w, S) { if (w.on("color") || w.on("flash")) w.play(() => tn({ type: "triangle", f: S.dir > 0 ? 1320 : 330, f2: S.dir > 0 ? 1760 : 250, dur: 0.1, vol: 0.18 })); } },
       ],
     },
 
@@ -2215,7 +2215,7 @@
 
     /* ───────── 30. 알림 배지 ───────── */
     {
-      id: "sim-badge", cat: "sim", view: "ui",
+      id: "sim-badge", cat: "sim", view: "ui", polished: true,
       title: { en: "Make notification badges *pop*", ko: "알림 배지가 *톡* 튀게" },
       intro: { en: "A red dot. Did it just change?", ko: "빨간 점. *방금 바뀐 거예요?*" },
       interval: 0.8, stepDur: 3.6,
@@ -2278,7 +2278,7 @@
           notify(w) { w.tween(w.S, { toast: 1 }, 0.25, "back", () => w.after(0.6, () => w.tween(w.S, { toast: 0 }, 0.2, "in"))); } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "two-note ding",
           cap: { en: "A light *two-note ding*. Never a harsh beep.", ko: "가벼운 *딩동*. 거친 삐 소리는 금지." },
-          arrive(w) { w.sfx.chime(0); w.after(0.09, () => w.sfx.chime(5)); } },
+          arrive(w) { w.sfx.pop(); if (w.on("ring") || w.on("toast")) w.after(0.09, () => w.sfx.chime(5)); } },
       ],
     },
   );

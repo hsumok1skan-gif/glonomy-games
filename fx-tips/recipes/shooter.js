@@ -2276,7 +2276,7 @@
 
     /* 27 ─ 킬 피드 */
     {
-      id: "shooter-killfeed", cat: "shooter", view: "3d",
+      id: "shooter-killfeed", cat: "shooter", view: "3d", polished: true,
       title: { en: "Build a *readable* kill feed", ko: "한눈에 읽히는 *킬 피드*" },
       intro: { en: "A wall of grey text. *Who* did what?", ko: "회색 글자 덩어리. *누가* 뭘 했죠?" },
       interval: 0.9, stepDur: 4.2,
@@ -2358,7 +2358,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick for yours only",
           cap: { en: "Only *your* kills make a *tick*.", ko: "*내* 처치만 *틱* 소리가 나요." },
-          add(w, e) { if (e.you) w.sfx.blip(5); },
+          add(w, e) { if (e.you && w.on("you")) w.sfx.blip(5); },
         },
       ],
     },
@@ -2526,7 +2526,7 @@
 
     /* 30 ─ 탄약 숫자 흔들기 */
     {
-      id: "shooter-ammo-shake", cat: "shooter", view: "3d",
+      id: "shooter-ammo-shake", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make the ammo counter *react*", ko: "탄약 숫자가 *반응하게*" },
       intro: { en: "12, 11, 10… The counter just *sits there*.", ko: "12, 11, 10… 숫자가 *가만히* 있어요." },
       interval: 0.28, stepDur: 3.8,
@@ -2589,7 +2589,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch up when low",
           cap: { en: "The shot's tail gets *higher* as you run dry.", ko: "탄이 줄수록 끝소리가 *높아져요*." },
-          shot(w, n) { w.sfx.smg(1); w.sfx.blip(13 - n); },
+          shot(w, n) { w.sfx.smg(1); if (w.on("low") && n <= 3) w.sfx.tick(); },
         },
       ],
     },
