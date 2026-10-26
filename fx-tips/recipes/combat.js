@@ -1634,7 +1634,7 @@
 
     /* 19. 적 등장 예고 */
     {
-      id: "combat-spawn", cat: "combat", view: "side",
+      id: "combat-spawn", cat: "combat", view: "side", polished: true,
       title: { en: "Warn *before* an enemy spawns", ko: "적이 나오기 *전에* 알려주기" },
       intro: { en: "*Pop.* An enemy. No warning at all.", ko: "*뿅.* 적이 나왔어요. 예고도 없이." },
       interval: 1.9, stepDur: 4.0,
@@ -1697,14 +1697,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising hum → pop",
           cap: { en: "A *rising hum*, then a *pop* on arrival.", ko: "*우웅* 올라가다가 *팡*." },
           mark(w) { w.sfx.charge(); },
-          spawn(w) { w.sfx.burst(); },
+          spawn(w) { w.sfx.thud(); if (w.on("burst")) w.sfx.magic(); },
         },
       ],
     },
 
     /* 20. 공격 예고 (위험 구역) */
     {
-      id: "combat-telegraph", cat: "combat", view: "top",
+      id: "combat-telegraph", cat: "combat", view: "top", polished: true,
       title: { en: "Telegraph attacks with a *danger zone*", ko: "공격 전에 *위험 구역* 보여주기" },
       intro: { en: "Hit by *nothing*, from *nowhere*.", ko: "*아무것도* 없었는데 맞았어요." },
       interval: 1.8, stepDur: 4.0,
@@ -1780,7 +1780,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising beep → slam",
           cap: { en: "Warning *beeps* that speed up, then a *slam*.", ko: "점점 빨라지는 *삐삐*, 그리고 *쾅*." },
-          warn(w, z) { [0, 0.3, 0.5, 0.62].forEach(t => w.after(t, () => w.sfx.blip(8))); },
+          warn(w, z) { if (w.on("pulse") || w.on("zone")) [0, 0.3, 0.5, 0.62].forEach(t => w.after(t, () => w.sfx.blip(8))); },
           strike(w) { w.sfx.slam(); },
         },
       ],

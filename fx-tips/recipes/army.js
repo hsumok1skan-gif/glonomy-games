@@ -2127,7 +2127,7 @@
 
     // 23 ─ 승리 배너
     {
-      id: "army-victory", cat: "army", view: "iso",
+      id: "army-victory", cat: "army", view: "iso", polished: true,
       title: { en: "Celebrate *VICTORY*", ko: "*승리*를 크게 축하하기" },
       intro: { en: "You won. Says so in *small print*.", ko: "이겼대요. *작은 글씨*로." },
       interval: 2.6, stepDur: 4.4,
@@ -2214,15 +2214,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hit · fanfare",
           cap: { en: "A heavy *last hit*, then the *fanfare*.", ko: "묵직한 *마지막 한 방*, 그리고 *팡파레*." },
-          final(w) { w.sfx.crit(); },
-          win(w) { w.sfx.fanfare(); },
+          final(w) { w.sfx.slashHit(); },
+          win(w) { if (w.on("banner")) w.sfx.fanfare(); },
         },
       ],
     },
 
     // 24 ─ 전력 줄다리기 바
     {
-      id: "army-tug", cat: "army", view: "iso",
+      id: "army-tug", cat: "army", view: "iso", polished: true,
       title: { en: "Make the strength bar a *tug-of-war*", ko: "전력 게이지를 *줄다리기*처럼" },
       intro: { en: "The line *teleports*. Who's winning?", ko: "경계선이 *순간이동*. 누가 이겨요?" },
       interval: 0.9, stepDur: 3.8,
@@ -2304,14 +2304,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "up = chime · down = thud",
           cap: { en: "Gaining *chimes*, losing *thuds*.", ko: "밀어붙이면 *띵*, 밀리면 *쿵*." },
-          swing(w, d) { if (d > 0) w.sfx.chime(Math.round(w.val * 12)); else w.sfx.thunk(); },
+          swing(w, d) { w.sfx.thunk(); },
         },
       ],
     },
 
     // 25 ─ 전장의 안개
     {
-      id: "army-fog", cat: "army", view: "top",
+      id: "army-fog", cat: "army", view: "top", polished: true,
       title: { en: "Reveal fog of war *with drama*", ko: "전장의 안개를 *극적으로* 걷기" },
       intro: { en: "Holes punched in black paper.", ko: "검은 종이에 *구멍* 뚫는 느낌." },
       interval: 0.9, stepDur: 4.0,
@@ -2391,7 +2391,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh · ping",
           cap: { en: "A soft *whoosh* to reveal, a *ping* when spotted.", ko: "걷힐 때 *쉬익*, 발견하면 *핑*." },
           arrive(w) { w.sfx.swish(); },
-          spot(w) { w.sfx.blip(8); },
+          spot(w) { if (w.on("spot")) w.sfx.blip(8); },
         },
       ],
     },

@@ -1853,7 +1853,7 @@
 
     /* 24 ─ 포위 경고 표시 */
     {
-      id: "horde-surround", cat: "horde", view: "top",
+      id: "horde-surround", cat: "horde", view: "top", polished: true,
       title: { en: "Show who's coming from *off-screen*", ko: "화면 *밖*에서 오는 적 알려주기" },
       intro: { en: "Surprise! From *every side*.", ko: "깜짝! *사방*에서 튀어나와요." },
       interval: 1.4, stepDur: 3.8,
@@ -1926,14 +1926,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "2 beeps per group",
           cap: { en: "Two short *beeps* when a group appears.", ko: "무리가 나타나면 짧게 *삑삑*." },
-          incoming(w) { w.play(() => { tn({ type: "square", f: 880, dur: 0.06, vol: 0.1 }); tn({ type: "square", f: 880, dur: 0.06, vol: 0.1, delay: 0.12 }); }); },
+          incoming(w) { if (w.on("pips") || w.on("pulse")) w.play(() => { tn({ type: "square", f: 880, dur: 0.06, vol: 0.1 }); tn({ type: "square", f: 880, dur: 0.06, vol: 0.1, delay: 0.12 }); }); },
         },
       ],
     },
 
     /* 25 ─ 생존 시간 이정표 */
     {
-      id: "horde-milestone", cat: "horde", view: "top",
+      id: "horde-milestone", cat: "horde", view: "top", polished: true,
       title: { en: "Celebrate a *survival milestone*", ko: "버틴 시간을 *축하하기*" },
       intro: { en: "Five minutes survived. The clock *shrugs*.", ko: "5분을 버텼는데 시계는 *무심해요*." },
       interval: 3.0, stepDur: 4.2,
@@ -2002,14 +2002,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "fanfare",
           cap: { en: "A short *fanfare*. You earned it.", ko: "짧은 *빰빠밤*. 버틴 보상이에요." },
-          milestone(w) { w.sfx.fanfare(); w.sfx.chime(0); },
+          milestone(w) { w.sfx.tick(); if (w.on("pop") || w.on("banner")) w.sfx.fanfare(); },
         },
       ],
     },
 
     /* 26 ─ 무리끼리 부드럽게 밀어내기 */
     {
-      id: "horde-crowd", cat: "horde", view: "top",
+      id: "horde-crowd", cat: "horde", view: "top", polished: true,
       title: { en: "Make a crowd *push back*", ko: "적 무리가 *서로 밀치게*" },
       intro: { en: "Forty enemies. One *green blob*.", ko: "적 마흔 마리가 *초록 덩어리* 하나." },
       interval: 1.6, stepDur: 3.8,
@@ -2066,14 +2066,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "dash + scuffle",
           cap: { en: "A *whoosh* and a *scuffle*.", ko: "*휙* 하고 *우당탕*." },
-          dash(w) { w.sfx.dash(); w.sfx.rattle(); },
+          dash(w) { w.sfx.dash(); if (w.on("shove")) w.sfx.rattle(); },
         },
       ],
     },
 
     /* 27 ─ 마지막 한 마리 슬로모션 */
     {
-      id: "horde-last", cat: "horde", view: "top",
+      id: "horde-last", cat: "horde", view: "top", polished: true,
       title: { en: "Slow down for the *last one*", ko: "마지막 한 마리는 *느리게*" },
       intro: { en: "Wave over. Nobody *noticed*.", ko: "웨이브가 끝났는데 *아무도 몰라요*." },
       interval: 2.8, stepDur: 4.4,
@@ -2136,14 +2136,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crit · fanfare",
           cap: { en: "A heavy *crit*, then a bright *fanfare*.", ko: "묵직한 *퍽*, 이어서 밝은 *빰빠밤*." },
-          last(w) { w.sfx.crit(); w.after(0.25, () => w.sfx.fanfare()); },
+          last(w) { w.sfx.slashHit(); if (w.on("freeze")) w.sfx.critBig(); if (w.on("banner")) w.after(0.25, () => w.sfx.fanfare()); },
         },
       ],
     },
 
     /* 28 ─ 무쌍 콤보 1000 (옆에서) */
     {
-      id: "horde-musou", cat: "horde", view: "side",
+      id: "horde-musou", cat: "horde", view: "side", polished: true,
       title: { en: "Count a *1000-hit* combo right", ko: "*1000 콤보*를 제대로 세기" },
       intro: { en: "347 hits… in a *footnote* font.", ko: "347 콤보인데 *각주*처럼 보여요." },
       interval: 0.32, stepDur: 3.8,
@@ -2233,14 +2233,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slash · chime / 100",
           cap: { en: "Quick *slashes*. A *chime* every 100.", ko: "빠른 *챙챙*. 100마다 *띵*." },
           swing(w) { w.sfx.slashHit(); },
-          hundred(w, c, m) { if (m >= 1000) w.sfx.fanfare(); else w.sfx.chime(m / 100); },
+          hundred(w, c, m) { if (!w.on("hundred") && !w.on("tiers")) return; if (m >= 1000) w.sfx.fanfare(); else w.sfx.chime(m / 100); },
         },
       ],
     },
 
     /* 29 ─ 한 줄을 꿰뚫는 빔 (옆에서) */
     {
-      id: "horde-beam", cat: "horde", view: "side",
+      id: "horde-beam", cat: "horde", view: "side", polished: true,
       title: { en: "Make a beam *pierce the line*", ko: "빔이 한 줄을 *꿰뚫게*" },
       intro: { en: "A thin line. Seven enemies *blink out*.", ko: "가는 선 하나. 일곱 마리가 *쓱* 사라져요." },
       interval: 1.4, stepDur: 3.8,
@@ -2330,14 +2330,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "charge · zzzap",
           cap: { en: "A rising *whine*, then a buzzing *ZZZAP*.", ko: "올라가는 *위잉*, 이어서 *지이잉*." },
           charge(w) { w.sfx.charge(); },
-          beam(w) { w.play(() => { tn({ type: "sawtooth", f: 160, f2: 90, dur: 0.45, vol: 0.18 }); nz({ type: "bandpass", f: 2400, f2: 900, q: 1, dur: 0.4, vol: 0.3 }); }); },
+          beam(w) { if (w.on("thick") || w.on("spray")) w.play(() => { tn({ type: "sawtooth", f: 160, f2: 90, dur: 0.45, vol: 0.18 }); nz({ type: "bandpass", f: 2400, f2: 900, q: 1, dur: 0.4, vol: 0.3 }); }); },
         },
       ],
     },
 
     /* 30 ─ 가장자리에서 몰려오는 웨이브 */
     {
-      id: "horde-wave-spawn", cat: "horde", view: "top",
+      id: "horde-wave-spawn", cat: "horde", view: "top", polished: true,
       title: { en: "Make a new wave *arrive*", ko: "새 웨이브가 *들이닥치게*" },
       intro: { en: "Twenty-four enemies. *Poof*, there.", ko: "적 스물넷이 *뿅* 하고 생겨요." },
       interval: 2.8, stepDur: 4.2,
@@ -2402,7 +2402,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "horn · pops ≤ 30/s",
           cap: { en: "A low *horn*, then a ripple of *pops*.", ko: "낮은 *뿌우*, 이어서 *뽁뽁뽁*." },
-          wave(w) { w.play(() => tn({ type: "sawtooth", f: 98, f2: 92, dur: 0.6, vol: 0.14 })); },
+          wave(w) { if (w.on("banner") || w.on("tele")) w.play(() => tn({ type: "sawtooth", f: 98, f2: 92, dur: 0.6, vol: 0.14 })); },
           spawn(w) { if (once(w, "sp", 0.03)) w.sfx.pop(); },
         },
       ],

@@ -95,7 +95,21 @@
     ? polySprite("fighting-c" + i, humanModel, 170, 260, -0.72, 0.3, c.l, c.d)
     : polySprite("fighting-c" + i, goblinModel, 210, 210, 0.62, 0.3, c.l, c.d));
   // 초상: 위쪽(머리·상체)이 보이게 크게 그림. dim 이면 어둡게
+  // 픽셀 초상: 주인공·적 기본 자세 한 컷에 캐릭터 색을 입힘 (명암은 살림)
+  const PXP = {};
+  const pxPortrait = i => {
+    if (PXP[i]) return PXP[i];
+    const c = CAST[i], A = POSES[c.m === "h" ? "hero" : "foe"] && POSES[c.m === "h" ? "hero" : "foe"].anims && POSES[c.m === "h" ? "hero" : "foe"].anims.idle;
+    if (!A || !A.img || !A.img.complete || !A.img.naturalWidth) return null;
+    const g = document.createElement("canvas"); g.width = A.cw; g.height = A.ch; const x = g.getContext("2d");
+    x.drawImage(A.img, 0, 0, A.cw, A.ch, 0, 0, A.cw, A.ch);
+    if (i !== 0 && i !== 4) { x.globalCompositeOperation = "source-atop"; x.globalAlpha = 0.33; x.fillStyle = `rgb(${c.l.join(",")})`; x.fillRect(0, 0, A.cw, A.ch); }
+    return (PXP[i] = g);
+  };
   const drawPortrait = (ctx, i, cx, top, hgt, dim) => {
+    const P = pxPortrait(i);
+    if (P) { const H2 = hgt * 0.9, W2 = H2 * P.width / P.height, sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(P, cx - W2 / 2, top + hgt * 0.06, W2, H2); ctx.imageSmoothingEnabled = sm;
+      if (dim) { ctx.save(); ctx.globalAlpha = 0.45; ctx.globalCompositeOperation = "source-atop"; ctx.restore(); ctx.fillStyle = "rgba(18,19,24,0.45)"; ctx.fillRect(cx - W2 / 2, top, W2, hgt); } return; }
     const c = SPR["fighting-c" + i].c, wd = hgt * c.width / c.height;
     ctx.drawImage(c, cx - wd / 2, top, wd, hgt);
     if (dim) { ctx.fillStyle = "rgba(18,19,24,0.45)"; ctx.fillRect(cx - wd / 2, top, wd, hgt); }
@@ -1829,7 +1843,7 @@
 
     /* 24 ─ 시간 초과 */
     {
-      id: "fighting-time-over", cat: "fighting", view: "side", melee: true,
+      id: "fighting-time-over", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make TIME OVER *tense*", ko: "타임 오버에 *긴장감*" },
       intro: { en: "The clock hits zero. Fight *just stops*.", ko: "시간이 0이 되면 *그냥 멈춰요*." },
       interval: 2.6, stepDur: 4.2,
@@ -1903,13 +1917,13 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ticks · buzzer",
           cap: { en: "*Ticks* that count down, then a *buzzer*.", ko: "*똑딱* 초읽기, 그리고 *삐—*." },
           tick(w) { w.sfx.tock(); },
-          timeup(w) { w.play(() => { tn({ type: "square", f: 150, dur: 0.7, vol: 0.16 }); tn({ type: "square", f: 152, dur: 0.7, vol: 0.12 }); }); },
+          timeup(w) { if (w.on("freeze") || w.on("banner")) w.play(() => { tn({ type: "square", f: 150, dur: 0.7, vol: 0.16 }); tn({ type: "square", f: 152, dur: 0.7, vol: 0.12 }); }); },
         },
       ],
     },
     /* 25 ─ 캐릭터 선택 확정 */
     {
-      id: "fighting-select-lockin", cat: "fighting", view: "ui",
+      id: "fighting-select-lockin", cat: "fighting", view: "ui", polished: true,
       title: { en: "Make character select *lock in*", ko: "캐릭터 선택을 *딱* 확정" },
       intro: { en: "Picked a fighter. *Did it register?*", ko: "캐릭터 골랐는데 *된 거예요?*" },
       interval: 1.6, stepDur: 4.0,
@@ -1993,14 +2007,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ticks · shout",
           cap: { en: "Light *ticks* moving, a heavy *thunk* on lock.", ko: "옮길 땐 *톡톡*, 확정은 *쿵*." },
           move(w) { w.sfx.tick(); },
-          lock(w) { w.sfx.crit(); w.sfx.chime(4); },
+          lock(w) { w.sfx.clickDown(); if (w.on("flash") || w.on("stamp")) w.sfx.slam(); },
         },
       ],
     },
 
     /* 26 ─ VS 화면 */
     {
-      id: "fighting-versus-screen", cat: "fighting", view: "ui",
+      id: "fighting-versus-screen", cat: "fighting", view: "ui", polished: true,
       title: { en: "Make the VS screen *clash*", ko: "VS 화면에 *불꽃* 튀기기" },
       intro: { en: "Two pictures and \"VS\". *A slideshow.*", ko: "그림 둘에 \"VS\". *슬라이드쇼* 같아요." },
       interval: 2.0, stepDur: 4.0,
@@ -2068,7 +2082,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swoosh · slam",
           cap: { en: "Two *swooshes*, one big *slam*.", ko: "*슉슉* 두 번, 크게 *쾅*." },
           go(w) { w.sfx.dash(); },
-          vs(w) { w.sfx.slam(); w.sfx.crit(); },
+          vs(w) { if (w.on("slam")) w.sfx.slam(); else w.sfx.tock(); },
         },
       ],
     },
@@ -2140,7 +2154,7 @@
 
     /* 28 ─ 기절 */
     {
-      id: "fighting-dizzy", cat: "fighting", view: "side", melee: true,
+      id: "fighting-dizzy", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a stun *dizzy*", ko: "기절을 *빙글빙글*" },
       intro: { en: "It's stunned. It's just… *standing there*.", ko: "기절했는데… 그냥 *서 있어요*." },
       interval: 1.9, stepDur: 4.0,
@@ -2209,14 +2223,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thuds · chirps",
           cap: { en: "Two *thuds*, then cartoon *chirps*.", ko: "*퍽퍽*, 그리고 *짹짹*." },
           hit(w) { w.sfx.thud(); },
-          stun(w) { w.play(() => { for (let i = 0; i < 6; i++) tn({ type: "triangle", f: i % 2 ? 2400 : 2000, dur: 0.07, vol: 0.1, delay: 0.15 + i * 0.1 }); }); },
+          stun(w) { if (w.on("stars")) w.play(() => { for (let i = 0; i < 6; i++) tn({ type: "triangle", f: i % 2 ? 2400 : 2000, dur: 0.07, vol: 0.1, delay: 0.15 + i * 0.1 }); }); },
         },
       ],
     },
 
     /* 29 ─ 장풍 상쇄 */
     {
-      id: "fighting-projectile-clash", cat: "fighting", view: "side", melee: true,
+      id: "fighting-projectile-clash", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make projectiles *collide*", ko: "장풍끼리 *부딪치게*" },
       intro: { en: "Two fireballs meet and… *vanish*.", ko: "장풍 두 개가 만나서… *사라져요*." },
       interval: 1.2, stepDur: 3.8,
@@ -2273,14 +2287,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh ×2 · boom",
           cap: { en: "Two *whooshes*, one *boom*.", ko: "*슈욱* 두 번, *펑* 한 번." },
           launch(w) { w.sfx.magic(); },
-          clash(w) { w.sfx.burst(); w.sfx.thud(); },
+          clash(w) { w.sfx.thud(); if (w.on("burst")) w.sfx.magic(); },
         },
       ],
     },
 
     /* 30 ─ 세기별 히트스톱 */
     {
-      id: "fighting-hitstop-scale", cat: "fighting", view: "side", melee: true,
+      id: "fighting-hitstop-scale", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Scale hit stop by *strength*", ko: "히트스톱을 *세기별로*" },
       intro: { en: "Jab or haymaker? They feel *the same*.", ko: "잽이나 강펀치나 *똑같은 느낌*." },
       interval: 0.8, stepDur: 3.8,
@@ -2335,7 +2349,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch by strength",
           cap: { en: "Lower pitch, *longer* sound for heavy.", ko: "셀수록 *낮고 길게*." },
-          hit(w, p, s) { if (s === 2) w.sfx.crit(); else w.sfx.hit(s ? 1 : 1.5); },
+          hit(w, p, s) { if (s === 2) { w.sfx.slam(); if (w.on("stop")) w.sfx.critBig(); } else w.sfx.hit(s ? 1 : 1.5); },
         },
       ],
     },

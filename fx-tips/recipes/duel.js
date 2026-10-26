@@ -1865,7 +1865,7 @@
 
     /* 24 ─ 패링 후 반격 */
     {
-      id: "duel-parry", cat: "duel", view: "side",
+      id: "duel-parry", cat: "duel", view: "side", polished: true,
       title: { en: "Make a parry *pay off*", ko: "패링이 *보상받게*" },
       intro: { en: "Parried! …So what?", ko: "막았다! …그래서요?" },
       interval: 1.9, stepDur: 4.0,
@@ -1934,14 +1934,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ring + crit",
           cap: { en: "A bright *ting* on parry, a *crit* on the counter.", ko: "막을 때 맑은 *쨍*, 반격에 *빡*." },
           parry(w) { clang(w); },
-          riposte(w) { w.sfx.crit(); },
+          riposte(w) { w.sfx.slashHit(); if (w.on("crit")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 25 ─ 두 번째 체력바 공개 */
     {
-      id: "duel-secondbar", cat: "duel", view: "side",
+      id: "duel-secondbar", cat: "duel", view: "side", polished: true,
       title: { en: "Reveal the boss's *second bar*", ko: "보스의 *두 번째 체력바* 공개" },
       intro: { en: "HP zero. Oh, it's full again. *Huh.*", ko: "체력 0. 어, 다시 꽉 찼네. *음?*" },
       interval: 2.8, stepDur: 4.2,

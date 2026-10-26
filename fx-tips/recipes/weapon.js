@@ -1664,7 +1664,7 @@
 
     /* ─────────────── 19. 유도 미사일 ─────────────── */
     {
-      id: "weapon-homing", cat: "weapon", view: "top",
+      id: "weapon-homing", cat: "weapon", view: "top", polished: true,
       title: { en: "Make homing missiles *swarm*", ko: "유도 미사일을 *떼로*" },
       intro: { en: "Six missiles. Six *straight lines*.", ko: "미사일 여섯 발. 직선 *여섯 줄*." },
       interval: 1.7, stepDur: 4.0,
@@ -1746,14 +1746,14 @@
           id: "sound", name: { en: "Fwip-fwip + Pops", ko: "퓽퓽 + 펑펑" }, param: "1 per missile",
           cap: { en: "A *fwip* per launch, a *pop* per hit.", ko: "나갈 때마다 *퓽*, 맞을 때마다 *펑*." },
           launch(w, ms) { ms.forEach((m, i) => w.play(() => nz({ dur: 0.1, type: "bandpass", f: 900 + i * 120, f2: 2600, q: 2, vol: 0.25, delay: m.delay }))); },
-          boom(w) { w.sfx.pop(); },
+          boom(w) { w.sfx.thud(); if (w.on("blast")) w.sfx.boom(); },
         },
       ],
     },
 
     /* ─────────────── 20. 플라스마 구체 ─────────────── */
     {
-      id: "weapon-plasma", cat: "weapon", view: "side",
+      id: "weapon-plasma", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a slow orb feel *dangerous*", ko: "느린 구체를 *위협적으로*" },
       intro: { en: "Slow and big. Just *a purple ball*.", ko: "느리고 커요. 그냥 *보라색 공*." },
       interval: 2.2, stepDur: 4.2,
@@ -1831,15 +1831,15 @@
           id: "sound", name: { en: "Hum → Boom", ko: "웅웅 → 쾅" }, param: "low throb",
           cap: { en: "A *low throb* while it crawls. Silence. *BOOM*.", ko: "다가오는 동안 *낮게 웅웅*. 정적. *쾅*." },
           launch(w) { w.sfx.charge(); },
-          orb(w, o) { if (Math.floor(o.t * 5) !== Math.floor((o.t - 1 / 60) * 5)) w.play(() => tn({ type: "sawtooth", f: 55, dur: 0.18, vol: 0.12 })); },
-          boom(w) { w.sfx.boom(); w.sfx.burst(); },
+          orb(w, o) { if (w.on("wobble") && Math.floor(o.t * 5) !== Math.floor((o.t - 1 / 60) * 5)) w.play(() => tn({ type: "sawtooth", f: 55, dur: 0.18, vol: 0.12 })); },
+          boom(w) { w.sfx.thud(); if (w.on("blast") || w.on("implode")) w.sfx.boom(); },
         },
       ],
     },
 
     /* ─────────────── 21. 새총 ─────────────── */
     {
-      id: "weapon-slingshot", cat: "weapon", view: "side",
+      id: "weapon-slingshot", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a slingshot *stretch*", ko: "새총을 *쭈욱* 당기게" },
       intro: { en: "Pebble out. *Plink.* That's all?", ko: "돌멩이 휙. *톡*. 끝?" },
       interval: 1.4, stepDur: 3.6,
@@ -1898,16 +1898,16 @@
         {
           id: "sound", name: { en: "Stretch · Thwap · Bonk", ko: "끼익 · 퉁 · 딱" }, param: "rubber + wood",
           cap: { en: "A rubbery *stretch*, a *thwap*, a hollow *bonk*.", ko: "고무 *끼익*, *퉁*, 텅 빈 *딱*." },
-          pull(w) { w.play(() => tn({ type: "sawtooth", f: 120, f2: 260, dur: 0.5, vol: 0.05 })); },
+          pull(w) { if (w.on("pull")) w.play(() => tn({ type: "sawtooth", f: 120, f2: 260, dur: 0.5, vol: 0.05 })); },
           release(w) { w.play(() => { tn({ type: "triangle", f: 180, f2: 90, dur: 0.12, vol: 0.3 }); nz({ dur: 0.06, type: "bandpass", f: 1200, q: 1, vol: 0.3 }); }); },
-          hit(w) { w.sfx.tock(); w.sfx.pop(); },
+          hit(w) { w.sfx.tock(); if (w.on("bonk")) w.sfx.thunk(); },
         },
       ],
     },
 
     /* ─────────────── 22. 차크람 ─────────────── */
     {
-      id: "weapon-chakram", cat: "weapon", view: "top",
+      id: "weapon-chakram", cat: "weapon", view: "top", polished: true,
       title: { en: "Make a chakram *ricochet*", ko: "차크람이 *튕겨 다니게*" },
       intro: { en: "Hits one. Flies off. *Bye.*", ko: "하나 맞히고 날아감. *안녕.*" },
       interval: 1.8, stepDur: 4.0,
@@ -1994,7 +1994,7 @@
           id: "sound", name: { en: "Rising Pings", ko: "올라가는 팅" }, param: "+2 semis / bounce",
           cap: { en: "Every bounce pings *higher*. Ting-ting-TING!", ko: "튕길수록 *높게*. 팅, 팅, *팅!*" },
           throw(w) { w.sfx.swish(); },
-          hit(w, at, f, c) { w.sfx.blip(c.n * 3); w.sfx.tick(); },
+          hit(w, at, f, c) { w.sfx.clack(1 + c.n * 0.05); },
           catch(w) { w.sfx.clickDown(); },
         },
       ],
@@ -2002,7 +2002,7 @@
 
     /* ─────────────── 23. 랜스 돌격 ─────────────── */
     {
-      id: "weapon-lance", cat: "weapon", view: "side",
+      id: "weapon-lance", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a lance charge *unstoppable*", ko: "랜스 돌격을 *멈출 수 없게*" },
       intro: { en: "A charge? It's a *stroll*.", ko: "돌격이요? *산책* 같아요." },
       interval: 1.9, stepDur: 4.0,
@@ -2072,15 +2072,15 @@
         {
           id: "sound", name: { en: "Thunder Feet + Crash", ko: "두두두 + 쾅" }, param: "steps speed up",
           cap: { en: "Footsteps *speed up*, then a *crash*.", ko: "발소리가 *빨라지다가* *쾅*." },
-          charge(w, c) { [0, 0.4, 0.66, 0.84, 0.95].forEach(k => w.play(() => tn({ f: 110, f2: 50, dur: 0.08, vol: 0.4, delay: k * c.dur }))); },
-          impact(w) { w.sfx.slam(); w.sfx.crit(); },
+          charge(w, c) { if (w.on("accel") || w.on("dust")) [0, 0.4, 0.66, 0.84, 0.95].forEach(k => w.play(() => tn({ f: 110, f2: 50, dur: 0.08, vol: 0.4, delay: k * c.dur }))); },
+          impact(w) { w.sfx.slam(); if (w.on("impact")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* ─────────────── 24. 도끼 던지기 ─────────────── */
     {
-      id: "weapon-axe-throw", cat: "weapon", view: "side",
+      id: "weapon-axe-throw", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a thrown axe *spin and stick*", ko: "던진 도끼가 *돌다 꽂히게*" },
       intro: { en: "An axe *slides* through the air. Then vanishes.", ko: "도끼가 *미끄러지듯* 날아가다 사라져요." },
       interval: 1.3, stepDur: 3.6,
@@ -2139,7 +2139,7 @@
         {
           id: "sound", name: { en: "Whum-whum-THUNK", ko: "휭휭 + 콱" }, param: "1 whum / turn",
           cap: { en: "A *whum* per turn, then a deep *THUNK*.", ko: "한 바퀴에 *휭*, 마지막에 깊은 *콱*." },
-          update(w) { for (const b of w.shots) if (b.draw === drawAxe) { const n = Math.floor(b.rot / TAU); if (n !== b.turn) { b.turn = n; w.sfx.swish(); } } },
+          update(w) { if (w.on("spin")) for (const b of w.shots) if (b.draw === drawAxe) { const n = Math.floor(b.rot / TAU); if (n !== b.turn) { b.turn = n; w.sfx.swish(); } } },
           hit(w) { w.sfx.thunk(); w.sfx.thud(); },
         },
       ],
@@ -2147,7 +2147,7 @@
 
     /* ─────────────── 25. 발도술 ─────────────── */
     {
-      id: "weapon-katana", cat: "weapon", view: "side",
+      id: "weapon-katana", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a quick-draw *cut late*", ko: "발도술은 *늦게 베여야*" },
       intro: { en: "Dash, hit, done. *Where's the cool?*", ko: "지나가며 베고 끝. *멋*은 어디 갔죠?" },
       interval: 2.2, stepDur: 4.0,
@@ -2219,8 +2219,8 @@
           id: "sound", name: { en: "Shing · · · Click", ko: "슝 · · · 딸깍" }, param: "silence in between",
           cap: { en: "A *shing*, silence, a tiny *click*, then the hit.", ko: "*슝*, 정적, 작은 *딸깍*, 그리고 베임." },
           cut(w) { w.sfx.slash(); w.sfx.dash(); },
-          sheathe(w) { w.sfx.clickUp(); w.sfx.clickDown(); },
-          hit(w) { w.sfx.crit(); },
+          sheathe(w) { if (w.on("wake") || w.on("delay")) w.sfx.clack(1.2); },
+          hit(w) { w.sfx.slashHit(); if (w.on("delay") || w.on("split")) w.sfx.critBig(); },
         },
       ],
     },
@@ -2416,6 +2416,7 @@
   }
   function drawAxe(ctx, p) {
     ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+    if (PXSPR["wpn-axe-px"] && FX.style === "art") { const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.rotate(Math.PI / 2); ctx.drawImage(PXSPR["wpn-axe-px"], -18 * 0.9, -40 * 0.9, 36 * 0.9, 72 * 0.9); ctx.imageSmoothingEnabled = sm; ctx.restore(); return; }
     box(ctx, -26, -3, 44, 6, "#8a5a34");
     poly(ctx, [[10, -6], [26, -16], [30, 0], [26, 16], [10, 6]], "#94a3b8");
     poly(ctx, [[26, -16], [30, 0], [26, 16], [24, 0]], "#f1f5f9");
