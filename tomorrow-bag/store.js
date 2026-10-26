@@ -40,9 +40,11 @@ var Store = (function () {
         font: 1,
         reduce: false,
         dark: false,
+        teacher: false,
         holidays: [],
         guardians: ['엄마', '아빠'],
-        welcomed: false
+        welcomed: false,
+        setupDone: false
       }
     };
   }

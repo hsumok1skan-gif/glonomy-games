@@ -16,6 +16,11 @@
   --gold: #C9932E;
   --violet: #6A5BC2;
   --scrim: rgba(42, 38, 34, 0.45);
+  /* 넓은 화면(720px 이상)에서 가운데 앱 면을 띄우는 그림자 */
+  --shadow-lift: rgba(42, 38, 34, 0.12);
+  /* QR코드는 어두운 화면에서도 밝은 바탕에 어두운 칸이어야 읽힌다 — body.dark 에서 바꾸지 않는다 (--ink·--surface 의 밝은 화면 값) */
+  --qr-ink: #2A2622;
+  --qr-paper: #FFFFFF;
 
   --k: 1;
   --fs-1: 12px;
@@ -45,6 +50,7 @@ body.dark {
   --line: #3A352F;
   --soft: #4A2A22;
   --subsoft: #1F3A35;
+  --shadow-lift: rgba(0, 0, 0, 0.45);
 }
 body.reduce { --dur: 0s; }
 
@@ -82,6 +88,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .brand .logo { width: 28px; height: 28px; }
 .kids { display: flex; gap: 6px; overflow-x: auto; padding: 8px var(--gap) 0; scrollbar-width: none; }
 .kids::-webkit-scrollbar { display: none; }
+.kids.hidden { display: none; }
 
 /* 버튼 */
 .btn {
@@ -196,7 +203,7 @@ body.reduce .ring .fg { transition: none; }
   font-weight: 900; color: var(--on-accent);
   transition: background var(--dur), border-color var(--dur);
 }
-.check .it-ic { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 10px; background: var(--soft); font-size: 20px; line-height: 1; }
+.check .it-ic { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 10px; background: var(--soft); font-size: var(--t-4); line-height: 1; }
 .check.done .it-ic { opacity: 0.55; }
 .check .nm { font-weight: 700; display: block; }
 .check .src { font-size: var(--t-1); color: var(--muted); display: block; }
@@ -210,6 +217,7 @@ body.reduce .check.pop .box { animation: none; }
 /* 빈 화면 */
 .empty { text-align: center; padding: 28px 12px; }
 .empty .art { width: 120px; height: 120px; margin: 0 auto 8px; display: block; }
+.empty h3 { font-size: var(--t-4); font-weight: 800; margin: 8px 0 6px; word-break: keep-all; }
 .empty p { color: var(--muted); }
 .mini-empty { width: 100%; text-align: center; padding: 12px 8px; border: 2px dashed var(--line); border-radius: 14px; }
 .mini-empty .em { display: block; font-size: var(--t-6); line-height: 1.2; }
@@ -256,6 +264,17 @@ body.reduce .check.pop .box { animation: none; }
 .hist-row:last-child { border-bottom: 0; }
 .pill { font-size: var(--t-1); font-weight: 800; padding: 2px 8px; border-radius: 999px; background: var(--subsoft); color: var(--sub); }
 .pill.miss { background: var(--soft); color: var(--accent); }
+
+/* 다 챙겼을 때 문구 복사 카드 (가방 화면 #done-share) */
+.done-share { background: var(--subsoft); border-color: var(--sub); }
+.done-share .ds-msg { font-size: var(--t-4); font-weight: 800; color: var(--sub); word-break: keep-all; }
+
+/* 처음 설정 3단계 카드 (가방 화면 #setup-steps, 날짜 카드 위) */
+.setup-steps { border-color: var(--accent); }
+.setup-steps .step { display: flex; align-items: center; gap: 10px; margin-top: 10px; word-break: keep-all; }
+.setup-steps .st-no { flex: none; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: var(--t-2); background: var(--soft); color: var(--accent); border: 2px solid var(--accent); }
+.setup-steps .step.done .st-no { background: var(--sub); border-color: var(--sub); color: var(--on-accent); }
+.setup-steps .step.done b { color: var(--muted); text-decoration: line-through; }
 
 /* 아래 탭 줄 (엄지 닿는 곳) */
 .tabs {
@@ -306,6 +325,9 @@ body.reduce .check.pop .box { animation: none; }
 .sheet .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 4px auto 10px; }
 .sheet-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .sheet-head h2 { margin: 0; flex: 1; }
+/* 시트의 저장 버튼: 지우기 옆 남은 폭을 다 채운 주 동작 버튼 (엄지가 닿기 쉽게) */
+.sheet .row .btn.main[type=submit] { flex: 1; }
+.sheet .row:has(> .btn.main[type=submit]) > .spacer { display: none; }
 
 label.f { display: block; font-size: var(--t-2); font-weight: 700; margin: 12px 0 4px; }
 input[type=text], input[type=search], input[type=time], input[type=date], input[type=number], select, textarea {
@@ -316,6 +338,16 @@ input[type=text], input[type=search], input[type=time], input[type=date], input[
   font-size: var(--t-3);
 }
 textarea { min-height: 120px; resize: vertical; font-size: var(--t-2); }
+#teach-memo { min-height: 72px; }
+
+/* 선생님 모드 링크·QR코드 */
+.teach-out:empty { display: none; }
+.teach-out { margin-top: 12px; }
+.teach-card h3 { margin: 0 0 8px; font-size: var(--t-3); }
+.qr-box { display: flex; justify-content: center; padding: 8px; background: var(--qr-paper); border: 1px solid var(--line); border-radius: var(--r-card); }
+.qr-box .qr { width: min(100%, 280px); height: auto; display: block; }
+textarea.teach-link { min-height: 72px; font-size: var(--t-1); word-break: break-all; }
+.btn.main .ic-share, .btn.main .ic-share path { color: var(--on-accent); stroke: var(--on-accent); }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--sub); border-color: var(--sub); }
 .err { color: var(--danger); font-size: var(--t-2); min-height: 0; margin-top: 4px; }
 .bad { border-color: var(--danger) !important; animation: shake 0.3s; }
@@ -376,7 +408,7 @@ body.reduce .done-burst { animation: none; }
     background: var(--surface);
     border: 1px solid var(--line);
     border-top: 0;
-    box-shadow: 0 10px 40px rgba(42, 38, 34, 0.12), 0 2px 0 var(--line);
+    box-shadow: 0 10px 40px var(--shadow-lift), 0 2px 0 var(--line);
   }
   .top { background: var(--surface); }
   .tabs { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }

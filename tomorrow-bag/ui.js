@@ -107,6 +107,10 @@ var UI = (function () {
 
   // ---- 아이 고르기 줄 ----
   function renderKids(S) {
+    // 아이가 없으면 줄을 숨긴다(가방 빈 화면 카드의 '아이 넣기'가 같은 일을 한다)
+    var empty = S.kids.length === 0;
+    $('kids').classList.toggle('hidden', empty);
+    if (empty) { $('kids').innerHTML = ''; return; }
     var h = '';
     S.kids.forEach(function (k) {
       h += '<button class="chip' + (k.id === S.cur ? ' on' : '') + '" type="button" data-act="kid-pick" data-id="' + k.id + '">' + esc(k.name) + ' · ' + k.grade + '학년</button>';
@@ -130,6 +134,26 @@ var UI = (function () {
     return h + '</div>';
   }
 
+  // 처음 설정 3단계 카드: 셋을 다 끝내면(app.js renderAll 이 setupDone 을 저장) 그리지 않는다
+  function setupCard(S, kid, k) {
+    if (S.settings.setupDone) return '';
+    var st = Logic.setupSteps(S, kid);
+    if (!st || st.all) return '';
+    var dw = Logic.dow(k);
+    var rows = [
+      { s: st.steps[0], title: '시간표 칸 5개 채우기', sub: '채운 칸 ' + st.steps[0].filled + ' / ' + st.steps[0].total, act: 'go', extra: ' data-to="week"', label: '시간표로' },
+      { s: st.steps[1], title: '방과후 · 학원 1개 넣기', sub: '요일마다 데리러 갈 사람도 고를 수 있어요', act: 'after-new', extra: ' data-d="' + (dw >= 1 && dw <= 5 ? dw : 1) + '"', label: '+ 방과후' },
+      { s: st.steps[2], title: '알림장 넣거나 한 번 체크하기', sub: '알림장 준비물이 가방 맨 위에 들어가요', act: 'note-new', extra: '', label: '+ 알림장' }
+    ];
+    var h = '<div class="card setup-steps no-print" id="setup-steps"><div class="row"><b style="flex:1">처음 설정 3단계</b><span class="pill">' + st.n + ' / 3</span></div>';
+    rows.forEach(function (r, i) {
+      h += '<div class="step' + (r.s.done ? ' done' : '') + '"><span class="st-no" aria-hidden="true">' + (r.s.done ? '✓' : (i + 1)) + '</span>' +
+        '<span style="flex:1"><b>' + esc(r.title) + '</b><br><span class="tiny">' + esc(r.sub) + '</span></span>' +
+        (r.s.done ? '<span class="tiny">끝</span>' : '<button class="btn small" type="button" data-act="' + r.act + '"' + r.extra + '>' + esc(r.label) + '</button>') + '</div>';
+    });
+    return h + '</div>';
+  }
+
   function renderBag(S, V, kid, k, todayKey) {
     var root = $('bag-root');
     if (!kid) {
@@ -144,7 +168,7 @@ var UI = (function () {
     var hasWeek = false;
     for (var d = 1; d <= 5; d++) if (kid.week[d].p.some(function (x) { return !!x; }) || kid.week[d].after.length) hasWeek = true;
 
-    var h = '<div class="card date-card">' +
+    var h = setupCard(S, kid, k) + '<div class="card date-card">' +
       '<button class="icon-btn" type="button" data-act="day-prev" aria-label="앞 학교 가는 날">‹</button>' +
       '<div class="mid"><span class="rel">' + Logic.relLabel(k, todayKey) + ' 가방</span><div class="big">' + Logic.label(k) + '</div>' +
       '<div class="tiny">' + esc(kid.name) + ' · ' + (bag.school ? '학교 가는 날' : '쉬는 날') + '</div></div>' +
@@ -198,11 +222,20 @@ var UI = (function () {
 
     h += checkList(bag, done);
 
+    // 다 챙기면: '하윤 내일 준비물 다 챙겼어요' 문구와 복사 버튼 (가족·선생님께 보내기)
+    var doneMsg = Logic.doneText(S, kid, bag, todayKey);
+    if (doneMsg) {
+      h += '<div class="card done-share no-print" id="done-share"><div class="ds-msg">' + esc(doneMsg.split('\n')[0]) + '</div>' +
+        '<div class="tiny">' + esc(doneMsg.split('\n')[1] || '') + ' · 가족 대화방이나 선생님께 붙여 넣으세요</div>' +
+        '<button class="btn main wide" type="button" data-act="done-copy" style="margin-top:8px">다 챙겼어요 문구 복사</button></div>';
+    }
+
     var notes = S.notes.filter(function (n) { return n.kid === kid.id && n.date === k; });
     if (notes.length) {
       h += '<div class="card"><div class="muted" style="font-weight:800">이날 알림장</div>';
       notes.forEach(function (n) {
-        h += '<div class="row" style="margin-top:6px"><span style="flex:1">' + esc(n.title || '알림장') + ' — ' + esc(n.items.join(', ')) + '</span>' +
+        h += '<div class="row" style="margin-top:6px"><span style="flex:1">' + esc(n.title || '알림장') + ' — ' + esc(n.items.join(', ')) +
+          (n.memo ? '<br><span class="tiny">선생님 메모: ' + esc(n.memo) + '</span>' : '') + '</span>' +
           '<button class="btn small" type="button" data-act="note-edit" data-id="' + n.id + '">고치기</button></div>';
       });
       h += '</div>';
@@ -531,9 +564,43 @@ var UI = (function () {
       '<button class="btn" type="button" data-act="sample-del"' + (S.kids.some(function (k) { return k.sample; }) ? '' : ' disabled') + '>예시 빼기</button>' +
       '<button class="btn danger" type="button" data-act="clear-all">전체 지우기</button></div></div>';
 
+    // 선생님 모드는 부모가 쓰는 화면에 섞이지 않게 여기서 켤 때만 여는 버튼이 보인다
+    h += '<h2>선생님 모드</h2><div class="card">' +
+      '<div class="toggle"><span>선생님 모드 켜기</span><button class="btn small' + (st.teacher ? ' main' : '') + '" type="button" data-act="toggle-set" data-k="teacher" aria-pressed="' + !!st.teacher + '">' + (st.teacher ? '켜짐' : '꺼짐') + '</button></div>' +
+      '<p class="tiny">선생님이 반 준비물을 링크와 QR코드로 만들어 부모님께 나눠 줄 때 켭니다. 부모님은 켜지 않아도 링크를 열면 준비물이 들어와요.</p>' +
+      (st.teacher ? '<button class="btn" type="button" data-act="teacher-open" style="margin-top:8px">반 준비물 링크 만들기</button>' : '') +
+      '</div>';
+
     h += '<h2>계산 점검</h2><div class="card"><p class="muted">학교 가는 날 계산과 가방 합치기가 맞게 도는지 확인합니다.</p>' +
       '<button class="btn" type="button" data-act="selftest">점검하기</button><div id="selftest-out" class="tiny" style="margin-top:8px"></div></div>';
     $('more-root').innerHTML = h;
+  }
+
+  // ---- 선생님 모드 ----
+  function renderTeachItems(items) {
+    var h = '';
+    items.forEach(function (x, i) {
+      h += '<button class="chip pick" type="button" data-act="teach-item-del" data-i="' + i + '" aria-label="' + esc(x) + ' 빼기">' + esc(x) + ' ✕</button>';
+    });
+    if (!items.length) h = miniEmpty('✏️', '넣은 준비물이 없어요. 알림장에 쓸 준비물을 하나씩 넣으세요.', { act: 'focus', label: '준비물 쓰기', extra: ' data-target="teach-add"' });
+    $('teach-items').innerHTML = h;
+  }
+  // o 가 없으면 만든 링크를 치운다 (내용이 바뀌면 옛 링크가 남지 않게)
+  function renderTeachOut(o) {
+    var el = $('teach-out');
+    if (!o) { el.innerHTML = ''; return; }
+    var h = '<div class="card teach-card">' +
+      '<h3>' + esc(o.cls) + ' · ' + Logic.label(o.d) + ' 준비물 ' + o.n + '개</h3>' +
+      '<div class="qr-box">' + o.qr + '</div>' +
+      '<label class="f" for="teach-link">링크 (부모님이 열면 준비물이 가방 목록에 들어가요)</label>' +
+      '<textarea id="teach-link" class="teach-link" readonly>' + esc(o.link) + '</textarea>' +
+      '<div class="row wrap" style="margin-top:8px">' +
+      '<button class="btn main" type="button" data-act="teach-share">' + SHARE_IC + '공유하기</button>' +
+      '<button class="btn" type="button" data-act="teach-copy">링크 복사</button></div>' +
+      '<p class="tiny">공유하기를 누르면 카카오톡·문자 같은 앱을 골라 바로 보낼 수 있어요. 고르는 창이 없는 브라우저에서는 복사해 대화방에 붙여 넣으세요.</p>';
+    if (o.local) h += '<p class="tiny">지금은 이 기기의 파일로 열려 있어 다른 기기에서는 이 링크가 열리지 않아요. 앱을 웹 주소로 열고 만들면 어디서나 열립니다.</p>';
+    el.innerHTML = h + '</div>';
+    flash(el.firstChild);
   }
 
   function renderHelp() {
@@ -547,6 +614,7 @@ var UI = (function () {
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     renderKids: renderKids, renderBag: renderBag, renderWeek: renderWeek, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow,
     renderPacks: renderPacks, renderPackList: renderPackList, renderHistList: renderHistList, renderPackItems: renderPackItems, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
-    renderEvents: renderEvents, renderLog: renderLog, renderMore: renderMore, renderHelp: renderHelp
+    renderEvents: renderEvents, renderLog: renderLog, renderMore: renderMore, renderHelp: renderHelp,
+    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut
   };
 })();

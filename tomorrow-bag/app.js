@@ -52,6 +52,11 @@
   function renderAll() {
     var kid = curKid();
     if (kid) S.cur = kid.id;
+    // 처음 설정 3단계를 다 끝내면 안내 카드를 다시 띄우지 않는다 (예시 아이로는 끝내지 않는다)
+    if (kid && !kid.sample && !S.settings.setupDone && Logic.setupSteps(S, kid).all) {
+      S.settings.setupDone = true;
+      save();
+    }
     applySettings();
     UI.renderKids(S);
     var t = todayKey();
@@ -127,6 +132,7 @@
     save();
     UI.closeSheet('sheet-kid');
     renderAll();
+    if (!V.kidEdit && pendingTeach) return applyTeach();   // 선생님 링크로 받아 둔 준비물을 이 아이 가방에
     UI.toast(V.kidEdit ? '고쳤어요' : name + '을(를) 넣었어요. 시간표를 채워 볼까요?', !!V.kidEdit);
     if (!V.kidEdit) go('week');
   }
@@ -167,7 +173,7 @@
     var pr = Logic.progress(S, kid, Logic.buildBag(S, kid, bagKey()));
     if (i < 0 && pr.total && pr.done === pr.total) {
       UI.flash($('bag-ring'));
-      UI.toast('모두 챙겼어요! 다 쌌어요를 눌러 기록하세요');
+      UI.toast('모두 챙겼어요! 다 쌌어요로 기록하고, 아래 문구를 복사해 보내세요');
     }
   }
   function cssEsc(s) { return String(s).replace(/["\\]/g, '\\$&'); }
@@ -226,6 +232,14 @@
     var kid = curKid();
     if (!kid) return UI.toast('아이를 먼저 넣어 주세요');
     copyText(Logic.shareText(S, kid, Logic.buildBag(S, kid, bagKey())), '가방 목록을 복사했어요. 가족 대화방에 붙여 넣으세요');
+  }
+  // 다 챙겼을 때 한 줄 문구 복사 (가방 화면 done-share 카드)
+  function doneCopy() {
+    var kid = curKid();
+    if (!kid) return UI.toast('아이를 먼저 넣어 주세요');
+    var t = Logic.doneText(S, kid, Logic.buildBag(S, kid, bagKey()), todayKey());
+    if (!t) return UI.toast('아직 남은 물건이 있어요. 다 챙기면 복사할 수 있어요');
+    copyText(t, '"' + t.split('\n')[0] + '" 문구를 복사했어요');
   }
 
   // ---- 알림장 ----
@@ -521,6 +535,140 @@
     UI.toast(Logic.shortLabel(d) + '을(를) 쉬는 날로 넣었어요', true);
   }
 
+  // ---- 선생님 모드: 반 준비물을 링크 주소(#t=…) 안에 담고 QR코드로 그린다. 서버 없음 ----
+  function openTeacher() {
+    if (!S.settings.teacher) return UI.toast('더보기에서 선생님 모드를 먼저 켜 주세요');
+    V.teach = { items: [] };
+    $('teach-date').value = Logic.bagDate(now(), S.settings);
+    $('teach-add').value = '';
+    $('teach-memo').value = '';
+    UI.clearErr('teach-class', 'teach-err');
+    UI.clearErr('teach-add', null);
+    UI.clearErr('teach-date', null);
+    UI.clearErr('teach-memo', null);
+    UI.renderTeachItems(V.teach.items);
+    UI.renderTeachOut(null);
+    openSheet('sheet-teacher');
+  }
+  function teachAddItem() {
+    var t = Logic.norm($('teach-add').value);
+    if (!t) return UI.fieldErr('teach-add', 'teach-err', '준비물 이름을 넣어 주세요.');
+    if (t.length > 40) return UI.fieldErr('teach-add', 'teach-err', '40자 안으로 넣어 주세요.');
+    if (V.teach.items.indexOf(t) >= 0) return UI.fieldErr('teach-add', 'teach-err', '이미 넣은 준비물이에요.');
+    if (V.teach.items.length >= 15) return UI.fieldErr('teach-add', 'teach-err', '한 번에 15개까지 넣을 수 있어요.');
+    UI.clearErr('teach-add', 'teach-err');
+    V.teach.items.push(t);
+    $('teach-add').value = '';
+    UI.renderTeachItems(V.teach.items);
+    UI.renderTeachOut(null);
+    return true;
+  }
+  function teacherBase() { return location.href.split('#')[0]; }
+  function submitTeacher() {
+    var cls = Logic.norm($('teach-class').value);
+    if (!cls) return UI.fieldErr('teach-class', 'teach-err', '반 이름을 넣어 주세요.');
+    if (cls.length > 20) return UI.fieldErr('teach-class', 'teach-err', '반 이름은 20자 안으로 넣어 주세요.');
+    var d = $('teach-date').value;
+    if (!d || !Logic.validKey(d)) return UI.fieldErr('teach-date', 'teach-err', '가져올 날을 골라 주세요.');
+    if (Logic.norm($('teach-add').value) && teachAddItem() !== true) return;
+    if (!V.teach.items.length) return UI.fieldErr('teach-add', 'teach-err', '준비물을 하나 이상 넣어 주세요.');
+    var memo = Logic.norm($('teach-memo').value);
+    if (memo.length > 100) return UI.fieldErr('teach-memo', 'teach-err', '메모는 100자 안으로 넣어 주세요.');
+    var link = teacherBase() + '#t=' + Logic.teacherPack({ c: cls, d: d, i: V.teach.items, m: memo });
+    var qr = QR.svg(link, cls + ' 준비물 링크 QR코드');
+    if (!qr) return UI.fieldErr('teach-memo', 'teach-err', '내용이 길어 QR코드에 다 담기지 않아요. 준비물이나 메모를 줄여 주세요.');
+    UI.clearErr('teach-class', 'teach-err');
+    V.teach.out = { cls: cls, d: d, n: V.teach.items.length, link: link };
+    UI.renderTeachOut({ cls: cls, d: d, n: V.teach.items.length, link: link, qr: qr, local: !/^https?:$/.test(location.protocol) });
+    UI.toast('링크와 QR코드를 만들었어요');
+  }
+  // 지금 화면에 보이는 링크만 보낸다 (내용을 바꿔 링크를 치웠으면 없음)
+  function teachOut() {
+    var o = V.teach && V.teach.out;
+    if (!o || !$('teach-link') || $('teach-link').value !== o.link) return null;
+    return o;
+  }
+  function teachMsg(o) {
+    return o.cls + ' ' + Logic.label(o.d) + ' 준비물 ' + o.n + '개예요. 링크를 열면 Tomorrow Bag 가방 목록에 들어가요.';
+  }
+  function teachCopy() {
+    var o = teachOut();
+    if (!o) return UI.toast('먼저 링크 만들기를 눌러 주세요');
+    copyText(teachMsg(o) + '\n' + o.link, '링크를 복사했어요. 카톡·문자 대화방에 붙여 넣으세요');
+  }
+  function teachShare() {
+    var o = teachOut();
+    if (!o) return UI.toast('먼저 링크 만들기를 눌러 주세요');
+    var data = { title: o.cls + ' 준비물', text: teachMsg(o), url: o.link };
+    var can = false;
+    try { can = !!navigator.share && (!navigator.canShare || navigator.canShare(data)); } catch (e) { can = false; }
+    if (!can) {
+      copyText(teachMsg(o) + '\n' + o.link, '이 브라우저는 바로 보내기가 안 돼 링크를 복사했어요. 대화방에 붙여 넣으세요');
+      return;
+    }
+    try {
+      navigator.share(data).then(function () { UI.toast('보낼 곳으로 넘겼어요'); }, function (err) {
+        if (err && err.name === 'AbortError') return;   // 사람이 고르기 창을 닫음
+        copyText(teachMsg(o) + '\n' + o.link, '바로 보내지 못해 링크를 복사했어요. 대화방에 붙여 넣으세요');
+      });
+    } catch (e) {
+      copyText(teachMsg(o) + '\n' + o.link, '바로 보내지 못해 링크를 복사했어요. 대화방에 붙여 넣으세요');
+    }
+  }
+
+  // ---- 부모 쪽: 선생님 링크(#t=…)를 열면 준비물을 지금 아이의 그날 알림장에 넣는다 ----
+  var pendingTeach = null;   // 아이가 아직 없을 때 받아 둔 링크
+  function clearHash() {
+    try {
+      if (/^https?:$/.test(location.protocol)) history.replaceState(null, '', location.href.split('#')[0]);
+      else location.hash = '';
+    } catch (e) { /* 주소를 못 지워도 같은 링크는 다시 넣지 않는다 (mergeTeacher) */ }
+  }
+  function readTeachHash() {
+    var h = location.hash || '';
+    if (h.indexOf('#t=') !== 0) return;
+    var t = Logic.teacherUnpack(h.slice(3));
+    clearHash();
+    if (!t) return UI.toast('선생님 링크를 읽지 못했어요. 링크를 다시 받아 주세요');
+    pendingTeach = t;
+    applyTeach();
+  }
+  // 학교 가는 날 몇 칸 앞뒤인지 세어 가방 화면을 그날로 (그날이 학교 가는 날이 아니면 지금 가방)
+  function offsetTo(d) {
+    var base = Logic.bagDate(now(), S.settings), hs = S.settings.holidays, n = 0, k = base;
+    if (d < base) { while (k > d && n > -400) { k = Logic.prevSchoolDay(k, hs); n--; } }
+    else { while (k < d && n < 400) { k = Logic.nextSchoolDay(k, hs); n++; } }
+    return k === d ? n : 0;
+  }
+  function applyTeach() {
+    var t = pendingTeach;
+    if (!t) return;
+    var kid = curKid();
+    if (!kid) {
+      // 아이를 넣으면 바로 들어간다 (submitKid)
+      S.settings.welcomed = true;
+      save();
+      UI.closeSheet('ov-welcome');
+      openKid(null);
+      UI.toast(t.c + ' 준비물 링크를 받았어요. 아이를 넣으면 바로 들어가요');
+      return;
+    }
+    pendingTeach = null;
+    rememberUndo();
+    var r = Logic.mergeTeacher(S, kid, t, Store.uid('n'));
+    save();
+    V.offset = offsetTo(r.date);
+    renderAll();
+    go('bag');
+    if (!r.added.length) {
+      undoSnap = null;
+      return UI.toast(kid.name + ' ' + Logic.shortLabel(r.date) + ' 가방에 ' + r.cls + ' 준비물이 이미 모두 들어 있어요');
+    }
+    UI.flash($('bag-ring'));
+    UI.toast(kid.name + ' ' + Logic.shortLabel(r.date) + ' 가방에 ' + r.cls + ' 준비물 ' + r.added.length + '개를 넣었어요' +
+      (r.merged.length ? ' · 이미 있던 ' + r.merged.length + '개는 하나로 합쳤어요' : ''), true);
+  }
+
   // ---- 내보내기·가져오기 ----
   function openBackup() {
     $('export-text').value = Store.exportText(S);
@@ -621,6 +769,7 @@
     'check-all': checkAll,
     'bag-done': bagDone,
     'share': share,
+    'done-copy': doneCopy,
     'note-new': function () { openNote(null); },
     'note-edit': function (b) { openNote(b.getAttribute('data-id')); },
     'note-add': function () { if (noteAddItem($('note-add').value) === true) $('note-add').value = ''; },
@@ -677,12 +826,7 @@
     'hist-clear': function () { V.histQ = ''; V.histShow = 'all'; renderAll(); },
     'to-daily': function (b) { addDaily(b.getAttribute('data-name'), true); },
     'hist-open': function (b) {
-      var d = b.getAttribute('data-date');
-      var base = Logic.bagDate(now(), S.settings), hs = S.settings.holidays, n = 0, k = base;
-      // 그날까지 학교 가는 날 몇 칸인지 세어 가방 화면을 그날로
-      if (d < base) { while (k > d && n > -400) { k = Logic.prevSchoolDay(k, hs); n--; } }
-      else { while (k < d && n < 400) { k = Logic.nextSchoolDay(k, hs); n++; } }
-      V.offset = k === d ? n : 0;
+      V.offset = offsetTo(b.getAttribute('data-date'));
       renderAll(); go('bag');
     },
     'hist-del': function (b) {
@@ -711,6 +855,11 @@
     },
     'font': function (b) { S.settings.font = +b.getAttribute('data-v'); save(); renderAll(); },
     'toggle-set': function (b) { var k = b.getAttribute('data-k'); S.settings[k] = !S.settings[k]; save(); renderAll(); },
+    'teacher-open': openTeacher,
+    'teach-add': teachAddItem,
+    'teach-share': teachShare,
+    'teach-copy': teachCopy,
+    'teach-item-del': function (b) { V.teach.items.splice(+b.getAttribute('data-i'), 1); UI.renderTeachItems(V.teach.items); UI.renderTeachOut(null); },
     'backup': openBackup,
     'copy-export': function () { copyText($('export-text').value, '내보내기 글을 복사했어요'); },
     'print': function () { go('bag'); try { window.print(); } catch (e) { UI.toast('인쇄할 수 없는 브라우저예요'); } },
@@ -741,14 +890,15 @@
     'cell-set': 'cell', 'cell-clear': 'cell', 'cell-copy': 'cell', 'cell-copy-to': 'cell',
     'note-add': 'note', 'note-item-del': 'note', 'note-supply': 'note', 'note-del': 'note',
     'pack-add': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
-    'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid'
+    'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid',
+    'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach'
   };
   function ready(name) {
     var need = NEED[name];
     if (!need) return true;
     if (need === 'kid') return !!curKid();
     if (!V[need]) return false;
-    return need === 'pack' || !!curKid();
+    return need === 'pack' || need === 'teach' || !!curKid();
   }
 
   function onClick(e) {
@@ -771,7 +921,7 @@
     'form-kid': submitKid, 'form-after': submitAfter, 'form-note': submitNote, 'form-pack': submitPack,
     'form-event': submitEvent, 'form-backup': restore,
     'form-daily': function () { addDaily($('daily-add').value, false); },
-    'form-guard': addGuardian, 'form-holiday': addHoliday
+    'form-guard': addGuardian, 'form-holiday': addHoliday, 'form-teacher': submitTeacher
   };
   function onSubmit(e) {
     var f = FORMS[e.target.id];
@@ -786,6 +936,9 @@
     } else if (e.key === 'Enter' && e.target && e.target.id === 'pack-add' && V.pack) {
       e.preventDefault();
       packAddItem();
+    } else if (e.key === 'Enter' && e.target && e.target.id === 'teach-add' && V.teach) {
+      e.preventDefault();
+      teachAddItem();
     }
   }
 
@@ -807,6 +960,7 @@
     var t = e.target;
     if (t.id === 'pack-q') { V.packQ = t.value; UI.renderPackList(S, V); }
     else if (t.id === 'hist-q') { V.histQ = t.value; UI.renderHistList(null, V); }
+    else if ((t.id === 'teach-class' || t.id === 'teach-memo' || t.id === 'teach-date') && V.teach) UI.renderTeachOut(null); // 내용이 바뀌면 옛 링크를 치운다
   }
 
   // 날짜가 바뀌면(자정 넘김, 오래 켜 둔 화면) 다시 계산
@@ -838,8 +992,10 @@
     document.addEventListener('change', onChange);
     document.addEventListener('input', onInput);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+    window.addEventListener('hashchange', readTeachHash);
     setInterval(tick, 60000);
-    if (!S.settings.welcomed) UI.openSheet('ov-welcome');
+    if (!S.settings.welcomed && !/^#t=/.test(location.hash || '')) UI.openSheet('ov-welcome');
+    readTeachHash();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

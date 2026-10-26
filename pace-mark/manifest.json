@@ -1,0 +1,12 @@
+{
+  "name": "Pace Mark",
+  "short_name": "Pace Mark",
+  "description": "기출 한 회를 풀 때 문항마다 계획보다 앞섰는지 늦었는지 알려 주는 시험 페이스 기록 앱",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F1EA",
+  "theme_color": "#2B59C3",
+  "lang": "ko",
+  "icons": []
+}

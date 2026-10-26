@@ -201,6 +201,30 @@
   </form>
 </div>
 
+<!-- 선생님 모드: 반 준비물을 링크와 QR코드로 -->
+<div id="sheet-teacher" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-teacher" role="dialog" aria-label="선생님 모드">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2>선생님 모드 · 반 준비물</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <p class="muted">반 이름과 준비물을 넣으면 그 내용이 담긴 링크와 QR코드를 만듭니다. 내용은 링크 주소 안에만 담기고 서버로 보내지 않아요.</p>
+    <label class="f" for="teach-class">반 이름</label>
+    <input id="teach-class" type="text" maxlength="40" autocomplete="off" placeholder="예: 2학년 3반">
+    <label class="f" for="teach-date">가져올 날</label>
+    <input id="teach-date" type="date">
+    <label class="f" for="teach-add">준비물</label>
+    <div class="row">
+      <input id="teach-add" type="text" maxlength="40" placeholder="예: 색종이" autocomplete="off">
+      <button class="btn" type="button" data-act="teach-add">넣기</button>
+    </div>
+    <div id="teach-items" class="chips" style="margin-top:8px"></div>
+    <label class="f" for="teach-memo">메모 (적지 않아도 됩니다)</label>
+    <textarea id="teach-memo" maxlength="200" placeholder="예: 물건마다 이름을 써 주세요"></textarea>
+    <div class="err" id="teach-err"></div>
+    <button class="btn main wide" type="submit" style="margin-top:12px">링크와 QR코드 만들기</button>
+    <div id="teach-out" class="teach-out" aria-live="polite"></div>
+  </form>
+</div>
+
 <!-- 처음 안내 -->
 <div id="ov-welcome" class="dim center" aria-hidden="true">
   <div class="sheet" role="dialog" aria-label="처음 안내">
@@ -238,6 +262,7 @@
 <script src="./data.js"></script>
 <script src="./store.js"></script>
 <script src="./logic.js"></script>
+<script src="./qr.js"></script>
 <script src="./ui.js"></script>
 <script src="./app.js"></script>
 </body>

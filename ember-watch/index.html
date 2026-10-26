@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0E1A">
+<title>Ember Watch</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 1. 시작 -->
+  <section id="scr-title" class="screen active" aria-label="시작 화면">
+    <div class="title-wrap">
+      <div class="logo" aria-hidden="true"><span class="logo-fire"></span><span class="logo-lamp"></span></div>
+      <h1 class="game-title">Ember Watch</h1>
+      <p class="sub">장작 하나를 모닥불에 넣을까, 등불에 넣을까. 열 밤 동안 새벽까지 불을 지켜라.</p>
+      <div class="menu">
+        <button id="btn-continue" class="btn primary">이어하기</button>
+        <button id="btn-start" class="btn primary">시작</button>
+        <button id="btn-daily" class="btn daily">오늘의 도전<small id="daily-sub" class="daily-sub"></small></button>
+        <div class="row">
+          <button id="btn-help" class="btn">방법</button>
+          <button id="btn-settings" class="btn">설정</button>
+        </div>
+        <div class="row">
+          <button id="btn-camp" class="btn">야영지</button>
+          <button id="btn-codex" class="btn">도감</button>
+          <button id="btn-records" class="btn">기록</button>
+        </div>
+      </div>
+      <p class="meta-line" id="title-meta"></p>
+    </div>
+  </section>
+
+  <!-- 2. 출발 준비 (지역·등불 고르기) -->
+  <section id="scr-prep" class="screen" aria-label="출발 준비">
+    <header class="bar-head">
+      <button id="btn-prep-back" class="btn small" aria-label="처음으로">← 처음으로</button>
+      <h2>출발 준비</h2>
+      <span class="chip" id="prep-embers"></span>
+    </header>
+    <div class="prep-cols">
+      <div class="col">
+        <h3>지역</h3>
+        <div id="region-list" class="list"></div>
+      </div>
+      <div class="col">
+        <h3>등불</h3>
+        <div id="lantern-list" class="list"></div>
+      </div>
+    </div>
+    <div class="foot">
+      <button id="btn-go" class="btn primary wide">밤 지키러 가기</button>
+    </div>
+  </section>
+
+  <!-- 3. 본 화면 -->
+  <section id="scr-game" class="screen" aria-label="게임 화면">
+    <canvas id="cv" aria-label="모닥불 둘레 야영지"></canvas>
+    <div id="hud">
+      <div class="hud-top">
+        <div class="meter fire-meter" id="fire-meter">
+          <span class="meter-label">모닥불</span>
+          <div class="meter-bar"><div class="meter-fill" id="fire-fill"></div></div>
+          <span class="meter-num" id="fire-num">70</span>
+        </div>
+        <div class="hud-center">
+          <!-- 밤 하늘 호: 달이 왼쪽 땅끝에서 떠 오른쪽 해 뜨는 곳으로 간다 -->
+          <svg id="sky-arc" class="sky-arc" viewBox="0 0 200 50" aria-hidden="true">
+            <line class="sky-ground" x1="4" y1="46" x2="196" y2="46"></line>
+            <path class="sky-track" d="M12 46 A88 40 0 0 1 188 46"></path>
+            <path id="sky-done" class="sky-done" d="M12 46 A88 40 0 0 1 188 46" pathLength="100"></path>
+            <circle class="sky-sun" cx="188" cy="46" r="8"></circle>
+            <g id="sky-moon"><circle class="sky-moon" r="6"></circle><circle class="sky-moon-cut" cx="3" cy="-2" r="5"></circle></g>
+          </svg>
+          <div id="hud-night" class="hud-night" role="timer">첫째 밤 · 남은 1:04</div>
+        </div>
+        <div class="hud-right">
+          <span class="chip" id="hud-embers">불씨 0</span>
+          <button id="btn-pause" class="btn icon" aria-label="잠시 멈춤">❚❚</button>
+        </div>
+      </div>
+      <div class="hud-bottom">
+        <div class="hud-stats">
+          <div class="meter small-meter">
+            <span class="meter-label">체력</span>
+            <div class="meter-bar"><div class="meter-fill hp" id="hp-fill"></div></div>
+            <span class="meter-num" id="hp-num">100</span>
+          </div>
+          <div class="meter small-meter" id="oil-meter">
+            <span class="meter-label">등불</span>
+            <div class="meter-bar"><div class="meter-fill oil" id="oil-fill"></div></div>
+            <span class="meter-num" id="oil-num">60</span>
+          </div>
+          <div id="wood-slots" class="wood-slots" aria-label="들고 있는 장작"></div>
+        </div>
+        <div class="hud-actions">
+          <button id="btn-feed-fire" class="btn act fire" aria-label="모닥불에 넣기">🔥<small>불에 넣기</small></button>
+          <button id="btn-feed-lamp" class="btn act lamp" aria-label="등불에 넣기">🏮<small>등불에 넣기</small></button>
+        </div>
+      </div>
+      <div id="hint" class="hint" role="status"></div>
+      <div id="banner" class="banner" aria-live="polite"></div>
+      <div id="joy" class="joy" aria-hidden="true"><div id="joy-knob" class="joy-knob"></div></div>
+    </div>
+  </section>
+
+  <!-- 4. 결과 -->
+  <section id="scr-result" class="screen" aria-label="결과">
+    <div class="result-wrap">
+      <h2 id="res-title" class="res-title">새벽을 지켰다</h2>
+      <p id="res-why" class="res-why"></p>
+      <div id="res-lines" class="res-lines"></div>
+      <div id="res-new" class="res-new"></div>
+      <div class="row">
+        <button id="btn-again" class="btn primary">다시 하기</button>
+        <button id="btn-share" class="btn" aria-label="결과 문구 복사">결과 복사</button>
+        <button id="btn-home" class="btn">처음으로</button>
+      </div>
+      <p id="share-msg" class="share-msg" aria-live="polite"></p>
+      <textarea id="share-box" class="share-box hidden" rows="5" readonly aria-label="결과 문구"></textarea>
+    </div>
+  </section>
+
+  <!-- 5. 방법 -->
+  <section id="scr-help" class="screen" aria-label="방법">
+    <header class="bar-head">
+      <button id="btn-help-back" class="btn small">← 돌아가기</button>
+      <h2>방법</h2>
+      <span></span>
+    </header>
+    <div class="scroll help">
+      <div class="card-box">
+        <h3>목표</h3>
+        <p>밤 열 개를 버틴다. 밤마다 화면 위 가운데의 <b>달</b>이 하늘 호를 따라 오른쪽 해 뜨는 곳에 닿으면(새벽) 그 밤을 이긴다. 모닥불이 꺼지거나 체력이 0이 되면 진다.</p>
+      </div>
+      <div class="card-box">
+        <h3>장작 하나, 두 갈래</h3>
+        <p>어둠 속 장작을 주워 <b class="t-fire">🔥 모닥불</b>이나 <b class="t-lamp">🏮 등불</b> 중 한 곳에 넣는다.</p>
+        <p><b class="t-fire">모닥불</b>: 연료가 늘고 불빛 반경이 커진다. 불빛 안 그림자는 천천히 타고, 불빛 안에 서 있으면 체력이 찬다. 불빛 안이면 그 자리에서 던져 넣고, 멀면 불지기가 걸어가서 넣는다.</p>
+        <p><b class="t-lamp">등불</b>: 그 자리에서 기름이 찬다. 내 둘레 빛이 커지고, 등불 빛은 그림자를 세게 태운다. 기름은 늘 닳는다.</p>
+        <p>모닥불만 키우면 그림자를 늦게 태우고, 등불만 키우면 모닥불이 꺼진다. 장작마다 어디에 넣을지 고르는 것이 이 게임이다.</p>
+      </div>
+      <div class="card-box">
+        <h3>그림자</h3>
+        <p>그림자는 모닥불을 먹으러 오거나 불지기를 문다. 빛 안에서는 느려지고 탄다. 쓰러뜨리면 불씨를 얻고 가끔 장작을 떨어뜨린다. 다섯째 밤과 열째 밤에는 우두머리가 온다.</p>
+        <p>빛 안에서는 그림자 몸에 종류 글자 한 자(예: 늪 손은 '늪')가 보이고, 우두머리는 왕관을 쓴다. 땅에 떨어진 장작에도 장작 칸과 같은 글자가 적혀 있다. 글자 뜻은 도감에서 본다.</p>
+      </div>
+      <div class="card-box">
+        <h3>새벽</h3>
+        <p>새벽마다 강화 카드 셋 중 하나를 고른다. 셋째·여섯째·아홉째 새벽에는 유물도 하나 고른다. 밤이 시작될 때마다 저장되어 이어하기 할 수 있다.</p>
+        <p><b>오늘의 도전</b>: 날짜로 지역·등불·그림자·장작·카드가 정해진 같은 판을 하루 한 번 한다. 야영 준비와 열린 유물 없이 누구나 같은 조건이고, 이겨도 지역은 열리지 않는다. 다음 날 새 판이 열린다.</p>
+      </div>
+      <div class="card-box">
+        <h3>조작</h3>
+        <p><b>휴대폰</b>: 화면 아무 곳이나 끌어 움직인다. 오른쪽 아래 🔥·🏮 버튼으로 넣는다. 들고 있는 장작 칸을 눌러 먼저 쓸 장작을 고른다.</p>
+        <p><b>키보드</b>: 방향키 또는 W·A·S·D 이동 · Q 또는 J 모닥불에 넣기 · 스페이스 또는 K 등불에 넣기 · 1~6 장작 고르기 · P 또는 Esc 잠시 멈춤 · 새벽 카드는 1·2·3 또는 ←·→ 와 엔터</p>
+      </div>
+      <div class="card-box">
+        <h3>장작 종류</h3>
+        <div id="help-woods" class="mini-table"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 설정 -->
+  <section id="scr-settings" class="screen" aria-label="설정">
+    <header class="bar-head">
+      <button id="btn-settings-back" class="btn small">← 돌아가기</button>
+      <h2>설정</h2>
+      <span></span>
+    </header>
+    <div class="scroll">
+      <div id="settings-list" class="list settings"></div>
+      <div class="card-box danger-box">
+        <h3>기록 지우기</h3>
+        <p>불씨·해금·업적·일지·통계와 이어하기를 모두 지운다.</p>
+        <button id="btn-wipe" class="btn danger">기록 지우기</button>
+        <div id="wipe-confirm" class="wipe-confirm hidden">
+          <p>정말 지울까요? 되돌릴 수 없습니다.</p>
+          <div class="row">
+            <button id="btn-wipe-yes" class="btn danger">지운다</button>
+            <button id="btn-wipe-no" class="btn">그만둔다</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-box">
+        <h3>정보</h3>
+        <p>Ember Watch · 인터넷 연결 없이 이 브라우저 안에서만 돈다. 기록은 이 기기 브라우저에만 저장된다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 야영지 (불씨로 해금) -->
+  <section id="scr-camp" class="screen" aria-label="야영지">
+    <header class="bar-head">
+      <button id="btn-camp-back" class="btn small">← 처음으로</button>
+      <h2>야영지</h2>
+      <span class="chip" id="camp-embers"></span>
+    </header>
+    <div id="camp-tabs" class="tabs" role="tablist"></div>
+    <div id="camp-list" class="scroll list grid"></div>
+  </section>
+
+  <!-- 8. 도감 -->
+  <section id="scr-codex" class="screen" aria-label="도감">
+    <header class="bar-head">
+      <button id="btn-codex-back" class="btn small">← 처음으로</button>
+      <h2>도감</h2>
+      <span class="chip" id="codex-count"></span>
+    </header>
+    <div id="codex-tabs" class="tabs" role="tablist"></div>
+    <div id="codex-list" class="scroll list grid"></div>
+  </section>
+
+  <!-- 9. 기록 (업적·야영 일지·통계) -->
+  <section id="scr-records" class="screen" aria-label="기록">
+    <header class="bar-head">
+      <button id="btn-records-back" class="btn small">← 처음으로</button>
+      <h2>기록</h2>
+      <span></span>
+    </header>
+    <div id="rec-tabs" class="tabs" role="tablist"></div>
+    <div id="rec-list" class="scroll list grid"></div>
+  </section>
+
+  <!-- 10. 새벽 고르기 (겹침) -->
+  <div id="ov-cards" class="overlay" role="dialog" aria-label="새벽 고르기">
+    <div class="panel">
+      <h2 id="cards-title">새벽이 왔다</h2>
+      <p id="cards-sub" class="sub"></p>
+      <div id="card-list" class="card-list"></div>
+    </div>
+  </div>
+
+  <!-- 11. 잠시 멈춤 (겹침) -->
+  <div id="ov-pause" class="overlay" role="dialog" aria-label="잠시 멈춤">
+    <div class="panel small-panel">
+      <h2>잠시 멈춤</h2>
+      <div id="pause-info" class="pause-info"></div>
+      <div class="menu">
+        <button id="btn-resume" class="btn primary">계속</button>
+        <div class="row">
+          <button id="btn-pause-help" class="btn">방법</button>
+          <button id="btn-pause-settings" class="btn">설정</button>
+        </div>
+        <button id="btn-quit" class="btn danger">그만두기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 세로 화면 안내 -->
+  <div id="rotate" class="rotate" role="alert">
+    <div class="rotate-icon" aria-hidden="true">📱</div>
+    <p>가로로 돌려 주세요</p>
+    <p class="sub">Ember Watch 는 가로 화면에서 합니다.</p>
+  </div>
+</div>
+
+<script src="./data.js"></script>
+<script src="./game.js"></script>
+<script src="./audio.js"></script>
+<script src="./render.js"></script>
+<script src="./ui.js"></script>
+<script src="./main.js"></script>
+</body>
+</html>
