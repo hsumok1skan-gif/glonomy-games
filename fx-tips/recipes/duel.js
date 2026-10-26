@@ -109,7 +109,12 @@
   }
   // 주인공의 맨 칼: 기본 상태에서도 '베었다'가 보이게
   const blade = w => w.blade || (w.blade = { a: -1.1 });
-  function heroSword(w, ctx) { const h = w.hero; if (h.alpha <= 0) return; const p = handH(h); drawSword(ctx, p.x, p.y, blade(w).a, 72); }
+  // 주인공이 픽셀 동작 그림이면 칼을 따로 그리지 않고, 칼 각도의 움직임을 준비·베기 자세로 바꿈
+  function heroSword(w, ctx) {
+    const h = w.hero; if (h.alpha <= 0) return;
+    if (poseSet(h)) { const b = blade(w), v = b.a - (b._prev ?? b.a); b._prev = b.a; if (v > 0.12) { h.forcePose = "slash"; h.forceFrames = 16; } else if (b.a < -1.5 && !(h.forceFrames > 0)) { h.forcePose = "windup"; h.forceFrames = 2; } return; }
+    const p = handH(h); drawSword(ctx, p.x, p.y, blade(w).a, 72);
+  }
   function swing(w) {
     const s = blade(w); s.a = -2.0;
     w.tween(s, { a: 0.7 }, 0.12, "in", () => w.after(0.22, () => w.tween(s, { a: -1.1 }, 0.3, "out")));
@@ -120,7 +125,7 @@
   RECIPES.push(
     /* 1 ─ 보스 등장 */
     {
-      id: "duel-entrance", cat: "duel", view: "side",
+      id: "duel-entrance", cat: "duel", view: "side", polished: true, hookDur: 2.6,
       title: { en: "Give the boss a real *entrance*", ko: "보스 *등장*을 제대로" },
       intro: { en: "A big guy shows up. *Who?*", ko: "큰 놈이 나왔어요. *누구지?*" },
       interval: 2.6, stepDur: 4.0,
@@ -167,7 +172,7 @@
           id: "land", name: { en: "Heavy Landing", ko: "묵직한 착지" }, param: "trauma .6 · cracks",
           cap: { en: "It *lands*. The floor *cracks*, the screen shakes.", ko: "*쿵* 떨어지면 바닥이 *쩍* 갈라져요." },
           land(w, b) {
-            w.shake(0.6); b.sx = 1.3; b.sy = 0.7;
+            w.shake(0.6);
             w.spawn({ type: "ring", x: b.x, y: G, size: 20, size1: 200, life: 0.45, w: 8, flat: true, color: "255,230,190" });
             crack(w, b.x, G, 6); dust(w, b.x - 60, G, 10, -1); dust(w, b.x + 60, G, 10, 1);
           },
@@ -184,7 +189,7 @@
           roar(w, b) {
             const m = { x: b.x - 70, y: G - 150 };
             for (let i = 0; i < 3; i++) w.after(i * 0.1, () => w.spawn({ type: "ring", x: m.x, y: m.y, size: 20, size1: 200, life: 0.5, w: 7, color: "255,255,255" }));
-            b.sx = 0.9; b.sy = 1.14; w.hero.ox -= 40; w.shake(0.3);
+            b.forcePose = "attack"; b.forceUntil = w.time + 0.7; w.hero.ox -= 40; w.shake(0.3);
           },
         },
         {
@@ -195,8 +200,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slam + growl",
           cap: { en: "A deep *slam*, then a long *growl*.", ko: "*쿵* 하고, 길게 *그르릉*." },
-          land(w) { w.sfx.slam(); },
-          roar(w) { growl(w); },
+          land(w) { if (w.on("land")) w.sfx.slam(); else w.sfx.land(); },
+          roar(w) { if (w.on("roar")) growl(w); },
         },
       ],
     },

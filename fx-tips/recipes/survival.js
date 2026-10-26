@@ -297,7 +297,7 @@
 
     /* ───────── 3. 제작 ───────── */
     {
-      id: "survival-craft", cat: "survival", view: "ui",
+      id: "survival-craft", cat: "survival", view: "ui", polished: true,
       title: { en: "Make crafting feel like *making*", ko: "제작이 *만드는 맛* 나게" },
       intro: { en: "Click. Items gone. Axe *appears*.", ko: "누르면 재료 사라지고 도끼 *뿅*." },
       interval: 2.6, stepDur: 4.0,
@@ -386,7 +386,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh / clink / chime",
           cap: { en: "*Whoosh* in, *clink*, then a bright *ding*.", ko: "*쉭* 들어가고, *딸깍*, 그리고 *띠링*." },
           craft(w) { w.sfx.toss(); w.after(0.4, () => w.sfx.tick()); },
-          done(w) { w.sfx.pop(); w.sfx.chime(5); },
+          done(w) { if (w.on("pop") || w.on("burst")) w.sfx.itemGet(); else w.sfx.chime(5); },
         },
       ],
     },

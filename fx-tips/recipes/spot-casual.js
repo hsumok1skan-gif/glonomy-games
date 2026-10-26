@@ -881,7 +881,7 @@
 
     /* ───────── 7. 최고 기록 갱신 ───────── */
     {
-      id: "spot-casual-high-score", cat: "ui", view: "ui",
+      id: "spot-casual-high-score", cat: "ui", view: "ui", polished: true,
       title: { en: "Make a new high score feel *historic*", ko: "최고 기록을 *역사적으로*" },
       intro: { en: "New best. The number just *counts up*.", ko: "신기록인데 숫자만 *올라가요*." },
       interval: 3.0, stepDur: 4.0,
@@ -962,8 +962,9 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ticks + crack + slam",
           cap: { en: "Fast *ticks*, a *crack*, a stamp *slam*.", ko: "*따다닥*, *쩍*, 도장 *쾅*." },
           digit(w) { w.sfx.tick(); },
-          beat(w) { w.sfx.crit(); },
-          record(w) { w.after(0.16, () => w.sfx.slam()); w.sfx.fanfare(); },
+          // 기록을 넘는 순간 "쩍" (금 가는 연출이 있을 때만), 도장이 박힐 때만 "쾅", 금빛일 때 팡파레
+          beat(w) { if (w.on("beat")) w.play(() => { sSnap(0.6, 0, 3000); sMetal(1500, 0.25, 0.08); }); },
+          record(w) { if (w.on("stamp")) w.after(0.16, () => w.sfx.thud()); if (w.on("gold")) w.sfx.fanfare(); else w.sfx.chime(7); },
         },
       ],
     },

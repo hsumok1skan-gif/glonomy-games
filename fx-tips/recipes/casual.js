@@ -244,7 +244,7 @@
 
     /* ───────── 2. 노트 타격 ───────── */
     {
-      id: "casual-note", cat: "casual", view: "ui",
+      id: "casual-note", cat: "casual", view: "ui", polished: true,
       title: { en: "Make note hits *burst*", ko: "노트 치는 맛 *터뜨리기*" },
       intro: { en: "Notes hit the line and *vanish*.", ko: "노트가 줄에 닿고 *사라질* 뿐." },
       interval: 0.3, stepDur: 3.3,
@@ -314,7 +314,7 @@
         {
           id: "sound", name: { en: "Lane Pitch", ko: "레인별 음" }, param: "4 lanes · 4 notes",
           cap: { en: "Each lane has its *own note*.", ko: "레인마다 *음*이 달라요." },
-          hit(w, l) { w.sfx.blip([1, 5, 8, 13][l]); w.sfx.tock(); },
+          hit(w, l) { w.sfx.blip([1, 5, 8, 13][l]); },
         },
       ],
     },

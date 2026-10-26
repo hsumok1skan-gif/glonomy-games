@@ -686,6 +686,7 @@ const SFX = {
   // 광선: 지잉 굵은 톱니 + 흔들리는 잡음 (dur 동안)
   beam(dur = 1) { const h = dur * 0.7; tn({ type: "sawtooth", f: 82, dur, vol: 0.13, lp: 1200, att: 0.03, hold: h }); tn({ type: "sawtooth", f: 164, dur, vol: 0.08, lp: 2400, det: 12, att: 0.03, hold: h }); nz({ dur, type: "bandpass", f: 1400, f2: 700, q: 0.9, vol: 0.28, att: 0.03, rv: 0.3, hold: h }); },
 };
+const ACTOR_POSE_ALIAS = { "duel-boss": "foe", "action-knight": "foe", "action-boss": "foe", "rpg-knight": "foe", "rpg-golem": "foe" };
 /* ───────── 한 사이클 · 큰 단계 (사이트와 영상이 같이 씀) ─────────
    사이클: 첫 화면(완성본)과 같은 발사 시각·길이. 단계를 바꾸든 다시 보든 언제나 이 사이클을 처음부터 똑같이 보여 줌
    단계: 레이어를 4~6개 큰 묶음으로 (적으면 그대로). R.stages = [마지막 레이어 번호...]로 직접 정할 수 있음 */
@@ -999,6 +1000,8 @@ class World {
 
   actor(key, o = {}) {
     const d = Object.assign({}, ACTOR[key], o), s = SPR[d.spr], ar = s.c.width / s.c.height;
+    // 옛 로우폴리 인물은 픽셀 동작 그림이 있는 인물로 바꿔 그림 (크기·체력·위치는 그대로)
+    const alias = ACTOR_POSE_ALIAS[key]; if (alias && POSES[alias] && FX._art && FX._art[alias] && FX.style === "art") { d.from = key; key = alias; }
     const h = d.h || d.w / ar, w = d.w || d.h * ar;
     const a = {
       key, s, w, h, x: d.home, home: d.home, gy: d.gy || G, top: !!d.top, oySpring: !!d.top, vib: 0, vibAxis: "x",
@@ -1821,7 +1824,9 @@ function poseName(w, a) {
   const vx = a._pPrevX != null ? (a.x - a._pPrevX) / dtp : 0; a._pPrevX = a.x;
   const vox = a._pPrevOx != null ? (a.ox - a._pPrevOx) / dtp : 0; a._pPrevOx = a.ox;
   if (a.key === "foe") {
-    if (a.flying || a.oy < -10 || (!a.alive && Math.abs(a.rot || 0) > 0.2)) return "fly";
+    if (a.flying || (!a.alive && (a.oy < -10 || Math.abs(a.rot || 0) > 0.2))) return "fly";
+    // 살아 있는 채 공중(뛰어들기·내려앉기): 쓰러지는 동작 말고 서 있는 자세 그대로
+    if (a.oy < -10) return a.poseNow === "attack" || a.poseNow === "windup" ? a.poseNow : "idle";
     // 떨어진 뒤: 잠깐 엎어져 있다가(0.45초) 일어남
     if (a.poseNow === "fly") a._getupAt = t + (a.land ? 0.45 : 0);
     if (t < (a._getupAt ?? -9)) return "down";

@@ -419,7 +419,7 @@
 
     /* 3 ─ 폭탄으로 화면 지우기 */
     {
-      id: "shooter-bomb", cat: "shooter", view: "top",
+      id: "shooter-bomb", cat: "shooter", view: "top", polished: true,
       title: { en: "Make the bomb *clear the screen*", ko: "폭탄이 *화면을 싹* 쓸게" },
       intro: { en: "Press bomb. Bullets just *vanish*.", ko: "폭탄을 눌러요. 총알이 그냥 *사라져요*." },
       interval: 2.4, stepDur: 4.0,
@@ -497,7 +497,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "boom + sweep",
           cap: { en: "A deep *boom*, then a rising *sweep*.", ko: "낮은 *쾅*, 이어서 올라가는 *쉬익*." },
-          bomb(w) { w.sfx.boom(); w.sfx.boost(); },
+          bomb(w) { if (w.on("wave")) w.sfx.boom(); else w.sfx.burst(); if (w.on("cutin")) w.sfx.boost(); },
         },
       ],
     },

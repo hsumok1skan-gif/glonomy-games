@@ -144,7 +144,7 @@
   RECIPES.push(
     // ───────────────────────── 1. 비
     {
-      id: "env-rain", cat: "env", view: "side",
+      id: "env-rain", cat: "env", view: "side", polished: true,
       title: { en: "Make rain *hit the ground*", ko: "비가 *땅에 닿게*" },
       intro: { en: "Dots fall. Then *vanish* into nothing.", ko: "점이 떨어지다 *그냥 사라져요*." },
       interval: 0.7, stepDur: 3.6,

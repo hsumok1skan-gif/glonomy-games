@@ -299,7 +299,7 @@
   RECIPES.push(
     /* ───────── 1. 보물상자 ───────── */
     {
-      id: "spot-reward-chest", cat: "rpg", view: "3d",
+      id: "spot-reward-chest", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make chests *burst* with loot", ko: "보물상자를 *터지듯* 열기" },
       intro: { en: "A treasure chest. The lid just *swings*.", ko: "보물상자인데 뚜껑만 *스윽* 열려요." },
       interval: 3.0, stepDur: 4.0,
@@ -387,10 +387,13 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle + slam + chimes",
           cap: { en: "Wooden *rattle*, heavy *slam*, coin *chimes*.", ko: "*덜그럭*, *쾅*, 동전 *짤랑짤랑*." },
-          rattle(w) { w.sfx.rattle(); },
+          rattle(w) { if (w.on("rattle")) w.sfx.woodRattle(); },
+          // 뚜껑: 경첩 끼익 + 탁, 터질 때만 쾅, 보석이 쏟아질 때만 짤랑, 빛기둥과 함께 획득음
           open(w) {
-            w.sfx.slam(); w.sfx.fanfare();
-            for (let i = 0; i < 6; i++) w.after(0.1 + i * 0.07, () => w.sfx.chime(i * 2));
+            w.sfx.chestOpen();
+            if (w.on("burst")) w.sfx.burst();
+            if (w.on("gems")) for (let i = 0; i < 6; i++) w.after(0.3 + i * 0.08, () => w.sfx.coinClink(1 + (i % 3) * 0.06));
+            if (w.on("pillar")) w.after(0.2, () => w.sfx.itemGet()); else if (w.on("geyser")) w.sfx.lightSwell();
           },
         },
       ],
@@ -398,7 +401,7 @@
 
     /* ───────── 2. 레벨 업 ───────── */
     {
-      id: "spot-reward-levelup", cat: "rpg", view: "3d",
+      id: "spot-reward-levelup", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make level ups feel *earned*", ko: "레벨 업을 *벅차게*" },
       intro: { en: "Level up. The number just *changes*.", ko: "레벨이 올랐는데 숫자만 *바뀌어요*." },
       interval: 3.0, stepDur: 4.0,
@@ -489,8 +492,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rise + chord + chime",
           cap: { en: "Rising *hum*, bright *chord*, a high *ding*.", ko: "차오르는 *웅~*, 밝은 *화음*, 높은 *딩*." },
-          gather(w) { w.play(() => tn({ type: "sawtooth", f: 160, f2: 640, dur: 0.7, vol: 0.1 })); },
-          level(w) { w.sfx.fanfare(); w.sfx.magic(); w.after(0.4, () => w.sfx.chime(12)); },
+          gather(w) { if (w.on("gather")) w.sfx.charge(); },
+          level(w) { if (w.on("pillar")) w.sfx.lightSwell(); if (w.on("banner")) w.sfx.fanfare(); else w.sfx.chime(7); },
         },
       ],
     },
@@ -1055,7 +1058,7 @@
 
     /* ───────── 8. 승급 엠블럼 ───────── */
     {
-      id: "spot-reward-rankup", cat: "rpg", view: "3d",
+      id: "spot-reward-rankup", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make promotions *shatter* the old rank", ko: "승급은 옛 계급을 *깨부수고*" },
       intro: { en: "Rank up. The icon just *swaps*.", ko: "승급했는데 아이콘만 *바뀌어요*." },
       interval: 3.0, stepDur: 4.0,
@@ -1150,9 +1153,9 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "creak + crash + chord",
           cap: { en: "Straining *creak*, glass *crash*, a bright *chord*.", ko: "*끼긱*, *와장창*, 밝은 *화음*." },
-          charge(w) { w.sfx.creak(); },
-          break(w) { w.sfx.crit(); w.play(() => nz({ type: "highpass", f: 3000, f2: 6000, dur: 0.4, vol: 0.3 })); },
-          form(w) { w.sfx.fanfare(); w.sfx.magic(); },
+          charge(w) { if (w.on("crack")) w.sfx.crackle(); },
+          break(w) { if (w.on("shatter")) w.sfx.glass(); else w.sfx.tock(); },
+          form(w) { if (w.on("assemble")) w.sfx.lightSwell(); if (w.on("title") || w.on("wings")) w.sfx.fanfare(); },
         },
       ],
     },

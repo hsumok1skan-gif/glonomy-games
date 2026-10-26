@@ -129,7 +129,7 @@
   RECIPES.push(
     /* 1 ─ 맞기 / 막기 / 카운터 */
     {
-      id: "fighting-hit-block-counter", cat: "fighting", view: "side",
+      id: "fighting-hit-block-counter", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make hit, block, counter *read apart*", ko: "맞기·막기·카운터를 *한눈에*" },
       intro: { en: "Hit? Blocked? Counter? *Can't tell.*", ko: "맞은 건지 막은 건지 *모르겠어요*." },
       interval: 0.7, stepDur: 3.8,
@@ -191,9 +191,9 @@
         {
           id: "sound", name: { en: "Three Sounds", ko: "소리 세 가지" }, param: "thud / clack / crack",
           cap: { en: "*Thud* for hit, *clack* for block, *crack* for counter.", ko: "맞기 *퍽*, 막기 *탁*, 카운터 *빡*." },
-          hit(w) { w.sfx.thud(); },
-          block(w) { w.sfx.tock(); },
-          counter(w) { w.sfx.crit(); },
+          hit(w) { w.sfx.hit(); },
+          block(w) { w.play(() => { sSnap(0.6, 0, 3000); sBody(260, 0.06, 0.5); if (w.on("guard")) sMetal(1700, 0.3, 0.08); }); },
+          counter(w) { if (w.on("counter")) w.sfx.critBig(); else w.sfx.hit(); },
         },
       ],
     },
