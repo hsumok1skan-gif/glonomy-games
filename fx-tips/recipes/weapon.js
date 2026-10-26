@@ -154,7 +154,7 @@
   RECIPES.push(
     /* ─────────────── 1. 저격총 ─────────────── */
     {
-      id: "weapon-sniper", cat: "weapon", view: "side",
+      id: "weapon-sniper", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a sniper shot *land*", ko: "저격 한 방을 *묵직하게*" },
       intro: { en: "One perfect shot. Felt like a *pea*.", ko: "완벽한 한 발인데 *콩알* 같아요." },
       interval: 1.7, stepDur: 3.8,
@@ -238,7 +238,7 @@
 
     /* ─────────────── 2. 미니건 ─────────────── */
     {
-      id: "weapon-minigun", cat: "weapon", view: "side",
+      id: "weapon-minigun", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a minigun *roar*", ko: "미니건이 *으르렁*거리게" },
       intro: { en: "A stream of dots. No *build-up*.", ko: "점만 줄줄 나가요. *쌓이는 맛*이 없어요." },
       interval: 0.3, stepDur: 4.2,

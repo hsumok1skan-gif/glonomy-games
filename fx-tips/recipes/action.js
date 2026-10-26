@@ -921,7 +921,7 @@
 
     /* 12 ─ 체간(자세) 붕괴 */
     {
-      id: "action-posture", cat: "action", view: "side", melee: true,
+      id: "action-posture", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a posture break *shatter*", ko: "자세 무너뜨리기를 *와장창*" },
       intro: { en: "The gauge filled. *Then what?*", ko: "게이지가 다 찼는데… *그래서?*" },
       interval: 0.6, stepDur: 4.0,
@@ -1004,7 +1004,7 @@
 
     /* 13 ─ 회복 물약 */
     {
-      id: "action-flask", cat: "action", view: "side", melee: true,
+      id: "action-flask", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make healing feel *restorative*", ko: "회복이 *살아나는* 느낌" },
       intro: { en: "HP went up. *That's all?*", ko: "체력이 올랐네요. *그게 다?*" },
       interval: 1.8, stepDur: 3.8,
@@ -1086,7 +1086,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "gulp ×2 + chime",
           cap: { en: "Two *gulps*, then a soft *chime*.", ko: "*꿀꺽 꿀꺽*, 그리고 맑은 *띵*." },
-          drink(w) { w.play(() => { tn({ f: 180, f2: 90, dur: 0.07, vol: 0.4 }); tn({ f: 170, f2: 80, dur: 0.07, vol: 0.4, delay: 0.12 }); }); w.sfx.chime(5); },
+          drink(w) { w.play(() => { tn({ f: 180, f2: 90, dur: 0.07, vol: 0.4 }); tn({ f: 170, f2: 80, dur: 0.07, vol: 0.4, delay: 0.12 }); }); if (w.on("glow")) w.sfx.chime(5); },
         },
       ],
     },

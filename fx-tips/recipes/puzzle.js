@@ -638,7 +638,7 @@
 
     /* 7 ─────────────────────────────── */
     {
-      id: "puzzle-wrong-shake", cat: "puzzle", view: "ui",
+      id: "puzzle-wrong-shake", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Say *no* without words", ko: "말 없이 *틀렸다*고 하기" },
       intro: { en: "Wrong answer. A thin red line. *Missed it?*", ko: "틀렸는데 빨간 테두리뿐. *봤어요?*" },
       interval: 1.1, stepDur: 3.6,

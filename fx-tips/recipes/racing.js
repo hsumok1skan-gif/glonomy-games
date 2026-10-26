@@ -701,7 +701,7 @@
 
     /* 8 ─ 슬립스트림 */
     {
-      id: "racing-slipstream", cat: "racing", view: "3d",
+      id: "racing-slipstream", cat: "racing", view: "3d", polished: true,
       title: { en: "Make drafting *visible*", ko: "슬립스트림을 *눈에 보이게*" },
       intro: { en: "You're in the draft. *Are* you, though?", ko: "바람막이 안에 있대요. *정말요*?" },
       interval: 2.3, stepDur: 4.0,
@@ -780,15 +780,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising hiss + whoosh",
           cap: { en: "A *rising hiss* while tucked in, then *whoosh*.", ko: "붙어 있는 동안 *쉬이익*, 빠질 때 *휙*." },
-          start(w) { w.play(() => nz({ type: "bandpass", f: 400, f2: 2400, q: 2, dur: 1.1, vol: 0.18 })); },
-          sling(w) { w.sfx.dash(); w.sfx.boost(); },
+          start(w) { if (w.on("lines") || w.on("buffet")) w.play(() => nz({ type: "bandpass", f: 400, f2: 2400, q: 2, dur: 1.1, vol: 0.18 })); },
+          sling(w) { w.sfx.dash(); if (w.on("sling")) w.sfx.boost(); },
         },
       ],
     },
 
     /* 9 ─ 점프대 체공 */
     {
-      id: "racing-jump", cat: "racing", view: "side",
+      id: "racing-jump", cat: "racing", view: "side", polished: true,
       title: { en: "Make airtime feel *long*", ko: "점프 체공을 *길게* 느끼게" },
       intro: { en: "Off the ramp, back down. *Blink* and you miss it.", ko: "떴다가 착지. *눈 깜빡*하면 끝나요." },
       interval: 2.1, stepDur: 4.0,

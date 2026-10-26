@@ -562,7 +562,7 @@
     },
     /* ───────── 7. 건물 업그레이드 ───────── */
     {
-      id: "sim-upgrade", cat: "sim", view: "iso",
+      id: "sim-upgrade", cat: "sim", view: "iso", polished: true,
       title: { en: "Make upgrades feel *big*", ko: "업그레이드를 *크게* 느끼게" },
       intro: { en: "Lv.2. The sprite just… *changed*.", ko: "레벨업. 그림만 *휙* 바뀌어요." },
       interval: 1.5, stepDur: 3.8,
@@ -629,14 +629,14 @@
           } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle → fanfare",
           cap: { en: "Rising *rattle*, then a *fanfare*.", ko: "*덜덜덜* 모았다가 *빠밤!*" },
-          pre(w) { w.sfx.charge(); },
-          up(w) { w.sfx.boom(); w.sfx.fanfare(); } },
+          pre(w) { if (w.on("anticip")) w.sfx.charge(); },
+          up(w) { if (w.on("beam")) w.sfx.boom(); else w.sfx.thunk(); if (w.on("badge")) w.sfx.fanfare(); } },
       ],
     },
 
     /* ───────── 8. 낮과 밤 ───────── */
     {
-      id: "sim-daynight", cat: "sim", view: "iso",
+      id: "sim-daynight", cat: "sim", view: "iso", polished: true,
       title: { en: "Make nightfall *cozy*", ko: "밤이 오는 걸 *포근하게*" },
       intro: { en: "Day. *Click.* Night.", ko: "낮. *딸깍.* 밤." },
       interval: 1.7, stepDur: 3.6,
@@ -656,7 +656,7 @@
         w.tween(D, { t: D.night ? 1 : 0 }, Math.max(0.01, D.dur), "inout");
       },
       update(w) { w.D.warm = 0; },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const D = w.D, lp = isoPt(2.6, 2.1);
         for (const h of w.hs) put(ctx, h.k, h.x, h.y, 96);
         ctx.strokeStyle = "#4b5563"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(lp.x, lp.y); ctx.lineTo(lp.x, lp.y - 70); ctx.lineTo(lp.x + 14, lp.y - 74); ctx.stroke();
@@ -700,6 +700,7 @@
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "crickets / bird",
           cap: { en: "*Crickets* at night, a *chirp* at dawn.", ko: "밤엔 *귀뚤귀뚤*, 아침엔 *짹*." },
           toggle(w, D) {
+            if (D.night && !w.on("stars")) return;
             if (D.night) for (let i = 0; i < 6; i++) w.play(() => tn({ type: "square", f: 4200, dur: 0.03, vol: 0.04, delay: 0.5 + i * 0.07 }));
             else w.play(() => { tn({ f: 2400, f2: 3400, dur: 0.08, vol: 0.12, delay: 0.4 }); tn({ f: 2600, f2: 3600, dur: 0.08, vol: 0.12, delay: 0.52 }); });
           } },
@@ -708,7 +709,7 @@
 
     /* ───────── 9. 빨리 감기 ───────── */
     {
-      id: "sim-ffwd", cat: "sim", view: "iso",
+      id: "sim-ffwd", cat: "sim", view: "iso", polished: true,
       title: { en: "Make fast-forward *feel fast*", ko: "빨리 감기가 *빨라 보이게*" },
       intro: { en: "3× speed. Looks like *1.2×*.", ko: "3배속인데 *별 차이* 없어 보여요." },
       interval: 2.2, stepDur: 4.0,
@@ -779,7 +780,7 @@
 
     /* ───────── 10. 하루 마감 정산 ───────── */
     {
-      id: "sim-summary", cat: "sim", view: "ui",
+      id: "sim-summary", cat: "sim", view: "ui", polished: true,
       title: { en: "Make the day's *results* rewarding", ko: "하루 *정산*을 뿌듯하게" },
       intro: { en: "A table of numbers. *Next.*", ko: "숫자 표 한 장. *다음.*" },
       interval: 3.0, stepDur: 4.2,

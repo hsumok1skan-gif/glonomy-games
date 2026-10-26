@@ -678,14 +678,21 @@
 
     /* 8. 앉아 미끄러지기 */
     {
-      id: "move-crouchslide", cat: "move", view: "side",
+      id: "move-crouchslide", cat: "move", view: "side", polished: true,
       title: { en: "Sell the *slide* under", ko: "숙여 *미끄러지기*에 속도감" },
       intro: { en: "It ducked under. Was it *sliding*?", ko: "숙이긴 했는데 *미끄러진* 거 맞아요?" },
       interval: 1.8, stepDur: 3.4,
       drawFloor(w, ctx) {
         slab(ctx, 20, 520, G);
-        ctx.fillStyle = "rgba(255,255,255,0.08)"; ctx.fillRect(260, 140, 110, G - 46 - 140);
-        ctx.fillStyle = "rgba(255,255,255,0.45)"; ctx.fillRect(260, G - 47, 110, 2);
+        // 픽셀 철문(아래가 비어 있어 숙여서 지나감): 테두리·판·리벳·경고 줄무늬
+        const X = 260, Y = 120, W2 = 110, B = G - 40;
+        ctx.fillStyle = "#11151d"; ctx.fillRect(X - 2, Y, W2 + 4, B - Y + 2);
+        ctx.fillStyle = "#3a4252"; ctx.fillRect(X, Y, W2, B - Y);
+        ctx.fillStyle = "#4b5567"; for (let y = Y + 4; y < B - 14; y += 16) ctx.fillRect(X + 2, y, W2 - 4, 10);
+        ctx.fillStyle = "#262c38"; for (let y = Y + 14; y < B - 14; y += 16) ctx.fillRect(X + 2, y, W2 - 4, 2);
+        ctx.fillStyle = "#8b95a7"; for (let y = Y + 8; y < B - 14; y += 16) { ctx.fillRect(X + 5, y, 2, 2); ctx.fillRect(X + W2 - 7, y, 2, 2); }
+        for (let x = X; x < X + W2; x += 12) { ctx.fillStyle = "#e0a526"; ctx.fillRect(x, B - 10, 6, 8); ctx.fillStyle = "#1a1a1a"; ctx.fillRect(x + 6, B - 10, 6, 8); }
+        ctx.fillStyle = "#0b0e14"; ctx.fillRect(X - 2, B - 2, W2 + 4, 2);
         for (const m of w.marks) { const a = Math.max(0, 1 - (w.time - m.t) / 1.2); ctx.fillStyle = `rgba(255,190,120,${a * 0.75})`; ctx.fillRect(m.x - 4, G - 2, 8, 4); }
       },
       setup(w) { w.hero = mkHero(w, 60); w.marks = []; w.M = null; },
@@ -699,7 +706,7 @@
         M.x += M.vx * dt;
         if (M.st === "run" && M.x > 175) { M.st = "slide"; w.emit("slide", h); }
         if (M.st === "slide") {
-          h.sx = 1; h.sy = 0.5;
+          h.sx = 1; h.sy = 0.62; h.forcePose = "dash"; h.forceFrames = 2;
           if (M.x > 395) { M.st = "up"; w.emit("rise", h); }
         }
         if (M.st === "up") { M.vx = Math.max(0, M.vx - 900 * dt); if (!M.vx && M.end == null) M.end = M.t; }
@@ -710,7 +717,7 @@
         {
           id: "flat", name: { en: "Long & Low", ko: "길고 낮게" }, param: "1.35 × 0.45",
           cap: { en: "Stretch *long and low*, not just shorter.", ko: "작아지기만 말고 *길고 낮게* 늘려요." },
-          update(w) { if (w.M && w.M.st === "slide") { w.hero.sx = 1.35; w.hero.sy = 0.45; } },
+          update(w) { if (w.M && w.M.st === "slide") { w.hero.sx = 1.25; w.hero.sy = 0.55; } },
         },
         {
           id: "lean", name: { en: "Lean Back", ko: "뒤로 젖히기" }, param: "−0.3 rad",
@@ -753,7 +760,7 @@
 
     /* 9. 착지 구르기 */
     {
-      id: "move-landroll", cat: "move", view: "side",
+      id: "move-landroll", cat: "move", view: "side", polished: true,
       title: { en: "Roll out of a *big drop*", ko: "높은 데서 *굴러서* 착지" },
       intro: { en: "Big drop, dead stop. *Ouch.*", ko: "높이 떨어져서 그대로 멈춤. *아파 보여요.*" },
       interval: 2.0, stepDur: 3.5,
@@ -827,7 +834,7 @@
 
     /* 10. 연속 토끼뜀 */
     {
-      id: "move-bhop", cat: "move", view: "side",
+      id: "move-bhop", cat: "move", view: "side", polished: true,
       title: { en: "Reward a *hop chain*", ko: "연속 점프에 *보상*을" },
       intro: { en: "Perfect hops. Nothing *builds up*.", ko: "타이밍 딱딱 맞췄는데 *쌓이는 게* 없어요." },
       interval: 2.6, stepDur: 3.8,

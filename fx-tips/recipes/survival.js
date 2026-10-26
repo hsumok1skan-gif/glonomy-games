@@ -833,7 +833,7 @@
         rr(ctx, 400, G - 66, 30, 26, 3, N.dark > 0 ? `rgba(253,224,71,${0.3 + 0.7 * t})` : "#1e293b", null);
         if (N.long) { ctx.fillStyle = `rgba(0,0,0,${0.35 * (1 - t * 0.7)})`; ctx.beginPath(); ctx.ellipse(w.hero.x + 30 + mid * 90, G + 3, 40 + mid * 120, 7, 0, 0, TAU); ctx.fill(); }
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const N = w.N;
         if (N.dark > 0) shade(ctx, N.dark * N.t, [{ x: 415, y: G - 53, r: 150 }, { x: w.hero.x, y: G - 70, r: 110, a: 0.6 }], "4,6,20");
       },
@@ -900,7 +900,7 @@
         if (w.on("hush")) { w.emit("hush", w.S); w.after(0.35, scare); } else scare();
         w.after(1.4, () => { m.alpha = 0; m.sx = m.sy = 1; m.x = 430; w.busy = false; });
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const h = w.hero, L = w.S.light;
         shade(ctx, 0.6, [{ x: h.x + 40, y: G - 80, r: 420 * L, cone: [0.05, 0.32], hard: 0.6 }, { x: h.x, y: G - 70, r: 90 * L, a: 0.6 }]);
         ctx.fillStyle = "#334155"; ctx.fillRect(h.x + 28, G - 86, 18, 10);
@@ -948,7 +948,7 @@
 
     /* ───────── 11. 괴물이 가까우면 두근 (탑다운) ───────── */
     {
-      id: "survival-heartbeat", cat: "survival", view: "top",
+      id: "survival-heartbeat", cat: "survival", view: "top", polished: true,
       title: { en: "Let the heart say *it's close*", ko: "심장이 *가깝다고* 말하게" },
       intro: { en: "It's right there. You feel *nothing*.", ko: "바로 옆인데 *아무 느낌*이 없어요." },
       interval: 2.4, stepDur: 4.0,
@@ -980,7 +980,7 @@
         w.p = Math.max(0, Math.min(1, (200 - Math.hypot(m.x - h.x, m.gy - h.gy)) / 120));
         w.heart.sc += (1 - w.heart.sc) * Math.min(1, dt * 10);
       },
-      drawFront(w, ctx) { if (w.tunnel > 0) shade(ctx, 0.85, [{ x: w.hero.x, y: w.hero.gy, r: w.tunnel, hard: 0.35 }], "10,2,4"); },
+      drawOver(w, ctx) { if (w.tunnel > 0) shade(ctx, 0.85, [{ x: w.hero.x, y: w.hero.gy, r: w.tunnel, hard: 0.35 }], "10,2,4"); },
       drawHud(w, ctx) {
         ctx.save(); ctx.translate(270, 62); ctx.scale(w.heart.sc * 0.42, w.heart.sc * 0.42);
         ctx.drawImage(SPR.heart.c, -65, -60); ctx.restore();
@@ -1017,14 +1017,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "lub-dub",
           cap: { en: "A deep *lub-dub*. Players' hearts sync to it.", ko: "묵직한 *쿵-쿵*. 듣는 사람 심장도 따라 뛰어요." },
-          beat(w, p) { w.play(() => { tn({ f: 60, f2: 40, dur: 0.12, vol: 0.5 + p * 0.3 }); tn({ f: 55, f2: 38, dur: 0.1, vol: 0.35 + p * 0.3, delay: 0.16 }); }); },
+          beat(w, p) { if (w.on("beat")) w.play(() => { tn({ f: 60, f2: 40, dur: 0.12, vol: 0.5 + p * 0.3 }); tn({ f: 55, f2: 38, dur: 0.1, vol: 0.35 + p * 0.3, delay: 0.16 }); }); },
         },
       ],
     },
 
     /* ───────── 12. 손전등 깜빡임 ───────── */
     {
-      id: "survival-flashlight", cat: "survival", view: "side",
+      id: "survival-flashlight", cat: "survival", view: "side", polished: true,
       title: { en: "Make a flashlight *flicker* with fear", ko: "손전등 깜빡임을 *오싹하게*" },
       intro: { en: "Light blinks once. *Nothing.*", ko: "한 번 깜빡. *그게 다예요*." },
       interval: 2.0, stepDur: 4.0,
@@ -1047,7 +1047,7 @@
         w.after(1.3, () => { w.fig.alpha = 0; w.busy = false; });
       },
       update(w, dt) { const L = w.L; L.jit *= Math.pow(0.05, dt); L.ang = 0.02 + Math.sin(w.time * 40) * L.jit; },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const h = w.hero, L = w.L, ox = h.x + 46, oy = G - 84;
         if (L.dark > 0) shade(ctx, L.dark, L.on ? [{ x: ox, y: oy, r: 470, cone: [L.ang + 0.1, 0.26], hard: 0.55 }, { x: h.x, y: G - 70, r: L.glow ? 100 : 0.1, a: 0.5 }] : [], "4,4,8");
         if (L.on) {
@@ -1102,7 +1102,7 @@
 
     /* ───────── 13. 정신력 왜곡 ───────── */
     {
-      id: "survival-sanity", cat: "survival", view: "side",
+      id: "survival-sanity", cat: "survival", view: "side", polished: true,
       title: { en: "Make losing your mind *visible*", ko: "정신이 *흔들리는 게* 보이게" },
       intro: { en: "Sanity dropping. Screen: *totally fine*.", ko: "정신력이 떨어지는데 화면은 *멀쩡*." },
       interval: 0.85, stepDur: 4.0,

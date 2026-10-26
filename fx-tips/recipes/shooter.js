@@ -1120,7 +1120,7 @@
 
     /* 11 ─ 반동 패턴 */
     {
-      id: "shooter-recoil-climb", cat: "shooter", view: "3d",
+      id: "shooter-recoil-climb", cat: "shooter", view: "3d", polished: true,
       title: { en: "Give full-auto a *recoil pattern*", ko: "연사에 *반동 패턴* 주기" },
       intro: { en: "Eight shots. *One hole.* No skill needed.", ko: "여덟 발이 *한 구멍*에. 실력이 필요 없어요." },
       interval: 1.7, stepDur: 4.0,
@@ -1200,7 +1200,7 @@
 
     /* 12 ─ 정조준 */
     {
-      id: "shooter-ads", cat: "shooter", view: "3d",
+      id: "shooter-ads", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make aiming down sights *smooth*", ko: "정조준을 *부드럽게*" },
       intro: { en: "Aim. The screen *teleports*.", ko: "조준하면 화면이 *순간이동*해요." },
       interval: 2.6, stepDur: 4.0,
@@ -1263,7 +1263,7 @@
 
     /* 13 ─ 재장전 */
     {
-      id: "shooter-reload", cat: "shooter", view: "3d",
+      id: "shooter-reload", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make reloads feel *physical*", ko: "재장전에 *손맛* 넣기" },
       intro: { en: "0 → 30. A number changed. *That's it.*", ko: "0 → 30. 숫자만 바뀌어요. *끝.*" },
       interval: 2.3, stepDur: 4.0,

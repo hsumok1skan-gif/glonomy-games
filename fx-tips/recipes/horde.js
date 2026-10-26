@@ -470,7 +470,7 @@
 
     /* 6 ─ 피해 오라 */
     {
-      id: "horde-aura", cat: "horde", view: "top",
+      id: "horde-aura", cat: "horde", view: "top", polished: true,
       title: { en: "Make a damage aura *visible*", ko: "피해 오라를 *눈에 보이게*" },
       intro: { en: "Enemies melt near you. *Why?*", ko: "가까이 오면 녹는데… *왜죠?*" },
       interval: 0.5, stepDur: 3.6,
@@ -524,14 +524,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "low hum tick",
           cap: { en: "A *low, soft* tick. It plays forever.", ko: "*낮고 부드럽게*. 계속 들리는 소리니까요." },
-          tick(w) { w.play(() => tn({ type: "sine", f: 110, f2: 70, dur: 0.12, vol: 0.25 })); },
+          tick(w) { if (w.on("pulse")) w.play(() => tn({ type: "sine", f: 110, f2: 70, dur: 0.12, vol: 0.25 })); },
         },
       ],
     },
 
     /* 7 ─ 연속 처치 아나운서 */
     {
-      id: "horde-announcer", cat: "horde", view: "top",
+      id: "horde-announcer", cat: "horde", view: "top", polished: true,
       title: { en: "Make a kill streak *announce itself*", ko: "연속 처치를 *크게 외치기*" },
       intro: { en: "Rampage… in *tiny letters*.", ko: "대학살인데… *글씨가 작아요*." },
       interval: 0.3, stepDur: 3.8,
@@ -607,7 +607,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "boom + fanfare",
           cap: { en: "A low *boom* under a short *fanfare*.", ko: "낮은 *쿵* 위에 짧은 *빰빠밤*." },
-          announce(w) { w.sfx.thud(); w.sfx.fanfare(); },
+          announce(w) { if (!w.on("big")) return; w.sfx.thud(); if (w.on("beat")) w.sfx.fanfare(); },
         },
       ],
     },

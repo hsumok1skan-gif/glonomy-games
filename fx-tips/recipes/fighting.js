@@ -512,7 +512,7 @@
 
     /* 6 ─ 잡기 */
     {
-      id: "fighting-throw", cat: "fighting", view: "side", melee: true,
+      id: "fighting-throw", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a throw feel *heavy*", ko: "잡기를 *묵직하게*" },
       intro: { en: "Grab… and it *slides* behind you.", ko: "잡았는데… 뒤로 *스르륵*." },
       interval: 1.6, stepDur: 4.0,
@@ -593,7 +593,7 @@
 
     /* 7 ─ 필살기 컷인 */
     {
-      id: "fighting-super-cutin", cat: "fighting", view: "side", melee: true,
+      id: "fighting-super-cutin", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a super move *stop the world*", ko: "필살기에 *컷인* 넣기" },
       intro: { en: "Biggest move in the game. Looks like a *jab*.", ko: "최강 기술인데 *잽*처럼 보여요." },
       interval: 2.2, stepDur: 4.2,
@@ -666,7 +666,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "charge · boom",
           cap: { en: "A rising *charge*, then a *boom*.", ko: "차오르는 *우우웅*, 그리고 *쾅*." },
           start(w) { w.sfx.charge(); w.sfx.boost(); },
-          hit(w) { w.sfx.boom(); w.sfx.crit(); },
+          hit(w) { w.sfx.boom(); if (w.on("impact")) w.sfx.critBig(); },
         },
       ],
     },

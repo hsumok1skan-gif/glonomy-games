@@ -553,7 +553,7 @@
 
     /* 6 ───── 알림 팝업 ───── */
     {
-      id: "ui-notify", cat: "ui", view: "ui",
+      id: "ui-notify", cat: "ui", view: "ui", polished: true,
       title: { en: "Make notifications *get noticed*", ko: "알림이 *눈에 띄게*" },
       intro: { en: "A notice appeared. *Nobody saw it.*", ko: "알림이 떴는데 *아무도 못 봤어요*." },
       interval: 1.9, stepDur: 3.6,
@@ -622,14 +622,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "2-note chime",
           cap: { en: "Two soft *chimes*. Up, not down.", ko: "부드러운 *딩동*. 내려가지 말고 올라가게." },
-          show(w) { w.sfx.chime(0); w.after(0.12, () => w.sfx.chime(5)); },
+          show(w) { w.sfx.swish(); if (w.on("bell")) w.after(0.12, () => w.sfx.chime(5)); },
         },
       ],
     },
 
     /* 7 ───── 토스트 메시지 ───── */
     {
-      id: "ui-toast", cat: "ui", view: "ui",
+      id: "ui-toast", cat: "ui", view: "ui", polished: true,
       title: { en: "Stack toasts *smoothly*", ko: "토스트를 *부드럽게* 쌓기" },
       intro: { en: "Messages *teleport* around.", ko: "메시지가 *순간이동*해요." },
       interval: 0.8, stepDur: 3.4,

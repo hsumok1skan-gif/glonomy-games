@@ -1030,7 +1030,7 @@ class World {
       const g = document.createElement("canvas"); g.width = a._snap.width; g.height = a._snap.height; const x = g.getContext("2d");
       x.drawImage(a._snap, 0, 0); x.globalCompositeOperation = "source-atop"; x.fillStyle = col; x.fillRect(0, 0, g.width, g.height);
       const [W, H] = a._snapWH, fl = a.flip ? -1 : 1, al = p.alpha0 || 0.6, sx0 = 1;
-      return this.spawn({ x: p.x, y: p.y, vx: p.vx || 0, vy: p.vy || 0, drag: p.drag || 0, life: p.life || 0.4, hold: p.hold, under: p.under,
+      return this.spawn({ x: p.x, y: p.y, vx: p.vx || 0, vy: p.vy || 0, drag: p.drag || 0, life: p.life || 0.4, hold: p.hold, under: p.under ?? k !== "white", // 잔상은 기본으로 인물 뒤(반투명 유지, 인물을 덮지 않게)
         draw: (ctx, q, kk) => { const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.globalAlpha = al * (1 - kk); ctx.save(); ctx.translate(q.x, q.y); ctx.scale(fl * sx0, 1); ctx.drawImage(g, -W / 2, -(H - 4), W, H); ctx.restore(); ctx.imageSmoothingEnabled = sm; } });
     }
     const q = Object.assign({ x: 0, y: 0, vx: 0, vy: 0, g: 0, drag: 0, life: 0.5, age: 0, size: 4, color: "255,255,255", type: "circle", rot: 0, vr: 0 }, p);
@@ -1310,6 +1310,7 @@ function drawPartPx(ctx, p, s, a, k, rem) {
   const C = p.color || "255,255,255";
   switch (p.type) {
     case "glow": pxGlow(ctx, p.x, p.y, s * 0.8, C, a); return true;
+    case "flame": { ctx.globalAlpha = 1; pxFlame(ctx, p.x, p.y, s, k, p.seed || (p.seed = Math.random() * 9)); return true; }
     // 베기 자국: 흰 심 + 양옆 색 테두리가 벌어지는 픽셀 칼자국 (모든 레시피 공통)
     case "slash": { if (p.age == null || p.life == null) return false; ctx.globalAlpha = Math.min(1, a * 1.4); pxCutLine(ctx, p.x, p.y, p.len * 2, p.ang, k, C === "255,255,255" ? "190,245,255" : C); ctx.globalAlpha = 1; return true; }
     case "star": { const sz = s * (0.6 + 0.4 * rem); ctx.globalAlpha = Math.min(1, a); pxPlus(ctx, p.x, p.y, sz, `rgb(${pxShade(C, 0.75)})`); pxPlus(ctx, p.x, p.y, sz * 0.55, `rgb(${pxShade(C, 1.5)})`); return true; }
@@ -1359,6 +1360,7 @@ function drawPart(ctx, p) {
   if (PIXMODE && drawPartPx(ctx, p, s, a, k, rem)) { ctx.globalAlpha = 1; return; }
   switch (p.type) {
     case "glow": glow(ctx, p.x, p.y, s, p.color, a); break;
+    case "flame": glow(ctx, p.x, p.y, s, p.color || "255,150,40", a); break;
     case "spark": {
       const dir = Math.atan2(p.vy, p.vx), len = Math.max(s * 2.7, Math.hypot(p.vx, p.vy) * 0.045);
       const tx=p.x-Math.cos(dir)*len,ty=p.y-Math.sin(dir)*len;
@@ -1514,6 +1516,23 @@ let PIXMODE = false; // 픽셀 효과 층에 그리는 중이면 true → 효과
 function pxShade(c, k) { const v = String(c).split(",").map(Number); return v.map(x => Math.max(0, Math.min(255, Math.round(k > 1 ? x + (255 - x) * (k - 1) : x * k)))).join(","); }
 function pxDisc(ctx, x, y, r, col) { if (r <= 0.3) return; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); }
 // 계단식 빛: 바깥은 어둡고 성기게, 안쪽으로 갈수록 밝고 꽉 차게 (3~4단)
+// 픽셀 불꽃 혀: 아래는 둥글고 위로 갈수록 가늘게 흔들리는 물방울꼴. 진홍 테 → 주황 → 노랑 → 흰 심
+function pxFlame(ctx, x, y, s, k, seed) {
+  const sz = s * (k < 0.25 ? 0.6 + k * 1.6 : 1 - (k - 0.25) * 0.9); if (sz < 2) return;
+  const sway = Math.sin(seed + k * 9) * sz * 0.35;
+  const tongue = (sc, col) => {
+    const r = sz * 0.5 * sc, h = sz * 1.7 * sc;
+    ctx.fillStyle = col; ctx.beginPath();
+    ctx.moveTo(x - r, y);
+    ctx.quadraticCurveTo(x - r, y - h * 0.55, x + sway * sc, y - h);
+    ctx.quadraticCurveTo(x + r, y - h * 0.55, x + r, y);
+    ctx.arc(x, y, r, 0, Math.PI); ctx.closePath(); ctx.fill();
+  };
+  if (k < 0.8) tongue(1, "#b91c1c");
+  tongue(0.78, k < 0.6 ? "#f97316" : "#c2410c");
+  if (k < 0.65) tongue(0.52, "#facc15");
+  if (k < 0.4) tongue(0.26, "#fff7d6");
+}
 function pxGlow(ctx, x, y, r, c, a) {
   if (a <= 0.04 || r < 1) return;
   r = Math.min(r, 60);

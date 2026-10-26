@@ -657,7 +657,7 @@
 
     /* 8. 자원 숫자 */
     {
-      id: "strategy-resource", cat: "strategy", view: "ui",
+      id: "strategy-resource", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make resource numbers *tick*", ko: "자원 숫자를 *살아 있게*" },
       intro: { en: "The number changed. *Up or down?*", ko: "숫자가 바뀌었는데… *늘었어요, 줄었어요?*" },
       interval: 1.1, stepDur: 3.6,
@@ -721,7 +721,8 @@
           id: "sound", name: { en: "Tick Run", ko: "또르륵" }, param: "5 ticks + tone",
           cap: { en: "A quick *tick-tick-tick* while it rolls.", ko: "굴러갈 때 *또르르륵*." },
           change(w, r, d) {
-            for (let i = 0; i < 5; i++) w.after(i * 0.045, () => w.sfx.tick());
+            if (w.on("roll")) for (let i = 0; i < 5; i++) w.after(i * 0.045, () => w.sfx.tick());
+            if (!w.on("delta") && !w.on("color")) return;
             if (d > 0) w.sfx.blip(8); else w.play(() => tn({ type: "triangle", f: 500, f2: 250, dur: 0.15, vol: 0.15 }));
           },
         },
@@ -812,7 +813,7 @@
   RECIPES.push(
     /* 9. 타워 설치 */
     {
-      id: "strategy-tower", cat: "strategy", view: "iso",
+      id: "strategy-tower", cat: "strategy", view: "iso", polished: true,
       title: { en: "Make tower placement *land*", ko: "타워 설치에 *무게* 넣기" },
       intro: { en: "Pop. A tower. *Weightless.*", ko: "뿅, 타워. *무게가 없어요.*" },
       interval: 1.0, stepDur: 3.6,

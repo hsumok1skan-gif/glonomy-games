@@ -158,7 +158,7 @@
 
     /* 2. 화염 피해 · gameplay-first upgrade: complete attack → ignite → damage-over-time */
     {
-      id: "combat-fire", cat: "combat", view: "side",
+      id: "combat-fire", cat: "combat", view: "side", polished: true,
       title: { en: "Make fire damage *feel real*", ko: "불이 붙고 *화상*까지" },
       intro: { en: "First: the hit. Then: fire sticks, *burns* and drains HP.", ko: "공격만 하던 장면에 *점화 → 화상 → 연출*을 더해요." },
       interval: 3.55, stepDur: 5.0,
@@ -225,8 +225,8 @@
             w.flamePulse-=.065;
             const x=f.x+f.ox+rand(-f.w*.27,f.w*.25);
             const y=f.gy+f.oy-rand(f.h*.20,f.h*.83);
-            w.spawn({type:"glow",x,y,vx:rand(-13,15),vy:rand(-85,-42),
-              size:rand(11,20),size1:1,life:rand(.19,.34),
+            w.spawn({type:"flame",x,y,vx:rand(-13,15),vy:rand(-85,-42),
+              size:rand(9,15),life:rand(.28,.42),
               color:pick(["255,118,33","255,168,46","255,221,96"])});
           }
         }
@@ -257,25 +257,15 @@
       drawFront(w,ctx) {
         if(!w.on("flame")||w.burnT<=0)return;
         const f=w.foe,age=w.burnAge,fade=Math.min(1,w.burnT/.32);
-        // Five body-following flames: shaped yellow cores + orange silhouettes.
+        // 몸에 붙은 픽셀 불꽃 혀 5개: 제자리에서 계속 일렁여요(k를 순환)
         ctx.save();
         ctx.translate(f.x+f.ox,f.gy+f.oy);
-        ctx.globalCompositeOperation="lighter";
         const h=f.h,wi=f.w;
         const positions=[[-.27,.26],[.17,.36],[-.16,.56],[.24,.68],[0,.44]];
         for(let i=0;i<positions.length;i++){
-          const [u,v]=positions[i], px=u*wi+Math.sin(age*8+i*1.4)*4;
-          const py=-h*v,fh=(24+(i%3)*10)*(0.87+.13*Math.sin(age*10+i));
-          const fw=12+(i%3)*3;
-          const g=ctx.createLinearGradient(px,py,px,py-fh);
-          g.addColorStop(0,"rgba(255,88,17,"+(.78*fade)+")");
-          g.addColorStop(.62,"rgba(255,170,34,"+(.58*fade)+")");
-          g.addColorStop(1,"rgba(255,237,132,0)");
-          ctx.fillStyle=g;
-          ctx.beginPath();ctx.moveTo(px-fw,py);
-          ctx.bezierCurveTo(px-fw*.72,py-fh*.41,px+fw*.32,py-fh*.63,px+Math.sin(age*11+i)*4,py-fh);
-          ctx.bezierCurveTo(px+fw*.72,py-fh*.53,px+fw,py-fh*.20,px+fw,py);
-          ctx.closePath();ctx.fill();
+          const [u,v]=positions[i], px=u*wi+Math.sin(age*8+i*1.4)*3, py=-h*v;
+          const k=((age*1.6+i*0.23)%1)*0.55;
+          (typeof pxFlame==="function"&&FX.pixelFx?pxFlame:(c,x,y,sz)=>glow(c,x,y-sz,sz*1.4,"255,140,40",.7))(ctx,px,py,(12+(i%3)*4)*fade,k,i*2.1);
         }
         ctx.restore();
       },
@@ -389,11 +379,11 @@
                 vx:rand(-130,130),vy:rand(-190,-45),life:.33,
                 color:pick(["255,128,41","255,200,80","255,235,143"])});
             }
-            w.sfx.crit();
+            w.sfx.thud(); w.play(()=>nz({type:"lowpass",f:900,f2:2600,dur:.45,vol:.4,rv:.3})); w.sfx.crackle();
           },
           tick(w,f){
             f.ox+=3.5;
-            w.play(()=>nz({type:"bandpass",f:2600,q:1.5,dur:.06,vol:.30}));
+            w.sfx.crackle();
           },
         },
       ],
@@ -401,7 +391,7 @@
 
     /* 3. 얼음 */
     {
-      id: "combat-ice", cat: "combat", view: "side",
+      id: "combat-ice", cat: "combat", view: "side", polished: true,
       title: { en: "Make frost *slow you down*", ko: "얼음은 *느려지게*" },
       intro: { en: "Ice hit. Still *jogging* happily.", ko: "얼음 맞았는데 *쌩쌩* 걸어와요." },
       interval: 1.4, stepDur: 3.8,
@@ -465,7 +455,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "glass ting",
           cap: { en: "A thin, glassy *ting*.", ko: "얇은 유리 소리, *팅*." },
-          hit(w) { w.play(() => { tn({ type: "triangle", f: 2600, f2: 2100, dur: 0.3, vol: 0.2 }); nz({ type: "highpass", f: 5000, dur: 0.12, vol: 0.3 }); }); },
+          hit(w) { w.sfx.hit(0.9); if (w.on("shard") || w.on("frost")) w.sfx.glass(); },
         },
       ],
     },

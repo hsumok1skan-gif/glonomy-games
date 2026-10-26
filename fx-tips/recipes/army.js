@@ -709,7 +709,7 @@
     },
     // 6 ─ 화살비
     {
-      id: "army-volley", cat: "army", view: "side",
+      id: "army-volley", cat: "army", view: "side", polished: true,
       title: { en: "Rain down an *arrow volley*", ko: "화살비를 *쏟아붓기*" },
       intro: { en: "Sticks float over. *Nobody flinches.*", ko: "막대기가 둥둥. *아무도 안 놀라요*." },
       interval: 1.2, stepDur: 3.8,
@@ -774,7 +774,7 @@
 
     // 7 ─ 기병 돌격
     {
-      id: "army-cavalry", cat: "army", view: "side",
+      id: "army-cavalry", cat: "army", view: "side", polished: true,
       title: { en: "Make a cavalry charge *crash*", ko: "기병 돌격을 *쾅*" },
       intro: { en: "Horses pass *through* people.", ko: "말이 사람을 *통과*해요." },
       interval: 1.4, stepDur: 3.8,

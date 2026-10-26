@@ -809,7 +809,7 @@
 
     /* ───────── 9. 구멍이 삼키기 ───────── */
     {
-      id: "casual-hole", cat: "casual", view: "top",
+      id: "casual-hole", cat: "casual", view: "top", polished: true,
       title: { en: "Make the hole *hungry*", ko: "구멍이 *꿀꺽* 삼키게" },
       intro: { en: "Objects just *blink out*.", ko: "물건이 그냥 *뿅* 사라져요." },
       interval: 0.6, stepDur: 3.4,
@@ -892,7 +892,7 @@
 
     /* ───────── 10. 과일 베기 ───────── */
     {
-      id: "casual-fruit", cat: "casual", view: "side",
+      id: "casual-fruit", cat: "casual", view: "side", polished: true,
       title: { en: "Make fruit slicing *juicy*", ko: "과일 베기를 *과즙 터지게*" },
       intro: { en: "Swipe. Fruit vanishes. *Dry.*", ko: "쓱. 과일이 사라짐. *퍽퍽해요*." },
       interval: 1.15, stepDur: 3.6,

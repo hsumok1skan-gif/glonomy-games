@@ -770,7 +770,7 @@
 
     // ───────────────────────── 8. 번개
     {
-      id: "env-lightning", cat: "env", view: "side",
+      id: "env-lightning", cat: "env", view: "side", polished: true,
       title: { en: "Make lightning *strike*", ko: "번개가 *내리꽂히게*" },
       intro: { en: "A yellow line blinked. *Was that it?*", ko: "노란 선이 깜빡. *이게 번개?*" },
       interval: 1.3, stepDur: 3.8,
@@ -848,7 +848,7 @@
 
     // ───────────────────────── 9. 안개
     {
-      id: "env-fog", cat: "env", view: "side",
+      id: "env-fog", cat: "env", view: "side", polished: true,
       title: { en: "Layer fog for *depth*", ko: "안개를 *겹겹이*" },
       intro: { en: "Fog? It's a *grey filter* on everything.", ko: "안개라더니 그냥 *회색 필터*예요." },
       interval: 1.4, stepDur: 4.0,
@@ -876,7 +876,7 @@
         if (w.layers) fogBand(ctx, 235, 70, 0.45, -w.drift * 26);
         groundFill(ctx, "#15181e");
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         if (!w.layers) { ctx.fillStyle = "rgba(150,158,170,0.35)"; ctx.fillRect(-100, -100, 740, 560); return; }
         if (w.low) fogBand(ctx, G - 4, 50, 0.6, w.drift * 40, "190,198,210");
       },
@@ -960,7 +960,7 @@
         ctx.fillStyle = `rgba(0,0,0,${0.4 * (1 - nightAt(w.tod) * 0.7)})`;
         ctx.beginPath(); ctx.ellipse(w.hero.x - s * 50 / up, G + 2, 20 + Math.abs(s) * 50 / up, 7, 0, 0, TAU); ctx.fill();
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const n = nightAt(w.tod), wm = warmAt(w.tod);
         if (w.grade) {
           ctx.globalCompositeOperation = "multiply";

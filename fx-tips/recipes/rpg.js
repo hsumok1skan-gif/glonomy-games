@@ -563,7 +563,7 @@
 
     /* 6. 상태이상 아이콘 */
     {
-      id: "rpg-status", cat: "rpg", view: "side",
+      id: "rpg-status", cat: "rpg", view: "side", polished: true,
       title: { en: "Make status effects *pop*", ko: "상태이상이 *딱* 보이게" },
       intro: { en: "Tiny grey word. *Stunned?*", ko: "작은 회색 글씨. *기절한 거예요?*" },
       interval: 1.4, stepDur: 3.8,
@@ -635,7 +635,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "one per status",
           cap: { en: "Each status gets *its own* sound.", ko: "상태마다 *다른* 소리." },
           apply(w, s) {
-            if (s.name === "STUN") w.sfx.ping();
+            if (s.name === "STUN") { w.sfx.thud(); w.play(() => { tn({ type: "triangle", f: 1500, f2: 1900, dur: 0.07, vol: 0.08, delay: 0.12 }); tn({ type: "triangle", f: 1300, f2: 1700, dur: 0.07, vol: 0.07, delay: 0.22 }); }); }
             if (s.name === "FREEZE") w.play(() => nz({ type: "highpass", f: 5000, dur: 0.3, vol: 0.3 }));
             if (s.name === "SLEEP") w.play(() => tn({ type: "triangle", f: 600, f2: 300, dur: 0.5, vol: 0.18 }));
           },
@@ -645,7 +645,7 @@
 
     /* 7. 회복 숫자 */
     {
-      id: "rpg-heal", cat: "rpg", view: "side",
+      id: "rpg-heal", cat: "rpg", view: "side", polished: true,
       title: { en: "Make heals *feel good*", ko: "회복이 *기분 좋게*" },
       intro: { en: "White number, bouncing. Hit or *heal*?", ko: "흰 숫자가 튀어요. 맞은 거예요, *나은* 거예요?" },
       interval: 1.0, stepDur: 3.6,
@@ -707,14 +707,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "soft rising chime",
           cap: { en: "Soft *rising* chimes. Never a thud.", ko: "부드럽게 *올라가는* 띠링. 쿵 소리는 금지." },
-          heal(w, h, n, big) { w.sfx.chime(0); w.after(0.08, () => w.sfx.chime(big ? 7 : 4)); },
+          heal(w, h, n, big) { if (!w.on("green") && !w.on("float")) return; w.sfx.chime(0); w.after(0.08, () => w.sfx.chime(big ? 7 : 4)); if (big && w.on("big")) w.sfx.lightSwell(); },
         },
       ],
     },
 
     /* 8. 부활 */
     {
-      id: "rpg-revive", cat: "rpg", view: "side",
+      id: "rpg-revive", cat: "rpg", view: "side", polished: true,
       title: { en: "Make revives feel *holy*", ko: "부활을 *성스럽게*" },
       intro: { en: "Dead. Then *pop*, standing. Huh?", ko: "쓰러져 있다가 *뿅*, 서 있어요." },
       interval: 2.6, stepDur: 4.0,

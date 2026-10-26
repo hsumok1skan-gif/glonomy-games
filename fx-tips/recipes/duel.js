@@ -586,7 +586,7 @@
 
     /* 7 ─ 마지막 일격 연출 */
     {
-      id: "duel-finalblow", cat: "duel", view: "side",
+      id: "duel-finalblow", cat: "duel", view: "side", polished: true,
       title: { en: "Make the final blow *cinematic*", ko: "마지막 일격을 *영화처럼*" },
       intro: { en: "Last hit. Boss *blinks out*.", ko: "마지막 한 방. 보스가 *뿅* 사라져요." },
       interval: 2.6, stepDur: 4.0,
@@ -645,14 +645,14 @@
           blow(w, p, b) {
             b.flash = 1.5;
             w.after(0.3, () => w.tween(b, { rot: 1.35, oy: 30 }, 0.4, "in", () => {
-              w.shake(0.5); dust(w, b.x + 80, G, 16); w.tween(b, { alpha: 0 }, 0.6, "lin");
+              w.shake(0.5); dust(w, b.x + 80, G, 16); if (w.on("sound")) w.sfx.slam();
             }));
           },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "cut silence → boom",
-          cap: { en: "*Cut* all sound on the slash, then one deep *boom*.", ko: "벨 때 소리를 *뚝*, 그다음 묵직한 *쿵*." },
-          blow(w) { w.sfx.slash(); w.after(0.3, () => w.sfx.boom()); },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "slash → body thud",
+          cap: { en: "A sharp *slash*, then the body hits the floor: *thud*.", ko: "*촥* 베고, 몸이 바닥에 *쿵*." },
+          blow(w) { w.sfx.slash(); if (w.on("slash")) w.after(0.06, () => w.sfx.slashHit()); },
         },
       ],
     },
