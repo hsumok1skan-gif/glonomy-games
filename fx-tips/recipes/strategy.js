@@ -509,7 +509,7 @@
 
     /* 6. 건설 완료 */
     {
-      id: "strategy-complete", cat: "strategy", view: "iso",
+      id: "strategy-complete", cat: "strategy", view: "iso", polished: true,
       title: { en: "Celebrate a *finished* building", ko: "건물 완성을 *축하하기*" },
       intro: { en: "Done. Scaffold gone. *That's it?*", ko: "다 지었대요. *끝이에요?*" },
       interval: 1.8, stepDur: 3.8,
@@ -565,7 +565,7 @@
         {
           id: "sound", name: { en: "Fanfare", ko: "팡파르" }, param: "thud + fanfare",
           cap: { en: "A *thud*, then a short *fanfare*.", ko: "*쿵*, 그리고 짧은 *빰빠밤*." },
-          done(w) { w.sfx.thunk(); w.after(0.08, () => w.sfx.fanfare()); },
+          done(w) { w.sfx.tock(); if (w.on("banner")) w.after(0.08, () => w.sfx.fanfare()); else if (w.on("rays")) w.sfx.lightSwell(); },
         },
       ],
     },

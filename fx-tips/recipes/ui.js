@@ -99,7 +99,7 @@
   RECIPES.push(
     /* 1 ───── 화면 전환 와이프 ───── */
     {
-      id: "ui-wipe", cat: "ui", view: "ui",
+      id: "ui-wipe", cat: "ui", view: "ui", polished: true,
       title: { en: "Hide the *screen cut*", ko: "화면 전환을 *가려요*" },
       intro: { en: "Screen A. Screen B. *Blink.*", ko: "화면이 *툭* 바뀌어요." },
       interval: 1.4, stepDur: 3.6,

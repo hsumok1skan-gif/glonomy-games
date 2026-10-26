@@ -554,7 +554,7 @@
 
     /* ───────── 6. 날갯짓 ───────── */
     {
-      id: "casual-flap", cat: "casual", view: "side",
+      id: "casual-flap", cat: "casual", view: "side", polished: true,
       title: { en: "Make a flap feel *alive*", ko: "날갯짓을 *살아 있게*" },
       intro: { en: "Up, down. A *box* on a string.", ko: "올라가고 내려가고. *상자* 같아요." },
       interval: 0.42, stepDur: 3.3,

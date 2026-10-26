@@ -236,7 +236,7 @@
 
     /* 2. 쿨타임 */
     {
-      id: "rpg-cooldown", cat: "rpg", view: "ui",
+      id: "rpg-cooldown", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make cooldowns *readable*", ko: "쿨타임이 *한눈에* 보이게" },
       intro: { en: "Grey icon. Ready *when*?", ko: "회색 아이콘. *언제* 다시 써요?" },
       interval: 0.6, stepDur: 3.6,
@@ -318,7 +318,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "use / ding / bonk",
           cap: { en: "*Ding* when ready. A dull *bonk* when not.", ko: "다 차면 *띵*, 아직이면 둔탁한 *툭*." },
           use(w) { w.sfx.swish(); },
-          ready(w) { w.sfx.chime(5); },
+          ready(w) { if (w.on("ready")) w.sfx.chime(5); else w.sfx.tock(); },
           deny(w) { w.sfx.tock(); },
         },
       ],

@@ -286,7 +286,7 @@
 
     /* ───────── 3. 주문 완료 ───────── */
     {
-      id: "sim-order", cat: "sim", view: "ui",
+      id: "sim-order", cat: "sim", view: "ui", polished: true,
       title: { en: "Make *order complete* land", ko: "주문 완료를 *확실하게*" },
       intro: { en: "Ticket gone. *Was it done?*", ko: "주문서가 사라졌어요. *끝난 거죠?*" },
       interval: 0.6, stepDur: 3.8,
@@ -353,7 +353,7 @@
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick / thunk / fanfare",
           cap: { en: "*Tick* per item, *thunk* for the stamp.", ko: "항목마다 *틱*, 도장은 *쿵*." },
           check(w) { w.sfx.tick(); w.sfx.blip(3); },
-          done(w) { w.after(0.14, () => w.sfx.thunk()); w.after(0.3, () => w.sfx.fanfare()); } },
+          done(w) { if (w.on("stamp")) w.after(0.14, () => w.sfx.thud()); if (w.on("confetti")) w.after(0.3, () => w.sfx.fanfare()); else w.after(0.3, () => w.sfx.chime(7)); } },
       ],
     },
 

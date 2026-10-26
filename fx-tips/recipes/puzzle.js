@@ -370,7 +370,7 @@
 
     /* 4 ─────────────────────────────── */
     {
-      id: "puzzle-merge-tiles", cat: "puzzle", view: "ui",
+      id: "puzzle-merge-tiles", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make number merges *grow*", ko: "숫자 합치기를 *커지게*" },
       intro: { en: "2 + 2 = 4. The number changed. *That's it.*", ko: "2+2=4. 숫자만 바뀌었어요. *끝.*" },
       interval: 1.1, stepDur: 3.6,
@@ -454,7 +454,7 @@
           id: "sound", name: { en: "Rising Pitch", ko: "올라가는 음" }, param: "+2 semitones / ×2",
           cap: { en: "Bigger merge, *higher note*.", ko: "숫자가 클수록 *음이 높아져요*." },
           slide(w) { w.sfx.swish(); },
-          merge(w, B) { w.sfx.blip(Math.log2(B.v) * 2); },
+          merge(w, B) { w.sfx.blip(Math.log2(B.v) * 2); if (w.on("burst")) w.sfx.pop(); },
         },
       ],
     },

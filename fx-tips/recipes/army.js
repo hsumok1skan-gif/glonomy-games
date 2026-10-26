@@ -582,7 +582,7 @@
 
     // 4 ─ 이동 명령 표시
     {
-      id: "army-move", cat: "army", view: "top",
+      id: "army-move", cat: "army", view: "top", polished: true,
       title: { en: "Confirm move orders *clearly*", ko: "이동 명령을 *확실하게*" },
       intro: { en: "Clicked. Did they *hear* me?", ko: "클릭했는데… *들은 거야?*" },
       interval: 1.6, stepDur: 3.8,

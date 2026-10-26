@@ -840,7 +840,7 @@
   RECIPES.push(
     /* 8 ─ 히트마커 */
     {
-      id: "shooter-hitmarker", cat: "shooter", view: "3d",
+      id: "shooter-hitmarker", cat: "shooter", view: "3d", polished: true,
       title: { en: "Confirm every hit with a *hitmarker*", ko: "맞힐 때마다 *히트마커*" },
       intro: { en: "Far target. Did that *land?*", ko: "멀리 있는 적. 방금 *맞았나요?*" },
       interval: 0.42, stepDur: 3.4,
@@ -894,7 +894,7 @@
           cap: { en: "A dry *tick* on hit. Ears confirm it first.", ko: "맞으면 건조한 *틱*. 귀가 먼저 알아요." },
           fire(w) { w.sfx.smg(rand(0.95, 1.05)); },
           hit(w) { w.play(() => tn({ type: "square", f: 2400, dur: 0.03, vol: 0.12 })); },
-          kill(w) { w.sfx.ping(); },
+          kill(w) { if (w.on("kill")) w.play(() => { sMetal(1500, 0.4, 0.1); sBody(80, 0.3, 0.6); }); else w.sfx.hit(); },
         },
       ],
     },

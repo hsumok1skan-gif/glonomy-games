@@ -713,7 +713,7 @@
 
     /* ───────── 8. 얼어붙는 화면 가장자리 ───────── */
     {
-      id: "survival-frost", cat: "survival", view: "side",
+      id: "survival-frost", cat: "survival", view: "side", polished: true,
       title: { en: "Make the cold *creep in*", ko: "추위가 *스며들게*" },
       intro: { en: "-20°C. Feels like *room temp*.", ko: "영하 20도인데 *실내* 같아요." },
       interval: 0.9, stepDur: 4.0,

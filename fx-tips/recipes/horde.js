@@ -308,7 +308,7 @@
 
     /* 4 ─ 화면 청소 폭탄 */
     {
-      id: "horde-nuke", cat: "horde", view: "top",
+      id: "horde-nuke", cat: "horde", view: "top", polished: true,
       title: { en: "Make a screen-clear *feel huge*", ko: "화면 청소 폭탄을 *크게*" },
       intro: { en: "Everyone vanished. *Was that it?*", ko: "다 사라졌는데… *그게 다?*" },
       interval: 2.4, stepDur: 4.2,
@@ -374,8 +374,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "charge → boom",
           cap: { en: "A rising *whine*, then a deep *boom*.", ko: "올라가는 *위잉*, 그리고 낮은 *쾅*." },
-          charge(w) { w.sfx.charge(); },
-          boom(w) { w.sfx.boom(); },
+          charge(w) { if (w.on("charge")) w.sfx.charge(); },
+          boom(w) { if (w.on("ring") || w.on("flash")) w.sfx.boom(); else w.sfx.burst(); },
         },
       ],
     },
