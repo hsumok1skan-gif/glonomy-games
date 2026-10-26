@@ -323,7 +323,7 @@
 
     /* ─────────────── 3. 레이저 빔 ─────────────── */
     {
-      id: "weapon-laser", cat: "weapon", view: "side",
+      id: "weapon-laser", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a laser beam *burn*", ko: "레이저가 *지지는* 느낌" },
       intro: { en: "A red thread. Is it *doing anything?*", ko: "빨간 실 한 가닥. *효과가 있긴* 해요?" },
       interval: 0.3, stepDur: 3.6,
@@ -434,7 +434,7 @@
 
     /* ─────────────── 4. 로켓 런처 ─────────────── */
     {
-      id: "weapon-rocket", cat: "weapon", view: "side",
+      id: "weapon-rocket", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a rocket launcher *thunder*", ko: "로켓포를 *우르릉*하게" },
       intro: { en: "It's a rocket. It flies like a *pencil*.", ko: "로켓인데 *연필*처럼 날아가요." },
       interval: 1.5, stepDur: 3.8,

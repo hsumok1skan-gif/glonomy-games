@@ -614,7 +614,7 @@
 
     /* 8 ─ 채찍으로 한 줄 쓸기 (옆에서) */
     {
-      id: "horde-whip", cat: "horde", view: "side",
+      id: "horde-whip", cat: "horde", view: "side", polished: true,
       title: { en: "Make a whip *mow the line*", ko: "채찍으로 한 줄을 *쓸어버리기*" },
       intro: { en: "Seven enemies. One *invisible* whip.", ko: "적 일곱. 채찍은 *안 보여요*." },
       interval: 1.0, stepDur: 3.6,
@@ -694,7 +694,7 @@
 
     /* 9 ─ 한꺼번에 말고 차례로 죽기 (옆에서) */
     {
-      id: "horde-stagger", cat: "horde", view: "side",
+      id: "horde-stagger", cat: "horde", view: "side", polished: true,
       title: { en: "Don't kill them *all at once*", ko: "한꺼번에 말고 *차례로* 쓰러뜨리기" },
       intro: { en: "Nine die on the *same frame*. Flat.", ko: "아홉이 *같은 프레임*에 사라져요. 밋밋." },
       interval: 1.8, stepDur: 3.8,
@@ -751,7 +751,7 @@
         {
           id: "sound", name: { en: "Rising Pops", ko: "올라가는 펑" }, param: "+2 semitones each",
           cap: { en: "Each pop a little *higher*. *Pa-pa-pa-pam!*", ko: "펑마다 조금씩 *높게*. *파파파팡!*" },
-          doom(w, f, i) { w.play(() => tn({ type: "triangle", f: 330 * Math.pow(2, i * 2 / 12), f2: 160, dur: 0.12, vol: 0.3 })); },
+          doom(w, f, i) { if (w.on("stagger")) w.play(() => tn({ type: "triangle", f: 330 * Math.pow(2, i * 2 / 12), f2: 160, dur: 0.12, vol: 0.3 })); },
         },
       ],
     },

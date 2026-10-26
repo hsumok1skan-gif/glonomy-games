@@ -885,7 +885,7 @@
 
     /* 10. 타워 업그레이드 */
     {
-      id: "strategy-upgrade", cat: "strategy", view: "iso",
+      id: "strategy-upgrade", cat: "strategy", view: "iso", polished: true,
       title: { en: "Make upgrades feel *earned*", ko: "업그레이드를 *뿌듯하게*" },
       intro: { en: "It swapped sprites. *Stronger?*", ko: "그림만 바뀌었어요. *세진 거예요?*" },
       interval: 1.2, stepDur: 3.6,
@@ -950,14 +950,14 @@
         {
           id: "sound", name: { en: "Rising Chime", ko: "올라가는 띵" }, param: "+4 semitones / lv",
           cap: { en: "Higher level, *higher chime*.", ko: "레벨이 오를수록 *음도 높게*." },
-          upgrade(w, t, lv) { w.sfx.chime(lv * 4); w.sfx.burst(); },
+          upgrade(w, t, lv) { w.sfx.thunk(); if (w.on("beam") || w.on("flash")) w.sfx.lightSwell(); if (w.on("pop")) w.sfx.chime(lv * 4); },
         },
       ],
     },
 
     /* 11. 적 경로 미리보기 */
     {
-      id: "strategy-path", cat: "strategy", view: "top",
+      id: "strategy-path", cat: "strategy", view: "top", polished: true,
       title: { en: "Preview the enemy *path*", ko: "적이 올 *길* 미리 보여주기" },
       intro: { en: "A red line. *Which way?*", ko: "빨간 선 하나. *어느 쪽으로요?*" },
       interval: 2.2, stepDur: 3.8,
@@ -1022,14 +1022,14 @@
         {
           id: "sound", name: { en: "Whoosh + Ticks", ko: "슉 + 틱틱" }, param: "sweep · 4 ticks",
           cap: { en: "A *sweep* along the path, a *tick* at each turn.", ko: "길 따라 *슉*, 꺾일 때마다 *틱*." },
-          preview(w) { w.sfx.dash(); for (let i = 1; i < 5; i++) w.after(i * 0.1, () => w.sfx.tick()); },
+          preview(w) { w.sfx.dash(); if (w.on("march") || w.on("arrows")) for (let i = 1; i < 5; i++) w.after(i * 0.1, () => w.sfx.tick()); },
         },
       ],
     },
 
     /* 12. 웨이브 시작 */
     {
-      id: "strategy-wave", cat: "strategy", view: "top",
+      id: "strategy-wave", cat: "strategy", view: "top", polished: true,
       title: { en: "Make a wave start *loud*", ko: "웨이브 시작을 *크게*" },
       intro: { en: "Wave 3 started. *Did you notice?*", ko: "3웨이브 시작. *눈치챘어요?*" },
       interval: 2.4, stepDur: 4.0,
@@ -1099,7 +1099,7 @@
         {
           id: "sound", name: { en: "Horn + Drums", ko: "뿔피리 + 북" }, param: "saw horn · 3 drums",
           cap: { en: "A low *horn*, then *drums* as they spawn.", ko: "낮은 *뿔피리*, 나올 때마다 *둥*." },
-          wave(w) { w.play(() => { tn({ type: "sawtooth", f: 110, f2: 98, dur: 0.7, vol: 0.12 }); tn({ type: "sawtooth", f: 165, f2: 147, dur: 0.7, vol: 0.07 }); }); },
+          wave(w) { if (w.on("alarm") || w.on("banner")) w.play(() => { tn({ type: "sawtooth", f: 110, f2: 98, dur: 0.7, vol: 0.12 }); tn({ type: "sawtooth", f: 165, f2: 147, dur: 0.7, vol: 0.07 }); }); },
           spawn(w) { w.sfx.thunk(); },
         },
       ],

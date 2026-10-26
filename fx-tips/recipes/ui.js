@@ -713,7 +713,7 @@
 
     /* 8 ───── 배지 숫자 ───── */
     {
-      id: "ui-badge", cat: "ui", view: "ui",
+      id: "ui-badge", cat: "ui", view: "ui", polished: true,
       title: { en: "Make badge counts *pop*", ko: "배지 숫자를 *톡* 튀게" },
       intro: { en: "3 became 5. *Did you notice?*", ko: "3이 5가 됐어요. *알아챘어요?*" },
       interval: 1.0, stepDur: 3.3,
@@ -789,7 +789,7 @@
 
     /* 9 ───── 출석 보상 달력 ───── */
     {
-      id: "ui-daily", cat: "ui", view: "ui",
+      id: "ui-daily", cat: "ui", view: "ui", polished: true,
       title: { en: "Make daily rewards *worth it*", ko: "출석 보상을 *받는 맛*" },
       intro: { en: "Day 3 claimed. *Gray box.*", ko: "3일차 받음. *회색 칸* 끝." },
       interval: 1.15, stepDur: 3.6,
@@ -869,14 +869,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "stamp + coin blips",
           cap: { en: "A *thunk* for the stamp, *clinks* for the coins.", ko: "도장은 *쿵*, 동전은 *짤랑*." },
-          claim(w, c, p, i) { w.after(0.18, () => w.sfx.thunk()); for (let k = 0; k < 6; k++) w.after(0.45 + k * 0.06, () => w.sfx.blip(k + i)); },
+          claim(w, c, p, i) { w.after(0.18, () => w.sfx.thunk()); if (w.on("fly")) for (let k = 0; k < 6; k++) w.after(0.45 + k * 0.06, () => w.sfx.blip(k + i)); },
         },
       ],
     },
 
     /* 10 ───── 연속 출석 ───── */
     {
-      id: "ui-streak", cat: "ui", view: "ui",
+      id: "ui-streak", cat: "ui", view: "ui", polished: true,
       title: { en: "Make a streak feel *on fire*", ko: "연속 출석이 *불타오르게*" },
       intro: { en: "5 days in a row. *Just a number.*", ko: "5일 연속인데 *그냥 숫자*예요." },
       interval: 1.0, stepDur: 3.5,
@@ -1046,7 +1046,7 @@
 
     /* 12 ───── 구매 확인 ───── */
     {
-      id: "ui-purchase", cat: "ui", view: "ui",
+      id: "ui-purchase", cat: "ui", view: "ui", polished: true,
       title: { en: "Make buying feel *final*", ko: "구매를 *확실하게*" },
       intro: { en: "Tap Buy. Window gone. *Did I buy it?*", ko: "구매 누르니 창이 사라짐. *산 거예요?*" },
       interval: 1.9, stepDur: 4.0,

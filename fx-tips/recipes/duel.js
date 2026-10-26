@@ -659,7 +659,7 @@
 
     /* 8 ─ 그로기(빈틈) */
     {
-      id: "duel-stagger", cat: "duel", view: "side",
+      id: "duel-stagger", cat: "duel", view: "side", polished: true,
       title: { en: "Show the boss *stagger window*", ko: "보스 *그로기* 빈틈 보여 주기" },
       intro: { en: "Three hits and… *something* happened?", ko: "세 대 때렸더니… *뭔가* 됐나?" },
       interval: 0.75, stepDur: 4.0,
@@ -735,15 +735,15 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thud / crit / shatter",
           cap: { en: "The break gets its own *crash*. Punish hits *crit*.", ko: "무너질 땐 전용 *와장창*. 응징은 *치명타 음*." },
           enter(w) { w.post.v = 68; },
-          hit(w, at, d, down) { if (down) w.sfx.crit(); else w.sfx.thud(); },
-          break(w) { w.sfx.boom(); w.sfx.chime(5); },
+          hit(w, at, d, down) { if (down && w.on("punish")) w.sfx.critBig(); else w.sfx.thud(); },
+          break(w) { if (w.on("kneel")) w.sfx.boom(); else w.sfx.thud(); },
         },
       ],
     },
 
     /* 9 ─ 약점 타격 */
     {
-      id: "duel-weakpoint", cat: "duel", view: "side",
+      id: "duel-weakpoint", cat: "duel", view: "side", polished: true,
       title: { en: "Make weak-point hits *obvious*", ko: "약점 타격을 *확실하게*" },
       intro: { en: "Shoot here, shoot there. *Same thing?*", ko: "여기 쏘나 저기 쏘나. *똑같아요?*" },
       interval: 0.7, stepDur: 3.8,
@@ -809,15 +809,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tink / crit",
           cap: { en: "Armor goes *tink*. The core goes *crunch*.", ko: "갑옷은 *팅*, 약점은 *콰직*." },
-          body(w) { w.play(() => tn({ type: "triangle", f: 2400, f2: 2100, dur: 0.12, vol: 0.15 })); },
-          weak(w) { w.sfx.crit(); },
+          body(w) { if (w.on("deflect")) w.sfx.clack(); else w.sfx.hit(0.8); },
+          weak(w) { w.sfx.hit(); if (w.on("burst")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 10 ─ 보스 사망 연쇄 폭발 */
     {
-      id: "duel-deathchain", cat: "duel", view: "side",
+      id: "duel-deathchain", cat: "duel", view: "side", polished: true,
       title: { en: "Blow the boss up in a *chain*", ko: "보스를 *연쇄 폭발*로 보내기" },
       intro: { en: "Ten minutes of fighting. *Poof.*", ko: "10분 싸웠는데. *뿅*." },
       interval: 2.6, stepDur: 4.2,

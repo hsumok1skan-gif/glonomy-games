@@ -1177,7 +1177,7 @@
 
     /* ───────── 14. 삐걱이는 문 ───────── */
     {
-      id: "survival-door", cat: "survival", view: "side",
+      id: "survival-door", cat: "survival", view: "side", polished: true,
       title: { en: "Make a door *creak* open", ko: "문이 *삐걱* 열리게" },
       intro: { en: "Door: closed. Door: *open*.", ko: "문 닫힘. 문 *열림*. 끝." },
       interval: 2.6, stepDur: 4.2,
@@ -1218,7 +1218,7 @@
         ctx.fillStyle = "#fbbf24"; ctx.beginPath(); ctx.arc(hx + dw * c * 0.85, G - 80, 4, 0, TAU); ctx.fill();
         ctx.strokeStyle = "#3b2a20"; ctx.lineWidth = 8; ctx.strokeRect(hx - 4, top - 4, dw + 8, 164);
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const D = w.D;
         if (D.dark > 0) { const gx = 300 + 84 * Math.cos(D.o * 1.45); const L = [{ x: w.hero.x, y: G - 70, r: 130, a: 0.5 }]; if (D.spill && D.o > 0.02) L.push({ x: (gx + 384) / 2 + 30, y: G - 60, r: 110 + 220 * D.o, hard: 0.3 }); shade(ctx, D.dark, L); }
       },
@@ -1256,14 +1256,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "2-part creak",
           cap: { en: "Two *creaks*, with a silence in between.", ko: "*끼익*… 정적… *끼이이익*." },
-          opening(w) { w.sfx.creak(); w.after(0.75, () => w.play(() => tn({ type: "sawtooth", f: 80, f2: 190, dur: 0.8, vol: 0.06 }))); },
+          opening(w) { w.sfx.creak(); if (w.on("dark")) w.after(0.75, () => w.play(() => tn({ type: "sawtooth", f: 80, f2: 190, dur: 0.8, vol: 0.06 }))); },
         },
       ],
     },
 
     /* ───────── 15. 발소리 ───────── */
     {
-      id: "survival-footsteps", cat: "survival", view: "side",
+      id: "survival-footsteps", cat: "survival", view: "side", polished: true,
       title: { en: "Make footsteps feel *heavy*", ko: "발소리가 *다가오게*" },
       intro: { en: "Something's coming. It *glides*.", ko: "뭔가 오는데… *미끄러지듯* 와요." },
       interval: 0.42, stepDur: 4.0,
@@ -1331,7 +1331,7 @@
 
     /* ───────── 16. 숨기·숨 참기 ───────── */
     {
-      id: "survival-hide", cat: "survival", view: "side",
+      id: "survival-hide", cat: "survival", view: "side", polished: true,
       title: { en: "Make hiding *hold your breath*", ko: "숨을 *같이 참게* 만들기" },
       intro: { en: "It walks by. You're *fine*. Boring.", ko: "지나가요. *안전해요*. 그래서 심심해요." },
       interval: 2.9, stepDur: 4.2,
@@ -1362,9 +1362,9 @@
           ctx.beginPath(); ctx.moveTo(m.x - 40, G - 100); ctx.lineTo(m.x - 220, G - 40); ctx.lineTo(m.x - 210, G + 6); ctx.closePath(); ctx.fill();
         }
       },
-      drawFront(w, ctx) {
-        rr(ctx, 210, G - 92, 80, 92, 6, "#4b3b2a", "rgba(0,0,0,0.4)", 2);
-        ctx.fillStyle = "rgba(0,0,0,0.25)"; ctx.fillRect(210, G - 62, 80, 4); ctx.fillRect(210, G - 32, 80, 4);
+      drawOver(w, ctx) {
+        if (PXSPR["env-crate-px"]) { const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(PXSPR["env-crate-px"], 206, G - 88, 88, 88); ctx.imageSmoothingEnabled = sm; }
+        else { rr(ctx, 210, G - 92, 80, 92, 6, "#4b3b2a", "rgba(0,0,0,0.4)", 2); ctx.fillStyle = "rgba(0,0,0,0.25)"; ctx.fillRect(210, G - 62, 80, 4); ctx.fillRect(210, G - 32, 80, 4); }
         if (w.B.dark > 0) shade(ctx, w.B.dark, [{ x: w.hero.x + 20, y: G - 60, r: 150, hard: 0.4 }, { x: w.mon.x, y: G - 70, r: 110, a: 0.6 }]);
         const B = w.B, h = w.hero;
         if (B.ring && B.hold) {
@@ -1410,8 +1410,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "muffled beats / gasp",
           cap: { en: "Muffled *thumps*, then a long *gasp*.", ko: "먹먹한 *쿵쿵*, 그리고 *하아*." },
-          hold(w) { for (let i = 0; i < 6; i++) w.after(i * 0.38, () => w.play(() => tn({ f: 55, f2: 40, dur: 0.12, vol: 0.4 }))); },
-          release(w) { w.play(() => nz({ dur: 0.6, type: "bandpass", f: 900, f2: 500, q: 1, vol: 0.3 })); },
+          hold(w) { if (w.on("tremble") || w.on("ring")) for (let i = 0; i < 6; i++) w.after(i * 0.38, () => w.play(() => tn({ f: 55, f2: 40, dur: 0.12, vol: 0.4 }))); },
+          release(w) { if (w.on("exhale")) w.play(() => nz({ dur: 0.6, type: "bandpass", f: 900, f2: 500, q: 1, vol: 0.3 })); },
         },
       ],
     },

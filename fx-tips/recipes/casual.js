@@ -971,7 +971,7 @@
 
     /* ───────── 11. 숫자 합치기 ───────── */
     {
-      id: "casual-merge", cat: "casual", view: "side",
+      id: "casual-merge", cat: "casual", view: "side", polished: true,
       title: { en: "Make merges feel *rewarding*", ko: "합치기를 *뿌듯하게*" },
       intro: { en: "Two 8s touch. One 16. *That's all?*", ko: "8 두 개가 닿으면 16. *끝?*" },
       interval: 0.9, stepDur: 3.6,
@@ -1050,7 +1050,7 @@
 
     /* ───────── 12. 방치형 치명타 ───────── */
     {
-      id: "casual-idle-crit", cat: "casual", view: "ui",
+      id: "casual-idle-crit", cat: "casual", view: "ui", polished: true,
       title: { en: "Make idle crits *pay off*", ko: "방치형 치명타 *짜릿하게*" },
       intro: { en: "Normal hit. Crit. *Spot the difference.*", ko: "일반, 치명타. *차이 찾기* 해보세요." },
       interval: 0.45, stepDur: 3.5,
@@ -1117,7 +1117,7 @@
         {
           id: "sound", name: { en: "Tap / Crit Sound", ko: "톡 / 치명타 소리" }, param: "tick vs crit",
           cap: { en: "Small *tick* for hits, a big *crack* for crits.", ko: "일반은 *톡*, 치명타는 *쾅*." },
-          tap(w, crit) { if (crit) w.sfx.crit(); else w.sfx.tock(); },
+          tap(w, crit) { w.sfx.tock(); if (crit && w.on("crit")) w.sfx.critBig(); },
         },
       ],
     },

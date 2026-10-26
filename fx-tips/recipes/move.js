@@ -908,7 +908,7 @@
 
     /* 11. 갈고리 스윙 */
     {
-      id: "move-grapple", cat: "move", view: "side",
+      id: "move-grapple", cat: "move", view: "side", polished: true,
       title: { en: "Give the grapple *weight*", ko: "갈고리 스윙에 *무게*를" },
       intro: { en: "Rope appears. Body floats across. *Weightless.*", ko: "줄이 생기고 몸이 둥실. *무게가 없어요.*" },
       interval: 2.3, stepDur: 3.8,
@@ -1015,7 +1015,7 @@
 
     /* 12. 대시 충전 크리스털 */
     {
-      id: "move-dashcrystal", cat: "move", view: "side",
+      id: "move-dashcrystal", cat: "move", view: "side", polished: true,
       title: { en: "Make dash refills *obvious*", ko: "대시 충전이 *확실하게*" },
       intro: { en: "Touched the crystal. Did it *do* anything?", ko: "크리스털에 닿았는데 *뭐가 된* 거예요?" },
       interval: 2.0, stepDur: 3.6,
@@ -1099,7 +1099,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh / chime",
           cap: { en: "A bright *chime* means refilled.", ko: "맑은 *띵*이 충전 완료." },
           dash(w) { w.sfx.dash(); },
-          refill(w) { w.sfx.chime(4); },
+          refill(w) { if (w.on("regrow")) w.sfx.chime(4); },
           land(w) { w.sfx.land(); },
         },
       ],
@@ -1107,7 +1107,7 @@
 
     /* 13. 점프대 */
     {
-      id: "move-spring", cat: "move", view: "side",
+      id: "move-spring", cat: "move", view: "side", polished: true,
       title: { en: "Make spring pads *boing*", ko: "점프대가 *띠용* 하게" },
       intro: { en: "Stepped on it, shot up. *Just a lift.*", ko: "밟았더니 위로 쭉. *그냥 리프트* 같아요." },
       interval: 2.0, stepDur: 3.5,

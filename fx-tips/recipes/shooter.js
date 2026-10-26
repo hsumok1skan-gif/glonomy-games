@@ -1339,7 +1339,7 @@
 
     /* 14 ─ 빈 탄창 딸깍 */
     {
-      id: "shooter-dryfire", cat: "shooter", view: "3d",
+      id: "shooter-dryfire", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make an empty gun *obvious*", ko: "탄이 *떨어진 걸* 알리기" },
       intro: { en: "Pulling the trigger. Nothing. *Is it broken?*", ko: "방아쇠를 당겨도 무반응. *고장?*" },
       interval: 0.38, stepDur: 4.0,
@@ -1406,7 +1406,7 @@
   RECIPES.push(
     /* 15 ─ 총구 연기 */
     {
-      id: "shooter-muzzle-smoke", cat: "shooter", view: "3d",
+      id: "shooter-muzzle-smoke", cat: "shooter", view: "3d", polished: true,
       title: { en: "Let the barrel *smoke*", ko: "총구에 *연기* 남기기" },
       intro: { en: "Burst ends. The gun is *instantly cold*.", ko: "연사가 끝나면 총이 *바로 식어요*." },
       interval: 2.2, stepDur: 4.0,
@@ -1464,14 +1464,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "shots + tick-tick",
           cap: { en: "After the shots, quiet *ticks* of cooling metal.", ko: "총성 뒤에 식는 쇠의 *틱, 틱*." },
-          shot(w) { w.sfx.smg(rand(0.95, 1.05)); w.after(0.7, () => w.sfx.tick()); },
+          shot(w) { w.sfx.smg(rand(0.95, 1.05)); },
         },
       ],
     },
 
     /* 16 ─ 1인칭 탄피 */
     {
-      id: "shooter-fp-shells", cat: "shooter", view: "3d",
+      id: "shooter-fp-shells", cat: "shooter", view: "3d", polished: true,
       title: { en: "Eject shells in *first person*", ko: "1인칭 *탄피* 튀기기" },
       intro: { en: "Bang. Bang. Feels like a *laser pointer*.", ko: "탕, 탕. *레이저 포인터* 같아요." },
       interval: 0.32, stepDur: 3.6,
@@ -1510,7 +1510,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "shot + tinkle later",
           cap: { en: "Shot now, *tinkle* later. The brass *lands somewhere*.", ko: "총성은 지금, *짤랑*은 나중에. 어딘가 *떨어졌어요*." },
-          shot(w) { w.sfx.gun(rand(0.95, 1.05)); w.after(0.45, () => w.play(() => tn({ type: "triangle", f: rand(2600, 3400), dur: 0.08, vol: 0.12 }))); },
+          shot(w) { w.sfx.gun(rand(0.95, 1.05)); if (w.on("shell")) w.after(0.45, () => w.play(() => tn({ type: "triangle", f: rand(2600, 3400), dur: 0.08, vol: 0.12 }))); },
         },
       ],
     },

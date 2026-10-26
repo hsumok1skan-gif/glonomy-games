@@ -904,7 +904,7 @@
 
     /* 9 ─────────────────────────────── */
     {
-      id: "puzzle-bubble-pop", cat: "puzzle", view: "top",
+      id: "puzzle-bubble-pop", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make bubble pops *chain*", ko: "버블 터짐을 *줄줄이*" },
       intro: { en: "Six bubbles vanish *at once*. Blink.", ko: "여섯 개가 *한꺼번에* 사라져요. 깜빡." },
       interval: 1.7, stepDur: 3.8,
@@ -1015,7 +1015,7 @@
 
     /* 10 ─────────────────────────────── */
     {
-      id: "puzzle-stack-tower", cat: "puzzle", view: "iso",
+      id: "puzzle-stack-tower", cat: "puzzle", view: "iso", polished: true,
       title: { en: "Make stacking feel *heavy*", ko: "쌓기에 *무게감*을" },
       intro: { en: "It lands. The extra just *disappears*.", ko: "올라가요. 남는 부분은 *그냥 사라져요*." },
       interval: 1.1, stepDur: 3.6,
@@ -1104,7 +1104,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk / chime",
           cap: { en: "A wooden *thunk*. Perfect adds a *chime*.", ko: "나무 *툭*. 딱 맞으면 *띵*까지." },
-          land(w, slab, cut, perfect) { w.sfx.thunk(); if (perfect) w.sfx.chime(w.S.tower.length); },
+          land(w, slab, cut, perfect) { w.sfx.thunk(); if (perfect && w.on("perfect")) w.sfx.chime(w.S.tower.length); },
         },
       ],
     },

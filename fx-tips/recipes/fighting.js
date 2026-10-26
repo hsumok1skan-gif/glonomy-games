@@ -673,7 +673,7 @@
 
     /* 8 ─ 슈퍼 게이지 */
     {
-      id: "fighting-meter-fill", cat: "fighting", view: "side", melee: true,
+      id: "fighting-meter-fill", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make the super meter *fill up*", ko: "필살 게이지가 *차오르게*" },
       intro: { en: "The meter just *jumps*. Nobody looks at it.", ko: "게이지가 *툭툭* 바뀌어요. 아무도 안 봐요." },
       interval: 0.75, stepDur: 4.0,
@@ -740,14 +740,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick · chime · rise",
           cap: { en: "Tiny *ticks* as it fills, a *chime* per level.", ko: "찰 때 *똑*, 한 칸마다 *띵*." },
-          gain(w) { w.sfx.tick(); w.sfx.hit(); },
-          level(w, M, lv) { w.sfx.chime(lv * 4); },
+          gain(w) { w.sfx.hit(); if (w.on("orbs")) w.sfx.tick(); },
+          level(w, M, lv) { if (w.on("stock") || w.on("max")) w.sfx.chime(lv * 4); },
         },
       ],
     },
     /* 9 ─ 가드 크러시 */
     {
-      id: "fighting-guard-crush", cat: "fighting", view: "side", melee: true,
+      id: "fighting-guard-crush", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a guard break *shatter*", ko: "가드 크러시를 *와장창*" },
       intro: { en: "The guard broke. Looked like a *normal hit*.", ko: "가드가 깨졌는데 *그냥 맞은* 것 같아요." },
       interval: 0.7, stepDur: 4.0,
@@ -830,8 +830,8 @@
           cap: { en: "*Clack*, *clack*… then *glass*.", ko: "*탁*, *탁*… 그리고 *쨍그랑*." },
           block(w) { w.sfx.tock(); },
           crush(w) {
-            w.sfx.crit();
-            w.play(() => { for (let i = 0; i < 4; i++) tn({ type: "triangle", f: rand(1800, 3200), dur: 0.12, vol: 0.08, delay: i * 0.03 }); nz({ type: "highpass", f: 4000, dur: 0.25, vol: 0.3 }); });
+            w.sfx.thud();
+            if (w.on("shatter")) { w.sfx.glass(); w.sfx.critBig(); }
           },
         },
       ],

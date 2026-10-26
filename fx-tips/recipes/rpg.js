@@ -138,6 +138,12 @@
     x.strokeStyle = "rgba(255,255,255,0.7)"; x.lineWidth = 3; x.beginPath(); x.arc(45, 76, 38, 0, TAU); x.stroke();
     x.fillStyle = "rgba(255,255,255,0.7)"; x.beginPath(); x.ellipse(30, 62, 9, 5, -0.7, 0, TAU); x.fill();
   });
+  // 강화 화면 칼: 주인공 팔레트 픽셀 장검(없으면 옛 그림)
+  const pxBlade = (ctx, x, y, rot, tint, alpha = 1) => {
+    if (!PXSPR["wpn-longsword-px"]) return false;
+    const im = tint ? pxTint("wpn-longsword-px", tint) : PXSPR["wpn-longsword-px"], sm = ctx.imageSmoothingEnabled;
+    ctx.save(); ctx.globalAlpha *= alpha; ctx.translate(x, y); ctx.rotate(rot); ctx.imageSmoothingEnabled = false; ctx.drawImage(im, -31, -62, 62, 124); ctx.restore(); ctx.imageSmoothingEnabled = sm; return true;
+  };
   const drawImg = (ctx, c, x, y, w, rot = 0, sx = 1, sy = 1, alpha = 1) => {
     const h = w * c.height / c.width;
     ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sx, sy); ctx.drawImage(c, -w / 2, -h / 2, w, h); ctx.restore();
@@ -796,7 +802,7 @@
 
     /* 9. 포션 사용 */
     {
-      id: "rpg-potion", cat: "rpg", view: "side",
+      id: "rpg-potion", cat: "rpg", view: "side", polished: true,
       title: { en: "Make potions feel *drunk*", ko: "포션을 *마신* 느낌으로" },
       intro: { en: "Tap. Number goes up. *Gulp?*", ko: "누르면 숫자만 올라요. *꿀꺽*은요?" },
       interval: 1.6, stepDur: 3.8,
@@ -881,7 +887,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pop · gulp · clink",
           cap: { en: "Cork *pop*, two *gulps*, a glass *clink*.", ko: "*뽁*, *꿀꺽꿀꺽*, *쨍그랑*." },
           use(w) { w.sfx.pop(); },
-          drink(w) { w.play(() => { tn({ f: 220, f2: 120, dur: 0.09, vol: 0.4 }); tn({ f: 200, f2: 110, dur: 0.09, vol: 0.4, delay: 0.2 }); tn({ type: "triangle", f: 2600, dur: 0.15, vol: 0.12, delay: 0.55 }); }); },
+          drink(w) { w.play(() => { tn({ f: 220, f2: 120, dur: 0.09, vol: 0.4 }); tn({ f: 200, f2: 110, dur: 0.09, vol: 0.4, delay: 0.2 }); }); if (w.on("spiral") || w.on("fill")) w.after(0.55, () => w.sfx.chime(4)); },
         },
       ],
     },
@@ -983,7 +989,7 @@
 
     /* 11. 강화 성공 */
     {
-      id: "rpg-enhance-ok", cat: "rpg", view: "ui",
+      id: "rpg-enhance-ok", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make upgrades feel *lucky*", ko: "강화 성공을 *짜릿하게*" },
       intro: { en: "+7 became +8. *Yay?*", ko: "+7이 +8이 됐어요. *와…?*" },
       interval: 1.7, stepDur: 4.0,
@@ -1002,7 +1008,7 @@
         const E2 = w.E, sx = E2.shake > 0 ? rand(-3, 3) : 0;
         panel(ctx, 150, 250, 240, 30, 10, "#262b36");
         w.emit("aura", ctx, E2);
-        drawImg(ctx, SPR["rpg-sword"].c, 270 + sx, 160, 56, 0.5);
+        pxBlade(ctx, 270 + sx, 160, 0.5) || drawImg(ctx, SPR["rpg-sword"].c, 270 + sx, 160, 56, 0.5);
         ctx.save(); ctx.translate(270, 300); ctx.scale(E2.sc, E2.sc); T(ctx, "+" + E2.lv, 0, 0, 30, "#fde047"); ctx.restore();
       },
       steps: [
@@ -1048,14 +1054,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hum → clang → fanfare",
           cap: { en: "Rising *hum*, a *clang*, a tiny *fanfare*.", ko: "*웅*, *깡*, 짧은 *빰빠밤*." },
           charge(w) { w.sfx.charge(); },
-          success(w) { w.play(() => tn({ type: "triangle", f: 1800, f2: 1500, dur: 0.3, vol: 0.2 })); w.sfx.fanfare(); },
+          success(w) { w.sfx.slam(); if (w.on("strike")) w.sfx.critBig(); if (w.on("banner")) w.sfx.fanfare(); else w.sfx.chime(4); },
         },
       ],
     },
 
     /* 12. 강화 실패 */
     {
-      id: "rpg-enhance-fail", cat: "rpg", view: "ui",
+      id: "rpg-enhance-fail", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make failures *sting*", ko: "강화 실패는 *쓰리게*" },
       intro: { en: "+8 became +7. *Shrug.*", ko: "+8이 +7로. *아무 느낌 없죠?*" },
       interval: 1.8, stepDur: 4.0,
@@ -1076,8 +1082,8 @@
       drawFront(w, ctx) {
         const E2 = w.E, sx = E2.shake > 0 ? rand(-3, 3) : 0;
         panel(ctx, 150, 250, 240, 30, 10, "#262b36");
-        drawImg(ctx, SPR["rpg-sword"].c, 270 + sx, 160 + E2.oy, 56, 0.5);
-        if (E2.grey > 0) drawImg(ctx, tintSpr("rpg-sword", "#3f3f46").c, 270 + sx, 160 + E2.oy, 56, 0.5, 1, 1, Math.min(1, E2.grey) * 0.8);
+        pxBlade(ctx, 270 + sx, 160 + E2.oy, 0.5) || drawImg(ctx, SPR["rpg-sword"].c, 270 + sx, 160 + E2.oy, 56, 0.5);
+        if (E2.grey > 0) pxBlade(ctx, 270 + sx, 160 + E2.oy, 0.5, "#3f3f46", Math.min(1, E2.grey) * 0.8) || drawImg(ctx, tintSpr("rpg-sword", "#3f3f46").c, 270 + sx, 160 + E2.oy, 56, 0.5, 1, 1, Math.min(1, E2.grey) * 0.8);
         w.emit("over", ctx, E2);
         T(ctx, "+" + E2.lv, 270, 300, 30, "#fde047");
       },
@@ -1130,14 +1136,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack + falling tone",
           cap: { en: "A *crack*, then a *falling* tone.", ko: "*쩍*, 그리고 *내려가는* 음." },
           charge(w) { w.sfx.charge(); },
-          fail(w) { w.play(() => { nz({ type: "highpass", f: 2500, dur: 0.12, vol: 0.5 }); tn({ type: "square", f: 330, f2: 110, dur: 0.6, vol: 0.12, delay: 0.1 }); }); },
+          fail(w) { w.sfx.thud(); if (w.on("crack")) w.sfx.glass(); if (w.on("grey") || w.on("banner")) w.play(() => tn({ type: "square", f: 330, f2: 110, dur: 0.6, vol: 0.12, delay: 0.1 })); },
         },
       ],
     },
 
     /* 13. 가챠 등급 공개 */
     {
-      id: "rpg-gacha", cat: "rpg", view: "ui",
+      id: "rpg-gacha", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make gacha reveals *tense*", ko: "뽑기 공개를 *두근두근*" },
       intro: { en: "Rare or common, *same moment*.", ko: "레어든 꽝이든 *똑같이* 나와요." },
       interval: 2.1, stepDur: 4.2,
@@ -1217,7 +1223,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch by tier",
           cap: { en: "Higher tier, *higher* and *longer* sound.", ko: "등급이 높을수록 *높고 길게*." },
-          reveal(w, P) { w.sfx.chime(P.r * 5); if (P.r === 2) w.sfx.fanfare(); },
+          reveal(w, P) { w.sfx.chime(P.r * 5); if (P.r === 2 && (w.on("burst") || w.on("stars"))) w.sfx.fanfare(); },
         },
       ],
     },

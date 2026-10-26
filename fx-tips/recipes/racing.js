@@ -870,7 +870,7 @@
 
     /* 10 ─ 거친 착지 */
     {
-      id: "racing-hard-landing", cat: "racing", view: "3d",
+      id: "racing-hard-landing", cat: "racing", view: "3d", polished: true,
       title: { en: "Land jumps with *weight*", ko: "착지에 *무게* 싣기" },
       intro: { en: "Big drop. Lands like a *feather*.", ko: "높이 떨어졌는데 *깃털*처럼 내려와요." },
       interval: 1.5, stepDur: 3.6,
@@ -930,7 +930,7 @@
 
     /* 11 ─ 비포장 흙먼지 */
     {
-      id: "racing-offroad", cat: "racing", view: "top",
+      id: "racing-offroad", cat: "racing", view: "top", polished: true,
       title: { en: "Make dirt feel *dirty*", ko: "흙길을 *흙길답게*" },
       intro: { en: "Rally car on dirt. Looks like *ice*.", ko: "흙길 랠리인데 *빙판* 같아요." },
       interval: 1.4, stepDur: 3.6,
@@ -1012,7 +1012,7 @@
 
     /* 12 ─ 번아웃 타이어 연기 */
     {
-      id: "racing-burnout", cat: "racing", view: "side",
+      id: "racing-burnout", cat: "racing", view: "side", polished: true,
       title: { en: "Make burnouts *smoke*", ko: "번아웃에 *연기* 피우기" },
       intro: { en: "Wheels spinning. You'd *never* know.", ko: "바퀴가 헛도는데 *전혀* 모르겠어요." },
       interval: 1.8, stepDur: 4.0,
@@ -1077,7 +1077,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "screech loop + roar",
           cap: { en: "A long *screech*, then a *roar* on launch.", ko: "길게 *끼이익*, 출발에 *부앙*." },
-          start(w) { for (let i = 0; i < 5; i++) w.after(i * 0.22, () => w.sfx.skid()); },
+          start(w) { if (w.on("smoke") || w.on("shudder")) for (let i = 0; i < 5; i++) w.after(i * 0.22, () => w.sfx.skid()); },
           launch(w) { w.sfx.boost(); },
         },
       ],

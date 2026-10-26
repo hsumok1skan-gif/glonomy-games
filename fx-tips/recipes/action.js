@@ -1093,7 +1093,7 @@
 
     /* 14 ─ 무적 구르기 */
     {
-      id: "action-roll", cat: "action", view: "side", melee: true,
+      id: "action-roll", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Show the *i-frames* in a roll", ko: "구르기의 *무적 시간* 보여주기" },
       intro: { en: "It went through me. *Did I get hit?*", ko: "뚫고 지나갔는데… *맞은 거야?*" },
       interval: 1.5, stepDur: 3.8,
@@ -1175,7 +1175,7 @@
 
     /* 15 ─ 달리기 먼지 */
     {
-      id: "action-sprint", cat: "action", view: "side", melee: true,
+      id: "action-sprint", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make sprinting feel *fast*", ko: "전력 질주가 *빠르게*" },
       intro: { en: "Sprinting. Looks like *sliding on ice*.", ko: "달리는 중인데 *얼음 위를 미끄러져요*." },
       interval: 1.7, stepDur: 3.6,
@@ -1237,7 +1237,7 @@
 
     /* 16 ─ 무기 궤적 */
     {
-      id: "action-weapon-trail", cat: "action", view: "side", melee: true,
+      id: "action-weapon-trail", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Give a sword swing a *trail*", ko: "칼 휘두르기에 *궤적* 그리기" },
       intro: { en: "The blade moved. Your eye *missed it*.", ko: "칼이 움직였는데 *눈이 못 따라가요*." },
       interval: 1.2, stepDur: 3.6,
@@ -1321,7 +1321,7 @@
 
     /* 17 ─ 가드 브레이크 */
     {
-      id: "action-guard-break", cat: "action", view: "side", melee: true,
+      id: "action-guard-break", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a guard break *hurt*", ko: "가드가 깨질 때 *아프게*" },
       intro: { en: "Shield's gone? I *didn't notice*.", ko: "방패가 깨졌다고? *몰랐어요*." },
       interval: 1.0, stepDur: 4.0,
@@ -1356,8 +1356,16 @@
         const g = w.gd, h = w.hero;
         if (!g.gone) {
           const x = h.x + h.ox + 44, y = G - 128;
-          ctx.fillStyle = "#64748b"; ctx.strokeStyle = "#cbd5e1"; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.roundRect(x, y, 22, 86, 8); ctx.fill(); ctx.stroke();
+          // 픽셀 대방패(옆모습): 검은 테 → 강철 면(위 밝고 아래 어둡게) → 밝은 테두리선 → 청록 문양 띠 + 가운데 징 + 리벳
+          const X = Math.round(x), P = 2;
+          for (let yy = 0; yy < 86; yy += P) { const tip = yy > 70 ? Math.round((yy - 70) / 3) * P : 0, x0 = X + tip, wv = 22 - tip * 2;
+            ctx.fillStyle = "#11151d"; ctx.fillRect(x0 - P, y + yy, wv + 2 * P, P);
+            ctx.fillStyle = yy < 30 ? "#8a93a3" : yy < 60 ? "#6b7385" : "#4f5666"; ctx.fillRect(x0, y + yy, wv, P);
+            ctx.fillStyle = "#c9d1dd"; ctx.fillRect(x0, y + yy, P, P); ctx.fillStyle = "#3a404c"; ctx.fillRect(x0 + wv - P, y + yy, P, P); }
+          ctx.fillStyle = "#11151d"; ctx.fillRect(X - P, y - P, 26, P);
+          ctx.fillStyle = "#1f8fae"; ctx.fillRect(X + 8, y + 6, 6, 60); ctx.fillStyle = "#5ad6ff"; ctx.fillRect(X + 8, y + 6, 2, 60);
+          ctx.fillStyle = "#2b303b"; ctx.fillRect(X + 5, y + 34, 12, 12); ctx.fillStyle = "#b8c0cc"; ctx.fillRect(X + 7, y + 36, 8, 8); ctx.fillStyle = "#eef2f7"; ctx.fillRect(X + 8, y + 37, 3, 3);
+          ctx.fillStyle = "#d6dce5"; for (const ry of [8, 24, 56, 68]) { ctx.fillRect(X + 3, y + ry, 2, 2); ctx.fillRect(X + 17, y + ry, 2, 2); }
           if (g.cracks) {
             ctx.strokeStyle = "rgba(15,23,42,0.9)"; ctx.lineWidth = 2; ctx.beginPath();
             const n = Math.round((100 - Math.max(0, g.v)) / 34);
@@ -1417,7 +1425,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk → crash",
           cap: { en: "Dull *thunks* on block, a *crash* on break.", ko: "막을 땐 *텅*, 깨질 땐 *와장창*." },
           block(w) { w.sfx.thunk(); },
-          break(w) { w.sfx.burst(); clang(w, 0.6); },
+          break(w) { clang(w, 0.6); if (w.on("shatter")) w.sfx.glass(); },
         },
       ],
     },

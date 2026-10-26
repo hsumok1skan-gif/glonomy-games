@@ -462,7 +462,7 @@
 
     /* 4. 독 */
     {
-      id: "combat-poison", cat: "combat", view: "side",
+      id: "combat-poison", cat: "combat", view: "side", polished: true,
       title: { en: "Make poison look *toxic*", ko: "독은 *독하게*" },
       intro: { en: "HP drops. *Why?* Nobody knows.", ko: "체력이 줄어요. *왜*인지 몰라요." },
       interval: 1.9, stepDur: 3.8,
@@ -581,14 +581,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "glass + bloops",
           cap: { en: "Glass *crack*, then low *bloops*.", ko: "*쨍* 깨지고, 낮게 *보글*." },
           splash(w) { w.sfx.pop(); },
-          tick(w) { w.play(() => tn({ f: rand(180, 260), f2: 420, dur: 0.07, vol: 0.2 })); },
+          tick(w) { if (w.on("numbers") || w.on("bubbles")) w.play(() => tn({ f: rand(180, 260), f2: 420, dur: 0.07, vol: 0.2 })); },
         },
       ],
     },
 
     /* 5. 감전 */
     {
-      id: "combat-shock", cat: "combat", view: "side",
+      id: "combat-shock", cat: "combat", view: "side", polished: true,
       title: { en: "Make a zap feel *electric*", ko: "감전은 *찌릿하게*" },
       intro: { en: "Lightning? Looks like a *laser pointer*.", ko: "번개라는데… *레이저 포인터* 같아요." },
       interval: 1.6, stepDur: 3.6,

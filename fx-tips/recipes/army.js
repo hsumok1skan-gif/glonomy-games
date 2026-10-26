@@ -849,7 +849,7 @@
 
     // 8 ─ 투석기
     {
-      id: "army-catapult", cat: "army", view: "side",
+      id: "army-catapult", cat: "army", view: "side", polished: true,
       title: { en: "Give a siege shot *weight*", ko: "투석기에 *무게* 싣기" },
       intro: { en: "A pebble. A *polite* pebble.", ko: "조약돌 하나. *얌전한* 조약돌." },
       interval: 1.2, stepDur: 3.8,
@@ -941,7 +941,7 @@
 
     // 9 ─ 성벽 돌파
     {
-      id: "army-breach", cat: "army", view: "side",
+      id: "army-breach", cat: "army", view: "side", polished: true,
       title: { en: "Make a wall breach *count*", ko: "성벽 뚫리는 순간 *크게*" },
       intro: { en: "Bonk. Bonk. *Gone.*", ko: "툭. 툭. *사라짐.*" },
       interval: 1.2, stepDur: 4.0,
@@ -983,8 +983,13 @@
         drawUnits(w, ctx);
         const ox = w.wall.ox * (Math.random() < 0.5 ? 1 : -1);
         for (const b of w.bricks) if (b.alive) {
-          ctx.fillStyle = "#8b919c"; ctx.fillRect(b.x + ox, b.y, 21, 19);
-          ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.fillRect(b.x + ox, b.y, 21, 3);
+          // 픽셀 돌벽돌: 어두운 줄눈 + 밝은 윗면 + 그늘진 아래 + 돌 얼룩
+          const bx = Math.round(b.x + ox), v = (b.r * 7 + b.x) % 3;
+          ctx.fillStyle = "#3a3f4a"; ctx.fillRect(bx, b.y, 21, 19);
+          ctx.fillStyle = ["#7d838f", "#868c98", "#737985"][v]; ctx.fillRect(bx + 1, b.y + 1, 19, 17);
+          ctx.fillStyle = "#a9afba"; ctx.fillRect(bx + 1, b.y + 1, 19, 2); ctx.fillRect(bx + 1, b.y + 1, 2, 15);
+          ctx.fillStyle = "#5c616c"; ctx.fillRect(bx + 1, b.y + 15, 19, 3); ctx.fillRect(bx + 18, b.y + 3, 2, 13);
+          ctx.fillStyle = "#666b77"; ctx.fillRect(bx + 6 + v * 3, b.y + 7, 3, 2); ctx.fillRect(bx + 12 - v * 2, b.y + 11, 2, 2);
           if (w.wall.flash > 0) { ctx.fillStyle = `rgba(255,255,255,${w.wall.flash * 0.8})`; ctx.fillRect(b.x + ox, b.y, 21, 19); }
         }
         ctx.strokeStyle = "rgba(15,15,20,0.9)"; ctx.lineWidth = 2;

@@ -923,7 +923,7 @@
 
     // ───────────────────────── 10. 낮과 밤
     {
-      id: "env-daynight", cat: "env", view: "side",
+      id: "env-daynight", cat: "env", view: "side", polished: true,
       title: { en: "Shift day to night *smoothly*", ko: "낮과 밤을 *부드럽게*" },
       intro: { en: "Day. *Click.* Night. Like a light switch.", ko: "낮. *딸깍.* 밤. 전등 스위치 같아요." },
       interval: 1.4, stepDur: 4.2,
@@ -1012,13 +1012,13 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "soft chime",
           cap: { en: "A soft *chime* marks the new hour.", ko: "새 시간엔 부드러운 *딩*." },
-          tod(w, t) { w.sfx.chime(Math.round(t * 4) % 4 * 3); },
+          tod(w, t) { if (w.on("sun")) w.sfx.swish(); },
         },
       ],
     },
     // ───────────────────────── 11. 낙엽
     {
-      id: "env-leaves", cat: "env", view: "side",
+      id: "env-leaves", cat: "env", view: "side", polished: true,
       title: { en: "Make leaves *flutter* down", ko: "낙엽이 *팔랑팔랑*" },
       intro: { en: "Leaves drop like *stones*.", ko: "낙엽이 *돌멩이처럼* 떨어져요." },
       interval: 1.1, stepDur: 3.8,
@@ -1045,11 +1045,23 @@
         skyFill(ctx, "#1d1a22", "#3a2c2a");
         groundFill(ctx, "#2a2420");
         const s = Math.sin(w.time * 26) * w.tree.wob;
-        ctx.fillStyle = "#4a3426"; ctx.beginPath(); ctx.moveTo(306, G); ctx.lineTo(334, G); ctx.lineTo(328 + s * 4, 120); ctx.lineTo(312 + s * 4, 120); ctx.fill();
-        for (const [dx, dy, r] of [[-60, 10, 52], [50, 14, 56], [0, -20, 62], [-20, 40, 48], [40, 46, 44]]) {
-          ctx.fillStyle = "#9a4a22"; ctx.beginPath(); ctx.arc(320 + dx + s * (10 + dy * 0.1), 120 + dy, r, 0, TAU); ctx.fill();
+        // 픽셀 단풍나무: 3px 칸으로 찍은 수관(빛 받는 쪽 밝게·잎 뭉치 점묘·어두운 테) + 나무껍질 줄기
+        const P = 3;
+        for (let y = 120; y < G; y += P) { const k = (y - 120) / (G - 120), x0 = Math.round((312 + s * 4 * (1 - k) - k * 4) / P) * P, x1 = Math.round((328 + s * 4 * (1 - k) + k * 4) / P) * P;
+          ctx.fillStyle = "#24160f"; ctx.fillRect(x0 - P, y, x1 - x0 + 2 * P, P); ctx.fillStyle = "#4a3426"; ctx.fillRect(x0, y, x1 - x0, P);
+          ctx.fillStyle = (y / P) % 5 < 1 ? "#33221a" : "#6b4a32"; ctx.fillRect(x0 + P, y, P, P); }
+        if (!w._canopy) {
+          const C = [[-60, 10, 52], [50, 14, 56], [0, -20, 62], [-20, 40, 48], [40, 46, 44]], cv = document.createElement("canvas"); cv.width = 260; cv.height = 210;
+          const g = cv.getContext("2d"), inside = (x, y) => C.some(([dx, dy, r]) => (x - dx) ** 2 + (y - dy) ** 2 < r * r);
+          const pal = ["#3b1608", "#6e2a10", "#9a4a22", "#c46a2a", "#e8a04a", "#ffd08a"], h = (x, y) => { const v = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453; return v - Math.floor(v); };
+          for (let y = -90; y < 100; y += P) for (let x = -120; x < 120; x += P) { if (!inside(x, y)) continue;
+            const edge = !inside(x - P, y) || !inside(x + P, y) || !inside(x, y - P) || !inside(x, y + P);
+            let L = 2 + (-(x + y) / 120) + (h(x, y) - 0.5) * 1.6 + 0.6 * Math.sin(x * 0.21) * Math.sin(y * 0.19);
+            L = edge ? 0 : Math.max(1, Math.min(5, Math.round(L)));
+            g.fillStyle = pal[L]; g.fillRect(x + 130, y + 95, P, P); }
+          w._canopy = cv;
         }
-        ctx.fillStyle = "rgba(255,180,90,0.18)"; ctx.beginPath(); ctx.arc(300 + s * 10, 90, 50, 0, TAU); ctx.fill();
+        const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(w._canopy, Math.round(320 + s * 10 - 130), 120 - 95); ctx.imageSmoothingEnabled = sm;
       },
       drawFront(w, ctx) { const t = w.on("tumble"); for (const l of w.leaves) drawLeaf(ctx, l, t); },
       steps: [
@@ -1093,7 +1105,7 @@
 
     // ───────────────────────── 12. 부서지는 벽
     {
-      id: "env-wall", cat: "env", view: "side",
+      id: "env-wall", cat: "env", view: "side", polished: true,
       title: { en: "Make walls *crumble*", ko: "벽이 *와르르*" },
       intro: { en: "Bricks just *blink out* of existence.", ko: "벽돌이 *뿅* 하고 사라져요." },
       interval: 0.9, stepDur: 3.8,

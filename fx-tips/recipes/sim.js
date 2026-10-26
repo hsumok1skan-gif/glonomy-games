@@ -918,7 +918,7 @@
 
     /* ───────── 12. 오프라인 보상 ───────── */
     {
-      id: "sim-offline", cat: "sim", view: "ui",
+      id: "sim-offline", cat: "sim", view: "ui", polished: true,
       title: { en: "Make *welcome back* worth it", ko: "*돌아온 보상*을 반갑게" },
       intro: { en: "\"You earned 52K.\" *OK.*", ko: "\"52K 벌었어요.\" *네.*" },
       interval: 2.6, stepDur: 4.0,
@@ -991,12 +991,12 @@
           arrive(w) { w.O.bump = 1; } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh · coin patter",
           cap: { en: "A soft *whoosh* in, then a *patter* of coins.", ko: "*슝* 등장, 그다음 *짤랑짤랑*." },
-          open(w) { w.sfx.swish(); w.after(0.3, () => w.sfx.chime(0)); }, arrive(w) { w.sfx.tick(); } },
+          open(w) { w.sfx.swish(); }, arrive(w) { if (w.on("shower")) w.sfx.coinClink(); } },
       ],
     },
     /* ───────── 13. 환생(프레스티지) ───────── */
     {
-      id: "sim-prestige", cat: "sim", view: "iso",
+      id: "sim-prestige", cat: "sim", view: "iso", polished: true,
       title: { en: "Make prestige feel like a *rebirth*", ko: "환생을 *새 출발*처럼" },
       intro: { en: "Everything's gone. *Was that good?*", ko: "다 사라졌어요. *잘된 거예요?*" },
       interval: 2.8, stepDur: 4.2,
@@ -1046,13 +1046,13 @@
           rebuild(w, b) { b.s = 0; w.after(rand(0, 0.35), () => w.tween(b, { s: 1 }, 0.35, "back")); } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "charge · boom · chimes",
           cap: { en: "Rising *charge*, deep *boom*, then bright *chimes*.", ko: "*우웅* 모으고, *쿵*, 맑은 *띠링*." },
-          charge(w) { w.sfx.charge(); }, prestige(w) { w.after(0.33, () => w.sfx.boom()); w.after(0.5, () => w.sfx.fanfare()); } },
+          charge(w) { w.sfx.charge(); }, prestige(w) { w.after(0.33, () => w.on("flash") ? w.sfx.boom() : w.sfx.thud()); if (w.on("payout") || w.on("mult")) w.after(0.5, () => w.sfx.fanfare()); } },
       ],
     },
 
     /* ───────── 14. 직원 고용 ───────── */
     {
-      id: "sim-hire", cat: "sim", view: "iso",
+      id: "sim-hire", cat: "sim", view: "iso", polished: true,
       title: { en: "Give new hires an *entrance*", ko: "새 직원에게 *등장*을" },
       intro: { en: "Hired. *Blink*, they're there.", ko: "고용 완료. *깜빡*, 서 있어요." },
       interval: 0.9, stepDur: 3.6,
@@ -1113,7 +1113,7 @@
           hire(w, b) { w.after(0.3, () => { w.S.bump = 1; w.spawn({ type: "text", text: "+10/s", x: b.x, y: b.y - 120, vy: -40, life: 0.9, size: 20, color: "#86efac" }); }); } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "whistle · thud · chime",
           cap: { en: "Falling *whistle*, a *thud*, a cheerful *chime*.", ko: "*휘이* 떨어지고 *쿵*, 그리고 *띠링*." },
-          hire(w) { w.play(() => tn({ f: 1400, f2: 500, dur: 0.28, vol: 0.1 })); }, land(w) { w.sfx.land(); w.sfx.chime(4); } },
+          hire(w) { w.play(() => tn({ f: 1400, f2: 500, dur: 0.28, vol: 0.1 })); }, land(w) { w.sfx.land(); if (w.on("tag")) w.sfx.chime(4); } },
       ],
     },
 
