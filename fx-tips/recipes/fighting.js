@@ -434,7 +434,7 @@
 
     /* 5 ─ 바닥 바운드 */
     {
-      id: "fighting-ground-bounce", cat: "fighting", view: "side", melee: true,
+      id: "fighting-ground-bounce", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Spike them into the *floor*", ko: "바닥에 *내리꽂기*" },
       intro: { en: "Smashed down. Floor *didn't notice*.", ko: "내리꽂았는데 바닥은 *모른 척*." },
       interval: 1.5, stepDur: 3.8,

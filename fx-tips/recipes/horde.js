@@ -382,7 +382,7 @@
 
     /* 5 ─ 주위를 도는 칼날 */
     {
-      id: "horde-orbit", cat: "horde", view: "top",
+      id: "horde-orbit", cat: "horde", view: "top", polished: true,
       title: { en: "Make orbiting blades *bite*", ko: "도는 칼날에 *날* 세우기" },
       intro: { en: "Grey sticks spin. Enemies *just die*.", ko: "회색 막대가 돌고, 적은 *그냥* 죽어요." },
       interval: 1.6, stepDur: 3.6,

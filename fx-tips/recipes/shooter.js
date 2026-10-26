@@ -901,7 +901,7 @@
 
     /* 9 ─ 헤드샷 */
     {
-      id: "shooter-headshot", cat: "shooter", view: "3d",
+      id: "shooter-headshot", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make headshots feel *special*", ko: "헤드샷을 *특별하게*" },
       intro: { en: "Head or body. *Same* feeling.", ko: "머리든 몸이든 *똑같은* 느낌." },
       interval: 0.7, stepDur: 3.8,
@@ -961,20 +961,20 @@
           head(w) { w.slowmo(0.3, 0.4); w.zoomPunch(0.05); },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "ping on head",
-          cap: { en: "Body *thud*. Head gets a bright *ping*.", ko: "몸은 *퍽*, 머리는 맑은 *팅*." },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack on head",
+          cap: { en: "Body *thud*. Head gets a heavy *crack*.", ko: "몸은 *퍽*, 머리는 묵직하게 *빠각*." },
           body(w) { w.sfx.gun(); w.sfx.hit(); },
-          head(w) { w.sfx.gun(); w.sfx.crit(); w.sfx.ping(); },
+          head(w) { w.sfx.gun(); if (w.on("pop") || w.on("label")) w.sfx.critBig(); else w.sfx.hit(); },
         },
       ],
     },
 
     /* 10 ─ 처치 확인 */
     {
-      id: "shooter-killconfirm", cat: "shooter", view: "3d",
+      id: "shooter-killconfirm", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make kills *unmistakable*", ko: "처치를 *확실하게* 알리기" },
       intro: { en: "It vanished. Dead? *Hiding?*", ko: "사라졌어요. 죽었나? *숨었나?*" },
-      interval: 0.45, stepDur: 3.6,
+      interval: 0.45, stepDur: 3.6, hookFires: [0.25, 0.6, 0.95], hookDur: 2.9,
       drawFloor: fpsRoom,
       setup(w) {
         fpsSetup(w, [[-0.05, 4.4]]); w.gobs[0].maxHp = w.gobs[0].hp = 60;
@@ -989,7 +989,7 @@
         w.emit("hit",t,g);
         w.spawn({type:"spark",x:t.x,y:t.y,vx:rand(-95,115),vy:rand(-160,50),
           life:.19,drag:2,size:2.4,color:"255,231,180"});
-        if(w.on("sound")){
+        if(w.on("xmark")){
           w.shake(.075,1);
           for(let i=0;i<5;i++){
             const a=i*TAU/5+rand(-.26,.26);
@@ -999,7 +999,7 @@
         }
         if(g.hp<=0){
           w.kill(g);w.killGlow=1;
-          if(w.on("sound")){
+          if(w.on("hitstop")){
             w.hitstop(.075);w.zoomPunch(.052);w.shake(.17,1);
             w.flash("250,238,199",.12);
           }
@@ -1018,7 +1018,7 @@
       },
       drawFront(w,ctx){
         drawFpGun(w,ctx);
-        if(w.on("sound")&&w.muzzleGlow>0){
+        if(w.on("xmark")&&w.muzzleGlow>0){
           ctx.save();ctx.globalCompositeOperation="lighter";
           const x=270,y=HY+89,alpha=w.muzzleGlow;
           glow(ctx,x,y,70,"255,175,83",alpha*.44);
@@ -1031,7 +1031,7 @@
       },
       drawHud(w, ctx) {
         xhair(ctx);
-        if(w.on("sound")){
+        if(w.on("xmark")){
           const t=torso(w.gobs[0]),p=w.impactGlow;
           if(p>0){
             ctx.save();ctx.globalCompositeOperation="lighter";
@@ -1110,9 +1110,10 @@
           kill(w) { w.skulls++; w.skT = 1; },
         },
         {
-          id: "sound", name: { en: "Sound", ko: "소리" }, param: "two-tone ding",
-          cap: { en: "A *two-note ding* means one thing: dead.", ko: "*딩-동* 두 음은 하나만 뜻해요. 처치." },
-          kill(w) { w.sfx.chime(0); w.after(0.08, () => w.sfx.chime(7)); },
+          id: "sound", name: { en: "Sound", ko: "소리" }, param: "shot · heavy kill crack",
+          cap: { en: "Every shot *bangs*. The kill gets a heavy *crack*.", ko: "총은 *탕*, 처치는 묵직하게 *빠각*." },
+          hit(w) { w.sfx.gun(); },
+          kill(w) { w.sfx.critBig(); },
         },
       ],
     },

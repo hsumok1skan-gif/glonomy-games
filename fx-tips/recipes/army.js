@@ -642,7 +642,7 @@
 
     // 5 ─ 진형 스냅
     {
-      id: "army-formation", cat: "army", view: "top",
+      id: "army-formation", cat: "army", view: "top", polished: true,
       title: { en: "Snap into formation *with style*", ko: "진형을 *착* 맞추기" },
       intro: { en: "They drift into place. *Like ice.*", ko: "미끄러지듯 스르륵. *얼음 위*처럼." },
       interval: 1.6, stepDur: 3.8,

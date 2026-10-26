@@ -87,7 +87,7 @@
   RECIPES.push(
     /* 1. 치명타 */
     {
-      id: "combat-crit", cat: "combat", view: "side",
+      id: "combat-crit", cat: "combat", view: "side", polished: true,
       title: { en: "Make crits feel *different*", ko: "치명타는 *다르게*" },
       intro: { en: "Normal hit, then a crit. Can you *tell*?", ko: "일반타, 그다음 치명타. *구분*되나요?" },
       interval: 1.3, stepDur: 3.6,
@@ -151,7 +151,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick vs crunch",
           cap: { en: "A light *tick* vs a heavy *crunch* with a ring.", ko: "가벼운 *톡*, 무거운 *콰직*." },
-          hit(w, at, d, crit) { if (crit) w.sfx.crit(); else w.sfx.hit(1.2); },
+          hit(w, at, d, crit) { if (crit) { w.sfx.slashHit(); if (w.on("flash") || w.on("stop")) w.sfx.critBig(); } else w.sfx.hit(1.2); },
         },
       ],
     },

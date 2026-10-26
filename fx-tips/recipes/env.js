@@ -592,7 +592,7 @@
     },
     // ───────────────────────── 6. 폭포 물안개
     {
-      id: "env-waterfall", cat: "env", view: "side",
+      id: "env-waterfall", cat: "env", view: "side", polished: true,
       title: { en: "Give waterfalls *mist*", ko: "폭포에 *물안개* 입히기" },
       intro: { en: "A blue rectangle. Is it even *moving*?", ko: "파란 사각형. *움직이긴* 하나요?" },
       interval: 1.2, stepDur: 3.8,
@@ -669,14 +669,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "low rumble",
           cap: { en: "A deep, constant *roar*. Louder on a surge.", ko: "낮게 깔리는 *콰르르*. 세지면 더 크게." },
-          surge(w) { w.play(() => nz({ dur: 1.2, f: 700, f2: 150, vol: 0.5 })); },
+          surge(w) { if (w.on("surge")) w.play(() => nz({ dur: 1.2, f: 700, f2: 150, vol: 0.5 })); },
         },
       ],
     },
 
     // ───────────────────────── 7. 용암
     {
-      id: "env-lava", cat: "env", view: "side",
+      id: "env-lava", cat: "env", view: "side", polished: true,
       title: { en: "Make lava *bubble*", ko: "용암이 *부글부글*" },
       intro: { en: "Orange floor. A circle grows. *Gone.*", ko: "주황 바닥에 원이 생겼다 *사라져요*." },
       interval: 0.75, stepDur: 3.8,

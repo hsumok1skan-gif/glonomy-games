@@ -419,7 +419,7 @@
 
     /* 5 ─ 예고된 내려찍기 + 회피 */
     {
-      id: "duel-slam", cat: "duel", view: "side",
+      id: "duel-slam", cat: "duel", view: "side", polished: true,
       title: { en: "Telegraph the boss *slam*", ko: "보스 내려찍기를 *예고*하기" },
       intro: { en: "Slam. No warning. *Unfair.*", ko: "쾅. 예고도 없이. *억울해요*." },
       interval: 2.0, stepDur: 3.8,
@@ -501,7 +501,7 @@
 
     /* 6 ─ 칼날 맞대기 */
     {
-      id: "duel-clash", cat: "duel", view: "side",
+      id: "duel-clash", cat: "duel", view: "side", polished: true,
       title: { en: "Make a blade lock *struggle*", ko: "칼날 맞대기를 *힘겨루기*로" },
       intro: { en: "Blades touch. *Boing.* Over.", ko: "칼이 닿고… *팅*. 끝." },
       interval: 2.1, stepDur: 4.0,

@@ -668,7 +668,7 @@
 
     /* 9 ─ 락온 */
     {
-      id: "action-lockon", cat: "action", view: "top",
+      id: "action-lockon", cat: "action", view: "top", polished: true,
       title: { en: "Make lock-on *snap*", ko: "락온이 *착* 붙게" },
       intro: { en: "Which one am I *locked onto?*", ko: "지금 *누구를* 잡은 거죠?" },
       interval: 0.9, stepDur: 3.6,
@@ -757,7 +757,7 @@
 
     /* 10 ─ 백스탭 */
     {
-      id: "action-backstab", cat: "action", view: "side", melee: true,
+      id: "action-backstab", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a backstab feel *sneaky*", ko: "등 찌르기를 *은밀하게*" },
       intro: { en: "Snuck up behind it. Felt like a *regular hit*.", ko: "뒤로 몰래 갔는데 *그냥 공격* 같아요." },
       interval: 1.8, stepDur: 3.8,
@@ -832,7 +832,7 @@
 
     /* 11 ─ 위험 공격 예고 */
     {
-      id: "action-telegraph", cat: "action", view: "side", melee: true,
+      id: "action-telegraph", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Warn before an *unblockable*", ko: "막을 수 없는 공격은 *미리 경고*" },
       intro: { en: "Unblockable! …nobody *told me*.", ko: "막기 불가! …*말을 해줘야죠*." },
       interval: 2.0, stepDur: 4.0,
@@ -913,7 +913,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "high ting → slam",
           cap: { en: "A *sharp ting* to warn, a *slam* to punish.", ko: "날카로운 *팅*으로 경고, *쾅*으로 응징." },
-          warn(w) { w.play(() => { tn({ type: "triangle", f: 2200, dur: 0.5, vol: 0.18 }); tn({ type: "triangle", f: 3300, dur: 0.3, vol: 0.08 }); }); },
+          warn(w) { if (w.on("glint") || w.on("pulse")) w.play(() => { tn({ type: "triangle", f: 2200, dur: 0.5, vol: 0.18 }); tn({ type: "triangle", f: 3300, dur: 0.3, vol: 0.08 }); }); },
           slam(w) { w.sfx.slam(); },
         },
       ],

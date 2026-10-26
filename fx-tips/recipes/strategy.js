@@ -572,7 +572,7 @@
 
     /* 7. 자원 채집 왕복 */
     {
-      id: "strategy-gather", cat: "strategy", view: "top",
+      id: "strategy-gather", cat: "strategy", view: "top", polished: true,
       title: { en: "Make gathering *feel like work*", ko: "자원 채집을 *일하는 것처럼*" },
       intro: { en: "Walk there, walk back. *Got anything?*", ko: "갔다가 왔어요. *뭘 가져온 거죠?*" },
       interval: 0.9, stepDur: 3.8,

@@ -359,7 +359,7 @@
 
     /* ───────── 4. 요리 진행 ───────── */
     {
-      id: "sim-cook", cat: "sim", view: "side",
+      id: "sim-cook", cat: "sim", view: "side", polished: true,
       title: { en: "Make cooking *sizzle*", ko: "요리가 *지글지글* 익게" },
       intro: { en: "A bar fills. That's *cooking*?", ko: "막대만 차요. 이게 *요리*?" },
       interval: 2.3, stepDur: 3.8,
@@ -429,15 +429,15 @@
           cap: { en: "A soft *sizzle* loop, a clear *ding* when done.", ko: "*지글지글* 깔고, 다 되면 *띵*." },
           update(w) {
             const K = w.K;
-            if (K.cook && Math.random() < 0.12) w.play(() => nz({ type: "highpass", f: 5000, dur: 0.12, vol: 0.12 }));
+            if (K.cook && w.on("sizzle") && Math.random() < 0.12) w.play(() => nz({ type: "highpass", f: 5000, dur: 0.12, vol: 0.12 }));
           },
-          done(w) { w.sfx.chime(5); } },
+          done(w) { if (w.on("burst")) w.sfx.chime(5); } },
       ],
     },
 
     /* ───────── 5. 작물 성장 단계 ───────── */
     {
-      id: "sim-crop", cat: "sim", view: "iso",
+      id: "sim-crop", cat: "sim", view: "iso", polished: true,
       title: { en: "Make crops *grow*, not swap", ko: "작물이 *자라는* 느낌" },
       intro: { en: "Sprite swap. Sprite swap. *Snore.*", ko: "그림만 바뀌어요. *휙, 휙*." },
       interval: 0.9, stepDur: 3.6,
@@ -501,7 +501,7 @@
 
     /* ───────── 6. 수확 ───────── */
     {
-      id: "sim-harvest", cat: "sim", view: "iso",
+      id: "sim-harvest", cat: "sim", view: "iso", polished: true,
       title: { en: "Make harvesting *juicy*", ko: "수확을 *쏙쏙* 손맛 있게" },
       intro: { en: "Tap. Gone. *+3.*", ko: "누르면 사라지고 *+3*. 끝." },
       interval: 0.8, stepDur: 3.6,
@@ -557,7 +557,7 @@
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "pluck · rising blips",
           cap: { en: "*Pluck!* Then notes that *climb* per carrot.", ko: "*뽁!* 들어올수록 음이 *올라가요*." },
           pull(w) { w.sfx.pop(); },
-          arrive(w) { w.sfx.blip(++w.S.combo); } },
+          arrive(w) { if (w.on("fly")) w.sfx.blip(++w.S.combo); } },
       ],
     },
     /* ───────── 7. 건물 업그레이드 ───────── */

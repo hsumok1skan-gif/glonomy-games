@@ -636,7 +636,7 @@
     },
     /* ───────── 7. 러너 코인 ───────── */
     {
-      id: "casual-runner-coins", cat: "casual", view: "side",
+      id: "casual-runner-coins", cat: "casual", view: "side", polished: true,
       title: { en: "Make coin runs *addictive*", ko: "달리며 줍는 코인 *중독되게*" },
       intro: { en: "Coins touch you. Number goes up. *Meh.*", ko: "닿으면 숫자만 오름. *밍밍해요*." },
       interval: 1.2, stepDur: 3.5,
@@ -708,7 +708,7 @@
 
     /* ───────── 8. 탑 쌓기 ───────── */
     {
-      id: "casual-stack", cat: "casual", view: "side",
+      id: "casual-stack", cat: "casual", view: "side", polished: true,
       title: { en: "Make a perfect drop *sing*", ko: "딱 맞게 쌓으면 *짜릿하게*" },
       intro: { en: "Perfect drop. Feels *like any other*.", ko: "딱 맞췄는데 *그냥 쌓일 뿐*." },
       interval: 0.8, stepDur: 3.6,
@@ -802,7 +802,7 @@
         {
           id: "sound", name: { en: "Streak Pitch", ko: "연속 음 올리기" }, param: "+2 semitones / streak",
           cap: { en: "Each perfect in a row rings *higher*.", ko: "연속 성공마다 음이 *올라가요*." },
-          land(w, s, perfect, n) { w.sfx.thunk(); if (perfect) w.sfx.chime(n * 2); },
+          land(w, s, perfect, n) { w.sfx.thunk(); if (perfect && w.on("perfect")) w.sfx.chime(n * 2); },
         },
       ],
     },

@@ -1238,6 +1238,7 @@ class World {
     for (const a of this.actors) drawShadow(ctx, a);
     if (this.R.drawBack) this.R.drawBack(this, ctx);
     for (const a of this.actors) drawActor(ctx, a, this);
+    if (this.R.drawOver) this.R.drawOver(this, ctx); // 반투명 물·유리처럼 픽셀 효과층에 넣으면 불투명해지는 것
     // 효과 층: 픽셀 그림이면 작은 화면에 따로 그려 경계를 또렷하게 + 색을 단계로 끊어서 얹음
     const fx = FX.pixelFx && FX._art && FX._art.hero ? pixFxBegin(ctx, OM, v.r) : null, fc = fx || ctx;
     if (this.R.drawFront) this.R.drawFront(this, fc);

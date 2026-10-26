@@ -793,7 +793,7 @@
 
     /* ───────── 9. 밤이 온다 ───────── */
     {
-      id: "survival-nightfall", cat: "survival", view: "side",
+      id: "survival-nightfall", cat: "survival", view: "side", polished: true,
       title: { en: "Make nightfall feel *dangerous*", ko: "밤이 *무섭게* 오게" },
       intro: { en: "Day… *click*… night.", ko: "낮… *딸깍*… 밤." },
       interval: 2.6, stepDur: 4.0,
@@ -871,14 +871,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "low drone + bell",
           cap: { en: "A *low drone* and a single *bell*.", ko: "낮게 *웅*, 종이 한 번 *댕*." },
-          dark(w) { w.play(() => { tn({ type: "sawtooth", f: 55, dur: 1.4, vol: 0.12 }); tn({ type: "triangle", f: 330, f2: 320, dur: 1.2, vol: 0.2 }); }); },
+          dark(w) { w.play(() => { tn({ type: "sawtooth", f: 55, dur: 1.4, vol: 0.12 }); if (w.on("card")) tn({ type: "triangle", f: 330, f2: 320, dur: 1.2, vol: 0.2, rv: 0.4 }); }); },
         },
       ],
     },
 
     /* ───────── 10. 깜짝 놀람 ───────── */
     {
-      id: "survival-jumpscare", cat: "survival", view: "side",
+      id: "survival-jumpscare", cat: "survival", view: "side", polished: true,
       title: { en: "Make a jump scare *land*", ko: "깜짝 놀람이 *제대로* 먹히게" },
       intro: { en: "Monster appears. *Oh. Hi.*", ko: "괴물 등장. *아, 안녕?*" },
       interval: 2.0, stepDur: 4.0,

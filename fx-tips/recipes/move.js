@@ -486,20 +486,35 @@
 
     /* 6. 물에 뛰어들기 */
     {
-      id: "move-swim", cat: "move", view: "side",
+      id: "move-swim", cat: "move", view: "side", polished: true,
       title: { en: "Make water *feel wet*", ko: "물에 들어간 *티*가 나게" },
       intro: { en: "Jumped in the water. Like *thin air*.", ko: "물에 들어갔는데 *허공* 같아요." },
       interval: 2.4, stepDur: 3.6,
-      drawFloor(w, ctx) { slab(ctx, 20, 230, 170); },
-      drawFront(w, ctx) {
-        const dx = (WX1 - WX0) / (WN - 1);
-        ctx.beginPath(); ctx.moveTo(WX0, 360);
+      drawFloor(w, ctx) {
+        slab(ctx, 20, 230, 170);
+        // 수영장 벽(돌) + 바닥 타일
+        ctx.fillStyle = "#1c2433"; ctx.fillRect(WX0 - 8, 170, 8, 200); ctx.fillRect(WX1, WS - 6, 10, 200);
+        ctx.fillStyle = "#2b3850"; for (let y = 176; y < 360; y += 14) { ctx.fillRect(WX0 - 8, y, 8, 2); ctx.fillRect(WX1, y + 7, 10, 2); }
+        ctx.fillStyle = "#0b2a44"; ctx.fillRect(WX0, WS, WX1 - WX0, 160);
+        ctx.fillStyle = "#123a5c"; for (let x = WX0; x < WX1; x += 24) ctx.fillRect(x, WS, 2, 160);
+        for (let y = WS + 20; y < 360; y += 24) ctx.fillRect(WX0, y, WX1 - WX0, 2);
+      },
+      drawOver(w, ctx) {
+        const dx = (WX1 - WX0) / (WN - 1), t = w.time;
+        ctx.save(); ctx.beginPath(); ctx.moveTo(WX0, 360);
         for (let i = 0; i < WN; i++) ctx.lineTo(WX0 + i * dx, WS + w.wh[i]);
         ctx.lineTo(WX1, 360); ctx.closePath();
-        ctx.fillStyle = "rgba(56,160,248,0.3)"; ctx.fill();
+        const g = ctx.createLinearGradient(0, WS, 0, 360); g.addColorStop(0, "rgba(40,150,230,0.55)"); g.addColorStop(1, "rgba(8,40,90,0.85)");
+        ctx.fillStyle = g; ctx.fill(); ctx.clip();
+        // 물속 빛줄기(픽셀 띠)
+        ctx.fillStyle = "rgba(160,220,255,0.10)";
+        for (let k = 0; k < 4; k++) { const x = WX0 + 30 + k * 72 + Math.sin(t * 0.8 + k) * 10; ctx.beginPath(); ctx.moveTo(x, WS); ctx.lineTo(x + 18, WS); ctx.lineTo(x - 10, 360); ctx.lineTo(x - 30, 360); ctx.closePath(); ctx.fill(); }
+        ctx.fillStyle = "rgba(200,240,255,0.18)";
+        for (let k = 0; k < 9; k++) { const x = WX0 + ((k * 37 + t * 22) % (WX1 - WX0)); ctx.fillRect(Math.round(x / 2) * 2, WS + 10 + (k % 3) * 6, 8, 2); }
+        ctx.restore();
         ctx.beginPath();
         for (let i = 0; i < WN; i++) ctx[i ? "lineTo" : "moveTo"](WX0 + i * dx, WS + w.wh[i]);
-        ctx.strokeStyle = "rgba(186,230,253,0.9)"; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.strokeStyle = "rgba(220,245,255,0.95)"; ctx.lineWidth = 3; ctx.stroke();
       },
       setup(w) { w.hero = mkHero(w, 190, 170); w.wh = Array(WN).fill(0); w.wv = Array(WN).fill(0); w.M = null; },
       fire(w) {
@@ -576,17 +591,20 @@
 
     /* 7. 사다리 오르기 */
     {
-      id: "move-ladder", cat: "move", view: "side",
+      id: "move-ladder", cat: "move", view: "side", polished: true,
       title: { en: "Make ladders feel *climbed*", ko: "사다리를 *오르는* 느낌으로" },
       intro: { en: "Up the ladder like an *escalator*.", ko: "사다리를 *에스컬레이터*처럼 올라가요." },
       interval: 2.2, stepDur: 3.6,
       drawFloor(w, ctx) {
         slab(ctx, 20, 520, G); slab(ctx, 290, 520, 90);
         const o = Math.sin(w.time * 40) * w.lad;
-        ctx.strokeStyle = "#a16207"; ctx.lineWidth = 5; ctx.lineCap = "round";
-        ctx.beginPath(); ctx.moveTo(244, G); ctx.lineTo(244 + o, 76); ctx.moveTo(276, G); ctx.lineTo(276 + o, 76); ctx.stroke();
-        ctx.lineWidth = 3.5;
-        for (let y = G - 14; y > 80; y -= 24) { const k = o * (G - y) / (G - 76); ctx.beginPath(); ctx.moveTo(244 + k, y); ctx.lineTo(276 + k, y); ctx.stroke(); }
+        // 픽셀 나무 사다리: 기둥 2개(어두운 테두리·밝은 결) + 가로대(못 박힌 끝)
+        const P = 2, sx = y => Math.round(o * (G - y) / (G - 76) / P) * P;
+        for (let y = 76; y < G; y += P) { const k = sx(y);
+          for (const bx of [240, 274]) { ctx.fillStyle = "#3b2414"; ctx.fillRect(bx + k, y, 6, P); ctx.fillStyle = "#8a5a2b"; ctx.fillRect(bx + 1 + k, y, 4, P); ctx.fillStyle = (y % 14 < 4) ? "#6d4420" : "#b07a3c"; ctx.fillRect(bx + 2 + k, y, 1, P); } }
+        for (let y = G - 14; y > 80; y -= 24) { const k = sx(y);
+          ctx.fillStyle = "#3b2414"; ctx.fillRect(244 + k, y - 3, 32, 6); ctx.fillStyle = "#9a6630"; ctx.fillRect(244 + k, y - 2, 32, 3); ctx.fillStyle = "#c8945a"; ctx.fillRect(244 + k, y - 2, 32, 1);
+          ctx.fillStyle = "#9ca3af"; ctx.fillRect(241 + k, y - 1, 2, 2); ctx.fillRect(277 + k, y - 1, 2, 2); }
       },
       setup(w) { w.hero = mkHero(w, 260); w.lad = 0; w.M = null; },
       fire(w) {

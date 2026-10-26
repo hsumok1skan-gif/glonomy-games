@@ -189,7 +189,7 @@
 
     /* 2 ───── 메뉴 열기 ───── */
     {
-      id: "ui-menu", cat: "ui", view: "ui",
+      id: "ui-menu", cat: "ui", view: "ui", polished: true,
       title: { en: "Make menus *slide*, not blink", ko: "메뉴는 *미끄러지게*" },
       intro: { en: "Menu: *on*. Menu: *off*.", ko: "메뉴가 *켜졌다 꺼졌다*." },
       interval: 1.8, stepDur: 3.6,
@@ -291,7 +291,7 @@
 
     /* 3 ───── 탭 전환 밑줄 ───── */
     {
-      id: "ui-tabs", cat: "ui", view: "ui",
+      id: "ui-tabs", cat: "ui", view: "ui", polished: true,
       title: { en: "Let the tab *underline travel*", ko: "탭 밑줄이 *따라가게*" },
       intro: { en: "Which tab am I on? *Look closely.*", ko: "지금 어느 탭이죠? *잘 봐야* 알아요." },
       interval: 0.95, stepDur: 3.3,
@@ -374,7 +374,7 @@
 
     /* 4 ───── 토글 스위치 ───── */
     {
-      id: "ui-toggle", cat: "ui", view: "ui",
+      id: "ui-toggle", cat: "ui", view: "ui", polished: true,
       title: { en: "Make a toggle *feel switched*", ko: "토글을 *딸깍* 넘어가게" },
       intro: { en: "On? Off? It just *swaps*.", ko: "켜졌나? 꺼졌나? 그냥 *바뀌어요*." },
       interval: 0.9, stepDur: 3.4,

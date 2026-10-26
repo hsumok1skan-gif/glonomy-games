@@ -461,7 +461,7 @@
 
     /* 5 ─────────────────────────────── */
     {
-      id: "puzzle-ice-slide", cat: "puzzle", view: "iso",
+      id: "puzzle-ice-slide", cat: "puzzle", view: "iso", polished: true,
       title: { en: "Make ice slides *glide*", ko: "얼음 미끄러짐을 *쭈욱*" },
       intro: { en: "It moves. Stops. *Like a robot.*", ko: "움직이고, 멈춰요. *로봇처럼.*" },
       interval: 1.2, stepDur: 3.6,
@@ -558,7 +558,7 @@
 
     /* 6 ─────────────────────────────── */
     {
-      id: "puzzle-number-correct", cat: "puzzle", view: "ui",
+      id: "puzzle-number-correct", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make right answers *click*", ko: "정답 입력을 *딱 맞게*" },
       intro: { en: "Right number. *No reaction.*", ko: "정답을 넣었는데 *반응이 없어요*." },
       interval: 1.0, stepDur: 3.5,
@@ -631,7 +631,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "chime / arpeggio",
           cap: { en: "A soft *chime*. A full row plays a *run*.", ko: "정답엔 *띵*, 한 줄 완성엔 *띠리링*." },
           input(w) { w.sfx.chime(0); },
-          row(w) { [0, 4, 7, 12].forEach((n, i) => w.after(i * 0.06, () => w.sfx.chime(n))); },
+          row(w) { if (w.on("wave")) [0, 4, 7, 12].forEach((n, i) => w.after(i * 0.06, () => w.sfx.chime(n))); },
         },
       ],
     },

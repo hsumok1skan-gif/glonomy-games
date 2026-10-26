@@ -407,7 +407,7 @@
 
     /* 4. 버프 아이콘 */
     {
-      id: "rpg-buff-stack", cat: "rpg", view: "side",
+      id: "rpg-buff-stack", cat: "rpg", view: "side", polished: true,
       title: { en: "Make buffs *stack up* visibly", ko: "버프가 *쌓이는* 게 보이게" },
       intro: { en: "Icons appear. Which one is *new*?", ko: "아이콘이 생겼는데, *뭐가* 새로 붙었죠?" },
       interval: 0.85, stepDur: 3.6,
@@ -493,7 +493,7 @@
 
     /* 5. 독 */
     {
-      id: "rpg-poison", cat: "rpg", view: "side",
+      id: "rpg-poison", cat: "rpg", view: "side", polished: true,
       title: { en: "Make poison *look sick*", ko: "독이 *독하게* 보이게" },
       intro: { en: "HP keeps dropping. *Why?*", ko: "체력이 계속 줄어요. *왜요?*" },
       interval: 1.6, stepDur: 3.8,
@@ -556,7 +556,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "splash / blub",
           cap: { en: "A wet *splat*, then soft *blubs* per tick.", ko: "철퍽 묻고, 틱마다 *뽀글*." },
           apply(w) { w.play(() => nz({ type: "bandpass", f: 900, f2: 300, q: 2, dur: 0.18, vol: 0.4 })); },
-          tick(w) { w.play(() => tn({ f: rand(300, 420), f2: 700, dur: 0.07, vol: 0.2 })); },
+          tick(w) { if (w.on("numbers") || w.on("flinch")) w.play(() => tn({ f: rand(300, 420), f2: 700, dur: 0.07, vol: 0.2 })); },
         },
       ],
     },
