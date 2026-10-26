@@ -130,6 +130,27 @@
   function deltaClass(d) { return Math.abs(d) < 1 ? 'even' : d > 0 ? 'behind' : 'ahead'; }
 
   /* ---------- 홈 ---------- */
+  // hero 카드의 큰 그림: 오늘 시작할 틀의 과목별 배정 시간 막대. 칸 폭 = sec.time / 전체 시간(%), 막대 높이 = 문항당 초
+  function heroPlan(t) {
+    var p = L.plan(t), maxPer = 1, all = p.reserve;
+    if (!p.secs.length) return '';
+    var slack = p.slack >= 30 ? p.slack : 0;
+    p.secs.forEach(function (s) { maxPer = Math.max(maxPer, s.per); all += s.time; });
+    all += slack;
+    if (all <= 0) return '';
+    function col(cls, sec, hPct, name, sub) {
+      var w = sec / all * 100;
+      return '<div class="hp-col' + cls + (w < 9 ? ' thin' : '') + '" style="width:' + w.toFixed(2) + '%" aria-hidden="true"><div class="hp-bar"><i style="height:' +
+        hPct.toFixed(1) + '%"></i><em>' + Math.round(sec / 60) + '분</em></div><b>' + esc(name) + '</b><span>' + esc(sub) + '</span></div>';
+    }
+    var label = p.secs.map(function (s) { return s.name + ' ' + Math.round(s.time / 60) + '분 ' + s.count + '문항 문항당 ' + Math.round(s.per) + '초'; }).join(', ');
+    var h = '<div class="hero-plan" role="img" aria-label="' + esc(t.name + ' 과목별 배정 시간: ' + label + (slack ? ', 여유 ' + Math.round(slack / 60) + '분' : '') + (p.reserve ? ', 마킹 ' + t.reserve + '분' : '')) + '">';
+    p.secs.forEach(function (s) { h += col('', s.time, Math.max(26, s.per / maxPer * 100), s.name, Math.round(s.per) + '초'); });
+    if (slack) h += col(' rsv', slack, 100, '여유', '');
+    if (p.reserve > 0) h += col(' rsv', p.reserve, 100, '마킹', '');
+    return h + '</div><div class="hp-axis tiny" aria-hidden="true"><span>0분</span><span>총 ' + t.total + '분</span></div>' +
+      '<p class="tiny hp-note">칸 폭은 과목 배정 시간, 막대 높이는 문항당 초예요.</p>';
+  }
   function renderHome(A) {
     var S = A.S, h = '', todayK = L.today();
     if (S.run) {
@@ -145,13 +166,13 @@
     h += '<div class="card hero"><div class="tiny">' + esc(L.dayLabel(todayK)) + '</div>' +
       '<h2>' + (todayN ? '오늘 ' + todayN + '회 풀었어요' : '오늘은 아직 한 회도 안 풀었어요') + '</h2>' +
       '<div class="stat3"><div><b>' + todayN + '</b><span>오늘</span></div><div><b>' + L.streak(S.sessions, todayK) + '일</b><span>연속</span></div><div><b>' + weekN + '</b><span>이번 주</span></div></div>' +
-      '<p class="small-t muted">바로 시작: ' + esc(last.name) + '</p>' +
+      '<p class="small-t muted">바로 시작: ' + esc(last.name) + '</p>' + heroPlan(last) +
       '<div class="row wrap" style="margin-top:10px"><button type="button" class="btn ghost" data-act="go" data-to="exams" style="color:inherit;border-color:currentColor">다른 틀</button>' +
       '<button type="button" class="btn primary grow" data-act="open-plan" data-id="' + esc(last.id) + '">시작 준비</button></div></div>';
 
     if (!S.sessions.length) {
       h += emptyBox('아직 기록이 없어요. 시험 틀을 고르고 한 회를 풀어 보세요. 문항마다 큰 버튼만 누르면 돼요.',
-        '<button type="button" class="btn ghost" data-act="sample-add">예시로 둘러보기</button><button type="button" class="btn primary" data-act="go" data-to="exams">시험 틀 고르기</button>');
+        '<button type="button" class="btn ghost" data-act="sample-add">예시로 둘러보기</button><button type="button" class="btn" data-act="welcome-try">2분 체험</button><button type="button" class="btn primary" data-act="go" data-to="exams">시험 틀 고르기</button>');
     } else {
       var s = A.sortedSessions()[0], sm = L.summary(s), adv = A.adviceFor(s);
       h += '<div class="sec-title">지난 회차</div><div class="card"><div class="spread"><h3>' + esc(s.name) + '</h3><span class="tiny">' + esc(L.dayLabel(s.date)) + '</span></div>' +
@@ -199,8 +220,10 @@
         : emptyBox('찾는 틀이 없어요. 다른 낱말로 찾거나 새 틀을 만드세요.', '<button type="button" class="btn ghost" data-act="exam-reset">모두 보기</button><button type="button" class="btn primary" data-act="tpl-new">새 틀 만들기</button>');
     }
     list.forEach(function (t) {
+      var best = L.bestOf(A.S.sessions, t.name);
       h += '<div class="card tpl-card"><div><span class="badge' + (t.custom ? ' mine' : '') + '">' + esc(t.custom ? '내 틀' : t.cat) + '</span></div>' +
         '<h3 style="margin-top:6px">' + esc(t.name) + '</h3><div class="meta">' + esc(tplMeta(t)) + '</div><div class="secs">' + secLine(t) + '</div>' +
+        (best ? '<div class="best-line">🏁 최고 기록 ' + L.fmt(best.elapsed / 1000) + ' · ' + esc(L.dayLabel(best.date)) + '</div>' : '') +
         '<div class="row wrap">' + (t.custom
           ? '<button type="button" class="btn ghost small" data-act="tpl-edit" data-id="' + esc(t.id) + '">고치기</button><button type="button" class="btn ghost small" data-act="tpl-del" data-id="' + esc(t.id) + '">지우기</button>'
           : '<button type="button" class="btn ghost small" data-act="tpl-copy" data-id="' + esc(t.id) + '">내 틀로 복사</button>') +
@@ -227,6 +250,13 @@
     h += '</tbody></table>';
     h += '<p class="hint">' + (p.manual ? '과목마다 정한 배정 분대로 나눴어요.' : '쓸 수 있는 ' + L.fmt(p.usable) + L.josa(L.fmt(p.usable), '을') + ' 문항 수대로 나눴어요.') +
       (p.slack > 1 ? ' 남는 ' + L.fmtShort(p.slack) + L.josa(L.fmtShort(p.slack), '은') + ' 마지막 여유로 둬요.' : '') + ' 순서를 바꾸면 이번 회에만 적용돼요.</p>';
+    var best = L.bestOf(A.S.sessions, d.name);
+    if (best) {
+      var on = d.ghostId === best.id;
+      h += '<div class="chips ghost-pick"><button type="button" class="chip" data-act="plan-ghost" aria-pressed="' + on + '">' +
+        (on ? '✓ ' : '') + '최고 기록 ' + L.fmt(best.elapsed / 1000) + L.josa(L.fmt(best.elapsed / 1000), '과') + ' 겨루기</button></div>' +
+        '<p class="tiny muted">' + (on ? '풀이 중에 최고 기록(' + esc(L.dayLabel(best.date)) + ')보다 앞섰는지 늦었는지 보여 줘요.' : '누르면 최고 기록과 겨뤄요.') + '</p>';
+    } else d.ghostId = null;
     if (!d.custom) h += '<p class="fine">' + esc(D.BASIS) + '</p>';
     h += '<div class="row wrap"><button type="button" class="btn ghost" data-act="plan-save">이 순서로 내 틀 저장</button>' +
       '<button type="button" class="btn primary grow" data-act="plan-start">시작</button></div>';
@@ -269,6 +299,17 @@
     var pace = $('run-pace');
     pace.textContent = done >= p.N ? '다 풀었어요 · ' + L.fmtDelta(delta) : L.fmtDelta(delta);
     pace.className = 'run-pace ' + deltaClass(delta);
+    var gEl = $('run-ghost'), ghost = A.runGhost();
+    if (ghost) {
+      var gd = L.ghostDelta(ghost, R.laps), gt;
+      if (!done) gt = '최고 기록 ' + L.fmt(ghost.elapsed / 1000) + L.josa(L.fmt(ghost.elapsed / 1000), '과') + ' 겨루는 중';
+      else if (gd === null) gt = '최고 기록과 비교할 문항이 없어요';
+      else if (Math.abs(gd) < 1) gt = '최고 기록과 같아요';
+      else gt = '최고 기록보다 ' + L.fmtShort(gd) + (gd > 0 ? ' 늦음' : ' 앞섬');
+      gEl.textContent = gt;
+      gEl.className = 'run-vs ' + (gd === null ? 'even' : deltaClass(gd));
+      gEl.hidden = false;
+    } else gEl.hidden = true;
     $('run-q').textContent = Math.min(done + 1, p.N) + ' / ' + p.N;
     $('run-qtime').textContent = L.fmt(el - lastAt);
     $('run-target').textContent = sec ? Math.round(sec.per) + '초' : '-';
@@ -295,6 +336,37 @@
     else if (el >= p.usable) msg = '마킹·검토 시간이에요 (' + L.fmt(left) + ' 남음)';
     else if (A.S.settings.warnMin > 0 && left <= A.S.settings.warnMin * 60) msg = '남은 시간 ' + A.S.settings.warnMin + '분 아래예요';
     if (msg) { al.textContent = msg; al.hidden = false; } else al.hidden = true;
+    // 처음 푸는 사람에게는 첫 runTick에서 안내를 띄운다(멈춘 채면 이어 풀 때)
+    if (!A.S.settings.coached && !R.pausedAt) A.coachStart();
+  }
+
+  /* ---------- 첫 풀이 안내 (3단계) ---------- */
+  var COACH = [
+    { id: 'run-pace', ring: 'run-pace', text: '이 띠가 계획보다 앞섰는지(초록) 늦었는지(빨강)를 초 단위로 알려 줘요.' },
+    { id: 'run-bar-mark', ring: 'run-bar', text: '노란 세로 줄은 지금 시각에 끝냈어야 할 문항 자리예요. 파란 막대가 줄보다 앞이면 여유가 있는 거예요.' },
+    { id: 'btn-lap', ring: 'btn-lap', text: '한 문항을 끝낼 때마다 이 큰 버튼(키보드는 스페이스)을 눌러요. 안내를 닫으면 시계가 흘러요.' }
+  ];
+  function coachShow(i) {
+    var box = $('run-coach'), st = COACH[i], scr = $('screen-run');
+    if (!box || !st) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.coach-on'), function (el) { el.classList.remove('coach-on'); });
+    var tgt = $(st.id), ring = $(st.ring);
+    if (tgt) tgt.classList.add('coach-on');
+    if (ring) ring.classList.add('coach-on');
+    $('coach-step').textContent = (i + 1) + ' / ' + COACH.length;
+    $('coach-text').textContent = st.text;
+    $('coach-next').textContent = i === COACH.length - 1 ? '시작하기' : '다음';
+    swap(box, true);
+    // 짚는 요소 바로 아래(큰 버튼은 위)에 말풍선을 둔다
+    var sr = scr.getBoundingClientRect(), rr = (ring || tgt).getBoundingClientRect();
+    var below = st.id !== 'btn-lap', top = below ? rr.bottom - sr.top + 10 : rr.top - sr.top - box.offsetHeight - 10;
+    box.style.top = Math.max(8, top) + 'px';
+    box.classList.toggle('up', !below);
+    try { $('coach-next').focus({ preventScroll: true }); } catch (e) { $('coach-next').focus(); }
+  }
+  function coachHide() {
+    Array.prototype.forEach.call(document.querySelectorAll('.coach-on'), function (el) { el.classList.remove('coach-on'); });
+    swap($('run-coach'), false);
   }
   function lapPop(behind) {
     var b = $('btn-lap');
@@ -355,6 +427,31 @@
     D.REASONS.forEach(function (x) { if (x.id === r) lab = x.label; });
     return lab ? '<span class="chip reason-now on">' + esc(lab) + '</span>' : '<span class="tiny muted reason-now">이유 없음</span>';
   }
+  // 문항별 시간 그래프: 푼 문항마다 막대 하나(높이 = 걸린 시간 ÷ 가장 긴 시간), 과목마다 목표 줄
+  function lapChart(s, p) {
+    var W = 320, H = 120, N = Math.max(1, p.N), slot = W / N, gap = slot > 3 ? slot * 0.18 : 0;
+    var laps = (s.laps || []).filter(function (l) { return !l.skip; });
+    var maxT = 1, nOver = 0;
+    laps.forEach(function (l) { maxT = Math.max(maxT, l.t); });
+    var g = '';
+    laps.forEach(function (l) {
+      var sec = p.secs[l.sec], per = sec ? sec.per : 0, bh = l.t / maxT * H;
+      var over = per > 0 && l.t / 1000 > per * 1.5;
+      if (over) nOver++;
+      g += '<rect class="lc-bar' + (over ? ' over' : '') + '" x="' + ((l.q - 1) * slot + gap / 2).toFixed(2) + '" y="' + (H - bh).toFixed(2) +
+        '" width="' + Math.max(0.5, slot - gap).toFixed(2) + '" height="' + bh.toFixed(2) + '"><title>' + l.q + '번 ' + L.fmt(l.t / 1000) + '</title></rect>';
+    });
+    p.secs.forEach(function (sec) {
+      var y = H - Math.min(1, sec.per * 1000 / maxT) * H;
+      g += '<line class="lc-target" x1="' + (sec.startQ * slot).toFixed(2) + '" x2="' + (sec.endQ * slot).toFixed(2) + '" y1="' + y.toFixed(2) + '" y2="' + y.toFixed(2) + '" vector-effect="non-scaling-stroke"></line>';
+    });
+    var lab = '<div class="lc-labels" aria-hidden="true">' + p.secs.map(function (sec) {
+      return '<span style="width:' + (sec.count / N * 100).toFixed(2) + '%">' + esc(sec.name) + '</span>';
+    }).join('') + '</div>';
+    return '<div class="lc-wrap"><div class="spread"><b class="small-t">문항별 시간</b><span class="tiny">가장 긴 문항 ' + L.fmt(maxT / 1000) + '</span></div>' +
+      '<svg id="res-lapchart" class="lapchart" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="문항별 걸린 시간 막대 ' + laps.length + '개, 목표의 1.5배를 넘긴 문항 ' + nOver + '개">' + g + '</svg>' +
+      lab + '<p class="fine">노란 줄이 과목의 문항당 목표예요. 빨간 막대는 목표의 1.5배를 넘긴 문항이에요.</p></div>';
+  }
   function renderResult(A, s) {
     var sm = L.summary(s), p = sm.plan, prev = A.prevOf(s), adv = A.adviceFor(s), h = '';
     h += '<div class="spread" style="margin:12px 0 6px"><h2>결과</h2><span class="tiny">' + esc(L.dayLabel(s.date)) + '</span></div>';
@@ -363,6 +460,10 @@
       '<div class="stat"><b>' + sm.done + ' / ' + sm.N + '</b><span>끝낸 문항' + (s.ended === 'time' ? ' · 시간 끝' : '') + '</span></div>' +
       '<div class="stat"><b>' + (sm.acc === null ? '-' : sm.acc + '%') + '</b><span>' + (sm.acc === null ? '채점 안 함' : '정답률 (확실히 ' + sm.sure + '%)') + '</span></div>' +
       '<div class="stat"><b class="' + (sm.lastDelta > 0 ? 'plus' : 'minus') + '">' + esc(L.fmtDelta(sm.lastDelta)) + '</b><span>마지막 문항 페이스</span></div></div></div>';
+    if (s.tplId === D.TRIAL.id) {
+      h += '<div class="card try-done"><h3>체험이 끝났어요</h3><p class="small-t">큰 버튼과 페이스 띠는 이렇게 써요. 이제 준비하는 시험 틀을 골라 진짜 한 회를 재 보세요.</p>' +
+        '<button type="button" class="btn primary block" style="margin-top:10px" data-act="go" data-to="exams">진짜 틀로 시작</button></div>';
+    }
 
     var maxT = 1;
     sm.secs.forEach(function (x) { maxT = Math.max(maxT, x.used, x.plan); });
@@ -373,7 +474,7 @@
         '<div class="tiny">문항당 ' + Math.round(x.avg) + '초 (목표 ' + Math.round(x.per) + '초) · ' + x.done + '/' + x.count + '문항' +
         (x.flags ? ' · ★' + x.flags : '') + (x.acc === null ? '' : ' · 정답률 ' + x.acc + '%') + '</div></div>';
     });
-    h += '</div><p class="fine">막대 안 세로 줄이 계획 시간이에요. 빨간 막대는 계획을 넘긴 과목이에요.</p></div>';
+    h += '</div><p class="fine">막대 안 세로 줄이 계획 시간이에요. 빨간 막대는 계획을 넘긴 과목이에요.</p>' + lapChart(s, p) + '</div>';
 
     h += '<div class="sec-title">다음 회에 해 볼 것</div><div class="card">';
     if (adv.length) adv.forEach(function (a) { h += '<div class="advice"><b>' + esc(a.title) + '</b><span>' + esc(a.text) + '</span></div>'; });
@@ -565,6 +666,7 @@
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, markBad: markBad, clearErr: clearErr, flash: flash,
     renderHome: renderHome, renderExams: renderExams, renderExamList: renderExamList, renderPlan: renderPlan,
     renderTplRows: renderTplRows, fillTplForm: fillTplForm, runTick: runTick, lapPop: lapPop,
+    COACH_N: COACH.length, coachShow: coachShow, coachHide: coachHide,
     renderGrade: renderGrade, updateGq: updateGq, renderResult: renderResult, renderLog: renderLog,
     renderMore: renderMore, renderTests: renderTests, renderHelp: renderHelp, reasonPicked: reasonPicked
   };

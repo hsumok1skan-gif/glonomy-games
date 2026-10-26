@@ -13,6 +13,8 @@
   --subsoft: #DDF1EC;
   --on-accent: #FFFFFF;
   --accent-deep: #B9422C;
+  /* '최근 n번 빠뜨림' 꼬리표 글자 (--soft 바탕 위) */
+  --miss-ink: #B9422C;
   --gold: #C9932E;
   --violet: #6A5BC2;
   --scrim: rgba(42, 38, 34, 0.45);
@@ -50,6 +52,7 @@ body.dark {
   --line: #3A352F;
   --soft: #4A2A22;
   --subsoft: #1F3A35;
+  --miss-ink: #FFB49F;
   --shadow-lift: rgba(0, 0, 0, 0.45);
 }
 body.reduce { --dur: 0s; }
@@ -210,6 +213,11 @@ body.reduce .ring .fg { transition: none; }
 .check.done { background: var(--subsoft); }
 .check.done .box { background: var(--sub); border-color: var(--sub); }
 .check.done .nm { text-decoration: line-through; color: var(--muted); }
+/* 최근 30일 2번 이상 빠뜨린 물건: 왼쪽 강조 띠와 '최근 n번 빠뜨림' 꼬리표 (챙기면 흐려진다) */
+.check.miss-often { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.check .miss-tag { display: inline-block; margin: 2px 0; padding: 1px 8px; border-radius: 999px; background: var(--soft); color: var(--miss-ink); font-size: var(--t-1); font-weight: 800; }
+.check.done.miss-often { border-color: var(--line); box-shadow: none; }
+.check.done .miss-tag { opacity: 0.55; }
 .check.pop .box { animation: pop 0.3s ease-out; }
 @keyframes pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
 body.reduce .check.pop .box { animation: none; }

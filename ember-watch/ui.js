@@ -143,20 +143,22 @@
   // ---------------- 출발 준비 ----------------
   function regionUnlocked(i) { return i === 0 || S.meta.regionsWon.indexOf(i - 1) >= 0; }
   let prepRegion = 0, prepLantern = 'old';
+  // 잠긴 항목은 흐린 글자와 함께 이름 앞 자물쇠로도 보인다
+  const LOCK_ICO = '<i class="lock-ico" aria-hidden="true">🔒</i>';
   function refreshPrep() {
     $('prep-embers').textContent = '불씨 ' + S.meta.embers;
     $('region-list').innerHTML = D.REGIONS.map(function (r, i) {
       const ok = regionUnlocked(i);
       const best = S.meta.stats.bestNight[i] || 0;
       return '<button class="item' + (prepRegion === i ? ' sel' : '') + (ok ? '' : ' locked') + '" data-region="' + i + '" aria-pressed="' + (prepRegion === i) + '"' + (ok ? '' : ' disabled') + '>' +
-        '<span class="name">' + esc(r.name) + (S.meta.regionsWon.indexOf(i) >= 0 ? ' ☀' : '') + '</span>' +
+        '<span class="name">' + (ok ? '' : LOCK_ICO) + esc(r.name) + (S.meta.regionsWon.indexOf(i) >= 0 ? ' ☀' : '') + '</span>' +
         '<span class="desc">' + (ok ? esc(r.desc) + '<br>규칙: ' + esc(r.rule) : '앞 지역에서 열째 밤을 버티면 열린다') + '</span>' +
         '<span class="tag">' + (ok ? '가장 멀리 버틴 밤 ' + best + '/10' : '잠김') + '</span></button>';
     }).join('');
     $('lantern-list').innerHTML = D.LANTERNS.map(function (l) {
       const own = S.meta.lanterns.indexOf(l.id) >= 0;
       return '<button class="item' + (prepLantern === l.id ? ' sel' : '') + (own ? '' : ' locked') + '" data-lantern="' + l.id + '" aria-pressed="' + (prepLantern === l.id) + '"' + (own ? '' : ' disabled') + '>' +
-        '<span class="name">' + esc(l.name) + '</span><span class="desc">' + esc(l.desc) + '</span>' +
+        '<span class="name">' + (own ? '' : LOCK_ICO) + esc(l.name) + '</span><span class="desc">' + esc(l.desc) + '</span>' +
         '<span class="tag">' + (own ? '가짐' : '야영지에서 불씨 ' + l.cost) + '</span></button>';
     }).join('');
   }
@@ -209,6 +211,10 @@
       else html += '<button class="wood-slot empty" disabled aria-label="빈 칸"></button>';
     }
     $('wood-slots').innerHTML = html;
+    // 장작 칸 머리 글: 든 수 / 칸수. 칸이 다 차면 .full 로 색을 바꾼다
+    const head = $('wood-head');
+    head.textContent = '장작 ' + R.wood.length + '/' + R.st.carry;
+    head.classList.toggle('full', R.wood.length >= R.st.carry);
   }
 
   // 밤 하늘 호: index.html 의 호(가운데 100,46 · 가로 88 · 세로 40)를 따라 달을 옮긴다

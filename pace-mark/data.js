@@ -40,6 +40,10 @@
       sections: [{ name: '학과', count: 40, min: 0 }] }
   ];
 
+  // 처음 쓰는 사람이 큰 버튼과 페이스 띠를 2분 안에 써 보는 체험 틀 (기본 틀 목록에는 넣지 않는다)
+  var TRIAL = { id: 'p-trial', cat: '체험', name: '2분 체험 (6문항)', total: 2, reserve: 0,
+    sections: [{ name: '체험 앞', count: 3, min: 0 }, { name: '체험 뒤', count: 3, min: 0 }] };
+
   var CATS = ['전체', '공무원', '수능', '자격증', '어학', '연습', '내 틀'];
 
   // 틀 고칠 때 고르는 과목 이름 40개
@@ -167,6 +171,7 @@
   window.PM_DATA = {
     BASIS: BASIS,
     PRESETS: PRESETS,
+    TRIAL: TRIAL,
     CATS: CATS,
     SUBJECT_NAMES: SUBJECT_NAMES,
     TIPS: TIPS,

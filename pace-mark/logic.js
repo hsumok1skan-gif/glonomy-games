@@ -79,6 +79,26 @@
     return Math.max(last, elapsed - p.targets[done]);
   }
 
+  /* 같은 이름 틀의 최고 기록: 끝까지 푼(ended==='done') 회차 중 elapsed 가 가장 짧은 것.
+     넘긴 문항이 있는 회차는 빼서 과목을 건너뛴 기록이 최고가 되지 않게 한다 */
+  function bestOf(sessions, name) {
+    var best = null;
+    (sessions || []).forEach(function (s) {
+      if (s.ended !== 'done' || s.name !== name || !s.laps || !s.laps.length) return;
+      if (s.laps.some(function (l) { return l.skip; })) return;
+      if (!best || (s.elapsed || 0) < (best.elapsed || 0)) best = s;
+    });
+    return best;
+  }
+
+  /* 최고 기록과의 차이(초). 양수 = 최고 기록보다 늦음, 음수 = 앞섬.
+     지금 끝낸 문항 수(laps.length)번째 문항을 최고 회차가 끝낸 시각과 지금 마지막 lap.at 을 비교한다 */
+  function ghostDelta(ghost, laps) {
+    var n = laps ? laps.length : 0;
+    if (!ghost || !ghost.laps || !n || n > ghost.laps.length) return null;
+    return (laps[n - 1].at - ghost.laps[n - 1].at) / 1000;
+  }
+
   // 지금 시각까지 끝냈어야 할 문항 수
   function expectedDone(p, elapsed) {
     var n = 0;
@@ -263,6 +283,7 @@
     var laps = [{ at: 60000 }, { at: 110000 }, { at: 180000 }];
     eq('문항 60·50·70초 (목표 57초) → 페이스', Math.round(liveDelta(p3, laps, 180)), 9);
     eq('페이스 9초 → 화면 글', fmtDelta(9), '9초 늦음');
+    eq('최고 기록 2번 1:50, 지금 2번 2:00 → 최고 기록보다 늦음(초)', ghostDelta({ laps: [{ at: 60000 }, { at: 110000 }, { at: 170000 }] }, [{ at: 60000 }, { at: 120000 }]), 10);
     var p4 = plan({ total: 75, reserve: 0, sections: [{ name: '5', count: 30, min: 11 }, { name: '6', count: 16, min: 9 }, { name: '7', count: 54, min: 55 }] });
     eq('읽기 11·9·55분 → 독해 첫 문항 목표(초)', Math.round(p4.targets[46]), 1261);
     eq('3,725초 → 시:분:초', fmt(3725), '1:02:05');
@@ -284,7 +305,7 @@
   window.Logic = {
     pad: pad, toKey: toKey, fromKey: fromKey, validKey: validKey, addDays: addDays, today: today, weekStart: weekStart, dayLabel: dayLabel,
     fmt: fmt, fmtShort: fmtShort, fmtDelta: fmtDelta, totalCount: totalCount, plan: plan, secOf: secOf,
-    liveDelta: liveDelta, expectedDone: expectedDone, summary: summary, slowest: slowest,
+    liveDelta: liveDelta, bestOf: bestOf, ghostDelta: ghostDelta, expectedDone: expectedDone, summary: summary, slowest: slowest,
     adviceRules: adviceRules, advice: advice, josa: josa, streak: streak, parseNums: parseNums, checkTemplate: checkTemplate, selfTest: selfTest
   };
 })();

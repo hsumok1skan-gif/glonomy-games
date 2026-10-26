@@ -28,6 +28,7 @@
     return A.S.templates.map(function (t) { t.custom = true; return t; }).concat(D.PRESETS);
   };
   A.findTpl = function (id) {
+    if (id === D.TRIAL.id) return D.TRIAL;
     var all = A.allTemplates();
     for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i];
     return null;
@@ -123,6 +124,11 @@
     var now = Date.now();
     return Math.max(0, now - R.startMs - R.pausedTotal - (R.pausedAt ? now - R.pausedAt : 0));
   };
+  // 풀이 중 겨루는 최고 회차 (지워졌으면 null)
+  A.runGhost = function () {
+    var R = A.S.run;
+    return R && R.ghostId ? findSession(R.ghostId) : null;
+  };
   var timer = null;
   function startTimer() { if (!timer) timer = setInterval(tick, 250); }
   function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
@@ -151,8 +157,8 @@
   function startRun(d) {
     A.S.run = { id: uid('r'), name: d.name, tplId: d.id, total: d.total, reserve: d.reserve,
       sections: d.sections.map(function (s) { return { name: s.name, count: s.count, min: s.min || 0 }; }),
-      laps: [], startMs: Date.now(), pausedTotal: 0, pausedAt: null, warned: false, markWarned: false };
-    A.S.lastTpl = d.id;
+      laps: [], startMs: Date.now(), pausedTotal: 0, pausedAt: null, warned: false, markWarned: false, ghostId: d.ghostId || null };
+    if (d.id !== D.TRIAL.id) A.S.lastTpl = d.id;
     save();
     initAudio();
     beep(520, 0.15);
@@ -177,6 +183,41 @@
     else if (p.secs[item.sec] && done + 1 === p.secs[item.sec].endQ) U.toast(p.secs[item.sec].name + ' 끝 · ' + L.fmtDelta(el / 1000 - p.targets[done]));
     U.runTick(A);
   }
+  // 2분 체험: 처음 안내와 홈 빈 상태의 버튼에서 바로 시작한다
+  function startTrial() {
+    if (A.S.run) { U.toast('풀던 회차가 있어요. 이어 풀거나 그만둔 뒤 체험해 보세요.'); go('home'); return; }
+    startRun(D.TRIAL);
+  }
+
+  /* ---------- 첫 풀이 안내 ---------- */
+  // runTick 이 settings.coached 가 false 일 때 부른다. 안내 동안 시계를 멈춘다
+  var coach = { on: false, step: 0, paused: false };
+  A.coachStart = function () {
+    var R = A.S.run;
+    if (coach.on || !R || R.pausedAt || A.S.settings.coached) return;
+    coach.on = true; coach.step = 0;
+    R.pausedAt = Date.now(); coach.paused = true;
+    save();
+    setTimeout(function () { if (coach.on) U.coachShow(coach.step); }, 0);
+  };
+  function coachEnd() {
+    if (!coach.on) return;
+    coach.on = false;
+    A.S.settings.coached = true;
+    var R = A.S.run;
+    if (R && coach.paused && R.pausedAt) { R.pausedTotal += Date.now() - R.pausedAt; R.pausedAt = null; }
+    coach.paused = false;
+    save();
+    U.coachHide();
+    if (R) { startTimer(); U.runTick(A); }
+  }
+  function coachNext() {
+    if (!coach.on) return;
+    if (coach.step >= U.COACH_N - 1) { coachEnd(); return; }
+    coach.step++;
+    U.coachShow(coach.step);
+  }
+
   function undoLap() {
     var R = A.S.run;
     if (!R || !R.laps.length || R.pausedAt) return;
@@ -224,6 +265,7 @@
     askConfirm('아직 ' + left + '문항이 남았어요. 지금 끝내고 채점할까요? 남은 문항은 못 푼 것으로 남아요.', '끝내기', function () { finishRun('quit'); });
   }
   function finishRun(reason) {
+    if (coach.on) coachEnd();
     var R = A.S.run;
     if (!R) return;
     var p = L.plan(R), el = A.runElapsed();
@@ -242,6 +284,7 @@
   }
   function discardRun() {
     askConfirm('풀던 회차를 기록하지 않고 지울까요?', '지우기', function () {
+      if (coach.on) coachEnd();
       A.S.run = null; stopTimer(); save();
       U.toast('풀던 회차를 지웠어요.');
       go('home');
@@ -265,8 +308,14 @@
     var t = A.findTpl(id);
     if (!t) { U.toast('그 틀을 찾지 못했어요.'); return; }
     A.ui.draft = copyTpl(t);
+    setGhost(A.ui.draft);
     U.renderPlan(A);
     U.openLayer('sheet-plan');
+  }
+  // 같은 이름의 최고 회차가 있으면 처음부터 그 기록과 겨룬다(시작 준비의 칩으로 끌 수 있다)
+  function setGhost(d) {
+    var b = L.bestOf(A.S.sessions, d.name);
+    d.ghostId = b ? b.id : null;
   }
   function readRows() {
     return Array.prototype.map.call(document.querySelectorAll('#tpl-rows .tpl-row'), function (row) {
@@ -405,6 +454,9 @@
     'confirm-yes': function () { var f = A.ui.confirmFn; A.ui.confirmFn = null; U.closeLayer('ov-confirm'); if (f) f(); },
     'confirm-no': function () { A.ui.confirmFn = null; U.closeLayer('ov-confirm'); },
     'welcome-start': function () { A.S.settings.welcomed = true; save(); U.closeLayer('ov-welcome'); go('exams'); },
+    'welcome-try': function () { A.S.settings.welcomed = true; save(); U.closeLayer('ov-welcome'); startTrial(); },
+    'coach-next': coachNext,
+    'coach-skip': coachEnd,
     'welcome-sample': function () { A.S.settings.welcomed = true; addSample(); U.closeLayer('ov-welcome'); go('log'); U.toast('예시 기록 6회를 넣었어요. 더보기에서 뺄 수 있어요.'); },
 
     cat: function (b) { A.ui.cat = b.getAttribute('data-c'); U.renderExams(A); },
@@ -436,6 +488,13 @@
         d.id = t.id; d.custom = true; d.name = name;
         save(); U.renderPlan(A); U.toast('「' + name + '」 로 내 틀에 저장했어요.');
       }
+    },
+    'plan-ghost': function () {
+      var d = A.ui.draft;
+      if (!d) return;
+      var b = L.bestOf(A.S.sessions, d.name);
+      d.ghostId = d.ghostId || !b ? null : b.id;
+      U.renderPlan(A);
     },
     'plan-start': function () { var d = A.ui.draft; if (!d) return; U.closeLayer('sheet-plan'); startRun(d); },
 
@@ -557,6 +616,7 @@
       if (!s) return;
       if (A.findTpl(s.tplId)) { openPlan(s.tplId); return; }
       A.ui.draft = { id: s.tplId, cat: '내 틀', custom: false, name: s.name, total: s.total, reserve: s.reserve, sections: copyTpl(s).sections };
+      setGhost(A.ui.draft);
       U.renderPlan(A);
       U.openLayer('sheet-plan');
     },
@@ -654,6 +714,7 @@
     var tag = e.target && e.target.tagName;
     var typing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
     if (e.key === 'Escape') {
+      if (coach.on && !U.topLayer()) { coachEnd(); return; }
       var top = U.topLayer();
       if (!top) return;
       if (top === 'ov-welcome') { A.S.settings.welcomed = true; save(); }

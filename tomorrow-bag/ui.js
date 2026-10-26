@@ -165,6 +165,8 @@ var UI = (function () {
     var pr = Logic.progress(S, kid, bag);
     var done = S.checks[Logic.checkKey(kid.id, k)] || [];
     var hist = S.history.filter(function (x) { return x.kid === kid.id && x.date === k; })[0];
+    // 이 가방 날짜 앞 30일 기록에서 빠뜨린 횟수 (그날 기록은 빼고)
+    var miss = Logic.missCounts(S.history, kid.id, Logic.addDays(k, -30), k);
     var hasWeek = false;
     for (var d = 1; d <= 5; d++) if (kid.week[d].p.some(function (x) { return !!x; }) || kid.week[d].after.length) hasWeek = true;
 
@@ -185,16 +187,16 @@ var UI = (function () {
       h += emptyBox('week', '시간표부터 넣어 주세요', '요일·교시마다 과목을 한 번 넣어 두면 날마다 가방 목록이 저절로 만들어집니다.', [
         { act: 'go', label: '시간표 넣기', extra: ' data-to="week"' }, { act: 'note-new', label: '+ 알림장 준비물' }]);
       h += '<h2>매일 챙길 것</h2>';
-      h += checkList(bag, done);
+      h += checkList(bag, done, miss);
       h += upcomingCard(S, kid, k, todayKey);
       root.innerHTML = h;
       return;
     }
 
     h += '<div class="card"><div class="ring-wrap" id="bag-ring">' + ring(pr.pct) +
-      '<div><div style="font-weight:800;font-size:var(--t-4)">' + pr.done + ' / ' + pr.total + ' 챙김</div>' +
+      '<div><div class="bag-count" style="font-weight:800;font-size:var(--t-4)">' + pr.done + ' / ' + pr.total + ' 챙김</div>' +
       (hist ? '<div class="pill">' + (hist.auto ? '기록됨' : '다 쌌어요 ✓') + ' · 빠진 것 ' + hist.missed.length + '</div>' :
-        '<div class="muted">' + (pr.total - pr.done ? '남은 물건 ' + (pr.total - pr.done) + '개' : '모두 챙겼어요!') + '</div>') +
+        '<div class="muted bag-left">' + leftText(pr) + '</div>') +
       '</div></div>';
     if (bag.periods.some(function (x) { return x; })) {
       h += '<div class="periods">';
@@ -220,7 +222,7 @@ var UI = (function () {
       '<span class="spacer"></span>' +
       '<button class="btn small subtle" type="button" data-act="check-all"' + (noItems || allDone ? ' disabled' : '') + '>모두 체크</button></div>';
 
-    h += checkList(bag, done);
+    h += checkList(bag, done, miss);
 
     // 다 챙기면: '하윤 내일 준비물 다 챙겼어요' 문구와 복사 버튼 (가족·선생님께 보내기)
     var doneMsg = Logic.doneText(S, kid, bag, todayKey);
@@ -247,8 +249,11 @@ var UI = (function () {
     root.innerHTML = h;
   }
 
-  function checkList(bag, done) {
+  // miss: Logic.missCounts 결과. 2번 이상 빠뜨린 물건은 miss-often 으로 표시하고 그 무리 안에서 위로 올린다
+  function checkList(bag, done, miss) {
     var h = '', last = '';
+    miss = miss || {};
+    function missN(it) { return miss[Logic.norm(it.name).toLowerCase()] || 0; }
     // 무리마다 챙긴 수/전체 (무리 머리의 g-count, 다 챙기면 all-done)
     var cnt = {};
     bag.items.forEach(function (it) {
@@ -256,7 +261,12 @@ var UI = (function () {
       c.t++;
       if (done.indexOf(it.name) >= 0) c.d++;
     });
-    bag.items.forEach(function (it) {
+    var items = bag.items.map(function (it, i) { return { it: it, i: i, often: missN(it) >= 2 }; });
+    items.sort(function (a, b) {
+      return Logic.GROUPS.indexOf(a.it.group) - Logic.GROUPS.indexOf(b.it.group) || (b.often - a.often) || a.i - b.i;
+    });
+    items.forEach(function (row) {
+      var it = row.it;
       if (it.group !== last) {
         last = it.group;
         var c = cnt[it.group];
@@ -264,12 +274,62 @@ var UI = (function () {
           '<span class="g-count" aria-label="' + c.t + '개 가운데 ' + c.d + '개 챙김">' + c.d + '/' + c.t + '</span></div>';
       }
       var on = done.indexOf(it.name) >= 0;
-      h += '<button class="check' + (on ? ' done' : '') + '" type="button" data-act="check" data-name="' + esc(it.name) + '" aria-pressed="' + on + '">' +
+      h += '<button class="check' + (on ? ' done' : '') + (row.often ? ' miss-often' : '') + '" type="button" data-act="check" data-name="' + esc(it.name) + '" aria-pressed="' + on + '">' +
         '<span class="box">' + (on ? '✓' : '') + '</span><span class="it-ic" aria-hidden="true">' + esc(it.icon || '🎒') + '</span><span><span class="nm">' + esc(it.name) + '</span>' +
+        (row.often ? '<span class="miss-tag">최근 ' + missN(it) + '번 빠뜨림</span>' : '') +
         '<span class="src">' + esc(it.sources.join(' · ')) + '</span></span></button>';
     });
     if (!bag.items.length) h += miniEmpty('🎒', '이날 챙길 물건이 아직 없어요. 알림장 준비물을 넣어 보세요.', { act: 'note-new', label: '+ 알림장 준비물' });
     return h;
+  }
+  function leftText(pr) { return pr.total - pr.done ? '남은 물건 ' + (pr.total - pr.done) + '개' : '모두 챙겼어요!'; }
+
+  // 체크 하나만 바꾸기: 화면을 다시 그리지 않고 이미 있는 요소의 글자·속성만 바꾼다
+  // (고리 SVG 가 그대로 남아 .ring .fg 의 stroke-dashoffset transition 이 돈다). 못 찾으면 false
+  function updateBag(S, kid, bag, name) {
+    var root = $('bag-root');
+    var btn = null, all = root.querySelectorAll('.check');
+    for (var i = 0; i < all.length; i++) if (all[i].getAttribute('data-name') === name) btn = all[i];
+    var item = bag.items.filter(function (it) { return it.name === name; })[0];
+    if (!btn || !item) return false;
+    var done = S.checks[Logic.checkKey(kid.id, bag.date)] || [];
+    var pr = Logic.progress(S, kid, bag);
+
+    // (1) 고리: 원의 dashoffset 과 가운데 글자만
+    var fg = root.querySelector('#bag-ring .ring .fg');
+    if (fg) {
+      var c = parseFloat(fg.getAttribute('stroke-dasharray'));
+      fg.setAttribute('stroke-dashoffset', (c * (1 - pr.pct / 100)).toFixed(1));
+      var tx = root.querySelector('#bag-ring .ring text');
+      if (tx) tx.textContent = pr.pct + '%';
+      var cnt = root.querySelector('#bag-ring .bag-count');
+      if (cnt) cnt.textContent = pr.done + ' / ' + pr.total + ' 챙김';
+      var left = root.querySelector('#bag-ring .bag-left');
+      if (left) left.textContent = leftText(pr);
+    }
+
+    // (2) 누른 줄: done·aria-pressed·체크 글자
+    var on = done.indexOf(name) >= 0;
+    btn.classList.toggle('done', on);
+    btn.setAttribute('aria-pressed', String(on));
+    var box = btn.querySelector('.box');
+    if (box) box.textContent = on ? '✓' : '';
+
+    // 그 무리 머리: 챙긴 수/전체, 다 챙기면 all-done
+    var head = btn.previousElementSibling;
+    while (head && !head.classList.contains('group-title')) head = head.previousElementSibling;
+    if (head) {
+      var t = 0, d = 0;
+      bag.items.forEach(function (it) { if (it.group === item.group) { t++; if (done.indexOf(it.name) >= 0) d++; } });
+      head.classList.toggle('all-done', d === t);
+      var gc = head.querySelector('.g-count');
+      if (gc) { gc.textContent = d + '/' + t; gc.setAttribute('aria-label', t + '개 가운데 ' + d + '개 챙김'); }
+    }
+
+    // 모두 체크 버튼: 다 챙기면 흐리게
+    var ca = root.querySelector('[data-act="check-all"]');
+    if (ca) ca.disabled = !bag.items.length || pr.done >= pr.total;
+    return true;
   }
 
   // ---- 시간표 ----
@@ -612,7 +672,7 @@ var UI = (function () {
   return {
     $: $, esc: esc, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
-    renderKids: renderKids, renderBag: renderBag, renderWeek: renderWeek, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow,
+    renderKids: renderKids, renderBag: renderBag, updateBag: updateBag, renderWeek: renderWeek, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow,
     renderPacks: renderPacks, renderPackList: renderPackList, renderHistList: renderHistList, renderPackItems: renderPackItems, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderLog: renderLog, renderMore: renderMore, renderHelp: renderHelp,
     renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut

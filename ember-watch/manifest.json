@@ -1,0 +1,22 @@
+{
+  "name": "Ember Watch",
+  "short_name": "Ember Watch",
+  "description": "장작 하나를 모닥불에 넣을까, 등불에 넣을까. 열 밤 동안 새벽까지 불을 지키는 가로 화면 생존 게임. 기록은 이 기기 브라우저에만 저장된다.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0B0E1A",
+  "theme_color": "#0B0E1A",
+  "categories": ["games", "action"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230B0E1A'/%3E%3Crect x='136' y='370' width='240' height='36' rx='18' fill='%238A5A3B' transform='rotate(-12 256 388)'/%3E%3Crect x='136' y='370' width='240' height='36' rx='18' fill='%236E4630' transform='rotate(12 256 388)'/%3E%3Cpath d='M256 96c40 70 110 120 110 200a110 110 0 0 1-220 0c0-50 30-80 50-110 10 30 30 40 40 40-10-50 0-90 20-130z' fill='%23FF9F43'/%3E%3Cpath d='M256 220c24 34 50 56 50 92a50 50 0 0 1-100 0c0-30 26-56 50-92z' fill='%23FFE08A'/%3E%3Crect x='384' y='112' width='56' height='76' rx='14' fill='%237FDCCB'/%3E%3Crect x='398' y='92' width='28' height='20' rx='6' fill='%237FDCCB'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

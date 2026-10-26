@@ -166,9 +166,22 @@ html.reduce .bad { animation: none; }
 .hero .muted, .hero .tiny { color: var(--on-accent); opacity: 0.85; }
 .hero .btn.primary { background: var(--on-accent); color: var(--accent-dk); border-color: var(--on-accent); box-shadow: 0 3px 0 var(--accent-dk); }
 .stat3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
-.stat3 > div { background: var(--hero-tint); border-radius: var(--r-btn); padding: 8px; text-align: center; }
+.stat3 > div { background: var(--accent-dk); border-radius: var(--r-btn); padding: 8px; text-align: center; }
 .stat3 b { display: block; font-size: var(--fs-4); }
-.stat3 span { font-size: var(--fs-1); }
+.stat3 span { font-size: var(--fs-1); font-weight: 700; opacity: 1; color: var(--on-accent); }
+.hero-plan { display: flex; align-items: flex-end; margin: 12px 0 0; }
+.hp-col { flex: none; box-sizing: border-box; min-width: 0; padding: 0 1px; text-align: center; font-size: var(--fs-1); line-height: 1.25; }
+.hp-col b, .hp-col span { display: block; min-height: 1.25em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hp-col span { opacity: 0.85; }
+.hp-bar { height: 88px; background: var(--hero-tint); border-radius: 8px; position: relative; overflow: hidden; margin-bottom: 4px; }
+.hp-bar i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--on-accent); border-radius: 8px 8px 0 0; }
+.hp-col:nth-child(even) .hp-bar i { opacity: 0.78; }
+.hp-bar em { position: absolute; left: 0; right: 0; bottom: 5px; font-style: normal; font-weight: 700; color: var(--accent-dk); overflow: hidden; white-space: nowrap; }
+.hp-col.rsv .hp-bar i { background: repeating-linear-gradient(135deg, var(--hero-tint) 0 6px, transparent 6px 12px); border-radius: 0; opacity: 1; }
+.hp-col.rsv .hp-bar em { color: var(--on-accent); }
+.hp-col.thin b, .hp-col.thin span, .hp-col.thin .hp-bar em { visibility: hidden; }
+.hp-axis { display: flex; justify-content: space-between; margin-top: 2px; border-top: 1px solid var(--hero-tint); padding-top: 2px; }
+.hp-note { margin-top: 4px; }
 .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .stat { background: var(--bg); border-radius: var(--r-btn); padding: 10px; }
 .stat b { display: block; font-size: var(--fs-4); }
@@ -191,6 +204,8 @@ html.reduce .bad { animation: none; }
 /* 틀 목록 */
 .tpl-card .meta { font-size: var(--fs-2); color: var(--muted); margin: 2px 0 8px; }
 .tpl-card .secs { font-size: var(--fs-1); color: var(--muted); margin-bottom: 10px; }
+.tpl-card .best-line { font-size: var(--fs-2); font-weight: 700; color: var(--ink); margin: -4px 0 10px; }
+.ghost-pick { margin: 10px 0 2px; }
 .badge { display: inline-block; font-size: var(--fs-1); padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-dk); font-weight: 700; margin-right: 4px; }
 html.dark .badge { color: var(--ink); }
 .badge.mine { background: var(--warn-soft); color: var(--ink); }
@@ -221,6 +236,11 @@ body.running { background: var(--run-bg); }
 .run-pace.ahead { background: var(--ahead); color: var(--on-accent); }
 .run-pace.behind { background: var(--behind); color: var(--on-accent); }
 .run-pace.even { background: var(--run-surface); color: var(--run-ink); }
+/* 최고 기록과 겨루기: 페이스 띠 아래 테두리만 있는 작은 띠 */
+.run-vs { display: block; width: fit-content; margin: 6px auto 0; padding: 3px 12px; border-radius: 999px; border: 1px solid var(--run-line); color: var(--run-muted); font-weight: 700; font-size: var(--fs-2); }
+.run-vs[hidden] { display: none; }
+.run-vs.ahead { border-color: var(--ahead); color: var(--run-ink); }
+.run-vs.behind { border-color: var(--behind); color: var(--run-ink); }
 .run-bar { position: relative; height: 12px; border-radius: 999px; background: var(--run-surface); overflow: hidden; margin: 10px 0 8px; }
 .run-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); transition: width var(--t-fast); }
 .run-bar-mark { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--warn); left: 0; }
@@ -251,6 +271,17 @@ html.reduce .lap.pop, html.reduce .lap.pop-behind, html.reduce .flash { animatio
 .run-tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: 14px; }
 .btn.run-ghost { background: var(--run-surface); color: var(--run-ink); border-color: var(--run-line); }
 .btn.run-danger { background: transparent; color: var(--behind); border-color: var(--behind); }
+/* 첫 풀이 안내: 짚는 요소에 노란 테두리, 그 아래(큰 버튼은 위)에 말풍선 */
+.run { position: relative; }
+.run-coach { position: absolute; left: 16px; right: 16px; z-index: 5; padding: 14px; border-radius: var(--r-card); background: var(--surface); color: var(--ink); box-shadow: 0 0 0 3px var(--warn), 0 10px 30px var(--shade); }
+.run-coach[hidden] { display: none; }
+.run-coach p { margin: 4px 0 10px; font-size: var(--fs-2); }
+.run-coach .coach-step { color: var(--muted); font-weight: 700; }
+.coach-on { outline: 3px solid var(--warn); outline-offset: 4px; }
+.run-bar.coach-on { overflow: visible; }
+.run-bar-mark.coach-on { width: 6px; outline: none; box-shadow: 0 0 0 3px var(--warn-soft); }
+.try-btn { margin-bottom: 8px; }
+.try-done { border: 2px solid var(--accent); }
 
 /* 채점 */
 .grade-sec { margin-bottom: 12px; }
@@ -279,6 +310,14 @@ html.reduce .lap.pop, html.reduce .lap.pop-behind, html.reduce .flash { animatio
 .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 999px; }
 .bar i.over { background: var(--behind); }
 .bar b { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ink); }
+.lc-wrap { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.lapchart { display: block; width: 100%; height: 120px; margin-top: 6px; background: var(--bg); border-radius: 8px; }
+.lc-bar { fill: var(--accent); }
+.lc-bar.over { fill: var(--behind); }
+.lc-target { stroke: var(--warn); stroke-width: 2px; }
+.lc-labels { display: flex; font-size: var(--fs-1); color: var(--muted); margin-top: 3px; }
+.lc-labels span { flex: none; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; border-left: 1px solid var(--line); }
+.lc-labels span:first-child { border-left: none; }
 .slow-item { padding: 10px 0; border-bottom: 1px solid var(--line); }
 .slow-item:last-child { border-bottom: none; }
 .reason-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }

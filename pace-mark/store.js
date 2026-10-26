@@ -10,7 +10,7 @@
       sessions: [],
       run: null,
       lastTpl: 'p-g9',
-      settings: { fs: 1, dark: false, reduce: false, vibrate: true, sound: true, warnMin: 10, welcomed: false }
+      settings: { fs: 1, dark: false, reduce: false, vibrate: true, sound: true, warnMin: 10, welcomed: false, coached: false }
     };
   }
 

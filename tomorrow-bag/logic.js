@@ -179,6 +179,23 @@ var Logic = (function () {
     return { days: list.length, rate: tot ? Math.round(dn * 100 / tot) : 0, full: full, streak: streak, top: top, list: list };
   }
 
+  // 자주 빠뜨린 것: fromKey 부터(toKey 가 있으면 그날 앞까지) 그 아이 기록의 missed 를 이름(norm·소문자)별로 센다
+  // 가방 줄의 '최근 n번 빠뜨림' 표시에 쓴다 (ui.js checkList)
+  function missCounts(history, kidId, fromKey, toKey) {
+    var out = {};
+    (history || []).forEach(function (h) {
+      if (h.kid !== kidId || (fromKey && h.date < fromKey) || (toKey && h.date >= toKey)) return;
+      var seen = {};
+      (h.missed || []).forEach(function (m) {
+        var key = norm(m).toLowerCase();
+        if (!key || seen[key]) return;
+        seen[key] = true;
+        out[key] = (out[key] || 0) + 1;
+      });
+    });
+    return out;
+  }
+
   // 요일별 챙김률 (월~금)
   function byWeekday(list) {
     var r = {};
@@ -416,6 +433,15 @@ var Logic = (function () {
     eq('챙김률', sm.rate, 92);
     eq('다 챙긴 날', sm.full, 2);
     eq('연속 다 챙긴 날', sm.streak, 1);
+    // 5-2) 자주 빠뜨린 것: 30일 앞(9/25)·다른 아이·그날(10/26) 기록은 빼고, ' 리코더'·'리코더' 는 같은 것 → 리코더 2, 물병 1
+    var mc = missCounts([
+      { kid: 'k', date: '2026-09-20', missed: ['리코더'] },
+      { kid: 'k', date: '2026-10-20', missed: ['리코더', '물병'] },
+      { kid: 'k', date: '2026-10-22', missed: [' 리코더 '] },
+      { kid: 'x', date: '2026-10-23', missed: ['리코더'] },
+      { kid: 'k', date: '2026-10-26', missed: ['물병'] }
+    ], 'k', addDays('2026-10-26', -30), '2026-10-26');
+    eq('최근 30일 빠뜨린 횟수', (mc['리코더'] || 0) + '|' + (mc['물병'] || 0), '2|1');
     // 6) 없는 날짜 거르기
     eq('2026-02-30 은 없는 날', validKey('2026-02-30'), false);
     // 7) 며칠 뒤 준비물: 10/26 가방 기준, 그날(10/26)·8일 뒤(11/3)·다른 아이는 빼고 10/28·11/2 두 개, 날짜순
@@ -473,7 +499,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel,
     buildBag: buildBag, progress: progress, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    summary: summary, byWeekday: byWeekday, findPacks: findPacks, filterHistory: filterHistory, upcoming: upcoming, setupSteps: setupSteps, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
+    summary: summary, missCounts: missCounts, byWeekday: byWeekday, findPacks: findPacks, filterHistory: filterHistory, upcoming: upcoming, setupSteps: setupSteps, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

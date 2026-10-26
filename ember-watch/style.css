@@ -137,7 +137,41 @@ body.reduce .screen.active, body.reduce .overlay.open, body.reduce .overlay.open
 /* ---- 시작 화면 ---- */
 /* 가운데 맞춤은 margin:auto 로 — 화면보다 길어져도 위가 잘리지 않고 내려 볼 수 있다 */
 #scr-title { align-items: center; justify-content: flex-start; overflow-y: auto; }
-.title-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; width: 100%; margin: auto 0; }
+/* 배경 층(위에서부터): 땅 · 앞 솔숲 · 뒤 솔숲 · 모닥불 빛 · 별 · 밤하늘. 솔은 conic-gradient 세모를 옆으로 되풀이한다 */
+#scr-title {
+  --tree-near: 70px 110px;
+  --tree-far: 46px 80px;
+  background:
+    linear-gradient(to top, var(--land-pine-dark) 0 16px, transparent 16px),
+    conic-gradient(from 163deg at 50% 0, var(--land-pine-dark) 0 34deg, transparent 0) 0 100% / var(--tree-near) repeat-x,
+    conic-gradient(from 162deg at 50% 0, var(--land-pine-deco) 0 36deg, transparent 0) 23px calc(100% - 10px) / var(--tree-far) repeat-x,
+    radial-gradient(ellipse 45% 55% at 50% 100%, rgba(var(--fire-rgb), 0.3), rgba(var(--fire-rgb), 0.08) 55%, transparent 75%),
+    radial-gradient(1px 1px at 18px 22px, rgba(var(--text-rgb), 0.7), transparent) 0 0 / 150px 96px,
+    radial-gradient(1.5px 1.5px at 92px 61px, rgba(var(--text-rgb), 0.5), transparent) 0 0 / 150px 96px,
+    radial-gradient(1px 1px at 57px 9px, rgba(var(--lamp-rgb), 0.6), transparent) 0 0 / 210px 130px,
+    linear-gradient(to bottom, var(--bg), var(--surface) 75%);
+}
+/* 아래 가운데 모닥불: ::before 는 엇갈린 장작 두 개와 빛 번짐, ::after 는 흔들리는 불꽃 */
+#scr-title::before, #scr-title::after { content: ''; position: absolute; z-index: 0; pointer-events: none; }
+#scr-title::before {
+  left: calc(50% - 30px); bottom: 12px; width: 60px; height: 12px;
+  background:
+    linear-gradient(-14deg, transparent 38%, var(--wood-oak) 38% 62%, transparent 62%),
+    linear-gradient(14deg, transparent 38%, var(--wood-charcoal) 38% 62%, transparent 62%);
+  box-shadow: 0 -10px 46px 18px rgba(var(--fire-rgb), 0.28);
+  border-radius: 6px;
+}
+#scr-title::after {
+  left: calc(50% - 15px); bottom: 18px; width: 30px; height: 42px;
+  background: radial-gradient(circle at 50% 72%, var(--fire-hot), var(--fire) 52%, transparent 72%);
+  border-radius: 50% 50% 45% 45%; transform-origin: 50% 100%;
+  animation: flicker 1.1s infinite alternate;
+}
+body.reduce #scr-title::after { animation: none; }
+.title-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; width: 100%; margin: auto 0; }
+/* '야영지' 같은 버튼 글이 두 줄로 꺾이지 않게 한다 */
+#scr-title .menu .btn { white-space: nowrap; }
+.meta-line { text-shadow: 0 1px 2px var(--ink); }
 .logo { position: relative; width: 64px; height: 64px; }
 .logo-fire {
   position: absolute; left: 12px; top: 8px; width: 34px; height: 48px;
@@ -182,6 +216,7 @@ button.item:disabled { opacity: 0.45; cursor: default; transform: none; }
 .item .desc { font-size: var(--fs-s); color: var(--muted); line-height: 1.45; }
 .item .tag { font-size: var(--fs-xs); color: var(--fire-hot); }
 .item.locked .name { color: var(--muted); }
+.lock-ico { font-style: normal; font-size: var(--fs-s); margin-right: 4px; }
 .item.done { border-color: var(--good); }
 .tabs { display: flex; gap: 6px; margin-bottom: 8px; overflow-x: auto; }
 .tabs .btn { font-size: var(--fs-s); padding: 6px 12px; }
@@ -233,6 +268,17 @@ body.reduce .meter.low { animation: none; }
 /* 모자람은 붉은 테두리와 함께 ! 기호로도 알린다 */
 .meter.low .meter-label::after { content: ' !'; font-weight: 900; color: var(--danger); }
 .small-meter .meter-bar { width: 96px; }
+/* 막대 이름 앞 아이콘: 모닥불 🔥 · 체력 ♥ · 등불 🏮 */
+.meter-label { display: inline-flex; align-items: center; gap: 3px; }
+.meter-ico { font-style: normal; font-size: var(--fs-s); line-height: 1; }
+.meter-ico.ico-hp { color: var(--good); font-weight: 900; }
+/* 장작 칸 머리 글: 장작 n/칸수 (선택 칸 ▼ 와 겹치지 않게 아래 여백) */
+.wood-head {
+  align-self: flex-start; font-size: var(--fs-xs); font-weight: 800; color: var(--muted);
+  background: rgba(var(--bg-rgb), 0.7); border: 1px solid var(--line); border-radius: var(--radius-s);
+  padding: 1px 8px; margin-bottom: 6px; line-height: 1.4;
+}
+.wood-head.full { color: var(--fire-hot); border-color: var(--fire); }
 .hud-bottom {
   position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: space-between;
   padding: 0 max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
@@ -377,6 +423,23 @@ body.reduce .rotate-icon { animation: none; }
   #scr-title .menu { flex-direction: row; flex-wrap: wrap; width: min(720px, 96%); }
   #scr-title .menu > .btn { flex: 1 1 26%; }
   #scr-title .menu > .row { flex: 1 1 auto; gap: 6px; flex-wrap: nowrap; }
+  #scr-title .menu .btn { padding: 6px 10px; }
+  #scr-title { --tree-near: 48px 76px; --tree-far: 32px 54px; }
+  #scr-title::after { width: 24px; height: 32px; left: calc(50% - 12px); bottom: 14px; }
+  #scr-title::before { width: 48px; height: 10px; left: calc(50% - 24px); bottom: 9px; }
+  /* 출발 준비: 칸을 낮춰 한 열에 3칸 넘게 보이게 한다. 설명은 한 줄로 줄이고, 고른 칸만 다 보인다 */
+  #scr-prep .bar-head { margin-bottom: 4px; }
+  #scr-prep h3 { margin-bottom: 4px; }
+  #scr-prep .list { gap: 6px; }
+  #scr-prep .item { padding: 5px 10px; gap: 1px; }
+  #scr-prep .item .name { font-size: var(--fs-s); line-height: 1.25; }
+  #scr-prep .item .desc {
+    font-size: var(--fs-xs); line-height: 1.35;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden;
+  }
+  #scr-prep .item.sel .desc { -webkit-line-clamp: 3; line-clamp: 3; }
+  #scr-prep .item .tag { line-height: 1.25; }
+  #scr-prep .foot { padding-top: 6px; }
   .result-wrap { gap: 6px; }
   .res-lines div { padding: 1px 0; }
   .share-box { max-height: 72px; }
@@ -393,5 +456,5 @@ body.reduce .rotate-icon { animation: none; }
   .hint { top: 70px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .screen.active, .overlay.open, .overlay.open .panel, .banner.on, .logo-fire, .rotate-icon { animation-duration: 0.01s; }
+  .screen.active, .overlay.open, .overlay.open .panel, .banner.on, .logo-fire, #scr-title::after, .rotate-icon { animation-duration: 0.01s; }
 }

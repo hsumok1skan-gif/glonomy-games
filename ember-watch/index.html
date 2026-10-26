@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B0E1A">
 <title>Ember Watch</title>
+<link rel="manifest" href="./manifest.json">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -62,7 +63,7 @@
     <div id="hud">
       <div class="hud-top">
         <div class="meter fire-meter" id="fire-meter">
-          <span class="meter-label">모닥불</span>
+          <span class="meter-label"><i class="meter-ico ico-fire" aria-hidden="true">🔥</i>모닥불</span>
           <div class="meter-bar"><div class="meter-fill" id="fire-fill"></div></div>
           <span class="meter-num" id="fire-num">70</span>
         </div>
@@ -85,15 +86,16 @@
       <div class="hud-bottom">
         <div class="hud-stats">
           <div class="meter small-meter">
-            <span class="meter-label">체력</span>
+            <span class="meter-label"><i class="meter-ico ico-hp" aria-hidden="true">♥</i>체력</span>
             <div class="meter-bar"><div class="meter-fill hp" id="hp-fill"></div></div>
             <span class="meter-num" id="hp-num">100</span>
           </div>
           <div class="meter small-meter" id="oil-meter">
-            <span class="meter-label">등불</span>
+            <span class="meter-label"><i class="meter-ico ico-lamp" aria-hidden="true">🏮</i>등불</span>
             <div class="meter-bar"><div class="meter-fill oil" id="oil-fill"></div></div>
             <span class="meter-num" id="oil-num">60</span>
           </div>
+          <div id="wood-head" class="wood-head" aria-hidden="true">장작 0/3</div>
           <div id="wood-slots" class="wood-slots" aria-label="들고 있는 장작"></div>
         </div>
         <div class="hud-actions">

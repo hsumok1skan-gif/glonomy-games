@@ -167,11 +167,15 @@
     var i = list.indexOf(name);
     if (i >= 0) list.splice(i, 1); else list.push(name);
     save();
-    renderAll();
+    var bag = Logic.buildBag(S, kid, bagKey());
+    var pr = Logic.progress(S, kid, bag);
+    var allNow = pr.total && pr.done === pr.total;
+    // 하나만 바꾸면 그 자리만 고친다 (고리가 차오르게). 다 챙겼을 때·다 챙김을 풀 때(문구 카드)·
+    // 처음 설정 카드가 떠 있을 때(3단계 '한 번 체크하기')만 화면을 다시 그린다
+    if (allNow || $('done-share') || $('setup-steps') || !UI.updateBag(S, kid, bag, name)) renderAll();
     var again = document.querySelector('.check[data-name="' + cssEsc(name) + '"]');
-    if (again && i < 0) again.classList.add('pop');
-    var pr = Logic.progress(S, kid, Logic.buildBag(S, kid, bagKey()));
-    if (i < 0 && pr.total && pr.done === pr.total) {
+    if (again && i < 0) { again.classList.remove('pop'); void again.offsetWidth; again.classList.add('pop'); }
+    if (i < 0 && allNow) {
       UI.flash($('bag-ring'));
       UI.toast('모두 챙겼어요! 다 쌌어요로 기록하고, 아래 문구를 복사해 보내세요');
     }
