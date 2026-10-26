@@ -1727,7 +1727,7 @@
 
     /* 20 ─ 제압 효과 */
     {
-      id: "shooter-suppression", cat: "shooter", view: "3d",
+      id: "shooter-suppression", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make near-misses *scary*", ko: "빗나간 총알도 *무섭게*" },
       intro: { en: "Bullets fly past. You feel *nothing*.", ko: "총알이 스쳐 가도 *아무렇지 않아요*." },
       interval: 1.6, stepDur: 4.0,
@@ -1744,7 +1744,7 @@
         });
       },
       update(w, dt) { fpsTick(w, dt); w.sup = Math.max(0, w.sup - dt * 0.3); w.vgn = 0; w.blur = 0; w.gray = 0; },
-      drawFront(w, ctx) { drawFpGun(w, ctx); },
+      drawOver(w, ctx) { drawFpGun(w, ctx); },
       drawHud(w, ctx) {
         xhair(ctx, 6 + w.sup * 8 * (w.vgn ? 1 : 0));
         if (w.gray > 0.02) screenFx(ctx, "grayscale(1)", w.gray);
@@ -1791,7 +1791,7 @@
 
     /* 21 ─ 피격 방향 표시 */
     {
-      id: "shooter-damage-dir", cat: "shooter", view: "3d",
+      id: "shooter-damage-dir", cat: "shooter", view: "3d", polished: true,
       title: { en: "Show *where* the hit came from", ko: "*어디서* 맞았는지 보여 주기" },
       intro: { en: "Taking damage. From *where?*", ko: "맞고 있어요. *어디서요?*" },
       interval: 1.1, stepDur: 4.0,
@@ -1814,7 +1814,7 @@
         if (!w.on("hp")) w.hpLag = w.hp;
         w.hpShake = Math.max(0, w.hpShake - dt);
       },
-      drawFront(w, ctx) { drawFpGun(w, ctx); },
+      drawOver(w, ctx) { drawFpGun(w, ctx); },
       drawHud(w, ctx) {
         xhair(ctx);
         if (w.edge && w.edge.t > 0) {
@@ -1874,7 +1874,7 @@
   RECIPES.push(
     /* 22 ─ 빈사 상태 심장 박동 */
     {
-      id: "shooter-low-health", cat: "shooter", view: "3d",
+      id: "shooter-low-health", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make low health *feel urgent*", ko: "빈사 상태를 *절박하게*" },
       intro: { en: "9 HP left. The screen looks *perfectly calm*.", ko: "체력 9. 화면은 *평화로워요*." },
       interval: 1.3, stepDur: 4.2,
@@ -2053,7 +2053,7 @@
         w.daze = Math.max(0, w.daze - dt * 0.4); w.wo = Math.max(0, w.wo - dt * 3);
         w.muf = 0; w.ghost = 0;
       },
-      drawFront(w, ctx) { drawFpGun(w, ctx); },
+      drawOver(w, ctx) { drawFpGun(w, ctx); },
       drawHud(w, ctx) {
         xhair(ctx);
         if (w.muf > 0.02) screenFx(ctx, "blur(3px) grayscale(0.8)", w.muf);

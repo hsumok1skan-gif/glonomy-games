@@ -711,7 +711,7 @@
 
     /* ─────────────── 7. 부메랑 ─────────────── */
     {
-      id: "weapon-boomerang", cat: "weapon", view: "top",
+      id: "weapon-boomerang", cat: "weapon", view: "top", polished: true,
       title: { en: "Make a boomerang *come back*", ko: "부메랑이 *돌아오는* 맛" },
       intro: { en: "Out, back. Like a *yo-yo*.", ko: "나갔다 들어옴. *요요* 같아요." },
       interval: 1.5, stepDur: 3.8,
@@ -797,7 +797,7 @@
 
     /* ─────────────── 8. 채찍 ─────────────── */
     {
-      id: "weapon-whip", cat: "weapon", view: "side",
+      id: "weapon-whip", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a whip *CRACK*", ko: "채찍이 *짝!* 하게" },
       intro: { en: "A stick that swings. Where's the *crack?*", ko: "막대가 휘둘러질 뿐. *짝* 소리는요?" },
       interval: 1.2, stepDur: 3.4,

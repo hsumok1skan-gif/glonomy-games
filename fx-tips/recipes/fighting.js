@@ -973,7 +973,7 @@
 
     /* 12 ─ KO 멈춤 + 슬로모션 */
     {
-      id: "fighting-ko-slowmo", cat: "fighting", view: "side", melee: true,
+      id: "fighting-ko-slowmo", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make the K.O. *land*", ko: "K.O.를 *제대로* 꽂기" },
       intro: { en: "Fight's over. Nobody *noticed*.", ko: "경기가 끝났는데 *아무도 몰라요*." },
       interval: 2.0, stepDur: 4.2,
@@ -1037,14 +1037,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack + boom",
           cap: { en: "A *crack*, then a long *boom*.", ko: "*빡*, 그리고 길게 *쿠웅*." },
-          ko(w) { w.sfx.crit(); w.sfx.boom(); },
+          ko(w) { w.sfx.boom(); if (w.on("flash") || w.on("freeze")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 13 ─ 깎기 데미지 */
     {
-      id: "fighting-chip-damage", cat: "fighting", view: "side", melee: true,
+      id: "fighting-chip-damage", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make chip damage *visible*", ko: "가드 데미지를 *보이게*" },
       intro: { en: "Blocking still costs HP. *Where did it go?*", ko: "막아도 체력이 닳아요. *어디서?*" },
       interval: 0.55, stepDur: 3.6,
@@ -1099,7 +1099,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clack + tick",
           cap: { en: "A *clack* plus a thin *tick* for the damage.", ko: "*탁* 위에 얇은 *틱*." },
-          chip(w) { w.sfx.tock(); w.sfx.tick(); },
+          chip(w) { w.sfx.clack(0.8); },
         },
       ],
     },

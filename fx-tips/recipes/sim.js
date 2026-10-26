@@ -940,7 +940,7 @@
         O.btn += (1 - O.btn) * Math.min(1, dt * 12); O.bump = Math.max(0, O.bump - dt * 5); O.dim = Math.max(0, O.dim - dt * 2);
         O.shown = w.on("bump") ? O.shown + (O.money - O.shown) * Math.min(1, dt * 6) : O.money;
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const O = w.O;
         if (O.show && O.dim) { ctx.fillStyle = `rgba(0,0,0,${0.5 * Math.min(1, O.dim)})`; ctx.fillRect(-60, -60, 660, 480); }
         if (!O.show) return;
@@ -1396,7 +1396,7 @@
     },
     /* ───────── 19. 펫 행복도 ───────── */
     {
-      id: "sim-pet", cat: "sim", view: "side",
+      id: "sim-pet", cat: "sim", view: "side", polished: true,
       title: { en: "Make petting *heartwarming*", ko: "쓰다듬기를 *몽글몽글하게*" },
       intro: { en: "Pet. Bar goes up. *That's it.*", ko: "쓰다듬으면 막대가 올라요. *끝.*" },
       interval: 1.0, stepDur: 3.6,
@@ -1464,13 +1464,13 @@
           } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "purr · pop",
           cap: { en: "A soft *purr* and a little *pop* per heart.", ko: "*그르릉* 소리에 하트마다 *뽁*." },
-          pet(w) { w.play(() => { for (let i = 0; i < 6; i++) nz({ type: "lowpass", f: 300, dur: 0.06, vol: 0.25, delay: i * 0.07 }); }); w.sfx.blip(5); }, full(w) { w.sfx.chime(7); } },
+          pet(w) { w.play(() => { for (let i = 0; i < 6; i++) nz({ type: "lowpass", f: 300, dur: 0.06, vol: 0.25, delay: i * 0.07 }); }); if (w.on("hearts")) w.sfx.blip(5); }, full(w) { if (w.on("max")) w.sfx.chime(7); } },
       ],
     },
 
     /* ───────── 20. 장식 배치 스냅 ───────── */
     {
-      id: "sim-place", cat: "sim", view: "iso",
+      id: "sim-place", cat: "sim", view: "iso", polished: true,
       title: { en: "Make placing decor *snap*", ko: "꾸미기 배치가 *착* 붙게" },
       intro: { en: "Slide… stop. *Did it place?*", ko: "스르륵… 멈춤. *놓인 거예요?*" },
       interval: 0.95, stepDur: 3.6,
@@ -1541,7 +1541,7 @@
           } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "lift swish · tock",
           cap: { en: "*Swish* on pick-up, *tock* on place.", ko: "들 때 *슉*, 놓을 때 *톡*." },
-          pick(w) { w.sfx.swish(); }, place(w) { w.sfx.tock(); w.sfx.blip(6); } },
+          pick(w) { w.sfx.swish(); }, place(w) { w.sfx.tock(); if (w.on("score")) w.sfx.blip(6); } },
       ],
     },
 
@@ -2164,7 +2164,7 @@
         const S = w.S; flyStep(w, dt); S.bump = Math.max(0, S.bump - dt * 5);
         for (const q of w.qs) { q.bump = Math.max(0, q.bump - dt * 5); q.psy += (1 - q.psy) * Math.min(1, dt * 10); q.shown = q.prog / q.need; }
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         for (const q of w.qs) {
           if (q.a <= 0) continue;
           ctx.save(); ctx.globalAlpha = q.a; ctx.translate(q.x, 182 + q.dy); ctx.rotate(q.rot);

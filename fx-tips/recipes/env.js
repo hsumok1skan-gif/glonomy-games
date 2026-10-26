@@ -1343,7 +1343,7 @@
 
     // ───────────────────────── 15. 드럼통 연쇄 폭발
     {
-      id: "env-barrels", cat: "env", view: "side",
+      id: "env-barrels", cat: "env", view: "side", polished: true,
       title: { en: "Chain barrel *explosions*", ko: "드럼통 *연쇄 폭발*" },
       intro: { en: "Shoot one. All four *disappear at once*.", ko: "하나 쐈더니 넷이 *한꺼번에* 사라져요." },
       interval: 2.2, stepDur: 4.2,
@@ -1432,7 +1432,7 @@
     },
     // ───────────────────────── 16. 문 박차기
     {
-      id: "env-door", cat: "env", view: "side",
+      id: "env-door", cat: "env", view: "side", polished: true,
       title: { en: "Kick doors open *hard*", ko: "문을 *쾅* 박차기" },
       intro: { en: "Kick. The door *teleports* open.", ko: "뻥. 문이 *순간이동*하듯 열려요." },
       interval: 1.9, stepDur: 4.0,
@@ -1517,14 +1517,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slam + creak",
           cap: { en: "A big *slam*, then a little *creak*.", ko: "큰 *쾅*, 뒤에 작은 *끼익*." },
-          slam(w) { w.sfx.slam(); w.after(0.3, () => w.sfx.creak()); },
+          slam(w) { w.sfx.slam(); if (w.on("rattle")) w.sfx.rattle(); },
         },
       ],
     },
 
     // ───────────────────────── 17. 횃불
     {
-      id: "env-torch", cat: "env", view: "side",
+      id: "env-torch", cat: "env", view: "side", polished: true,
       title: { en: "Make torches *flicker*", ko: "횃불이 *일렁이게*" },
       intro: { en: "An orange triangle. It lights *nothing*.", ko: "주황 삼각형. 아무것도 *안 비춰요*." },
       interval: 1.4, stepDur: 3.8,
@@ -1553,9 +1553,12 @@
         }
         ctx.fillStyle = "#3b3530"; ctx.fillRect(262, 150, 16, 46); ctx.fillStyle = "#5a4a3a"; ctx.fillRect(258, 142, 24, 12);
       },
+      drawBack(w, ctx) { // 벽 비추는 빛: 픽셀 효과층 밖에서 부드럽게
+        const F = w.fl, x = 270, y = 142, f = flick(w.time) * (1 - F.dim);
+        if (w.light) { add(ctx); glow(ctx, x, y - 10, (190 + f * 60) * (1 + F.puff * 0.3), "255,150,60", 0.35 + f * 0.25); glow(ctx, x, y - 14, 50, "255,210,140", 0.6); norm(ctx); }
+      },
       drawFront(w, ctx) {
         const F = w.fl, x = 270, y = 142, t = w.time, f = flick(t) * (1 - F.dim);
-        if (w.light) { add(ctx); glow(ctx, x, y - 10, (190 + f * 60) * (1 + F.puff * 0.3), "255,150,60", 0.35 + f * 0.25); glow(ctx, x, y - 14, 50, "255,210,140", 0.6); norm(ctx); }
         const s = 1 + F.puff * 0.4;
         if (!w.fshape) { ctx.fillStyle = "#f97316"; ctx.beginPath(); ctx.moveTo(x - 12 * s, y); ctx.lineTo(x + 12 * s, y); ctx.lineTo(x + F.lean * 40, y - 40 * s); ctx.fill(); return; }
         const h = (38 + Math.sin(t * 17) * 5 + Math.sin(t * 31) * 3) * s * (1 - F.dim * 0.4), lean = F.lean * 1.1 + Math.sin(t * 9) * 0.08;
@@ -1599,7 +1602,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + crackle",
           cap: { en: "A *whoosh*, then soft *crackles*.", ko: "*화르륵*, 뒤에 *타닥타닥*." },
-          gust(w) { w.play(() => { nz({ dur: 0.4, type: "bandpass", f: 500, f2: 1500, q: 1, vol: 0.3 }); for (let i = 0; i < 5; i++) nz({ dur: 0.02, type: "highpass", f: 3000, vol: 0.25, delay: 0.1 + i * rand(0.05, 0.12) }); }); },
+          gust(w) { if (w.on("gust")) w.play(() => { nz({ dur: 0.4, type: "bandpass", f: 500, f2: 1500, q: 1, vol: 0.3 }); for (let i = 0; i < 5; i++) nz({ dur: 0.02, type: "highpass", f: 3000, vol: 0.25, delay: 0.1 + i * rand(0.05, 0.12) }); }); },
         },
       ],
     },

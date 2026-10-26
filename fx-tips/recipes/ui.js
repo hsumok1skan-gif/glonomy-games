@@ -1435,7 +1435,7 @@
 
     /* 17 ───── 카드 뒤집기 ───── */
     {
-      id: "ui-flip", cat: "ui", view: "ui",
+      id: "ui-flip", cat: "ui", view: "ui", polished: true,
       title: { en: "Flip cards with *drama*", ko: "카드 뒤집기에 *긴장감*" },
       intro: { en: "Back. Front. *Swap.*", ko: "뒷면. 앞면. *휙* 바뀜." },
       interval: 2.3, stepDur: 3.8,
@@ -1518,14 +1518,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swish + reveal",
           cap: { en: "*Swish* as it turns, a bright *ping* on the face.", ko: "돌 때 *휙*, 앞면에서 *띵*." },
           flip(w) { w.sfx.swish(); },
-          reveal(w, C) { if (C.rar >= 3) w.sfx.ping(); else w.sfx.pop(); },
+          reveal(w, C) { w.sfx.pop(); if (C.rar >= 3 && (w.on("aura") || w.on("shine"))) w.sfx.lightSwell(); },
         },
       ],
     },
 
     /* 18 ───── 진행 바 마일스톤 ───── */
     {
-      id: "ui-milestone", cat: "ui", view: "ui",
+      id: "ui-milestone", cat: "ui", view: "ui", polished: true,
       title: { en: "Celebrate each *milestone*", ko: "진행 바의 *중간 보상*" },
       intro: { en: "The bar passed a chest. *Nothing.*", ko: "상자를 지나쳤는데 *아무 일*도 없어요." },
       interval: 1.0, stepDur: 3.6,
@@ -1597,14 +1597,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "blip + chime",
           cap: { en: "Tiny *blip* per gain, a *chime* at each chest.", ko: "늘 때마다 *뿅*, 상자마다 *딩*." },
           add(w, M) { w.sfx.blip(Math.round(M.v / 10)); },
-          reach(w, M, n) { w.sfx.chime(n.at / 10); },
+          reach(w, M, n) { if (w.on("node") || w.on("open")) w.sfx.chime(n.at / 10); },
         },
       ],
     },
 
     /* 19 ───── 업적 달성 ───── */
     {
-      id: "ui-achieve", cat: "ui", view: "ui",
+      id: "ui-achieve", cat: "ui", view: "ui", polished: true,
       title: { en: "Make achievements *shine*", ko: "업적 달성을 *빛나게*" },
       intro: { en: "Achievement unlocked. *Grey box.*", ko: "업적 달성. *회색 상자* 하나." },
       interval: 2.1, stepDur: 4.0,
@@ -1670,14 +1670,14 @@
         {
           id: "sound", name: { en: "Fanfare", ko: "팡파르" }, param: "5-note arpeggio",
           cap: { en: "A short *fanfare*. Rising, never falling.", ko: "짧은 *빰빠밤*. 올라가기만 해요." },
-          unlock(w) { w.after(0.35, () => w.sfx.fanfare()); },
+          unlock(w) { w.sfx.swish(); if (w.on("gold") || w.on("trophy")) w.after(0.35, () => w.sfx.fanfare()); },
         },
       ],
     },
 
     /* 20 ───── 랭킹 상승 ───── */
     {
-      id: "ui-rank", cat: "ui", view: "ui",
+      id: "ui-rank", cat: "ui", view: "ui", polished: true,
       title: { en: "Make rank-ups *climb*", ko: "순위 상승을 *올라가게*" },
       intro: { en: "Rank 5 → 3. The list just *redraws*.", ko: "5위 → 3위. 목록이 *다시 그려질* 뿐." },
       interval: 1.4, stepDur: 3.6,

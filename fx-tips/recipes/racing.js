@@ -1265,7 +1265,7 @@
 
     /* 15 ─ 전복 */
     {
-      id: "racing-crash-tumble", cat: "racing", view: "side",
+      id: "racing-crash-tumble", cat: "racing", view: "side", polished: true,
       title: { en: "Make crashes *tumble*", ko: "사고를 *데굴데굴* 구르게" },
       intro: { en: "Full speed into a wall. It just *stops*.", ko: "전속력으로 벽에 박았는데 그냥 *멈춰요*." },
       interval: 2.8, stepDur: 4.2,
@@ -1339,7 +1339,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crash + thunks",
           cap: { en: "One big *crash*, then *thunks* on each bounce.", ko: "큰 *쾅*, 튈 때마다 *쿵쿵*." },
-          crash(w) { w.sfx.boom(); w.sfx.crit(); },
+          crash(w) { w.sfx.slam(); if (w.on("sparks") || w.on("parts")) w.sfx.scrape(); },
           bounce(w) { w.sfx.thunk(); },
         },
       ],
@@ -1347,7 +1347,7 @@
 
     /* 16 ─ 축구 슛 */
     {
-      id: "sports-soccer-kick", cat: "racing", view: "side",
+      id: "sports-soccer-kick", cat: "racing", view: "side", polished: true,
       title: { en: "Make kicks feel *powerful*", ko: "슛에 *힘* 싣기" },
       intro: { en: "The ball just *leaves*. No foot behind it.", ko: "공이 그냥 *날아가요*. 발 힘이 없어요." },
       interval: 1.5, stepDur: 3.6,
@@ -1443,7 +1443,7 @@
 
     /* 17 ─ 골 그물 */
     {
-      id: "sports-goal-net", cat: "racing", view: "side",
+      id: "sports-goal-net", cat: "racing", view: "side", polished: true,
       title: { en: "Make the net *catch* the ball", ko: "그물이 공을 *받아내게*" },
       intro: { en: "Goal! The net is a *painting*.", ko: "골인! 그런데 그물이 *그림* 같아요." },
       interval: 1.6, stepDur: 3.8,
@@ -1530,7 +1530,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swish + thump",
           cap: { en: "A soft *swish* of net, a dull *thump*.", ko: "그물 *쉭*, 둔한 *퍽*." },
-          net(w) { w.sfx.thunk(); w.play(() => nz({ type: "bandpass", f: 3000, f2: 1200, q: 1, dur: 0.35, vol: 0.3 })); },
+          net(w) { w.sfx.thunk(); if (w.on("bulge") || w.on("ripple")) w.play(() => nz({ type: "bandpass", f: 3000, f2: 1200, q: 1, dur: 0.35, vol: 0.3 })); },
         },
       ],
     },

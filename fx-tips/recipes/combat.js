@@ -34,6 +34,8 @@
     const c = w.hero, b = w.blade; if (!b || c.alpha <= 0) return;
     const x = c.x + c.ox + c.w * 0.4, y = G - c.h * 0.55 * c.sy;
     ctx.save(); ctx.translate(x, y); ctx.rotate(b.rot);
+    // 주인공 팔레트 픽셀 장검(손잡이를 손에, 칼끝이 b.rot 방향)
+    if (PXSPR["wpn-longsword-px"]) { const s = 1.8, sm = ctx.imageSmoothingEnabled; ctx.rotate(Math.PI / 2); ctx.imageSmoothingEnabled = false; ctx.drawImage(PXSPR["wpn-longsword-px"], -15.5 * s, -53 * s, 31 * s, 62 * s); ctx.imageSmoothingEnabled = sm; ctx.restore(); return; }
     ctx.fillStyle = "#e2e8f0"; ctx.beginPath(); ctx.moveTo(12, -4); ctx.lineTo(84, -4); ctx.lineTo(98, 0); ctx.lineTo(84, 4); ctx.lineTo(12, 4); ctx.closePath(); ctx.fill();
     ctx.fillStyle = "#94a3b8"; ctx.fillRect(12, 0.5, 74, 2.5);
     ctx.fillStyle = "#57534e"; ctx.fillRect(-10, -3, 20, 6);
@@ -768,7 +770,7 @@
 
     /* 7. 막기 */
     {
-      id: "combat-block", cat: "combat", view: "side",
+      id: "combat-block", cat: "combat", view: "side", polished: true,
       title: { en: "Make a block go *CLANG*", ko: "막을 때 *쨍!* 소리 나게" },
       intro: { en: "Blocked? Or just *ignored*?", ko: "막은 거예요? 아니면 *씹힌* 거예요?" },
       interval: 1.1, stepDur: 3.4,
@@ -787,10 +789,15 @@
         drawBlade(w, ctx);
         const f = w.foe, x = f.x + f.ox - 50, y = G - 112, g = w.guard;
         ctx.save(); ctx.translate(x, y);
-        ctx.fillStyle = "#64748b"; ctx.strokeStyle = "#cbd5e1"; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(12, 0); ctx.lineTo(12, 70); ctx.lineTo(0, 92); ctx.lineTo(-12, 70); ctx.closePath(); ctx.fill(); ctx.stroke();
-        ctx.fillStyle = "#94a3b8"; ctx.fillRect(-12, 0, 6, 70);
-        if (g.fl > 0) { ctx.fillStyle = `rgba(255,255,255,${g.fl})`; ctx.fill(); }
+        // 픽셀 연 모양 방패: 검은 테 → 녹슨 쇠(적 팔레트 붉은 문양) → 밝은 모서리, 맞으면 하얗게 번쩍
+        const P = 2, fl = g.fl > 0.05;
+        for (let yy = 0; yy < 92; yy += P) { const half = yy < 70 ? 12 : Math.max(0, Math.round((12 * (92 - yy) / 22) / P) * P);
+          ctx.fillStyle = "#0d0f14"; ctx.fillRect(-half - P, yy, 2 * half + 2 * P, P);
+          if (half > 0) { ctx.fillStyle = fl ? "#f8fafc" : yy < 30 ? "#7b8494" : yy < 60 ? "#5f6878" : "#4a5262"; ctx.fillRect(-half, yy, 2 * half, P);
+            if (!fl) { ctx.fillStyle = "#b9c1cd"; ctx.fillRect(-half, yy, P, P); ctx.fillStyle = "#353b47"; ctx.fillRect(half - P, yy, P, P); } } }
+        ctx.fillStyle = "#0d0f14"; ctx.fillRect(-14, -P, 28, P);
+        if (!fl) { ctx.fillStyle = "#7f1d1d"; ctx.fillRect(-2, 8, 4, 64); ctx.fillRect(-9, 28, 18, 4); ctx.fillStyle = "#dc2626"; ctx.fillRect(-2, 8, 2, 64); ctx.fillRect(-9, 28, 18, 2);
+          ctx.fillStyle = "#d6dce5"; for (const ry of [6, 50, 66]) { ctx.fillRect(-8, ry, 2, 2); ctx.fillRect(6, ry, 2, 2); } }
         ctx.restore();
       },
       steps: [
@@ -835,7 +842,6 @@
           cap: { en: "Two *clashing* tones = metal. *CLANG*.", ko: "안 어울리는 두 음 = 쇠. *쨍!*" },
           block(w) {
             w.play(() => {
-              tn({ type: "triangle", f: 1870, dur: 0.45, vol: 0.2 }); tn({ type: "triangle", f: 2730, dur: 0.35, vol: 0.12 });
               nz({ type: "highpass", f: 4000, dur: 0.06, vol: 0.4 });
             });
           },
@@ -845,7 +851,7 @@
 
     /* 8. 회피 MISS */
     {
-      id: "combat-dodge", cat: "combat", view: "side",
+      id: "combat-dodge", cat: "combat", view: "side", polished: true,
       title: { en: "Make a dodge *read*", ko: "피한 게 *보이게*" },
       intro: { en: "No damage. Bug? *Dodge?*", ko: "피해가 없어요. 버그? *회피?*" },
       interval: 1.4, stepDur: 3.6,
@@ -905,7 +911,7 @@
 
     /* 9. 회복 */
     {
-      id: "combat-heal", cat: "combat", view: "side",
+      id: "combat-heal", cat: "combat", view: "side", polished: true,
       title: { en: "Make healing feel *good*", ko: "회복은 *기분 좋게*" },
       intro: { en: "HP went up. That's *all* you get.", ko: "체력이 올랐어요. *그게* 다예요." },
       interval: 1.5, stepDur: 3.8,
@@ -965,7 +971,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "3-note chime",
           cap: { en: "A rising *three-note* chime. Soft, bright.", ko: "*도-미-솔* 올라가는 맑은 소리." },
-          heal(w) { [0, 4, 7].forEach((n, i) => w.after(i * 0.07, () => w.sfx.chime(n))); },
+          heal(w) { if (w.on("glow") || w.on("beam")) w.sfx.lightSwell(); if (w.on("plus") || w.on("number")) [0, 4, 7].forEach((n, i) => w.after(i * 0.07, () => w.sfx.chime(n))); },
         },
       ],
     },
@@ -1567,7 +1573,7 @@
         w.lb = Math.max(0, w.lb - dt * 1.5);
         if (w.ts >= 1) { w.cam.tx = 0; w.cam.ty = 0; }
       },
-      drawFront(w, ctx) { drawGun(w, ctx); },
+      drawOver(w, ctx) { drawGun(w, ctx); },
       drawHud(w, ctx) {
         label(ctx, "ENEMIES LEFT  " + (w.foe.alive ? 1 : 0), 270, 52, 14, "rgba(255,255,255,0.7)");
         if (w.lb <= 0) return;

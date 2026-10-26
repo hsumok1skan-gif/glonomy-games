@@ -650,7 +650,7 @@
       update(w, dt) {
         const h = w.hero; h.x = 270 + Math.sin(w.time * 0.9) * 120; h.rot = Math.cos(w.time * 0.9) > 0 ? 0 : Math.PI;
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const D = w.D, h = w.hero;
         if (D.ghost > 0) { ctx.save(); ctx.globalAlpha = 0.35 * D.ghost; if (poseSet(h)) { ctx.translate(14 * Math.sin(w.time * 3), 0); drawActorSil(ctx, h, null); } else { ctx.translate(h.x + 14 * Math.sin(w.time * 3), h.gy + 6); ctx.rotate(h.rot); ctx.drawImage(h.s.c, -h.w / 2, -h.h / 2, h.w, h.h); } ctx.restore(); }
         if (D.grade > 0) { ctx.fillStyle = `rgba(255,170,40,${D.grade})`; ctx.fillRect(-80, -80, 700, 520); }
@@ -1126,7 +1126,7 @@
       drawBack(w, ctx) {
         if (w.Z.dbl > 0) { const h = w.hero, d = 18 * w.Z.dbl; for (const [c, k] of [["red", -1], ["cyan", 1]]) { ctx.save(); ctx.globalAlpha = 0.4; ctx.drawImage(h.s[c], h.x - h.w / 2 + d * k + Math.sin(w.time * 3) * 6 * k, G - h.h, h.w, h.h); ctx.restore(); } }
       },
-      drawFront(w, ctx) { if (w.Z.tint > 0) { ctx.fillStyle = `rgba(126,34,206,${w.Z.tint})`; ctx.fillRect(-80, -80, 700, 520); } },
+      drawOver(w, ctx) { if (w.Z.tint > 0) { ctx.fillStyle = `rgba(126,34,206,${w.Z.tint})`; ctx.fillRect(-80, -80, 700, 520); } },
       drawHud(w, ctx) {
         const Z = w.Z, j = Z.glitch * w.s;
         meter(ctx, 190 + rand(-1, 1) * j * 6, 62 + rand(-1, 1) * j * 3, 160, 14, Z.v / 100, "#a78bfa");
@@ -1617,7 +1617,7 @@
 
     /* ───────── 19. 낚시 ───────── */
     {
-      id: "survival-fish", cat: "survival", view: "side",
+      id: "survival-fish", cat: "survival", view: "side", polished: true,
       title: { en: "Make fishing *tense*", ko: "낚시에 *손맛* 넣기" },
       intro: { en: "Cast. Wait. Fish. *Huh.*", ko: "던지고, 기다리고, 물고기. *응?*" },
       interval: 2.8, stepDur: 4.2,
@@ -1726,7 +1726,7 @@
 
     /* ───────── 20. 불에 굽기 ───────── */
     {
-      id: "survival-cook", cat: "survival", view: "side",
+      id: "survival-cook", cat: "survival", view: "side", polished: true,
       title: { en: "Make cooking look *delicious*", ko: "굽는 걸 *맛있어 보이게*" },
       intro: { en: "Raw… raw… raw… *cooked*.", ko: "날것… 날것… 날것… *익음*." },
       interval: 0.7, stepDur: 4.0,
@@ -1747,12 +1747,25 @@
       },
       drawFront(w, ctx) {
         const M = w.M, d = M.smooth ? M.done : M.done >= 1 ? 1 : 0;
-        const col = d < 0.8 ? lerpc([244, 114, 182], [146, 64, 14], d / 0.8) : lerpc([146, 64, 14], [120, 53, 15], (d - 0.8) / 0.2);
+        const col = d < 0.8 ? lerpc([200, 70, 78], [146, 64, 14], d / 0.8) : lerpc([146, 64, 14], [120, 53, 15], (d - 0.8) / 0.2);
         ctx.strokeStyle = "#d6d3d1"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(160, G - 136); ctx.lineTo(380, G - 136); ctx.stroke();
         ctx.save(); ctx.translate(270, G - 136); ctx.rotate(M.rot); ctx.scale(M.sx, M.sy);
-        ctx.fillStyle = `rgb(${col})`; ctx.beginPath(); ctx.ellipse(0, 0, 62, 34, 0, 0, TAU); ctx.fill();
-        ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.beginPath(); ctx.ellipse(-16, -14, 30, 8, -0.2, 0, TAU); ctx.fill();
-        if (M.smooth && d > 0.4) { ctx.strokeStyle = `rgba(60,25,10,${(d - 0.4) * 1.4})`; ctx.lineWidth = 4; for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.moveTo(i * 22 - 10, -26); ctx.lineTo(i * 22 + 10, 26); ctx.stroke(); } }
+        // 픽셀 뼈 붙은 고기: 3px 칸. 검은 테 → 지방 테두리(익으면 노릇) → 살(분홍→갈색) + 마블링 + 뼈 + 석쇠 자국
+        const P = 3, sh = (c, k) => `rgb(${c.map(v => Math.max(0, Math.min(255, Math.round(v * k)))).join(",")})`;
+        const fat = lerpc([250, 232, 220], [214, 150, 70], Math.min(1, d * 1.2)), cc = col.split ? col.split(",").map(Number) : col;
+        const inside = (x, y, r = 0) => (x / (62 - r)) ** 2 + (y / (34 - r)) ** 2 < 1;
+        for (let y = -36; y < 36; y += P) for (let x = -64; x < 64; x += P) {
+          if (!inside(x, y)) continue;
+          const edge = !inside(x - P, y) || !inside(x + P, y) || !inside(x, y - P) || !inside(x, y + P);
+          let c;
+          if (edge) c = "#2a1208";
+          else if (!inside(x, y, 7)) c = sh(fat.split ? fat.split(",").map(Number) : fat, y < 0 ? 1.05 : 0.85);
+          else { const m = Math.sin(x * 0.31 + y * 0.53) * Math.sin(x * 0.17 - y * 0.41); c = sh(cc, (y < -8 ? 1.12 : y > 14 ? 0.8 : 1) * (m > 0.55 ? 1.35 : 1)); }
+          ctx.fillStyle = c; ctx.fillRect(x, y, P, P);
+        }
+        ctx.fillStyle = "#2a1208"; ctx.fillRect(30, -9, 33, 18); ctx.fillRect(54, -15, 15, 30);
+        ctx.fillStyle = "#efe6d4"; ctx.fillRect(33, -6, 27, 12); ctx.fillRect(57, -12, 9, 24); ctx.fillStyle = "#c8bba3"; ctx.fillRect(33, 3, 27, 3); ctx.fillRect(57, 6, 9, 6);
+        if (M.smooth && d > 0.4) { ctx.globalAlpha = Math.min(1, (d - 0.4) * 1.6); ctx.fillStyle = "#3a1506"; for (let i = -1; i <= 1; i++) for (let k = 0; k < 16; k++) ctx.fillRect(i * 22 - 12 + k * 1.5 - (k * 1.5) % P, -24 + k * 3, P * 2, P); ctx.globalAlpha = 1; }
         ctx.restore();
         meter(ctx, 200, 60, 140, 12, M.done, M.done >= 1 ? "#fbbf24" : "#fb923c");
       },
@@ -1795,15 +1808,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "sizzle loop + ding",
           cap: { en: "Constant *sizzle*. A little *ding* when ready.", ko: "계속 *지글지글*, 다 되면 *띵*." },
-          update(w, dt) { if (Math.random() < dt * 14) w.play(() => nz({ dur: 0.04, type: "highpass", f: rand(4000, 7000), vol: 0.08 })); },
-          ready(w) { w.sfx.chime(2); },
+          update(w, dt) { if (w.on("drip") && Math.random() < dt * 14) w.play(() => nz({ dur: 0.04, type: "highpass", f: rand(4000, 7000), vol: 0.08 })); },
+          ready(w) { if (w.on("perfect")) w.sfx.chime(2); },
         },
       ],
     },
 
     /* ───────── 21. 폭풍 ───────── */
     {
-      id: "survival-storm", cat: "survival", view: "side",
+      id: "survival-storm", cat: "survival", view: "side", polished: true,
       title: { en: "Make a storm *crackle*", ko: "폭풍을 *번쩍 쾅*" },
       intro: { en: "Line flashes. *That* was lightning?", ko: "선 하나 번쩍. 이게 *번개*?" },
       interval: 1.8, stepDur: 4.0,
@@ -1812,8 +1825,9 @@
         ctx.fillStyle = w.S.dark ? "#0d121a" : "#2c3440";
         ctx.beginPath(); ctx.moveTo(-80, G); ctx.lineTo(80, G - 60); ctx.lineTo(200, G - 20); ctx.lineTo(330, G - 80); ctx.lineTo(620, G); ctx.closePath(); ctx.fill();
         soil(ctx);
-        ctx.fillStyle = w.S.burn > 0 ? "#1c1917" : "#3f2a1d"; ctx.fillRect(404, G - 110, 12, 110);
-        ctx.fillStyle = w.S.hit > 0 ? "#f8fafc" : w.S.burn > 0 ? "#292524" : "#14532d"; ctx.beginPath(); ctx.moveTo(370, G - 90); ctx.lineTo(410, G - 180); ctx.lineTo(450, G - 90); ctx.closePath(); ctx.fill();
+        if (PXSPR["env-pine-px"]) { const im = w.S.hit > 0 ? pxTint("env-pine-px", "#f8fafc") : w.S.burn > 0 ? pxTint("env-pine-px", "#1c1917") : PXSPR["env-pine-px"], sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(im, 410 - 36, G - 192, 72, 192); ctx.imageSmoothingEnabled = sm; }
+        else { ctx.fillStyle = w.S.burn > 0 ? "#1c1917" : "#3f2a1d"; ctx.fillRect(404, G - 110, 12, 110);
+        ctx.fillStyle = w.S.hit > 0 ? "#f8fafc" : w.S.burn > 0 ? "#292524" : "#14532d"; ctx.beginPath(); ctx.moveTo(370, G - 90); ctx.lineTo(410, G - 180); ctx.lineTo(450, G - 90); ctx.closePath(); ctx.fill(); }
       },
       setup(w) {
         w.hero = w.actor("hero", { home: 130 });
@@ -1875,14 +1889,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack → rumble",
           cap: { en: "A sharp *crack*, then a long low *rumble*.", ko: "날카로운 *쩍*, 이어서 긴 *우르릉*." },
           strike(w) { w.play(() => nz({ dur: 0.15, type: "highpass", f: 2000, vol: 0.5 })); },
-          rumble(w) { w.play(() => { nz({ dur: 1.6, f: 300, f2: 60, vol: 0.6 }); tn({ f: 50, f2: 30, dur: 1.2, vol: 0.4 }); }); },
+          rumble(w) { if (w.on("thunder")) w.play(() => { nz({ dur: 1.6, f: 300, f2: 60, vol: 0.6 }); tn({ f: 50, f2: 30, dur: 1.2, vol: 0.4 }); }); },
         },
       ],
     },
 
     /* ───────── 22. 쉼터의 안도감 ───────── */
     {
-      id: "survival-shelter", cat: "survival", view: "side",
+      id: "survival-shelter", cat: "survival", view: "side", polished: true,
       title: { en: "Make shelter feel *safe*", ko: "쉼터를 *안심되게*" },
       intro: { en: "Inside or outside? *Same thing.*", ko: "안이든 밖이든 *똑같아요*." },
       interval: 1.9, stepDur: 4.2,
@@ -1909,7 +1923,7 @@
         ctx.fillStyle = "#2a1d14"; ctx.fillRect(350, G - 136, 150, 136);
         ctx.fillStyle = "#facc15"; ctx.fillRect(452, G - 120, 10, 14);
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const Sh = w.Sh;
         if (Sh.cold > 0) { ctx.fillStyle = `rgba(56,120,220,${Sh.cold * 0.28})`; ctx.fillRect(-80, -80, 700, 520); }
         if (Sh.lamp > 0) { shade(ctx, 0.55, [{ x: 457, y: G - 110, r: 170 * Sh.lamp + 20, hard: 0.5 }]); ctx.globalCompositeOperation = "lighter"; glow(ctx, 457, G - 110, 120, "253,186,116", 0.45); ctx.globalCompositeOperation = "source-over"; }
@@ -1952,8 +1966,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rain dulls inside",
           cap: { en: "Rain *dulls* inside. A soft *chime* on entry.", ko: "안에선 빗소리가 *먹먹*. 들어갈 때 *띵*." },
-          update(w, dt) { if (Math.random() < dt * 6) w.play(() => nz({ dur: 0.3, type: w.Sh.inside ? "lowpass" : "highpass", f: w.Sh.inside ? 500 : 2500, vol: w.Sh.inside ? 0.06 : 0.12 })); },
-          inside(w) { w.sfx.chime(0); },
+          update(w, dt) { if (w.on("drips") && Math.random() < dt * 6) w.play(() => nz({ dur: 0.3, type: w.Sh.inside ? "lowpass" : "highpass", f: w.Sh.inside ? 500 : 2500, vol: w.Sh.inside ? 0.06 : 0.12 })); },
+          inside(w) { if (w.on("badge")) w.sfx.chime(0); },
         },
       ],
     },
@@ -2133,7 +2147,7 @@
         });
         w.after(2.7, () => { Object.assign(Dd, { on: 0, fade: 0, ring: 0, sp: 0, stats: 0 }); Object.assign(h, { alpha: 1, rot: 0, oy: 0 }); w.busy = false; });
       },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         const Dd = w.Dd;
         if (Dd.fade > 0) { ctx.fillStyle = `rgba(40,4,8,${Dd.fade * 0.65})`; ctx.fillRect(-80, -80, 700, 520); }
         if (Dd.ring > 0) shade(ctx, 0.9 * Dd.ring, [{ x: w.hero.x, y: G - 40, r: 420 - 280 * Dd.ring, hard: 0.5 }], "0,0,0");
@@ -2211,7 +2225,7 @@
         ctx.fillStyle = "#334155"; ctx.beginPath(); ctx.ellipse(270, G + 2, 70, 12, 0, 0, TAU); ctx.fill();
         ctx.strokeStyle = "rgba(198,244,50,0.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(270, G + 2, 56, 9, 0, 0, TAU); ctx.stroke();
       },
-      drawFront(w, ctx) { if (w.Rs.black > 0) { ctx.fillStyle = `rgba(0,0,0,${w.Rs.black})`; ctx.fillRect(-80, -80, 700, 520); } },
+      drawOver(w, ctx) { if (w.Rs.black > 0) { ctx.fillStyle = `rgba(0,0,0,${w.Rs.black})`; ctx.fillRect(-80, -80, 700, 520); } },
       steps: [
         {
           id: "fade", name: { en: "Fade from Black", ko: "검은 화면에서" }, param: "black 1 → 0 · 0.6s",

@@ -951,7 +951,7 @@
 
     /* 12 ─ 3, 2, 1, FIGHT */
     {
-      id: "duel-countdown", cat: "duel", view: "ui",
+      id: "duel-countdown", cat: "duel", view: "ui", polished: true,
       title: { en: "Make the countdown *hype*", ko: "카운트다운을 *두근두근*하게" },
       intro: { en: "3… 2… 1… *fight.* Yawn.", ko: "3… 2… 1… *시작*. 하품." },
       interval: 2.6, stepDur: 4.0,
@@ -1009,14 +1009,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "3 beeps + gong",
           cap: { en: "Three *beeps*, then a big *gong* on FIGHT.", ko: "*삑, 삑, 삑*, 그리고 *징~*." },
-          beat(w, c, i) { if (i < 3) w.play(() => tn({ type: "square", f: 660, dur: 0.12, vol: 0.12 })); else { w.sfx.fanfare(); w.sfx.slam(); } },
+          beat(w, c, i) { if (i < 3) w.play(() => tn({ type: "square", f: 660, dur: 0.12, vol: 0.12 })); else { w.sfx.slam(); if (w.on("burst")) w.sfx.critBig(); } },
         },
       ],
     },
 
     /* 13 ─ 라운드 승리 */
     {
-      id: "duel-roundwin", cat: "duel", view: "side",
+      id: "duel-roundwin", cat: "duel", view: "side", polished: true,
       title: { en: "Make a round win *land*", ko: "라운드 승리를 *꽂히게*" },
       intro: { en: "Round over. *Next.*", ko: "라운드 끝. *다음*." },
       interval: 2.4, stepDur: 4.0,
@@ -1087,14 +1087,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crit + fanfare",
           cap: { en: "A crushing *hit*, a short *fanfare*.", ko: "묵직한 *퍽*, 짧은 *팡파레*." },
-          ko(w) { w.sfx.crit(); w.after(0.3, () => w.sfx.fanfare()); },
+          ko(w) { w.sfx.slashHit(); if (w.on("ko")) w.sfx.critBig(); if (w.on("banner") || w.on("pose")) w.after(0.3, () => w.sfx.fanfare()); },
         },
       ],
     },
 
     /* 14 ─ 퍼펙트 승리 */
     {
-      id: "duel-perfect", cat: "duel", view: "side",
+      id: "duel-perfect", cat: "duel", view: "side", polished: true,
       title: { en: "Celebrate a *perfect* win", ko: "*퍼펙트* 승리를 축하하기" },
       intro: { en: "No damage taken. *Nobody noticed.*", ko: "한 대도 안 맞았는데. *아무도 몰라요*." },
       interval: 2.6, stepDur: 4.2,
@@ -1169,7 +1169,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "chimes + fanfare",
           cap: { en: "A *chime* per letter, then the *fanfare*.", ko: "글자마다 *띵*, 마지막에 *팡파레*." },
-          win(w) { for (let i = 0; i < 7; i++) w.after(i * 0.06, () => w.sfx.chime(i * 2)); w.after(0.5, () => w.sfx.fanfare()); },
+          win(w) { w.sfx.slashHit(); if (w.on("letters")) for (let i = 0; i < 7; i++) w.after(i * 0.06, () => w.sfx.tick()); if (w.on("gold") || w.on("rays")) w.after(0.5, () => w.sfx.fanfare()); },
         },
       ],
     },
@@ -1586,7 +1586,7 @@
         }));
       },
       update(w, dt) { w.cool = Math.max(0, w.cool - dt * 0.9); },
-      drawFront(w, ctx) { drawClub(ctx, ...Object.values(bossHand(w.boss)), w.club.rot, 150); },
+      drawOver(w, ctx) { drawClub(ctx, ...Object.values(bossHand(w.boss)), w.club.rot, 150); },
       drawHud(w, ctx) {
         if (w.cool <= 0) return;
         ctx.fillStyle = `rgba(40,90,200,${0.22 * w.cool})`; ctx.fillRect(-100, -100, 740, 560);

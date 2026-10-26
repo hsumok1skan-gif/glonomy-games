@@ -893,7 +893,7 @@
 
     /* 12 ─ 레벨업: 멈추고 카드 세 장 */
     {
-      id: "horde-levelup", cat: "horde", view: "top",
+      id: "horde-levelup", cat: "horde", view: "top", polished: true,
       title: { en: "Make a level-up *stop the world*", ko: "레벨업은 *세상을 멈추고*" },
       intro: { en: "Cards appear. Enemies *keep biting*.", ko: "카드가 떴는데 적은 *계속 와요*." },
       interval: 2.8, stepDur: 4.2,
@@ -981,7 +981,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "fanfare · chime",
           cap: { en: "A *fanfare* to open, a bright *chime* to pick.", ko: "열 때 *빰빠밤*, 고를 때 *띵*." },
-          levelup(w) { w.sfx.fanfare(); },
+          levelup(w) { if (w.on("burst") || w.on("pause")) w.sfx.fanfare(); else w.sfx.chime(4); },
           pick(w) { w.sfx.chime(4); },
         },
       ],
@@ -989,7 +989,7 @@
 
     /* 13 ─ 무기 진화 */
     {
-      id: "horde-evolve", cat: "horde", view: "top",
+      id: "horde-evolve", cat: "horde", view: "top", polished: true,
       title: { en: "Make a weapon evolution *an event*", ko: "무기 진화를 *사건*으로" },
       intro: { en: "Two knives became six. *Silently*.", ko: "칼 두 개가 여섯 개로. *조용히*." },
       interval: 2.8, stepDur: 4.2,
@@ -1070,7 +1070,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "charge · chime + boom",
           cap: { en: "Rising *charge*, then a *chime* on a *boom*.", ko: "올라가는 *위잉*, 그리고 *쿵* 위에 *띵*." },
           charge(w) { w.sfx.charge(); },
-          evolve(w) { w.sfx.boom(); w.sfx.chime(7); },
+          evolve(w) { if (w.on("flash")) w.sfx.boom(); if (w.on("name") || w.on("rays")) w.sfx.lightSwell(); },
         },
       ],
     },

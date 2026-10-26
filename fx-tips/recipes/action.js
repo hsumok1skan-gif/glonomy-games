@@ -1528,7 +1528,7 @@
         });
       },
       update(w, dt) { w.fin = Math.max(0, w.fin - dt); w.bars += ((w.fin > 0 ? 1 : 0) - w.bars) * Math.min(1, dt * 10); },
-      drawFront(w, ctx) { drawSword(ctx, w.hero, w.sw); },
+      drawOver(w, ctx) { drawSword(ctx, w.hero, w.sw); },
       drawHud(w, ctx) {
         if (w.bars > 0.01) {
           const wy = sy => (sy - 180) / (1 + w.zoom) + 180 + w.cam.y;
@@ -1583,7 +1583,7 @@
 
     /* 20 ─ 적 경직 */
     {
-      id: "action-stagger", cat: "action", view: "side", melee: true,
+      id: "action-stagger", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make an interrupt *stagger*", ko: "공격을 끊으면 *휘청*하게" },
       intro: { en: "I hit it mid-swing. It just… *stopped*.", ko: "기 모을 때 쳤는데 그냥… *멈췄어요*." },
       interval: 1.6, stepDur: 3.8,
@@ -1663,7 +1663,7 @@
 
     /* 21 ─ 방향별 피격 반응 */
     {
-      id: "action-hit-dir", cat: "action", view: "top",
+      id: "action-hit-dir", cat: "action", view: "top", polished: true,
       title: { en: "React to *where* the hit came from", ko: "맞은 *방향*대로 반응하게" },
       intro: { en: "Hit from any side. Same *flash* every time.", ko: "어느 쪽에서 맞든 *똑같이* 번쩍." },
       interval: 0.8, stepDur: 3.6,
@@ -1732,7 +1732,7 @@
 
     /* 22 ─ 벽꽝 */
     {
-      id: "action-wall-splat", cat: "action", view: "side", melee: true,
+      id: "action-wall-splat", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a wall hit *splat*", ko: "벽에 *철퍼덕* 박히게" },
       intro: { en: "Knocked into a wall. It just *stopped*.", ko: "벽까지 날렸는데 그냥 *멈췄어요*." },
       interval: 1.8, stepDur: 4.0,
@@ -1805,14 +1805,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slam + crumble",
           cap: { en: "A body *slam*, then a little *crumble*.", ko: "*쾅*, 그리고 *우르르*." },
           launch(w) { w.sfx.hit(); },
-          wall(w) { w.sfx.slam(); w.sfx.rattle(); },
+          wall(w) { w.sfx.slam(); if (w.on("debris") || w.on("crack")) w.sfx.rattle(); },
         },
       ],
     },
 
     /* 23 ─ 슬라이딩 */
     {
-      id: "action-slide", cat: "action", view: "side", melee: true,
+      id: "action-slide", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a slide feel *close*", ko: "슬라이딩을 *아슬아슬하게*" },
       intro: { en: "Slid under it. Felt like *nothing happened*.", ko: "밑으로 빠져나갔는데 *아무 일도* 없어요." },
       interval: 1.8, stepDur: 3.8,
@@ -2001,7 +2001,7 @@
         }));
       },
       update(w, dt) { const D = w.ds; if (D.on) D.t += dt / w.ts; },
-      drawFront(w, ctx) { drawSword(ctx, w.foe, w.bs, 150); },
+      drawOver(w, ctx) { drawSword(ctx, w.foe, w.bs, 150); },
       drawHud(w, ctx) {
         const D = w.ds; if (!D.on) return;
         if (D.fade) veil(ctx, "0,0,0", Math.min(0.72, D.t * 1.1));

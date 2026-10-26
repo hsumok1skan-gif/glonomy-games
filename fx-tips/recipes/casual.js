@@ -1296,7 +1296,7 @@
 
     /* ───────── 15. 최고 기록 경신 ───────── */
     {
-      id: "casual-highscore", cat: "casual", view: "ui",
+      id: "casual-highscore", cat: "casual", view: "ui", polished: true,
       title: { en: "Celebrate a *new best*", ko: "최고 기록을 *축제처럼*" },
       intro: { en: "New record! …said a *tiny line*.", ko: "신기록! …이라고 *작게* 써 있어요." },
       interval: 2.3, stepDur: 3.8,
@@ -1378,14 +1378,14 @@
         {
           id: "sound", name: { en: "Fanfare", ko: "팡파르" }, param: "5-note arpeggio",
           cap: { en: "A short *fanfare*. You earned it.", ko: "짧은 *팡파르*. 자격 있어요." },
-          best(w) { w.sfx.fanfare(); w.after(0.3, () => w.sfx.chime(12)); },
+          best(w) { w.sfx.tick(); if (w.on("banner") || w.on("flag")) w.sfx.fanfare(); },
         },
       ],
     },
 
     /* ───────── 16. 슬롯머신 ───────── */
     {
-      id: "casual-slot", cat: "casual", view: "ui",
+      id: "casual-slot", cat: "casual", view: "ui", polished: true,
       title: { en: "Make a slot spin *thrilling*", ko: "슬롯머신을 *두근두근하게*" },
       intro: { en: "Symbols change. Then *stop*. Okay.", ko: "그림이 바뀌다가 *멈춤*. 그래서요?" },
       interval: 2.6, stepDur: 4.0,
@@ -1469,14 +1469,14 @@
           cap: { en: "*Ticks* while spinning, *clunk* per stop.", ko: "돌 땐 *따르륵*, 멈출 땐 *덜컹*." },
           update(w, dt) { if (w.reels.some(r => r.spin) && (w.tk = (w.tk || 0) - dt) <= 0) { w.tk = 0.06; w.sfx.tick(); } },
           stop(w) { w.sfx.thunk(); },
-          win(w) { w.sfx.fanfare(); },
+          win(w) { if (w.on("coins")) w.sfx.coinClink(); if (w.on("line") || w.on("lights")) w.sfx.fanfare(); },
         },
       ],
     },
 
     /* ───────── 17. 룰렛 돌림판 ───────── */
     {
-      id: "casual-wheel", cat: "casual", view: "ui",
+      id: "casual-wheel", cat: "casual", view: "ui", polished: true,
       title: { en: "Make the prize wheel *tense*", ko: "돌림판을 *쫄깃하게*" },
       intro: { en: "Spins. *Stops dead.* No drama.", ko: "돌다가 *뚝* 멈춤. 긴장감 0." },
       interval: 2.8, stepDur: 4.0,
@@ -1553,7 +1553,7 @@
           id: "sound", name: { en: "Clicks + Ding", ko: "딸깍 + 딩" }, param: "tick / peg · chime",
           cap: { en: "*Click* per peg, *ding* at the end.", ko: "핀마다 *딸깍*, 끝에 *딩*." },
           peg(w) { w.sfx.tick(); },
-          land(w) { w.sfx.chime(5); w.sfx.fanfare(); },
+          land(w) { w.sfx.thunk(); if (w.on("prize") || w.on("confetti")) w.sfx.fanfare(); },
         },
       ],
     },

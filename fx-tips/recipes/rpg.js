@@ -1488,7 +1488,7 @@
 
     /* 17. 상점 구매 */
     {
-      id: "rpg-shop", cat: "rpg", view: "ui",
+      id: "rpg-shop", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make buying *satisfying*", ko: "구매를 *뿌듯하게*" },
       intro: { en: "Bought it. Gold changed… *somewhere*.", ko: "샀어요. 골드가… *어딘가* 줄었네요." },
       interval: 1.5, stepDur: 3.8,
@@ -1566,7 +1566,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "coins + bag thud",
           cap: { en: "*Ka-ching*, then a soft *thump* in the bag.", ko: "*짤랑*, 그리고 가방에 *툭*." },
-          buy(w) { [0, 0.05, 0.1].forEach(d => w.play(() => tn({ type: "triangle", f: 1800 + d * 3000, dur: 0.08, vol: 0.15, delay: d }))); },
+          buy(w) { w.sfx.clickDown(); if (w.on("coins") || w.on("fly")) w.sfx.coinClink(); },
           land(w) { w.sfx.thunk(); },
         },
       ],
@@ -1574,7 +1574,7 @@
 
     /* 18. 인벤토리 */
     {
-      id: "rpg-inventory", cat: "rpg", view: "ui",
+      id: "rpg-inventory", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make new items *land* in the bag", ko: "새 아이템이 *쏙* 들어오게" },
       intro: { en: "Something's in slot 7. *Did you notice?*", ko: "7번 칸에 뭔가 생겼어요. *보셨어요?*" },
       interval: 0.75, stepDur: 3.6,
@@ -1649,7 +1649,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch by rarity",
           cap: { en: "A soft *tock*. Rarer items ring *higher*.", ko: "부드러운 *톡*. 귀할수록 *높게* 울려요." },
-          add(w, it) { w.after(0.2, () => { w.sfx.tock(); if (it.r) w.sfx.chime(it.r * 4); }); },
+          add(w, it) { w.after(0.2, () => { w.sfx.tock(); if (it.r && w.on("rarity")) w.sfx.chime(it.r * 4); }); },
         },
       ],
     },
@@ -1742,7 +1742,7 @@
 
     /* 20. 치명타 컷인 */
     {
-      id: "rpg-cutin", cat: "rpg", view: "side",
+      id: "rpg-cutin", cat: "rpg", view: "side", polished: true,
       title: { en: "Make crits *cinematic*", ko: "치명타를 *영화처럼*" },
       intro: { en: "A big number. *That was the crit?*", ko: "숫자만 커요. *이게 치명타?*" },
       interval: 2.2, stepDur: 4.2,
@@ -1805,8 +1805,16 @@
           inband(w, ctx, t) {
             const c = SPR.hero.c, h = 300, ww = h * c.width / c.height, x = 120 + t * 60;
             ctx.save(); ctx.beginPath(); ctx.moveTo(-60, 122); ctx.lineTo(620, 82); ctx.lineTo(620, 222); ctx.lineTo(-60, 262); ctx.clip();
+            // 픽셀 주인공(검 든 자세) 실루엣: 연두 테 + 검은 몸
+            const A = POSES.hero && POSES.hero.anims && POSES.hero.anims.sword, im = A && A.img;
+            if (im && im.complete && im.naturalWidth) {
+              const tint = col => { const k = "_cut" + col; if (A[k]) return A[k]; const g = document.createElement("canvas"); g.width = A.cw; g.height = A.ch; const x2 = g.getContext("2d"); x2.drawImage(im, 0, 0, A.cw, A.ch, 0, 0, A.cw, A.ch); x2.globalCompositeOperation = "source-atop"; x2.fillStyle = col; x2.fillRect(0, 0, A.cw, A.ch); return (A[k] = g); };
+              const H2 = 230, W2 = H2 * A.cw / A.ch, sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false;
+              ctx.drawImage(tint("#c6f432"), x - W2 / 2 - 6, 60, W2, H2); ctx.drawImage(tint("#05060a"), x - W2 / 2, 60, W2, H2); ctx.imageSmoothingEnabled = sm;
+            } else {
             ctx.drawImage(tintSpr("hero", "#c6f432").c, x - ww / 2 - 6, 70, ww, h);
             ctx.drawImage(tintSpr("hero", "#05060a").c, x - ww / 2, 70, ww, h);
+            }
             ctx.restore();
           },
         },
@@ -1828,14 +1836,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swoosh · silence · crit",
           cap: { en: "*Swoosh* in, a beat of quiet, then *CRASH*.", ko: "*쉭* 들어오고, 잠깐 조용, 그리고 *쾅*." },
           cutin(w) { w.sfx.dash(); },
-          strike(w) { w.sfx.crit(); },
+          strike(w) { w.sfx.slashHit(); if (w.on("release")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 21. 약점 */
     {
-      id: "rpg-weak", cat: "rpg", view: "side",
+      id: "rpg-weak", cat: "rpg", view: "side", polished: true,
       title: { en: "Make weak spots *scream*", ko: "약점 공격은 *크게 외치게*" },
       intro: { en: "Weak hit or normal hit? *Same look.*", ko: "약점이든 아니든 *똑같아 보여요*." },
       interval: 1.25, stepDur: 3.8,
@@ -1899,7 +1907,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crit vs plain",
           cap: { en: "Weak hits get a *crunchier* sound.", ko: "약점은 더 *아작* 소리." },
-          hit(w, h, weak) { if (weak) w.sfx.crit(); else w.sfx.hit(); },
+          hit(w, h, weak) { w.sfx.hit(); if (weak && (w.on("label") || w.on("burst"))) w.sfx.critBig(); },
         },
       ],
     },

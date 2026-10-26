@@ -1205,7 +1205,7 @@
 
     // 12 ─ 깃발 점령
     {
-      id: "army-flag", cat: "army", view: "iso",
+      id: "army-flag", cat: "army", view: "iso", polished: true,
       title: { en: "Make a flag capture *feel earned*", ko: "깃발 점령을 *뿌듯하게*" },
       intro: { en: "Red… now blue. *That's it?*", ko: "빨강이… 파랑. *끝이야?*" },
       interval: 2.0, stepDur: 4.0,
@@ -1287,14 +1287,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "fanfare",
           cap: { en: "A short *fanfare*. Earned it.", ko: "짧은 *빰빠밤*. 해냈어요." },
-          capture(w) { w.sfx.fanfare(); },
+          capture(w) { w.sfx.swish(); if (w.on("burst") || w.on("text")) w.sfx.fanfare(); },
         },
       ],
     },
 
     // 13 ─ 증원 도착
     {
-      id: "army-reinforce", cat: "army", view: "iso",
+      id: "army-reinforce", cat: "army", view: "iso", polished: true,
       title: { en: "Make reinforcements *arrive*", ko: "지원군을 *등장*시키기" },
       intro: { en: "Six more units. *Just… there.*", ko: "여섯 명 추가. *그냥… 있어요*." },
       interval: 1.8, stepDur: 4.0,
@@ -1368,7 +1368,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "horn + thumps",
           cap: { en: "A *horn* call, then a *thump* per soldier.", ko: "*뿌우* 나팔, 내릴 때마다 *쿵*." },
-          call(w) { w.play(() => { tn({ type: "sawtooth", f: 220, dur: 0.35, vol: 0.12 }); tn({ type: "sawtooth", f: 330, dur: 0.3, vol: 0.1, delay: 0.12 }); }); },
+          call(w) { if (w.on("marker")) w.play(() => { tn({ type: "sawtooth", f: 220, dur: 0.35, vol: 0.12 }); tn({ type: "sawtooth", f: 330, dur: 0.3, vol: 0.1, delay: 0.12 }); }); },
           land(w) { w.sfx.land(); },
         },
       ],
@@ -1485,7 +1485,7 @@
       },
       update(w, dt) { uStep(w, dt); w.haze = false; },
       drawBack(w, ctx) { drawUnits(w, ctx); },
-      drawFront(w, ctx) {
+      drawOver(w, ctx) {
         if (!w.haze) return;
         ctx.save(); ctx.translate(270, 262); ctx.scale(1, 0.32);
         const g = ctx.createRadialGradient(0, 0, 20, 0, 0, 220);

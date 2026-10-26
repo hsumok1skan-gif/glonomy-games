@@ -1245,7 +1245,7 @@
 
     /* 15. 카드 내기 */
     {
-      id: "strategy-play", cat: "strategy", view: "ui",
+      id: "strategy-play", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make playing a card *matter*", ko: "카드 내는 순간을 *묵직하게*" },
       intro: { en: "Card gone. Number changed. *Hm.*", ko: "카드는 사라지고 숫자만 바뀜. *음…*" },
       interval: 1.6, stepDur: 3.8,
@@ -1321,7 +1321,7 @@
 
     /* 16. 카드 올리기 (호버) */
     {
-      id: "strategy-hover", cat: "strategy", view: "ui",
+      id: "strategy-hover", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make card hover *lift*", ko: "카드 고를 때 *쏙 올라오게*" },
       intro: { en: "Pointing at a card. *Which one?*", ko: "카드를 가리키는데… *어느 거죠?*" },
       interval: 0.7, stepDur: 3.4,
@@ -1420,7 +1420,7 @@
   RECIPES.push(
     /* 17. 마나 수정 */
     {
-      id: "strategy-mana", cat: "strategy", view: "ui",
+      id: "strategy-mana", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make mana crystals *satisfying*", ko: "마나 수정을 *채우는 맛*" },
       intro: { en: "Full. Empty. Full. *No feeling.*", ko: "찼다, 비었다. *아무 느낌 없어요.*" },
       interval: 1.0, stepDur: 3.6,
@@ -1484,7 +1484,7 @@
         {
           id: "sound", name: { en: "Rising Chimes", ko: "올라가는 띵띵" }, param: "+2 semitones each",
           cap: { en: "Each fill *rings higher*. Spending *crunches*.", ko: "찰수록 *음이 올라가고*, 쓰면 *와작*." },
-          fill(w, m) { w.sfx.chime(m.i * 2); },
+          fill(w, m) { if (w.on("pop") || w.on("glow")) w.sfx.chime(m.i * 2); },
           spend(w, m, i) { w.after(i * 0.05, () => w.play(() => nz({ type: "bandpass", f: 3000, f2: 900, q: 2, dur: 0.12, vol: 0.25 }))); },
         },
       ],

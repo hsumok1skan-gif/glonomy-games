@@ -1291,7 +1291,7 @@
 
     /* 13 ─────────────────────────────── */
     {
-      id: "puzzle-word-found", cat: "puzzle", view: "ui",
+      id: "puzzle-word-found", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Celebrate the *found word*", ko: "단어 찾기를 *반갑게*" },
       intro: { en: "Found it! Gray outline. *Yay?*", ko: "찾았다! 회색 테두리. *와아..?*" },
       interval: 1.3, stepDur: 3.6,
@@ -1572,7 +1572,7 @@
   RECIPES.push(
     /* 15 ─────────────────────────────── */
     {
-      id: "puzzle-fifteen", cat: "puzzle", view: "ui",
+      id: "puzzle-fifteen", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Give sliding tiles *weight*", ko: "숫자 밀기에 *무게*를" },
       intro: { en: "Tap. The tile *teleports*. Did it move?", ko: "누르면 타일이 *순간이동*. 움직인 거 맞아요?" },
       interval: 1.0, stepDur: 3.5,
@@ -1657,7 +1657,7 @@
           id: "sound", name: { en: "Wood Tock", ko: "나무 소리" }, param: "tock / chime",
           cap: { en: "A wooden *tock*. The right spot adds a *chime*.", ko: "나무 블록 *톡*. 제자리면 *띵*까지." },
           stop(w) { w.sfx.tock(); },
-          home(w) { w.sfx.chime(4); },
+          home(w) { if (w.on("home")) w.sfx.chime(4); },
         },
       ],
     },

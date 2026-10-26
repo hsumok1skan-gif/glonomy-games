@@ -1458,7 +1458,7 @@
 
     /* 17. 적 밟기 */
     {
-      id: "move-stomp", cat: "move", view: "side",
+      id: "move-stomp", cat: "move", view: "side", polished: true,
       title: { en: "Make stomps *squish*", ko: "적 밟기를 *꾹* 하게" },
       intro: { en: "Landed on its head. It just *vanished*.", ko: "머리를 밟았더니 그냥 *사라져요*." },
       interval: 2.0, stepDur: 3.6,
