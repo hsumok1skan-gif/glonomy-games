@@ -1422,14 +1422,14 @@
 
     /* 18 ─ 분노 타이머 경고 */
     {
-      id: "duel-timer", cat: "duel", view: "side",
+      id: "duel-timer", cat: "duel", view: "side", polished: true,
       title: { en: "Make the enrage timer *scary*", ko: "분노 타이머를 *무섭게*" },
       intro: { en: "A clock in the corner. *Who's looking?*", ko: "구석의 시계. *누가 봐요?*" },
-      interval: 0.5, stepDur: 4.0,
-      setup(w) { art(); w.hero = w.actor("hero", { home: 120 }); w.boss = w.actor("duel-boss", { home: 410 }); w.tm = { s: 12, pulse: 0, scroll: 0 }; },
+      interval: 0.5, stepDur: 4.0, hookFires: [0.2, 0.6, 1.0, 1.4, 1.8, 2.2], hookDur: 4.0,
+      setup(w) { art(); w.hero = w.actor("hero", { home: 120 }); w.boss = w.actor("duel-boss", { home: 410 }); w.tm = { s: 6, pulse: 0, scroll: 0 }; },
       fire(w) {
         const T = w.tm;
-        if (--T.s < 0) { T.s = 12; Object.assign(w.boss, { h: 210, w: 210, tint: 0 }); return; }
+        if (--T.s < 0) { T.s = 6; Object.assign(w.boss, { h: 210, w: 210, tint: 0 }); return; }
         w.emit("tick", T.s);
         if (T.s === 0) w.emit("zero", w.boss);
       },
@@ -1460,7 +1460,6 @@
         {
           id: "red", name: { en: "Red Alert", ko: "빨간 경고" }, param: "red text · vignette",
           cap: { en: "Turn it *red*. Under 5, the screen edges glow too.", ko: "숫자가 *빨갛게*. 5초 아래면 화면 끝도." },
-          enter(w) { w.tm.s = 9; },
           tick(w, s) { if (s <= 5) w.vignette(0.5); },
         },
         {
@@ -1485,16 +1484,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ticks rise · alarm",
           cap: { en: "Ticks get *higher* near zero. Then an *alarm*.", ko: "0에 가까울수록 *째깍*이 높아져요. 그리고 *경보*." },
-          enter(w) { w.tm.s = 6; },
-          tick(w, s) { w.play(() => tn({ type: "square", f: 500 + (10 - s) * 70, dur: 0.06, vol: 0.12 })); },
-          zero(w) { w.play(() => { for (let i = 0; i < 3; i++) tn({ type: "sawtooth", f: 880, f2: 440, dur: 0.18, vol: 0.12, delay: i * 0.2 }); }); w.sfx.boom(); },
+          tick(w, s) { if (w.on("pulse") || w.on("red")) w.play(() => tn({ type: "square", f: 500 + (10 - s) * 70, dur: 0.06, vol: 0.12 })); },
+          zero(w) { if (w.on("zero") || w.on("banner")) w.play(() => { for (let i = 0; i < 3; i++) tn({ type: "sawtooth", f: 880, f2: 440, dur: 0.18, vol: 0.12, delay: i * 0.2 }); }); if (w.on("boss")) w.sfx.boom(); },
         },
       ],
     },
 
     /* 19 ─ 피니셔 줌 */
     {
-      id: "duel-finisher", cat: "duel", view: "side",
+      id: "duel-finisher", cat: "duel", view: "side", polished: true,
       title: { en: "Zoom in on the *finisher*", ko: "피니셔에 *줌인*" },
       intro: { en: "Big uppercut. Seen from *way back*.", ko: "어퍼컷 한 방. 그런데 *멀리서* 봐요." },
       interval: 2.3, stepDur: 4.0,
@@ -1561,14 +1559,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crit + boom",
           cap: { en: "A crunchy *crit*, a long *boom* tail.", ko: "*빡!* 하고, 길게 *쿠웅*." },
-          smash(w) { w.sfx.crit(); w.sfx.boom(); },
+          smash(w) { w.sfx.slam(); if (w.on("freeze") || w.on("shock")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 20 ─ 슬로모션 완벽 회피 */
     {
-      id: "duel-slowdodge", cat: "duel", view: "side",
+      id: "duel-slowdodge", cat: "duel", view: "side", polished: true,
       title: { en: "Slow time on a *perfect dodge*", ko: "완벽 회피에 *시간 느리게*" },
       intro: { en: "Dodged at the last frame. *Felt like nothing.*", ko: "마지막 순간 피했는데. *아무 느낌 없죠*." },
       interval: 2.4, stepDur: 4.0,
@@ -1624,15 +1622,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch-down whoosh",
           cap: { en: "A *whoosh* that *drops in pitch* — and a heartbeat.", ko: "음이 *쭉 떨어지는* 휙, 그리고 심장 *쿵*." },
-          dodge(w) { w.play(() => { tn({ f: 900, f2: 120, dur: 0.7, vol: 0.2 }); nz({ dur: 0.6, type: "bandpass", f: 2400, f2: 300, q: 2, vol: 0.3 }); tn({ f: 60, f2: 40, dur: 0.15, vol: 0.6, delay: 0.25 }); }); },
-          counter(w) { w.sfx.crit(); },
+          dodge(w) { w.sfx.dash(); if (w.on("slow")) w.play(() => { tn({ f: 900, f2: 120, dur: 0.7, vol: 0.2 }); nz({ dur: 0.6, type: "bandpass", f: 2400, f2: 300, q: 2, vol: 0.3 }); tn({ f: 60, f2: 40, dur: 0.15, vol: 0.6, delay: 0.25 }); }); },
+          counter(w) { w.sfx.slashHit(); },
         },
       ],
     },
 
     /* 21 ─ 광선 힘겨루기 */
     {
-      id: "duel-beam", cat: "duel", view: "side",
+      id: "duel-beam", cat: "duel", view: "side", polished: true,
       title: { en: "Turn a beam clash into *tug-of-war*", ko: "광선 대결을 *줄다리기*로" },
       intro: { en: "Two lines touch. Which one's *winning*?", ko: "선 두 개가 닿아 있어요. *누가 이겨요?*" },
       interval: 0.35, stepDur: 4.0,
@@ -1704,7 +1702,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "zap + boom",
           cap: { en: "A *zap* per tap, a *boom* when it breaks.", ko: "누를 때마다 *지직*, 뚫으면 *쾅*." },
-          push(w) { w.play(() => { tn({ type: "sawtooth", f: 180, f2: 260, dur: 0.12, vol: 0.1 }); nz({ dur: 0.1, type: "bandpass", f: 1800, q: 2, vol: 0.2 }); }); },
+          push(w) { if (w.on("clash") || w.on("surge")) w.play(() => { tn({ type: "sawtooth", f: 180, f2: 260, dur: 0.12, vol: 0.1 }); nz({ dur: 0.1, type: "bandpass", f: 1800, q: 2, vol: 0.2 }); }); },
           win(w) { w.sfx.boom(); },
         },
       ],
@@ -1712,7 +1710,7 @@
 
     /* 22 ─ 미러 매치 VS 화면 */
     {
-      id: "duel-vs", cat: "duel", view: "ui",
+      id: "duel-vs", cat: "duel", view: "ui", polished: true,
       title: { en: "Make the VS screen *clash*", ko: "VS 화면이 *맞부딪히게*" },
       intro: { en: "Two pictures. A small *vs*.", ko: "그림 두 장. 작은 *vs*." },
       interval: 2.2, stepDur: 3.8,
@@ -1783,14 +1781,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + thunder",
           cap: { en: "Two *whooshes*, then *thunder* on VS.", ko: "*휙휙* 두 번, VS에서 *콰르릉*." },
           start(w) { w.sfx.dash(); w.after(0.08, () => w.sfx.dash()); },
-          vs(w) { w.sfx.slam(); w.sfx.burst(); },
+          vs(w) { if (w.on("slam")) w.sfx.slam(); else w.sfx.tock(); },
         },
       ],
     },
 
     /* 23 ─ 보스 잡기 · 던지기 */
     {
-      id: "duel-grab", cat: "duel", view: "side",
+      id: "duel-grab", cat: "duel", view: "side", polished: true,
       title: { en: "Make a boss grab *hurt*", ko: "보스 잡기를 *아프게*" },
       intro: { en: "Picked up. Put down. *Gentle.*", ko: "들었다가 내려놓네요. *상냥하게*." },
       interval: 2.6, stepDur: 4.0,

@@ -2442,7 +2442,7 @@
   RECIPES.push(
     /* 29 ─ 3인칭 엄폐물 피탄 */
     {
-      id: "shooter-cover-hits", cat: "shooter", view: "side",
+      id: "shooter-cover-hits", cat: "shooter", view: "side", polished: true,
       title: { en: "Make cover *take the hits*", ko: "엄폐물이 *맞아 주게*" },
       intro: { en: "Bullets hit the wall. *Are you even safe?*", ko: "벽에 총알이 박혀요. *안전한 거 맞죠?*" },
       interval: 1.0, stepDur: 4.0,
@@ -2464,13 +2464,21 @@
       },
       drawFront(w, ctx) {
         const x0 = 170, x1 = 222, top = G - 74, dx = 14, dy = 8, cw = (x1 - x0) / w.cols.length;
-        ctx.fillStyle = "#8b8f98"; ctx.beginPath(); ctx.moveTo(x1, top + w.cols[8]); ctx.lineTo(x1 + dx, top - dy + w.cols[8]); ctx.lineTo(x1 + dx, G - dy); ctx.lineTo(x1, G); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = "#b9bdc6"; ctx.beginPath(); ctx.moveTo(x0, top + w.cols[0]); ctx.lineTo(x0 + dx, top - dy + w.cols[0]);
+        ctx.fillStyle = "#3f444e"; ctx.beginPath(); ctx.moveTo(x1, top + w.cols[8]); ctx.lineTo(x1 + dx, top - dy + w.cols[8]); ctx.lineTo(x1 + dx, G - dy); ctx.lineTo(x1, G); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#7a808c"; ctx.beginPath(); ctx.moveTo(x0, top + w.cols[0]); ctx.lineTo(x0 + dx, top - dy + w.cols[0]);
         w.cols.forEach((c, i) => { ctx.lineTo(x0 + dx + (i + 1) * cw, top - dy + c); });
         ctx.lineTo(x1, top + w.cols[8]); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = "#a3a8b2"; ctx.beginPath(); ctx.moveTo(x0, G);
+        ctx.fillStyle = "#5d636e"; ctx.beginPath(); ctx.moveTo(x0, G);
         w.cols.forEach((c, i) => { ctx.lineTo(x0 + i * cw, top + c); ctx.lineTo(x0 + (i + 1) * cw, top + c); });
         ctx.lineTo(x1, G); ctx.closePath(); ctx.fill();
+        // 픽셀 콘크리트 결: 블록 줄눈 + 얼룩 + 아래 그늘 + 검은 테 (부서진 모양 그대로 잘라서)
+        ctx.save(); ctx.clip();
+        ctx.fillStyle = "#40454f"; for (let y = top + 16; y < G; y += 18) ctx.fillRect(x0, y, x1 - x0, 2);
+        for (let r = 0, y = top; y < G; y += 18, r++) ctx.fillRect(x0 + (r % 2 ? 14 : 30), y, 2, 18);
+        ctx.fillStyle = "#8c929e"; for (const [px, py] of [[176, 8], [196, 22], [210, 40], [182, 52], [204, 62]]) ctx.fillRect(px, top + py, 2, 2);
+        ctx.fillStyle = "#4f5560"; for (const [px, py] of [[188, 12], [214, 28], [178, 34], [200, 50]]) ctx.fillRect(px, top + py, 4, 2);
+        ctx.fillStyle = "rgba(40,44,52,0.45)"; ctx.fillRect(x0, G - 10, x1 - x0, 10);
+        ctx.restore(); ctx.strokeStyle = "#1a1d23"; ctx.lineWidth = 2; ctx.stroke();
         for (const h of w.holes) { ctx.fillStyle = "rgba(30,30,36,0.9)"; ctx.beginPath(); ctx.ellipse(h.x, h.y, 3, 4.5, 0, 0, TAU); ctx.fill(); ctx.strokeStyle = "rgba(230,230,235,0.5)"; ctx.lineWidth = 1; ctx.stroke(); }
         const f = w.foe; ctx.fillStyle = "#2a2f3a"; ctx.fillRect(f.x + f.ox - 64, G - 68, 30, 8);
       },
@@ -2588,7 +2596,7 @@
 
     /* 31 ─ 조준 보정 */
     {
-      id: "shooter-aim-assist", cat: "shooter", view: "3d",
+      id: "shooter-aim-assist", cat: "shooter", view: "3d", polished: true,
       title: { en: "Hide the *aim assist*", ko: "*조준 보정*을 티 안 나게" },
       intro: { en: "Swipe past a target. *Miss*, every time.", ko: "적을 스쳐 지나가요. 매번 *빗나가요*." },
       interval: 1.7, stepDur: 4.2,
@@ -2659,7 +2667,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "soft beep · shot",
           cap: { en: "A soft *beep* on lock, then the shot.", ko: "고정되면 작게 *삑*, 그리고 탕." },
-          lock(w) { w.play(() => tn({ type: "triangle", f: 1760, dur: 0.06, vol: 0.12 })); },
+          lock(w) { if (w.on("ping") || w.on("bracket")) w.play(() => tn({ type: "triangle", f: 1760, dur: 0.06, vol: 0.12 })); },
           shot(w, hit) { w.sfx.gun(); if (hit) w.sfx.hit(); },
         },
       ],
@@ -2667,7 +2675,7 @@
 
     /* 32 ─ 모아 쏘기 */
     {
-      id: "shooter-charge-shot", cat: "shooter", view: "side",
+      id: "shooter-charge-shot", cat: "shooter", view: "side", polished: true,
       title: { en: "Make a charge shot *build up*", ko: "모아 쏘기를 *쌓이게*" },
       intro: { en: "Hold… hold… *pew*. Was it charged?", ko: "꾹… 꾹… *퓽*. 모인 거 맞아요?" },
       interval: 2.0, stepDur: 4.2,
@@ -2726,7 +2734,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising hum + boom",
           cap: { en: "A *rising whine*, then a fat *boom*.", ko: "*올라가는 위잉*, 그리고 묵직한 *쾅*." },
-          tier(w, t) { w.sfx.chime(t * 4); if (t === 1) w.sfx.charge(); },
+          tier(w, t) { if (t === 1) w.sfx.charge(); if (w.on("tiers")) w.sfx.chime(t * 4); },
           release(w) { w.sfx.burst(); },
           hit(w) { w.sfx.boom(); },
         },
@@ -2736,7 +2744,7 @@
   RECIPES.push(
     /* 33 ─ 관통탄 */
     {
-      id: "shooter-pierce", cat: "shooter", view: "side",
+      id: "shooter-pierce", cat: "shooter", view: "side", polished: true,
       title: { en: "Make piercing shots *feel* it", ko: "관통탄이 *꿰뚫는 맛*" },
       intro: { en: "Four in a row. The bolt *ghosts through*.", ko: "일렬로 넷. 탄이 *유령처럼* 통과해요." },
       interval: 1.4, stepDur: 4.0,
@@ -2805,14 +2813,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "+3 semitones each",
           cap: { en: "Each pierce plays *higher*. Ta-ti-ti-*TING*.", ko: "꿰뚫을 때마다 음이 *높아져요*. 따-띠-띠-*띵*." },
           fire(w) { w.sfx.magic(); },
-          pierce(w, f, h, n) { w.sfx.blip(n * 3); w.sfx.hit(1 + n * 0.15); },
+          pierce(w, f, h, n) { w.sfx.hit(1 + n * 0.15); if (w.on("count")) w.sfx.blip(n * 3); },
         },
       ],
     },
 
     /* 34 ─ 방어막 */
     {
-      id: "shooter-shield", cat: "shooter", view: "side",
+      id: "shooter-shield", cat: "shooter", view: "side", polished: true,
       title: { en: "Make a shield *soak* bullets", ko: "방어막이 총알을 *받아 내게*" },
       intro: { en: "Bullets vanish at the line. *Is it working?*", ko: "선에서 총알이 사라져요. *막는 거 맞죠?*" },
       interval: 1.0, stepDur: 4.2,
@@ -2894,14 +2902,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "zap per hit",
           cap: { en: "An electric *zap* per hit. A *crash* when it breaks.", ko: "맞을 때마다 *지직*, 깨질 땐 *와장창*." },
           block(w) { w.play(() => { tn({ type: "sawtooth", f: 900, f2: 300, dur: 0.08, vol: 0.08 }); nz({ type: "bandpass", f: 3000, q: 3, dur: 0.06, vol: 0.2 }); }); },
-          empty(w) { w.sfx.burst(); },
+          empty(w) { w.sfx.glass(); },
         },
       ],
     },
 
     /* 35 ─ 레이저 조준기 */
     {
-      id: "shooter-laser-sight", cat: "shooter", view: "side",
+      id: "shooter-laser-sight", cat: "shooter", view: "side", polished: true,
       title: { en: "Make a laser sight *glow*", ko: "레이저 조준기를 *빛나게*" },
       intro: { en: "A thin red line. *Through* walls, too.", ko: "가는 빨간 선. 벽도 *뚫고* 가요." },
       interval: 1.5, stepDur: 4.2,
@@ -2987,7 +2995,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "lock tick · shot",
           cap: { en: "A tiny *tick* when it lands, then the shot.", ko: "점이 닿으면 작게 *틱*, 그리고 탕." },
           shot(w) { w.sfx.gun(); },
-          update(w) { const t = w.beam && w.beam.t; if (t && t !== w.lastT) w.sfx.tick(); w.lastT = t; },
+          
         },
       ],
     },

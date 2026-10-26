@@ -2011,7 +2011,7 @@
 
     /* 20 ─────────────────────────────── */
     {
-      id: "puzzle-pipe-flow", cat: "puzzle", view: "top",
+      id: "puzzle-pipe-flow", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make water *flow* through pipes", ko: "파이프에 물이 *흐르게*" },
       intro: { en: "Connected! The whole path just *turns blue*.", ko: "연결! 길 전체가 *한 번에 파래져요*." },
       interval: 1.6, stepDur: 3.8,
@@ -2097,14 +2097,14 @@
           cap: { en: "*Click*, a soft *gurgle*, then a *chime*.", ko: "*딸깍*, *꼴꼴꼴*, 그리고 *띠링*." },
           turn(w) { w.sfx.clickDown(); },
           pour(w, i) { w.play(() => nz({ type: "bandpass", f: 500 + i * 80, q: 6, dur: 0.08, vol: 0.25 })); },
-          drain(w) { w.sfx.chime(7); },
+          drain(w) { if (w.on("goal") || w.on("splash")) w.sfx.chime(7); },
         },
       ],
     },
 
     /* 21 ─────────────────────────────── */
     {
-      id: "puzzle-mine-reveal", cat: "puzzle", view: "top",
+      id: "puzzle-mine-reveal", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make safe reveals *cascade*", ko: "빈칸 열기를 *와르르*" },
       intro: { en: "One tap opens a big area. *Instantly.*", ko: "한 번 눌렀더니 넓게 열림. *그냥 한 번에.*" },
       interval: 1.4, stepDur: 3.7,
@@ -2149,7 +2149,7 @@
         {
           id: "sound", name: { en: "Rolling Ticks", ko: "또르르 소리" }, param: "+1 semitone / ring",
           cap: { en: "Ticks *climb* as the area spreads.", ko: "넓게 퍼질수록 소리가 *또르르* 올라가요." },
-          reveal(w, list) { const far = Math.max(...list.map(m => m.d)); for (let d = 0; d <= far; d++) w.after(d * 0.04, () => w.sfx.blip(d + 1)); },
+          reveal(w, list) { if (!w.on("cascade")) { w.sfx.tock(); return; } const far = Math.max(...list.map(m => m.d)); for (let d = 0; d <= far; d++) w.after(d * 0.04, () => w.sfx.blip(d + 1)); },
         },
       ],
     },
@@ -2206,7 +2206,7 @@
   RECIPES.push(
     /* 22 ─────────────────────────────── */
     {
-      id: "puzzle-mine-explode", cat: "puzzle", view: "top",
+      id: "puzzle-mine-explode", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make a mine hit *hurt*", ko: "지뢰 밟기를 *아프게*" },
       intro: { en: "Game over... it says. *Nothing else happens.*", ko: "게임 오버래요. *근데 아무 일도 없어요.*" },
       interval: 1.7, stepDur: 4.0,
@@ -2288,14 +2288,14 @@
           cap: { en: "A *tick*, a deep *boom*, then little *pops*.", ko: "*틱*, 묵직한 *쾅*, 이어서 *퐁퐁퐁*." },
           arm(w) { w.sfx.tick(); },
           boom(w) { w.sfx.boom(); },
-          chain(w, list) { list.forEach((o, i) => w.after(0.25 + i * 0.07, () => w.sfx.pop())); },
+          chain(w, list) { if (w.on("chain")) list.forEach((o, i) => w.after(0.25 + i * 0.07, () => w.sfx.pop())); },
         },
       ],
     },
 
     /* 23 ─────────────────────────────── */
     {
-      id: "puzzle-level-stars", cat: "puzzle", view: "ui",
+      id: "puzzle-level-stars", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make 3 stars feel *earned*", ko: "별 3개를 *뿌듯하게*" },
       intro: { en: "Level clear. Three stars. *Already there.*", ko: "클리어. 별 3개가 *이미 떠 있어요*." },
       interval: 2.0, stepDur: 4.2,
@@ -2364,14 +2364,14 @@
         {
           id: "sound", name: { en: "Rising Chimes", ko: "올라가는 종소리" }, param: "do-mi-sol + fanfare",
           cap: { en: "One chime per star, *higher each time*.", ko: "별마다 종소리가 *한 단계씩* 높아져요." },
-          land(w, i) { w.sfx.chime([0, 4, 7][i]); if (i === 2) w.after(0.1, () => w.sfx.fanfare()); },
+          land(w, i) { w.sfx.thunk(); if (w.on("stamp")) w.sfx.chime([0, 4, 7][i]); if (i === 2 && (w.on("burst") || w.on("rays"))) w.after(0.1, () => w.sfx.fanfare()); },
         },
       ],
     },
 
     /* 24 ─────────────────────────────── */
     {
-      id: "puzzle-chain-combo", cat: "puzzle", view: "ui",
+      id: "puzzle-chain-combo", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make chain reactions *build*", ko: "연쇄 반응이 *점점 커지게*" },
       intro: { en: "Ten in a chain. Gone *all at once*.", ko: "열 개가 연쇄인데 *한 번에* 사라져요." },
       interval: 1.7, stepDur: 4.0,
@@ -2443,14 +2443,14 @@
         {
           id: "sound", name: { en: "Rising Pitch", ko: "올라가는 음" }, param: "+2 semitones / link",
           cap: { en: "Each link sounds *higher*. The ear feels it build.", ko: "연쇄마다 음이 *올라가요*. 귀로도 쌓여요." },
-          pop(w, o, n) { w.sfx.blip(n * 2); if (n === CH.length) w.sfx.burst(); },
+          pop(w, o, n) { w.sfx.blip(n * 2); if (n === CH.length && w.on("finale")) w.sfx.fanfare(); },
         },
       ],
     },
 
     /* 25 ─────────────────────────────── */
     {
-      id: "puzzle-undo-rewind", cat: "puzzle", view: "top",
+      id: "puzzle-undo-rewind", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make undo feel like *rewinding*", ko: "되돌리기를 *되감기처럼*" },
       intro: { en: "Undo. You're back. *Wait, what happened?*", ko: "되돌리기. 처음으로. *방금 뭐였죠?*" },
       interval: 1.5, stepDur: 3.8,
@@ -2519,7 +2519,7 @@
         {
           id: "sound", name: { en: "Reverse Sweep", ko: "거꾸로 휘릭" }, param: "falling tone + ticks",
           cap: { en: "A *falling* sweep with ticks. Tape going back.", ko: "*내려가는* 소리와 틱틱틱. 테이프 되감는 소리." },
-          undo(w) { w.play(() => tn({ type: "sawtooth", f: 1200, f2: 300, dur: 0.38, vol: 0.06 })); },
+          undo(w) { if (w.on("reverse") || w.on("tape")) w.play(() => tn({ type: "sawtooth", f: 1200, f2: 300, dur: 0.38, vol: 0.06 })); },
           step(w) { w.sfx.tick(); },
         },
       ],
@@ -2527,7 +2527,7 @@
 
     /* 26 ─────────────────────────────── */
     {
-      id: "puzzle-timer-pressure", cat: "puzzle", view: "ui",
+      id: "puzzle-timer-pressure", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make the last seconds *tense*", ko: "마지막 몇 초를 *쫄깃하게*" },
       intro: { en: "3... 2... 1... Feels like a *calm* number.", ko: "3, 2, 1... 그냥 *평온한* 숫자예요." },
       interval: 0.75, stepDur: 4.0,
@@ -2582,14 +2582,14 @@
           id: "sound", name: { en: "Climbing Ticks", ko: "높아지는 째깍" }, param: "+3 semitones / sec",
           cap: { en: "Ticks get *higher* and doubled as time runs out.", ko: "시간이 줄수록 째깍이 *높고 빨라져요*." },
           tick(w, S) { const f = 700 * Math.pow(2, (6 - S.sec) * 3 / 12); w.play(() => { tn({ type: "square", f, dur: 0.05, vol: 0.12 }); if (S.sec <= 2) tn({ type: "square", f, dur: 0.05, vol: 0.1, delay: 0.16 }); }); },
-          refill(w) { w.sfx.chime(0); },
+          refill(w) { if (w.on("color")) w.sfx.chime(0); },
         },
       ],
     },
 
     /* 27 ─────────────────────────────── */
     {
-      id: "puzzle-block-blast", cat: "puzzle", view: "ui",
+      id: "puzzle-block-blast", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make cross clears *blast*", ko: "가로세로 동시 지우기를 *팡!*" },
       intro: { en: "Row and column done. They just *blink out*.", ko: "가로세로 동시에! 근데 *깜빡* 하고 끝." },
       interval: 1.4, stepDur: 3.8,
@@ -2667,14 +2667,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thunk / burst / chime",
           cap: { en: "*Thunk* on place, *burst* on clear, *chime* for combo.", ko: "놓을 때 *툭*, 지울 때 *팡*, 콤보엔 *띠링*." },
           place(w) { w.sfx.thunk(); },
-          clear(w) { w.sfx.burst(); w.after(0.1, () => w.sfx.chime(7)); },
+          clear(w) { w.sfx.pop(); if (w.on("combo") || w.on("beams")) w.after(0.1, () => w.sfx.chime(7)); },
         },
       ],
     },
 
     /* 28 ─────────────────────────────── */
     {
-      id: "puzzle-key-door", cat: "puzzle", view: "side",
+      id: "puzzle-key-door", cat: "puzzle", view: "side", polished: true,
       title: { en: "Make unlocking *satisfying*", ko: "열쇠로 문 열기를 *짜릿하게*" },
       intro: { en: "Key gone. Door gone. *Was that it?*", ko: "열쇠 사라짐. 문 사라짐. *이게 끝?*" },
       interval: 1.8, stepDur: 4.0,
@@ -2778,7 +2778,7 @@
           cap: { en: "*Swish*, a heavy *clack*, then a long *creak*.", ko: "*휙*, 묵직한 *철컥*, 길게 *끼이익*." },
           fly(w) { w.sfx.swish(); },
           turn(w) { w.sfx.clickDown(); w.after(0.12, () => w.sfx.thunk()); },
-          unlock(w) { w.after(0.15, () => w.sfx.creak()); },
+          unlock(w) { w.sfx.clickDown(); if (w.on("door")) w.after(0.15, () => w.sfx.creak()); },
         },
       ],
     },

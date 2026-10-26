@@ -2345,7 +2345,7 @@
 
     /* 28. 골드 카운터 */
     {
-      id: "rpg-gold", cat: "rpg", view: "ui",
+      id: "rpg-gold", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make gold counters *roll*", ko: "골드 숫자를 *굴러가게*" },
       intro: { en: "Number swapped. *How much did I get?*", ko: "숫자만 바뀌었어요. *얼마 들어왔죠?*" },
       interval: 1.4, stepDur: 3.8,
@@ -2421,15 +2421,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick per change",
           cap: { en: "A *tick* for every change. It *sounds* like money.", ko: "바뀔 때마다 *틱틱틱*. 돈 소리가 나요." },
-          tick(w) { if (Math.random() < 0.5) w.play(() => tn({ type: "triangle", f: rand(2200, 2600), dur: 0.03, vol: 0.08 })); },
-          gain(w) { w.sfx.chime(4); },
+          tick(w) { if (w.on("odo") && Math.random() < 0.5) w.play(() => tn({ type: "triangle", f: rand(2200, 2600), dur: 0.03, vol: 0.08 })); },
+          gain(w) { if (w.on("coins")) w.sfx.coinClink(); },
         },
       ],
     },
 
     /* 29. 스킬 트리 */
     {
-      id: "rpg-skill-tree", cat: "rpg", view: "ui",
+      id: "rpg-skill-tree", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make skill unlocks *flow*", ko: "스킬 해금이 *흐르게*" },
       intro: { en: "A circle turned green. *Unlocked?*", ko: "동그라미가 초록이 됐어요. *열린 거예요?*" },
       interval: 0.95, stepDur: 3.8,
@@ -2509,14 +2509,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "zip · pop · chime",
           cap: { en: "A rising *zip*, then a crisp *pop*.", ko: "올라가는 *지잉*, 그리고 *톡*." },
           unlock(w) { w.play(() => tn({ type: "sawtooth", f: 300, f2: 1200, dur: 0.3, vol: 0.06 })); },
-          lit(w) { w.sfx.pop(); w.sfx.chime(5); },
+          lit(w) { w.sfx.pop(); if (w.on("burst")) w.sfx.chime(5); },
         },
       ],
     },
 
     /* 30. 인카운터 전환 */
     {
-      id: "rpg-encounter", cat: "rpg", view: "side",
+      id: "rpg-encounter", cat: "rpg", view: "side", polished: true,
       title: { en: "Make encounters *break in*", ko: "전투 진입을 *와장창*" },
       intro: { en: "Walking… *cut*. Battle. No warning.", ko: "걷다가 *뚝*. 전투. 예고도 없이." },
       interval: 2.4, stepDur: 4.4,
@@ -2611,8 +2611,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "sting · crash",
           cap: { en: "A sharp *sting*, then glass *CRASH*.", ko: "날카로운 *띠링!*, 그리고 *와장창*." },
-          alert(w) { w.play(() => { tn({ type: "square", f: 880, dur: 0.12, vol: 0.12 }); tn({ type: "square", f: 1320, dur: 0.18, vol: 0.12, delay: 0.1 }); }); },
-          go(w) { w.play(() => { nz({ type: "highpass", f: 3000, dur: 0.5, vol: 0.5 }); nz({ dur: 0.4, f: 1500, f2: 200, vol: 0.4 }); }); w.sfx.thud(); },
+          alert(w) { if (w.on("alert")) w.play(() => { tn({ type: "square", f: 880, dur: 0.12, vol: 0.12 }); tn({ type: "square", f: 1320, dur: 0.18, vol: 0.12, delay: 0.1 }); }); },
+          go(w) { if (w.on("shatter")) w.sfx.glass(); w.sfx.thud(); },
         },
       ],
     },

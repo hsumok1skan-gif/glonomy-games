@@ -1619,7 +1619,7 @@
 
     // 17 ─ 광역 마법
     {
-      id: "army-aoe", cat: "army", view: "top",
+      id: "army-aoe", cat: "army", view: "top", polished: true,
       title: { en: "Land an area spell on a *blob*", ko: "뭉친 적에 *광역기* 꽂기" },
       intro: { en: "Some of them… *vanished?*", ko: "몇 명이… *사라졌나?*" },
       interval: 1.4, stepDur: 3.8,
@@ -1706,7 +1706,7 @@
 
     // 18 ─ 오토배틀러 라운드 시작
     {
-      id: "army-round", cat: "army", view: "top",
+      id: "army-round", cat: "army", view: "top", polished: true,
       title: { en: "Kick off an auto-battle round *with a bang*", ko: "오토배틀 라운드 시작을 *쾅*" },
       intro: { en: "The round started. *Probably.*", ko: "라운드가… 시작됐나 봐요. *아마도*." },
       interval: 2.4, stepDur: 4.2,
@@ -1768,15 +1768,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "chime · crash",
           cap: { en: "A *chime* for the banner, a *crash* for FIGHT.", ko: "배너엔 *띵*, FIGHT엔 *쾅*." },
-          start(w) { w.sfx.chime(0); w.after(0.12, () => w.sfx.chime(7)); },
-          fight(w) { w.sfx.crit(); },
+          start(w) { if (w.on("banner")) w.sfx.swish(); },
+          fight(w) { w.sfx.slam(); if (w.on("fight")) w.sfx.fanfare(); },
         },
       ],
     },
 
     // 19 ─ 3 합체
     {
-      id: "army-merge", cat: "army", view: "ui",
+      id: "army-merge", cat: "army", view: "ui", polished: true,
       title: { en: "Make a 3-merge *feel like a level-up*", ko: "3개 합치기를 *레벨업처럼*" },
       intro: { en: "Three gone, one bigger. *Okay?*", ko: "셋이 사라지고 하나가 커졌어요. *그래서?*" },
       interval: 1.8, stepDur: 4.0,
@@ -1853,14 +1853,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "3 blips + chime",
           cap: { en: "Three rising *blips*, then a bright *chime*.", ko: "*삑삑삑* 올라가고, 맑은 *띵*." },
           gather(w) { w.sfx.blip(w.trio.filter(u => u.flash > 2).length * 3); },
-          merge(w) { w.sfx.chime(5); w.sfx.pop(); },
+          merge(w) { w.sfx.pop(); if (w.on("burst") || w.on("stars")) w.sfx.chime(5); },
         },
       ],
     },
 
     // 20 ─ 시너지 발동
     {
-      id: "army-synergy", cat: "army", view: "ui",
+      id: "army-synergy", cat: "army", view: "ui", polished: true,
       title: { en: "Light up a *synergy*", ko: "시너지 발동을 *반짝*" },
       intro: { en: "3/4 became 4/4. *Did you notice?*", ko: "3/4가 4/4로. *눈치채셨어요?*" },
       interval: 1.8, stepDur: 4.0,
@@ -1946,14 +1946,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "major chord",
           cap: { en: "A bright *chord*. Not a click.", ko: "딸깍 말고 밝은 *화음*." },
-          activate(w) { [0, 4, 7].forEach((n, i) => w.after(i * 0.05, () => w.sfx.chime(n))); },
+          activate(w) { w.sfx.clickDown(); if (w.on("glow") || w.on("callout")) [0, 4, 7].forEach((n, i) => w.after(i * 0.05, () => w.sfx.chime(n))); },
         },
       ],
     },
 
     // 21 ─ 점령 진행 고리
     {
-      id: "army-capring", cat: "army", view: "top",
+      id: "army-capring", cat: "army", view: "top", polished: true,
       title: { en: "Make capture progress *readable*", ko: "점령 진행을 *한눈에*" },
       intro: { en: "A tiny number. *Squint.*", ko: "작은 숫자 하나. *눈을 찡그려요*." },
       interval: 2.2, stepDur: 4.0,
@@ -2034,8 +2034,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising blips · fanfare",
           cap: { en: "Each pulse a *step higher*. Finish with a fanfare.", ko: "톡마다 *한 단씩* 높게, 끝은 빰빠밤." },
-          tick(w, c, n) { w.sfx.blip(n * 3); },
-          done(w) { w.sfx.fanfare(); },
+          tick(w, c, n) { if (w.on("ticks")) w.sfx.blip(n * 3); },
+          done(w) { w.sfx.thunk(); if (w.on("burst") || w.on("flag")) w.sfx.fanfare(); },
         },
       ],
     },

@@ -694,7 +694,7 @@ const SFX = {
   // 광선: 지잉 굵은 톱니 + 흔들리는 잡음 (dur 동안)
   beam(dur = 1) { const h = dur * 0.7; tn({ type: "sawtooth", f: 82, dur, vol: 0.13, lp: 1200, att: 0.03, hold: h }); tn({ type: "sawtooth", f: 164, dur, vol: 0.08, lp: 2400, det: 12, att: 0.03, hold: h }); nz({ dur, type: "bandpass", f: 1400, f2: 700, q: 0.9, vol: 0.28, att: 0.03, rv: 0.3, hold: h }); },
 };
-const ACTOR_POSE_ALIAS = { "duel-boss": "foe", "action-knight": "foe", "action-boss": "foe", "rpg-knight": "foe", "rpg-golem": "foe" };
+const ACTOR_POSE_ALIAS = { "duel-boss": "foe", "action-knight": "foe", "action-boss": "foe", "rpg-knight": "foe", "rpg-golem": "foe", "duel-mirror": "hero" };
 /* ───────── 한 사이클 · 큰 단계 (사이트와 영상이 같이 씀) ─────────
    사이클: 첫 화면(완성본)과 같은 발사 시각·길이. 단계를 바꾸든 다시 보든 언제나 이 사이클을 처음부터 똑같이 보여 줌
    단계: 레이어를 4~6개 큰 묶음으로 (적으면 그대로). R.stages = [마지막 레이어 번호...]로 직접 정할 수 있음 */
@@ -1017,6 +1017,7 @@ class World {
       flash: 0, tint: 0, burn: 0, blink: 0, barShake: 0, alpha: 1, flip: !!d.flip, alive: true,
       flying: false, vx: 0, vy: 0, spin: 0, maxHp: d.hp || 0, hp: d.hp || 0, hpLag: d.hp || 0, lagWait: 0,
     };
+    if (d.from === "duel-mirror") a.chill = 0.8; // 거울 그림자: 주인공 그림을 푸르게
     this.actors.push(a);
     return a;
   }

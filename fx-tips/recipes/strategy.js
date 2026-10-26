@@ -1828,7 +1828,7 @@
 
     /* 22. 거점 점령 */
     {
-      id: "strategy-capture", cat: "strategy", view: "top",
+      id: "strategy-capture", cat: "strategy", view: "top", polished: true,
       title: { en: "Make capturing *tense*", ko: "거점 점령을 *쫄깃하게*" },
       intro: { en: "Standing in a circle. *Doing what?*", ko: "원 안에 서 있어요. *뭐 하는 거죠?*" },
       interval: 2.0, stepDur: 4.0,
@@ -1901,15 +1901,15 @@
         {
           id: "sound", name: { en: "Rising Ticks", ko: "올라가는 틱" }, param: "10 ticks · chime",
           cap: { en: "*Ticks* climb in pitch, then a bright *chime*.", ko: "*틱틱틱* 점점 높게, 끝에 *띵!*" },
-          start(w) { for (let i = 0; i < 10; i++) w.after(i * 0.1, () => w.sfx.blip(i + 1)); },
-          captured(w) { w.sfx.chime(7); w.sfx.burst(); },
+          start(w) { if (w.on("fill")) for (let i = 0; i < 10; i++) w.after(i * 0.1, () => w.sfx.tick()); },
+          captured(w) { w.sfx.thunk(); if (w.on("flag") || w.on("burst")) w.sfx.fanfare(); },
         },
       ],
     },
 
     /* 23. 연구 완료 */
     {
-      id: "strategy-research", cat: "strategy", view: "ui",
+      id: "strategy-research", cat: "strategy", view: "ui", polished: true,
       title: { en: "Celebrate *research done*", ko: "연구 완료를 *축하하기*" },
       intro: { en: "Bar full. Text says \"Done\". *Yay?*", ko: "막대 꽉 참. \"완료\". *야호…?*" },
       interval: 1.7, stepDur: 3.8,
@@ -1969,14 +1969,14 @@
           id: "sound", name: { en: "Fanfare", ko: "팡파르" }, param: "fill whoosh · fanfare",
           cap: { en: "A rising *whoosh*, then a *fanfare*.", ko: "차오르는 *쓔웅*, 그리고 *빰빠밤*." },
           fill(w) { w.sfx.charge(); },
-          done(w) { w.sfx.fanfare(); },
+          done(w) { w.sfx.thunk(); if (w.on("pop") || w.on("toast")) w.sfx.fanfare(); },
         },
       ],
     },
 
     /* 24. 진급 */
     {
-      id: "strategy-promote", cat: "strategy", view: "side",
+      id: "strategy-promote", cat: "strategy", view: "side", polished: true,
       title: { en: "Make promotions feel *proud*", ko: "진급을 *뿌듯하게*" },
       intro: { en: "One more stripe. *Barely visible.*", ko: "계급장 하나 늘었어요. *잘 안 보여요.*" },
       interval: 1.6, stepDur: 3.8,
@@ -2030,7 +2030,7 @@
         {
           id: "sound", name: { en: "Fanfare + Stamp", ko: "팡파르 + 쾅" }, param: "stamp · fanfare",
           cap: { en: "A *stamp*, then a proud *fanfare*.", ko: "*쾅* 박고, 당당한 *빰빠밤*." },
-          promote(w) { w.after(0.2, () => { w.sfx.thunk(); w.sfx.fanfare(); }); },
+          promote(w) { if (w.on("beam")) w.sfx.lightSwell(); w.after(0.2, () => { w.sfx.thunk(); if (w.on("slam") || w.on("stats")) w.sfx.fanfare(); }); },
         },
       ],
     },
@@ -2060,7 +2060,7 @@
   RECIPES.push(
     /* 25. 알림 핑 */
     {
-      id: "strategy-ping", cat: "strategy", view: "top",
+      id: "strategy-ping", cat: "strategy", view: "top", polished: true,
       title: { en: "Make alerts *grab attention*", ko: "알림 핑이 *눈길을 끌게*" },
       intro: { en: "\"Under attack!\" …*Where?*", ko: "\"공격받고 있습니다!\" …*어디요?*" },
       interval: 1.5, stepDur: 3.8,
@@ -2123,7 +2123,7 @@
         {
           id: "sound", name: { en: "Two-tone Alarm", ko: "삐뽀 경고음" }, param: "high-low ×2",
           cap: { en: "A *two-tone* alarm. Nobody misses that.", ko: "*삐-뽀* 두 음. 못 들을 수가 없어요." },
-          alert(w) { w.play(() => [0, 1, 2, 3].forEach(i => tn({ type: "square", f: i % 2 ? 660 : 990, dur: 0.1, vol: 0.09, delay: i * 0.11 }))); },
+          alert(w) { if (w.on("rings") || w.on("pulse")) w.play(() => [0, 1, 2, 3].forEach(i => tn({ type: "square", f: i % 2 ? 660 : 990, dur: 0.1, vol: 0.09, delay: i * 0.11 }))); },
         },
       ],
     },
@@ -2218,7 +2218,7 @@
 
     /* 27. 기술 해금 */
     {
-      id: "strategy-tech", cat: "strategy", view: "ui",
+      id: "strategy-tech", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make tech unlocks *flow*", ko: "기술 해금이 *흘러가게*" },
       intro: { en: "Gray turned green. *That's the unlock?*", ko: "회색이 초록이 됐어요. *이게 해금?*" },
       interval: 1.1, stepDur: 3.6,
@@ -2290,15 +2290,15 @@
         {
           id: "sound", name: { en: "Charge + Clack", ko: "쓔웅 + 철컥" }, param: "rise · clack · chime",
           cap: { en: "A rising *whir*, a *clack*, a *chime*.", ko: "*쓔웅*, *철컥*, *띵*." },
-          flow(w) { w.play(() => tn({ type: "triangle", f: 300, f2: 900, dur: 0.25, vol: 0.12 })); },
-          unlock(w) { w.sfx.pump(); w.sfx.chime(5); },
+          flow(w) { if (w.on("flow")) w.play(() => tn({ type: "triangle", f: 300, f2: 900, dur: 0.25, vol: 0.12 })); },
+          unlock(w) { w.sfx.clickDown(); if (w.on("pop")) w.sfx.chime(5); },
         },
       ],
     },
 
     /* 28. 말 잡기 */
     {
-      id: "strategy-chess", cat: "strategy", view: "iso",
+      id: "strategy-chess", cat: "strategy", view: "iso", polished: true,
       title: { en: "Make captures *crunchy*", ko: "말 잡기를 *통쾌하게*" },
       intro: { en: "Slide. Gone. *Was that a capture?*", ko: "스윽, 사라짐. *잡은 거 맞아요?*" },
       interval: 1.4, stepDur: 3.8,
@@ -2399,7 +2399,7 @@
 
     /* 29. 주사위 굴리기 */
     {
-      id: "strategy-dice", cat: "strategy", view: "top",
+      id: "strategy-dice", cat: "strategy", view: "top", polished: true,
       title: { en: "Make dice rolls *thrilling*", ko: "주사위 굴리기를 *두근두근*" },
       intro: { en: "Numbers changed. *Did I roll?*", ko: "숫자만 바뀌었어요. *굴린 거예요?*" },
       interval: 1.6, stepDur: 3.8,
@@ -2478,14 +2478,14 @@
           cap: { en: "A *rattle*, then a *clack* on every bounce.", ko: "*달그락*, 튈 때마다 *딱*." },
           tumble(w) { w.sfx.rattle(); },
           clack(w) { w.play(() => tn({ type: "triangle", f: rand(900, 1300), dur: 0.04, vol: 0.2 })); },
-          result(w) { w.sfx.tock(); },
+          result(w) { w.sfx.tock(); if (w.on("total")) w.sfx.chime(4); },
         },
       ],
     },
 
     /* 30. 턴 종료 버튼 */
     {
-      id: "strategy-endbtn", cat: "strategy", view: "ui",
+      id: "strategy-endbtn", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make \"End Turn\" *ask to be pressed*", ko: "턴 종료 버튼이 *눌러 달라고*" },
       intro: { en: "Nothing left to do. *Now what?*", ko: "할 게 없어요. *이제 뭐 하지?*" },
       interval: 1.6, stepDur: 3.8,

@@ -1312,7 +1312,7 @@
 
     /* 17 ─ 광폭화 */
     {
-      id: "horde-frenzy", cat: "horde", view: "top",
+      id: "horde-frenzy", cat: "horde", view: "top", polished: true,
       title: { en: "Make frenzy mode *feel unhinged*", ko: "광폭화를 *미친 듯이*" },
       intro: { en: "Frenzy is on. Feels like *Tuesday*.", ko: "광폭화 중인데… *평소랑 똑같아요*." },
       interval: 2.6, stepDur: 4.2,
@@ -1368,7 +1368,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "roar + fast hits",
           cap: { en: "A *roar* in, then *rapid* little hits.", ko: "시작은 *우오오*, 이어서 *다다다닥*." },
-          frenzy(w) { w.sfx.boost(); },
+          frenzy(w) { if (w.on("tint") || w.on("aura")) w.sfx.boost(); },
           slay(w) { if (w.fz > 0) w.sfx.slashHit(); },
         },
       ],
@@ -1376,7 +1376,7 @@
 
     /* 18 ─ 회전 회오리 */
     {
-      id: "horde-whirlwind", cat: "horde", view: "top",
+      id: "horde-whirlwind", cat: "horde", view: "top", polished: true,
       title: { en: "Make a spin attack *a blender*", ko: "회전 베기를 *믹서기*처럼" },
       intro: { en: "The hero twirls. Enemies *politely* die.", ko: "빙글 도는데 적이 *얌전히* 죽어요." },
       interval: 1.8, stepDur: 3.8,
@@ -1441,7 +1441,7 @@
 
     /* 19 ─ 내려찍기 범위 공격 (옆에서) */
     {
-      id: "horde-slam", cat: "horde", view: "side",
+      id: "horde-slam", cat: "horde", view: "side", polished: true,
       title: { en: "Make a ground slam *hit the floor*", ko: "내려찍기가 *바닥을 울리게*" },
       intro: { en: "Hop, land… enemies *blink out*.", ko: "콩 뛰고 착지… 적이 *쓱 사라져요*." },
       interval: 1.6, stepDur: 3.8,
@@ -1533,7 +1533,7 @@
 
     /* 20 ─ 무리를 꿰뚫는 연쇄 번개 */
     {
-      id: "horde-chain-zap", cat: "horde", view: "top",
+      id: "horde-chain-zap", cat: "horde", view: "top", polished: true,
       title: { en: "Make chain lightning *jump*", ko: "연쇄 번개가 *튀어 다니게*" },
       intro: { en: "Eight die. You saw… *a line?*", ko: "여덟이 죽었는데… *선 하나?*" },
       interval: 1.0, stepDur: 3.6,
@@ -1604,7 +1604,7 @@
 
     /* 21 ─ 독구름 */
     {
-      id: "horde-poison", cat: "horde", view: "top",
+      id: "horde-poison", cat: "horde", view: "top", polished: true,
       title: { en: "Make a poison cloud *look toxic*", ko: "독구름이 *독하게* 보이게" },
       intro: { en: "A purple circle. Pretty *harmless*-looking.", ko: "보라색 원 하나. *별로* 안 무서워요." },
       interval: 1.6, stepDur: 3.8,
@@ -1686,7 +1686,7 @@
 
     /* 22 ─ 포탑 소환 */
     {
-      id: "horde-turret", cat: "horde", view: "top",
+      id: "horde-turret", cat: "horde", view: "top", polished: true,
       title: { en: "Make a summoned turret *arrive*", ko: "소환 포탑이 *등장하게*" },
       intro: { en: "A grey dot appears. It… *shoots?*", ko: "회색 점이 생겼어요. 쏘긴… *쏘나?*" },
       interval: 2.4, stepDur: 4.0,
@@ -1769,7 +1769,7 @@
 
     /* 23 ─ 따라다니는 펫 */
     {
-      id: "horde-pets", cat: "horde", view: "top",
+      id: "horde-pets", cat: "horde", view: "top", polished: true,
       title: { en: "Give pet minions *personality*", ko: "펫에게 *성격* 불어넣기" },
       intro: { en: "Three dots slide out and back. *Robots.*", ko: "점 셋이 갔다 와요. *로봇* 같아요." },
       interval: 1.0, stepDur: 3.6,
@@ -1845,7 +1845,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "squeak · pop",
           cap: { en: "Tiny *squeaks*. Pets sound *small*.", ko: "작은 *삑*. 펫은 소리도 *작게*." },
-          dash(w, p) { w.play(() => tn({ type: "square", f: 900 + p.i * 120, f2: 1400, dur: 0.06, vol: 0.08 })); },
+          dash(w, p) { if (w.on("windup")) w.play(() => tn({ type: "square", f: 900 + p.i * 120, f2: 1400, dur: 0.06, vol: 0.08 })); },
           bite(w) { w.sfx.pop(); },
         },
       ],

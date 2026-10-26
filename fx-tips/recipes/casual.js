@@ -1905,7 +1905,7 @@
 
     /* ───────── 22. 시간 보너스 ───────── */
     {
-      id: "casual-time-bonus", cat: "casual", view: "ui",
+      id: "casual-time-bonus", cat: "casual", view: "ui", polished: true,
       title: { en: "Make time bonuses *feel like air*", ko: "시간 보너스를 *숨통 트이게*" },
       intro: { en: "+3 seconds. The bar *blinks*. Missed it.", ko: "+3초. 막대가 *툭*. 놓쳤어요." },
       interval: 1.3, stepDur: 3.6,
@@ -1972,8 +1972,8 @@
         {
           id: "sound", name: { en: "Tick → Chime", ko: "째깍 → 띵" }, param: "tick when low",
           cap: { en: "Nervous *ticks* when low, a bright *chime* on bonus.", ko: "급할 땐 *째깍째깍*, 보너스엔 *띵*." },
-          update(w, dt) { if (w.t < 3 && (w.tk = (w.tk || 0) - dt) <= 0) { w.tk = 0.25; w.sfx.tick(); } },
-          bonus(w) { w.sfx.chime(9); },
+          update(w, dt) { if (w.on("warn") && w.t < 3 && (w.tk = (w.tk || 0) - dt) <= 0) { w.tk = 0.25; w.sfx.tick(); } },
+          bonus(w) { if (w.on("fill") || w.on("text")) w.sfx.chime(9); },
         },
       ],
     },

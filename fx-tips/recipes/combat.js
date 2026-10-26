@@ -1188,7 +1188,7 @@
 
     /* 13. 넘어짐과 일어남 */
     {
-      id: "combat-knockdown", cat: "combat", view: "side",
+      id: "combat-knockdown", cat: "combat", view: "side", polished: true,
       title: { en: "Knock them *down*. Let them *get up*.", ko: "*쓰러지고*, *일어나게*" },
       intro: { en: "Down. Up. Like flipping a *switch*.", ko: "누웠다, 섰다. *스위치* 켜듯." },
       interval: 2.2, stepDur: 4.0,
@@ -1259,7 +1259,7 @@
 
     /* 14. 래그돌 */
     {
-      id: "combat-ragdoll", cat: "combat", view: "side",
+      id: "combat-ragdoll", cat: "combat", view: "side", polished: true,
       title: { en: "Launch bodies like *ragdolls*", ko: "*헝겊 인형*처럼 날려 보내기" },
       intro: { en: "Huge hit. It just *slides* away.", ko: "세게 쳤는데 *스르륵* 밀려나요." },
       interval: 2.2, stepDur: 4.0,
@@ -1323,7 +1323,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crunch + thumps",
           cap: { en: "A *crunch* to launch, a *thump* per bounce.", ko: "날릴 때 *콰직*, 튈 때마다 *쿵*." },
-          launch(w) { w.sfx.crit(); },
+          launch(w) { w.sfx.slashHit(); if (w.on("stop")) w.sfx.critBig(); },
           bounce(w) { w.sfx.thunk(); },
         },
       ],
@@ -1331,7 +1331,7 @@
 
     /* 15. 연타 */
     {
-      id: "combat-flurry", cat: "combat", view: "side",
+      id: "combat-flurry", cat: "combat", view: "side", polished: true,
       title: { en: "Make a flurry *stack up*", ko: "연타 숫자는 *쌓이게*" },
       intro: { en: "Seven hits. You can read *one* number.", ko: "일곱 대 때렸는데 숫자는 *하나*만 보여요." },
       interval: 1.4, stepDur: 3.8,
@@ -1399,15 +1399,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch +1 / hit",
           cap: { en: "Raise the pitch *every hit*. It builds.", ko: "칠 때마다 음을 *한 칸씩*. 쌓이는 느낌." },
-          hit(w, at, i) { w.sfx.blip(i + 1); w.sfx.tick(); },
-          last(w) { w.sfx.crit(); },
+          hit(w, at, i) { w.sfx.hit(1 + i * 0.05); },
+          last(w) { w.sfx.slashHit(); if (w.on("finisher")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 16. 흡혈 */
     {
-      id: "combat-lifesteal", cat: "combat", view: "side",
+      id: "combat-lifesteal", cat: "combat", view: "side", polished: true,
       title: { en: "Make lifesteal *visible*", ko: "흡혈은 *눈에 보이게*" },
       intro: { en: "My HP went up. From *where?*", ko: "체력이 늘었어요. *어디서?*" },
       interval: 1.6, stepDur: 3.8,
@@ -1485,14 +1485,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slash + soft pops",
           cap: { en: "A *slash*, then soft *pops* as orbs land.", ko: "*베고*, 구슬이 닿을 때마다 *뽁*." },
           hit(w) { w.sfx.slashHit(); },
-          gain(w) { w.sfx.blip(5); },
+          gain(w) { if (w.on("absorb")) w.sfx.blip(5); },
         },
       ],
     },
 
     /* 17. 오버킬 */
     {
-      id: "combat-overkill", cat: "combat", view: "side",
+      id: "combat-overkill", cat: "combat", view: "side", polished: true,
       title: { en: "Make overkill *look* like overkill", ko: "오버킬은 *과하게*" },
       intro: { en: "260 damage on 20 HP. Same as a *tap*.", ko: "체력 20에 260 데미지. 툭 친 거랑 *같아요*." },
       interval: 1.6, stepDur: 3.8,
@@ -1557,14 +1557,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crunch + boom",
           cap: { en: "A *crunch* with a *boom* under it.", ko: "*콰직* 밑에 *쾅*." },
-          hit(w) { w.sfx.crit(); w.sfx.boom(); },
+          hit(w) { w.sfx.slashHit(); if (w.on("stop") || w.on("callout")) w.sfx.critBig(); if (w.on("gib")) w.sfx.boom(); },
         },
       ],
     },
 
     /* 18. 마지막 처치 슬로모션 */
     {
-      id: "combat-lastkill", cat: "combat", view: "side",
+      id: "combat-lastkill", cat: "combat", view: "side", polished: true,
       title: { en: "Slow down the *final kill*", ko: "마지막 한 방은 *슬로모션*" },
       intro: { en: "Last enemy down. Felt like *any* other.", ko: "마지막 적인데 *평소*랑 똑같아요." },
       interval: 2.4, stepDur: 4.2,
@@ -1627,7 +1627,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "shot + deep boom",
           cap: { en: "A *deep, long* boom. Like time stretched.", ko: "*낮고 길게* 쿵. 시간이 늘어난 것처럼." },
           fire(w) { w.sfx.gun(); },
-          kill(w) { w.play(() => { tn({ f: 70, f2: 28, dur: 1.4, vol: 0.8 }); nz({ f: 700, f2: 60, dur: 1.5, vol: 0.5 }); }); },
+          kill(w) { w.sfx.thud(); if (w.on("slow") || w.on("zoom")) w.play(() => { tn({ f: 70, f2: 28, dur: 1.4, vol: 0.8 }); nz({ f: 700, f2: 60, dur: 1.5, vol: 0.5 }); }); },
         },
       ],
     },

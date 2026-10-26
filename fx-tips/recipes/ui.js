@@ -2209,7 +2209,7 @@
 
     /* 27 ───── NEW 해금 배지 ───── */
     {
-      id: "ui-new", cat: "ui", view: "ui",
+      id: "ui-new", cat: "ui", view: "ui", polished: true,
       title: { en: "Make unlocks *announce* themselves", ko: "새로 열린 걸 *알리기*" },
       intro: { en: "Something unlocked. *Where?*", ko: "뭔가 열렸대요. *어디요?*" },
       interval: 1.4, stepDur: 3.8,
@@ -2287,14 +2287,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle → chime",
           cap: { en: "A *rattle*, a *crack*, then a bright *chime*.", ko: "*달그락*, *깨짐*, 밝은 *띵*." },
           crack(w) { w.sfx.rattle(); },
-          unlock(w) { w.sfx.pop(); w.sfx.chime(7); },
+          unlock(w) { w.sfx.pop(); if (w.on("badge") || w.on("reveal")) w.sfx.chime(7); },
         },
       ],
     },
 
     /* 28 ───── 일시정지 메뉴 블러 ───── */
     {
-      id: "ui-pause", cat: "ui", view: "ui",
+      id: "ui-pause", cat: "ui", view: "ui", polished: true,
       title: { en: "Make pausing feel *calm*", ko: "일시정지를 *차분하게*" },
       intro: { en: "Paused. A box *on top of chaos*.", ko: "일시정지. *정신없는 화면* 위에 상자 하나." },
       interval: 2.1, stepDur: 4.0,

@@ -1405,7 +1405,7 @@
 
     /* 18 ─ 대시 캔슬 */
     {
-      id: "fighting-dash-cancel", cat: "fighting", view: "side", melee: true,
+      id: "fighting-dash-cancel", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a dash cancel *snap*", ko: "대시 캔슬을 *착*" },
       intro: { en: "Hit, dash, hit. Was that a *cancel?*", ko: "치고, 대시, 또 치고. *캔슬*이었나?" },
       interval: 1.2, stepDur: 4.0,
@@ -1468,14 +1468,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tap · whoosh · crack",
           cap: { en: "*Tap*, *whoosh*, *crack*. Three beats.", ko: "*톡*, *슉*, *빡*. 세 박자." },
           cancel(w) { w.sfx.dash(); },
-          hit(w, p, n) { if (n) w.sfx.crit(); else w.sfx.hit(1.3); },
+          hit(w, p, n) { w.sfx.hit(1.3); if (n && w.on("payoff")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 19 ─ 공중 콤보 */
     {
-      id: "fighting-air-combo", cat: "fighting", view: "side", melee: true,
+      id: "fighting-air-combo", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Keep an air combo *afloat*", ko: "공중 콤보를 *띄워 두기*" },
       intro: { en: "Air combo. Both just *fall* through it.", ko: "공중 콤보인데 둘 다 *그냥 떨어져요*." },
       interval: 1.5, stepDur: 4.2,
@@ -1538,7 +1538,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising pops · slam",
           cap: { en: "Pops that *climb*, then a *slam*.", ko: "올라가는 *팡팡*, 그리고 *쾅*." },
           air(w, q, n) { w.sfx.hit(1 + n * 0.1); },
-          spike(w) { w.sfx.crit(); },
+          spike(w) { w.sfx.hit(); if (w.on("spike")) w.sfx.critBig(); },
           land(w) { w.sfx.slam(); },
         },
       ],
@@ -1546,7 +1546,7 @@
 
     /* 20 ─ 낙법 */
     {
-      id: "fighting-tech-recovery", cat: "fighting", view: "side", melee: true,
+      id: "fighting-tech-recovery", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a tech recovery *flash*", ko: "낙법을 *번쩍* 보이게" },
       intro: { en: "Knocked down. Gets up *very slowly*.", ko: "넘어지면 *세월아 네월아* 일어나요." },
       interval: 1.6, stepDur: 4.0,
@@ -1610,14 +1610,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "thud · swish · ting",
           cap: { en: "*Thud* down, *swish* roll, tiny *ting*.", ko: "*쿵* 넘어지고, *휙* 구르고, *팅*." },
           down(w) { w.sfx.thud(); },
-          tech(w) { w.sfx.swish(); w.sfx.chime(5); },
+          tech(w) { w.sfx.swish(); if (w.on("label") || w.on("flash")) w.sfx.clack(); },
         },
       ],
     },
 
     /* 21 ─ 슈퍼 아머 */
     {
-      id: "fighting-super-armor", cat: "fighting", view: "side", melee: true,
+      id: "fighting-super-armor", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Show super armor *tanking* hits", ko: "슈퍼 아머가 *버티는* 게 보이게" },
       intro: { en: "Hit lands. It doesn't flinch. *Bug?*", ko: "맞았는데 꿈쩍도 안 해요. *버그?*" },
       interval: 0.6, stepDur: 3.6,
@@ -1668,8 +1668,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clank",
           cap: { en: "A metal *clank*, not a thud.", ko: "*퍽* 말고 *깡*." },
           hit(w) {
-            w.play(() => { tn({ type: "square", f: 1250, f2: 900, dur: 0.12, vol: 0.12 }); tn({ type: "triangle", f: 2500, dur: 0.2, vol: 0.08 }); nz({ type: "highpass", f: 3500, dur: 0.08, vol: 0.3 }); });
-            w.sfx.thunk();
+            w.sfx.thunk(); if (w.on("clank")) w.sfx.clack(0.7);
           },
         },
       ],
@@ -1677,7 +1676,7 @@
 
     /* 22 ─ 기상 리버설 */
     {
-      id: "fighting-wakeup-reversal", cat: "fighting", view: "side", melee: true,
+      id: "fighting-wakeup-reversal", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Make a wake-up reversal *explode*", ko: "기상 반격을 *폭발*하게" },
       intro: { en: "Gets up, uppercuts. *Just happened.*", ko: "일어나서 어퍼컷. *그냥 그랬어요*." },
       interval: 1.7, stepDur: 4.0,
@@ -1742,15 +1741,15 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "shing · crack",
           cap: { en: "A bright *shing*, then a *crack*.", ko: "밝은 *챙*, 그리고 *빡*." },
-          wake(w) { w.sfx.chime(0); w.sfx.swish(); },
-          hit(w) { w.sfx.crit(); },
+          wake(w) { w.sfx.swish(); if (w.on("shine")) w.sfx.lightSwell(); },
+          hit(w) { w.sfx.hit(); if (w.on("impact")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 23 ─ 퍼펙트 KO */
     {
-      id: "fighting-perfect-ko", cat: "fighting", view: "side", melee: true,
+      id: "fighting-perfect-ko", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Celebrate a *PERFECT*", ko: "*퍼펙트* 승리 축하하기" },
       intro: { en: "Won without a scratch. *Same as any win.*", ko: "한 대도 안 맞고 이겼는데 *평범해요*." },
       interval: 2.0, stepDur: 4.2,
@@ -1822,8 +1821,8 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack · fanfare",
           cap: { en: "A *crack*, then a *fanfare*.", ko: "*빡*, 그리고 *빠바밤*." },
-          ko(w) { w.sfx.crit(); },
-          perfect(w) { w.sfx.fanfare(); },
+          ko(w) { w.sfx.slashHit(); },
+          perfect(w) { if (w.on("text") || w.on("rays")) w.sfx.fanfare(); },
         },
       ],
     },

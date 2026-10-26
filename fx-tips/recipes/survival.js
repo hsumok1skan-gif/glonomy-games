@@ -2361,7 +2361,7 @@
 
     /* ───────── 28. 기지 습격 경보 ───────── */
     {
-      id: "survival-raid", cat: "survival", view: "side",
+      id: "survival-raid", cat: "survival", view: "side", polished: true,
       title: { en: "Make a base raid *alarming*", ko: "기지 습격을 *다급하게*" },
       intro: { en: "Base under attack. Nobody *noticed*.", ko: "기지가 공격받는데 *아무도 몰라요*." },
       interval: 1.1, stepDur: 4.0,
@@ -2439,7 +2439,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "two-tone siren",
           cap: { en: "A *two-tone siren*. Nobody misses that.", ko: "*삐뽀삐뽀* 두 음 사이렌. 못 들을 수가 없죠." },
-          alarm(w) { for (let i = 0; i < 4; i++) w.after(i * 0.5, () => w.play(() => { tn({ type: "square", f: 880, dur: 0.24, vol: 0.08 }); tn({ type: "square", f: 660, dur: 0.24, vol: 0.08, delay: 0.25 }); })); },
+          alarm(w) { if (w.on("siren") || w.on("banner")) for (let i = 0; i < 4; i++) w.after(i * 0.5, () => w.play(() => { tn({ type: "square", f: 880, dur: 0.24, vol: 0.08 }); tn({ type: "square", f: 660, dur: 0.24, vol: 0.08, delay: 0.25 }); })); },
           hit(w) { w.sfx.thunk(); },
         },
       ],

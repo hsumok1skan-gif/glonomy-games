@@ -1896,7 +1896,7 @@
 
     /* 22 ─ 테니스 스매시 */
     {
-      id: "sports-tennis-smash", cat: "racing", view: "side",
+      id: "sports-tennis-smash", cat: "racing", view: "side", polished: true,
       title: { en: "Make smashes *slam*", ko: "스매시를 *꽂히게*" },
       intro: { en: "Big smash. Lands like a *lob*.", ko: "스매시인데 *로브*처럼 떨어져요." },
       interval: 1.6, stepDur: 3.8,
@@ -1986,7 +1986,7 @@
 
     /* 23 ─ 타이밍 게이지 */
     {
-      id: "sports-timing-meter", cat: "racing", view: "ui",
+      id: "sports-timing-meter", cat: "racing", view: "ui", polished: true,
       title: { en: "Make perfect timing *feel* perfect", ko: "완벽한 타이밍을 *완벽하게*" },
       intro: { en: "You nailed it. The game *shrugs*.", ko: "딱 맞췄는데 게임은 *시큰둥*." },
       interval: 1.1, stepDur: 3.8,
@@ -2073,14 +2073,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch by grade",
           cap: { en: "Higher *pitch* for better grades.", ko: "잘할수록 *음이 높아요*." },
-          judge(w, j) { if (j.g === "MISS") w.sfx.hurt(); else w.sfx.chime({ PERFECT: 12, GREAT: 7, GOOD: 0 }[j.g]); },
+          judge(w, j) { if (j.g === "MISS") w.sfx.thud(); else if (w.on("grade")) w.sfx.chime({ PERFECT: 12, GREAT: 7, GOOD: 0 }[j.g]); else w.sfx.tock(); },
         },
       ],
     },
 
     /* 24 ─ 골 세리머니 */
     {
-      id: "sports-celebration", cat: "racing", view: "side",
+      id: "sports-celebration", cat: "racing", view: "side", polished: true,
       title: { en: "Make goals feel like *goals*", ko: "골을 *골답게* 축하하기" },
       intro: { en: "Scored. The number changed. *That's it?*", ko: "골! 숫자만 바뀌었어요. *끝?*" },
       interval: 2.2, stepDur: 4.2,
@@ -2160,14 +2160,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "fanfare + roar",
           cap: { en: "A *fanfare* over a swelling *roar*.", ko: "커지는 *함성* 위에 *빰빠밤*." },
-          goal(w) { w.sfx.fanfare(); w.play(() => nz({ type: "bandpass", f: 700, f2: 1400, q: 0.5, dur: 1.8, vol: 0.35 })); },
+          goal(w) { if (w.on("text") || w.on("jump")) w.sfx.fanfare(); if (w.on("crowd")) w.play(() => nz({ type: "bandpass", f: 700, f2: 1400, q: 0.5, dur: 1.8, vol: 0.35 })); },
         },
       ],
     },
 
     /* 25 ─ 스키 트릭 착지 */
     {
-      id: "sports-ski-trick", cat: "racing", view: "side",
+      id: "sports-ski-trick", cat: "racing", view: "side", polished: true,
       title: { en: "Make trick landings *stick*", ko: "트릭 착지를 *딱* 꽂히게" },
       intro: { en: "Big air. Lands like a *cardboard cutout*.", ko: "크게 떴는데 *종이 인형*처럼 내려와요." },
       interval: 1.8, stepDur: 4.0,
@@ -2186,7 +2186,16 @@
         S.sq += (1 - S.sq) * Math.min(1, dt * 10);
       },
       drawFloor(w, ctx) {
-        ctx.fillStyle = "#e8eef7"; ctx.beginPath(); ctx.moveTo(-80, 150 - 24); ctx.lineTo(150, 195); ctx.lineTo(200, 196); ctx.lineTo(200, 210); ctx.lineTo(620, 336); ctx.lineTo(620, 420); ctx.lineTo(-80, 420); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#c9d4e4"; ctx.beginPath(); ctx.moveTo(-80, 150 - 24); ctx.lineTo(150, 195); ctx.lineTo(200, 196); ctx.lineTo(200, 210); ctx.lineTo(620, 336); ctx.lineTo(620, 420); ctx.lineTo(-80, 420); ctx.closePath(); ctx.fill();
+        // 픽셀 눈 결: 빛 받는 윗면 띠 + 아래로 갈수록 푸른 그늘 + 스키 자국 점선
+        ctx.save(); ctx.clip();
+        const sy = x => x < 150 ? 126 + (x + 80) * 69 / 230 : x < 200 ? 195 : 210 + (x - 200) * 0.3;
+        for (let x = -80; x < 620; x += 4) { const y = Math.round(sy(x) / 2) * 2;
+          ctx.fillStyle = "#f4f8fd"; ctx.fillRect(x, y, 4, 6); ctx.fillStyle = "#e2e9f3"; ctx.fillRect(x, y + 6, 4, 10);
+          ctx.fillStyle = "#a9b8cc"; ctx.fillRect(x, y + 60, 4, 30); ctx.fillStyle = "#8d9db4"; ctx.fillRect(x, y + 120, 4, 200);
+          if ((x / 4) % 5 < 3) { ctx.fillStyle = "#b5c2d4"; ctx.fillRect(x, y + 24, 4, 2); } }
+        ctx.fillStyle = "#ffffff"; for (const [x, d] of [[30, 30], [120, 40], [260, 22], [380, 50], [500, 34]]) ctx.fillRect(x, Math.round(sy(x) + d), 2, 2);
+        ctx.restore();
         ctx.fillStyle = "#b8c4d6"; ctx.beginPath(); ctx.moveTo(150, 195); ctx.lineTo(200, 196); ctx.lineTo(200, 210); ctx.closePath(); ctx.fill();
         for (const [x, s] of [[60, 1], [330, 0.8], [470, 1.1]]) { const y = 150 + x * 0.3; ctx.fillStyle = "#1f3b2c"; ctx.beginPath(); ctx.moveTo(x, y - 60 * s); ctx.lineTo(x + 16 * s, y); ctx.lineTo(x - 16 * s, y); ctx.closePath(); ctx.fill(); }
       },
@@ -2238,7 +2247,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh / crunch",
           cap: { en: "A *whoosh* off the lip, a snowy *crunch* down.", ko: "도약에 *휙*, 착지에 *사각*." },
           launch(w) { w.sfx.jump(); w.sfx.swish(); },
-          land(w) { w.sfx.land(); w.play(() => nz({ type: "highpass", f: 1800, dur: 0.25, vol: 0.4 })); },
+          land(w) { w.sfx.land(); if (w.on("spray")) w.play(() => nz({ type: "highpass", f: 1800, dur: 0.25, vol: 0.4 })); },
         },
       ],
     },

@@ -1199,7 +1199,7 @@
 
     /* ─────────────── 13. 석궁 고정 ─────────────── */
     {
-      id: "weapon-crossbow", cat: "weapon", view: "side",
+      id: "weapon-crossbow", cat: "weapon", view: "side", polished: true,
       title: { en: "Pin them to the *wall*", ko: "석궁으로 *벽에 꽂기*" },
       intro: { en: "Hit. Gone. *Where'd it go?*", ko: "맞았다. 사라졌다. *어디 갔지?*" },
       interval: 1.6, stepDur: 3.8,
@@ -1277,7 +1277,7 @@
 
     /* ─────────────── 14. 투척 단검 부채꼴 ─────────────── */
     {
-      id: "weapon-knives", cat: "weapon", view: "top",
+      id: "weapon-knives", cat: "weapon", view: "top", polished: true,
       title: { en: "Fan out *throwing knives*", ko: "투척 단검을 *부채꼴로*" },
       intro: { en: "Five knives. Looks like *one*.", ko: "다섯 개 던졌는데 *하나*로 보여요." },
       interval: 1.1, stepDur: 3.6,
@@ -1351,7 +1351,7 @@
 
     /* ─────────────── 15. 수류탄 쿠킹 ─────────────── */
     {
-      id: "weapon-grenade", cat: "weapon", view: "side",
+      id: "weapon-grenade", cat: "weapon", view: "side", polished: true,
       title: { en: "Cook a grenade, *feel the timer*", ko: "수류탄 *타이머*를 느끼게" },
       intro: { en: "It lands. Sits. *Then* explodes. Huh?", ko: "떨어지고, 가만히… *그러다* 펑. 엥?" },
       interval: 2.6, stepDur: 4.2,
@@ -1433,7 +1433,7 @@
           id: "sound", name: { en: "Beep… Beep-Beep-BOOM", ko: "삑… 삑삑삑 쾅" }, param: "beeps speed up",
           cap: { en: "Beeps *speed up*. Then the *boom*.", ko: "삑 소리가 *빨라지다가*, *쾅*." },
           cook(w) { w.sfx.clickUp(); },
-          beep(w) { w.play(() => tn({ type: "square", f: 1760, dur: 0.05, vol: 0.12 })); },
+          beep(w) { if (w.on("blink") || w.on("ring")) w.play(() => tn({ type: "square", f: 1760, dur: 0.05, vol: 0.12 })); },
           boom(w) { w.sfx.boom(); },
         },
       ],
@@ -1441,7 +1441,7 @@
 
     /* ─────────────── 16. 지뢰 ─────────────── */
     {
-      id: "weapon-landmine", cat: "weapon", view: "side",
+      id: "weapon-landmine", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a landmine *click* first", ko: "지뢰는 *딸깍*부터" },
       intro: { en: "Step. Boom. *No suspense at all.*", ko: "밟자마자 펑. *긴장감이 없어요*." },
       interval: 2.5, stepDur: 4.2,
@@ -1511,7 +1511,7 @@
         {
           id: "sound", name: { en: "Click · Beep · BOOM", ko: "딸깍 · 삑 · 쾅" }, param: "silence before boom",
           cap: { en: "A tiny *click*, a beat of *silence*, then *BOOM*.", ko: "작은 *딸깍*, 잠깐 *정적*, 그리고 *쾅*." },
-          click(w) { w.sfx.clickDown(); w.play(() => tn({ type: "square", f: 1500, dur: 0.06, vol: 0.1, delay: 0.1 })); },
+          click(w) { w.sfx.clickDown(); if (w.on("led") || w.on("click")) w.play(() => tn({ type: "square", f: 1500, dur: 0.06, vol: 0.1, delay: 0.1 })); },
           boom(w) { w.sfx.boom(); },
         },
       ],
@@ -1519,7 +1519,7 @@
 
     /* ─────────────── 17. 연쇄 번개 ─────────────── */
     {
-      id: "weapon-chain-lightning", cat: "weapon", view: "side",
+      id: "weapon-chain-lightning", cat: "weapon", view: "side", polished: true,
       title: { en: "Make chain lightning *jump*", ko: "연쇄 번개가 *튀어 다니게*" },
       intro: { en: "Four hits at once. Looks like *lines*.", ko: "넷이 한 번에 맞음. 그냥 *선* 같아요." },
       interval: 1.3, stepDur: 3.6,
@@ -1584,7 +1584,7 @@
 
     /* ─────────────── 18. 얼음 파편 ─────────────── */
     {
-      id: "weapon-ice-shard", cat: "weapon", view: "side",
+      id: "weapon-ice-shard", cat: "weapon", view: "side", polished: true,
       title: { en: "Make ice *freeze* them", ko: "얼음으로 *꽁꽁* 얼리기" },
       intro: { en: "A blue dot. Is it *cold?*", ko: "파란 점 하나. *차가운* 건가요?" },
       interval: 0.95, stepDur: 3.6,
@@ -1656,7 +1656,7 @@
           id: "sound", name: { en: "Chime + Crack", ko: "띵 + 쩍" }, param: "glassy highs",
           cap: { en: "A glassy *chime* on hit, a *crack* when it breaks.", ko: "맞을 땐 유리 같은 *띵*, 깨질 땐 *쩍*." },
           fire(w) { w.sfx.magic(); },
-          hit(w) { w.sfx.chime(rand(0, 4)); w.sfx.tick(); },
+          hit(w) { w.sfx.hit(0.9); if (w.on("frost") || w.on("freeze")) w.sfx.glass(); },
           kill(w) { w.play(() => { nz({ dur: 0.35, type: "highpass", f: 3500, f2: 1800, vol: 0.5 }); tn({ type: "triangle", f: 2600, f2: 1900, dur: 0.3, vol: 0.12 }); }); },
         },
       ],
@@ -2275,6 +2275,18 @@
   }
   function drawCrossbow(ctx, g, s) {
     ctx.save(); ctx.translate(g.x, g.y); ctx.rotate(s.rot); ctx.translate(-s.kick, 0);
+    if (FX._art && FX._art.hero) { // 픽셀 석궁(주인공 팔레트): 검은 테 · 어두운 나무 개머리 · 강철 활대 · 청록 장식
+      const R = (x, y, w2, h2, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w2, h2); };
+      R(-38, -7, 40, 14, "#0a0809"); R(-36, -5, 36, 10, "#2c2220"); R(-36, -5, 36, 2, "#4a3a34"); R(-30, 1, 6, 2, "#1a1414");
+      R(-2, -10, 92, 10, "#0a0809"); R(0, -8, 88, 6, "#3d3841"); R(0, -8, 88, 2, "#6b6f7a"); R(40, -6, 30, 2, "#35878f"); R(84, -10, 6, 10, "#68d6e4");
+      R(-2, 0, 10, 14, "#0a0809"); R(0, 2, 6, 10, "#2c2220");
+      const f = Math.round(s.flex * 12 / 2) * 2;
+      for (let k = -19; k <= 13; k++) { const t = (k + 3) / 16, x = 72 + f + Math.round((1 - t * t) * 12 * (1 - s.flex * 0.6) / 2) * 2, y = k * 2;
+        R(x - 2, y - 1, 6, 4, "#0a0809"); R(x - 1, y, 4, 2, Math.abs(k + 3) < 3 ? "#68d6e4" : "#58616e"); }
+      ctx.strokeStyle = "#d6dce5"; ctx.lineWidth = 1.5; const sx = s.flex > 0.05 ? 74 : 40;
+      ctx.beginPath(); ctx.moveTo(72 + f, -38); ctx.lineTo(sx, -6); ctx.lineTo(72 + f, 26); ctx.stroke();
+      ctx.restore(); return;
+    }
     poly(ctx, [[-36, -4], [0, -8], [0, 4], [-36, 10]], "#6b4f3a");
     box(ctx, -2, -9, 88, 7, "#5b4636"); box(ctx, -2, 2, 9, 12, "#1f2430");
     const f = s.flex * 12;
