@@ -1461,7 +1461,7 @@
 
     // 15 ─ 전장 흙먼지
     {
-      id: "army-dust", cat: "army", view: "iso",
+      id: "army-dust", cat: "army", view: "iso", polished: true,
       title: { en: "Fill the melee with *dust*", ko: "난전을 *흙먼지*로 채우기" },
       intro: { en: "A brawl in a *clean room*.", ko: "*깨끗한 방*에서 싸우는 느낌." },
       interval: 0.5, stepDur: 3.8,
@@ -1530,7 +1530,7 @@
 
     // 16 ─ 치유 오라
     {
-      id: "army-heal", cat: "army", view: "top",
+      id: "army-heal", cat: "army", view: "top", polished: true,
       title: { en: "Show a healer *working*", ko: "힐러가 *일하는 게* 보이게" },
       intro: { en: "Bars go up. *From where?*", ko: "체력이 차요. *누가?*" },
       interval: 1.2, stepDur: 3.8,
@@ -1612,7 +1612,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "soft chime",
           cap: { en: "A soft *chime*. Heals should sound *kind*.", ko: "부드러운 *띵*. 치유는 *다정하게*." },
-          pulse(w) { w.sfx.chime(rand(-2, 2)); },
+          pulse(w) { if (w.on("wave")) w.sfx.chime(rand(-2, 2)); },
         },
       ],
     },

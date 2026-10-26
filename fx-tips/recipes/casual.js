@@ -1560,7 +1560,7 @@
 
     /* ───────── 18. 복권 긁기 ───────── */
     {
-      id: "casual-scratch", cat: "casual", view: "ui",
+      id: "casual-scratch", cat: "casual", view: "ui", polished: true,
       title: { en: "Make scratch cards *crispy*", ko: "복권 긁기를 *사각사각하게*" },
       intro: { en: "Grey goes away. *Prize is just… there.*", ko: "회색이 지워짐. 상금은 *그냥 거기*." },
       interval: 1.6, stepDur: 3.8,
@@ -1638,13 +1638,13 @@
           id: "sound", name: { en: "Scratch Sound", ko: "사각 소리" }, param: "noise / stroke",
           cap: { en: "A dry *scritch* per stroke, a *ding* at the end.", ko: "긁을 때 *사각*, 끝나면 *딩*." },
           scratch(w) { w.play(() => nz({ dur: 0.05, type: "bandpass", f: rand(2500, 4000), q: 1, vol: 0.18 })); },
-          done(w) { w.sfx.chime(7); },
+          done(w) { if (w.on("shine") || w.on("pop")) w.sfx.itemGet(); },
         },
       ],
     },
     /* ───────── 19. 인형 뽑기 ───────── */
     {
-      id: "casual-claw", cat: "casual", view: "side",
+      id: "casual-claw", cat: "casual", view: "side", polished: true,
       title: { en: "Make the claw machine *tense*", ko: "인형 뽑기를 *조마조마하게*" },
       intro: { en: "Grab. Lift. Drop. Like a *forklift*.", ko: "집고, 들고, 놓기. *지게차* 같아요." },
       interval: 2.3, stepDur: 4.0,
@@ -1742,14 +1742,14 @@
           cap: { en: "*Whirr* while moving, *clunk* on the grab.", ko: "움직일 땐 *위잉*, 집을 땐 *덜컥*." },
           move(w) { w.play(() => tn({ type: "sawtooth", f: 90, f2: 110, dur: 0.28, vol: 0.06 })); },
           grab(w) { w.sfx.clickDown(); w.sfx.thunk(); },
-          win(w) { w.after(0.25, () => w.sfx.fanfare()); },
+          win(w) { w.sfx.thunk(); if (w.on("lights")) w.after(0.25, () => w.sfx.fanfare()); },
         },
       ],
     },
 
     /* ───────── 20. 풍선 터뜨리기 ───────── */
     {
-      id: "casual-balloon", cat: "casual", view: "side",
+      id: "casual-balloon", cat: "casual", view: "side", polished: true,
       title: { en: "Make balloon pops *POP*", ko: "풍선을 *빵* 터지게" },
       intro: { en: "Dart hits. Balloon… *leaves*.", ko: "다트 맞음. 풍선이… *퇴장*." },
       interval: 0.7, stepDur: 3.4,
@@ -1814,14 +1814,14 @@
         {
           id: "sound", name: { en: "Pop!", ko: "빵!" }, param: "pop + noise burst",
           cap: { en: "A sharp *bang*, not a soft click.", ko: "부드러운 딸깍 말고 *빵*." },
-          burst(w) { w.sfx.pop(); w.play(() => nz({ dur: 0.08, type: "highpass", f: 1800, vol: 0.5 })); },
+          burst(w) { w.sfx.pop(); },
         },
       ],
     },
 
     /* ───────── 21. 뽁뽁이 ───────── */
     {
-      id: "casual-bubble-wrap", cat: "casual", view: "ui",
+      id: "casual-bubble-wrap", cat: "casual", view: "ui", polished: true,
       title: { en: "Make bubble wrap *addictive*", ko: "뽁뽁이를 *멈출 수 없게*" },
       intro: { en: "Click. Circle goes flat. *Not satisfying.*", ko: "톡. 동그라미가 납작. *시원하지 않아요*." },
       interval: 0.22, stepDur: 3.3,

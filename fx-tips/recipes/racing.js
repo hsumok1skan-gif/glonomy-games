@@ -1537,7 +1537,7 @@
 
     /* 18 ─ 농구 클린슛 */
     {
-      id: "sports-basketball", cat: "racing", view: "side",
+      id: "sports-basketball", cat: "racing", view: "side", polished: true,
       title: { en: "Make swishes *satisfying*", ko: "클린슛을 *시원하게*" },
       intro: { en: "Nothing but net. Nothing *happens*.", ko: "림도 안 건드린 슛. 아무 *반응이 없어요*." },
       interval: 1.8, stepDur: 4.0,
@@ -1614,14 +1614,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swish",
           cap: { en: "The *swish*. Breathy, short, perfect.", ko: "*촥*. 짧고 시원하게." },
-          swish(w) { w.play(() => nz({ type: "highpass", f: 2400, f2: 5000, dur: 0.22, vol: 0.4 })); w.sfx.chime(5); },
+          swish(w) { w.play(() => nz({ type: "highpass", f: 2400, f2: 5000, dur: 0.22, vol: 0.4 })); if (w.on("text") || w.on("sparkle")) w.sfx.chime(5); },
         },
       ],
     },
 
     /* 19 ─ 골프 파워 게이지 */
     {
-      id: "sports-golf-power", cat: "racing", view: "side",
+      id: "sports-golf-power", cat: "racing", view: "side", polished: true,
       title: { en: "Make power meters *juicy*", ko: "파워 게이지에 *맛* 내기" },
       intro: { en: "A grey bar fills up. Then a ball moves.", ko: "회색 막대가 차고, 공이 움직여요. *끝*." },
       interval: 1.7, stepDur: 4.0,
@@ -1708,14 +1708,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising tone + click",
           cap: { en: "A *rising tone* while filling, a crisp *tick* on hit.", ko: "차오르며 *음이 올라가고*, 맞을 때 *딱*." },
           lock(w) { w.sfx.blip(10); },
-          hit(w) { w.sfx.ping(); },
+          hit(w) { w.sfx.thunk(); if (w.on("launch") || w.on("smear")) w.sfx.swish(); },
         },
       ],
     },
 
     /* 20 ─ 볼링 스트라이크 */
     {
-      id: "sports-bowling", cat: "racing", view: "3d",
+      id: "sports-bowling", cat: "racing", view: "3d", polished: true,
       title: { en: "Make strikes *explode*", ko: "스트라이크를 *팡* 터지게" },
       intro: { en: "Strike. The pins just *vanish*.", ko: "스트라이크인데 핀이 *사라질* 뿐." },
       interval: 1.8, stepDur: 4.0,
@@ -1803,14 +1803,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "boom + clatter",
           cap: { en: "A low *boom*, then wooden *clatter*.", ko: "낮은 *쿵*, 이어서 *와르르*." },
-          strike(w) { w.sfx.thud(); w.sfx.rattle(); w.play(() => { for (let i = 0; i < 6; i++) tn({ f: rand(500, 900), f2: 300, dur: 0.06, vol: 0.15, delay: 0.05 + i * 0.05 }); }); },
+          strike(w) { w.sfx.thud(); w.sfx.rattle(); if (w.on("scatter") || w.on("chips")) w.play(() => { for (let i = 0; i < 6; i++) tn({ f: rand(500, 900), f2: 300, dur: 0.06, vol: 0.15, delay: 0.05 + i * 0.05 }); }); },
         },
       ],
     },
 
     /* 21 ─ 야구 홈런 */
     {
-      id: "sports-home-run", cat: "racing", view: "side",
+      id: "sports-home-run", cat: "racing", view: "side", polished: true,
       title: { en: "Make home runs *legendary*", ko: "홈런을 *전설*처럼" },
       intro: { en: "Out of the park. Feels like a *foul tip*.", ko: "장외 홈런인데 *파울* 느낌이에요." },
       interval: 1.8, stepDur: 4.0,
@@ -1889,7 +1889,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack + crowd",
           cap: { en: "A sharp *crack*, then the *crowd* rises.", ko: "날카로운 *딱*, 이어서 *함성*." },
-          hit(w) { w.sfx.crit(); w.play(() => nz({ type: "bandpass", f: 900, f2: 1500, q: 0.6, dur: 1.4, vol: 0.3, delay: 0.15 })); },
+          hit(w) { w.sfx.thud(); if (w.on("stop") || w.on("burst")) w.sfx.critBig(); if (w.on("trail")) w.play(() => nz({ type: "bandpass", f: 900, f2: 1500, q: 0.6, dur: 1.4, vol: 0.3, delay: 0.15 })); },
         },
       ],
     },

@@ -1609,7 +1609,7 @@
 
     // ───────────────────────── 18. 빛줄기 속 먼지
     {
-      id: "env-motes", cat: "env", view: "side",
+      id: "env-motes", cat: "env", view: "side", polished: true,
       title: { en: "Fill light shafts with *dust*", ko: "빛줄기에 *먼지* 띄우기" },
       intro: { en: "A yellow shape on the floor. Flat. *Dead.*", ko: "바닥에 노란 도형. 납작하고 *죽어 있어요*." },
       interval: 1.2, stepDur: 3.8,
@@ -1704,7 +1704,7 @@
 
     // ───────────────────────── 19. 발자국 (위에서)
     {
-      id: "env-footprints", cat: "env", view: "top",
+      id: "env-footprints", cat: "env", view: "top", polished: true,
       title: { en: "Leave *footprints* behind", ko: "*발자국* 남기기" },
       intro: { en: "He walks on sand. *No trace* at all.", ko: "모래 위를 걷는데 *흔적이 없어요*." },
       interval: 0.3, stepDur: 3.6,
@@ -1786,7 +1786,7 @@
 
     // ───────────────────────── 20. 지진
     {
-      id: "env-quake", cat: "env", view: "side",
+      id: "env-quake", cat: "env", view: "side", polished: true,
       title: { en: "Make earthquakes *rumble*", ko: "지진을 *우르르*" },
       intro: { en: "One jolt. That's an *earthquake?*", ko: "한 번 덜컹. 이게 *지진*이라고요?" },
       interval: 2.0, stepDur: 4.2,

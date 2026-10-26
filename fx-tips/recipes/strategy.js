@@ -1492,7 +1492,7 @@
 
     /* 18. 턴 넘기기 */
     {
-      id: "strategy-turn", cat: "strategy", view: "top",
+      id: "strategy-turn", cat: "strategy", view: "top", polished: true,
       title: { en: "Make turn changes *unmissable*", ko: "턴이 바뀌는 걸 *확실하게*" },
       intro: { en: "Whose turn is it? *Still mine?*", ko: "지금 누구 차례예요? *아직 나?*" },
       interval: 1.8, stepDur: 3.8,
@@ -1554,7 +1554,7 @@
         {
           id: "sound", name: { en: "Whoosh + Gong", ko: "휙 + 징" }, param: "dash · low gong",
           cap: { en: "A *whoosh* and a low *gong*.", ko: "*휙*, 그리고 낮은 *징*." },
-          turn(w, T) { w.sfx.dash(); w.play(() => { tn({ f: T.side ? 110 : 165, dur: 0.9, vol: 0.3 }); tn({ type: "triangle", f: T.side ? 220 : 330, dur: 0.6, vol: 0.1 }); }); },
+          turn(w, T) { w.sfx.dash(); if (w.on("banner")) w.play(() => { tn({ f: T.side ? 110 : 165, dur: 0.9, vol: 0.3 }); tn({ type: "triangle", f: T.side ? 220 : 330, dur: 0.6, vol: 0.1 }); }); },
         },
       ],
     },
@@ -1737,7 +1737,7 @@
 
     /* 21. 전장의 안개 */
     {
-      id: "strategy-fog", cat: "strategy", view: "top",
+      id: "strategy-fog", cat: "strategy", view: "top", polished: true,
       title: { en: "Make fog of war *feel alive*", ko: "전장의 안개를 *살아 있게*" },
       intro: { en: "Black squares. *Pop, pop.*", ko: "까만 네모가 *툭툭* 사라져요." },
       interval: 1.1, stepDur: 3.8,
@@ -1821,7 +1821,7 @@
           id: "sound", name: { en: "Breeze + Ping", ko: "바람 + 핑" }, param: "soft noise · ping",
           cap: { en: "A soft *breeze* as fog clears, a *ping* on discovery.", ko: "걷힐 때 *쉬이*, 찾으면 *핑*." },
           move(w) { w.play(() => nz({ type: "bandpass", f: 500, f2: 1400, q: 0.8, dur: 0.5, vol: 0.12 })); },
-          found(w) { w.sfx.ping(); },
+          found(w) { if (w.on("found")) w.sfx.tock(); },
         },
       ],
     },

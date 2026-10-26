@@ -1757,7 +1757,7 @@
 
     /* 17 ─────────────────────────────── */
     {
-      id: "puzzle-flood-fill", cat: "puzzle", view: "top",
+      id: "puzzle-flood-fill", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make color floods *spread*", ko: "색 번지기를 *물결처럼*" },
       intro: { en: "Pick a color. The area *snaps* to it.", ko: "색을 고르면 영역이 *휙* 바뀌어요." },
       interval: 1.1, stepDur: 3.6,
@@ -1820,14 +1820,14 @@
         {
           id: "sound", name: { en: "Rolling Notes", ko: "굴러가는 음" }, param: "note / 2 steps",
           cap: { en: "Notes *roll upward* with the wave.", ko: "물결 따라 음이 *또르르* 올라가요." },
-          fill(w, cells) { const far = Math.max(...cells.map(c => c.d)); for (let d = 0; d <= far; d += 2) w.after(d * 0.03, () => w.sfx.blip(d / 2 + 1)); },
+          fill(w, cells) { if (!w.on("wave") && !w.on("pop")) { w.sfx.tock(); return; } const far = Math.max(...cells.map(c => c.d)); for (let d = 0; d <= far; d += 2) w.after(d * 0.03, () => w.sfx.blip(d / 2 + 1)); },
         },
       ],
     },
 
     /* 18 ─────────────────────────────── */
     {
-      id: "puzzle-gravity-flip", cat: "puzzle", view: "side",
+      id: "puzzle-gravity-flip", cat: "puzzle", view: "side", polished: true,
       title: { en: "Make gravity flips *drop*", ko: "중력 뒤집기를 *쿵쿵*" },
       intro: { en: "Gravity flipped. Blocks just *swap sides*.", ko: "중력이 바뀌었는데 블록이 *그냥 반대편에*." },
       interval: 1.2, stepDur: 3.6,
@@ -1923,7 +1923,7 @@
 
     /* 19 ─────────────────────────────── */
     {
-      id: "puzzle-laser-mirror", cat: "puzzle", view: "top",
+      id: "puzzle-laser-mirror", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make lasers *sizzle*", ko: "레이저를 *지지직*" },
       intro: { en: "Mirror turns. A thin line. *Solved?*", ko: "거울이 돌고 얇은 선. *풀린 거예요?*" },
       interval: 1.4, stepDur: 3.8,
@@ -2004,7 +2004,7 @@
           cap: { en: "A *zap* as it fires, a *chime* on target.", ko: "쏠 때 *지잉*, 맞으면 *띠링*." },
           turn(w) { w.sfx.clickDown(); },
           beam(w) { w.play(() => tn({ type: "sawtooth", f: 880, f2: 1760, dur: 0.22, vol: 0.06 })); },
-          lit(w) { w.sfx.chime(5); },
+          lit(w) { if (w.on("target")) w.sfx.chime(5); },
         },
       ],
     },

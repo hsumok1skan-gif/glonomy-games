@@ -1889,7 +1889,7 @@
 
     /* 24 ─ 갈고리 당기기 */
     {
-      id: "action-grapple", cat: "action", view: "side", melee: true,
+      id: "action-grapple", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make a grapple *yank*", ko: "갈고리로 *확* 끌어오기" },
       intro: { en: "Hooked it. It *floated* over.", ko: "걸었는데 *둥둥* 떠서 와요." },
       interval: 1.8, stepDur: 3.8,
@@ -1976,7 +1976,7 @@
 
     /* 25 ─ 패배 화면 */
     {
-      id: "action-defeat", cat: "action", view: "side", melee: true,
+      id: "action-defeat", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make defeat feel *heavy*", ko: "패배 화면을 *묵직하게*" },
       intro: { en: "Died. A *text box* popped up.", ko: "죽었어요. *글자*가 툭 떴어요." },
       interval: 3.0, stepDur: 4.2,
@@ -2054,7 +2054,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "low drone + bell",
           cap: { en: "A *low drone* and a distant *bell*.", ko: "낮은 *웅~* 소리와 먼 *종소리*." },
-          dead(w) { w.sfx.thud(); w.play(() => { tn({ type: "sawtooth", f: 55, f2: 45, dur: 2, vol: 0.08 }); tn({ type: "triangle", f: 220, dur: 2, vol: 0.12, delay: 0.5 }); tn({ f: 660, dur: 1.5, vol: 0.05, delay: 0.5 }); }); },
+          dead(w) { w.sfx.thud(); if (w.on("slowText") || w.on("band")) w.play(() => { tn({ type: "sawtooth", f: 55, f2: 45, dur: 2, vol: 0.08 }); tn({ type: "triangle", f: 220, dur: 2, vol: 0.12, delay: 0.5 }); tn({ f: 660, dur: 1.5, vol: 0.05, delay: 0.5 }); }); },
         },
       ],
     },

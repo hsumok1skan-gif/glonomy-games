@@ -1077,7 +1077,7 @@
 
     /* 14 ─ 자석: 맵 전체 보석 한 번에 */
     {
-      id: "horde-magnet", cat: "horde", view: "top",
+      id: "horde-magnet", cat: "horde", view: "top", polished: true,
       title: { en: "Make the magnet pickup *a feast*", ko: "자석 아이템을 *잔치*로" },
       intro: { en: "Fifty gems. Gone in *one frame*.", ko: "보석 쉰 개가 *한 프레임*에 사라져요." },
       interval: 2.2, stepDur: 4.0,
@@ -1165,7 +1165,7 @@
 
     /* 15 ─ 떼 속 보스 경고 */
     {
-      id: "horde-boss-warn", cat: "horde", view: "top",
+      id: "horde-boss-warn", cat: "horde", view: "top", polished: true,
       title: { en: "Warn about a boss *before* it arrives", ko: "보스는 오기 *전에* 경고하기" },
       intro: { en: "A giant just *walked in*. No warning.", ko: "거대한 놈이 *그냥* 걸어 들어와요." },
       interval: 3.2, stepDur: 4.2,
@@ -1234,7 +1234,7 @@
         {
           id: "sound", name: { en: "Siren", ko: "사이렌" }, param: "2 wails · boom",
           cap: { en: "A *siren* first. A *boom* when it lands.", ko: "먼저 *사이렌*, 도착하면 *쿵*." },
-          warn(w) { w.play(() => { for (let i = 0; i < 2; i++) tn({ type: "sawtooth", f: 520, f2: 880, dur: 0.5, vol: 0.08, delay: i * 0.6 }); }); },
+          warn(w) { if (w.on("banner") || w.on("arrow")) w.play(() => { for (let i = 0; i < 2; i++) tn({ type: "sawtooth", f: 520, f2: 880, dur: 0.5, vol: 0.08, delay: i * 0.6 }); }); },
           bossIn(w) { w.sfx.slam(); },
         },
       ],
@@ -1242,7 +1242,7 @@
 
     /* 16 ─ 엘리트 적 테두리 */
     {
-      id: "horde-elite", cat: "horde", view: "top",
+      id: "horde-elite", cat: "horde", view: "top", polished: true,
       title: { en: "Make elites *pop out* of the crowd", ko: "엘리트를 무리 속에서 *튀게*" },
       intro: { en: "Three of these are elites. *Which?*", ko: "이 중 셋이 엘리트예요. *어느 거?*" },
       interval: 0.45, stepDur: 3.6,
@@ -1304,9 +1304,8 @@
           spawn(w, f) {
             if (!f.elite) return;
             w.spawn({ type: "ring", x: f.x, y: f.gy, size: 10, size1: 70, life: 0.4, w: 6, color: "251,146,60" });
-            w.sfx.chime(-12);
           },
-          kill(w, f) { if (f.elite) { w.sfx.crit(); w.shake(0.25); burst(w, f.x, f.gy, 14, "251,146,60"); } },
+          kill(w, f) { if (f.elite) { w.sfx.slam(); w.shake(0.25); burst(w, f.x, f.gy, 14, "251,146,60"); } },
         },
       ],
     },

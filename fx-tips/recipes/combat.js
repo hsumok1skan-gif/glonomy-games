@@ -17,7 +17,9 @@
     ctx.drawImage(tintImg(a, col), -a.w / 2, top, a.w, a.h);
     ctx.restore();
   };
-  const drawOvers = (w, ctx) => { for (const a of w.actors) if (a.over) overlay(ctx, a, a.over.col, a.over.a); };
+  // 픽셀 효과층 안에선 반투명이 불투명해지므로, 그 경우엔 drawOver(효과층 밖)에서 그림
+  const pxOn = () => !!(FX.pixelFx && FX._art && FX._art.hero);
+  const drawOvers = (w, ctx, outside) => { if (!outside && pxOn()) return; for (const a of w.actors) if (a.over) overlay(ctx, a, a.over.col, a.over.a); };
   const popText = (w, text, x, y, size, color, o = {}) =>
     w.spawn(Object.assign({ type: "text", text, x, y, vy: -240, g: 600, life: 1.3, size, color }, o));
   const bar = (ctx, a, col, y0) => {
@@ -415,6 +417,7 @@
         f.oy = -Math.abs(Math.sin(w.walk)) * 9;
         f.over = null;
       },
+      drawOver(w, ctx) { if (pxOn()) drawOvers(w, ctx, true); },
       drawFront(w, ctx) { drawOvers(w, ctx); },
       drawHud(w, ctx) { drawBar(ctx, w.foe); },
       steps: [
@@ -608,6 +611,7 @@
         w.stun -= dt; f.over = null;
         if (w.zap && (w.zap.t -= dt) <= 0) w.zap = null;
       },
+      drawOver(w, ctx) { if (pxOn()) drawOvers(w, ctx, true); },
       drawFront(w, ctx) {
         drawOvers(w, ctx);
         const z = w.zap; if (!z) return;
@@ -927,6 +931,7 @@
         if (!w.on("roll")) c.shown = c.hp;
         if (c.over) c.over.a -= dt * 1.5;
       },
+      drawOver(w, ctx) { if (pxOn()) drawOvers(w, ctx, true); },
       drawFront(w, ctx) { drawOvers(w, ctx); },
       drawHud(w, ctx) {
         const c = w.hero, bw = 130, x = c.x - bw / 2, y = G - c.h - 30;
@@ -978,13 +983,14 @@
 
     /* 10. 버프 */
     {
-      id: "combat-buff", cat: "combat", view: "side",
+      id: "combat-buff", cat: "combat", view: "side", polished: true,
       title: { en: "Make a buff *look* powerful", ko: "버프는 *세 보이게*" },
       intro: { en: "Attack +50%. Looks *exactly* the same.", ko: "공격력 +50%. 겉모습은 *똑같아요*." },
       interval: 1.6, stepDur: 3.8,
       setup(w) { w.hero = w.actor("hero", { home: 270 }); w.buff = 0; },
       fire(w) { w.buff = 1.3; w.hero.oy = -20; w.emit("buff", w.hero); },
       update(w, dt) { w.buff -= dt; w.hero.over = null; },
+      drawOver(w, ctx) { if (pxOn()) drawOvers(w, ctx, true); },
       drawFront(w, ctx) {
         drawOvers(w, ctx);
         const c = w.hero; if (w.buff <= 0 || w.on("icon")) return;
@@ -1037,14 +1043,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising roar",
           cap: { en: "A *rising* roar. Up = stronger.", ko: "*올라가는* 소리. 위로 = 강해짐." },
-          buff(w) { w.sfx.boost(); },
+          buff(w) { if (w.on("burst") || w.on("aura")) w.sfx.lightSwell(); else w.sfx.swish(); },
         },
       ],
     },
 
     /* 11. 디버프 */
     {
-      id: "combat-debuff", cat: "combat", view: "side",
+      id: "combat-debuff", cat: "combat", view: "side", polished: true,
       title: { en: "Make a debuff feel *heavy*", ko: "디버프는 *축 처지게*" },
       intro: { en: "Weakened, they say. Looks *totally fine*.", ko: "약해졌대요. *멀쩡해* 보여요." },
       interval: 1.6, stepDur: 3.8,
@@ -1056,6 +1062,7 @@
         w.shoot(o);
       },
       update(w, dt) { const f = w.foe; w.curse -= dt; f.over = null; f.rot = 0; },
+      drawOver(w, ctx) { if (pxOn()) drawOvers(w, ctx, true); },
       drawFront(w, ctx) {
         drawOvers(w, ctx);
         const f = w.foe; if (w.curse <= 0 || w.on("icon")) return;
@@ -1103,7 +1110,7 @@
 
     /* 12. 기절 별 */
     {
-      id: "combat-stun", cat: "combat", view: "side",
+      id: "combat-stun", cat: "combat", view: "side", polished: true,
       title: { en: "Show a stun with *spinning stars*", ko: "기절은 *빙글빙글 별*로" },
       intro: { en: "Stunned for a second. Just *standing* there.", ko: "1초 기절인데 그냥 *서 있어요*." },
       interval: 1.7, stepDur: 3.8,
@@ -1173,7 +1180,7 @@
           cap: { en: "A hollow *bonk*, then a *twinkle* loop.", ko: "*콩!* 그리고 *띠링띠링*." },
           hit(w) {
             w.sfx.thunk();
-            for (let i = 0; i < 4; i++) w.after(0.15 + i * 0.18, () => w.sfx.chime(i % 2 ? 7 : 12));
+            if (w.on("stars")) for (let i = 0; i < 4; i++) w.after(0.15 + i * 0.18, () => w.play(() => tn({ type: "triangle", f: i % 2 ? 1500 : 1800, f2: i % 2 ? 1900 : 2200, dur: 0.06, vol: 0.06 })));
           },
         },
       ],
@@ -1433,6 +1440,7 @@
         }
         w.orbs = w.orbs.filter(o => !o.dead);
       },
+      drawOver(w, ctx) { if (pxOn()) drawOvers(w, ctx, true); },
       drawFront(w, ctx) {
         drawBlade(w, ctx); drawOvers(w, ctx);
         for (const o of w.orbs) {

@@ -872,7 +872,7 @@
 
     /* ─────────────── 9. 창 찌르기 ─────────────── */
     {
-      id: "weapon-spear", cat: "weapon", view: "side",
+      id: "weapon-spear", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a spear thrust *reach*", ko: "창 찌르기에 *사거리* 느낌" },
       intro: { en: "Long weapon. Feels *short*.", ko: "긴 무기인데 *짧게* 느껴져요." },
       interval: 1.15, stepDur: 3.4,
@@ -951,7 +951,7 @@
 
     /* ─────────────── 10. 쌍단검 연타 ─────────────── */
     {
-      id: "weapon-daggers", cat: "weapon", view: "side",
+      id: "weapon-daggers", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a dagger flurry *rip*", ko: "단검 연타를 *다다닥*" },
       intro: { en: "Five hits. Felt like *one*.", ko: "다섯 번 쳤는데 *한 번* 같아요." },
       interval: 1.2, stepDur: 3.4,
@@ -1027,14 +1027,14 @@
           id: "sound", name: { en: "Rising Pitch", ko: "올라가는 음" }, param: "+2 semitones / hit",
           cap: { en: "Each hit a little *higher*. The ear feels the *combo*.", ko: "칠 때마다 음이 *조금씩 높게*. 귀로 *연타*를 느껴요." },
           stab(w, i) { w.play(() => { nz({ dur: 0.06, type: "bandpass", f: 3000 * Math.pow(2, i / 6), q: 2, vol: 0.4 }); tn({ f: 300 * Math.pow(2, i / 6), f2: 120, dur: 0.06, vol: 0.3 }); }); },
-          finish(w) { w.sfx.crit(); },
+          finish(w) { w.sfx.slashHit(); if (w.on("finish")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* ─────────────── 11. 대검 ─────────────── */
     {
-      id: "weapon-greatsword", cat: "weapon", view: "side",
+      id: "weapon-greatsword", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a greatsword *weigh a ton*", ko: "대검에 *무게* 싣기" },
       intro: { en: "Huge sword. Swings like a *ruler*.", ko: "거대한 칼인데 *자*처럼 휘둘러요." },
       interval: 1.7, stepDur: 3.8,
@@ -1105,14 +1105,14 @@
           cap: { en: "A *low whoom*, not a whistle. Then a *crunch*.", ko: "휘파람 말고 *낮은 웅*. 그리고 *콰직*." },
           windup(w) { w.sfx.creak(); },
           swing(w) { w.play(() => nz({ dur: 0.2, type: "bandpass", f: 300, f2: 900, q: 1.5, vol: 0.5 })); },
-          hit(w) { w.sfx.crit(); },
+          hit(w) { w.sfx.slashHit(); if (w.on("stop") || w.on("cleave")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* ─────────────── 12. 방패 밀치기 ─────────────── */
     {
-      id: "weapon-shield", cat: "weapon", view: "side",
+      id: "weapon-shield", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a shield bash *stun*", ko: "방패 밀치기로 *기절*" },
       intro: { en: "Bumped into it. *Sorry?*", ko: "살짝 부딪쳤어요. *죄송?*" },
       interval: 1.5, stepDur: 3.6,
@@ -1136,8 +1136,8 @@
       update(w, dt) { const f = w.foe; f.dizzy = Math.max(0, f.dizzy - dt); },
       drawFront(w, ctx) {
         const h = w.hero, x = h.x + h.ox + 46, y = G - 128;
-        rr(ctx, x, y, 22, 92, 9, "#64748b"); rr(ctx, x + 4, y + 5, 14, 82, 6, "#94a3b8");
-        box(ctx, x + 8, y + 36, 6, 20, "#fde047");
+        if (FX._art && FX._art.hero) pxTowerShield(ctx, x, y, 92);
+        else { rr(ctx, x, y, 22, 92, 9, "#64748b"); rr(ctx, x + 4, y + 5, 14, 82, 6, "#94a3b8"); box(ctx, x + 8, y + 36, 6, 20, "#fde047"); }
       },
       drawHud(w, ctx) {
         const f = w.foe; drawBar(ctx, f);
@@ -1192,7 +1192,7 @@
           id: "sound", name: { en: "Clang + Thud", ko: "깡 + 쿵" }, param: "metal 620Hz",
           cap: { en: "Metal *clang* on top of a body *thud*.", ko: "몸이 *쿵*, 그 위에 쇠 *깡*." },
           dash(w) { w.sfx.dash(); },
-          bash(w) { w.sfx.thud(); w.play(() => { tn({ type: "triangle", f: 620, f2: 560, dur: 0.35, vol: 0.2 }); tn({ type: "triangle", f: 1490, dur: 0.2, vol: 0.08 }); }); },
+          bash(w) { w.sfx.thud(); if (w.on("impact")) w.sfx.slam(); },
         },
       ],
     },
@@ -2265,6 +2265,8 @@
   const swordTip = w => loc(swordPivot(w), w.gs.rot, 150, 0);
   function drawGreatsword(ctx, p, rot) {
     ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(rot);
+    // 주인공 팔레트 픽셀 대검: 장검 그림을 길고 두껍게 (손잡이 기준점 = 자루 가운데)
+    if (PXSPR["wpn-longsword-px"]) { const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.rotate(Math.PI / 2); ctx.drawImage(PXSPR["wpn-longsword-px"], -21, -158, 42, 186); ctx.imageSmoothingEnabled = sm; ctx.restore(); return; }
     box(ctx, -26, -4, 26, 8, "#3b2a1e"); box(ctx, -2, -15, 7, 30, "#a16207");
     poly(ctx, [[5, -9], [136, -6], [154, 0], [136, 6], [5, 9]], "#cbd5e1");
     poly(ctx, [[5, -9], [136, -6], [154, 0], [5, 0]], "#e2e8f0");

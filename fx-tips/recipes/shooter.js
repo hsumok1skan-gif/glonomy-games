@@ -1942,7 +1942,7 @@
 
     /* 23 ─ 수류탄 경고 */
     {
-      id: "shooter-grenade-warn", cat: "shooter", view: "3d",
+      id: "shooter-grenade-warn", cat: "shooter", view: "3d", polished: true,
       title: { en: "Warn about *grenades*", ko: "*수류탄*을 경고하기" },
       intro: { en: "Something landed nearby. *Boom.* What was that?", ko: "뭔가 떨어지더니 *쾅*. 뭐였죠?" },
       interval: 3.0, stepDur: 4.2,
@@ -2037,7 +2037,7 @@
 
     /* 24 ─ 폭발 후 귀 울림 */
     {
-      id: "shooter-ear-ring", cat: "shooter", view: "3d",
+      id: "shooter-ear-ring", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make blasts *ring in your ears*", ko: "폭발 뒤 *귀가 멍하게*" },
       intro: { en: "Huge blast, one meter away. You *shrug it off*.", ko: "바로 옆에서 큰 폭발. 그냥 *멀쩡해요*." },
       interval: 3.0, stepDur: 4.4,
@@ -2093,14 +2093,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "boom → 3.8kHz ring",
           cap: { en: "Boom, then a thin *eeeee* that slowly fades.", ko: "쾅, 그리고 천천히 사라지는 *삐이이*." },
-          boom(w) { w.sfx.boom(); w.play(() => { tn({ type: "sine", f: 3800, dur: 2.6, vol: 0.09, delay: 0.15 }); tn({ type: "sine", f: 3820, dur: 2.2, vol: 0.05, delay: 0.15 }); }); },
+          boom(w) { w.sfx.boom(); if (w.on("muffle") || w.on("white")) w.play(() => { tn({ type: "sine", f: 3800, dur: 2.6, vol: 0.09, delay: 0.15 }); tn({ type: "sine", f: 3820, dur: 2.2, vol: 0.05, delay: 0.15 }); }); },
         },
       ],
     },
 
     /* 25 ─ 저격 조준경 흔들림 + 숨 참기 */
     {
-      id: "shooter-scope-breath", cat: "shooter", view: "3d",
+      id: "shooter-scope-breath", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make the scope *breathe*", ko: "조준경에 *숨결* 넣기" },
       intro: { en: "A rock-steady scope. *No skill* in the shot.", ko: "흔들림 없는 조준경. 실력이 *필요 없어요*." },
       interval: 2.8, stepDur: 4.4,
@@ -2178,7 +2178,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "inhale · crack",
           cap: { en: "A quiet *inhale*… then a huge *crack*.", ko: "조용히 *흡*… 그리고 큰 *탕!*" },
-          inhale(w) { w.play(() => nz({ type: "bandpass", f: 900, f2: 1800, q: 1, dur: 0.5, vol: 0.12 })); },
+          inhale(w) { if (w.on("hold") || w.on("meter")) w.play(() => nz({ type: "bandpass", f: 900, f2: 1800, q: 1, dur: 0.5, vol: 0.12 })); },
           shot(w, hit) { w.sfx.shotgun(); if (hit) w.after(0.12, () => w.sfx.hit()); },
         },
       ],
@@ -2187,7 +2187,7 @@
   RECIPES.push(
     /* 26 ─ 탄도 낙차 */
     {
-      id: "shooter-bullet-drop", cat: "shooter", view: "side",
+      id: "shooter-bullet-drop", cat: "shooter", view: "side", polished: true,
       title: { en: "Show *bullet drop* at long range", ko: "먼 거리 *탄도 낙차* 보여 주기" },
       intro: { en: "400 meters. The bullet flies like a *laser*.", ko: "400미터. 총알이 *레이저*처럼 날아가요." },
       interval: 2.2, stepDur: 4.2,
@@ -2365,7 +2365,7 @@
 
     /* 28 ─ 연속 처치 알림 */
     {
-      id: "shooter-multikill", cat: "shooter", view: "3d",
+      id: "shooter-multikill", cat: "shooter", view: "3d", polished: true,
       title: { en: "Celebrate the *multi-kill*", ko: "*연속 처치*를 축하하기" },
       intro: { en: "Three kills in a second. *Not a word.*", ko: "1초에 셋. *아무 말도* 없어요." },
       interval: 2.4, stepDur: 4.2,
@@ -2434,7 +2434,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "chimes climb",
           cap: { en: "Chimes *climb* with each kill. Triple gets a *fanfare*.", ko: "처치마다 음이 *올라가고*, 셋이면 *빰빠밤*." },
-          multi(w, n) { w.sfx.gun(); w.sfx.chime(n * 4); if (n === 3) w.sfx.fanfare(); },
+          multi(w, n) { w.sfx.gun(); if (w.on("text") || w.on("medal")) w.sfx.chime(n * 4); if (n === 3 && w.on("medal")) w.sfx.fanfare(); },
         },
       ],
     },

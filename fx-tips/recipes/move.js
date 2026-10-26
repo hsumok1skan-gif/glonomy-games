@@ -1694,7 +1694,7 @@
 
     /* 20. 순간이동 */
     {
-      id: "move-blink", cat: "move", view: "top",
+      id: "move-blink", cat: "move", view: "top", polished: true,
       title: { en: "Make a blink *read*", ko: "순간이동이 *읽히게*" },
       intro: { en: "Here, then there. Eyes *lost* it.", ko: "여기 있다가 저기. 눈이 *놓쳐요*." },
       interval: 1.8, stepDur: 3.4,
@@ -1762,7 +1762,7 @@
 
     /* 21. 전력 질주 */
     {
-      id: "move-sprint", cat: "move", view: "side",
+      id: "move-sprint", cat: "move", view: "side", polished: true,
       title: { en: "Make sprinting feel *urgent*", ko: "전력 질주가 *다급하게*" },
       intro: { en: "Sprint is on. Looks like *jogging*.", ko: "전력 질주인데 *조깅*처럼 보여요." },
       interval: 2.4, stepDur: 3.8,
@@ -1834,7 +1834,7 @@
 
     /* 22. 살금살금 */
     {
-      id: "move-stealth", cat: "move", view: "side",
+      id: "move-stealth", cat: "move", view: "side", polished: true,
       title: { en: "Make sneaking feel *quiet*", ko: "숨어 가기가 *조용하게*" },
       intro: { en: "\"Sneaking\" past it. Looks like a *stroll*.", ko: "몰래 지나간다는데 *산책* 같아요." },
       interval: 2.6, stepDur: 4.0,
@@ -1914,7 +1914,7 @@
 
     /* 23. 등반 지구력 */
     {
-      id: "move-stamina", cat: "move", view: "side",
+      id: "move-stamina", cat: "move", view: "side", polished: true,
       title: { en: "Make climbing stamina *tense*", ko: "등반 지구력을 *조마조마*하게" },
       intro: { en: "Stamina is running out. *Nobody knows.*", ko: "힘이 다 떨어지는데 *아무도 몰라요*." },
       interval: 2.8, stepDur: 4.0,
@@ -1991,14 +1991,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "heartbeat when low",
           cap: { en: "A *heartbeat* thumps when you're close.", ko: "아슬아슬하면 *쿵쿵* 심장 소리." },
           beat(w) { w.play(() => { tn({ f: 70, f2: 45, dur: 0.1, vol: 0.5 }); tn({ f: 65, f2: 40, dur: 0.1, vol: 0.35, delay: 0.12 }); }); },
-          top(w) { w.sfx.chime(0); },
+          top(w) { if (w.on("relief")) w.sfx.chime(0); },
         },
       ],
     },
 
     /* 24. 달리기 시작 */
     {
-      id: "move-runstart", cat: "move", view: "side",
+      id: "move-runstart", cat: "move", view: "side", polished: true,
       title: { en: "Give the first step *weight*", ko: "첫걸음에 *무게*를" },
       intro: { en: "Full speed on frame one. *No body.*", ko: "첫 프레임부터 최고 속도. *몸이 없어요.*" },
       interval: 2.0, stepDur: 3.4,
@@ -2060,14 +2060,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "scuff + steps",
           cap: { en: "A sharp *scuff*, then quickening steps.", ko: "*팍* 박차고, 점점 빨라지는 발소리." },
           go(w) { w.sfx.skid(); },
-          stride(w, h, v) { w.play(() => tn({ f: 120 + v / 4, f2: 60, dur: 0.05, vol: 0.28 })); },
+          stride(w, h, v) { if (w.on("stride")) w.play(() => tn({ f: 120 + v / 4, f2: 60, dur: 0.05, vol: 0.28 })); },
         },
       ],
     },
 
     /* 25. 낙하 데미지 */
     {
-      id: "move-hardland", cat: "move", view: "side",
+      id: "move-hardland", cat: "move", view: "side", polished: true,
       title: { en: "Make a hard landing *hurt*", ko: "높은 착지가 *아프게*" },
       intro: { en: "Fell from the sky. *Took damage?*", ko: "하늘에서 떨어졌는데 *다친 거예요?*" },
       interval: 1.9, stepDur: 3.6,
@@ -2138,7 +2138,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "slam + grunt",
           cap: { en: "A deep *slam* and a pained grunt.", ko: "묵직한 *쾅*, 그리고 *윽*." },
-          land(w) { w.sfx.slam(); w.sfx.hurt(); },
+          land(w) { w.sfx.slam(); if (w.on("damage")) w.sfx.hurt(); },
         },
       ],
     },

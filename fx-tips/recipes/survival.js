@@ -1974,7 +1974,7 @@
 
     /* ───────── 23. 먼 울음소리 경고 ───────── */
     {
-      id: "survival-howl", cat: "survival", view: "side",
+      id: "survival-howl", cat: "survival", view: "side", polished: true,
       title: { en: "Make a distant howl *a warning*", ko: "먼 울음소리를 *경고*로" },
       intro: { en: "Something howled. *Where?*", ko: "뭔가 울었는데… *어디서?*" },
       interval: 2.2, stepDur: 4.2,
@@ -2002,7 +2002,7 @@
       update(w, dt) { const Hw = w.Hw; Hw.arrow = Math.max(0, Hw.arrow - dt * 0.8); Hw.moon = Math.max(0, Hw.moon - dt * 0.6); },
       drawBack(w, ctx) {
         const Hw = w.Hw, c = SPR["survival-wolf"].c;
-        const wolf = (x, y, s, a, r = 0) => { ctx.save(); ctx.globalAlpha = a; ctx.translate(x, y); ctx.scale(-s, s); ctx.rotate(r); ctx.drawImage(c, -65, -76, 130, 78); ctx.restore(); };
+        const wolf = (x, y, s, a, r = 0) => { ctx.save(); ctx.globalAlpha = a; ctx.translate(x, y); ctx.scale(-s, s); ctx.rotate(r); const px = PXSPR["mob-wolf-px"]; if (px) { const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(px, -65, -82, 129, 84); ctx.imageSmoothingEnabled = sm; } else ctx.drawImage(c, -65, -76, 130, 78); ctx.restore(); };
         if (Hw.pack > 0) { wolf(360, G - 58, 0.7, Hw.pack); wolf(470, G - 92, 0.75, Hw.pack); }
         wolf(440, G - 80, 1, 1, Hw.rot);
       },
@@ -2126,7 +2126,7 @@
 
     /* ───────── 25. 사망 화면 ───────── */
     {
-      id: "survival-death", cat: "survival", view: "side",
+      id: "survival-death", cat: "survival", view: "side", polished: true,
       title: { en: "Make death feel *final*", ko: "죽음을 *묵직하게*" },
       intro: { en: "Hero gone. Text appears. *Next.*", ko: "주인공 사라짐, 글자 뜸. *다음.*" },
       interval: 3.2, stepDur: 4.4,
@@ -2197,14 +2197,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hit + long drone",
           cap: { en: "One heavy *hit*, then a long falling *drone*.", ko: "묵직한 *퍽*, 길게 가라앉는 *우웅*." },
-          die(w) { w.sfx.crit(); w.play(() => { tn({ type: "sawtooth", f: 110, f2: 40, dur: 2.2, vol: 0.12 }); tn({ f: 220, f2: 80, dur: 2, vol: 0.1 }); }); },
+          die(w) { w.sfx.thud(); if (w.on("fade") || w.on("close")) w.play(() => { tn({ type: "sawtooth", f: 110, f2: 40, dur: 2.2, vol: 0.12 }); tn({ f: 220, f2: 80, dur: 2, vol: 0.1 }); }); },
         },
       ],
     },
 
     /* ───────── 26. 부활 ───────── */
     {
-      id: "survival-respawn", cat: "survival", view: "side",
+      id: "survival-respawn", cat: "survival", view: "side", polished: true,
       title: { en: "Make respawning feel like a *fresh start*", ko: "부활을 *새 출발*처럼" },
       intro: { en: "Pop. You're back. *Okay.*", ko: "뿅. 돌아왔어요. *그래요.*" },
       interval: 2.2, stepDur: 4.2,
@@ -2263,14 +2263,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rising arpeggio",
           cap: { en: "A *rising* sparkle of notes.", ko: "*올라가는* 반짝 소리." },
           begin(w) { w.sfx.charge(); },
-          spawn(w) { w.sfx.fanfare(); },
+          spawn(w) { if (w.on("beam") || w.on("form")) w.sfx.lightSwell(); else w.sfx.swish(); },
         },
       ],
     },
 
     /* ───────── 27. 보급 상자 열기 ───────── */
     {
-      id: "survival-lootcrate", cat: "survival", view: "side",
+      id: "survival-lootcrate", cat: "survival", view: "side", polished: true,
       title: { en: "Make a supply crate *burst open*", ko: "보급 상자를 *팍* 열기" },
       intro: { en: "Lid gone. Three icons. *Fine.*", ko: "뚜껑 사라짐. 아이콘 셋. *끝.*" },
       interval: 2.4, stepDur: 4.2,
@@ -2354,7 +2354,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / crack / pops",
           cap: { en: "*Rattle*, a wood *crack*, then quick *pops*.", ko: "*덜컹*, 나무 *빠각*, 이어서 *톡톡톡*." },
           pry(w) { w.sfx.rattle(); },
-          open(w) { w.sfx.thunk(); w.play(() => nz({ dur: 0.1, type: "bandpass", f: 1500, q: 1, vol: 0.5 })); [0, 1, 2].forEach(i => w.after(i * 0.09, () => w.sfx.blip(i * 3))); },
+          open(w) { w.sfx.woodRattle(); w.sfx.chestOpen(); if (w.on("fan") || w.on("rare")) w.after(0.2, () => w.sfx.itemGet()); },
         },
       ],
     },

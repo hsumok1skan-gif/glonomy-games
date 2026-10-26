@@ -1914,7 +1914,7 @@
 
     /* 22. 회피 */
     {
-      id: "rpg-miss", cat: "rpg", view: "side",
+      id: "rpg-miss", cat: "rpg", view: "side", polished: true,
       title: { en: "Make dodges *obvious*", ko: "회피가 *확실히* 보이게" },
       intro: { en: "It swung. Nothing happened. *Bug?*", ko: "휘둘렀는데 아무 일 없음. *버그?*" },
       interval: 1.6, stepDur: 3.8,
@@ -1962,14 +1962,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "swish · whoosh",
           cap: { en: "Two *swishes*: the swing and the dodge.", ko: "휘두르는 *휙*, 피하는 *슉*." },
-          miss(w) { w.sfx.slash(); w.after(0.05, () => w.sfx.swish()); },
+          miss(w) { w.sfx.slash(); },
         },
       ],
     },
 
     /* 23. 방어 */
     {
-      id: "rpg-guard", cat: "rpg", view: "side",
+      id: "rpg-guard", cat: "rpg", view: "side", polished: true,
       title: { en: "Make guarding feel *solid*", ko: "방어를 *단단하게*" },
       intro: { en: "Smaller number. *Did I block?*", ko: "숫자가 작네요. *막은 거예요?*" },
       interval: 1.4, stepDur: 3.8,
@@ -2034,14 +2034,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "metal clang",
           cap: { en: "A ringing *clang*. Never a fleshy thud.", ko: "울리는 *깡*. 살 맞는 *퍽* 소리는 금지." },
-          block(w) { w.play(() => { tn({ type: "triangle", f: 1250, f2: 1180, dur: 0.35, vol: 0.2 }); tn({ type: "triangle", f: 1870, dur: 0.25, vol: 0.1 }); nz({ type: "highpass", f: 3000, dur: 0.05, vol: 0.35 }); }); },
+          block(w) { if (w.on("shield") || w.on("sparks")) w.sfx.clack(0.7); else w.sfx.thud(); },
         },
       ],
     },
 
     /* 24. 소환 */
     {
-      id: "rpg-summon", cat: "rpg", view: "side",
+      id: "rpg-summon", cat: "rpg", view: "side", polished: true,
       title: { en: "Make summons *arrive*", ko: "소환수가 *등장하게*" },
       intro: { en: "Poof. A golem is just… *there*.", ko: "뿅. 골렘이 그냥… *있어요*." },
       interval: 1.9, stepDur: 4.2,
@@ -2101,14 +2101,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "hum · rumble · boom",
           cap: { en: "*Hum*, a deep *rumble*, then *BOOM*.", ko: "*웅*, 낮은 *우르르*, 그리고 *쿵*." },
           summon(w) { w.sfx.charge(); },
-          emerge(w) { w.sfx.boost(); w.after(0.4, () => w.sfx.slam()); },
+          emerge(w) { if (w.on("pillar")) w.sfx.lightSwell(); w.after(0.4, () => w.on("slam") ? w.sfx.slam() : w.sfx.thud()); },
         },
       ],
     },
 
     /* 25. 궁극기 */
     {
-      id: "rpg-ultimate", cat: "rpg", view: "side",
+      id: "rpg-ultimate", cat: "rpg", view: "side", polished: true,
       title: { en: "Make ultimates feel *ultimate*", ko: "궁극기는 *궁극기답게*" },
       intro: { en: "Ultimate skill. Big number. *That's all?*", ko: "궁극기. 숫자만 큼. *이게 다?*" },
       interval: 2.3, stepDur: 4.4,
@@ -2192,14 +2192,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rise · boom · tail",
           cap: { en: "Long *rise*, then a *boom* with a tail.", ko: "길게 *차오르고*, 꼬리 긴 *쿠웅*." },
           charge(w) { w.sfx.boost(); },
-          blast(w) { w.sfx.boom(); w.sfx.burst(); },
+          blast(w) { w.sfx.burst(); if (w.on("impact") || w.on("beam")) w.sfx.boom(); },
         },
       ],
     },
 
     /* 26. 파티 교체 */
     {
-      id: "rpg-party-swap", cat: "rpg", view: "side",
+      id: "rpg-party-swap", cat: "rpg", view: "side", polished: true,
       title: { en: "Make party swaps *snappy*", ko: "파티 교체를 *착착*" },
       intro: { en: "Different person. *When did that happen?*", ko: "사람이 바뀌었어요. *언제요?*" },
       interval: 1.5, stepDur: 3.8,
@@ -2208,8 +2208,9 @@
         if (!ACTOR["rpg-knight"]) ACTOR["rpg-knight"] = { spr: "rpg-knight", h: 140, home: 150 };
         w.M = [
           { a: w.actor("hero", { home: 150, h: 130 }), name: "HERO", col: "#e5e7eb", rgb: "229,231,235", lift: 1 },
-          { a: w.actor("rpg-knight"), name: "KNIGHT", col: "#60a5fa", rgb: "96,165,250", lift: 0 },
+          { a: FX._art && FX._art.hero ? w.actor("hero", { home: 150, h: 140 }) : w.actor("rpg-knight"), name: "KNIGHT", col: "#60a5fa", rgb: "96,165,250", lift: 0 },
         ];
+        if (FX._art && FX._art.hero) w.M[1].a.chill = 0.3; // 같은 주인공 그림을 푸른 갑옷으로: 적(붉은)과 헷갈리지 않게
         w.M[1].a.alpha = 0;
         w.foe = w.actor("foe", { home: 440, h: 140 });
         w.cur = 0;
@@ -2275,7 +2276,7 @@
 
     /* 27. 승리 결산 */
     {
-      id: "rpg-victory", cat: "rpg", view: "ui",
+      id: "rpg-victory", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make victory screens *pay out*", ko: "승리 화면은 *정산하는 맛*" },
       intro: { en: "Everything at once. *Read it yourself.*", ko: "한꺼번에 툭. *알아서 읽으세요.*" },
       interval: 2.4, stepDur: 4.4,
@@ -2337,7 +2338,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ticks + fanfare",
           cap: { en: "Ticking *tally*, then a *fanfare*.", ko: "*타다닥* 세고, *빰빠밤*." },
-          show(w) { w.sfx.fanfare(); for (let i = 0; i < 10; i++) w.after(0.25 + i * 0.06, () => w.sfx.tick()); },
+          show(w) { if (w.on("banner")) w.sfx.fanfare(); if (w.on("count")) for (let i = 0; i < 10; i++) w.after(0.25 + i * 0.06, () => w.sfx.tick()); },
         },
       ],
     },

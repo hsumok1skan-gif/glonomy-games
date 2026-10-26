@@ -1755,7 +1755,7 @@
 
     /* 21 ───── 별점 ───── */
     {
-      id: "ui-stars", cat: "ui", view: "ui",
+      id: "ui-stars", cat: "ui", view: "ui", polished: true,
       title: { en: "Hand out stars *one by one*", ko: "별은 *하나씩* 쾅쾅쾅" },
       intro: { en: "Three stars. *All at once.*", ko: "별 세 개가 *한꺼번에*." },
       interval: 1.9, stepDur: 4.0,
@@ -1816,14 +1816,14 @@
         {
           id: "sound", name: { en: "Rising Notes", ko: "올라가는 음" }, param: "+4 semitones each",
           cap: { en: "Each star is *a step higher*. The third one sings.", ko: "별마다 음이 *한 단계 위로*. 세 번째는 노래해요." },
-          star(w, s, i) { w.after(0.16, () => { w.sfx.chime(i * 4); if (i === 2) w.sfx.fanfare(); }); },
+          star(w, s, i) { w.after(0.16, () => { w.sfx.thunk(); if (w.on("slam") || w.on("burst")) w.sfx.chime(i * 4); if (i === 2 && w.on("finale")) w.sfx.fanfare(); }); },
         },
       ],
     },
 
     /* 22 ───── 좋아요 하트 ───── */
     {
-      id: "ui-heart", cat: "ui", view: "ui",
+      id: "ui-heart", cat: "ui", view: "ui", polished: true,
       title: { en: "Make a like *burst*", ko: "좋아요를 *팡* 터지게" },
       intro: { en: "Gray heart → red heart. *That's it.*", ko: "회색 하트 → 빨간 하트. *끝.*" },
       interval: 1.5, stepDur: 3.6,
@@ -1982,7 +1982,7 @@
 
     /* 24 ───── 카운트다운 ───── */
     {
-      id: "ui-countdown", cat: "ui", view: "ui",
+      id: "ui-countdown", cat: "ui", view: "ui", polished: true,
       title: { en: "Make a timer feel *urgent*", ko: "타이머에 *조급함*을" },
       intro: { en: "3… 2… 1… *No pressure at all.*", ko: "3… 2… 1… *하나도 안 급해요*." },
       interval: 0.7, stepDur: 4.2,
@@ -2043,14 +2043,14 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tock → higher at 3",
           cap: { en: "*Tock* each second. *Higher and louder* near the end.", ko: "1초마다 *똑*. 끝으로 갈수록 *높고 크게*." },
           tick(w, C) { if (C.n > 3) w.sfx.tock(); else w.sfx.blip(8 + (3 - C.n) * 3); },
-          timeup(w) { w.sfx.boom(); },
+          timeup(w) { if (w.on("timeup")) w.sfx.slam(); else w.sfx.tock(); },
         },
       ],
     },
 
     /* 25 ───── 인벤토리 끌어다 놓기 ───── */
     {
-      id: "ui-drag", cat: "ui", view: "ui",
+      id: "ui-drag", cat: "ui", view: "ui", polished: true,
       title: { en: "Make drag-and-drop *snap*", ko: "끌어다 놓기를 *착* 붙게" },
       intro: { en: "Item vanishes. Item *reappears*.", ko: "아이템이 사라졌다가 *다시 나타나요*." },
       interval: 1.6, stepDur: 3.8,
@@ -2135,7 +2135,7 @@
 
     /* 26 ───── 등급 테두리 ───── */
     {
-      id: "ui-rarity", cat: "ui", view: "ui",
+      id: "ui-rarity", cat: "ui", view: "ui", polished: true,
       title: { en: "Make rarity *readable*", ko: "등급이 *한눈에* 보이게" },
       intro: { en: "Common or legendary? *Same box.*", ko: "일반이에요, 전설이에요? *똑같은 상자*." },
       interval: 2.0, stepDur: 3.8,
@@ -2202,7 +2202,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pitch by tier",
           cap: { en: "Each tier sounds *a step higher*.", ko: "등급이 오를수록 소리도 *한 단계 위*." },
-          deal(w, c, i) { w.after(i * 0.12, () => (i === 3 ? w.sfx.ping() : w.sfx.chime(i * 4))); },
+          deal(w, c, i) { w.after(i * 0.12, () => { w.sfx.swish(); if (i === 3 && w.on("aura")) w.sfx.lightSwell(); }); },
         },
       ],
     },

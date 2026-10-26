@@ -1176,7 +1176,7 @@
 
     /* 15 ─ 보스 휩쓰는 레이저 */
     {
-      id: "duel-laser", cat: "duel", view: "side",
+      id: "duel-laser", cat: "duel", view: "side", polished: true,
       title: { en: "Make the boss laser *sweep*", ko: "보스 레이저가 *쓸고* 가게" },
       intro: { en: "A thin red line. *Scary?*", ko: "가느다란 빨간 선. *무서워요?*" },
       interval: 2.2, stepDur: 4.0,
@@ -1257,7 +1257,7 @@
 
     /* 16 ─ 졸개 소환 (위에서 보기) */
     {
-      id: "duel-summon", cat: "duel", view: "top",
+      id: "duel-summon", cat: "duel", view: "top", polished: true,
       title: { en: "Make boss summons *dramatic*", ko: "보스 *소환*을 극적으로" },
       intro: { en: "Three enemies. *Just appeared.*", ko: "적 셋이 *그냥 생겼어요*." },
       interval: 2.3, stepDur: 4.0,
@@ -1332,17 +1332,17 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "magic + pops",
           cap: { en: "A *chant* hum, then a *pop* per minion.", ko: "*우웅* 주문 소리, 하나씩 *퐁*." },
           cast(w) { w.sfx.charge(); },
-          spawn(w) { w.sfx.pop(); w.sfx.magic(); },
+          spawn(w) { w.sfx.pop(); if (w.on("pillar") || w.on("rise")) w.sfx.magic(); },
         },
       ],
     },
 
     /* 17 ─ 보스 보호막 깨기 */
     {
-      id: "duel-shield", cat: "duel", view: "side",
+      id: "duel-shield", cat: "duel", view: "side", polished: true,
       title: { en: "Make shield breaks *shatter*", ko: "보호막이 *와장창* 깨지게" },
       intro: { en: "Hit, hit, hit… shield *gone*.", ko: "때리고, 때리고… 보호막 *없어짐*." },
-      interval: 0.7, stepDur: 4.0,
+      interval: 0.7, stepDur: 4.0, hookFires: [0.2, 0.75, 1.3, 1.85], hookDur: 3.6,
       setup(w) {
         art(); w.hero = w.actor("hero", { home: 120 }); w.boss = w.actor("duel-boss", { home: 410 });
         w.sh = { hp: 4, up: 1, flash: 0, cracks: [] };
@@ -1361,8 +1361,8 @@
         });
       },
       update(w, dt) { w.sh.flash = Math.max(0, w.sh.flash - dt * 4); },
-      drawFront(w, ctx) {
-        heroSword(w, ctx);
+      drawFront(w, ctx) { heroSword(w, ctx); },
+      drawOver(w, ctx) { // 반투명 보호막: 픽셀 효과층 밖에서
         const S = w.sh, b = w.boss, cx = b.x - 10, cy = G - 104;
         if (S.up <= 0) return;
         ctx.save(); ctx.translate(cx, cy);
@@ -1414,8 +1414,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "glass tink → crash",
           cap: { en: "Glassy *tinks* climb up, then a *crash*.", ko: "*팅, 팅* 올라가다 *와장창*." },
-          enter(w) { w.sh.hp = 1; },
-          hit(w, p, n) { w.sfx.chime(n * 3); },
+          hit(w, p, n) { w.sfx.clack(0.8 + n * 0.08); },
           break(w) { w.play(() => { nz({ dur: 0.5, type: "highpass", f: 3000, f2: 1200, vol: 0.5 }); for (let i = 0; i < 6; i++) tn({ type: "triangle", f: rand(2000, 4000), dur: 0.15, vol: 0.08, delay: i * 0.04 }); }); w.sfx.thud(); },
         },
       ],

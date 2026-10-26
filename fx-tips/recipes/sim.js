@@ -1678,7 +1678,7 @@
 
     /* ───────── 23. 배달 트럭 도착 ───────── */
     {
-      id: "sim-truck", cat: "sim", view: "iso",
+      id: "sim-truck", cat: "sim", view: "iso", polished: true,
       title: { en: "Make deliveries *arrive*", ko: "배달 트럭이 *도착하는* 맛" },
       intro: { en: "Slides in. Stops dead. *Stuff appears.*", ko: "미끄러져 와서 뚝. *물건이 생겨요.*" },
       interval: 2.6, stepDur: 4.0,
@@ -1755,7 +1755,7 @@
 
     /* ───────── 24. 건설 비계 ───────── */
     {
-      id: "sim-build", cat: "sim", view: "iso",
+      id: "sim-build", cat: "sim", view: "iso", polished: true,
       title: { en: "Make construction *rise*", ko: "건물이 *올라가는* 맛" },
       intro: { en: "25%. 50%. Jump, jump. *Done?*", ko: "25%, 50%. 툭툭 커져요. *다 된 거예요?*" },
       interval: 0.75, stepDur: 4.0,
@@ -1819,12 +1819,12 @@
           } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "clank · fanfare",
           cap: { en: "Metal *clank* per hit, *fanfare* at the end.", ko: "망치마다 *깡*, 완성하면 *빠밤*." },
-          hit(w) { w.play(() => { tn({ type: "square", f: 820, f2: 600, dur: 0.06, vol: 0.12 }); nz({ type: "bandpass", f: 3000, q: 3, dur: 0.08, vol: 0.3 }); }); }, finish(w) { w.sfx.fanfare(); } },
+          hit(w) { w.play(() => { tn({ type: "square", f: 820, f2: 600, dur: 0.06, vol: 0.12 }); nz({ type: "bandpass", f: 3000, q: 3, dur: 0.08, vol: 0.3 }); }); }, finish(w) { w.sfx.thunk(); if (w.on("reveal")) w.sfx.fanfare(); } },
       ],
     },
     /* ───────── 25. 공장 컨베이어 ───────── */
     {
-      id: "sim-conveyor", cat: "sim", view: "side",
+      id: "sim-conveyor", cat: "sim", view: "side", polished: true,
       title: { en: "Make the factory line *thump*", ko: "공장 라인이 *쿵쿵* 돌아가게" },
       intro: { en: "Grey box in. Orange box out. *Magic?*", ko: "회색 상자가 주황 상자로. *마법?*" },
       interval: 1.0, stepDur: 3.8,
@@ -1902,14 +1902,14 @@
           update(w) { for (const it of w.items) if (!w.S.pause) it.bob = -Math.abs(Math.sin(it.x / 48 * Math.PI)) * 3; } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "slam · hiss · rattle",
           cap: { en: "Heavy *slam*, a *hiss*, the belt's *rattle*.", ko: "묵직한 *쾅*, *치익*, 벨트 *덜덜*." },
-          pressed(w) { w.sfx.slam(); w.play(() => nz({ type: "highpass", f: 3000, dur: 0.4, vol: 0.2 })); },
-          update(w) { if (Math.random() < 0.03) w.sfx.tick(); } },
+          pressed(w) { w.sfx.slam(); if (w.on("steam")) w.play(() => nz({ type: "highpass", f: 3000, dur: 0.4, vol: 0.2 })); },
+          update(w) { if (w.on("belt") && Math.random() < 0.03) w.sfx.tick(); } },
       ],
     },
 
     /* ───────── 26. 낚시 입질 ───────── */
     {
-      id: "sim-fish", cat: "sim", view: "side",
+      id: "sim-fish", cat: "sim", view: "side", polished: true,
       title: { en: "Make a fish bite *thrilling*", ko: "낚시 입질을 *두근거리게*" },
       intro: { en: "Bobber dips. Fish appears. *Huh.*", ko: "찌가 내려가고 물고기 등장. *어?*" },
       interval: 2.4, stepDur: 4.0,
@@ -1982,13 +1982,13 @@
           } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "plip · splash · chime",
           cap: { en: "*Plip*, *plip*, *SPLASH*, then a happy *chime*.", ko: "*퐁*, *퐁*, *첨벙!* 그리고 *띠링*." },
-          nibble(w) { w.play(() => tn({ f: 900, f2: 1300, dur: 0.05, vol: 0.15 })); }, bite(w) { w.play(() => nz({ f: 1800, f2: 300, dur: 0.3, vol: 0.4 })); }, land(w) { w.sfx.chime(4); } },
+          nibble(w) { w.play(() => tn({ f: 900, f2: 1300, dur: 0.05, vol: 0.15 })); }, bite(w) { w.play(() => nz({ f: 1800, f2: 300, dur: 0.3, vol: 0.4 })); }, land(w) { if (w.on("leap")) w.sfx.chime(4); } },
       ],
     },
 
     /* ───────── 27. 탭해서 수확 ───────── */
     {
-      id: "sim-tap", cat: "sim", view: "iso",
+      id: "sim-tap", cat: "sim", view: "iso", polished: true,
       title: { en: "Make tap-to-collect *irresistible*", ko: "톡 눌러 걷기를 *못 참게*" },
       intro: { en: "Tap the icon. Icon gone. *Okay.*", ko: "아이콘 누르면 사라짐. *그렇군요.*" },
       interval: 0.6, stepDur: 3.6,
@@ -2051,13 +2051,13 @@
           ready(w, b) { b.sc = 0; w.tween(b, { sc: 1 }, 0.35, "back"); } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "pop · coin ticks",
           cap: { en: "Bubble *pop*, then tiny coin *ticks*.", ko: "말풍선 *뽁*, 그다음 동전 *틱틱*." },
-          tap(w) { w.sfx.pop(); }, arrive(w) { w.sfx.blip(8); } },
+          tap(w) { w.sfx.pop(); }, arrive(w) { if (w.on("coins")) w.sfx.coinClink(); } },
       ],
     },
 
     /* ───────── 28. 가게 레벨업 ───────── */
     {
-      id: "sim-shoplv", cat: "sim", view: "ui",
+      id: "sim-shoplv", cat: "sim", view: "ui", polished: true,
       title: { en: "Make shop level-ups *pay off*", ko: "가게 레벨업을 *보람차게*" },
       intro: { en: "Bar resets. Number +1. *That's it?*", ko: "막대 리셋, 숫자 +1. *그게 다예요?*" },
       interval: 0.8, stepDur: 4.0,
@@ -2135,13 +2135,13 @@
           level(w) { confetti(w, 398, 100, 30, 0.9); } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "orb ticks · fanfare",
           cap: { en: "Soft orb *ticks*, then a *fanfare*.", ko: "구슬은 *톡톡*, 레벨업은 *빠바밤*." },
-          gain(w) { w.sfx.blip(3); }, level(w) { w.sfx.fanfare(); } },
+          gain(w) { if (w.on("orbs")) w.sfx.blip(3); }, level(w) { w.sfx.thunk(); if (w.on("burst") || w.on("unlock")) w.sfx.fanfare(); } },
       ],
     },
 
     /* ───────── 29. 퀘스트 게시판 ───────── */
     {
-      id: "sim-quest", cat: "sim", view: "ui",
+      id: "sim-quest", cat: "sim", view: "ui", polished: true,
       title: { en: "Make the quest board *rewarding*", ko: "퀘스트 게시판을 *뿌듯하게*" },
       intro: { en: "3/3. Note swaps. *Reward?*", ko: "3/3. 쪽지가 바뀌어요. *보상은?*" },
       interval: 0.6, stepDur: 3.8,

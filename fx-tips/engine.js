@@ -320,7 +320,7 @@ const fxPt = k => FX[k] || (FX._art && FX._art[k === "hand" ? "hero" : "gun"] ? 
 // 배경 그림을 깔 장르 (옆에서 본 장면만)
 function useBgArt(R) { return !!(SPR.bg && FX_BG_CATS.test(R.cat) && (!R.view || R.view === "side")); }
 const FX_BG_CATS = /^(weapon|combat|duel|fighting|shooter|horde|action|move|survival|army|rpg|env)$/;
-const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px", "wpn-pickaxe-px", "env-rock-px", "wpn-longsword-px", "env-crate-px"];
+const PXSPR = {}, PXSPR_FILES = ["wpn-hammer-px", "wpn-bow-px", "wpn-arrow-px", "item-gem-px", "fx-coin-px", "wpn-axe-px", "env-pine-px", "env-stump-px", "wpn-pickaxe-px", "env-rock-px", "wpn-longsword-px", "env-crate-px", "mob-wolf-px"];
 // 픽셀 그림 한 장(또는 시트의 한 칸)을 또렷하게: 기준점(ax, ay)을 (x, y)에 두고 s배, rot만큼 돌려서
 function pxSprite(ctx, name, x, y, s, rot = 0, ax = 0, ay = 0, frame = 0, fw = 0) {
   const im = PXSPR[name]; if (!im) return false;
@@ -1618,6 +1618,19 @@ function drawActorSil(ctx, a, col = "#ffffff") {
   x.drawImage(sn, 0, 0); x.globalCompositeOperation = "source-atop"; x.fillStyle = col; x.fillRect(0, 0, g.width, g.height); x.globalCompositeOperation = "source-over";
   const [W, H] = a._snapWH, s = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false;
   ctx.save(); ctx.translate(a.x + a.ox, a.gy + a.oy); ctx.scale(a.flip ? -1 : 1, 1); ctx.drawImage(g, -W / 2, -(H - 4), W, H); ctx.restore(); ctx.imageSmoothingEnabled = s; return true;
+}
+// 픽셀 대방패(주인공 팔레트, 옆모습): (x,y) 왼쪽 위, 너비 22 · 높이 h
+function pxTowerShield(ctx, x, y, h = 86) {
+  const X = Math.round(x), P = 2, tipY = h - 16;
+  for (let yy = 0; yy < h; yy += P) { const tip = yy > tipY ? Math.round((yy - tipY) / 3) * P : 0, x0 = X + tip, wv = 22 - tip * 2; if (wv <= 0) break;
+    ctx.fillStyle = "#11151d"; ctx.fillRect(x0 - P, y + yy, wv + 2 * P, P);
+    ctx.fillStyle = yy < h * 0.35 ? "#8a93a3" : yy < h * 0.7 ? "#6b7385" : "#4f5666"; ctx.fillRect(x0, y + yy, wv, P);
+    ctx.fillStyle = "#c9d1dd"; ctx.fillRect(x0, y + yy, P, P); ctx.fillStyle = "#3a404c"; ctx.fillRect(x0 + wv - P, y + yy, P, P); }
+  ctx.fillStyle = "#11151d"; ctx.fillRect(X - P, y - P, 26, P);
+  ctx.fillStyle = "#1f8fae"; ctx.fillRect(X + 8, y + 6, 6, h - 26); ctx.fillStyle = "#5ad6ff"; ctx.fillRect(X + 8, y + 6, 2, h - 26);
+  const my = Math.round(y + h * 0.4);
+  ctx.fillStyle = "#2b303b"; ctx.fillRect(X + 5, my, 12, 12); ctx.fillStyle = "#b8c0cc"; ctx.fillRect(X + 7, my + 2, 8, 8); ctx.fillStyle = "#eef2f7"; ctx.fillRect(X + 8, my + 3, 3, 3);
+  ctx.fillStyle = "#d6dce5"; for (const ry of [8, 24, h - 30, h - 18]) { ctx.fillRect(X + 3, y + ry, 2, 2); ctx.fillRect(X + 17, y + ry, 2, 2); }
 }
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }

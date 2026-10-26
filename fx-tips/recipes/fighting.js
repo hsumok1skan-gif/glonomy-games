@@ -1106,7 +1106,7 @@
 
     /* 14 ─ 세기별 타격 불꽃 */
     {
-      id: "fighting-spark-strength", cat: "fighting", view: "side", melee: true,
+      id: "fighting-spark-strength", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Size hit sparks by *strength*", ko: "약·중·강 불꽃을 *다르게*" },
       intro: { en: "Light, medium, heavy. *Same spark.*", ko: "약·중·강인데 *불꽃이 똑같아요*." },
       interval: 0.7, stepDur: 3.8,
@@ -1161,14 +1161,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tap / thud / crack",
           cap: { en: "*Tap*, *thud*, *crack*. Heavier, lower.", ko: "*톡*, *퍽*, *빡*. 셀수록 낮게." },
-          hit(w, p, s) { if (s === 0) w.sfx.hit(1.6); else if (s === 1) w.sfx.thud(); else w.sfx.crit(); },
+          hit(w, p, s) { if (s === 0) w.sfx.hit(1.6); else if (s === 1) w.sfx.thud(); else { w.sfx.slam(); if (w.on("ring") || w.on("shake")) w.sfx.critBig(); } },
         },
       ],
     },
 
     /* 15 ─ 막을 때 밀어내기 */
     {
-      id: "fighting-block-pushback", cat: "fighting", view: "side", melee: true,
+      id: "fighting-block-pushback", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Push both apart on *block*", ko: "막으면 *서로 밀려나게*" },
       intro: { en: "Blocked, and they stay *glued* together.", ko: "막았는데 둘이 *딱 붙어* 있어요." },
       interval: 0.9, stepDur: 3.6,
@@ -1223,14 +1223,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clack + skid",
           cap: { en: "A *clack* and a short *skid*.", ko: "*탁*, 그리고 짧게 *끼익*." },
-          block(w) { w.sfx.tock(); w.sfx.skid(); },
+          block(w) { w.sfx.clack(0.8); if (w.on("skid")) w.sfx.skid(); },
         },
       ],
     },
 
     /* 16 ─ 입력 표시 / 커맨드 궤적 */
     {
-      id: "fighting-input-display", cat: "fighting", view: "side", melee: true,
+      id: "fighting-input-display", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Show the *motion* input", ko: "커맨드 입력을 *보여주기*" },
       intro: { en: "Down, forward, punch. *You'd never know.*", ko: "↓↘→+P 했는데 *아무도 몰라요*." },
       interval: 1.2, stepDur: 4.0,
@@ -1321,14 +1321,14 @@
           cap: { en: "A *tick* per input, a *whoosh* on release.", ko: "입력마다 *톡*, 나갈 때 *슈욱*." },
           dir(w) { w.sfx.tick(); },
           press(w) { w.sfx.clickDown(); },
-          launch(w) { w.sfx.magic(); },
-          hit(w) { w.sfx.burst(); },
+          launch(w) { if (w.on("orb")) w.sfx.magic(); },
+          hit(w) { w.sfx.hit(); },
         },
       ],
     },
     /* 17 ─ 필살 기술 궤적 */
     {
-      id: "fighting-special-trail", cat: "fighting", view: "side", melee: true,
+      id: "fighting-special-trail", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Give a special move a *trail*", ko: "필살 기술에 *잔상* 남기기" },
       intro: { en: "A rising uppercut. Looks like a *jump*.", ko: "솟구치는 어퍼컷인데 *점프* 같아요." },
       interval: 1.4, stepDur: 4.0,
@@ -1397,7 +1397,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "roar up · crack",
           cap: { en: "A *rising roar*, a sharp *crack*.", ko: "올라가는 *후오옹*, 날카로운 *빡*." },
           start(w) { w.play(() => { nz({ type: "bandpass", f: 400, f2: 2600, q: 1.5, dur: 0.3, vol: 0.4 }); tn({ type: "sawtooth", f: 110, f2: 330, dur: 0.25, vol: 0.06 }); }); },
-          hit(w) { w.sfx.crit(); },
+          hit(w) { w.sfx.hit(); if (w.on("burst")) w.sfx.critBig(); },
           land(w) { w.sfx.land(); },
         },
       ],
