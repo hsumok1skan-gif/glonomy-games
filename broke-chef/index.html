@@ -48,7 +48,7 @@
         <div class="magnets">
           <button type="button" class="magnet" data-act="go" data-to="home"><span class="mag-img m1" aria-hidden="true"></span>식비 계산</button>
           <button type="button" class="magnet" data-act="go" data-to="chal"><span class="mag-img m2" aria-hidden="true"></span>챌린지</button>
-          <button type="button" class="magnet" data-act="photo-take"><span class="mag-emoji" aria-hidden="true">📸</span>사진 찍기</button>
+          <button type="button" class="magnet" data-act="photo-take"><span class="mag-emoji" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5a2 2 0 0 1 2-2h2.2l1.5-2h5.6l1.5 2h2.2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.6"/><path class="ico-flash" d="M17.2 9.3h.6"/></svg></span>사진 찍기</button>
         </div>
         <button type="button" class="handle" data-act="fridge-door" aria-label="냉동실 문 열기"></button>
       </div>
@@ -172,6 +172,8 @@
         <button type="button" data-act="go" data-to="menu"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="6.5"/><circle cx="10" cy="14" r="2"/><path d="M14.6 9.4l6-6"/></svg></span>집밥</button>
         <button type="button" data-act="go" data-to="hist"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3.5v16.5h16.5"/><path d="M7.5 15.5l3.5-4.5 3 2.5 5-6.5"/></svg></span>값 기록</button>
         <button type="button" data-act="go" data-to="help"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.7"/><path d="M12 17h.01" stroke-width="2.4"/></svg></span>방법</button>
+        <!-- H-12: 처음 열 때 냉장고 위에 뜨던 안내 시트는 여기서 연다 -->
+        <button type="button" data-act="welcome-open"><span aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h6.5a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H4z"/><path d="M20 5.5h-6.5a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H20z"/></svg></span>처음 안내</button>
       </div>
     </nav>
     <form id="settings-form" class="card" novalidate>
@@ -246,7 +248,7 @@
     <div class="card">
       <h3>쓰는 순서</h3>
       <ol class="steps">
-        <li><b>냉장고</b>: 처음 화면은 양문형 냉장고 하나뿐이다. 문에 붙은 자석 버튼으로 식비 계산·챌린지·사진 찍기·내 냉장고 보기·집밥 메뉴·재료 값으로 가고, 냉동실 문 위 ⚙ 자석이 설정이다. 손잡이를 누르면 문이 열리고, 문 안쪽 메뉴에서 칸별·유통기한·사진을 고른다. 칸을 누르면 그 칸 메모와 들어 있는 음식·유통기한을 적는다. 다른 화면에서는 위 '냉장고로'로 돌아온다. 값 기록·방법은 설정 안 '모든 화면'에 있다.</li>
+        <li><b>냉장고</b>: 처음 화면은 양문형 냉장고 하나뿐이다. 문에 붙은 자석 버튼으로 식비 계산·챌린지·사진 찍기·내 냉장고 보기·집밥 메뉴·재료 값으로 가고, 냉동실 문 위 ⚙ 자석이 설정이다. 손잡이를 누르면 문이 열리고, 문 안쪽 메뉴에서 칸별·유통기한·사진을 고른다. 칸을 누르면 그 칸 메모와 들어 있는 음식·유통기한을 적는다. 다른 화면에서는 위 '냉장고로'로 돌아온다. 값 기록·방법·처음 안내는 설정 안 '모든 화면'에 있다. 처음 열면 닫힌 문 메모지에 다음 할 일 하나가 붙어 있다.</li>
         <li><b>사진 찍기</b>: 냉장고 안을 찍어 두면 '내 냉장고 보기'와 열린 냉장고의 '사진'에서 냉장고를 열지 않고도 무엇이 있었는지 본다. 사진은 최근 4장까지 이 기기에만 남는다. 찍은 사진에서 글자를 읽어 유통기한을 찾으면 '이 날짜가 맞나요?'를 묻고, 읽힌 글자를 버튼으로 보여 줘 음식 이름을 고르게 한다. 날짜를 맞다고 하고 이름을 고르면 바로 그 칸에 들어간다. 맞는 이름이 없으면 직접 쓴다. 읽힌 글자 전체는 '전체 복사'로 한 번에 복사한다.</li>
         <li><b>챌린지</b>: 기간과 식비 목표를 고른다. 12가지 중에서 고르거나 직접 정한다.</li>
         <li><b>식비 쓰기</b>: 배달·외식·편의점·카페처럼 밥에 쓴 돈을 그날그날 넣는다.</li>
@@ -402,13 +404,21 @@
     <div class="field"><span id="lb-spend-kind">어디에 썼나요?</span>
       <div id="spend-kinds" class="kind-grid" role="radiogroup" aria-labelledby="lb-spend-kind"></div>
     </div>
+    <!-- R-07: 큰 금액 + 앱 숫자판. 기기 키보드가 올라와 미리보기·종류 버튼을 가리지 않게 금액 칸은 inputmode="none" (PC 는 그대로 타자) -->
+    <output id="spend-display" class="spend-display" for="spend-amount" aria-live="polite">0원</output>
+    <div id="spend-quick" class="quick-row" aria-label="자주 쓰는 값"></div>
+    <div id="spend-pad" class="num-pad" role="group" aria-label="금액 숫자판">
+      <button type="button" data-act="spend-key" data-k="1">1</button><button type="button" data-act="spend-key" data-k="2">2</button><button type="button" data-act="spend-key" data-k="3">3</button><button type="button" class="pad-fn" data-act="spend-key" data-k="+1000">+1천</button>
+      <button type="button" data-act="spend-key" data-k="4">4</button><button type="button" data-act="spend-key" data-k="5">5</button><button type="button" data-act="spend-key" data-k="6">6</button><button type="button" class="pad-fn" data-act="spend-key" data-k="+10000">+1만</button>
+      <button type="button" data-act="spend-key" data-k="7">7</button><button type="button" data-act="spend-key" data-k="8">8</button><button type="button" data-act="spend-key" data-k="9">9</button><button type="button" class="pad-fn" data-act="spend-key" data-k="clear" aria-label="금액 모두 지우기">C</button>
+      <button type="button" data-act="spend-key" data-k="00">00</button><button type="button" data-act="spend-key" data-k="0">0</button><button type="button" class="pad-fn pad-back" data-act="spend-key" data-k="back" aria-label="한 자리 지우기">⌫</button>
+    </div>
+    <div id="spend-preview" class="card soft" aria-live="polite"></div>
     <div class="row2">
-      <label class="field"><span>쓴 돈 (원)</span><input id="spend-amount" type="number" inputmode="numeric" min="1" max="10000000" step="1"><em class="err"></em></label>
+      <label class="field"><span>쓴 돈 (원)</span><input id="spend-amount" type="number" inputmode="none" min="1" max="10000000" step="1"><em class="err"></em></label>
       <label class="field"><span>날짜</span><input id="spend-date" type="date"><em class="err"></em></label>
     </div>
-    <div id="spend-quick" class="quick-row" aria-label="자주 쓰는 값"></div>
     <label class="field"><span>메모 (선택)</span><input id="spend-memo" type="text" maxlength="40" autocomplete="off" placeholder="예: 학식, 치킨 반반"></label>
-    <div id="spend-preview" class="card soft" aria-live="polite"></div>
     <div class="sheet-actions">
       <button type="button" class="danger" id="spend-del" data-act="spend-del">지우기</button>
       <button type="submit" class="primary">저장</button>
@@ -463,7 +473,7 @@
       <div id="item-quick" class="quick-row" aria-label="유통기한 빨리 넣기"></div>
       <div class="ocr-row">
         <button type="button" data-act="shelf-ocr">📷 사진에서 유통기한 읽기</button>
-        <small class="hint">날짜·이름이 찍힌 곳을 가까이 찍으면, 찾은 날짜가 맞는지 묻고 읽힌 글자로 음식 이름을 고르게 한다.</small>
+        <small class="hint">날짜·이름이 찍힌 곳을 가까이 찍으면, 찾은 날짜가 맞는지 묻고 '날짜 맞음'을 누르면 이 칸 메모와 음식 목록에 바로 넣는다. 이름은 읽힌 글자를 눌러 고른다.</small>
       </div>
       <p id="shelf-ocr-file" class="card soft ocr-file" hidden>📄 사진 글자 읽기는 사이트 주소에서 쓸 수 있다. 지금은 위 유통기한 칸에 직접 넣자.</p>
       <div id="shelf-ocr-box" class="card soft ocr-box" aria-live="polite" hidden>
@@ -478,9 +488,14 @@
         </div>
         <p class="ocr-sub">음식 이름 — 읽힌 글자에서 고르기</p>
         <div id="shelf-ocr-names" class="chip-row"></div>
+        <div id="shelf-ocr-own" class="field ocr-own" hidden>
+          <label for="shelf-ocr-own-in">맞는 글자가 없으면 직접 쓰기 (30자까지)</label>
+          <div class="ocr-own-row"><input id="shelf-ocr-own-in" type="text" maxlength="30" autocomplete="off" placeholder="예: 두부"><button type="button" class="primary" data-act="ocr-own-use" data-at="shelf">이 이름으로</button></div>
+          <em class="err"></em>
+        </div>
         <div class="ocr-all">
-          <div class="sec-head"><h3>읽힌 글자 전체</h3><button type="button" class="small" id="shelf-ocr-copy" data-act="ocr-copy" data-at="shelf">📋 전체 복사</button></div>
-          <p id="shelf-ocr-text" class="ocr-text"></p>
+          <div class="sec-head"><h3 id="shelf-ocr-text-h">읽힌 글자 전체 <span id="shelf-ocr-count" class="ocr-count"></span></h3><button type="button" class="small ocr-copy" id="shelf-ocr-copy" data-act="ocr-copy" data-at="shelf" aria-describedby="shelf-ocr-count">📋 전체 복사</button></div>
+          <p id="shelf-ocr-text" class="ocr-text" tabindex="0" aria-labelledby="shelf-ocr-text-h"></p>
         </div>
       </div>
       <div class="sheet-actions">
@@ -517,11 +532,16 @@
         <label class="field"><span>넣을 칸</span><select id="ocr-shelf"></select></label>
         <p class="ocr-sub">음식 이름 — 읽힌 글자에서 고르기</p>
         <div id="ocr-names" class="chip-row"></div>
+        <div id="ocr-own" class="field ocr-own" hidden>
+          <label for="ocr-own-in">맞는 글자가 없으면 직접 쓰기 (30자까지)</label>
+          <div class="ocr-own-row"><input id="ocr-own-in" type="text" maxlength="30" autocomplete="off" placeholder="예: 두부"><button type="button" class="primary" data-act="ocr-own-use" data-at="photo">이 이름으로</button></div>
+          <em class="err"></em>
+        </div>
         <button type="button" class="wide" data-act="ocr-to-shelf">칸 열어 직접 넣기</button>
       </div>
       <div class="ocr-all">
-        <div class="sec-head"><h3>읽힌 글자 전체</h3><button type="button" class="small" id="ocr-copy" data-act="ocr-copy" data-at="photo">📋 전체 복사</button></div>
-        <p id="ocr-text" class="ocr-text"></p>
+        <div class="sec-head"><h3 id="ocr-text-h">읽힌 글자 전체 <span id="ocr-count" class="ocr-count"></span></h3><button type="button" class="small ocr-copy" id="ocr-copy" data-act="ocr-copy" data-at="photo" aria-describedby="ocr-count">📋 전체 복사</button></div>
+        <p id="ocr-text" class="ocr-text" tabindex="0" aria-labelledby="ocr-text-h"></p>
       </div>
     </div>
     <div id="photo-thumbs" class="thumbs"></div>

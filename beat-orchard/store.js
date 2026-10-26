@@ -4,8 +4,9 @@
   var KEY = 'mistOrchard.v1';
   var RUN_KEY = 'mistOrchard.run.v1';
 
+  // lang: 화면 언어 'ko' | 'en' (H-24). 처음에는 한국어, 옵션에서 바꾼다. 예전 저장에는 없어 merge 가 'ko' 로 채운다
   function defaultSettings() {
-    return { sound: true, volume: 0.7, vibrate: true, reduceMotion: false, shake: true, dmgNums: true, speed: 1, textSize: 'mid',
+    return { lang: 'ko', sound: true, volume: 0.7, vibrate: true, reduceMotion: false, shake: true, dmgNums: true, speed: 1, textSize: 'mid',
       beatSound: true, beatWide: false, music: true };
   }
   function regionCount() { return window.GD ? window.GD.REGIONS.length : 5; }
@@ -49,7 +50,12 @@
       lastDiff: 0,
       tutorialDone: false,
       daily: { date: '', played: false, done: false, win: false, waves: 0, kills: 0, time: 0 },
-      dailyLog: []
+      dailyLog: [],
+      // 광고 자리의 '하루 n번' 횟수 (H-26, ads.js Ads.SLOTS). date 가 오늘이 아니면 ads.js 가 0 으로 되돌린다
+      adDay: { date: '', revive: 0, double: 0, refill: 0, silver: 0, result: 0 },
+      // 전면 광고 빈도 (H-32, ads.js '전면 빈도'): 끝난 판 수(튜토리얼 판 빼고)와 마지막 전면 뒤 끝난 판 수
+      adRunCount: 0,
+      adSinceAd: 0
     };
   }
   // 예전 저장(난이도 없음)을 보통 난이도 기록으로 옮기고, 깨진 값을 기본값으로 되돌린다

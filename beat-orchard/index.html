@@ -2,8 +2,16 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070b1a">
+<!-- 무료 모바일 게임: 홈 화면에 올리면 주소창 없이 전체 화면으로 열린다 -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Beat Orchard">
+<meta name="format-detection" content="telephone=no">
+<!-- 가로 고정 (H-07): 이 meta 를 읽는 휴대폰 브라우저는 가로로 연다. 나머지는 ui.js 가 방향을 잠그고, 안 되면 세로 안내가 가린다 -->
+<meta name="screen-orientation" content="landscape">
 <title>Beat Orchard</title>
 <link rel="icon" href="assets/오렌지_정원사_1.png">
 <link rel="apple-touch-icon" href="assets/오렌지_정원사_1.png">
@@ -15,158 +23,152 @@
 <div id="app">
 
   <!-- 1. 시작 -->
-  <section id="scr-title" class="screen active" aria-label="시작 화면">
-    <div class="topbar">
-      <span class="chip chip-silver"><span aria-hidden="true">🌰</span> <b id="title-silver-n">0</b></span>
-      <span class="chip chip-star"><span aria-hidden="true">🏆</span> <b id="title-achv-n">0</b></span>
-    </div>
-    <div class="title-cols">
-    <div class="title-main">
+  <!-- 홈은 그림·제목·메뉴 4개뿐, 스테이지·스토리 문구(목표 카드·과수원 지도·숫자 칩)는 두지 않는다 (H-18) -->
+  <section id="scr-title" class="screen active" aria-label="시작 화면" data-i18n-aria="a.title">
+    <!-- 제목은 화면 가운데 크게, 제목·부제는 언어 설정과 상관없이 영어 (H-16) -->
     <div class="title-box">
       <img class="emblem" src="assets/오렌지_정원사_1.png" alt="" aria-hidden="true" draggable="false">
-      <h1 class="logo-text"><span>Beat</span> <span>Orchard</span></h1>
-      <p class="tagline">리듬으로 지키는 세 줄 디펜스</p>
+      <div class="title-words" lang="en">
+        <h1 class="logo-text"><span>Beat</span> <span>Orchard</span></h1>
+        <p class="tagline">A Rhythm Defense in Three Lanes</p>
+      </div>
     </div>
 
-    <div class="goal-card">
-      <div class="goal-head"><span class="goal-tag">목표</span> <b id="title-goal">이슬 비탈 되찾기</b></div>
-      <p id="title-goal-desc" class="goal-desc">밤안개가 다섯 과수원을 집어삼켰어요. 정원사들과 함께 웨이브 10개를 막아 내고 과수원을 하나씩 되찾으세요.</p>
-      <div id="title-map" class="orchard-map" aria-label="되찾은 과수원"></div>
-      <p id="title-silver" class="goal-meta"></p>
-    </div>
-    </div>
-
-    <div class="title-side">
-    <div class="menu">
-      <button id="btn-continue" class="big glow hidden" type="button">이어하기</button>
-      <button id="btn-start" class="big primary shine" type="button">▶ 시작</button>
-      <button id="btn-daily" class="big secondary" type="button">오늘의 도전</button>
-    </div>
-    <div class="tiles">
-      <button id="btn-shop" class="tile" type="button"><span class="ti" aria-hidden="true">🛠️</span>작업실</button>
-      <button id="btn-codex" class="tile" type="button"><span class="ti" aria-hidden="true">📖</span>도감</button>
-      <button id="btn-achv" class="tile" type="button"><span class="ti" aria-hidden="true">🏆</span>업적</button>
-      <button id="btn-stats" class="tile" type="button"><span class="ti" aria-hidden="true">📊</span>기록</button>
-      <button id="btn-help" class="tile" type="button"><span class="ti" aria-hidden="true">❓</span>게임 방법</button>
-      <button id="btn-settings" class="tile" type="button"><span class="ti" aria-hidden="true">⚙️</span>설정</button>
-    </div>
-    </div>
-    </div>
+    <!-- 그림 아래 메뉴 4개, 이 차례 그대로 (H-17). 이어하기는 저장된 판이 없으면 숨기지 않고 흐리게(disabled).
+         한국어일 때는 한국어(.mk) 위 / 영어(.me) 아래 두 줄, 영어일 때는 .mk 가 영어로 바뀌고 .me 는 숨는다 (H-24) -->
+    <nav class="home-menu" aria-label="메뉴" data-i18n-aria="a.menu">
+      <button id="btn-start" class="big primary" type="button"><span class="mk" data-i18n="m.start">시작</span><span class="me" lang="en">Start</span></button>
+      <button id="btn-continue" class="big" type="button" disabled><span class="mk" data-i18n="m.continue">이어하기</span><span class="me" lang="en">Continue</span></button>
+      <button id="btn-settings" class="big" type="button"><span class="mk" data-i18n="m.options">옵션</span><span class="me" lang="en">Options</span></button>
+      <button id="btn-codex" class="big" type="button"><span class="mk" data-i18n="m.codex">도감</span><span class="me" lang="en">Codex</span></button>
+    </nav>
   </section>
 
   <!-- 2. 방법 -->
-  <section id="scr-help" class="screen" aria-label="게임 방법">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>게임 방법</h2></header>
+  <section id="scr-help" class="screen" aria-label="게임 방법" data-i18n-aria="a.help">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2 data-i18n="help.title">게임 방법</h2></header>
     <div class="help-steps">
-      <div class="hstep"><span class="hs-ico" aria-hidden="true">🛡️</span><b>막는다</b><small>울타리를 지키며 웨이브 10개</small></div>
-      <div class="hstep"><span class="hs-ico" aria-hidden="true">🥁</span><b>맞춘다</b><small>박자에 맞춰 나무 누르기</small></div>
-      <div class="hstep"><span class="hs-ico" aria-hidden="true">🌱</span><b>키운다</b><small>씨앗을 심어 줄 강화</small></div>
+      <div class="hstep"><span class="hs-ico" aria-hidden="true">🛡️</span><b data-i18n="help.s1">막는다</b><small data-i18n="help.s1d">울타리를 지키며 웨이브 10개</small></div>
+      <div class="hstep"><span class="hs-ico" aria-hidden="true">🥁</span><b data-i18n="help.s2">맞춘다</b><small data-i18n="help.s2d">박자에 맞춰 나무 누르기</small></div>
+      <div class="hstep"><span class="hs-ico" aria-hidden="true">🌱</span><b data-i18n="help.s3">키운다</b><small data-i18n="help.s3d">열매를 심어 줄 강화</small></div>
     </div>
     <div class="panel-text">
-      <h3>목표</h3>
-      <p>왼쪽 울타리를 지키면서 안개 웨이브 10개를 막아 내세요. 10번째 웨이브에는 우두머리가 나타나요. 울타리 체력이 0이 되면 패배예요.</p>
-      <h3>밤바람 박자</h3>
-      <p>과수원 전체가 하나의 박자에 맞춰 흔들려요. 나무를 둘러싼 고리가 점점 작아지다가 나무에 닿는 순간이 바로 박자예요. 웨이브가 올라갈수록 박자도 빨라져요.</p>
+      <h3 data-i18n="help.goal.h">목표</h3>
+      <p data-i18n="help.goal">왼쪽 울타리를 지키면서 안개 웨이브 10개를 막아 내세요. 10번째 웨이브에는 우두머리가 나타나요. 울타리 체력(판 위 가운데 막대)이 0이 되면 패배예요. 가진 열매 수는 심기 버튼 위 초록 배지에 보여요.</p>
+      <h3 data-i18n="help.beat.h">밤바람 박자</h3>
+      <p data-i18n="help.beat">과수원 전체가 하나의 박자에 맞춰 흔들려요. 나무를 둘러싼 고리가 점점 작아지다가 나무에 닿는 순간이 바로 박자예요. 웨이브가 올라갈수록 박자도 빨라져요.</p>
       <ul>
-        <li><b>물 주기</b>: 박자에 맞춰 왼쪽 나무를 누르면 그 줄 열매가 빨라져요(파란 막대). <b>완벽!</b>이면 많이, <b>좋아!</b>면 조금 빨라져요. 박자를 놓치거나 한 박자에 같은 나무를 두 번 누르면 <b>놓침</b>이 뜨고, 올라간 속도가 다시 떨어져요.</li>
-        <li><b>콤보</b>: 박자를 맞출 때마다 1씩 쌓이고, 콤보가 높을수록 모든 나무 열매가 강해져요(기본 최대 ×1.6, 박자 강화로 더 올릴 수 있어요). 박자를 놓치거나 4박자 넘게 쉬면 콤보가 끊겨요.</li>
-        <li><b>♪ 박자 강화·보물</b>: '박자' 표시가 붙은 강화와 보물은 박자 규칙을 바꿔요. 판정 범위가 넓어지거나, 콤보 상한이 오르거나, 완벽!이 뜰 때 열매를 하나 더 던지거나, 콤보 10마다 그 줄 전체가 폭발하거나, 박자를 놓쳐도 콤보가 이어져요.</li>
-        <li><b>심기와 기술도 박자에 맞춰</b>: 박자에 딱 맞춰 심으면 씨앗 한 알이 두 알만큼 자라고, 기술은 완벽! ×1.5, 좋아! ×1.2로 강해져요.</li>
-        <li>박자 맞추기가 어렵다면 설정에서 <b>박자 판정</b>을 <b>넉넉하게</b>로 바꿔 보세요.</li>
+        <li data-i18n="help.b1"><b>물 주기</b>: 박자에 맞춰 왼쪽 나무를 누르면 그 줄 열매가 빨라져요(파란 막대). <b>완벽!</b>이면 많이, <b>좋아!</b>면 조금 빨라져요. 박자를 놓치거나 한 박자에 같은 나무를 두 번 누르면 <b>놓침</b>이 뜨고, 올라간 속도가 다시 떨어져요.</li>
+        <li data-i18n="help.b2"><b>콤보</b>: <b>완벽!</b>이 뜰 때만 1씩 쌓이고, 콤보가 높을수록 모든 나무 열매가 강해져요(기본 최대 ×1.6, 박자 강화로 더 올릴 수 있어요). <b>좋아!</b>나 <b>놓침</b>이 뜨거나 4박자 넘게 쉬면 콤보가 끊겨요.</li>
+        <li data-i18n="help.b3"><b>열매 발사</b>: 콤보가 5·10·15…에 닿을 때마다 정원사가 울타리에 가장 가까운 정령(안개)에게 금빛 열매를 쏴요(5콤보 1개, 10콤보 2개, 15콤보부터 3개). 열매를 받은 정령은 숲으로 돌아가요. 우두머리는 돌아가지 않고 큰 피해만 받아요.</li>
+        <li data-i18n="help.b4"><b>♪ 박자 강화·보물</b>: '박자' 표시가 붙은 강화와 보물은 박자 규칙을 바꿔요. 판정 범위가 넓어지거나, 콤보 상한이 오르거나, 완벽!이 뜰 때 열매를 하나 더 던지거나, 콤보 10마다 그 줄 전체가 폭발하거나, 박자를 놓쳐도 콤보가 이어져요.</li>
+        <li data-i18n="help.b5"><b>심기와 기술도 박자에 맞춰</b>: 박자에 딱 맞춰 심으면 열매 한 알이 두 알만큼 자라고, 기술은 완벽! ×1.5, 좋아! ×1.2로 강해져요.</li>
+        <li data-i18n="help.b6">박자 맞추기가 어렵다면 옵션에서 <b>박자 판정</b>을 <b>넉넉하게</b>로 바꿔 보세요.</li>
       </ul>
-      <h3>나무와 씨앗</h3>
-      <p>줄마다 나무가 한 그루씩 있고, 같은 줄에 안개가 나타나면 알아서 열매를 던져요. 안개를 물리치면 가끔 씨앗이 떨어져요. 판 왼쪽의 <b>심기</b> 버튼을 누르면 그 줄 나무에 씨앗을 심어 열매가 강하고 빨라져요. 씨앗이 없으면 심기 버튼이 흐리게 바뀌어요.</p>
-      <h3>정원사</h3>
-      <p>줄마다 전열 칸과 후열 칸이 하나씩 있어요. 전열 정원사(파란 칸)는 안개를 붙잡아 두고 가까이에서 싸우고, 후열 정원사(보라 칸)는 멀리서 공격해요. 하늘을 나는 안개는 붙잡을 수 없어요. 정원사를 누른 다음 다른 칸을 누르면 그 자리로 옮기거나 서로 자리를 바꿔요. 쓰러진 정원사는 웨이브가 끝나면 체력 절반으로 돌아와요.</p>
-      <h3>기술·강화·보물</h3>
-      <p>판 오른쪽 버튼으로 정원사마다 다른 기술을 쓸 수 있어요. 웨이브가 끝날 때마다 강화를 하나 고르고, 3번째와 6번째 웨이브가 끝나면 보물을 골라요. 판이 끝나면 은씨앗을 받는데, 작업실에서 새 정원사를 영입하거나 영구 강화를 살 수 있어요.</p>
-      <h3>조작</h3>
+      <h3 data-i18n="help.tree.h">나무와 열매</h3>
+      <p data-i18n="help.tree">줄마다 나무가 한 그루씩 있고, 같은 줄에 안개가 나타나면 알아서 열매를 던져요. 안개를 물리치면 가끔 열매가 떨어져요. 판 왼쪽의 <b>심기</b> 버튼을 누르면 그 줄 나무 밑에 열매를 심어, 나무가 던지는 열매가 더 세고 빨라져요. 가진 열매가 없으면 심기 버튼이 흐리게 바뀌어요.</p>
+      <h3 data-i18n="help.gard.h">정원사</h3>
+      <p data-i18n="help.gard">줄마다 전열 칸과 후열 칸이 하나씩 있어요. 전열 정원사(파란 칸)는 안개를 붙잡아 두고 가까이에서 싸우고, 후열 정원사(보라 칸)는 멀리서 공격해요. 하늘을 나는 안개는 붙잡을 수 없어요. 정원사를 누른 다음 다른 칸을 누르면 그 자리로 옮기거나 서로 자리를 바꿔요. 쓰러진 정원사는 웨이브가 끝나면 체력 절반으로 돌아와요.</p>
+      <h3 data-i18n="help.skill.h">기술·강화·보물</h3>
+      <p data-i18n="help.skill">판 오른쪽 버튼으로 정원사마다 다른 기술을 쓸 수 있어요. 웨이브가 끝날 때마다 강화를 하나 고르고, 3번째와 6번째 웨이브가 끝나면 보물을 골라요. 판이 끝나면 은열매를 받는데, 도감 화면 위 작업실에서 새 정원사를 영입하거나 영구 강화를 살 수 있어요.</p>
+      <h3 data-i18n="help.ctrl.h">조작</h3>
       <ul>
-        <li>휴대폰은 가로로 돌려서 플레이해요(세로로 돌리면 게임이 멈추고, 다시 가로로 돌리면 이어서 할 수 있어요).</li>
-        <li>휴대폰: 나무 누르기 = 물 주기(박자), 판 왼쪽 심기 버튼 = 그 줄에 씨앗 심기(왼손 엄지), 정원사 누르기 → 칸 누르기 = 옮기기, 판 오른쪽 버튼 = 기술(오른손 엄지)</li>
-        <li>키보드: <b>A·S·D</b> 1·2·3번 줄 나무에 물 주기, <b>1·2·3</b> 그 줄에 심기, <b>Q·W·E</b> 기술, <b>방향키</b> 칸 선택, <b>스페이스·엔터</b> 정원사 집기·놓기, <b>P·Esc</b> 일시정지</li>
-        <li>강화·보물 선택 창: <b>1~5</b> 키로 고르기</li>
+        <li data-i18n="help.c1">휴대폰은 가로로 돌려서 플레이해요(세로로 돌리면 게임이 멈추고, 다시 가로로 돌리면 이어서 할 수 있어요).</li>
+        <li data-i18n="help.c2">휴대폰: 나무 누르기 = 물 주기(박자), 판 왼쪽 심기 버튼 = 그 줄에 열매 심기(왼손 엄지), 정원사 누르기 → 칸 누르기 = 옮기기, 판 오른쪽 버튼 = 기술(오른손 엄지)</li>
+        <li data-i18n="help.c3">키보드: <b>A·S·D</b> 1·2·3번 줄 나무에 물 주기, <b>1·2·3</b> 그 줄에 심기, <b>Q·W·E</b> 기술, <b>방향키</b> 칸 선택, <b>스페이스·엔터</b> 정원사 집기·놓기, <b>P·Esc</b> 일시정지</li>
+        <li data-i18n="help.c4">강화·보물 선택 창: <b>1~5</b> 키로 고르기</li>
       </ul>
-      <h3>안개 구별하기</h3>
-      <p>안개는 색깔과 모양 기호로 구별해요. 바깥 테두리 = 보호막(공격을 몇 번 대신 막음), 점선 테두리 = 느려진 상태, 그림자 = 하늘을 나는 안개.</p>
-      <h3>웨이브 미리보기</h3>
-      <p>판 위쪽 띠에 이번 웨이브에 나오는 안개의 종류와 수가 표시돼요. 강화를 고르는 창에서는 다음 웨이브의 안개를 미리 볼 수 있으니, 어느 줄을 키울지 미리 정해 두세요. (비행) = 하늘을 나는 안개(전열이 막지 못함), (우두머리) = 마지막 웨이브의 우두머리.</p>
-      <h3>난이도</h3>
-      <p>지역마다 보통·어려움·악몽 중에서 고를 수 있어요. 어려울수록 안개의 체력과 수가 늘어나지만, 은씨앗도 더 많이 받아요. 최고 기록과 클리어 표시는 난이도마다 따로 남아요.</p>
-      <h3>오늘의 도전</h3>
-      <p>날마다 정해진 지역·난이도·정원사로, 모든 사람이 똑같은 판에 하루 한 번 도전해요. 결과 화면의 <b>결과 복사</b>로 기록을 친구와 나눌 수 있어요.</p>
+      <h3 data-i18n="help.fog.h">안개 구별하기</h3>
+      <p data-i18n="help.fog">안개는 색깔과 모양 기호로 구별해요. 바깥 테두리 = 보호막(공격을 몇 번 대신 막음), 점선 테두리 = 느려진 상태, 그림자 = 하늘을 나는 안개.</p>
+      <h3 data-i18n="help.prev.h">웨이브 미리보기</h3>
+      <p data-i18n="help.prev">판 왼쪽 위 작은 표시에 이번 웨이브에 나오는 안개의 종류와 수가 표시돼요. 강화를 고르는 창에서는 다음 웨이브의 안개를 미리 볼 수 있으니, 어느 줄을 키울지 미리 정해 두세요. (비행) = 하늘을 나는 안개(전열이 막지 못함), (우두머리) = 마지막 웨이브의 우두머리.</p>
+      <h3 data-i18n="help.diff.h">난이도</h3>
+      <p data-i18n="help.diff">지역마다 보통·어려움·악몽 중에서 고를 수 있어요. 어려울수록 안개의 체력과 수가 늘어나지만, 은열매도 더 많이 받아요. 최고 기록과 클리어 표시는 난이도마다 따로 남아요.</p>
+      <h3 data-i18n="help.daily.h">오늘의 도전</h3>
+      <p data-i18n="help.daily">날마다 정해진 지역·난이도·정원사로, 모든 사람이 똑같은 판에 하루 한 번 도전해요. 결과 화면의 <b>결과 복사</b>로 기록을 친구와 나눌 수 있어요.</p>
     </div>
   </section>
 
   <!-- 3. 설정 -->
-  <section id="scr-settings" class="screen" aria-label="설정">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>설정</h2></header>
+  <section id="scr-settings" class="screen" aria-label="설정" data-i18n-aria="a.settings">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2 data-i18n="set.title">옵션</h2></header>
+    <!-- 언어 / 소리 / 화면·플레이 세 묶음 (ui.js SETTING_GROUPS, H-24) -->
     <div id="settings-list" class="list settings"></div>
-    <button id="btn-tutorial" class="secondary" type="button">튜토리얼 다시 보기</button>
+    <!-- 홈 메뉴에서 빠진 게임 방법은 옵션에서 연다 (H-17) -->
+    <div class="two">
+      <button id="btn-help" class="secondary" type="button" data-i18n="set.help">❓ 게임 방법</button>
+      <button id="btn-tutorial" class="secondary" type="button" data-i18n="set.tutorial">튜토리얼 다시 보기</button>
+    </div>
     <div class="danger">
-      <button id="btn-wipe" class="danger-btn" type="button">기록 지우기</button>
+      <button id="btn-wipe" class="danger-btn" type="button" data-i18n="set.wipe">기록 지우기</button>
       <div id="wipe-confirm" class="hidden">
-        <p class="warn">은씨앗, 정원사, 업적, 기록이 모두 사라져요. 정말 지울까요?</p>
+        <p class="warn" data-i18n="set.wipeWarn">은열매, 정원사, 업적, 기록이 모두 사라져요. 정말 지울까요?</p>
         <div class="two">
-          <button id="btn-wipe-yes" class="danger-btn" type="button">지우기</button>
-          <button id="btn-wipe-no" type="button">취소</button>
+          <button id="btn-wipe-yes" class="danger-btn" type="button" data-i18n="set.wipeYes">지우기</button>
+          <button id="btn-wipe-no" type="button" data-i18n="set.wipeNo">취소</button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 4. 지역 고르기 -->
-  <section id="scr-region" class="screen" aria-label="지역 고르기">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>과수원 선택</h2></header>
-    <div id="diff-list" class="seg" role="group" aria-label="난이도"></div>
+  <section id="scr-region" class="screen" aria-label="지역 고르기" data-i18n-aria="a.region">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2 data-i18n="region.title">과수원 선택</h2></header>
+    <div id="diff-list" class="seg" role="group" aria-label="난이도" data-i18n-aria="a.diff"></div>
     <p id="diff-desc" class="hint center"></p>
     <div id="region-list" class="region-list"></div>
   </section>
 
   <!-- 5. 편성 -->
-  <section id="scr-squad" class="screen" aria-label="정원사 편성">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>정원사 <small id="squad-count"></small></h2></header>
+  <section id="scr-squad" class="screen" aria-label="정원사 편성" data-i18n-aria="a.squad">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2><span data-i18n="squad.title">정원사</span> <small id="squad-count"></small></h2></header>
     <div id="squad-slots" class="squad-slots" aria-hidden="true"></div>
-    <p class="hint center">최대 세 명까지 데려갈 수 있어요. <span class="tag-front">전열</span>은 안개를 붙잡고, <span class="tag-back">후열</span>은 멀리서 공격해요.</p>
+    <p class="hint center" data-i18n="squad.hint">최대 세 명까지 데려갈 수 있어요. <span class="tag-front">전열</span>은 안개를 붙잡고, <span class="tag-back">후열</span>은 멀리서 공격해요.</p>
     <div id="squad-list" class="grid"></div>
     <div class="sticky-cta">
-      <button id="btn-go" class="big primary shine" type="button">출발 ▶</button>
+      <button id="btn-go" class="big primary shine" type="button" data-i18n="squad.go">출발 ▶</button>
     </div>
   </section>
 
   <!-- 6. 전투 -->
-  <section id="scr-battle" class="screen battle" aria-label="전투">
-    <div class="hud">
-      <div class="hud-item hud-fence"><small><span aria-hidden="true">🛡️</span> 울타리</small><b id="hud-fence">100</b><i class="meter" aria-hidden="true"><i id="hud-fence-bar"></i></i></div>
-      <div class="hud-item hud-wave"><small><span aria-hidden="true">🌊</span> 웨이브</small><b id="hud-wave">1/10</b><i class="meter" aria-hidden="true"><i id="hud-wave-bar"></i></i></div>
-      <div class="hud-item"><small><span aria-hidden="true">🌱</span> 씨앗</small><b id="hud-seeds">0</b></div>
-      <div class="hud-item"><small><span aria-hidden="true">🔥</span> 콤보</small><b id="hud-combo">0</b></div>
-      <button id="btn-pause" class="small icon-btn" type="button" aria-label="일시정지">❚❚</button>
-    </div>
-    <!-- 가로 배치: 가운데 판, 왼쪽에 줄마다 심기 버튼(줄 높이에 맞춤), 오른쪽에 기술 버튼 -->
+  <section id="scr-battle" class="screen battle" aria-label="전투" data-i18n-aria="a.battle">
+    <!-- HUD 최소화: 위 띠 없이 판이 화면 높이를 다 쓴다. 울타리는 판 위 가는 막대, 가진 열매는 심기 열 배지,
+         콤보는 판 오른쪽 위 알약(game.js render), 웨이브는 판 왼쪽 위 작은 알약(판 안에 겹침), 일시정지는 오른쪽 열 맨 위 -->
+    <!-- 가로 배치: 가운데 판, 왼쪽에 줄마다 심기 버튼(줄 높이에 맞춤), 오른쪽에 일시정지·기술 버튼 -->
     <div class="battle-main">
       <div class="battle-center">
-        <div id="tut-box" class="tut hidden" role="status" aria-live="polite">
-          <div class="tut-head"><b id="tut-step"></b> <span id="tut-dots" aria-hidden="true"></span></div>
-          <p id="tut-text"></p>
-          <button id="btn-tut-skip" class="small" type="button">건너뛰기</button>
-        </div>
-        <div id="wave-preview" class="wave-preview" aria-live="polite"></div>
         <div class="field-row">
           <div class="plant-bar">
-            <button class="plant" data-lane="0" type="button"><span aria-hidden="true">🌱</span> 1번 줄 심기</button>
-            <button class="plant" data-lane="1" type="button"><span aria-hidden="true">🌱</span> 2번 줄 심기</button>
-            <button class="plant" data-lane="2" type="button"><span aria-hidden="true">🌱</span> 3번 줄 심기</button>
+            <b id="hud-seeds" class="pouch-badge hud-bump" title="가진 열매" aria-label="가진 열매" data-i18n-title="a.seeds" data-i18n-aria="a.seeds">0</b>
+            <button class="plant" data-lane="0" type="button" data-i18n="plant.0"><span aria-hidden="true">🌱</span> 1번 줄 심기</button>
+            <button class="plant" data-lane="1" type="button" data-i18n="plant.1"><span aria-hidden="true">🌱</span> 2번 줄 심기</button>
+            <button class="plant" data-lane="2" type="button" data-i18n="plant.2"><span aria-hidden="true">🌱</span> 3번 줄 심기</button>
           </div>
-          <div id="field-wrap"><canvas id="field" aria-label="과수원 판"></canvas><div id="tut-spot" class="tut-spot hidden" aria-hidden="true"></div></div>
+          <div id="field-wrap"><canvas id="field" aria-label="과수원 판" data-i18n-aria="a.field"></canvas><div id="hud-fence" class="fence-gauge hud-bump" role="meter" aria-label="울타리" data-i18n-aria="a.fence" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="hud-fence-bar"></i></div><div id="wave-preview" class="wave-preview" aria-live="polite"></div></div>
         </div>
       </div>
-      <div id="skill-bar" class="skill-bar"></div>
+      <div class="side-col">
+        <button id="btn-pause" class="small icon-btn" type="button" aria-label="일시정지" data-i18n-aria="a.pause">❚❚</button>
+        <div id="skill-bar" class="skill-bar"></div>
+      </div>
+    </div>
+    <!-- 첫 판 튜토리얼 (tutorial.js): 화면을 엷게 덮고 알려 줄 요소 둘레만 밝게 뚫은 뒤, 그 옆 카드로 뜻을 알려 준다 -->
+    <div id="tut-layer" class="tut-layer hidden" aria-hidden="true"><div id="tut-hole" class="tut-hole hidden"></div></div>
+    <div id="tut-card" class="tut-card hidden" role="dialog" aria-live="polite" aria-labelledby="tut-step">
+      <div class="tut-top"><span id="tut-kind" class="tut-kind"></span><span id="tut-count" class="tut-count"></span></div>
+      <b id="tut-step" class="tut-title"></b>
+      <p id="tut-text" class="tut-text"></p>
+      <p id="tut-keys" class="tut-keys hidden"></p>
+      <div id="tut-dots" class="tut-dots" aria-hidden="true"></div>
+      <div class="tut-btns">
+        <button id="btn-tut-skip" class="small tut-skip" type="button" aria-label="튜토리얼 건너뛰기 (Skip)" data-i18n-aria="a.skip"><span id="tut-skip-k" class="mk">건너뛰기</span><span class="me" lang="en">Skip</span></button>
+        <button id="btn-tut-next" class="small primary" type="button">다음 ▶</button>
+      </div>
     </div>
   </section>
 
   <!-- 9. 결과 -->
-  <section id="scr-result" class="screen" aria-label="결과">
+  <section id="scr-result" class="screen" aria-label="결과" data-i18n-aria="a.result">
     <div class="res-cols">
       <div class="res-side">
         <div class="res-hero">
@@ -174,66 +176,78 @@
           <h2 id="res-title">결과</h2>
           <div id="res-stars" class="res-stars"></div>
         </div>
+        <!-- 보상형 광고 자리 double: 이긴 판만 '광고 보고 은열매 2배' (ui.js showResult, H-29) -->
+        <div id="res-ad" class="ad-slot hidden"></div>
         <button id="btn-again" class="big primary shine" type="button">다시 하기</button>
+        <button id="btn-change" type="button" data-i18n="res.change">과수원·정원사 바꾸기</button>
         <div class="two">
-          <button id="btn-share" type="button">결과 복사</button>
-          <button id="btn-home" type="button">처음으로</button>
+          <button id="btn-share" type="button" data-i18n="res.share">결과 복사</button>
+          <button id="btn-home" type="button" data-i18n="res.home">처음으로</button>
         </div>
       </div>
       <div class="res-main">
         <div id="res-body" class="result-box"></div>
         <p id="res-best" class="silver"></p>
         <div id="res-achv" class="achv-new"></div>
-        <textarea id="share-box" class="share-box hidden" rows="5" readonly aria-label="공유할 결과 문구"></textarea>
-        <p id="share-msg" class="hint hidden">자동 복사가 되지 않았어요. 위 글을 길게 눌러 직접 복사해 주세요.</p>
+        <textarea id="share-box" class="share-box hidden" rows="5" readonly aria-label="공유할 결과 문구" data-i18n-aria="a.share"></textarea>
+        <p id="share-msg" class="hint hidden" data-i18n="res.shareMsg">자동 복사가 되지 않았어요. 위 글을 길게 눌러 직접 복사해 주세요.</p>
       </div>
     </div>
   </section>
 
   <!-- 14. 오늘의 도전 -->
-  <section id="scr-daily" class="screen" aria-label="오늘의 도전">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>오늘의 도전 <small id="daily-date"></small></h2></header>
-    <p class="hint">모든 사람이 똑같은 판에 하루 한 번 도전해요. 이 결과는 지역 기록과 해금에는 반영되지 않아요.</p>
+  <section id="scr-daily" class="screen" aria-label="오늘의 도전" data-i18n-aria="a.daily">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2><span data-i18n="daily.title">오늘의 도전</span> <small id="daily-date"></small></h2></header>
+    <p class="hint" data-i18n="daily.hint">모든 사람이 똑같은 판에 하루 한 번 도전해요. 이 결과는 지역 기록과 해금에는 반영되지 않아요.</p>
     <div id="daily-info" class="result-box"></div>
     <p id="daily-status" class="silver"></p>
     <button id="btn-daily-go" class="big primary shine" type="button">도전 시작</button>
-    <h3>지난 도전</h3>
+    <h3 data-i18n="daily.log">지난 도전</h3>
     <div id="daily-log" class="list"></div>
   </section>
 
   <!-- 10. 도감 -->
-  <section id="scr-codex" class="screen" aria-label="도감">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>도감 <small id="codex-count"></small></h2></header>
+  <section id="scr-codex" class="screen" aria-label="도감" data-i18n-aria="a.codex">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2><span data-i18n="codex.title">도감</span> <small id="codex-count"></small></h2></header>
+    <!-- 홈 메뉴에서 빠진 화면 바로가기 (H-17): 뒤로 가면 도감으로 돌아온다 -->
+    <div class="codex-links" role="group" aria-label="바로가기" data-i18n-aria="a.links">
+      <button id="btn-achv" type="button" data-i18n="codex.achv"><span aria-hidden="true">🏆</span> 업적</button>
+      <button id="btn-stats" type="button" data-i18n="codex.stats"><span aria-hidden="true">📊</span> 기록</button>
+      <button id="btn-shop" type="button" data-i18n="codex.shop"><span aria-hidden="true">🛠️</span> 작업실</button>
+      <button id="btn-daily" type="button">📅 오늘의 도전</button>
+    </div>
     <div class="seg" id="codex-tabs">
-      <button type="button" data-tab="gardener">정원사</button>
-      <button type="button" data-tab="enemy">안개</button>
-      <button type="button" data-tab="boss">우두머리</button>
-      <button type="button" data-tab="upgrade">강화</button>
-      <button type="button" data-tab="relic">보물</button>
+      <button type="button" data-tab="gardener" data-i18n="tab.gardener">정원사</button>
+      <button type="button" data-tab="enemy" data-i18n="tab.enemy">안개</button>
+      <button type="button" data-tab="boss" data-i18n="tab.boss">우두머리</button>
+      <button type="button" data-tab="upgrade" data-i18n="tab.upgrade">강화</button>
+      <button type="button" data-tab="relic" data-i18n="tab.relic">보물</button>
     </div>
     <div id="codex-list" class="list cards"></div>
   </section>
 
   <!-- 11. 업적 -->
-  <section id="scr-achv" class="screen" aria-label="업적">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>업적 <small id="achv-count"></small></h2></header>
+  <section id="scr-achv" class="screen" aria-label="업적" data-i18n-aria="a.achv">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2><span data-i18n="achv.title">업적</span> <small id="achv-count"></small></h2></header>
     <div class="progress-line" aria-hidden="true"><i id="achv-bar"></i></div>
     <div id="achv-list" class="list cards"></div>
   </section>
 
   <!-- 12. 기록 -->
-  <section id="scr-stats" class="screen" aria-label="기록">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>기록</h2></header>
+  <section id="scr-stats" class="screen" aria-label="기록" data-i18n-aria="a.stats">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2 data-i18n="stats.title">기록</h2></header>
     <div id="stats-list" class="list stat-grid"></div>
   </section>
 
   <!-- 13. 작업실 -->
-  <section id="scr-shop" class="screen" aria-label="작업실">
-    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로">‹ 뒤로</button><h2>작업실</h2><span class="chip chip-silver"><span aria-hidden="true">🌰</span> <b id="shop-silver"></b></span></header>
+  <section id="scr-shop" class="screen" aria-label="작업실" data-i18n-aria="a.shop">
+    <header class="scr-head"><button class="back" data-back type="button" aria-label="뒤로" data-i18n-aria="a.back" data-i18n="back">‹ 뒤로</button><h2 data-i18n="shop.title">작업실</h2><span class="chip chip-silver"><span aria-hidden="true">🌰</span> <b id="shop-silver"></b></span></header>
     <div class="seg" id="shop-tabs">
-      <button type="button" data-tab="gardener">정원사 영입</button>
-      <button type="button" data-tab="work">영구 강화</button>
+      <button type="button" data-tab="gardener" data-i18n="shop.recruit">정원사 영입</button>
+      <button type="button" data-tab="work" data-i18n="shop.work">영구 강화</button>
     </div>
+    <!-- 보상형 광고 자리 silver: '광고 보고 은열매 +30' 하루 3번 (ui.js renderShop, H-29) -->
+    <div id="shop-ad" class="ad-slot"></div>
     <div id="shop-list" class="list shop"></div>
   </section>
 
@@ -243,22 +257,48 @@
       <div class="pick-head"><span class="pick-burst" aria-hidden="true">✦</span><h2 id="pick-title">강화 고르기</h2></div>
       <p id="pick-sub" class="hint center"></p>
       <div id="pick-list" class="pick-list"></div>
+      <!-- 보상형 광고 자리 refill: 웨이브 사이 '광고 보고 열매 +3' 한 판 2번 (ui.js showPick, H-29) -->
+      <div id="pick-ad" class="ad-slot"></div>
       <div id="pick-preview" class="wave-preview"></div>
+    </div>
+  </div>
+
+  <!-- 울타리가 무너졌을 때 (겹침): 보상형 광고 자리 revive '광고 보고 이어하기' 또는 결과 보기 (H-29) -->
+  <div id="ov-revive" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="revive-title">
+    <div class="panel">
+      <div class="revive-ico" aria-hidden="true">🌫️</div>
+      <h2 id="revive-title" data-i18n="revive.title">울타리가 무너졌어요</h2>
+      <p id="revive-sub" class="hint center"></p>
+      <div id="revive-ad" class="ad-slot"></div>
+      <button id="btn-revive-giveup" type="button" data-i18n="revive.giveup">포기하고 결과 보기</button>
     </div>
   </div>
 
   <!-- 8. 잠시 멈춤 (겹침) -->
   <div id="ov-pause" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
     <div class="panel">
-      <h2 id="pause-title">일시정지</h2>
+      <h2 id="pause-title" data-i18n="pause.title">일시정지</h2>
       <p id="pause-info" class="hint center"></p>
-      <button id="btn-resume" class="big primary" type="button">▶ 계속하기</button>
+      <button id="btn-resume" class="big primary" type="button" data-i18n="pause.resume">▶ 계속하기</button>
       <div class="two">
-        <button id="btn-pause-help" type="button">게임 방법</button>
-        <button id="btn-pause-settings" type="button">설정</button>
+        <button id="btn-pause-help" type="button" data-i18n="pause.help">게임 방법</button>
+        <button id="btn-pause-settings" type="button" data-i18n="pause.settings">옵션</button>
       </div>
-      <button id="btn-quit" class="danger-btn" type="button">포기하기</button>
-      <p id="quit-msg" class="warn hidden">한 번 더 누르면 이번 판을 포기해요.</p>
+      <button id="btn-quit" class="danger-btn" type="button" data-i18n="pause.quit">포기하기</button>
+      <p id="quit-msg" class="warn hidden" data-i18n="pause.quitMsg">한 번 더 누르면 이번 판을 포기해요.</p>
+    </div>
+  </div>
+
+  <!-- 광고 (겹침): 앱 포장 때 붙는 광고가 없을 때 ads.js 가 띄우는 대신 광고 창. 플레이 도중에는 뜨지 않는다 -->
+  <div id="ov-ad" class="overlay ad-ov hidden" role="dialog" aria-modal="true" aria-labelledby="ad-title">
+    <div class="panel ad-panel">
+      <span class="ad-badge">AD</span>
+      <h2 id="ad-title">광고</h2>
+      <div class="ad-frame" aria-hidden="true"><span class="ad-count" id="ad-count">0</span></div>
+      <p id="ad-note" class="hint center"></p>
+      <p id="ad-safe" class="hint center hidden"></p>
+      <button id="btn-ad-done" class="big primary" type="button" disabled>닫기</button>
+      <button id="btn-ad-skip" class="small hidden" type="button" data-i18n="ad.skip">그만 보기</button>
     </div>
   </div>
 
@@ -274,11 +314,14 @@
       <path d="M26 98 A44 44 0 0 0 98 98" fill="none" stroke="#5ef0b0" stroke-width="5" stroke-linecap="round"/>
       <path d="M90 90 L99 99 L88 104" fill="none" stroke="#5ef0b0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
+    <!-- 이 한국어 제목은 언어와 상관없이 늘 그대로 둔다 (G-56, 실행 검사가 이 글을 찾는다). 영어일 때는 아래 영어 줄이 함께 보인다 (H-24) -->
     <p class="rotate-title">가로로 돌려 주세요</p>
-    <p class="rotate-sub">Beat Orchard는 가로 화면 전용 게임이에요. 휴대폰을 옆으로 돌리면 바로 이어서 할 수 있어요.</p>
+    <p class="rotate-en" lang="en">Please rotate your device</p>
+    <p class="rotate-sub" data-i18n="rotate.sub">Beat Orchard는 가로 화면 전용 게임이에요. 휴대폰을 옆으로 돌리면 바로 이어서 할 수 있어요.</p>
   </div>
 </div>
 
+<script src="./i18n.js"></script>
 <script src="./data.js"></script>
 <script src="./art.js"></script>
 <script src="./store.js"></script>
@@ -287,6 +330,7 @@
 <script src="./game.js"></script>
 <script src="./tutorial.js"></script>
 <script src="./daily.js"></script>
+<script src="./ads.js"></script>
 <script src="./ui.js"></script>
 </body>
 </html>

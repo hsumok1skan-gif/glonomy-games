@@ -4,6 +4,7 @@
   var GD = window.GD;
   var Store = window.Store;
   var Sound = window.Sound;
+  var T = window.I18N.T; // 판 위 글도 T('한국어 원문') — 영어는 i18n.js (H-24)
 
   var FENCE_X = 9;
   var TREE_X = 12;
@@ -27,13 +28,25 @@
   var MAX_PARTS = 160;
   var PROBE_DT = 1 / 60;
   // 균형 (기획서 `## 균형 목표`, `## 바뀐 점`)
-  var SEED_DMG = 0.07;      // 씨앗 한 알당 열매 피해 +7%
-  var SEED_RATE = 0.025;    // 씨앗 한 알당 던지는 빠르기 +2.5% (40알까지)
-  var SEED_DROP = 0.2;      // 안개를 걷어 낼 때 씨앗이 떨어질 확률
+  var SEED_DMG = 0.07;      // 심은 열매 한 알당 던지는 열매 피해 +7%
+  var SEED_RATE = 0.025;    // 심은 열매 한 알당 던지는 빠르기 +2.5% (40알까지)
+  var SEED_DROP = 0.2;      // 안개를 걷어 낼 때 열매가 떨어질 확률
   var SHIELD_MAX = 100;     // 막이는 이만큼까지 쌓인다
   var SHIELD_DECAY = 5;     // 막이는 초마다 이만큼 흩어진다
   var BOSS_HP = 1.5;        // 우두머리 체력 배율
   var SUMMON_HP = 0.5;      // 우두머리가 부른 안개의 체력 (그 물결 배율에 곱함)
+  // 콤보 장면 (H-13): 콤보가 GIFT_STEP 마다 정원사가 정령(안개)에게 열매를 쏜다
+  var GIFT_STEP = 5;        // 이 콤보마다 쏜다 (5·10·15 …)
+  var GIFT_MAX = 3;         // 한 번에 쏘는 열매 수 상한 (콤보 5 → 1알, 10 → 2알, 15 이상 → 3알)
+  var GIFT_TIME = 0.34;     // 열매가 날아가는 시간 (게임 초)
+  var GIFT_BOSS = 0.1;      // 우두머리는 돌아가지 않고 최대 체력의 이만큼 피해
+  var HOME_TIME = 0.75;     // 돌아가는 정령이 보이는 시간 (그리기만)
+  var SLOWMO_TIME = 0.16;   // 정령이 돌아가는 순간 느린 화면 (실제 초, 그리기 고리만)
+  var SLOWMO_RATE = 0.3;
+  // 광고 보고 이어하기 (H-29, ads.js 자리 revive): 울타리가 무너지면 판을 멈추고 고르게 한다
+  var REVIVE_FENCE = 0.5;   // 이어 가면 울타리를 최대의 이만큼으로
+  var REVIVE_SHIELD = 30;   // 이어 가는 순간 보호막 (초마다 SHIELD_DECAY 씩 흩어져 약 6초)
+  var REVIVE_PUSH = 10;     // 울타리 바로 앞 안개를 이만큼(판 폭 %) 밀어낸다 (우두머리는 그대로)
 
   function mapBy(arr) { var m = {}; for (var i = 0; i < arr.length; i++) m[arr[i].id] = arr[i]; return m; }
   var EN = mapBy(GD.ENEMIES);
@@ -49,7 +62,7 @@
   var H = 0;
   var dpr = 1;
   var run = null;
-  var state = 'idle'; // idle | running | paused | picking | ended
+  var state = 'idle'; // idle | running | paused | picking | down(무너짐, 이어하기를 고르는 중) | ended
   var loopId = 0;
   var lastTs = 0;
   var hudTimer = 0;
@@ -105,48 +118,55 @@
   function comboMul(r) { return 1 + r.mods.comboPower * Math.min(r.combo, r.mods.comboCap); }
   var JUDGE_TEXT = ['놓침', '좋아!', '완벽!'];
   var JUDGE_COLOR = ['#ff8a8a', '#a8f0a0', '#ffd34d'];
-  // 나무 열매 한 알의 피해 (씨앗·이어치기를 넣어서)
+  // 나무 열매 한 알의 피해 (열매·이어치기를 넣어서)
   function treeShotDmg(r, L) {
     var m = r.mods;
     return 6 * m.treeDmg * (1 + (SEED_DMG + m.seedPower) * r.lanes[L].seeds) * comboMul(r);
   }
+  // 콤보는 완벽!일 때만 오른다. 좋아!·놓침이면 끊긴다 (박자 강화 missGuard 가 있으면 웨이브마다 그 횟수만큼 버팀)
   function beatResult(r, j, x, lane) {
     var m = r.mods;
     var k;
-    if (j > 0) {
+    if (j === 1) {
+      // 좋아!: 열매·기술 효과는 그대로 받지만 콤보는 오르지 않고 끊긴다
+      r.goods++;
+      r.lastHitBeat = Math.round(r.beat);
+      addFloat(r, x, lane, T(JUDGE_TEXT[1]), JUDGE_COLOR[1], 1.1);
+      Sound.play('good');
+      if (r.combo > 0 && r.guard > 0) {
+        r.guard--;
+        addFloat(r, x + 6, lane, T('콤보 유지!'), '#a0d8ff', 1.1);
+      } else if (r.combo > 0) {
+        if (r.combo >= 3) addFloat(r, x + 6, lane, T('콤보 끊김'), '#ff9a9a', 1);
+        r.combo = 0;
+      }
+    } else if (j === 2) {
       r.combo++;
       if (r.combo > r.bestCombo) r.bestCombo = r.combo;
       r.lastHitBeat = Math.round(r.beat);
-      if (j === 2) r.perfects++; else r.goods++;
-      addFloat(r, x, lane, JUDGE_TEXT[j] + (r.combo >= 3 ? ' ' + r.combo : ''), JUDGE_COLOR[j], j === 2 ? 1.35 : 1.1);
-      Sound.play(j === 2 ? 'perfect' : 'good');
-      if (r.combo > 0 && r.combo % 5 === 0) { fxComboStep(r, lane); }
+      r.perfects++;
+      addFloat(r, x, lane, T(JUDGE_TEXT[j]) + (r.combo >= 3 ? ' ' + r.combo : ''), JUDGE_COLOR[j], 1.35);
+      Sound.play('perfect');
       // 박자 강화: 딱!이면 그 줄 나무가 열매를 바로 던진다
       if (j === 2 && m.perfectShot > 0 && laneHasTarget(r, lane, TREE_X, 100)) {
         for (k = 0; k < m.perfectShot; k++) shoot(r, lane, TREE_X + 2, treeShotDmg(r, lane), 'tree');
         burst(r, TREE_X + 2, lane, '#ffd34d', 4, 18);
       }
-      // 박자 강화: 이어치기 10마다 그 줄 안개가 모두 터진다 (물결 세기만큼 셈)
-      if (m.comboBurst > 0 && r.combo % 10 === 0) {
-        var inLane = r.enemies.filter(function (e) { return e.lane === lane && !e.dead; });
-        for (k = 0; k < inLane.length; k++) damage(r, inLane[k], m.comboBurst * r.hpScale * m.treeDmg, 'skill');
-        addFloat(r, TREE_X + 8, lane, '줄 전체 폭발!', '#ffb04d', 1.4);
-        ring(r, TREE_X + 8, lane + 0.5, '#ffb04d');
-        screenShake(r, 4, 0.2);
-      }
+      // 콤보 5마다: 정원사가 정령(안개)에게 열매를 쏘고, 받은 정령은 숲으로 돌아간다 (핵심 장면)
+      if (r.combo > 0 && r.combo % GIFT_STEP === 0) comboVolley(r, lane);
     } else if (r.combo > 0 && r.guard > 0) {
       // 박자 강화: 물결마다 정한 횟수만큼 빗나가도 이어치기가 버틴다
       r.guard--;
       r.misses++;
-      addFloat(r, x, lane, JUDGE_TEXT[0], JUDGE_COLOR[0], 1);
-      addFloat(r, x + 6, lane, '콤보 유지!', '#a0d8ff', 1.1);
+      addFloat(r, x, lane, T(JUDGE_TEXT[0]), JUDGE_COLOR[0], 1);
+      addFloat(r, x + 6, lane, T('콤보 유지!'), '#a0d8ff', 1.1);
       fxTreeFail(r, lane);
       Sound.play('miss');
     } else {
-      if (r.combo >= 3) addFloat(r, x + 6, lane, '콤보 끊김', '#ff9a9a', 1);
+      if (r.combo >= 3) addFloat(r, x + 6, lane, T('콤보 끊김'), '#ff9a9a', 1);
       r.combo = 0;
       r.misses++;
-      addFloat(r, x, lane, JUDGE_TEXT[0], JUDGE_COLOR[0], 1);
+      addFloat(r, x, lane, T(JUDGE_TEXT[0]), JUDGE_COLOR[0], 1);
       fxTreeFail(r, lane);
       Sound.play('miss');
     }
@@ -156,7 +176,7 @@
   function onBeat(r) {
     var bi = r.beatIdx;
     if (r.combo > 0 && bi - r.lastHitBeat > 4) {
-      if (r.combo >= 3) addFloat(r, TREE_X + 6, 1, '콤보 끊김', '#ff9a9a', 1);
+      if (r.combo >= 3) addFloat(r, TREE_X + 6, 1, T('콤보 끊김'), '#ff9a9a', 1);
       r.combo = 0;
       emit('onFx', 'combo', 0, -1);
     }
@@ -226,24 +246,24 @@
     if (e.boss) { screenShake(r, 9, 0.4); screenFlash(r, '#ffffff', 0.18); }
     else screenShake(r, Math.min(3, 0.6 + e.maxHp / 60), 0.1);
   }
-  // 얻음: 씨앗이 HUD 쪽으로 끌려 들어가고, 씨앗 칸이 번쩍·흔들·커짐(ui.js bumpHud), 숫자 "+씨앗 n"
+  // 얻음: 열매가 왼쪽 위 열매 배지(심기 열) 쪽으로 끌려 들어가고, 배지가 번쩍·커짐(ui.js bumpHud), 숫자 "+열매 n"
   function fxGain(r, x, lane, n) {
-    addFloat(r, x, lane, '씨앗 +' + n, '#b6f0a0', 1 + Math.min(0.8, (n - 1) * 0.2));
+    addFloat(r, x, lane, T('열매 +{n}', { n: n }), '#b6f0a0', 1 + Math.min(0.8, (n - 1) * 0.2));
     if (!fxLive()) return;
-    suckTo(r, x, lane, 50, -0.15, '#b6f0a0', Math.min(6, 1 + n));
+    suckTo(r, x, lane, 0, -0.15, '#b6f0a0', Math.min(6, 1 + n));
     emit('onFx', 'seed', n);
   }
   // 심음: 나무가 커졌다 돌아오고 초록으로 번쩍, 잎 조각
   function fxPlant(r, lane, n) {
     var ln = r.lanes[lane];
-    addFloat(r, TREE_X, lane, n > 1 ? '심기 ×' + n + '!' : '심었다!', '#b6f0a0', n > 1 ? 1.4 : 1.1);
+    addFloat(r, TREE_X, lane, n > 1 ? T('심기 ×{n}!', { n: n }) : T('심었다!'), '#b6f0a0', n > 1 ? 1.4 : 1.1);
     if (!fxLive()) return;
     ln.flashT = 0.15; ln.flashC = '#b6f0a0';
     if (moveOk()) { ln.pop = 0.3; ln.jolt = 0.12; ln.joltAmp = 2; }
     burst(r, TREE_X, lane, '#8fe08a', 6 + n * 3, 20);
     emit('onFx', 'plant', n);
   }
-  // 놓침·틀림(박자 빗나감, 씨앗 없음): 나무가 빨갛게 번쩍·흔들리고 움츠러든다
+  // 놓침·틀림(박자 빗나감, 열매 없음): 나무가 빨갛게 번쩍·흔들리고 움츠러든다
   function fxTreeFail(r, lane) {
     if (!fxLive()) return;
     var ln = r.lanes[lane];
@@ -257,6 +277,31 @@
     for (var L = 0; L < 3; L++) { r.lanes[L].flashT = 0.18; r.lanes[L].flashC = '#ffd34d'; if (moveOk()) r.lanes[L].pop = 0.25; }
     ring(r, TREE_X, lane + 0.5, '#ffd34d');
     screenShake(r, 2, 0.12);
+  }
+  // 열매를 쏜 정원사(또는 나무): 금빛 번쩍 + 튀어 오름 + "콤보 n!" 글자
+  function fxGiftLaunch(r, g, n) {
+    addFloat(r, g.fx, g.flane, T('콤보 {n}! 열매 발사', { n: r.combo }), '#ffe08a', 1.25 + Math.min(0.4, n * 0.12));
+    if (!fxLive()) return;
+    if (g.unit) { g.unit.cheer = 0.3; g.unit.flash = 0; }
+    burst(r, g.fx, g.flane, '#ffd34d', 6, 22);
+    ring(r, g.fx, g.flane + 0.5, '#ffe08a');
+    Sound.play('gift');
+  }
+  // 정령이 돌아감: 금빛 번쩍·흔들림·느린 화면, 금빛 고리 둘, 조각, "돌아갔다!" 큰 글자, 정령은 오른쪽 위 숲으로 날아가며 흐려진다
+  function fxHome(r, e) {
+    addFloat(r, e.x, e.lane, T('돌아갔다!'), '#ffe9a8', 1.6);
+    if (!fxLive()) return;
+    if (r.homes.length > 12) r.homes.shift();
+    r.homes.push({ id: e.id, x: e.x, lane: e.lane, fly: e.fly, t: HOME_TIME });
+    screenFlash(r, '#fff1b8', 0.16);
+    screenShake(r, 5, 0.22);
+    ring(r, e.x, e.lane + 0.5, '#ffe08a');
+    ring(r, e.x, e.lane + 0.5, '#ffffff');
+    burst(r, e.x, e.lane, '#ffd34d', 16, 34);
+    burst(r, e.x, e.lane, '#ffffff', 6, 20);
+    if (moveOk()) r.slowMo = SLOWMO_TIME;
+    Sound.play('home');
+    Sound.vibrate(20);
   }
   // 울타리 맞음: 화면 빨간 번쩍 + 피해에 비례한 흔들림 + "-피해" 숫자 + 나무 조각
   function fxFence(r, dmg, lane) {
@@ -298,7 +343,14 @@
       if (e.jolt > 0) e.jolt -= dt;
       if (e.pop > 0) e.pop -= dt;
     }
-    for (i = 0; i < r.units.length; i++) if (r.units[i].jolt > 0) r.units[i].jolt -= dt;
+    for (i = 0; i < r.units.length; i++) {
+      if (r.units[i].jolt > 0) r.units[i].jolt -= dt;
+      if (r.units[i].cheer > 0) r.units[i].cheer -= dt;
+    }
+    for (i = r.homes.length - 1; i >= 0; i--) {
+      r.homes[i].t -= dt;
+      if (r.homes[i].t <= 0) r.homes.splice(i, 1);
+    }
     for (i = 0; i < 3; i++) {
       var ln = r.lanes[i];
       if (ln.pop > 0) ln.pop -= dt;
@@ -386,7 +438,7 @@
       diff: diff, daily: typeof opts.daily === 'string' ? opts.daily : '',
       seeded: !!opts.seeded, rngState: opts.seed | 0, nextWave: null, waveList: [],
       lanes: [newLane(), newLane(), newLane()],
-      units: [], enemies: [], shots: [], floats: [], parts: [],
+      units: [], enemies: [], shots: [], floats: [], parts: [], gifts: [], homes: [], homeSent: 0, slowMo: 0,
       upgrades: [], relics: [], kills: 0, bossKills: 0, planted: 0, skillUses: 0, fenceDamaged: false,
       spawnQueue: [], spawnT: 0, hpScale: 1, waveActive: false, rallyUntil: 0,
       shakeT: 0, shakeAmp: 0, shakeMax: 0, flashT: 0, flashMax: 0, flashC: '#ffffff',
@@ -470,7 +522,7 @@
     r.spawnT = 0;
     r.waveActive = true;
     r.guard = r.mods.missGuard;
-    r.banner = r.wave === WAVES ? '마지막 웨이브 — 우두머리 등장!' : '웨이브 ' + r.wave;
+    r.banner = r.wave === WAVES ? T('마지막 웨이브 — 우두머리 등장!') : T('웨이브 {n}', { n: r.wave });
     r.bannerT = 2;
     Sound.play(r.wave === WAVES ? 'boss' : 'wave');
     emit('onWave', r.wave);
@@ -506,17 +558,17 @@
       for (var i = 0; i < 2; i++) {
         if (r.enemies.length < MAX_ENEMIES) makeEnemy(r, EN[def.summon], rand(3), Math.min(SPAWN_X, e.x + 4), false, r.hpScale * SUMMON_HP);
       }
-      addFloat(r, e.x, e.lane, '소환!', '#ffd0a0');
+      addFloat(r, e.x, e.lane, T('소환!'), '#ffd0a0');
     } else if (def.ability === 'shield') {
       e.shieldHits += 6;
-      addFloat(r, e.x, e.lane, '보호막!', '#c0d0ff');
+      addFloat(r, e.x, e.lane, T('보호막!'), '#c0d0ff');
     } else if (def.ability === 'haste') {
       e.hasteT = 2;
-      addFloat(r, e.x, e.lane, '질주!', '#d0f0ff');
+      addFloat(r, e.x, e.lane, T('질주!'), '#d0f0ff');
     } else if (def.ability === 'hop') {
       e.lane = (e.lane + 1 + rand(2)) % 3;
       e.atk = 0;
-      addFloat(r, e.x, e.lane, '줄 이동!', '#d0d0ff');
+      addFloat(r, e.x, e.lane, T('줄 이동!'), '#d0d0ff');
     }
   }
 
@@ -552,7 +604,7 @@
     var m = r.mods;
     if (e.shieldHits > 0) {
       e.shieldHits--;
-      if (src !== 'splash') { addFloat(r, e.x, e.lane, '막혔다', '#a8d8d8'); Sound.play('block'); }
+      if (src !== 'splash') { addFloat(r, e.x, e.lane, T('막혔다'), '#a8d8d8'); Sound.play('block'); }
       return;
     }
     var crit = rng() < m.crit;
@@ -574,10 +626,87 @@
     }
     if (e.hp <= 0) kill(r, e);
   }
-  function kill(r, e) {
+  // ---------- 콤보 장면 (H-13): 정원사가 정령에게 열매를 쏘고, 받은 정령은 돌아간다 ----------
+  // 맞힐 정령: 울타리에 가까운 것부터, 쏜 줄을 먼저. 이미 열매가 날아가는 정령과 우두머리는 뒤로 미룬다
+  function giftTarget(r, lane) {
+    var best = null;
+    var bestKey = 0;
+    for (var i = 0; i < r.enemies.length; i++) {
+      var e = r.enemies[i];
+      if (e.dead || e.x >= 100) continue;
+      var aimed = false;
+      for (var k = 0; k < r.gifts.length; k++) if (r.gifts[k].uid === e.uid) { aimed = true; break; }
+      if (aimed) continue;
+      var key = e.x + (e.lane === lane ? 0 : 200) + (e.boss ? 1000 : 0);
+      if (!best || key < bestKey) { best = e; bestKey = key; }
+    }
+    return best;
+  }
+  // 쏘는 쪽: 정령이 있는 줄의 서 있는 정원사(전열 먼저), 없으면 아무 정원사, 그래도 없으면 그 줄 나무
+  function giftShooter(r, lane) {
+    var pick = null;
+    for (var pass = 0; pass < 2 && !pick; pass++) {
+      for (var i = 0; i < r.units.length; i++) {
+        var u = r.units[i];
+        if (u.down || (pass === 0 && u.lane !== lane)) continue;
+        if (!pick || u.slot > pick.slot) pick = u;
+      }
+    }
+    if (pick) return { unit: pick, fx: slotX(pick.slot), flane: pick.lane };
+    return { unit: null, fx: TREE_X + 2, flane: lane };
+  }
+  function comboVolley(r, lane) {
+    var m = r.mods;
+    var k;
+    var n = Math.min(GIFT_MAX, Math.floor(r.combo / GIFT_STEP));
+    fxComboStep(r, lane);
+    for (k = 0; k < n; k++) {
+      var e = giftTarget(r, lane);
+      if (!e) break;
+      var s = giftShooter(r, e.lane);
+      var g = { uid: e.uid, unit: s.unit, fx: s.fx, flane: s.flane, tx: e.x, tlane: e.lane, t: 0, delay: k * 0.08 };
+      r.gifts.push(g);
+      if (k === 0) fxGiftLaunch(r, g, n);
+    }
+    // 박자 강화: 콤보 10마다 그 줄 안개가 모두 터진다 (물결 세기만큼 셈)
+    if (m.comboBurst > 0 && r.combo % 10 === 0) {
+      var inLane = r.enemies.filter(function (x) { return x.lane === lane && !x.dead; });
+      for (k = 0; k < inLane.length; k++) damage(r, inLane[k], m.comboBurst * r.hpScale * m.treeDmg, 'skill');
+      addFloat(r, TREE_X + 8, lane, T('줄 전체 폭발!'), '#ffb04d', 1.4);
+      ring(r, TREE_X + 8, lane + 0.5, '#ffb04d');
+      screenShake(r, 4, 0.2);
+    }
+  }
+  // 날아가는 선물 열매: 정령을 따라가다 닿으면 돌려보낸다 (게임 시간으로 흐름 — 균형 시험에서도 같은 규칙)
+  function stepGifts(r, dt) {
+    for (var i = r.gifts.length - 1; i >= 0; i--) {
+      var g = r.gifts[i];
+      if (g.delay > 0) { g.delay -= dt; continue; }
+      g.t += dt;
+      var e = null;
+      for (var k = 0; k < r.enemies.length; k++) if (r.enemies[k].uid === g.uid) { e = r.enemies[k]; break; }
+      if (e && !e.dead) { g.tx = e.x; g.tlane = e.lane; }
+      if (g.t < GIFT_TIME) continue;
+      r.gifts.splice(i, 1);
+      if (!e || e.dead) { burst(r, g.tx, g.tlane, '#ffd34d', 5, 14); continue; }
+      if (e.boss) {
+        damage(r, e, e.maxHp * GIFT_BOSS, 'gift');
+        ring(r, e.x, e.lane + 0.5, '#ffe08a');
+      } else {
+        sendHome(r, e);
+      }
+    }
+  }
+  // 열매를 받은 정령은 쓰러지지 않고 숲으로 돌아간다 (물리침으로 세고 열매도 떨군다. 갈라지지 않는다)
+  function sendHome(r, e) {
+    r.homeSent++;
+    kill(r, e, true);
+  }
+  function kill(r, e, home) {
     e.dead = true;
     r.kills++;
-    fxKill(r, e, e.boss ? BO[e.id] : EN[e.id]);
+    if (home) fxHome(r, e);
+    else fxKill(r, e, e.boss ? BO[e.id] : EN[e.id]);
     if (e.boss) {
       r.bossKills++;
       r.pouch += 5;
@@ -588,12 +717,12 @@
       fxGain(r, e.x, e.lane, 1);
       Sound.play('seed');
     }
-    if (e.split && EN[e.split.id]) {
+    if (e.split && EN[e.split.id] && !home) {
       for (var i = 0; i < e.split.n; i++) {
         if (r.enemies.length < MAX_ENEMIES) makeEnemy(r, EN[e.split.id], e.lane, Math.min(SPAWN_X, e.x + 1.5 + i * 2.5), false, r.hpScale * 0.7);
       }
     }
-    Sound.play('kill');
+    if (!home) Sound.play('kill');
   }
   function blockerFor(r, e) {
     var best = null;
@@ -615,7 +744,7 @@
       u.hp = 0;
       u.down = true;
       if (selected >= 0 && r.units[selected] === u) selected = -1;
-      addFloat(r, slotX(u.slot), u.lane, '쓰러짐', '#ff9a9a', 1.2);
+      addFloat(r, slotX(u.slot), u.lane, T('쓰러짐'), '#ff9a9a', 1.2);
       Sound.play('hurt');
       Sound.vibrate(30);
     }
@@ -625,7 +754,7 @@
       var a = Math.min(r.shield, dmg);
       r.shield -= a;
       dmg -= a;
-      if (dmg <= 0) { addFloat(r, FENCE_X + 2, lane, '보호막', '#a0d8ff'); ring(r, FENCE_X, lane + 0.5, '#a0d8ff'); Sound.play('block'); return; }
+      if (dmg <= 0) { addFloat(r, FENCE_X + 2, lane, T('보호막'), '#a0d8ff'); ring(r, FENCE_X, lane + 0.5, '#a0d8ff'); Sound.play('block'); return; }
     }
     r.fence -= dmg;
     r.fenceDamaged = true;
@@ -700,6 +829,8 @@
       }
       if (p.x > SPAWN_X + 4) r.shots.splice(s, 1);
     }
+    // 콤보 장면의 선물 열매
+    if (r.gifts.length) stepGifts(r, dt);
     // 안개
     for (i = 0; i < r.enemies.length; i++) {
       var en = r.enemies[i];
@@ -728,7 +859,7 @@
     if (r.shakeT > 0) r.shakeT -= dt;
     if (r.bannerT > 0) r.bannerT -= dt;
 
-    if (r.fence <= 0) { r.fence = 0; endRun(false); return; }
+    if (r.fence <= 0) { r.fence = 0; if (canRevive(r)) goDown(r); else endRun(false); return; }
     if (r.waveActive && !r.spawnQueue.length && !r.enemies.length) waveCleared(r);
   }
 
@@ -736,6 +867,7 @@
     var m = r.mods;
     r.waveActive = false;
     r.shots = [];
+    r.gifts = [];
     r.fence = Math.min(r.fenceMax, r.fence + m.fenceRegen);
     for (var i = 0; i < r.units.length; i++) {
       var u = r.units[i];
@@ -818,8 +950,8 @@
   function plant(lane) {
     var r = run;
     if (!r || state !== 'running' || lane < 0 || lane > 2) return false;
-    if (r.pouch <= 0) { addFloat(r, TREE_X, lane, '씨앗 없음', '#ffb0b0'); fxTreeFail(r, lane); Sound.play('empty'); return false; }
-    // 박자에 딱 맞춰 심으면 씨앗 한 알이 두 알 몫으로 자란다
+    if (r.pouch <= 0) { addFloat(r, TREE_X, lane, T('열매 없음'), '#ffb0b0'); fxTreeFail(r, lane); Sound.play('empty'); return false; }
+    // 박자에 딱 맞춰 심으면 열매 한 알이 두 알 몫으로 자란다
     var j = judge(r);
     var n = j === 2 ? 2 : 1;
     r.pouch--;
@@ -993,6 +1125,60 @@
     }
     return { wave: n.wave, queue: q, hpScale: +n.hpScale > 0 ? +n.hpScale : 1 };
   }
+  // ---------- 광고 보고 이어하기 (H-29) ----------
+  // 울타리가 무너져도 바로 끝내지 않고 'down' 으로 멈춘 채 ui.js 창(ov-revive)에서 고르게 한다.
+  // 시험 모드·오늘의 도전·이미 이어 간 판·광고 횟수를 다 쓴 판은 지금처럼 바로 끝난다 (균형 시험 숫자 그대로)
+  function canRevive(r) {
+    if (probeMode || r.daily || r.revived) return false;
+    var A = window.Ads;
+    return !!(A && A.left && A.left('revive') !== 0);
+  }
+  function goDown(r) {
+    state = 'down';
+    stopLoop();
+    Sound.musicStop();
+    Sound.play('lose');
+    Sound.vibrate(120);
+    r.downs = (r.downs | 0) + 1;
+    renderNow();
+    emit('onDown', { wave: r.wave, waves: WAVES, fenceMax: Math.round(r.fenceMax) });
+  }
+  // 광고를 끝까지 본 뒤에만 ui.js 가 부른다: 울타리 50%·보호막 잠깐, 울타리 앞 안개를 밀어내고 그 웨이브를 이어 간다
+  function revive() {
+    var r = run;
+    if (!r || state !== 'down') return false;
+    r.revived = true;
+    r.fence = Math.max(1, Math.round(r.fenceMax * REVIVE_FENCE));
+    r.shield = Math.min(SHIELD_MAX, Math.max(r.shield, REVIVE_SHIELD));
+    for (var i = 0; i < r.enemies.length; i++) {
+      var en = r.enemies[i];
+      if (!en.boss && en.x < FENCE_X + REVIVE_PUSH) en.x = FENCE_X + REVIVE_PUSH;
+    }
+    for (var L = 0; L < 3; L++) ring(r, FENCE_X, L + 0.5, '#ffd34d');
+    screenFlash(r, '#fff1b8', 0.18);
+    addFloat(r, FENCE_X + 6, 1, T('다시 일어섰다!'), '#ffd34d', 1.5);
+    Sound.play('home');
+    state = 'running';
+    lastTs = 0;
+    startLoop();
+    return true;
+  }
+  // 이어하지 않고 결과로 (지금까지의 패배와 같다)
+  function giveUp() {
+    if (!run || state !== 'down') return false;
+    endRun(false);
+    return true;
+  }
+  // 웨이브 사이 고르기 창에서 광고를 본 뒤에만 ui.js 가 부른다 (ads.js 자리 refill)
+  function addPouch(n) {
+    var r = run;
+    if (!r || state !== 'picking' || !(n > 0)) return false;
+    r.pouch += n;
+    saveSnapshot(r);
+    emit('onFx', 'seed', n);
+    return true;
+  }
+
   function endRun(win) {
     var r = run;
     if (!r || state === 'ended') return;
@@ -1060,7 +1246,7 @@
       diff: r.diff, daily: r.daily, dailyBest: dailyBest,
       bestWave: r.daily ? dailyBest : M.diffBest[r.region][r.diff],
       bestTime: r.daily ? 0 : M.diffTime[r.region][r.diff], squad: r.squad.slice(),
-      bestCombo: r.bestCombo, perfects: r.perfects, goods: r.goods, misses: r.misses
+      bestCombo: r.bestCombo, perfects: r.perfects, goods: r.goods, misses: r.misses, homeSent: r.homeSent
     });
   }
   function checkAchievements() {
@@ -1078,7 +1264,7 @@
 
   // ---------- 그리기 ----------
   // 가로 화면: 전투 화면(#scr-battle)이 화면 전체를 채우는 flex 배치이고, 판 상자(#field-wrap)는
-  // HUD·첫 판 안내·물결 미리보기·심기 열·기술 열을 뺀 나머지를 CSS 가 정한다.
+  // 첫 판 안내·물결 미리보기·심기 열·오른쪽 열(일시정지·기술)을 뺀 나머지를 CSS 가 정한다 (위 HUD 띠는 없다).
   // 캔버스는 그 상자 안에 절대 위치로 들어가므로 상자 크기에 영향을 주지 않고, 상자 크기를 그대로 쓴다.
   function resize() {
     if (!canvas) return;
@@ -1265,7 +1451,7 @@
     return o2;
   }
   // 사람 그림 3 으로 그린 판 바탕. 줄마다 나무 부분을 잘라(가장자리는 흐리게) 두고, render 가 그 조각을 키우고 흔들어
-  // 나무의 손맛(커짐·움츠림·씨앗만큼 자람)을 낸다. 지역 색은 위에 엷게 덮는다
+  // 나무의 손맛(커짐·움츠림·열매만큼 자람)을 낸다. 지역 색은 위에 엷게 덮는다
   function getArtBg(r, key, img) {
     var reg = GD.REGIONS[r.region];
     var o = offscreen(W, H);
@@ -1354,7 +1540,26 @@
     var g = o.g;
     var c = size / 2;
     var blobs = [[0, 0, 1], [-0.45, 0.15, 0.7], [0.45, 0.2, 0.72], [0.05, -0.4, 0.66]];
-    for (var i = 0; i < blobs.length; i++) {
+    // 밝은 테두리(림 라이트): 덩어리 겉모양 바깥에만 고리를 남겨 어두운 바탕과 떼어 놓는다
+    var rim = offscreen(size, size);
+    var rw = Math.max(3, rk * 0.16);
+    var i;
+    rim.g.fillStyle = rim.g.strokeStyle = shade(color, 0.8, 0.9);
+    rim.g.lineWidth = rw;
+    for (i = 0; i < blobs.length; i++) {
+      rim.g.beginPath();
+      rim.g.arc(c + blobs[i][0] * rk, c + blobs[i][1] * rk, rk * blobs[i][2] * 0.95, 0, Math.PI * 2);
+      rim.g.fill();
+      rim.g.stroke();
+    }
+    rim.g.globalCompositeOperation = 'destination-out';
+    for (i = 0; i < blobs.length; i++) {
+      rim.g.beginPath();
+      rim.g.arc(c + blobs[i][0] * rk, c + blobs[i][1] * rk, rk * blobs[i][2] * 0.95, 0, Math.PI * 2);
+      rim.g.fill();
+    }
+    g.drawImage(rim.canvas, 0, 0, size, size);
+    for (i = 0; i < blobs.length; i++) {
       var bx = c + blobs[i][0] * rk;
       var by = c + blobs[i][1] * rk;
       var br = rk * blobs[i][2];
@@ -1514,7 +1719,7 @@
         cx.fill();
       }
       if (bg.trees) {
-        // 사람 그림의 나무 조각을 크기만큼 키워 그린다 (씨앗 0알·손맛 없음이면 바탕과 꼭 겹친다)
+        // 사람 그림의 나무 조각을 크기만큼 키워 그린다 (열매 0알·손맛 없음이면 바탕과 꼭 겹친다)
         var tc = bg.trees[L];
         var tk = size / (lh * 0.22);
         cx.drawImage(tc.canvas, tx - tc.w * tk / 2, ty - tc.h * tk / 2, tc.w * tk, tc.h * tk);
@@ -1539,7 +1744,7 @@
         // 잎
         blit(canopySprite(lnr.flashT > 0 ? lnr.flashC : reg.color, size), tx, ty);
       }
-      // 씨앗만큼 열린 열매
+      // 심은 열매만큼 열린 열매
       var fruits = Math.min(8, seeds);
       for (k = 0; k < fruits; k++) {
         var an = k * 2.4 + 0.6;
@@ -1574,8 +1779,8 @@
       cx.textAlign = 'center';
       cx.textBaseline = 'middle';
       cx.fillText(String(L + 1), bx0, by0 + 0.5);
-      // 씨앗 수 알약
-      var label = '씨앗 ' + seeds;
+      // 열매 수 알약
+      var label = T('열매 {n}', { n: seeds });
       var fs = Math.max(10, Math.round(lh * 0.11));
       cx.font = '700 ' + fs + 'px system-ui, sans-serif';
       var lw = cx.measureText(label).width + fs;
@@ -1622,8 +1827,20 @@
           cx.arc(ux, uy, ur + 4 + (calm ? 0 : Math.sin(tt * 8) * 1.5), 0, Math.PI * 2);
           cx.stroke();
         }
+        // 콤보 장면에서 열매를 쏜 정원사: 금빛으로 빛나며 튀어 오른다
+        var ch = u.cheer > 0 ? u.cheer / 0.3 : 0;
+        if (ch > 0) {
+          var cg = cx.createRadialGradient(ux, uy, 0, ux, uy, ur * 2.2);
+          cg.addColorStop(0, 'rgba(255,224,138,' + (0.6 * ch).toFixed(3) + ')');
+          cg.addColorStop(1, 'rgba(255,224,138,0)');
+          cx.fillStyle = cg;
+          cx.beginPath();
+          cx.arc(ux, uy, ur * 2.2, 0, Math.PI * 2);
+          cx.fill();
+        }
+        var gk = calm ? 1 : 1 + 0.25 * ch;
         if (u.down) cx.globalAlpha = 0.45;
-        cx.drawImage(gs.canvas, ux - gs.w / 2, uy + ur - gs.h, gs.w, gs.h);
+        cx.drawImage(gs.canvas, ux - gs.w * gk / 2, uy + ur - gs.h * gk - (calm ? 0 : ch * ur * 0.4), gs.w * gk, gs.h * gk);
         cx.globalAlpha = 1;
         if (u.down) {
           cx.font = Math.round(ur * 0.8) + 'px sans-serif';
@@ -1646,8 +1863,9 @@
       cx.fill();
       cx.fillStyle = ug;
       cx.beginPath();
-      cx.arc(ux, uy, ur, 0, Math.PI * 2);
+      cx.arc(ux, uy, ur * (u.cheer > 0 && !calm ? 1 + 0.25 * u.cheer / 0.3 : 1), 0, Math.PI * 2);
       cx.fill();
+      if (u.cheer > 0) { cx.strokeStyle = '#ffe08a'; cx.lineWidth = 3; cx.stroke(); }
       cx.strokeStyle = front ? 'rgba(170,210,255,0.9)' : 'rgba(225,195,255,0.9)';
       cx.lineWidth = 2;
       cx.stroke();
@@ -1777,7 +1995,64 @@
       var ef = e.hp / e.maxHp;
       bar(ex - rad, ey - rad - 9, rad * 2, ef, e.boss ? '#ff4a6a' : hpColor(ef));
     }
-    // 조각·끌려 가는 씨앗·퍼지는 고리 (겹치면 더 밝게)
+    // 콤보 장면: 돌아가는 정령 — 금빛으로 물들어 오른쪽 위 숲으로 날아가며 작아지고 흐려진다
+    for (i = 0; i < r.homes.length; i++) {
+      var hm = r.homes[i];
+      var hk2 = 1 - hm.t / HOME_TIME;
+      var hdef = EN[hm.id];
+      if (!hdef) continue;
+      var hrad = lh * 0.2 * (1 + 0.3 * Math.sin(Math.min(1, hk2 * 3) * Math.PI) - 0.45 * hk2);
+      var hx = (hm.x + (calm ? 0 : hk2 * hk2 * 40)) * sx;
+      var hy = hm.lane * lh + lh * 0.5 - (hm.fly ? lh * 0.14 : 0) - (calm ? 0 : hk2 * lh * 0.6);
+      cx.globalAlpha = Math.max(0, 1 - hk2 * hk2);
+      var hg2 = cx.createRadialGradient(hx, hy, 0, hx, hy, hrad * 2);
+      hg2.addColorStop(0, 'rgba(255,236,160,0.7)');
+      hg2.addColorStop(1, 'rgba(255,236,160,0)');
+      cx.fillStyle = hg2;
+      cx.beginPath();
+      cx.arc(hx, hy, hrad * 2, 0, Math.PI * 2);
+      cx.fill();
+      var hs = artSprite('enemy', hm.id, hrad * 2.9, 'rgba(255,230,140,0.45)');
+      blit(hs || fogSprite('#ffe9a8', hrad), hx, hy);
+      cx.globalAlpha = 1;
+    }
+    // 콤보 장면: 날아가는 선물 열매 — 정원사에게서 정령까지 포물선, 큰 금빛 열매와 빛 꼬리
+    cx.globalCompositeOperation = 'lighter';
+    var gr = Math.max(6, lh * 0.085);
+    for (i = 0; i < r.gifts.length; i++) {
+      var gf = r.gifts[i];
+      if (gf.delay > 0) continue;
+      var gk2 = Math.min(1, gf.t / GIFT_TIME);
+      var gx0 = gf.fx * sx;
+      var gy0 = gf.flane * lh + lh * 0.45;
+      var gx1 = gf.tx * sx;
+      var gy1 = gf.tlane * lh + lh * 0.5;
+      for (k = 5; k >= 0; k--) {
+        var gq = Math.max(0, gk2 - k * 0.05);
+        var gpx = gx0 + (gx1 - gx0) * gq;
+        var gpy = gy0 + (gy1 - gy0) * gq - Math.sin(gq * Math.PI) * lh * 0.45;
+        var grr = gr * (k === 0 ? 1 : 0.85 - k * 0.12);
+        cx.fillStyle = k === 0 ? '#ffb347' : 'rgba(255,200,90,' + (0.5 - k * 0.07).toFixed(3) + ')';
+        cx.beginPath();
+        cx.arc(gpx, gpy, Math.max(1, grr), 0, Math.PI * 2);
+        cx.fill();
+        if (k === 0) {
+          var ga = cx.createRadialGradient(gpx, gpy, 0, gpx, gpy, gr * 2.6);
+          ga.addColorStop(0, 'rgba(255,240,170,0.8)');
+          ga.addColorStop(1, 'rgba(255,240,170,0)');
+          cx.fillStyle = ga;
+          cx.beginPath();
+          cx.arc(gpx, gpy, gr * 2.6, 0, Math.PI * 2);
+          cx.fill();
+          cx.fillStyle = 'rgba(255,255,240,0.95)';
+          cx.beginPath();
+          cx.arc(gpx - gr * 0.3, gpy - gr * 0.3, gr * 0.35, 0, Math.PI * 2);
+          cx.fill();
+        }
+      }
+    }
+    cx.globalCompositeOperation = 'source-over';
+    // 조각·끌려 가는 열매·퍼지는 고리 (겹치면 더 밝게)
     cx.globalCompositeOperation = 'lighter';
     for (i = 0; i < r.parts.length; i++) {
       var q = r.parts[i];
@@ -1802,7 +2077,7 @@
     cx.fillStyle = bg.vignette;
     cx.fillRect(0, 0, W, H);
     // 떠오르는 글자: 처음에 커졌다 줄며 떠오르고 흐려진다. 큰 값은 더 크게
-    var fbase = Math.max(12, lh * 0.14);
+    var fbase = Math.max(14, lh * 0.18);
     cx.textAlign = 'center';
     cx.lineJoin = 'round';
     for (i = 0; i < r.floats.length; i++) {
@@ -1830,7 +2105,7 @@
     if (r.combo >= 2) {
       var big = r.combo >= r.mods.comboCap;
       var cs = Math.round(Math.max(13, lh * 0.14) * (1 + Math.min(0.4, r.combo / 30)));
-      var ctext = r.combo + ' 콤보  ×' + comboMul(r).toFixed(2);
+      var ctext = T('{n} 콤보  ×{m}', { n: r.combo, m: comboMul(r).toFixed(2) });
       cx.font = '900 ' + cs + 'px system-ui, sans-serif';
       var cw2 = cx.measureText(ctext).width + cs * 1.4;
       var cx0 = W - cw2 - 6;
@@ -1894,6 +2169,8 @@
     if (dt > 0.05) dt = 0.05;
     if (dt < 0) dt = 0;
     var total = dt * (Store.settings.speed || 1);
+    // 정령이 돌아가는 순간 잠깐 느리게 (fxHome, 움직임 줄이기면 걸리지 않음)
+    if (run.slowMo > 0) { run.slowMo -= dt; total *= SLOWMO_RATE; }
     // 빠른 안개가 정원사를 건너뛰지 않게 잘게 나눠 움직인다
     var steps = Math.max(1, Math.ceil(total / 0.03));
     for (var st = 0; st < steps && state === 'running'; st++) update(run, total / steps);
@@ -1932,6 +2209,8 @@
       stopLoop();
       probeMode = false;
       run = newRun(regionIdx, squad, opts);
+      // 광고 자리의 '한 판 n번' 횟수를 새 판마다 다시 센다 (H-26, ads.js). 시험 훅 reset 은 여기를 거치지 않는다
+      if (window.Ads && window.Ads.newRun) window.Ads.newRun({ daily: !!run.daily, tutorial: !!(opts && opts.tutorial) });
       hold = !!(opts && opts.tutorial);
       selected = -1;
       cursor = { lane: 1, slot: 1 };
@@ -2004,11 +2283,20 @@
       }
       return { x: slotX(u.slot), y: (u.lane + 0.5) / 3 * 100 };
     },
+    // 튜토리얼이 판 위에서 짚을 네모 구역 (판 폭·높이의 %). slots = 정원사 두 칸(후열·전열), combo = 오른쪽 위 콤보 알약 자리
+    tutArea: function (kind) {
+      if (kind === 'slots') return { x0: ZONE_TREE, y0: 0, x1: ZONE_FRONT, y1: 100 };
+      if (kind === 'combo') return { x0: 66, y0: 0, x1: 100, y1: 20 };
+      return null;
+    },
     state: function () { return state; },
     plant: plant,
     water: water,
     useSkill: useSkill,
     choose: choose,
+    revive: revive,
+    giveUp: giveUp,
+    addPouch: addPouch,
     handleKey: handleKey,
     resize: resize,
     checkAchievements: checkAchievements,
@@ -2060,7 +2348,7 @@
       state = 'running';
       return seed;
     },
-    // 지금 누를 수 있는 것: 나무 3(물 주기), 씨앗이 있으면 심기 버튼 3, 준비된 기술 버튼, 판의 칸 6. 고르기 창이면 그 선택지
+    // 지금 누를 수 있는 것: 나무 3(물 주기), 열매가 있으면 심기 버튼 3, 준비된 기술 버튼, 판의 칸 6. 고르기 창이면 그 선택지
     actions: function () {
       if (!run || !probeMode) return [];
       var i;

@@ -3,6 +3,7 @@
   'use strict';
   var GD = window.GD;
   var Store = window.Store;
+  var T = window.I18N.T; // 공유 문구도 지금 언어로 (H-24)
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function today() {
@@ -30,7 +31,7 @@
     sec = Math.max(0, Math.round(sec || 0));
     var m = Math.floor(sec / 60);
     var s = sec % 60;
-    return m + '분 ' + pad(s) + '초';
+    return T('{m}분 {s}초', { m: m, s: pad(s) });
   }
 
   // 그날의 판: 지역·난이도·정원사 셋(앞줄 하나 이상, 뒷줄 하나 이상)·씨
@@ -83,11 +84,11 @@
     var barTxt = '';
     for (var i = 0; i < GD.WAVES; i++) barTxt += i < res.waves ? '🌳' : '·';
     var lines = [
-      'Beat Orchard — ' + (res.daily ? '오늘의 도전 ' + res.daily : '방어 기록'),
-      reg.name + ' · ' + df.name + ' · ' + (res.win ? '방어 성공!' : '방어 실패'),
-      '웨이브 ' + res.waves + '/' + GD.WAVES + ' ' + barTxt,
-      '물리친 안개 ' + res.kills + '마리' + (res.bossKills ? ' (우두머리 ' + res.bossKills + ')' : '') + ' · 심은 씨앗 ' + res.planted + '알',
-      '플레이 시간 ' + fmtTime(res.time) + (res.perfect ? ' · 울타리 무피해' : '')
+      'Beat Orchard — ' + (res.daily ? T('오늘의 도전 {d}', { d: res.daily }) : T('방어 기록')),
+      reg.name + ' · ' + df.name + ' · ' + (res.win ? T('방어 성공!') : T('방어 실패')),
+      T('웨이브 {w}/{max} {bar}', { w: res.waves, max: GD.WAVES, bar: barTxt }),
+      T('물리친 안개 {n}마리', { n: res.kills }) + (res.bossKills ? T(' (우두머리 {n})', { n: res.bossKills }) : '') + T(' · 심은 열매 {n}알', { n: res.planted }),
+      T('플레이 시간 {t}', { t: fmtTime(res.time) }) + (res.perfect ? T(' · 울타리 무피해') : '')
     ];
     return lines.join('\n');
   }

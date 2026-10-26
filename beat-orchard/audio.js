@@ -29,6 +29,9 @@
     perfect: { type: 'triangle', f: 988, f2: 1480, d: 0.12, v: 0.2 },
     good: { type: 'triangle', f: 740, f2: 988, d: 0.09, v: 0.14 },
     miss: { type: 'square', f: 160, f2: 110, d: 0.12, v: 0.08 },
+    // 콤보 장면: 정원사가 열매를 쏨 / 정령이 돌아감
+    gift: { type: 'triangle', f: 660, f2: 1760, d: 0.22, v: 0.2 },
+    home: { type: 'sine', f: 784, f2: 2093, d: 0.45, v: 0.26 },
     // 중요한 버튼 (시작·고르기·되돌릴 수 없는 것)
     press: { type: 'triangle', f: 520, f2: 1040, d: 0.1, v: 0.16 }
   };

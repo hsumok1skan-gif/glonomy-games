@@ -459,7 +459,14 @@ function renderSpendKinds(chosen) {
   var quick = { '장보기': [10000, 20000, 30000], '배달': [15000, 20000, 25000], '외식': [7000, 9000, 12000], '편의점': [3000, 5000, 8000], '카페·간식': [2000, 4500, 6000], '기타': [1000, 5000, 10000] }[chosen] || [];
   $('spend-quick').innerHTML = quick.map(function (v) { return btn({ act: 'spend-quick', label: won(v), cls: 'small', data: { v: v } }); }).join('');
 }
+// R-07: 숫자판 위 큰 금액. 금액 칸이 바뀌는 모든 길(숫자판·자주 쓰는 값·타자·열기)이 미리보기를 거치므로 여기서 같이 그린다
+function renderSpendDisplay() {
+  var v = Number($('spend-amount').value), d = $('spend-display');
+  d.textContent = won(v >= 0 ? v : 0);
+  d.classList.toggle('empty-amt', !(v >= 1));
+}
 function renderSpendPreview() {
+  renderSpendDisplay();
   var box = $('spend-preview'), ch = activeChal();
   if (!ch) { box.innerHTML = '<p class="hint">진행 중인 챌린지가 없다. 식비는 기록으로 남고, 챌린지를 시작하면 그 기간 것만 센다.</p>'; return; }
   var amt = Number($('spend-amount').value), day = $('spend-date').value;
@@ -1020,7 +1027,7 @@ function renderFridge() {
   } else {
     var ns = steps[nextIdx], doneN = steps.filter(function (s) { return s.done; }).length;
     dn.innerHTML = '<p class="dn-head"><span class="start-no" aria-hidden="true">' + (nextIdx + 1) + '</span>' +
-        '<small>다음 할 일 · ' + doneN + ' / ' + steps.length + '</small></p>' +
+        '<small>다음 할 일 · <b class="dn-count">' + doneN + ' / ' + steps.length + '</b></small></p>' +
       '<b class="dn-title">' + ns.title + '</b>' +
       btn(Object.assign({}, ns.btn, { cls: 'small primary', aria: (nextIdx + 1) + '단계 ' + ns.title + ' ' + ns.btn.label }));
     dn.hidden = open;

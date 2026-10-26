@@ -8,6 +8,8 @@
   var Tutorial = window.Tutorial;
   var Daily = window.Daily;
   var DIFFS = GD.DIFFICULTIES;
+  var I18N = window.I18N;
+  var T = I18N.T; // 화면 글은 모두 T('한국어 원문') 으로 — 영어는 i18n.js (H-24)
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -15,12 +17,13 @@
     sec = Math.max(0, Math.round(sec || 0));
     var m = Math.floor(sec / 60);
     var s = sec % 60;
-    return m + '분 ' + (s < 10 ? '0' : '') + s + '초';
+    return T('{m}분 {s}초', { m: m, s: (s < 10 ? '0' : '') + s });
   }
   function findById(arr, id) { for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return arr[i]; return null; }
 
   var current = 'scr-title';
   var returnTo = null;
+  var backTo = null; // 'codex' · 'settings': 뒤로 가면 돌아갈 메뉴 화면
   var squadSel = [];
   var regionSel = 0;
   var diffSel = 0;
@@ -28,8 +31,10 @@
   var shopTab = 'gardener';
   var quitArmed = false;
   var lastResult = null;
+  var lastCombo = 0; // 콤보가 끊기는 순간을 알려고 (onFx)
   var pickCount = 0;
   var toastTimer = 0;
+  var langApplied = false;
 
   // ---------- 공통 ----------
   var navBusy = false;
@@ -74,20 +79,24 @@
   }
   function show(id) { view(id, true); }
   function overlay(id, on) { view(id, on); }
-  // HUD 칸 손맛: kind 'gain' 초록 번쩍+통통 / 'hurt' 빨강 번쩍+흔들림
+  // 다른 파일의 겹침 화면(ads.js 대신 광고 창 #ov-ad)도 같은 전환을 거치게 밖에 내놓는다
+  window.UI = window.UI || {};
+  window.UI.view = view;
+  // HUD 손맛 (열매 배지·울타리 막대): kind 'gain' 초록 번쩍+통통 / 'hurt' 빨강 번쩍+흔들림
   function bumpHud(id, kind) {
     var b = $(id);
-    if (!b || !b.parentNode) return;
-    replay(b.parentNode, kind === 'hurt' ? 'fx-hurt' : 'fx-gain');
+    if (!b) return;
+    replay(b, kind === 'hurt' ? 'fx-hurt' : 'fx-gain');
   }
   function onFx(kind, n, j) {
     if (kind === 'seed') bumpHud('hud-seeds', 'gain');
     else if (kind === 'plant') bumpHud('hud-seeds', 'gain');
     else if (kind === 'fence') { bumpHud('hud-fence', 'hurt'); replay($('field-wrap'), 'fx-hurt-edge'); }
+    // 콤보는 판 오른쪽 위 알약(game.js render)이 보여 주고, 끊기면 판 가장자리가 번쩍인다
+    // (콤보는 완벽!일 때만 오르고, 좋아!·놓침이면 끊긴다 — game.js beatResult)
     else if (kind === 'combo') {
-      $('hud-combo').textContent = n;
-      if (j > 0) bumpHud('hud-combo', 'gain');
-      else if (j === 0) bumpHud('hud-combo', 'hurt');
+      if (n === 0 && lastCombo >= 3) replay($('field-wrap'), 'fx-hurt-edge');
+      lastCombo = n;
     }
   }
   function toast(msg) {
@@ -100,6 +109,11 @@
   function applySettings() {
     var root = document.documentElement;
     var s = Store.settings;
+    // 언어: 바뀌었을 때만 콘텐츠 이름·설명과 index.html 글을 다시 끼운다 (첫 실행은 늘 한 번)
+    if (s.lang !== I18N.lang() || !langApplied) {
+      I18N.set(s.lang); langApplied = true;
+      if (window.Ads && Ads.refresh) Ads.refresh(); // 화면에 있는 광고 버튼 글도 새 언어로 (H-27)
+    }
     root.classList.toggle('text-small', s.textSize === 'small');
     root.classList.toggle('text-big', s.textSize === 'big');
     root.classList.toggle('reduce-motion', !!s.reduceMotion);
@@ -110,66 +124,37 @@
     if (returnTo === 'battle') {
       returnTo = null;
       show('scr-battle');
+      // 옵션에서 언어를 바꿨을 수 있으니 판 둘레 글을 지금 언어로 다시 채운다 (판은 그대로)
+      renderPauseInfo();
+      renderWavePreview();
+      updateHud();
+      Tutorial.refresh();
       overlay('ov-pause', true);
       return;
     }
     if (current === 'scr-squad') { openRegion(); return; }
+    // 도감 바로가기·옵션의 게임 방법에서 들어온 화면은 그 화면으로 돌아간다 (H-17)
+    var to = backTo;
+    backTo = null;
+    if (to === 'codex' && current !== 'scr-codex') { openCodex(); return; }
+    if (to === 'settings' && current !== 'scr-settings') { openSettings(); return; }
     openTitle();
   }
 
   // ---------- 시작 ----------
   function openTitle() {
     returnTo = null;
+    backTo = null;
     var snap = Store.loadRun();
     var ok = snap && Game.snapshotValid(snap);
     if (snap && !ok) Store.clearRun();
-    $('btn-continue').classList.toggle('hidden', !ok);
-    if (ok) {
-      var tag = snap.daily ? '오늘의 도전' : GD.REGIONS[snap.region].name + ' · ' + (DIFFS[snap.diff | 0] || DIFFS[0]).name;
-      $('btn-continue').textContent = '이어하기 (' + tag + ' · 웨이브 ' + (snap.wave + 1) + ')';
-    }
-    var M = Store.meta;
-    var clearedN = M.cleared.filter(Boolean).length;
-    $('title-silver').textContent = '은씨앗 ' + M.silver + ' · 되찾은 과수원 ' + clearedN + '/' + GD.REGIONS.length + ' · 업적 ' + M.achv.length + '/' + GD.ACHIEVEMENTS.length;
-    $('title-silver-n').textContent = M.silver;
-    $('title-achv-n').textContent = M.achv.length + '/' + GD.ACHIEVEMENTS.length;
-    renderGoal();
-    $('btn-daily').textContent = Daily.canPlay() ? '📅 오늘의 도전' : '📅 오늘의 도전 (완료)';
+    // 이어하기는 메뉴 4개의 자리·차례를 지키려고 숨기지 않고, 저장된 판이 없으면 흐리게 둔다 (H-17)
+    var cont = $('btn-continue');
+    cont.disabled = !ok;
+    // 홈에는 스테이지·스토리 문구를 두지 않는다: 이어하기 안내에도 지역 이름·웨이브를 넣지 않는다 (H-18)
+    cont.title = ok ? T('저장된 게임을 이어서 해요') : T('이어서 할 게임이 없어요');
+    cont.setAttribute('aria-label', T('이어하기 ({t})', { t: cont.title }));
     show('scr-title');
-  }
-  // 시작 화면 목표 카드: 다음에 되찾을 과수원과 다섯 과수원 지도
-  function nextGoalRegion() {
-    for (var i = 0; i < GD.REGIONS.length; i++) if (!Store.meta.cleared[i]) return i;
-    return -1;
-  }
-  function renderGoal() {
-    var M = Store.meta;
-    var next = nextGoalRegion();
-    var title = $('title-goal');
-    var desc = $('title-goal-desc');
-    if (next < 0) {
-      title.textContent = '다섯 과수원을 모두 되찾았어요!';
-      desc.textContent = '이번에는 어려움이나 악몽 난이도로 더 짙은 안개에 맞서 보세요. 은씨앗을 더 많이 받을 수 있어요.';
-    } else {
-      var reg = GD.REGIONS[next];
-      var best = M.diffBest[next][0] | 0;
-      title.textContent = (next + 1) + '번째 과수원 「' + reg.name + '」 되찾기';
-      desc.textContent = (next === 0 ? '밤안개가 다섯 과수원을 집어삼켰어요. ' : '') +
-        '웨이브 10개를 막아 내면 이 과수원을 되찾고, 다음 과수원이 열려요.' +
-        (best > 0 ? ' 최고 기록: 웨이브 ' + best + '/' + GD.WAVES : '');
-    }
-    var map = $('title-map');
-    map.innerHTML = '';
-    GD.REGIONS.forEach(function (reg, i) {
-      var node = document.createElement('div');
-      var done = !!M.cleared[i];
-      node.className = 'map-node' + (done ? ' done' : (i === next ? ' next' : ''));
-      node.innerHTML = '<span class="map-dot">' + (done ? '✔' : (i === next ? (i + 1) : '🔒')) + '</span><small>' + esc(reg.name) + '</small>';
-      map.appendChild(node);
-    });
-    var span = GD.REGIONS.length - 1;
-    var doneTo = next < 0 ? span : next;
-    map.style.setProperty('--done', Math.round(doneTo / span * 100) + '%');
   }
 
   // ---------- 지역 ----------
@@ -200,7 +185,8 @@
       box.appendChild(b);
     });
     var cur = DIFFS[diffSel];
-    $('diff-desc').textContent = cur.name + ' — ' + cur.desc + ' (안개 체력 ×' + cur.hp + ', 안개 수 ×' + cur.count + ', 은씨앗 ×' + cur.silver + ')';
+    $('diff-desc').textContent = T('{name} — {desc} (안개 체력 ×{hp}, 안개 수 ×{count}, 은열매 ×{silver})',
+      { name: cur.name, desc: cur.desc, hp: cur.hp, count: cur.count, silver: cur.silver });
   }
   function openRegion() {
     renderDiffTabs();
@@ -215,7 +201,7 @@
       b.style.setProperty('--rc', open ? reg.color : '#3a3a4a');
       b.innerHTML = '<span class="rnum" aria-hidden="true">' + (cleared ? '✔' : (open ? (i + 1) : '🔒')) + '</span>' +
         '<span class="rtxt"><span class="name">' + (cleared ? '✔ ' : '') + (i + 1) + '. ' + esc(reg.name) + '</span>' +
-        '<span class="pdesc">' + esc(open ? reg.desc : '앞 과수원을 되찾으면 열려요') + '</span>' +
+        '<span class="pdesc">' + esc(open ? reg.desc : T('앞 과수원을 되찾으면 열려요')) + '</span>' +
         (open ? '<small>' + esc(diffRecordText(i)) + '</small>' : '') + '</span>' +
         (open ? '<span class="rgo" aria-hidden="true">›</span>' : '');
       b.disabled = !open;
@@ -249,13 +235,13 @@
       b.disabled = !have;
       b.innerHTML = '<span class="av' + (g.role === 'front' ? '' : ' back') + '" aria-hidden="true">' + (have ? (Art.html('gardener', g.id) || g.emoji) : '🔒') + '</span>' +
         '<span class="gtxt"><span class="gname">' + esc(g.name) + '</span>' +
-        '<span class="role">' + (g.role === 'front' ? '전열 · 근접' : '후열 · 원거리') + ' · ' + esc(g.skill.name) + '</span>' +
-        (have ? '' : '<span class="role">작업실에서 영입할 수 있어요</span>') + '</span>';
+        '<span class="role">' + (g.role === 'front' ? T('전열 · 근접') : T('후열 · 원거리')) + ' · ' + esc(g.skill.name) + '</span>' +
+        (have ? '' : '<span class="role">' + T('작업실에서 영입할 수 있어요') + '</span>') + '</span>';
       b.addEventListener('click', function () {
         var k = squadSel.indexOf(g.id);
         if (k >= 0) squadSel.splice(k, 1);
         else if (squadSel.length < 3) squadSel.push(g.id);
-        else { toast('정원사는 세 명까지 데려갈 수 있어요'); return; }
+        else { toast(T('정원사는 세 명까지 데려갈 수 있어요')); return; }
         Sound.play('click');
         renderSquad();
       });
@@ -284,7 +270,7 @@
       var b = document.createElement('button');
       b.type = 'button';
       b.id = 'skill-' + i;
-      b.setAttribute('aria-label', u.name + ' 기술 ' + u.skill);
+      b.setAttribute('aria-label', T('{name} 기술 {skill}', { name: u.name, skill: u.skill }));
       b.innerHTML = '<span class="sk-em" aria-hidden="true">' + (Art.html('gardener', u.id) || u.emoji) + '</span><span class="sk-name"></span><span class="sk-state"></span>';
       b.addEventListener('click', function () { Game.useSkill(i); });
       bar.appendChild(b);
@@ -299,7 +285,9 @@
       if (!b) return;
       var key = ['Q', 'W', 'E'][i] || '';
       var name = u.skill + ' (' + key + ')';
-      var st = u.down ? '쓰러짐' : (u.cd > 0 ? Math.ceil(u.cd) + '초' : '사용 가능!');
+      var st = u.down ? T('쓰러짐') : (u.cd > 0 ? T('{n}초', { n: Math.ceil(u.cd) }) : T('사용 가능!'));
+      var label = T('{name} 기술 {skill}', { name: u.name, skill: u.skill });
+      if (b.getAttribute('aria-label') !== label) b.setAttribute('aria-label', label);
       var nEl = b.querySelector('.sk-name');
       var sEl = b.querySelector('.sk-state');
       if (nEl && nEl.textContent !== name) nEl.textContent = name;
@@ -314,15 +302,19 @@
   function updateHud() {
     var h = Game.hud();
     if (!h) return;
-    $('hud-fence').textContent = h.fence + (h.shield > 0 ? '+' + h.shield : '');
+    // 울타리: 판 위 가는 막대 하나 (숫자는 일시정지 창에), 보호막이 있으면 막대가 푸르게
     var ff = h.fenceMax > 0 ? h.fence / h.fenceMax : 0;
-    $('hud-fence-bar').style.width = Math.round(Math.max(0, Math.min(1, ff)) * 100) + '%';
-    $('hud-fence').parentNode.classList.toggle('low', ff < 0.35);
-    $('hud-wave').textContent = h.wave + '/' + h.waves;
-    $('hud-wave-bar').style.width = Math.round(Math.max(0, Math.min(1, h.wave / h.waves)) * 100) + '%';
-    $('hud-seeds').textContent = h.pouch;
-    $('hud-combo').textContent = h.combo;
-    // 씨앗이 없으면 심기 버튼을 누를 수 없다 (흐리게)
+    var pct = Math.round(Math.max(0, Math.min(1, ff)) * 100);
+    var gauge = $('hud-fence');
+    $('hud-fence-bar').style.width = pct + '%';
+    gauge.classList.toggle('low', ff < 0.35);
+    gauge.classList.toggle('shield', h.shield > 0);
+    gauge.setAttribute('aria-valuenow', pct);
+    gauge.title = T('울타리 {n}', { n: h.fence }) + (h.shield > 0 ? T(' + 보호막 {n}', { n: h.shield }) : '');
+    var pouch = $('hud-seeds');
+    if (pouch.textContent !== String(h.pouch)) pouch.textContent = h.pouch;
+    pouch.classList.toggle('empty', h.pouch <= 0);
+    // 열매가 없으면 심기 버튼을 누를 수 없다 (흐리게)
     var plants = document.querySelectorAll('.plant');
     for (var p = 0; p < plants.length; p++) plants[p].disabled = h.pouch <= 0;
     var bar = $('skill-bar');
@@ -330,26 +322,30 @@
     else updateSkillText(h.units);
   }
   // 물결 미리보기: "○ 안개솜 ×5 · ✦ 반딧안개 ×2 (날기)"
-  function previewHtml(p) {
+  // compact = 전투 화면 판 안 알약: 머리를 "웨이브 n/10" 으로 줄인다
+  function previewHtml(p, compact) {
     if (!p || !p.list.length) return '';
-    var head = p.upcoming ? '다음 웨이브 (' + p.wave + '/' + GD.WAVES + ')' : '이번 웨이브 (' + p.wave + '/' + GD.WAVES + ')';
+    var head = compact ? T('웨이브 {n}', { n: p.wave + '/' + GD.WAVES })
+      : T(p.upcoming ? '다음 웨이브 ({w}/{max})' : '이번 웨이브 ({w}/{max})', { w: p.wave, max: GD.WAVES });
     var items = p.list.map(function (x) {
       return '<span class="wp-item' + (x.boss ? ' boss' : '') + '"><b aria-hidden="true">' + esc(x.sym) + '</b> ' + esc(x.name) +
-        ' ×' + x.n + (x.fly ? ' (비행)' : '') + (x.boss ? ' (우두머리)' : '') + '</span>';
+        ' ×' + x.n + (x.fly ? T(' (비행)') : '') + (x.boss ? T(' (우두머리)') : '') + '</span>';
     });
     return '<span class="wp-head">' + head + '</span> ' + items.join(' ');
   }
   function renderWavePreview() {
     var box = $('wave-preview');
     var p = Game.wavePreview();
-    box.innerHTML = previewHtml(p);
+    box.innerHTML = previewHtml(p, true);
     box.classList.toggle('hidden', !p || !p.list.length);
-    Game.resize(); // 미리보기 줄 수가 바뀌면 판 높이를 다시 맞춘다
+    // 판 안에 겹친 알약이라 판 크기는 바뀌지 않는다 (Game.resize 필요 없음)
   }
   function resetBattleUi() {
     overlay('ov-pick', false);
     overlay('ov-pause', false);
+    overlay('ov-revive', false);
     pickCount = 0;
+    lastCombo = 0;
     $('skill-bar').innerHTML = '';
     $('wave-preview').innerHTML = '';
   }
@@ -366,8 +362,18 @@
     updateHud();
     renderWavePreview();
   }
+  // 시작 버튼이 고르는 값: 지난번 과수원·난이도·정원사(열린 과수원·가진 정원사만), 처음이면 첫 과수원·보통·처음 정원사 셋
+  function quickPick() {
+    var M = Store.meta;
+    var reg = M.lastRegion | 0;
+    regionSel = reg >= 0 && reg < GD.REGIONS.length && regionOpen(reg) ? reg : 0;
+    diffSel = M.lastDiff | 0;
+    if (diffSel < 0 || diffSel >= DIFFS.length) diffSel = 0;
+    var last = Array.isArray(M.lastSquad) ? M.lastSquad.filter(function (id) { return M.unlocked.indexOf(id) >= 0; }) : [];
+    squadSel = (last.length ? last : M.unlocked).slice(0, 3);
+  }
   function startDaily() {
-    if (!Daily.canPlay()) { toast('오늘의 도전은 이미 끝났어요. 내일 다시 도전해 주세요'); openDaily(); return; }
+    if (!Daily.canPlay()) { toast(T('오늘의 도전은 이미 끝났어요. 내일 다시 도전해 주세요')); openDaily(); return; }
     var d = Daily.info();
     Daily.markStarted();
     resetBattleUi();
@@ -379,7 +385,7 @@
   }
   function continueBattle() {
     var snap = Store.loadRun();
-    if (!snap || !Game.snapshotValid(snap)) { Store.clearRun(); openTitle(); toast('이어서 할 게임이 없어요'); return; }
+    if (!snap || !Game.snapshotValid(snap)) { Store.clearRun(); openTitle(); toast(T('이어서 할 게임이 없어요')); return; }
     if (!snap.daily) {
       regionSel = snap.region;
       squadSel = snap.squad.slice();
@@ -388,7 +394,7 @@
     resetBattleUi();
     Tutorial.stop();
     show('scr-battle');
-    if (!Game.resumeSaved(snap)) { openTitle(); toast('저장된 게임을 불러오지 못했어요'); return; }
+    if (!Game.resumeSaved(snap)) { openTitle(); toast(T('저장된 게임을 불러오지 못했어요')); return; }
     updateHud();
     renderWavePreview();
   }
@@ -396,9 +402,13 @@
     if (!Game.pause()) return;
     quitArmed = false;
     $('quit-msg').classList.add('hidden');
-    var h = Game.hud();
-    $('pause-info').textContent = h ? (h.daily ? '오늘의 도전 · ' : '') + h.region + ' · ' + h.diff + ' · 웨이브 ' + h.wave + '/' + h.waves + ' · 울타리 ' + h.fence : '';
+    renderPauseInfo();
     overlay('ov-pause', true);
+  }
+  function renderPauseInfo() {
+    var h = Game.hud();
+    $('pause-info').textContent = h ? (h.daily ? T('오늘의 도전 · ') : '') +
+      T('{region} · {diff} · 웨이브 {w}/{max} · 울타리 {fence}', { region: h.region, diff: h.diff, w: h.wave, max: h.waves, fence: h.fence }) : '';
   }
   function resumeGame() {
     overlay('ov-pause', false);
@@ -406,9 +416,10 @@
   }
   function showPick(kind, ids, wave) {
     pickCount = ids.length;
-    $('pick-title').textContent = kind === 'relic' ? '보물 선택' : '강화 선택';
+    $('pick-title').textContent = kind === 'relic' ? T('보물 선택') : T('강화 선택');
     var left = GD.WAVES - wave;
-    $('pick-sub').textContent = '웨이브 ' + wave + ' 방어 성공! ' + (left > 0 ? '과수원을 되찾기까지 ' + left + '웨이브 남았어요. ' : '') + '하나를 골라 주세요. (키보드 1~' + ids.length + ')';
+    $('pick-sub').textContent = T('웨이브 {w} 방어 성공! ', { w: wave }) + (left > 0 ? T('과수원을 되찾기까지 {n}웨이브 남았어요. ', { n: left }) : '') +
+      T('하나를 골라 주세요. (키보드 1~{n})', { n: ids.length });
     var box = $('pick-list');
     box.innerHTML = '';
     ids.forEach(function (id, i) {
@@ -418,14 +429,20 @@
       b.type = 'button';
       var rk = kind === 'relic' ? 3 : Math.max(1, Math.min(3, d.rare | 0));
       b.className = 'rare' + rk;
-      var stars = d.rare ? '<span class="stars" aria-label="등급 ' + d.rare + '">' + '★★★'.slice(0, d.rare) + '</span>' : '';
+      var stars = d.rare ? '<span class="stars" aria-label="' + esc(T('등급 {n}', { n: d.rare })) + '">' + '★★★'.slice(0, d.rare) + '</span>' : '';
       if (d.beat) b.className += ' beat';
-      var tag = d.beat ? '<span class="beat-tag">♪ 박자</span>' : '';
+      var tag = d.beat ? '<span class="beat-tag">' + T('♪ 박자') + '</span>' : '';
       b.innerHTML = '<span class="pk-num" aria-hidden="true">' + (i + 1) + '</span><span class="pk-txt"><b>' + esc(d.name) + '</b>' + stars + tag +
         '<span class="pdesc">' + esc(d.desc) + '</span></span>';
       b.addEventListener('click', function () { Sound.important(); choosePick(i); });
       box.appendChild(b);
     });
+    // 열매 충전 (보상형 자리 refill, H-29): 끝까지 보면 가진 열매 +3, 고르기는 그대로 이어서
+    adSlot('pick-ad', 'refill', function (rw) {
+      if (!Game.addPouch(rw.pouch)) return;
+      updateHud();
+      toast(T('열매 +{n}! 다음 웨이브에서 심어 보세요', { n: rw.pouch }));
+    }, true);
     $('pick-preview').innerHTML = previewHtml(Game.wavePreview());
     overlay('ov-pause', false);
     overlay('ov-pick', true);
@@ -441,16 +458,55 @@
     }
   }
 
+  // ---------- 보상형 광고 자리 (H-29) ----------
+  // 상자 box 를 비우고 그 자리의 광고 버튼(ads.js Ads.button)을 하나 넣는다.
+  // 횟수를 다 쓴 자리는 상자를 숨긴다. keep 이면 꺼진 버튼('다 썼어요')으로 남긴다 (충전 자리)
+  function adSlot(boxId, id, onReward, keep) {
+    var box = $(boxId);
+    if (!box) return null;
+    box.innerHTML = '';
+    var A = window.Ads;
+    var s = A && A.slot ? A.slot(id) : null;
+    var open = !!s && (keep || A.left(id) !== 0);
+    var b = open ? A.button(id, function (rw) { Sound.play('buy'); onReward(rw || s.reward); }) : null;
+    if (b) box.appendChild(b);
+    box.classList.toggle('hidden', !b);
+    return b;
+  }
+  // 울타리가 무너졌을 때 (game.js goDown → onDown): 광고 보고 이어하기 또는 결과 보기
+  function showRevive(info) {
+    overlay('ov-pause', false);
+    overlay('ov-pick', false);
+    $('revive-sub').textContent = T('웨이브 {w}/{max}에서 울타리가 무너졌어요. 광고를 끝까지 보면 울타리 50%와 잠깐의 보호막으로 이번 웨이브를 이어서 할 수 있어요.', { w: info.wave, max: info.waves });
+    var b = adSlot('revive-ad', 'revive', function () {
+      overlay('ov-revive', false);
+      if (Game.revive()) { updateHud(); renderWavePreview(); }
+    });
+    if (!b) { Game.giveUp(); return; } // 낼 수 없으면 지금까지처럼 바로 결과로
+    overlay('ov-revive', true);
+  }
+
   // ---------- 결과 ----------
+  // 판 끝 → 결과 화면 (H-31, game.js endRun → onEnd): 결과 화면을 열기 전에 화면 전체를 덮는 전면 광고(자리 result)를 띄우고,
+  // 닫히면 결과를 연다. 거절(3판에 한 번 차례가 아님 H-32·튜토리얼 판·보상형을 본 판·다른 광고 중)이면 Ads.interstitial 이 바로 cb 를 불러 곧장 결과로 간다
+  function endToResult(res) {
+    overlay('ov-pick', false);
+    overlay('ov-pause', false);
+    overlay('ov-revive', false);
+    var A = window.Ads;
+    if (!A || !A.interstitial) { showResult(res); return; }
+    A.interstitial('result', function () { showResult(res); });
+  }
   function showResult(res) {
     lastResult = res;
     overlay('ov-pick', false);
     overlay('ov-pause', false);
+    overlay('ov-revive', false);
     returnTo = null;
     Tutorial.stop();
     var reg = GD.REGIONS[res.region];
     var df = DIFFS[res.diff] || DIFFS[0];
-    $('res-title').textContent = res.win ? '「' + reg.name + '」 탈환 성공!' : '울타리가 무너졌어요';
+    $('res-title').textContent = res.win ? T('「{name}」 탈환 성공!', { name: reg.name }) : T('울타리가 무너졌어요');
     // 별: 지키면 1, 울타리가 절반 넘게 남으면 2, 한 번도 안 다치면 3
     var stars = !res.win ? 0 : (res.perfect ? 3 : ((res.fenceLeft || 0) >= 0.5 ? 2 : 1));
     var medal = $('res-medal');
@@ -458,34 +514,50 @@
     medal.className = 'res-medal' + (res.win ? '' : ' lose');
     var sh = '';
     for (var si = 0; si < 3; si++) sh += '<span class="' + (si < stars ? 'on' : '') + '">★</span>';
-    $('res-stars').innerHTML = res.win ? sh : '<small class="hint">웨이브 ' + res.waves + '/' + GD.WAVES + '까지 버텼어요. 다른 강화를 골라 다시 도전해 보세요!</small>';
-    $('res-stars').setAttribute('aria-label', res.win ? '별 ' + stars + '개' : '');
+    $('res-stars').innerHTML = res.win ? sh : '<small class="hint">' + esc(T('웨이브 {w}/{max}까지 버텼어요. 다른 강화를 골라 다시 도전해 보세요!', { w: res.waves, max: GD.WAVES })) + '</small>';
+    $('res-stars').setAttribute('aria-label', res.win ? T('별 {n}개', { n: stars }) : '');
     function tile(label, value, wide) { return '<div class="rs' + (wide ? ' wide' : '') + '"><small>' + esc(label) + '</small><b>' + value + '</b></div>'; }
     var body = $('res-body');
     body.className = 'result-box ' + (res.win ? 'win' : 'lose');
     body.innerHTML =
-      '<div class="rs-top">' + (res.daily ? '오늘의 도전 ' + esc(res.daily) + ' · ' : '') + esc(reg.name) + ' · 난이도 ' + esc(df.name) + '</div>' +
+      '<div class="rs-top">' + (res.daily ? esc(T('오늘의 도전 {d} · ', { d: res.daily })) : '') + esc(reg.name) + ' · ' + esc(T('난이도 {name}', { name: df.name })) + '</div>' +
       '<div class="rs-grid">' +
-      tile('막아 낸 웨이브', res.waves + '/' + GD.WAVES) +
-      tile('물리친 안개', res.kills + (res.bossKills ? ' (우두머리 ' + res.bossKills + ')' : '')) +
-      tile('심은 씨앗', res.planted) +
-      tile('플레이 시간', esc(fmtTime(res.time))) +
-      tile('박자 판정', '완벽 ' + (res.perfects | 0) + ' · 좋아 ' + (res.goods | 0) + ' · 놓침 ' + (res.misses | 0), true) +
-      tile('최대 콤보', res.bestCombo | 0) +
-      tile('받은 은씨앗', '🌰 ' + res.silver) +
+      tile(T('막아 낸 웨이브'), res.waves + '/' + GD.WAVES) +
+      tile(T('물리친 안개'), res.kills + (res.bossKills ? esc(T(' (우두머리 {n})', { n: res.bossKills })) : '')) +
+      tile(T('심은 열매'), res.planted) +
+      tile(T('플레이 시간'), esc(fmtTime(res.time))) +
+      tile(T('박자 판정'), esc(T('완벽 {a} · 좋아 {b} · 놓침 {c}', { a: res.perfects | 0, b: res.goods | 0, c: res.misses | 0 })), true) +
+      tile(T('최대 콤보'), res.bestCombo | 0) +
+      tile(T('돌려보낸 정령'), res.homeSent | 0) +
+      tile(T('받은 은열매'), '<span id="res-silver">🌰 ' + res.silver + '</span>') +
       '</div>' +
-      (res.perfect ? '<div class="rs-top rs-note">울타리 무피해 클리어!</div>' : '') +
-      '<span class="res-gain' + (res.win ? '' : ' lose') + '" aria-hidden="true">+은씨앗 ' + res.silver + '</span>';
-    // 결과 손맛: 이기면 금빛·지면 빨강 번쩍(fx-win/fx-lose), 진 판은 흔들림, 상자가 커지며 들어오고 은씨앗 숫자가 떠오른다
+      (res.perfect ? '<div class="rs-top rs-note">' + esc(T('울타리 무피해 클리어!')) + '</div>' : '') +
+      '<span class="res-gain' + (res.win ? '' : ' lose') + '" aria-hidden="true">' + esc(T('+은열매 {n}', { n: res.silver })) + '</span>';
+    // 결과 손맛: 이기면 금빛·지면 빨강 번쩍(fx-win/fx-lose), 진 판은 흔들림, 상자가 커지며 들어오고 은열매 숫자가 떠오른다
     replay(body, res.win ? 'fx-win' : 'fx-lose');
+    // 클리어 보상 2배 (보상형 자리 double, H-29): 이긴 판만. 끝까지 보면 이번 판 은열매만큼 한 번 더 받는다
+    var base = res.silver;
+    if (res.win && base > 0) {
+      adSlot('res-ad', 'double', function () {
+        var M = Store.meta;
+        M.silver += base;
+        M.stats.silverTotal += base;
+        res.silver = base * 2;
+        var got = Game.checkAchievements();
+        Store.save();
+        var el = $('res-silver');
+        if (el) { el.textContent = '🌰 ' + res.silver; replay(el.parentNode.parentNode, 'fx-gain'); }
+        toast(T('은열매 {n}개를 더 받았어요', { n: base }) + (got.length ? T(' · 업적 달성: {list}', { list: got.join(', ') }) : ''));
+      });
+    } else adSlot('res-ad', '', null);
     if (res.daily) {
-      $('res-best').textContent = '오늘의 도전 최고 기록: 웨이브 ' + res.bestWave + '/' + GD.WAVES + ' · 다음 도전은 내일 열려요';
+      $('res-best').textContent = T('오늘의 도전 최고 기록: 웨이브 {w}/{max} · 다음 도전은 내일 열려요', { w: res.bestWave, max: GD.WAVES });
     } else {
-      $('res-best').textContent = (res.newBest ? '최고 기록 경신! ' : '') + '이 과수원(' + df.name + ') 최고 기록: 웨이브 ' + res.bestWave + '/' + GD.WAVES +
-        (res.bestTime ? ' · 최단 클리어 ' + fmtTime(res.bestTime) : '');
+      $('res-best').textContent = (res.newBest ? T('최고 기록 경신! ') : '') + T('이 과수원({diff}) 최고 기록: 웨이브 {w}/{max}', { diff: df.name, w: res.bestWave, max: GD.WAVES }) +
+        (res.bestTime ? T(' · 최단 클리어 {t}', { t: fmtTime(res.bestTime) }) : '');
     }
-    $('res-achv').textContent = res.achievements.length ? '업적 달성: ' + res.achievements.join(', ') : '';
-    $('btn-again').textContent = res.daily ? '오늘의 도전 보기' : '다시 하기';
+    $('res-achv').textContent = res.achievements.length ? T('업적 달성: {list}', { list: res.achievements.join(', ') }) : '';
+    $('btn-again').textContent = res.daily ? T('오늘의 도전 보기') : T('다시 하기');
     $('share-box').classList.add('hidden');
     $('share-box').value = '';
     $('share-msg').classList.add('hidden');
@@ -496,7 +568,7 @@
     var text = Daily.shareText(lastResult);
     Daily.copyText(text, $('share-box'), function (ok) {
       $('share-msg').classList.toggle('hidden', ok);
-      if (ok) toast('결과를 복사했어요');
+      if (ok) toast(T('결과를 복사했어요'));
       Sound.play('click');
     });
   }
@@ -508,27 +580,27 @@
     var df = DIFFS[d.diff] || DIFFS[0];
     $('daily-date').textContent = d.date;
     $('daily-info').innerHTML =
-      '지역: ' + esc(reg.name) + ' — ' + esc(reg.desc) + '<br>' +
-      '난이도: ' + esc(df.name) + '<br>' +
-      '정원사: ' + esc(Daily.squadNames(d.squad).join(', ')) + '<br>' +
-      '웨이브 10개 · 오늘은 모든 사람에게 같은 순서로 안개가 나와요';
+      esc(T('지역: {name} — {desc}', { name: reg.name, desc: reg.desc })) + '<br>' +
+      esc(T('난이도: {name}', { name: df.name })) + '<br>' +
+      esc(T('정원사: {list}', { list: Daily.squadNames(d.squad).join(', ') })) + '<br>' +
+      esc(T('웨이브 10개 · 오늘은 모든 사람에게 같은 순서로 안개가 나와요'));
     var done = Daily.todayResult();
     var can = Daily.canPlay();
     var status;
-    if (can) status = '아직 도전하지 않았어요. 하루에 한 번만 도전할 수 있어요.';
-    else if (done && done.done) status = '오늘 결과: ' + (done.win ? '방어 성공' : '방어 실패') + ' · 웨이브 ' + done.waves + '/' + GD.WAVES + ' · 물리친 안개 ' + done.kills + ' · ' + fmtTime(done.time);
-    else status = '오늘의 도전이 진행 중이에요. 시작 화면의 이어하기를 눌러 계속하세요.';
+    if (can) status = T('아직 도전하지 않았어요. 하루에 한 번만 도전할 수 있어요.');
+    else if (done && done.done) status = T('오늘 결과: {r} · 웨이브 {w}/{max} · 물리친 안개 {k} · {t}', { r: done.win ? T('방어 성공') : T('방어 실패'), w: done.waves, max: GD.WAVES, k: done.kills, t: fmtTime(done.time) });
+    else status = T('오늘의 도전이 진행 중이에요. 시작 화면의 이어하기를 눌러 계속하세요.');
     $('daily-status').textContent = status;
     var go = $('btn-daily-go');
     go.disabled = !can;
-    go.textContent = can ? '도전 시작' : '내일 다시 도전할 수 있어요';
+    go.textContent = can ? T('도전 시작') : T('내일 다시 도전할 수 있어요');
     var box = $('daily-log');
     box.innerHTML = '';
     var log = Store.meta.dailyLog.slice().reverse();
     if (!log.length) {
       var empty = document.createElement('div');
       empty.className = 'row locked';
-      empty.innerHTML = '<div class="desc">아직 기록이 없어요</div>';
+      empty.innerHTML = '<div class="desc">' + esc(T('아직 기록이 없어요')) + '</div>';
       box.appendChild(empty);
     }
     log.forEach(function (x) {
@@ -537,14 +609,19 @@
       var rg = GD.REGIONS[x.region] ? GD.REGIONS[x.region].name : '';
       var dn = DIFFS[x.diff] ? DIFFS[x.diff].name : '';
       row.innerHTML = '<div class="name">' + esc(x.date) + (x.win ? ' ✔' : '') + '</div><div class="desc">' + esc(rg + ' · ' + dn) +
-        ' · 웨이브 ' + (x.waves | 0) + '/' + GD.WAVES + ' · 물리친 안개 ' + (x.kills | 0) + ' · ' + fmtTime(x.time) + '</div>';
+        esc(T(' · 웨이브 {w}/{max} · 물리친 안개 {k} · {t}', { w: x.waves | 0, max: GD.WAVES, k: x.kills | 0, t: fmtTime(x.time) })) + '</div>';
       box.appendChild(row);
     });
     show('scr-daily');
   }
 
   // ---------- 도감 ----------
-  function openCodex() { renderCodex(); show('scr-codex'); }
+  function openCodex() {
+    backTo = null;
+    $('btn-daily').textContent = Daily.canPlay() ? T('📅 오늘의 도전') : T('📅 오늘의 도전 (완료)');
+    renderCodex();
+    show('scr-codex');
+  }
   function renderCodex() {
     var M = Store.meta;
     var list;
@@ -566,12 +643,12 @@
       row.className = 'row' + (known ? '' : ' locked');
       var icon = d.emoji || d.sym || '';
       var extra = '';
-      if (known && codexTab === 'gardener') extra = ' · ' + (d.role === 'front' ? '전열' : '후열') + ' · 기술 「' + d.skill.name + '」 ' + d.skill.desc;
-      if (known && (codexTab === 'enemy' || codexTab === 'boss')) extra = ' · 체력 ' + d.hp + (d.armor ? ' · 방어력 ' + d.armor : '') + (d.fly ? ' · 비행' : '');
+      if (known && codexTab === 'gardener') extra = T(' · {role} · 기술 「{name}」 {desc}', { role: d.role === 'front' ? T('전열') : T('후열'), name: d.skill.name, desc: d.skill.desc });
+      if (known && (codexTab === 'enemy' || codexTab === 'boss')) extra = T(' · 체력 {n}', { n: d.hp }) + (d.armor ? T(' · 방어력 {n}', { n: d.armor }) : '') + (d.fly ? T(' · 비행') : '');
       var art = known && codexTab !== 'upgrade' && codexTab !== 'relic' ? Art.html(codexTab, d.id) : '';
       row.innerHTML = '<span class="ico" aria-hidden="true">' + (known ? (art || esc(icon || '✦')) : '?') + '</span>' +
-        '<div class="txt"><div class="name">' + (known ? esc(d.name) + (d.beat ? ' <span class="beat-tag">♪ 박자</span>' : '') : '???') + '</div>' +
-        '<div class="desc">' + (known ? esc(d.desc + extra) : '아직 발견하지 못했어요') + '</div></div>';
+        '<div class="txt"><div class="name">' + (known ? esc(d.name) + (d.beat ? ' <span class="beat-tag">' + T('♪ 박자') + '</span>' : '') : '???') + '</div>' +
+        '<div class="desc">' + (known ? esc(d.desc + extra) : esc(T('아직 발견하지 못했어요'))) + '</div></div>';
       box.appendChild(row);
     });
     $('codex-count').textContent = n + '/' + list.length;
@@ -601,10 +678,10 @@
     var st = M.stats;
     var rows = [
       ['플레이 횟수', st.runs], ['승리', st.wins], ['패배', st.losses],
-      ['물리친 안개', st.kills], ['물리친 우두머리', st.bossKills], ['심은 씨앗', st.planted],
+      ['물리친 안개', st.kills], ['물리친 우두머리', st.bossKills], ['심은 열매', st.planted],
       ['막아 낸 웨이브', st.wavesCleared], ['평균 웨이브', st.runs ? (st.wavesCleared / st.runs).toFixed(1) : '0'],
-      ['기술 사용 횟수', st.skillUses], ['고른 강화', st.upgradesPicked], ['한 줄 최다 씨앗', st.maxLaneSeeds],
-      ['모은 은씨앗', st.silverTotal], ['무피해 승리', st.perfectWins], ['총 플레이 시간', fmtTime(st.playTime)],
+      ['기술 사용 횟수', st.skillUses], ['고른 강화', st.upgradesPicked], ['한 줄 최다 열매', st.maxLaneSeeds],
+      ['모은 은열매', st.silverTotal], ['무피해 승리', st.perfectWins], ['총 플레이 시간', fmtTime(st.playTime)],
       ['최대 콤보', st.bestCombo | 0], ['완벽! 판정 횟수', st.perfects | 0]
     ];
     var box = $('stats-list');
@@ -612,7 +689,7 @@
     rows.forEach(function (r) {
       var row = document.createElement('div');
       row.className = 'row';
-      row.innerHTML = '<div class="name">' + esc(r[0]) + '</div><div class="desc">' + esc(r[1]) + '</div>';
+      row.innerHTML = '<div class="name">' + esc(T(r[0])) + '</div><div class="desc">' + esc(r[1]) + '</div>';
       box.appendChild(row);
     });
     GD.REGIONS.forEach(function (reg, i) {
@@ -625,7 +702,7 @@
     var dWins = dl.filter(function (x) { return x.win; }).length;
     var dRow = document.createElement('div');
     dRow.className = 'row wide';
-    dRow.innerHTML = '<div class="name">오늘의 도전</div><div class="desc">최근 ' + dl.length + '번 도전 · 성공 ' + dWins + '번</div>';
+    dRow.innerHTML = '<div class="name">' + esc(T('오늘의 도전')) + '</div><div class="desc">' + esc(T('최근 {n}번 도전 · 성공 {w}번', { n: dl.length, w: dWins })) + '</div>';
     box.appendChild(dRow);
     show('scr-stats');
   }
@@ -634,7 +711,16 @@
   function openShop() { renderShop(); show('scr-shop'); }
   function renderShop() {
     var M = Store.meta;
-    $('shop-silver').textContent = '은씨앗 ' + M.silver;
+    $('shop-silver').textContent = T('은열매 {n}', { n: M.silver });
+    // 재화 충전 (보상형 자리 silver, H-29): 하루 3번, 끝까지 보면 은열매 +30
+    adSlot('shop-ad', 'silver', function (rw) {
+      M.silver += rw.silver;
+      M.stats.silverTotal += rw.silver;
+      var got = Game.checkAchievements();
+      Store.save();
+      toast(T('은열매 +{n}!', { n: rw.silver }) + (got.length ? T(' · 업적 달성: {list}', { list: got.join(', ') }) : ''));
+      renderShop();
+    }, true);
     var tabs = $('shop-tabs').querySelectorAll('button');
     for (var t = 0; t < tabs.length; t++) tabs[t].setAttribute('aria-pressed', tabs[t].getAttribute('data-tab') === shopTab ? 'true' : 'false');
     var box = $('shop-list');
@@ -644,11 +730,11 @@
       var owned = shopTab === 'gardener' ? M.unlocked.indexOf(d.id) >= 0 : M.shop.indexOf(d.id) >= 0;
       var b = document.createElement('button');
       b.type = 'button';
-      var label = shopTab === 'gardener' ? d.name + ' (' + (d.role === 'front' ? '전열' : '후열') + ')' : d.name;
-      var desc = shopTab === 'gardener' ? d.desc + ' 기술 「' + d.skill.name + '」 ' + d.skill.desc : d.desc;
+      var label = shopTab === 'gardener' ? T('{name} ({role})', { name: d.name, role: d.role === 'front' ? T('전열') : T('후열') }) : d.name;
+      var desc = shopTab === 'gardener' ? d.desc + T(' 기술 「{name}」 {desc}', { name: d.skill.name, desc: d.skill.desc }) : d.desc;
       b.innerHTML = '<span class="ico" aria-hidden="true">' + (shopTab === 'gardener' ? (Art.html('gardener', d.id) || d.emoji) : '🔧') + '</span>' +
         '<span class="txt"><b>' + esc(label) + '</b><span class="pdesc">' + esc(desc) + '</span></span>' +
-        '<span class="price' + (owned ? ' owned' : '') + '">' + (owned ? (shopTab === 'gardener' ? '✔ 영입함' : '✔ 구매함') : '🌰 ' + d.cost) + '</span>';
+        '<span class="price' + (owned ? ' owned' : '') + '">' + (owned ? (shopTab === 'gardener' ? T('✔ 영입함') : T('✔ 구매함')) : '🌰 ' + d.cost) + '</span>';
       b.disabled = owned || M.silver < d.cost;
       b.addEventListener('click', function () {
         if (owned || M.silver < d.cost) return;
@@ -658,7 +744,7 @@
         var got = Game.checkAchievements();
         Store.save();
         Sound.play('buy');
-        toast((shopTab === 'gardener' ? d.name + ' 영입 완료!' : d.name + ' 구매 완료!') + (got.length ? ' · 업적 달성: ' + got.join(', ') : ''));
+        toast(T(shopTab === 'gardener' ? '{name} 영입 완료!' : '{name} 구매 완료!', { name: d.name }) + (got.length ? T(' · 업적 달성: {list}', { list: got.join(', ') }) : ''));
         renderShop();
       });
       box.appendChild(b);
@@ -666,19 +752,30 @@
   }
 
   // ---------- 설정 ----------
-  var SETTING_ROWS = [
-    { key: 'sound', label: '효과음', values: [true, false], names: ['켜짐', '꺼짐'] },
-    { key: 'music', label: '배경 음악', values: [true, false], names: ['켜짐', '꺼짐'] },
-    { key: 'volume', label: '음량', values: [0.3, 0.5, 0.7, 1], names: ['작게', '조금 작게', '보통', '크게'] },
-    { key: 'vibrate', label: '진동', values: [true, false], names: ['켜짐', '꺼짐'] },
-    { key: 'shake', label: '화면 흔들림', values: [true, false], names: ['켜짐', '꺼짐'] },
-    { key: 'reduceMotion', label: '움직임 줄이기', values: [false, true], names: ['꺼짐', '켜짐'] },
-    { key: 'dmgNums', label: '피해 숫자', values: [true, false], names: ['표시', '숨김'] },
-    { key: 'speed', label: '게임 속도', values: [1, 1.5, 2], names: ['보통', '1.5배', '2배'] },
-    { key: 'textSize', label: '글자 크기', values: ['small', 'mid', 'big'], names: ['작게', '보통', '크게'] },
-    { key: 'beatSound', label: '박자 소리', values: [true, false], names: ['켜짐', '꺼짐'] },
-    { key: 'beatWide', label: '박자 판정', values: [false, true], names: ['보통', '넉넉하게'] }
+  // 글은 [한국어, 영어] 짝 (같은 '작게' 도 음량은 Low, 글자는 Small 처럼 자리마다 영어가 달라서).
+  // 언어 줄은 어느 언어에서도 찾을 수 있게 두 말로 쓰고, 값은 그 언어 자기 이름으로 둔다 (H-24)
+  var ON_OFF = [['켜짐', 'On'], ['꺼짐', 'Off']];
+  var SETTING_GROUPS = [
+    { head: ['언어', 'Language'], rows: [
+      { key: 'lang', label: ['언어 / Language', 'Language / 언어'], values: ['ko', 'en'], names: [['한국어', '한국어'], ['English', 'English']] }
+    ] },
+    { head: ['소리', 'Sound'], rows: [
+      { key: 'sound', label: ['효과음', 'Sound effects'], values: [true, false], names: ON_OFF },
+      { key: 'music', label: ['배경 음악', 'Music'], values: [true, false], names: ON_OFF },
+      { key: 'volume', label: ['음량', 'Volume'], values: [0.3, 0.5, 0.7, 1], names: [['작게', 'Low'], ['조금 작게', 'Medium-low'], ['보통', 'Medium'], ['크게', 'High']] },
+      { key: 'beatSound', label: ['박자 소리', 'Beat sound'], values: [true, false], names: ON_OFF },
+      { key: 'vibrate', label: ['진동', 'Vibration'], values: [true, false], names: ON_OFF }
+    ] },
+    { head: ['화면·플레이', 'Display & Play'], rows: [
+      { key: 'shake', label: ['화면 흔들림', 'Screen shake'], values: [true, false], names: ON_OFF },
+      { key: 'reduceMotion', label: ['움직임 줄이기', 'Reduce motion'], values: [false, true], names: [ON_OFF[1], ON_OFF[0]] },
+      { key: 'dmgNums', label: ['피해 숫자', 'Damage numbers'], values: [true, false], names: [['표시', 'Show'], ['숨김', 'Hide']] },
+      { key: 'textSize', label: ['글자 크기', 'Text size'], values: ['small', 'mid', 'big'], names: [['작게', 'Small'], ['보통', 'Medium'], ['크게', 'Large']] },
+      { key: 'speed', label: ['게임 속도', 'Game speed'], values: [1, 1.5, 2], names: [['보통', 'Normal'], ['1.5배', '1.5×'], ['2배', '2×']] },
+      { key: 'beatWide', label: ['박자 판정', 'Beat timing window'], values: [false, true], names: [['보통', 'Normal'], ['넉넉하게', 'Wide']] }
+    ] }
   ];
+  function L(pair) { return I18N.pick(pair[0], pair[1]); }
   function openSettings() {
     $('wipe-confirm').classList.add('hidden');
     renderSettings();
@@ -687,22 +784,30 @@
   function renderSettings() {
     var box = $('settings-list');
     box.innerHTML = '';
-    SETTING_ROWS.forEach(function (row) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      var idx = row.values.indexOf(Store.settings[row.key]);
-      if (idx < 0) idx = 0;
-      b.innerHTML = '<span>' + esc(row.label) + '</span><span class="val">' + esc(row.names[idx]) + '</span>';
-      b.setAttribute('aria-label', row.label + ': ' + row.names[idx]);
-      b.addEventListener('click', function () {
-        var next = (row.values.indexOf(Store.settings[row.key]) + 1) % row.values.length;
-        Store.settings[row.key] = row.values[next];
-        Store.save();
-        applySettings();
-        Sound.play('click');
-        renderSettings();
+    SETTING_GROUPS.forEach(function (grp) {
+      var h = document.createElement('h3');
+      h.className = 'set-head';
+      h.textContent = L(grp.head);
+      box.appendChild(h);
+      grp.rows.forEach(function (row) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        var idx = row.values.indexOf(Store.settings[row.key]);
+        if (idx < 0) idx = 0;
+        var label = L(row.label);
+        var val = L(row.names[idx]);
+        b.innerHTML = '<span>' + esc(label) + '</span><span class="val"' + (row.key === 'lang' ? ' lang="' + row.values[idx] + '"' : '') + '>' + esc(val) + '</span>';
+        b.setAttribute('aria-label', label + ': ' + val);
+        b.addEventListener('click', function () {
+          var next = (row.values.indexOf(Store.settings[row.key]) + 1) % row.values.length;
+          Store.settings[row.key] = row.values[next];
+          Store.save();
+          applySettings();
+          Sound.play('click');
+          renderSettings();
+        });
+        box.appendChild(b);
       });
-      box.appendChild(b);
     });
   }
 
@@ -715,7 +820,8 @@
     Game.init($('field'), {
       onHud: updateHud,
       onPick: showPick,
-      onEnd: showResult,
+      onEnd: endToResult,
+      onDown: showRevive,
       onWave: renderWavePreview,
       onFx: onFx,
       onAction: function (kind) { Tutorial.onAction(kind); }
@@ -739,33 +845,30 @@
     document.addEventListener('pointerup', pressOff, { passive: true });
     document.addEventListener('pointercancel', pressOff, { passive: true });
 
+    // 시작은 지역·편성 화면을 거치지 않고 바로 판에 들어간다 (H-19). 과수원·정원사는 결과 화면 `바꾸기` 에서 고른다
     on('btn-start', function () {
       Sound.important();
-      // 처음 하는 사람은 지역·편성 화면 없이 첫 지역·보통·처음 정원사 셋으로 바로 판에 들어간다
-      if (Store.meta.stats.runs === 0 && Tutorial.needed()) {
-        regionSel = 0;
-        diffSel = 0;
-        squadSel = Store.meta.unlocked.slice(0, 3);
-        startBattle();
-        return;
-      }
-      openRegion();
+      quickPick();
+      startBattle();
     });
-    on('btn-daily', function () { Sound.play('click'); openDaily(); });
+    on('btn-change', function () { Sound.play('click'); Tutorial.stop(); Game.leave(); openRegion(); });
+    on('btn-daily', function () { Sound.play('click'); openDaily(); backTo = 'codex'; });
     on('btn-daily-go', function () { Sound.important(); startDaily(); });
     on('btn-share', shareResult);
     on('btn-tut-skip', function () { Sound.play('click'); Tutorial.skip(); });
+    on('btn-tut-next', function () { Tutorial.next(); });
     on('btn-tutorial', function () {
       Sound.play('click');
       Tutorial.reset();
-      toast('다음 게임을 시작할 때 튜토리얼이 다시 나와요');
+      toast(T('다음 게임을 시작할 때 튜토리얼이 다시 나와요'));
     });
     on('btn-continue', function () { Sound.important(); continueBattle(); });
-    on('btn-help', function () { Sound.play('click'); show('scr-help'); });
-    on('btn-shop', function () { Sound.play('click'); openShop(); });
+    // 게임 방법은 옵션 화면, 업적·기록·작업실·오늘의 도전은 도감 화면 바로가기에서 연다 (H-17)
+    on('btn-help', function () { Sound.play('click'); show('scr-help'); if (returnTo !== 'battle') backTo = 'settings'; });
+    on('btn-shop', function () { Sound.play('click'); openShop(); backTo = 'codex'; });
     on('btn-codex', function () { Sound.play('click'); openCodex(); });
-    on('btn-achv', function () { Sound.play('click'); openAchv(); });
-    on('btn-stats', function () { Sound.play('click'); openStats(); });
+    on('btn-achv', function () { Sound.play('click'); openAchv(); backTo = 'codex'; });
+    on('btn-stats', function () { Sound.play('click'); openStats(); backTo = 'codex'; });
     on('btn-settings', function () { Sound.play('click'); openSettings(); });
     on('btn-go', function () { Sound.important(); startBattle(); });
     on('btn-pause', function () { Sound.play('click'); pauseGame(); });
@@ -785,6 +888,7 @@
       if (lastResult) { regionSel = lastResult.region; squadSel = lastResult.squad.slice(); diffSel = lastResult.diff | 0; }
       startBattle();
     });
+    on('btn-revive-giveup', function () { Sound.play('click'); overlay('ov-revive', false); Game.giveUp(); });
     on('btn-home', function () { Sound.play('click'); Tutorial.stop(); Game.leave(); openTitle(); });
     on('btn-wipe', function () { $('wipe-confirm').classList.remove('hidden'); });
     on('btn-wipe-no', function () { $('wipe-confirm').classList.add('hidden'); });
@@ -793,7 +897,7 @@
       Store.wipe();
       squadSel = [];
       $('wipe-confirm').classList.add('hidden');
-      toast('모든 기록을 지웠어요');
+      toast(T('모든 기록을 지웠어요'));
       renderSettings();
     });
 
@@ -817,9 +921,13 @@
 
     document.addEventListener('keydown', function (e) {
       // 전환 중에는 판 조작 말고는 받지 않는다
+      // 광고 창이 떠 있는 동안은 뒤 화면 키를 받지 않는다 (버튼으로만 닫힘)
+      if (window.Ads && Ads.busy && Ads.busy()) { e.preventDefault(); return; }
       var playing = current === 'scr-battle' && $('ov-pick').classList.contains('hidden') && $('ov-pause').classList.contains('hidden');
       if (navBusy && !playing) { e.preventDefault(); return; }
       if (current === 'scr-battle') {
+        // 이어하기 창: 고르는 것은 버튼으로만 (광고는 사람이 직접 누를 때만, H-28)
+        if (!$('ov-revive').classList.contains('hidden')) return;
         if (!$('ov-pick').classList.contains('hidden')) {
           var n = parseInt(e.key, 10);
           if (n >= 1 && n <= pickCount) { choosePick(n - 1); e.preventDefault(); }
@@ -862,6 +970,41 @@
     }
     window.addEventListener('resize', onOrient);
     window.addEventListener('orientationchange', function () { setTimeout(onOrient, 120); });
+
+    // 가로 고정 (H-07): 휴대폰에서 처음 터치하면 전체 화면으로 바꾸고 화면 방향을 가로로 잠근다.
+    // 브라우저가 잠금을 막으면(아이폰 사파리 등) 위의 세로 안내가 그대로 대신한다.
+    // 홈 화면에 올린 앱(standalone·fullscreen)은 전체 화면 없이 바로 잠근다. 앱 포장 때는 바깥 설정이 가로로 고정한다.
+    var lockTried = false;
+    function standalone() {
+      try {
+        if (window.matchMedia && (window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches)) return true;
+      } catch (e) { /* 아래로 */ }
+      return !!navigator.standalone;
+    }
+    function lockOrientation() {
+      try {
+        var so = screen.orientation;
+        if (!so || typeof so.lock !== 'function') return;
+        var p = so.lock('landscape');
+        if (p && typeof p.catch === 'function') p.catch(function () { /* 잠그지 못하면 세로 안내로 */ });
+      } catch (e) { /* 잠그지 못하면 세로 안내로 */ }
+    }
+    function lockLandscape() {
+      if (standalone() || document.fullscreenElement || document.webkitFullscreenElement) { lockOrientation(); return; }
+      var el = document.documentElement;
+      var req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (!req) { lockOrientation(); return; }
+      try {
+        var p = req.call(el, { navigationUI: 'hide' });
+        if (p && typeof p.then === 'function') p.then(lockOrientation, function () { /* 전체 화면을 막으면 세로 안내로 */ });
+        else lockOrientation();
+      } catch (e) { /* 전체 화면을 막으면 세로 안내로 */ }
+    }
+    document.addEventListener('pointerdown', function (e) {
+      if (lockTried || e.pointerType !== 'touch') return;
+      lockTried = true;
+      lockLandscape();
+    }, { passive: true });
 
     openTitle();
   }

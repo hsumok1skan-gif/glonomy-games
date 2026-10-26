@@ -561,12 +561,18 @@ function submitItem() {
   if (!ok) return false;
   var list = App.state.fridge.items;
   var x = App.editItemId ? fridgeItemById(App.editItemId) : null;
+  var memos = App.state.fridge.memos, memoBefore = memos[x ? x.shelf : App.shelfId] || '';
   if (x) {
+    // 사진으로 넣은 메모 줄(⏰ 이름 ~날짜)이 있으면 같이 고친다 (H-13)
+    var oldLine = memoLineFor(x.name, x.exp), hadLine = (memos[x.shelf] || '').split('\n').indexOf(oldLine) >= 0;
     x.name = name; x.qty = qty; x.exp = exp;
+    if (hadLine) { memoRemoveLine(x.shelf, oldLine); if (exp) memoAddLine(x.shelf, memoLineFor(name, exp)); }
   } else {
     if (list.length >= 1000) { toast('냉장고 음식은 1000개까지다'); return false; }
     x = { id: newId('k'), shelf: App.shelfId, name: name, qty: qty, exp: exp, added: today, sample: false };
     list.push(x);
+    // 사진에서 읽은 날짜를 손으로 고쳐 넣었을 때도 칸 메모에 남긴다 (H-13)
+    if (App.ocrPick.shelf && exp) memoAddLine(x.shelf, memoLineFor(name, exp));
   }
   var edited = !!App.editItemId;
   save();
@@ -574,6 +580,7 @@ function submitItem() {
   resetItemForm();
   hideOcrAsk(); // 사진에서 읽은 것을 넣었으면 묻는 카드도 닫는다
   refreshOpen();
+  if ((memos[x.shelf] || '') !== memoBefore) syncShelfMemoBox(x.shelf);
   var e = expInfo(exp);
   toast(name + (edited ? ' 고쳤다' : ' 넣었다') + (e ? ' · ' + e.text : ''));
   try { $('item-name').focus({ preventScroll: true }); } catch (err) { $('item-name').focus(); }
@@ -585,9 +592,11 @@ function deleteItem(id) {
   askConfirm('냉장고에서 꺼낼까요?', x.name + ' 을(를) ' + shelfById(x.shelf).name + '에서 지운다. 다 먹었거나 버렸을 때 누른다.', '꺼내기', function () {
     rememberUndo();
     App.state.fridge.items = App.state.fridge.items.filter(function (i) { return i.id !== x.id; });
+    memoRemoveLine(x.shelf, memoLineFor(x.name, x.exp)); // 사진으로 넣은 메모 줄도 뺀다 (H-13)
     if (App.editItemId === x.id) resetItemForm();
     save();
     refreshOpen();
+    syncShelfMemoBox(x.shelf);
     toast(x.name + ' 꺼냈다', true);
   });
 }
@@ -700,7 +709,19 @@ function ocrEl(at, key) { return $((at === 'shelf' ? 'shelf-ocr-' : 'ocr-') + ke
 
 // 이름으로 쓰지 않는 표시 낱말 (날짜·용량·영양 표시 글)
 var OCR_SKIP = /^(유통기한|소비기한|유통|소비|기한|까지|제조|제조일|제조일자|제조년월일|생산|생산일|원재료|원재료명|내용량|중량|용량|보관|보관방법|냉장|냉장보관|냉동|냉동보관|영양|영양정보|영양성분|열량|칼로리|나트륨|탄수화물|당류|지방|포화지방|트랜스지방|콜레스테롤|단백질|포장|포장재질|재질|업소명|제조원|판매원|소재지|품목|품목보고번호|반품|교환|가격|판매가|할인|바코드|exp|best|before|kcal|mg|ml|kg|g|l)$/i;
-// 읽힌 글에서 음식 이름 후보를 고른다: 한 줄 통째(짧은 것)와 낱말, 날짜·숫자·단위·표시 낱말은 뺀다. 12개까지
+// 글자 인식은 한글을 '서 울 우 유' 처럼 한 글자씩 띄워 읽을 때가 많다. 이어진 한 글자들을 한 낱말로 붙인다 (H-14)
+function ocrWords(line) {
+  var words = [], run = '';
+  line.split(/\s+/).forEach(function (w) {
+    if (/^[가-힣]$/.test(w)) { run += w; return; }
+    if (run) { words.push(run); run = ''; }
+    if (w) words.push(w);
+  });
+  if (run) words.push(run);
+  return words;
+}
+// 읽힌 글에서 음식 이름 후보를 고른다: 한 줄 통째(짧은 것)와 낱말, 날짜·숫자·단위·표시 낱말은 뺀다.
+// 한글이 든 것을 앞에 두고 12개까지 (H-14)
 function ocrNames(text) {
   var seen = {}, out = [];
   function add(s) {
@@ -716,12 +737,13 @@ function ocrNames(text) {
     out.push(s);
   }
   String(text || '').split(/\n/).forEach(function (line) {
-    var l = line.trim();
-    var words = l.split(/\s+/);
+    var words = ocrWords(line.trim());
+    var l = words.join(' ');
     if (words.length > 1 && l.length <= 20) add(l);
     words.forEach(add);
   });
-  return out.slice(0, 12);
+  var ko = out.filter(function (s) { return /[가-힣]/.test(s); });
+  return ko.concat(out.filter(function (s) { return !/[가-힣]/.test(s); })).slice(0, 12);
 }
 function fillShelfSelect() {
   var sel = $('ocr-shelf');
@@ -729,7 +751,10 @@ function fillShelfSelect() {
 }
 // 읽은 결과로 카드를 연다. 날짜는 아직 '맞음' 전이다 (넣기 전에 늘 묻는다)
 function showOcrPick(at, r) {
-  App.ocrPick[at] = { text: r.text || '', date: Calc.isDay(r.date) ? r.date : null, dateOk: false, manual: false, name: '' };
+  App.ocrPick[at] = { text: r.text || '', date: Calc.isDay(r.date) ? r.date : null, dateOk: false, manual: false, name: '', own: false, savedId: null, memoLine: '', memoFull: false };
+  // 칸 시트에서 음식을 고치는 중에 찍었으면, 날짜를 확인할 때 그 음식을 고친다
+  var editing = at === 'shelf' && App.editItemId ? fridgeItemById(App.editItemId) : null;
+  if (editing) { App.ocrPick[at].savedId = editing.id; App.ocrPick[at].memoLine = memoLineFor(editing.name, editing.exp); }
   if (at === 'photo') fillShelfSelect();
   renderOcrPick(at);
   var box = at === 'shelf' ? $('shelf-ocr-ask') : $('ocr-out');
@@ -743,32 +768,50 @@ function renderOcrPick(at) {
   var where = at === 'shelf' ? esc(shelfById(App.shelfId) ? shelfById(App.shelfId).name : '이 칸') : '고른 칸';
   var day = o.date ? '<b>' + o.date.replace(/-/g, '.') + '</b>(' + ocrDateText(o.date) + ')' : '';
   var q;
-  if (o.date && !o.dateOk && !o.manual) q = '⏰ 사진에서 찾은 유통기한 ' + day + '<br>이 날짜가 맞나요?';
+  var saved = o.savedId ? fridgeItemById(o.savedId) : null;
+  if (o.date && !o.dateOk && !o.manual) q = '⏰ 사진에서 찾은 유통기한 ' + day + '<br>이 날짜가 맞나요? 맞으면 ' + where + ' 메모에 바로 넣는다.';
+  else if (o.dateOk && saved) q = '✓ <b>' + esc(saved.name) + '</b> · 유통기한 ' + day + '<br>' + esc(shelfById(saved.shelf).name) +
+    (o.memoFull ? '에 넣었다(칸 메모가 200자라 메모 줄은 못 더했다).' : ' 메모에 넣었다.') + ' 이름이 다르면 아래 글자를 누르거나 직접 써서 바꾼다.';
   else if (o.dateOk) q = '✓ 유통기한 ' + day + ' 확인. ' + (o.name ? '' : '아래에서 음식 이름을 고르면 바로 ' + where + '에 넣는다.');
   else if (o.manual) q = '날짜는 ' + (at === 'shelf' ? '위 유통기한 칸에서 고치자. 이름을 고른 뒤 \'이 칸에 넣기\'를 누른다.' : '칸을 열어 고치자.');
   else q = '⏰ 유통기한 날짜를 찾지 못했다. ' + (at === 'shelf' ? '위 유통기한 칸에 직접 넣고, 이름을 고른 뒤 \'이 칸에 넣기\'를 누른다.' : '이름을 고르고 \'칸 열어 직접 넣기\'로 날짜를 넣자.');
   ocrEl(at, 'q').innerHTML = q;
+  ocrEl(at, 'q').parentNode.classList.toggle('saved', !!(o.dateOk && saved)); // 넣었으면 상추색 막대 (H-13)
   ocrEl(at, 'btns').hidden = !(o.date && !o.dateOk && !o.manual);
   var names = ocrNames(o.text);
-  ocrEl(at, 'names').innerHTML = names.map(function (n) {
+  // 직접 쓴 이름은 읽힌 글자 버튼 맨 앞에 고른 채로 둔다 (H-14)
+  var typed = o.name && names.indexOf(o.name) < 0 ? o.name : '';
+  ocrEl(at, 'names').innerHTML = (typed ? [typed] : []).concat(names).map(function (n) {
     var on = n === o.name;
-    return '<button type="button" class="chip' + (on ? ' on' : '') + '" data-act="ocr-name" data-at="' + at + '" data-name="' + esc(n) + '" aria-pressed="' + on + '">' + esc(n) + '</button>';
-  }).join('') + (names.length ? '' : '<p class="hint">이름으로 쓸 만한 글자를 찾지 못했다.</p>') +
+    return '<button type="button" class="chip' + (on ? ' on' : '') + (n === typed ? ' typed' : '') + '" data-act="ocr-name" data-at="' + at + '" data-name="' + esc(n) + '" aria-pressed="' + on + '">' +
+      (on ? '✓ ' : '') + (n === typed ? '✏️ ' : '') + esc(n) + '</button>';
+  }).join('') + (names.length ? '' : '<p class="hint">이름으로 쓸 만한 글자를 찾지 못했다. 아래 \'직접 쓰기\'로 쓰자.</p>') +
     btn({ act: 'ocr-name-own', label: '✏️ 직접 쓰기', cls: 'chip own', data: { at: at } });
+  ocrEl(at, 'own').hidden = !o.own;
+  ocrEl(at, 'names').querySelector('.chip.own').setAttribute('aria-expanded', String(!!o.own));
+  // 읽힌 글자 전체: 줄바꿈 그대로 다 펼치고, 제목 옆에 줄·글자 수를 작게 단다 (H-15)
   ocrEl(at, 'text').textContent = o.text || '읽힌 글자가 없다. 날짜·이름 부분이 크게 나오게 가까이 찍어 보자.';
+  ocrEl(at, 'count').textContent = o.text ? ocrCountText(o.text) : '';
+  ocrCopyDone(at, false);
   ocrEl(at, 'copy').disabled = !o.text;
 }
-// '✓ 날짜 맞음': 칸 시트면 유통기한 칸을 채우고, 이름까지 골랐으면 바로 넣는다
+function ocrCountText(text) {
+  return text.split('\n').length + '줄 · ' + text.replace(/\s/g, '').length + '자';
+}
+// 전체 복사 버튼: 복사하면 1.6초 동안 '✓ 복사했다'(상추색)로 바뀐다
+function ocrCopyDone(at, on) {
+  var b = ocrEl(at, 'copy');
+  clearTimeout(b._doneTimer);
+  b.classList.toggle('done', on);
+  b.textContent = on ? '✓ 복사했다' : '📋 전체 복사';
+  if (on) b._doneTimer = setTimeout(function () { ocrCopyDone(at, false); }, 1600);
+}
+// '✓ 날짜 맞음': 확인한 날짜를 그 칸 메모와 음식 목록에 바로 넣는다 (H-13). 이름은 뒤에 골라도 따라 바뀐다
 function ocrDateOk(at) {
   var o = App.ocrPick[at];
   if (!o || !o.date) return;
   o.dateOk = true;
-  if (at === 'shelf') {
-    var i = $('item-exp');
-    i.value = o.date;
-    i.classList.remove('flash'); void i.offsetWidth; i.classList.add('flash');
-  }
-  if (!ocrCommit(at)) renderOcrPick(at);
+  if (!ocrAutoSave(at)) renderOcrPick(at);
 }
 // '다른 날짜': 날짜는 손으로 고친다 (내 냉장고 보기에서는 칸 시트를 연다)
 function ocrDateNo(at) {
@@ -786,67 +829,134 @@ function ocrName(at, name) {
   var o = App.ocrPick[at];
   if (!o || !name) return;
   o.name = String(name).slice(0, 30);
+  o.own = false;
+  if (o.dateOk && ocrAutoSave(at)) return; // 이미 넣었으면 그 음식·메모 줄 이름을 바꾼다
   if (at === 'shelf') {
     var n = $('item-name');
     n.value = o.name;
     n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash');
   }
-  if (ocrCommit(at)) return;
   renderOcrPick(at);
   if (o.date && !o.dateOk && !o.manual) toast('이름을 골랐다. 날짜가 맞으면 \'✓ 날짜 맞음\'을 누르자');
 }
-// 맞는 이름이 없으면 직접 쓴다
+// 맞는 이름이 없으면 카드 안 칸에 직접 쓴다 (H-14). 두 카드 모두 그 자리에서 쓰고, 이미 넣은 음식이면 이름이 따라 바뀐다
 function ocrNameOwn(at) {
   var o = App.ocrPick[at];
   if (!o) return;
-  o.name = '';
-  if (at === 'photo') { ocrToShelf(); return; }
+  o.own = !o.own;
   renderOcrPick(at);
-  var n = $('item-name');
-  n.value = '';
-  try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); }
+  if (!o.own) return;
+  var inp = ocrEl(at, 'own-in');
+  clearErrs(ocrEl(at, 'own'));
+  var saved = o.savedId ? fridgeItemById(o.savedId) : null;
+  inp.value = o.name || (saved && saved.name !== OCR_NONAME ? saved.name : '') || (at === 'shelf' ? $('item-name').value.trim() : '');
+  try { inp.focus({ preventScroll: true }); } catch (e) { inp.focus(); }
+  inp.select();
 }
-// 날짜 확인 + 이름이 모두 되면 그 칸에 음식을 넣는다 (칸 시트는 넣기 폼, 내 냉장고 보기는 고른 칸에 바로)
-function ocrCommit(at) {
+function ocrOwnUse(at) {
   var o = App.ocrPick[at];
-  if (!o || !o.dateOk || !o.name) return false;
-  if (at === 'shelf') {
-    $('item-exp').value = o.date;
-    $('item-name').value = o.name;
-    return submitItem();
-  }
-  var s = shelfById($('ocr-shelf').value);
-  var list = App.state.fridge.items;
-  if (!s) return false;
-  if (list.length >= 1000) { toast('냉장고 음식은 1000개까지다'); return false; }
-  rememberUndo();
-  var x = { id: newId('k'), shelf: s.id, name: o.name, qty: '', exp: o.date, added: Calc.today(), sample: false };
-  list.push(x);
-  save();
-  App.ocrPick.photo = null;
-  $('ocr-out').hidden = true;
-  App.flash = s.id;
-  refreshOpen();
-  toast(o.name + ' 을(를) ' + s.name + '에 넣었다 · ' + ocrDateText(o.date), true);
+  if (!o) return;
+  var inp = ocrEl(at, 'own-in'), v = inp.value.trim().replace(/\s+/g, ' ');
+  clearErrs(ocrEl(at, 'own'));
+  if (!v) { fieldErr(inp, '음식 이름을 쓴다.'); return; }
+  if (v.length > 30) { fieldErr(inp, '이름은 30자까지다.'); return; }
+  ocrName(at, v);
+}
+
+// ---------- 확인한 유통기한을 칸 메모에 자동으로 넣기 (H-13) ----------
+var OCR_NONAME = '사진 속 음식';
+// 칸 메모에 남기는 한 줄: '⏰ 두부 ~2026.11.03'
+function memoLineFor(name, exp) { return '⏰ ' + name + ' ~' + String(exp).replace(/-/g, '.'); }
+// 칸 메모에 줄을 더한다. 200자를 넘으면 더하지 않고 false
+function memoAddLine(shelfId, line) {
+  var memos = App.state.fridge.memos, cur = memos[shelfId] || '';
+  if (cur.split('\n').indexOf(line) >= 0) return true;
+  var next = cur ? cur + '\n' + line : line;
+  if (next.length > 200) return false;
+  memos[shelfId] = next;
   return true;
 }
-// 칸 시트를 열어 고른 이름·확인한 날짜를 채우고, 같은 카드로 이어서 묻는다
+function memoRemoveLine(shelfId, line) {
+  var memos = App.state.fridge.memos, cur = memos[shelfId];
+  if (!cur || !line) return;
+  var lines = cur.split('\n'), i = lines.indexOf(line);
+  if (i < 0) return;
+  lines.splice(i, 1);
+  var next = lines.join('\n').trim();
+  if (next) memos[shelfId] = next; else delete memos[shelfId];
+}
+// 칸 시트가 그 칸을 보고 있으면 메모 칸 글도 맞춘다
+function syncShelfMemoBox(shelfId) {
+  if (!isOpen('sheet-shelf') || App.shelfId !== shelfId) return;
+  var ta = $('shelf-memo');
+  ta.value = App.state.fridge.memos[shelfId] || '';
+  ta.classList.remove('flash'); void ta.offsetWidth; ta.classList.add('flash');
+}
+// 날짜를 확인하면 부른다: 처음이면 넣고(되돌리기 가능), 이미 넣었으면 이름·칸만 맞춘다
+function ocrAutoSave(at) {
+  var o = App.ocrPick[at];
+  if (!o || !o.dateOk || !Calc.isDay(o.date)) return false;
+  var s = shelfById(at === 'shelf' ? App.shelfId : $('ocr-shelf').value);
+  if (!s) return false;
+  var typed = at === 'shelf' && !o.savedId ? $('item-name').value.trim().replace(/\s+/g, ' ').slice(0, 30) : '';
+  var name = o.name || (o.savedId ? '' : typed || OCR_NONAME);
+  var x = o.savedId ? fridgeItemById(o.savedId) : null;
+  var first = !x;
+  if (first) {
+    var list = App.state.fridge.items;
+    if (list.length >= 1000) { toast('냉장고 음식은 1000개까지다'); return false; }
+    rememberUndo();
+    var qty = at === 'shelf' ? $('item-qty').value.trim().replace(/\s+/g, ' ').slice(0, 20) : '';
+    x = { id: newId('k'), shelf: s.id, name: name, qty: qty, exp: o.date, added: Calc.today(), sample: false };
+    list.push(x);
+    o.savedId = x.id;
+  } else {
+    memoRemoveLine(x.shelf, o.memoLine);
+    if (name) x.name = name;
+    x.shelf = s.id;
+    x.exp = o.date;
+  }
+  o.memoLine = memoLineFor(x.name, x.exp);
+  o.memoFull = !memoAddLine(x.shelf, o.memoLine);
+  if (o.memoFull) o.memoLine = '';
+  save();
+  App.flash = x.id;
+  if (at === 'shelf') resetItemForm();
+  refreshOpen();
+  syncShelfMemoBox(x.shelf);
+  renderOcrPick(at);
+  var where = s.name + (o.memoFull ? '' : ' 메모');
+  toast(first ? x.name + ' · ' + ocrDateText(x.exp) + ' 을(를) ' + where + '에 넣었다' :
+    x.name + ' · ' + ocrDateText(x.exp) + ' 로 ' + where + '을(를) 고쳤다', first);
+  return true;
+}
+// 내 냉장고 보기에서 넣을 칸을 바꾸면, 이미 넣은 음식·메모 줄도 그 칸으로 옮긴다
+function onOcrShelfChange() {
+  var o = App.ocrPick.photo;
+  if (o && o.dateOk && o.savedId) ocrAutoSave('photo');
+}
+// 칸 시트를 열어 고른 이름·확인한 날짜를 채우고, 같은 카드로 이어서 묻는다 (이미 넣었으면 그 음식 고치기로)
 function ocrToShelf() {
   var o = App.ocrPick.photo, id = $('ocr-shelf').value;
   if (!o || !shelfById(id)) return;
-  openShelf(id);
-  App.ocrPick.shelf = { text: o.text, date: o.date, dateOk: o.dateOk, manual: o.manual, name: o.name };
-  if (o.name) $('item-name').value = o.name;
-  if (o.date && (o.dateOk || o.manual)) $('item-exp').value = o.date;
+  var saved = o.savedId ? fridgeItemById(o.savedId) : null;
+  openShelf(saved ? saved.shelf : id);
+  App.ocrPick.shelf = { text: o.text, date: o.date, dateOk: o.dateOk, manual: o.manual, name: o.name, own: false, savedId: saved ? saved.id : null, memoLine: o.memoLine || '', memoFull: !!o.memoFull };
+  if (saved) {
+    editItem(saved.id);
+  } else {
+    if (o.name) $('item-name').value = o.name;
+    if (o.date && (o.dateOk || o.manual)) $('item-exp').value = o.date;
+  }
   renderOcrPick('shelf');
   $('shelf-ocr-ask').hidden = false;
-  var focus = o.name ? $('item-exp') : $('item-name');
+  var focus = o.name || saved ? $('item-exp') : $('item-name');
   try { focus.focus({ preventScroll: true }); } catch (e) { focus.focus(); }
 }
 function copyOcrText(at) {
   var o = App.ocrPick[at];
   if (!o || !o.text) { toast('복사할 글자가 없다'); return; }
-  copyText(o.text, '읽힌 글자를 모두 복사했다');
+  copyText(o.text, '읽힌 글자 ' + ocrCountText(o.text) + '를 모두 복사했다', null, function () { ocrCopyDone(at, true); });
 }
 // 칸 시트: 사진을 찍어 이 칸에 넣을 날짜·이름을 고른다
 function takeShelfPhoto() {
@@ -1139,8 +1249,8 @@ function openBackup() {
 function copyExport() {
   copyText($('export-text').value, '복사했다. 안전한 곳에 붙여 두자', $('export-text'));
 }
-// 글을 클립보드로 복사한다. 막히면 글 상자(없으면 잠깐 만든 숨은 상자)를 골라 복사한다
-function copyText(text, okMsg, ta) {
+// 글을 클립보드로 복사한다. 막히면 글 상자(없으면 잠깐 만든 숨은 상자)를 골라 복사한다. 되면 onOk 를 부른다
+function copyText(text, okMsg, ta, onOk) {
   var fallback = function () {
     var box = ta, temp = !box;
     if (temp) {
@@ -1154,10 +1264,11 @@ function copyText(text, okMsg, ta) {
     try { box.focus(); box.select(); ok = document.execCommand('copy'); } catch (e) { ok = false; }
     if (temp) document.body.removeChild(box);
     toast(ok ? okMsg : '글을 길게 눌러 직접 복사해 주세요');
+    if (ok && onOk) onOk();
   };
   try {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { toast(okMsg); }, fallback);
+      navigator.clipboard.writeText(text).then(function () { toast(okMsg); if (onOk) onOk(); }, fallback);
     } else fallback();
   } catch (e) { fallback(); }
 }
@@ -1294,6 +1405,12 @@ function doUndo() {
   applySettings();
   save();
   refreshOpen();
+  // 사진으로 넣은 음식을 되돌렸으면 묻는 카드도 날짜 확인 전으로 (H-13)
+  ['shelf', 'photo'].forEach(function (at) {
+    var o = App.ocrPick[at];
+    if (o && o.savedId && !fridgeItemById(o.savedId)) { o.savedId = null; o.memoLine = ''; o.dateOk = false; renderOcrPick(at); }
+  });
+  if (isOpen('sheet-shelf')) $('shelf-memo').value = App.state.fridge.memos[App.shelfId] || '';
   toast('되돌렸다');
 }
 
@@ -1351,6 +1468,7 @@ var ACTIONS = {
   'ocr-date-no': function (d) { ocrDateNo(d.at); },
   'ocr-name': function (d) { ocrName(d.at, d.name); },
   'ocr-name-own': function (d) { ocrNameOwn(d.at); },
+  'ocr-own-use': function (d) { ocrOwnUse(d.at); },
   'ocr-copy': function (d) { copyOcrText(d.at); },
   'ocr-to-shelf': ocrToShelf,
   'price-open': function () { openPrice(null); },
@@ -1377,6 +1495,19 @@ var ACTIONS = {
     var a = $('spend-amount');
     a.value = d.v;
     a.classList.remove('flash'); void a.offsetWidth; a.classList.add('flash');
+    renderSpendPreview();
+  },
+  // R-07: 숫자판 — 금액 칸(#spend-amount) 값을 고친 뒤 큰 금액·미리보기를 다시 그린다. 1,000만 원을 넘는 키는 받지 않고 흔든다
+  'spend-key': function (d) {
+    var a = $('spend-amount'), k = d.k;
+    var s = String(a.value || '').replace(/\D/g, '');
+    if (k === 'back') s = s.slice(0, -1);
+    else if (k === 'clear') s = '';
+    else if (k.charAt(0) === '+') s = String((Number(s) || 0) + Number(k.slice(1)));
+    else s = (s + k).replace(/^0+/, '');
+    if (Number(s) > 10000000) { fieldErr(a, '쓴 돈은 1~10,000,000 사이로 넣는다.'); return; }
+    clearErrs(a.closest('.field'));
+    a.value = s;
     renderSpendPreview();
   },
   'chal-open': function () { if (isOpen('ov-result')) closeLayer('ov-result'); openChalSheet(); },
@@ -1424,6 +1555,7 @@ var ACTIONS = {
   'welcome-sample': function () { closeLayer('ov-welcome'); loadSample(); },
   'welcome-empty': function () { App.state.welcomed = true; save(); closeLayer('ov-welcome'); },
   'welcome-chal': function () { App.state.welcomed = true; save(); closeLayer('ov-welcome'); openChalSheet(); },
+  'welcome-open': function () { openLayer('ov-welcome'); },
   undo: doUndo
 };
 
@@ -1442,6 +1574,12 @@ function onKey(e) {
   if (e.key === 'Enter' && e.target && e.target.tagName === 'INPUT' && e.target.closest('#settings-form')) {
     e.preventDefault();
     onSettingsChange(e);
+    return;
+  }
+  // 사진 카드의 '직접 쓰기' 칸은 엔터로 그 이름을 고른다 (칸 시트에서는 음식 넣기 폼이 제출되지 않게)
+  if (e.key === 'Enter' && e.target && (e.target.id === 'shelf-ocr-own-in' || e.target.id === 'ocr-own-in')) {
+    e.preventDefault();
+    ocrOwnUse(e.target.id === 'ocr-own-in' ? 'photo' : 'shelf');
     return;
   }
   if (e.key === 'Enter' && e.target && e.target.id === 'price-q') {
@@ -1496,6 +1634,7 @@ function bind() {
   $('item-form').addEventListener('submit', function (e) { e.preventDefault(); submitItem(); });
   $('photo-input').addEventListener('change', onPhotoChosen);
   $('shelf-photo-input').addEventListener('change', onShelfPhotoChosen);
+  $('ocr-shelf').addEventListener('change', onOcrShelfChange);
   Ocr.onProgress(showOcrProgress);
   $('settings-form').addEventListener('change', onSettingsChange);
   $('settings-form').addEventListener('submit', function (e) { e.preventDefault(); onSettingsChange(e); });
@@ -1519,7 +1658,8 @@ function init() {
   $('ocr-file').hidden = Ocr.available(); // file:// 면 글자 읽기 대신 안내 (H-08)
   settleChallenges();
   setScreen('fridge'); // 처음 여는 화면은 양문형 냉장고 (H-03)
-  if (!App.state.welcomed) openLayer('ov-welcome');
+  // H-12: 첫 화면은 냉장고만. 처음 안내 시트(아래쪽 버튼 셋)를 저절로 띄우지 않는다.
+  // 첫 실행 안내는 닫힌 문의 메모지·다음 할 일(#door-next)이 맡고, 시트는 설정 '모든 화면'의 '처음 안내'로 연다
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
