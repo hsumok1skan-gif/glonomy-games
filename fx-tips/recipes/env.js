@@ -340,7 +340,7 @@
 
     // ───────────────────────── 3. 바람과 풀
     {
-      id: "env-wind", cat: "env", view: "side",
+      id: "env-wind", cat: "env", view: "side", polished: true,
       title: { en: "Make wind *visible*", ko: "바람을 *눈에 보이게*" },
       intro: { en: "A gust? Everything just *tilts* at once.", ko: "바람이 불면… 전부 *한꺼번에* 기울어요." },
       interval: 1.5, stepDur: 3.8,

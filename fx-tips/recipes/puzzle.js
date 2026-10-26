@@ -179,7 +179,7 @@
 
     /* 2 ─────────────────────────────── */
     {
-      id: "puzzle-hard-drop", cat: "puzzle", view: "ui",
+      id: "puzzle-hard-drop", cat: "puzzle", view: "ui", polished: true,
       title: { en: "Make hard drops *slam*", ko: "한 번에 내리기를 *쾅!*" },
       intro: { en: "It just *blinks* to the bottom.", ko: "그냥 바닥으로 *깜빡* 이동해요." },
       interval: 1.15, stepDur: 3.5,
@@ -265,7 +265,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "whoosh + slam",
           cap: { en: "A short *whoosh*, then a heavy *slam*.", ko: "짧게 *휙*, 이어서 묵직하게 *쾅*." },
           drop(w) { w.sfx.swish(); },
-          land(w) { w.sfx.thud(); },
+          land(w) { if (w.on("impact") || w.on("squash")) w.sfx.thud(); else w.sfx.tock(); },
         },
       ],
     },

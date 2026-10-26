@@ -39,6 +39,8 @@
   const sprIn = (ctx, key, x, y, w, h, a = 1) => { if (a <= 0) return; const c = SPR[key].c; ctx.globalAlpha = a; ctx.drawImage(c, x - w / 2, y - h, w, h); ctx.globalAlpha = 1; };
   // 배우 위에 색 덮기 (하늘색·흰색 등)
   const tintActor = (ctx, a, which, alpha) => {
+    // 픽셀 동작 그림 인물은 그림 위에 색을 칠해 줌(다음 프레임부터), 옛 그림을 겹쳐 그리지 않음
+    if (poseSet(a)) { a.chill = which === "cyan" ? Math.max(0, alpha) : 0; return; }
     if (alpha <= 0 || a.alpha <= 0) return;
     ctx.save(); ctx.globalAlpha = Math.min(1, alpha) * a.alpha;
     ctx.translate(a.x + a.ox, a.gy + a.oy); ctx.scale(a.sx, a.sy);
@@ -58,20 +60,29 @@
     ctx.restore();
   };
   // 불꽃: 세 겹 물방울, s = 크기, f = 흔들림(0이면 정지)
+  // 픽셀 불꽃: 4px 칸으로 찍는 불혀 4겹(검붉음 → 빨강 → 주황 → 노랑 심), 줄마다 좌우로 일렁이고 위쪽은 톱니처럼 갈라짐
   const flame = (ctx, x, y, s, f, t) => {
-    const lay = [[1, "239,68,68"], [0.75, "251,146,60"], [0.48, "253,224,71"]];
-    ctx.save(); ctx.globalCompositeOperation = "lighter";
-    lay.forEach(([k, c], i) => {
-      const h = 70 * s * k * (1 + f * 0.18 * Math.sin(t * 19 + i * 2)), wd = 26 * s * k, sw = f * 9 * Math.sin(t * 11 + i);
-      ctx.fillStyle = `rgba(${c},0.9)`; ctx.beginPath(); ctx.moveTo(x - wd, y);
-      ctx.quadraticCurveTo(x - wd * 1.1, y - h * 0.5, x + sw, y - h); ctx.quadraticCurveTo(x + wd * 1.1, y - h * 0.5, x + wd, y); ctx.closePath(); ctx.fill();
-    });
-    ctx.restore();
+    const C = 4, lay = [[1, "#7a1a10"], [0.86, "#e2402a"], [0.66, "#ff8a2a"], [0.42, "#ffd45a"], [0.2, "#fff4c8"]];
+    x = Math.round(x / C) * C; y = Math.round(y / C) * C;
+    for (const [k, col] of lay) {
+      const H = Math.round(76 * s * k / C), W = 30 * s * k;
+      ctx.fillStyle = col;
+      for (let r = 0; r < H; r++) {
+        const u = r / H, sway = f * Math.sin(t * 11 - r * 0.45) * 5 * u, tongue = f * (Math.sin(t * 19 + r * 1.3) * 0.5 + 0.5) * u;
+        const half = Math.max(0, Math.round((W * Math.pow(1 - u, 0.8) * (1 - 0.35 * tongue)) / C));
+        if (!half && u > 0.85) continue;
+        ctx.fillRect(x + Math.round(sway / C) * C - half * C, y - (r + 1) * C, Math.max(1, half * 2) * C, C);
+      }
+    }
   };
+  // 픽셀 장작 두 개를 엇갈려 쌓고, 단면은 밝은 나이테 + 빨갛게 탄 끝
   const logs = (ctx, x, y) => {
-    ctx.save(); ctx.translate(x, y);
-    for (const r of [-0.35, 0.35]) { ctx.save(); ctx.rotate(r); rr(ctx, -40, -9, 80, 14, 6, "#78350f", "rgba(0,0,0,0.3)", 2); ctx.restore(); }
-    ctx.restore();
+    x = Math.round(x); y = Math.round(y);
+    for (const d of [-1, 1]) {
+      for (let i = 0; i < 18; i++) { const px = x - 36 * d + i * 4 * d, py = y - 2 - Math.round(i * 0.55); ctx.fillStyle = "#1a0f0a"; ctx.fillRect(px - 2, py - 7, 6, 14); ctx.fillStyle = i % 5 ? "#5a3418" : "#7a4a24"; ctx.fillRect(px - 1, py - 6, 4, 12); ctx.fillStyle = "#3a2010"; ctx.fillRect(px - 1, py + 3, 4, 3); }
+      const ex = x - 38 * d, ey = y - 2; ctx.fillStyle = "#1a0f0a"; ctx.fillRect(ex - 6, ey - 8, 12, 16); ctx.fillStyle = "#c8925a"; ctx.fillRect(ex - 4, ey - 6, 8, 12); ctx.fillStyle = "#8a5a30"; ctx.fillRect(ex - 2, ey - 2, 4, 4);
+      ctx.fillStyle = "#ff6a2a"; ctx.fillRect(x - 8 * d - 2, y - 14, 4, 4);
+    }
   };
   const meter = (ctx, x, y, wd, h, f, col, bg = "rgba(0,0,0,0.55)") => {
     ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(x - 3, y - 3, wd + 6, h + 6, (h + 6) / 2); ctx.fill();
@@ -467,7 +478,7 @@
 
     /* ───────── 5. 모닥불 온기 ───────── */
     {
-      id: "survival-campfire", cat: "survival", view: "side",
+      id: "survival-campfire", cat: "survival", view: "side", polished: true,
       title: { en: "Make a campfire feel *warm*", ko: "모닥불을 *따뜻하게*" },
       intro: { en: "Is that fire? Or a *cone*?", ko: "불인가요… *고깔*인가요?" },
       interval: 1.6, stepDur: 4.0,

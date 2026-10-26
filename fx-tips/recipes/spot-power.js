@@ -226,7 +226,7 @@
 
     /* ───────── 2. 무기 단조 ───────── */
     {
-      id: "spot-power-forge", cat: "sim", view: "3d",
+      id: "spot-power-forge", cat: "sim", view: "3d", polished: true,
       title: { en: "Make forging feel *red-hot*", ko: "대장간 망치질을 *뜨겁게*" },
       intro: { en: "Three hits. Just *tap, tap, tap*.", ko: "세 번 쳤는데 그냥 *톡, 톡, 톡*." },
       interval: 2.9, stepDur: 4.0,
@@ -287,11 +287,11 @@
         }
         // 망치: 오른쪽 위 손잡이 끝을 축으로 회전
         const px = 446, py = 150, L = 138, hx = px + Math.cos(hm.a) * L, hy = py + Math.sin(hm.a) * L;
-        ctx.strokeStyle = "#6b4426"; ctx.lineWidth = 9; ctx.lineCap = "round";
-        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(hx, hy); ctx.stroke();
-        ctx.save(); ctx.translate(hx, hy); ctx.rotate(hm.a + Math.PI / 2);
-        rr(ctx, -26, -16, 52, 32, 4, "#59606e"); rr(ctx, -26, -16, 52, 10, 4, "#9aa2b4");
-        ctx.restore();
+        // 손으로 찍은 픽셀 전투 망치: 자루 끝(16, 68)을 축에, 머리(16, 11)가 hx, hy 쪽으로
+        if (!pxSprite(ctx, "wpn-hammer-px", px, py, 2.35, hm.a + Math.PI / 2, 16, 68)) {
+          ctx.strokeStyle = "#6b4426"; ctx.lineWidth = 9; ctx.lineCap = "round";
+          ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(hx, hy); ctx.stroke();
+        }
       },
       steps: [
         {
@@ -338,11 +338,9 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clang ×3 + hiss",
           cap: { en: "Ringing *clang*, *clang*, then a *hiss*.", ko: "*깡*, *깡*, 마지막에 *치익*." },
-          strike(w, b, x, y, i) {
-            w.play(() => { tn({ type: "square", f: 1400 + i * 120, f2: 1300, dur: 0.22, vol: 0.12 }); nz({ type: "highpass", f: 3000, f2: 2000, q: 1, dur: 0.08, vol: 0.3 }); });
-            w.sfx.thud();
-          },
-          forged(w) { w.play(() => nz({ type: "highpass", f: 4000, f2: 2500, q: 1, dur: 0.6, vol: 0.18 })); w.sfx.chime(4); },
+          // 망치가 모루를 칠 때: 쇠가 길게 울리는 깡 (불꽃이 있을 때만 크게), 완성되면 물에 식히는 치익
+          strike(w, b, x, y, i) { w.play(() => { sSnap(0.7, 0, 3000); sBody(240, 0.08, 0.6); sMetal(1250 + i * 90, w.on("sparks") ? 0.8 : 0.3, 0.13, 0, 0.4); }); },
+          forged(w) { w.play(() => nz({ type: "highpass", f: 4000, f2: 2500, q: 1, dur: 0.8, vol: 0.22, att: 0.02 })); if (w.on("gleam")) w.after(0.5, () => w.sfx.sparkle()); },
         },
       ],
     },
@@ -832,7 +830,7 @@
 
     /* ───────── 8. 금고 문 열기 ───────── */
     {
-      id: "spot-power-vault", cat: "rpg", view: "3d",
+      id: "spot-power-vault", cat: "rpg", view: "3d", polished: true,
       title: { en: "Make vault doors feel *heavy*", ko: "금고 문을 *묵직하게*" },
       intro: { en: "Key in. The door just *slides open*.", ko: "열쇠 넣으니 문이 그냥 *스윽*." },
       interval: 3.4, stepDur: 4.2,
@@ -954,15 +952,16 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "clicks + hiss + creak",
           cap: { en: "*Clicks*, a *hiss*, a long *creak*, *boom*.", ko: "*철컥*, *피식*, *끼이익*, *쿵*." },
           bolt(w) { w.sfx.clickDown(); },
-          unseal(w) { w.play(() => nz({ type: "highpass", f: 3000, f2: 1500, q: 1, dur: 0.5, vol: 0.2 })); w.sfx.creak(); },
-          open(w) { w.sfx.slam(); w.sfx.chime(5); },
+          unseal(w) { if (w.on("unseal")) w.play(() => nz({ type: "highpass", f: 3000, f2: 1500, q: 1, dur: 0.5, vol: 0.2 })); },
+          // 문이 열릴 때 경첩, 무거운 문이 닿을 때만 쿵, 빛이 쏟아질 때 화아
+          open(w) { w.sfx.chestOpen(); if (w.on("swing")) w.after(0.3, () => w.sfx.thud()); if (w.on("light")) w.sfx.lightSwell(); },
         },
       ],
     },
 
     /* ───────── 9. 스킬 트리 노드 해금 ───────── */
     {
-      id: "spot-power-skill", cat: "rpg", view: "ui",
+      id: "spot-power-skill", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make skill unlocks feel *earned*", ko: "스킬 해금을 *뿌듯하게*" },
       intro: { en: "Skill unlocked. The icon just *turns on*.", ko: "스킬을 찍었는데 아이콘만 *딸깍*." },
       interval: 2.9, stepDur: 4.0,
@@ -1058,7 +1057,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "charge + zap + ding",
           cap: { en: "Rising *charge*, an electric *zap*, a *ding*.", ko: "차오르는 *웅*, *파직*, 맑은 *딩*." },
           charge(w) { w.sfx.charge(); },
-          unlock(w) { w.sfx.magic(); w.sfx.chime(6); },
+          unlock(w) { if (w.on("pop")) w.play(() => { for (let i = 0; i < 6; i++) sSnap(0.2, i * 0.025, 3000 + i * 500); }); if (w.on("banner")) w.sfx.itemGet(); else w.sfx.chime(6); },
         },
       ],
     },

@@ -1935,7 +1935,7 @@ function drawPoseActor(ctx, a, w) {
   x.setTransform(1, 0, 0, 1, 0, 0);
   const over = (col, al) => { if (al <= 0) return; x.globalCompositeOperation = "source-atop"; x.globalAlpha = Math.min(1, al); x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); x.globalAlpha = 1; x.globalCompositeOperation = "source-over"; };
   // 번쩍임은 짧고 또렷하게: 처음 순간만 흰색, 그 뒤는 옅게
-  over("#ffffff", a.flash > 0.88 ? 0.85 : a.flash * 0.28); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#ff6a1a", a.burn > 0 ? Math.min(1, a.burn) * (0.14 + 0.1 * Math.sin(performance.now() / 45)) : 0);
+  over("#ffffff", a.flash > 0.88 ? 0.85 : a.flash * 0.28); over("#ef4444", Math.min(0.55, a.tint * 0.6)); over("#6ac8ff", Math.min(0.42, (a.chill || 0) * 0.7)); over("#ff6a1a", a.burn > 0 ? Math.min(1, a.burn) * (0.14 + 0.1 * Math.sin(performance.now() / 45)) : 0);
   const sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = !P.pixel; ctx.shadowBlur = 0;
   ctx.drawImage(c, -W / 2, -(H - 4), W, H); ctx.imageSmoothingEnabled = sm;
   // 잔상용으로 지금 모습을 보관 (actorGhost가 복사해 씀)

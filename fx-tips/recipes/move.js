@@ -132,7 +132,7 @@
 
     /* 2. 벽 미끄러짐 */
     {
-      id: "move-wallslide", cat: "move", view: "side",
+      id: "move-wallslide", cat: "move", view: "side", polished: true,
       title: { en: "Give wall slides *friction*", ko: "벽 미끄럼에 *마찰*을 주기" },
       intro: { en: "Sliding down a wall. Feels like an *elevator*.", ko: "벽을 타고 내려오는데 *엘리베이터* 같아요." },
       interval: 2.3, stepDur: 3.6,
@@ -208,7 +208,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "scrape loop / tup",
           cap: { en: "A rough *scrape* loop, then a *tup*.", ko: "*지익* 긁는 소리, 끝에 *툭*." },
-          grind(w) { w.sfx.scrape(); },
+          grind(w) { if (w.on("sparks")) w.play(() => { nz({ dur: 0.2, type: "bandpass", f: 2600, f2: 1800, q: 2, vol: 0.18 }); sSnap(0.1, 0.03, 4000); }); else w.sfx.scrape(); },
           land(w) { w.sfx.land(); },
         },
       ],

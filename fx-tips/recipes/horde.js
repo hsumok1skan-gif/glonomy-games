@@ -146,7 +146,7 @@
 
     /* 2 ─ 연쇄 처치 카운터 */
     {
-      id: "horde-chain", cat: "horde", view: "top",
+      id: "horde-chain", cat: "horde", view: "top", polished: true,
       title: { en: "Make a *kill chain* feel alive", ko: "연쇄 처치 숫자에 *생기* 넣기" },
       intro: { en: "The number goes up. *Who cares?*", ko: "숫자는 오르는데… *아무 느낌* 없어요." },
       interval: 0.24, stepDur: 3.8,

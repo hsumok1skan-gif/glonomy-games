@@ -596,7 +596,7 @@
 
     /* 5 ─ 옵션 드론 */
     {
-      id: "shooter-options", cat: "shooter", view: "top",
+      id: "shooter-options", cat: "shooter", view: "top", polished: true,
       title: { en: "Give option drones *life*", ko: "옵션 드론에 *생기* 넣기" },
       intro: { en: "Two dots, *glued* to the ship.", ko: "점 두 개가 기체에 *붙어만* 있어요." },
       interval: 1.6, stepDur: 3.8,

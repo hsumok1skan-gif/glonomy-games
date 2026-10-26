@@ -308,7 +308,7 @@
 
     /* 3 ─ 니트로 불꽃 */
     {
-      id: "racing-nitro", cat: "racing", view: "side",
+      id: "racing-nitro", cat: "racing", view: "side", polished: true,
       title: { en: "Make nitro *roar*", ko: "니트로를 *으르렁*거리게" },
       intro: { en: "Nitro on. It just goes a bit *faster*.", ko: "니트로 켰는데 *조금* 빨라질 뿐." },
       interval: 2.2, stepDur: 3.6,
@@ -379,7 +379,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "pop + roar",
           cap: { en: "A *pop* to ignite, then a long *roar*.", ko: "*펑* 하고 붙고, 길게 *부와앙*." },
-          nitro(w) { w.sfx.pop(); w.sfx.boost(); },
+          nitro(w) { if (w.on("flames")) w.play(() => { sSnap(0.5, 0, 2500); sBody(160, 0.12, 0.6); nz({ dur: 0.18, f: 1800, f2: 400, vol: 0.4 }); }); if (w.on("core") || w.on("lines")) w.sfx.boost(); else w.sfx.dash(); },
         },
       ],
     },
