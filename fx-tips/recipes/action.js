@@ -1432,7 +1432,7 @@
 
     /* 18 ─ 분노 모드 */
     {
-      id: "action-rage", cat: "action", view: "side", melee: true,
+      id: "action-rage", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Make rage mode feel *dangerous*", ko: "분노 모드가 *위험해 보이게*" },
       intro: { en: "Rage mode ON. Looks *exactly the same*.", ko: "분노 모드 켰는데 *똑같아요*." },
       interval: 2.6, stepDur: 4.0,
@@ -1499,20 +1499,20 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "growl + boom",
           cap: { en: "A low *growl* under a *boom*.", ko: "낮은 *으르렁* 위에 *쾅*." },
-          rage(w) { w.sfx.boom(); w.play(() => tn({ type: "sawtooth", f: 70, f2: 55, dur: 0.6, vol: 0.12 })); },
+          rage(w) { if (w.on("burst")) w.sfx.boom(); if (w.on("body") || w.on("aura")) w.play(() => tn({ type: "sawtooth", f: 70, f2: 55, dur: 0.6, vol: 0.12 })); },
         },
       ],
     },
 
     /* 19 ─ 마무리 카메라 */
     {
-      id: "action-finisher-cam", cat: "action", view: "side", melee: true,
+      id: "action-finisher-cam", cat: "action", view: "side", polished: true, melee: true,
       title: { en: "Frame the *final blow*", ko: "마지막 일격을 *영화처럼*" },
       intro: { en: "The boss is dead. The camera *didn't care*.", ko: "보스가 죽었는데 카메라는 *무덤덤*." },
       interval: 2.0, stepDur: 4.0,
       setup(w) {
         w.hero = w.actor("hero", { home: 120 }); w.sw = { rot: 0.3 };
-        w.foe = w.actor("foe", { home: 360, hp: 30 }); w.fin = 0; w.ifr = 0; w.bars = 0;
+        w.foe = w.actor("foe", { home: 360, hp: 30 }); w.fin = 0; w.ifr = 0; w.bars = 0; w.hero.keepSnap = w.foe.keepSnap = true;
       },
       fire(w) {
         if (w.busy) return;
@@ -1537,7 +1537,7 @@
         if (w.ifr > 0) {
           w.ifr--;
           ctx.fillStyle = "#000"; ctx.fillRect(-100, -100, 740, 560);
-          for (const a of [w.hero, w.foe]) { ctx.save(); ctx.translate(a.x + a.ox, a.gy + a.oy); ctx.scale(a.flip ? -1 : 1, 1); ctx.drawImage(a.s.white, -a.w / 2, -a.h, a.w, a.h); ctx.restore(); }
+          for (const a of [w.hero, w.foe]) { if (drawActorSil(ctx, a, "#ffffff")) continue; ctx.save(); ctx.translate(a.x + a.ox, a.gy + a.oy); ctx.scale(a.flip ? -1 : 1, 1); ctx.drawImage(a.s.white, -a.w / 2, -a.h, a.w, a.h); ctx.restore(); }
         }
         drawBar(ctx, w.foe);
       },
@@ -1576,7 +1576,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crit + low boom",
           cap: { en: "A sharp *crit* sinking into a low *boom*.", ko: "날카로운 *챙*이 낮은 *쿵*으로." },
-          finish(w) { w.sfx.crit(); w.sfx.boom(); },
+          finish(w) { w.sfx.slashHit(); if (w.on("impact")) w.sfx.critBig(); if (w.on("zoom") || w.on("bars")) w.sfx.boom(); },
         },
       ],
     },

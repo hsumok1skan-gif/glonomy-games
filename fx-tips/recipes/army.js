@@ -1045,7 +1045,7 @@
 
     // 10 ─ 쓰러진 유닛 정리
     {
-      id: "army-death", cat: "army", view: "top",
+      id: "army-death", cat: "army", view: "top", polished: true,
       title: { en: "Clear the dead *without clutter*", ko: "쓰러진 유닛, *깔끔하게* 치우기" },
       intro: { en: "Dead or alive? *Can't tell.*", ko: "죽은 거야, 산 거야? *모르겠어요*." },
       interval: 0.7, stepDur: 3.6,
@@ -1103,14 +1103,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "soft thunk",
           cap: { en: "*Soft* thunks. Many deaths shouldn't be loud.", ko: "*작은* 퍽. 많이 죽어도 시끄러우면 안 돼요." },
-          die(w) { w.sfx.tock(); },
+          die(w) { w.sfx.thud(); },
         },
       ],
     },
 
     // 11 ─ 사기 붕괴, 패주
     {
-      id: "army-rout", cat: "army", view: "iso",
+      id: "army-rout", cat: "army", view: "iso", polished: true,
       title: { en: "Show the moment *morale breaks*", ko: "사기가 *꺾이는* 순간" },
       intro: { en: "They… back away. *Calmly.*", ko: "뒤로… 스르륵. *침착하게*." },
       interval: 2.2, stepDur: 4.0,
@@ -1198,7 +1198,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "crack + scatter",
           cap: { en: "A *crack* when it breaks, then *scrambling* feet.", ko: "깨질 때 *쩍*, 이어서 *후다닥*." },
-          break(w) { w.sfx.crit(); w.sfx.rattle(); },
+          break(w) { w.sfx.rattle(); if (w.on("icon") || w.on("panic")) w.sfx.slam(); },
         },
       ],
     },

@@ -590,7 +590,7 @@
       title: { en: "Make the final blow *cinematic*", ko: "마지막 일격을 *영화처럼*" },
       intro: { en: "Last hit. Boss *blinks out*.", ko: "마지막 한 방. 보스가 *뿅* 사라져요." },
       interval: 2.6, stepDur: 4.0,
-      setup(w) { art(); w.hero = w.actor("hero", { home: 100 }); w.boss = w.actor("duel-boss", { home: 380, hp: 1000 }); w.lb = 0; w.sil = 0; },
+      setup(w) { art(); w.hero = w.actor("hero", { home: 100 }); w.boss = w.actor("duel-boss", { home: 380, hp: 1000 }); w.lb = 0; w.sil = 0; w.hero.keepSnap = w.boss.keepSnap = true; },
       fire(w) {
         restart(w);
         const h = w.hero, b = w.boss;
@@ -608,7 +608,7 @@
       drawHud(w, ctx) {
         if (w.sil > 0) {
           ctx.fillStyle = "#f5f5f0"; ctx.fillRect(-100, -100, 740, 560);
-          for (const a of [w.hero, w.boss]) if (a.alpha > 0) ctx.drawImage(black(a.s === SPR.hero ? "hero" : "duel-boss"), a.x + a.ox - a.w / 2, a.gy + a.oy - a.h, a.w, a.h);
+          for (const a of [w.hero, w.boss]) if (a.alpha > 0 && !drawActorSil(ctx, a, "#05060a")) ctx.drawImage(black(a.s === SPR.hero ? "hero" : "duel-boss"), a.x + a.ox - a.w / 2, a.gy + a.oy - a.h, a.w, a.h);
         }
         if (w.lb > 0) { ctx.fillStyle = "#000"; ctx.fillRect(-100, -100, 740, 100 + 44 * w.lb); ctx.fillRect(-100, 360 - 44 * w.lb, 740, 200); }
         topBar(ctx, w.boss, { name: "DARK WARLORD", y: 66 });
@@ -887,7 +887,7 @@
 
     /* 11 ─ 결투 퀵드로 */
     {
-      id: "duel-quickdraw", cat: "duel", view: "side",
+      id: "duel-quickdraw", cat: "duel", view: "side", polished: true,
       title: { en: "Build tension before the *bang*", ko: "*탕!* 전까지 긴장 쌓기" },
       intro: { en: "Draw. Bang. *No drama.*", ko: "뽑고, 쏘고. *긴장감 제로*." },
       interval: 2.6, stepDur: 4.2,

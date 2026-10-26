@@ -1193,7 +1193,7 @@
 
     /* 14. 컨베이어 벨트 */
     {
-      id: "move-conveyor", cat: "move", view: "side",
+      id: "move-conveyor", cat: "move", view: "side", polished: true,
       title: { en: "Show the belt is *moving*", ko: "벨트가 *움직이는* 걸 보여주기" },
       intro: { en: "Something moves the player. *What?*", ko: "뭔가 캐릭터를 미는데 *뭐가요?*" },
       interval: 2.6, stepDur: 3.8,
@@ -1289,7 +1289,7 @@
 
     /* 15. 빙판 */
     {
-      id: "move-ice", cat: "move", view: "top",
+      id: "move-ice", cat: "move", view: "top", polished: true,
       title: { en: "Make ice *slippery*", ko: "빙판을 *미끄럽게*" },
       intro: { en: "Let go on ice. Stopped *dead*.", ko: "빙판에서 손을 뗐는데 *딱* 멈춰요." },
       interval: 2.4, stepDur: 3.6,
@@ -1373,7 +1373,7 @@
 
     /* 16. 진흙 */
     {
-      id: "move-mud", cat: "move", view: "side",
+      id: "move-mud", cat: "move", view: "side", polished: true,
       title: { en: "Make mud feel *heavy*", ko: "진흙이 *무겁게*" },
       intro: { en: "Walked through mud like a *carpet*.", ko: "진흙을 *카펫*처럼 지나가요." },
       interval: 3.0, stepDur: 4.0,
@@ -1381,14 +1381,19 @@
       drawFront(w, ctx) {
         const h = w.hero, M = w.M;
         if (M && M.stain > 0 && h.alpha > 0) {
-          const c = brown(h.s.c), f = 0.4 * M.stain, sw = c.width, sh = c.height;
-          ctx.save(); ctx.globalAlpha = h.alpha * 0.85; ctx.translate(h.x + h.ox, feetY(h)); ctx.scale(h.sx, h.sy);
-          ctx.drawImage(c, 0, sh * (1 - f), sw, sh * f, -h.w / 2, -h.h * f, h.w, h.h * f); ctx.restore();
+          const f = 0.4 * M.stain, fy = feetY(h);
+          ctx.save(); ctx.beginPath(); ctx.rect(h.x - 80, fy - h.h * f, 160, h.h * f + 10); ctx.clip(); ctx.globalAlpha = h.alpha * 0.85;
+          if (!drawActorSil(ctx, h, "#5b3a1e")) { const c = brown(h.s.c), sw = c.width, sh = c.height; ctx.translate(h.x + h.ox, fy); ctx.scale(h.sx, h.sy); ctx.drawImage(c, 0, sh * (1 - f), sw, sh * f, -h.w / 2, -h.h * f, h.w, h.h * f); }
+          ctx.restore();
         }
         ctx.fillStyle = "#5b3a1e"; ctx.beginPath(); ctx.moveTo(200, G + 20);
         for (let x = 200; x <= 380; x += 10) ctx.lineTo(x, G - 3 + Math.sin(x * 0.2 + w.time * 2) * w.wob);
         ctx.lineTo(380, G + 20); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = "rgba(255,255,255,0.08)"; ctx.fillRect(200, G - 4, 180, 2);
+        // 진흙 결: 어두운 웅덩이 얼룩 + 젖은 하이라이트 점
+        for (let x = 204; x < 376; x += 4) { const yy = G - 3 + Math.sin(x * 0.2 + w.time * 2) * w.wob, k = Math.sin(x * 1.7) * 0.5 + 0.5;
+          ctx.fillStyle = "#7a5230"; if (k > 0.75) ctx.fillRect(x, yy, 4, 2);
+          ctx.fillStyle = "#3e2712"; if (k < 0.3) ctx.fillRect(x, yy + 6 + (x % 3) * 2, 4, 2); }
+        ctx.fillStyle = "#c79a64"; for (const x of [232, 290, 341]) ctx.fillRect(x, G - 2 + Math.sin(x * 0.2 + w.time * 2) * w.wob, 2, 2);
       },
       setup(w) { w.hero = mkHero(w, 130); w.wob = 1; w.M = null; },
       fire(w) {

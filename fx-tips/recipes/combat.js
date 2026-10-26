@@ -9,6 +9,7 @@
     if (a.alpha <= 0 || al <= 0) return;
     const top = a.top ? -a.h / 2 : -a.h;
     ctx.save(); ctx.globalAlpha = Math.min(1, al) * a.alpha;
+    if (!a.top && poseSet(a) && drawActorSil(ctx, a, col)) { ctx.restore(); return; }
     ctx.translate(a.x + a.ox, a.gy + a.oy);
     if (a.top) ctx.rotate(a.rot);
     else if (a.rot) { ctx.translate(0, -a.h / 2); ctx.rotate(a.rot); ctx.translate(0, a.h / 2); }
@@ -679,7 +680,7 @@
 
     /* 6. 보호막 파괴 */
     {
-      id: "combat-shield", cat: "combat", view: "side",
+      id: "combat-shield", cat: "combat", view: "side", polished: true,
       title: { en: "Make a shield *SHATTER*", ko: "보호막이 *와장창* 깨지게" },
       intro: { en: "The shield is gone. *When* did that happen?", ko: "보호막이… *언제* 없어졌죠?" },
       interval: 1.8, stepDur: 3.8,
@@ -759,7 +760,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tink ×2 + shatter",
           cap: { en: "Hollow *tinks*, then a glassy *crash*.", ko: "빈 소리 *팅팅*, 그리고 *와장창*." },
-          block(w) { w.play(() => tn({ type: "triangle", f: 1500, f2: 1300, dur: 0.15, vol: 0.2 })); },
+          block(w) { w.sfx.clack(0.7); },
           break(w) { w.play(() => { nz({ type: "highpass", f: 3500, dur: 0.5, vol: 0.5 }); tn({ type: "triangle", f: 2200, f2: 900, dur: 0.4, vol: 0.18 }); tn({ f: 120, f2: 50, dur: 0.25, vol: 0.5 }); }); },
         },
       ],

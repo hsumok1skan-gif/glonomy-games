@@ -1085,7 +1085,7 @@
 
     /* 13 ─ 출발 카운트다운 */
     {
-      id: "racing-countdown", cat: "racing", view: "3d",
+      id: "racing-countdown", cat: "racing", view: "3d", polished: true,
       title: { en: "Make countdowns *tense*", ko: "카운트다운을 *긴장감* 있게" },
       intro: { en: "3, 2, 1, go. Reads like a *spreadsheet*.", ko: "3, 2, 1, 출발. *엑셀 표* 같아요." },
       interval: 3.2, stepDur: 4.2,
@@ -1176,7 +1176,7 @@
 
     /* 14 ─ 추월 */
     {
-      id: "racing-overtake", cat: "racing", view: "top",
+      id: "racing-overtake", cat: "racing", view: "top", polished: true,
       title: { en: "Make overtakes *thrilling*", ko: "추월을 *짜릿하게*" },
       intro: { en: "You pass. It's like *changing lanes*.", ko: "추월했는데 *차선 변경* 같아요." },
       interval: 2.4, stepDur: 4.0,
@@ -1258,7 +1258,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "doppler whoosh + blip",
           cap: { en: "A *doppler whoosh* past, then a *ding*.", ko: "*휘이잉* 지나가고, *딩*." },
           side(w) { w.play(() => nz({ type: "bandpass", f: 2400, f2: 500, q: 2, dur: 0.5, vol: 0.35 })); },
-          pass(w) { w.sfx.chime(4); },
+          pass(w) { if (w.on("text")) w.sfx.chime(4); },
         },
       ],
     },

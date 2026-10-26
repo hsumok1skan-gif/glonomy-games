@@ -839,7 +839,7 @@
 
     /* 10 ─ 저스트 가드 */
     {
-      id: "fighting-just-defend", cat: "fighting", view: "side", melee: true,
+      id: "fighting-just-defend", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Reward a perfect block with a *flash*", ko: "저스트 가드에 *번쩍* 보상" },
       intro: { en: "Frame-perfect block. Felt like *any block*.", ko: "딱 맞춰 막았는데 *평범한 막기* 같아요." },
       interval: 0.9, stepDur: 3.8,
@@ -892,14 +892,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "high ting",
           cap: { en: "A clean, high *ting*. Not a thud.", ko: "*퍽* 말고 맑고 높은 *팅*." },
-          just(w) { w.sfx.chime(7); w.sfx.tock(); },
+          just(w) { w.sfx.clack(); if (w.on("freeze") || w.on("flash")) w.sfx.critBig(); },
         },
       ],
     },
 
     /* 11 ─ 라운드 시작 */
     {
-      id: "fighting-round-start", cat: "fighting", view: "side", melee: true,
+      id: "fighting-round-start", cat: "fighting", view: "side", polished: true, melee: true,
       title: { en: "Start the round with a *bang*", ko: "라운드 시작을 *쾅*" },
       intro: { en: "\"ROUND 1. FIGHT.\" Like a *memo*.", ko: "\"ROUND 1. FIGHT.\" *공지사항* 같아요." },
       interval: 2.0, stepDur: 4.0,
@@ -966,7 +966,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "gong · slam",
           cap: { en: "A low *gong*, then a *slam* on FIGHT.", ko: "낮은 *둥*, FIGHT에 *쾅*." },
           round(w) { w.play(() => { tn({ type: "triangle", f: 196, dur: 0.7, vol: 0.3 }); tn({ f: 294, dur: 0.6, vol: 0.12 }); }); },
-          fight(w) { w.sfx.crit(); w.sfx.slam(); },
+          fight(w) { if (w.on("slam")) w.sfx.slam(); else w.sfx.thud(); },
         },
       ],
     },

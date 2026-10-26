@@ -1107,7 +1107,7 @@
 
     /* 13. 본진 피해 */
     {
-      id: "strategy-leak", cat: "strategy", view: "top",
+      id: "strategy-leak", cat: "strategy", view: "top", polished: true,
       title: { en: "Make a leak *hurt*", ko: "본진이 뚫리면 *아프게*" },
       intro: { en: "Lives 20 → 19. *Missed it.*", ko: "목숨 20 → 19. *못 봤죠?*" },
       interval: 1.2, stepDur: 3.6,
@@ -1168,7 +1168,7 @@
           cap: { en: "A *crunch*, then a short *alarm*.", ko: "*쩍*, 그리고 짧은 *삐삐*." },
           leak(w) {
             w.sfx.hurt(); w.sfx.thud();
-            w.play(() => { tn({ type: "square", f: 880, dur: 0.08, vol: 0.08, delay: 0.12 }); tn({ type: "square", f: 880, dur: 0.08, vol: 0.08, delay: 0.26 }); });
+            if (w.on("flash") || w.on("vignette")) w.play(() => { tn({ type: "square", f: 880, dur: 0.08, vol: 0.08, delay: 0.12 }); tn({ type: "square", f: 880, dur: 0.08, vol: 0.08, delay: 0.26 }); });
           },
         },
       ],
@@ -1176,7 +1176,7 @@
 
     /* 14. 카드 뽑기 */
     {
-      id: "strategy-draw", cat: "strategy", view: "ui",
+      id: "strategy-draw", cat: "strategy", view: "ui", polished: true,
       title: { en: "Make drawing a card *exciting*", ko: "카드 뽑기를 *설레게*" },
       intro: { en: "A card appeared. *Wait, what?*", ko: "카드가 생겼어요. *언제?*" },
       interval: 1.0, stepDur: 3.6,

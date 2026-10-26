@@ -1517,7 +1517,7 @@
 
     /* 17 ─ 재질별 탄흔 */
     {
-      id: "shooter-materials", cat: "shooter", view: "3d",
+      id: "shooter-materials", cat: "shooter", view: "3d", polished: true,
       title: { en: "Give each material its *own impact*", ko: "재질마다 *다른 탄흔*" },
       intro: { en: "Steel, wood, enemy. *Same grey dot.*", ko: "강철, 나무, 적. *같은 회색 점*." },
       interval: 0.45, stepDur: 4.0,
@@ -1597,14 +1597,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ping / thunk / thud",
           cap: { en: "*Ping*, *thunk*, *thud*. Eyes closed, you'd still know.", ko: "*팅*, *쿵*, *퍽*. 눈 감아도 알아요." },
-          impact(w, h, mat) { w.sfx.smg(); if (mat === "metal") w.sfx.ping(); if (mat === "wood") w.sfx.thunk(); if (mat === "flesh") w.sfx.hit(); },
+          impact(w, h, mat) { w.sfx.smg(); if (mat === "metal") w.sfx.clack(1.1); if (mat === "wood") w.sfx.thunk(); if (mat === "flesh") w.sfx.hit(); },
         },
       ],
     },
 
     /* 18 ─ 도탄 */
     {
-      id: "shooter-ricochet", cat: "shooter", view: "3d",
+      id: "shooter-ricochet", cat: "shooter", view: "3d", polished: true,
       title: { en: "Make ricochets *sing*", ko: "도탄이 *노래하게*" },
       intro: { en: "Shoot the steel plate. It just… *absorbs it*.", ko: "강철판을 쐈는데 그냥 *먹혀요*." },
       interval: 0.7, stepDur: 3.8,
@@ -1661,14 +1661,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "ping + falling whine",
           cap: { en: "*Ping*, then the classic *pee-yoo* whine.", ko: "*팅*, 그리고 그 유명한 *피융~*." },
-          hit(w) { w.sfx.smg(); w.sfx.ping(); w.play(() => tn({ type: "sine", f: 2600, f2: 900, dur: 0.35, vol: 0.14, delay: 0.03 })); },
+          hit(w) { w.sfx.smg(); w.sfx.clack(1.1); if (w.on("tracer") || w.on("spark")) w.play(() => tn({ type: "sine", f: 2600, f2: 900, dur: 0.35, vol: 0.14, delay: 0.03 })); },
         },
       ],
     },
 
     /* 19 ─ 예광탄 */
     {
-      id: "shooter-tracers", cat: "shooter", view: "3d",
+      id: "shooter-tracers", cat: "shooter", view: "3d", polished: true,
       title: { en: "Every *third* bullet is a tracer", ko: "*세 발에 한 발*은 예광탄" },
       intro: { en: "Full auto. Where are the bullets *going?*", ko: "연사 중. 총알이 *어디로* 가죠?" },
       interval: 1.3, stepDur: 3.8,
@@ -1720,7 +1720,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "smg + snap",
           cap: { en: "A tight *rattle*. Tracers add a faint *snap*.", ko: "짧은 *드르륵*. 예광탄엔 *딱* 소리를 살짝." },
-          shot(w, m, h) { w.sfx.smg(rand(0.95, 1.05)); if (h.tracer) w.sfx.tick(); },
+          shot(w, m, h) { w.sfx.smg(rand(0.95, 1.05)); },
         },
       ],
     },

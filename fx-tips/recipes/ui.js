@@ -1131,7 +1131,7 @@
 
     /* 13 ───── 재화 소비 ───── */
     {
-      id: "ui-spend", cat: "ui", view: "ui",
+      id: "ui-spend", cat: "ui", view: "ui", polished: true,
       title: { en: "Show where the *gold went*", ko: "쓴 돈이 *어디 갔는지*" },
       intro: { en: "1,250 → 1,130. *Where'd it go?*", ko: "1,250 → 1,130. *어디로 갔죠?*" },
       interval: 1.1, stepDur: 3.6,
@@ -1210,7 +1210,7 @@
 
     /* 14 ───── 오류 흔들기 ───── */
     {
-      id: "ui-error", cat: "ui", view: "ui",
+      id: "ui-error", cat: "ui", view: "ui", polished: true,
       title: { en: "Say *no* with a shake", ko: "흔들어서 *아니라고*" },
       intro: { en: "Wrong password. *Tiny red text.*", ko: "비밀번호 틀림. *작은 빨간 글씨*뿐." },
       interval: 1.4, stepDur: 3.5,
@@ -1281,7 +1281,7 @@
 
     /* 15 ───── 성공 체크 ───── */
     {
-      id: "ui-success", cat: "ui", view: "ui",
+      id: "ui-success", cat: "ui", view: "ui", polished: true,
       title: { en: "Make *success* feel earned", ko: "성공을 *뿌듯하게*" },
       intro: { en: "A check icon. *Okay, done.*", ko: "체크 하나. *네, 끝.*" },
       interval: 1.6, stepDur: 3.6,
@@ -1342,7 +1342,7 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "major chord",
           cap: { en: "A quick *up-up-up* chord. Bright and short.", ko: "*도미솔*을 빠르게. 밝고 짧게." },
-          done(w) { [0, 4, 7].forEach((n, i) => w.after(0.3 + i * 0.07, () => w.sfx.chime(n))); },
+          done(w) { w.sfx.tick(); if (w.on("check") || w.on("pop")) [0, 4, 7].forEach((n, i) => w.after(0.3 + i * 0.07, () => w.sfx.chime(n))); },
         },
       ],
     },

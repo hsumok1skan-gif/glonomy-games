@@ -1123,7 +1123,7 @@
     },
     /* ───────── 13. 통통 튀는 공 ───────── */
     {
-      id: "casual-bounce", cat: "casual", view: "side",
+      id: "casual-bounce", cat: "casual", view: "side", polished: true,
       title: { en: "Make a bouncing ball *bouncy*", ko: "튀는 공을 *말랑하게*" },
       intro: { en: "It bounces. Like a *coin*. A rigid one.", ko: "튀긴 하는데 *쇠구슬* 같아요." },
       interval: 1.3, stepDur: 3.5,
@@ -1200,7 +1200,7 @@
 
     /* ───────── 14. 아케이드 점수 팝업 ───────── */
     {
-      id: "casual-score-pop", cat: "casual", view: "ui",
+      id: "casual-score-pop", cat: "casual", view: "ui", polished: true,
       title: { en: "Make score popups *pop*", ko: "점수 팝업을 *톡 튀게*" },
       intro: { en: "Tiny grey numbers. *Who reads those?*", ko: "작고 흐린 숫자. *누가 봐요?*" },
       interval: 0.4, stepDur: 3.4,

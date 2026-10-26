@@ -652,7 +652,7 @@
       },
       drawFront(w, ctx) {
         const D = w.D, h = w.hero;
-        if (D.ghost > 0) { ctx.save(); ctx.globalAlpha = 0.35 * D.ghost; ctx.translate(h.x + 14 * Math.sin(w.time * 3), h.gy + 6); ctx.rotate(h.rot); ctx.drawImage(h.s.c, -h.w / 2, -h.h / 2, h.w, h.h); ctx.restore(); }
+        if (D.ghost > 0) { ctx.save(); ctx.globalAlpha = 0.35 * D.ghost; if (poseSet(h)) { ctx.translate(14 * Math.sin(w.time * 3), 0); drawActorSil(ctx, h, null); } else { ctx.translate(h.x + 14 * Math.sin(w.time * 3), h.gy + 6); ctx.rotate(h.rot); ctx.drawImage(h.s.c, -h.w / 2, -h.h / 2, h.w, h.h); } ctx.restore(); }
         if (D.grade > 0) { ctx.fillStyle = `rgba(255,170,40,${D.grade})`; ctx.fillRect(-80, -80, 700, 520); }
       },
       drawHud(w, ctx) {
@@ -1418,7 +1418,7 @@
 
     /* ───────── 17. 뒤져서 줍기 ───────── */
     {
-      id: "survival-scavenge", cat: "survival", view: "side",
+      id: "survival-scavenge", cat: "survival", view: "side", polished: true,
       title: { en: "Make scavenging feel like *finding*", ko: "뒤지는 맛 *찾는 맛*" },
       intro: { en: "Search. +1. *Next.*", ko: "뒤짐. +1. *끝.*" },
       interval: 1.6, stepDur: 4.0,
@@ -1508,7 +1508,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "rustle / pop / blip",
           cap: { en: "*Rustle*, a *pop*, then a soft *blip*.", ko: "*부스럭*, *톡*, 그리고 *뾰롱*." },
           dig(w) { w.play(() => nz({ dur: 0.5, type: "bandpass", f: 1800, q: 0.8, vol: 0.2 })); },
-          found(w, it) { w.sfx.pop(); if (it.r > 1) w.sfx.chime(7); },
+          found(w, it) { w.sfx.pop(); if (it.r > 1 && w.on("rarity")) w.sfx.itemGet(); },
           bag(w) { w.sfx.blip(3); },
         },
       ],
@@ -1516,7 +1516,7 @@
 
     /* ───────── 18. 도구 내구도 파손 ───────── */
     {
-      id: "survival-toolbreak", cat: "survival", view: "side",
+      id: "survival-toolbreak", cat: "survival", view: "side", polished: true,
       title: { en: "Make a tool *break* with drama", ko: "도구가 *부서지는* 순간" },
       intro: { en: "The hammer just… *vanished*?", ko: "망치가… *어디 갔지?*" },
       interval: 0.6, stepDur: 4.0,
@@ -1545,14 +1545,21 @@
       drawFront(w, ctx) {
         const T = w.T, h = w.hero, px = h.x + h.ox + 30, py = G - 74;
         ctx.save(); ctx.translate(px, py); ctx.rotate(T.rot);
+        // 픽셀 망치(주인공 팔레트): 손잡이 끝을 손에. 부서지면 머리 없이 쪼개진 손잡이만
+        if (PXSPR["wpn-hammer-px"]) {
+          const red = T.warn && T.dur <= 40 && Math.sin(w.time * 20) > 0, sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false;
+          if (T.broken) { ctx.save(); ctx.beginPath(); ctx.rect(-20, -62, 40, 80); ctx.clip(); ctx.drawImage(PXSPR["wpn-hammer-px"], -33, -132, 66, 144); ctx.restore();
+            ctx.fillStyle = "#e9c48a"; ctx.fillRect(-4, -66, 2, 4); ctx.fillRect(0, -70, 2, 8); ctx.fillRect(3, -65, 2, 3); }
+          else {
+            ctx.drawImage(red ? pxTint("wpn-hammer-px", "#ef4444") : PXSPR["wpn-hammer-px"], -33, -132, 66, 144);
+            if (T.cracks && T.dur < 100) { ctx.fillStyle = "#0b0e14"; const n = Math.round((100 - T.dur) / 20);
+              for (let i = 0; i < n; i++) { const cx = -24 + i * 12; for (const [dx, dy] of [[0, 0], [2, 2], [2, 4], [0, 6], [-2, 8], [0, 10], [2, 12], [2, 14]]) ctx.fillRect(cx + dx, -124 + dy * 2, 2, 4); } }
+          }
+          ctx.imageSmoothingEnabled = sm;
+        } else {
         rr(ctx, -5, T.broken ? -60 : -120, 10, T.broken ? 70 : 130, 4, "#a16207", "rgba(0,0,0,0.3)", 2);
         if (T.broken) { ctx.fillStyle = "#fcd9a0"; ctx.beginPath(); ctx.moveTo(-5, -60); ctx.lineTo(0, -70); ctx.lineTo(5, -60); ctx.closePath(); ctx.fill(); }
-        else {
-          rr(ctx, -30, -142, 60, 34, 6, T.warn && T.dur <= 40 && Math.sin(w.time * 20) > 0 ? "#ef4444" : "#64748b", "rgba(0,0,0,0.3)", 2);
-          if (T.cracks && T.dur < 100) {
-            ctx.strokeStyle = "#0f172a"; ctx.lineWidth = 2.5; const n = Math.round((100 - T.dur) / 20);
-            for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.moveTo(-24 + i * 12, -142); ctx.lineTo(-18 + i * 12, -130); ctx.lineTo(-26 + i * 12, -118); ctx.stroke(); }
-          }
+        else rr(ctx, -30, -142, 60, 34, 6, "#64748b", "rgba(0,0,0,0.3)", 2);
         }
         ctx.restore();
         if (T.bar) {
@@ -1603,7 +1610,7 @@
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tink / snap",
           cap: { en: "*Tink* on hits, a sharp *snap* when it breaks.", ko: "칠 땐 *탕*, 부서질 땐 *뚝*." },
           hit(w) { w.sfx.thunk(); },
-          break(w) { w.sfx.crit(); w.play(() => nz({ dur: 0.08, type: "highpass", f: 3500, vol: 0.5 })); },
+          break(w) { w.sfx.clack(0.8); w.sfx.thud(); if (w.on("shatter")) w.sfx.glass(); },
         },
       ],
     },

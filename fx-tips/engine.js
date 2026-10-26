@@ -1610,6 +1610,15 @@ function actorGhost(w, a, col = "#5ad6ff", life = 0.25, alpha = 0.55) {
   const [W, H] = a._snapWH, px = a.x + a.ox, py = a.gy + a.oy, fl = a.flip ? -1 : 1;
   w.spawn({ x: px, y: py, life, draw: (ctx, p, k) => { const s = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.globalAlpha = alpha * (1 - k); ctx.save(); ctx.translate(p.x, p.y); ctx.scale(fl, 1); ctx.drawImage(g, -W / 2, -(H - 4), W, H); ctx.restore(); ctx.imageSmoothingEnabled = s; } });
 }
+// 캐릭터 실루엣: 지금 픽셀 동작을 한 색으로 (임팩트 프레임용). 아직 찍힌 게 없으면 false
+function drawActorSil(ctx, a, col = "#ffffff") {
+  a.keepSnap = true; const sn = a._snap; if (!sn || !a._snapWH) return false;
+  if (!col) { const [W, H] = a._snapWH, s = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.save(); ctx.translate(a.x + a.ox, a.gy + a.oy); ctx.scale(a.flip ? -1 : 1, 1); ctx.drawImage(sn, -W / 2, -(H - 4), W, H); ctx.restore(); ctx.imageSmoothingEnabled = s; return true; }
+  const g = drawActorSil.c || (drawActorSil.c = document.createElement("canvas")); g.width = sn.width; g.height = sn.height; const x = g.getContext("2d");
+  x.drawImage(sn, 0, 0); x.globalCompositeOperation = "source-atop"; x.fillStyle = col; x.fillRect(0, 0, g.width, g.height); x.globalCompositeOperation = "source-over";
+  const [W, H] = a._snapWH, s = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false;
+  ctx.save(); ctx.translate(a.x + a.ox, a.gy + a.oy); ctx.scale(a.flip ? -1 : 1, 1); ctx.drawImage(g, -W / 2, -(H - 4), W, H); ctx.restore(); ctx.imageSmoothingEnabled = s; return true;
+}
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }
 function pixFxBegin(ctx, OM, r) {

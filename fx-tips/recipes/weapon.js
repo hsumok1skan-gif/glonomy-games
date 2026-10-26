@@ -134,19 +134,12 @@
     ctx.save();ctx.translate(f.x+f.ox,f.gy+f.oy);
     ctx.globalCompositeOperation="lighter";
     const ribbons=[[-.28,.28,24],[-.08,.40,38],[.23,.51,32],[-.20,.68,38],[.15,.81,25]];
+    ctx.globalCompositeOperation="source-over";
     for(let i=0;i<ribbons.length;i++){
       const [off,up,height]=ribbons[i];
-      const px=off*f.w+Math.sin(time*10+i*2.6)*3.8,py=-up*f.h;
-      const size=9+(i%2)*4,h=height*(.88+.12*Math.sin(time*12+i));
-      const g=ctx.createLinearGradient(px,py,px,py-h);
-      g.addColorStop(0,"rgba("+tone+","+(fade*.88)+")");
-      g.addColorStop(.53,"rgba(255,184,73,"+(fade*.64)+")");
-      g.addColorStop(1,"rgba(255,248,194,0)");
-      ctx.fillStyle=g;ctx.beginPath();
-      ctx.moveTo(px-size,py);
-      ctx.bezierCurveTo(px-size*.55,py-h*.42,px+size*.16,py-h*.75,px+Math.sin(time*8+i)*4,py-h);
-      ctx.bezierCurveTo(px+size*.82,py-h*.55,px+size,py-h*.27,px+size,py);
-      ctx.closePath();ctx.fill();
+      const px=off*f.w+Math.sin(time*10+i*2.6)*3,py=-up*f.h;
+      if(FX.pixelFx&&typeof pxFlame==="function") pxFlame(ctx,px,py,(height*.42)*fade,((time*1.6+i*.23)%1)*.55,i*2.1);
+      else glow(ctx,px,py-height*.4,height*.6,tone,.7*fade);
     }
     ctx.restore();
   }
@@ -510,7 +503,7 @@
 
     /* ─────────────── 5. 화염방사기 ─────────────── */
     {
-      id: "weapon-flamethrower", cat: "weapon", view: "side",
+      id: "weapon-flamethrower", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a flamethrower *roar*", ko: "화염방사기가 *활활*" },
       intro: { en: "Orange dots. That's not *fire*.", ko: "주황 점들. 이건 *불*이 아니에요." },
       interval: 0.3, stepDur: 3.6,
@@ -526,9 +519,9 @@
           f.burn=.14;
           if(s.ashT<=0){
             s.ashT=.075;
-            w.spawn({type:"glow",x:f.x+f.ox+rand(-f.w*.24,f.w*.24),
+            w.spawn({type:"flame",x:f.x+f.ox+rand(-f.w*.24,f.w*.24),
               y:f.gy-rand(f.h*.34,f.h*.83),vx:rand(-18,22),vy:rand(-100,-55),
-              size:rand(9,18),size1:1,life:rand(.22,.4),color:pick(["255,105,28","255,170,58","255,237,139"])});
+              size:rand(8,13),life:rand(.28,.42),color:pick(["255,105,28","255,170,58","255,237,139"])});
             if(Math.random()<.38)w.spawn({type:"smoke",x:f.x+rand(-18,18),
               y:f.gy-f.h*.89,vx:rand(-19,24),vy:rand(-65,-35),
               size:7,size1:20,life:.6,color:"54,45,43"});
@@ -631,7 +624,7 @@
 
     /* ─────────────── 6. 레일건 ─────────────── */
     {
-      id: "weapon-railgun", cat: "weapon", view: "side",
+      id: "weapon-railgun", cat: "weapon", view: "side", polished: true,
       title: { en: "Make a railgun *charge* and *pierce*", ko: "레일건 *모았다가 관통*" },
       intro: { en: "Click. Two enemies gone. *Did I do that?*", ko: "딸깍. 둘 다 사라짐. *내가 한 거야?*" },
       interval: 1.7, stepDur: 3.8,
@@ -1612,7 +1605,7 @@
       drawFront(w, ctx) {
         const f = w.foe; if (f.ice <= 0 || !f.alive) return;
         const x = f.x + f.ox, a = Math.min(1, f.ice * 3);
-        ctx.save(); ctx.globalAlpha = 0.55 * a; ctx.drawImage(f.s.cyan, x - f.w / 2, G - f.h, f.w, f.h); ctx.restore();
+        ctx.save(); ctx.globalAlpha = 0.55 * a; if (!(poseSet(f) && drawActorSil(ctx, f, "#7dd3fc"))) ctx.drawImage(f.s.cyan, x - f.w / 2, G - f.h, f.w, f.h); ctx.restore();
         ctx.save(); ctx.globalAlpha = a;
         rr(ctx, x - 62, G - 150, 124, 150, 10, "rgba(165,243,252,0.22)");
         ctx.strokeStyle = "rgba(224,250,255,0.85)"; ctx.lineWidth = 2; ctx.strokeRect(x - 62, G - 150, 124, 150);

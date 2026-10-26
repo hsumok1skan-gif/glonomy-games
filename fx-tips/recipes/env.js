@@ -1191,7 +1191,7 @@
 
     // ───────────────────────── 13. 유리
     {
-      id: "env-glass", cat: "env", view: "side",
+      id: "env-glass", cat: "env", view: "side", polished: true,
       title: { en: "Make glass *shatter*", ko: "유리를 *산산조각*" },
       intro: { en: "The window is just… *not there* anymore.", ko: "유리창이 그냥… *없어졌어요*." },
       interval: 1.6, stepDur: 4.0,
@@ -1279,7 +1279,7 @@
 
     // ───────────────────────── 14. 나무 상자
     {
-      id: "env-crate", cat: "env", view: "side",
+      id: "env-crate", cat: "env", view: "side", polished: true,
       title: { en: "Make crates *break* nicely", ko: "나무 상자 *부수는 맛*" },
       intro: { en: "Hit, hit… and it *vanishes*.", ko: "퍽, 퍽… 그리고 *사라져요*." },
       interval: 0.8, stepDur: 3.6,

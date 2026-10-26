@@ -1230,7 +1230,7 @@
 
     /* 14. 레어 드롭 빛기둥 */
     {
-      id: "rpg-drop", cat: "rpg", view: "side",
+      id: "rpg-drop", cat: "rpg", view: "side", polished: true,
       title: { en: "Make rare drops *shine*", ko: "레어 드롭은 *빛나게*" },
       intro: { en: "Something dropped. *Junk or gold?*", ko: "뭔가 떨어졌는데, *쓰레기예요 보물이에요?*" },
       interval: 1.9, stepDur: 4.0,
@@ -1241,7 +1241,7 @@
       },
       fire(w) {
         const f = w.foe; if (!f.alive) return;
-        f.flash = 1; w.kill(f);
+        f.flash = 1; f.keep = true; w.kill(f); w.fly(f, 150, -430, 3); // 사라지지 말고 날아가 떨어짐
         const L = { x: 300, y: G - 16, vx: 0, vy: 0, t: 0, r: [1, 2, 0][w.cnt++ % 3], sq: 1 };
         w.L = L;
         w.emit("drop", L, w.TIER[L.r]);
@@ -1304,14 +1304,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tink / chime / choir",
           cap: { en: "Junk *tinks*. Legends *sing*.", ko: "잡템은 *틱*, 전설은 *노래해요*." },
-          drop(w, L) { if (L.r === 0) w.sfx.tick(); else if (L.r === 1) w.sfx.chime(4); else { w.sfx.chime(0); w.sfx.fanfare(); } },
+          drop(w, L) { w.sfx.thud(); if (L.r === 0 || !w.on("beam")) return; if (L.r === 1) w.sfx.lightSwell(); else { w.sfx.lightSwell(); if (w.on("legend")) w.sfx.fanfare(); } },
         },
       ],
     },
 
     /* 15. 퀘스트 완료 */
     {
-      id: "rpg-quest", cat: "rpg", view: "ui",
+      id: "rpg-quest", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make quest completes *celebrate*", ko: "퀘스트 완료를 *축하하게*" },
       intro: { en: "4/5 → 5/5. *Done… I guess?*", ko: "4/5 → 5/5. *끝난 건가?*" },
       interval: 2.2, stepDur: 4.0,
@@ -1396,14 +1396,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick + fanfare",
           cap: { en: "A *tick* for the check, then a *fanfare*.", ko: "체크에 *틱*, 이어서 *빰빠밤*." },
-          complete(w) { w.sfx.tick(); w.after(0.15, () => w.sfx.fanfare()); },
+          complete(w) { w.sfx.tick(); if (w.on("banner")) w.after(0.15, () => w.sfx.fanfare()); },
         },
       ],
     },
 
     /* 16. 대사 타자기 */
     {
-      id: "rpg-dialogue", cat: "rpg", view: "ui",
+      id: "rpg-dialogue", cat: "rpg", view: "ui", polished: true,
       title: { en: "Make dialogue *speak*", ko: "대사가 *말하듯* 나오게" },
       intro: { en: "A wall of text, all at once. *Skip.*", ko: "글이 한 번에 와르르. *안 읽혀요.*" },
       interval: 2.6, stepDur: 4.2,

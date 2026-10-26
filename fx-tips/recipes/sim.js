@@ -1119,7 +1119,7 @@
 
     /* ───────── 15. 생산 체인 ───────── */
     {
-      id: "sim-chain", cat: "sim", view: "iso",
+      id: "sim-chain", cat: "sim", view: "iso", polished: true,
       title: { en: "Make production chains *flow*", ko: "생산 체인이 *흐르게*" },
       intro: { en: "Wheat. Flour. Bread. *Teleporting.*", ko: "밀, 밀가루, 빵이 *순간이동*해요." },
       interval: 1.1, stepDur: 3.8,
@@ -1194,7 +1194,7 @@
 
     /* ───────── 16. 제작 완료 ───────── */
     {
-      id: "sim-craft", cat: "sim", view: "ui",
+      id: "sim-craft", cat: "sim", view: "ui", polished: true,
       title: { en: "Make crafting *satisfying*", ko: "제작 완료를 *짜릿하게*" },
       intro: { en: "Materials gone. Item there. *Meh.*", ko: "재료 사라지고 아이템 생김. *음.*" },
       interval: 2.2, stepDur: 4.0,
@@ -1249,15 +1249,15 @@
           cap: { en: "*Whoosh*, a few *clinks*, then a bright *chime*.", ko: "*슝*, *땅땅*, 맑은 *띠링*." },
           craft(w, C) {
             w.sfx.swish();
-            for (let i = 0; i < 3; i++) w.after(0.5 + i * 0.16, () => w.play(() => tn({ type: "triangle", f: 1800, dur: 0.08, vol: 0.12 })));
+            for (let i = 0; i < 3; i++) w.after(0.5 + i * 0.16, () => w.sfx.clack(0.9));
           },
-          done(w) { w.sfx.chime(7); } },
+          done(w) { w.sfx.thunk(); if (w.on("pop") || w.on("flash")) w.sfx.itemGet(); } },
       ],
     },
 
     /* ───────── 17. 별점 ───────── */
     {
-      id: "sim-rating", cat: "sim", view: "ui",
+      id: "sim-rating", cat: "sim", view: "ui", polished: true,
       title: { en: "Make star ratings *sparkle*", ko: "별점이 *반짝이게*" },
       intro: { en: "Five stars. Felt like *one*.", ko: "별 다섯 개인데 *한 개* 받은 기분." },
       interval: 1.4, stepDur: 3.8,
@@ -1311,13 +1311,13 @@
           update(w, dt) { const Rt = w.Rt; Rt.from += (Rt.avg - Rt.from) * Math.min(1, dt * 3); Rt.shown = Rt.from; } },
         { id: "sound", name: { en: "Sound", ko: "소리" }, param: "+2 semitones / star",
           cap: { en: "Each star *a step higher*. Five sounds like a tune.", ko: "별마다 음이 *한 칸씩*. 다섯 개면 노래가 돼요." },
-          fill(w, s) { w.sfx.chime(s.i * 2); }, perfect(w) { w.sfx.fanfare(); } },
+          fill(w, s) { w.sfx.chime(s.i * 2); }, perfect(w) { if (w.on("perfect")) w.sfx.fanfare(); } },
       ],
     },
 
     /* ───────── 18. 청소 반짝임 ───────── */
     {
-      id: "sim-clean", cat: "sim", view: "iso",
+      id: "sim-clean", cat: "sim", view: "iso", polished: true,
       title: { en: "Make clean feel *sparkling*", ko: "청소가 *반짝반짝* 느껴지게" },
       intro: { en: "Dirt gone. *Is it clean?*", ko: "얼룩이 사라졌어요. *깨끗해진 거죠?*" },
       interval: 0.85, stepDur: 3.6,
@@ -1390,7 +1390,7 @@
           cap: { en: "A rubbery *squeak*, then a tiny *ting*.", ko: "*뽀드득*, 그리고 작게 *팅*." },
           clean(w) {
             w.play(() => { tn({ type: "triangle", f: 900, f2: 1700, dur: 0.12, vol: 0.12 }); tn({ type: "triangle", f: 1100, f2: 2000, dur: 0.1, vol: 0.1, delay: 0.13 }); });
-            w.after(0.3, () => w.sfx.chime(9));
+            if (w.on("sparkle") || w.on("shine")) w.after(0.3, () => w.sfx.chime(9));
           } },
       ],
     },

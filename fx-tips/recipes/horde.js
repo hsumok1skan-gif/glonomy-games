@@ -758,7 +758,7 @@
 
     /* 10 ─ 데미지 숫자 합치기 */
     {
-      id: "horde-dmg-merge", cat: "horde", view: "top",
+      id: "horde-dmg-merge", cat: "horde", view: "top", polished: true,
       title: { en: "Merge damage numbers, *not spam*", ko: "데미지 숫자는 *모아서* 보여주기" },
       intro: { en: "A blizzard of *tiny numbers*.", ko: "작은 숫자가 *눈보라*처럼 쏟아져요." },
       interval: 0.12, stepDur: 3.6,
@@ -812,14 +812,14 @@
         {
           id: "sound", name: { en: "Sound", ko: "소리" }, param: "tick ≤ 15/s",
           cap: { en: "*Limit* how often the hit sound plays.", ko: "타격음은 *횟수를 제한*해요." },
-          hit(w, f, d, crit) { if (crit) w.sfx.crit(); else if (once(w, "t", 0.07)) w.sfx.tick(); },
+          hit(w, f, d, crit) { if (crit && w.on("crit")) w.sfx.critBig(); else if (once(w, "t", 0.07)) w.sfx.tick(); },
         },
       ],
     },
 
     /* 11 ─ 바닥에 쌓이는 흔적 */
     {
-      id: "horde-carpet", cat: "horde", view: "top",
+      id: "horde-carpet", cat: "horde", view: "top", polished: true,
       title: { en: "Let the battlefield *remember*", ko: "전장에 *흔적*이 쌓이게" },
       intro: { en: "Hundreds died here. Floor's *spotless*.", ko: "수백이 쓰러졌는데 바닥이 *깨끗해요*." },
       interval: 0.4, stepDur: 3.8,

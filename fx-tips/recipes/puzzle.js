@@ -1111,7 +1111,7 @@
 
     /* 11 ─────────────────────────────── */
     {
-      id: "puzzle-rope-cut", cat: "puzzle", view: "side",
+      id: "puzzle-rope-cut", cat: "puzzle", view: "side", polished: true,
       title: { en: "Make rope cuts *snap*", ko: "줄 끊기를 *팅!*" },
       intro: { en: "The rope just *vanishes*. Candy drops.", ko: "줄이 그냥 *없어지고* 사탕이 떨어져요." },
       interval: 1.5, stepDur: 3.8,
@@ -1211,7 +1211,7 @@
 
     /* 12 ─────────────────────────────── */
     {
-      id: "puzzle-connect-dots", cat: "puzzle", view: "top",
+      id: "puzzle-connect-dots", cat: "puzzle", view: "top", polished: true,
       title: { en: "Make connecting lines *flow*", ko: "선 잇기를 *흐르게*" },
       intro: { en: "A thin line. Done. *Was it?*", ko: "얇은 선 하나. 끝. *끝난 거 맞죠?*" },
       interval: 1.2, stepDur: 3.6,
@@ -1284,7 +1284,7 @@
           id: "sound", name: { en: "Rising Steps", ko: "올라가는 음" }, param: "+1 semitone / cell",
           cap: { en: "Each cell plays *one step higher*.", ko: "칸마다 *한 음씩 올라가요*." },
           seg(w, S, i) { w.sfx.blip(i + 1); },
-          done(w) { w.sfx.chime(9); },
+          done(w) { if (w.on("rings") || w.on("flow")) w.sfx.chime(9); },
         },
       ],
     },
