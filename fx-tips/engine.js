@@ -686,6 +686,33 @@ const SFX = {
   // 광선: 지잉 굵은 톱니 + 흔들리는 잡음 (dur 동안)
   beam(dur = 1) { const h = dur * 0.7; tn({ type: "sawtooth", f: 82, dur, vol: 0.13, lp: 1200, att: 0.03, hold: h }); tn({ type: "sawtooth", f: 164, dur, vol: 0.08, lp: 2400, det: 12, att: 0.03, hold: h }); nz({ dur, type: "bandpass", f: 1400, f2: 700, q: 0.9, vol: 0.28, att: 0.03, rv: 0.3, hold: h }); },
 };
+/* ───────── 한 사이클 · 큰 단계 (사이트와 영상이 같이 씀) ─────────
+   사이클: 첫 화면(완성본)과 같은 발사 시각·길이. 단계를 바꾸든 다시 보든 언제나 이 사이클을 처음부터 똑같이 보여 줌
+   단계: 레이어를 4~6개 큰 묶음으로 (적으면 그대로). R.stages = [마지막 레이어 번호...]로 직접 정할 수 있음 */
+function fxCycle(r) {
+  return { dur: r.hookDur || Math.max(1.9, Math.min(4.2, r.interval * 0.90 + 0.5)), fires: (r.hookFires || [0.26, ...(r.interval < 1 ? [0.26 + r.interval] : [])]).slice() };
+}
+function fxStages(r) {
+  if (r.stages) return r.stages;
+  const K = r.steps.length, S = K <= 4 ? K : K <= 6 ? 4 : K <= 8 ? 5 : 6, out = [];
+  let e = 0; for (let i = 0; i < S; i++) { const end = Math.round(K * (i + 1) / S); if (end > e) { out.push(end); e = end; } }
+  return out;
+}
+const fxPlain = t => String(t).replace(/\*/g, "");
+function fxStageIndex(r, n) { const st = fxStages(r); return st.indexOf(n); }
+function fxStageNames(r, si, L = "en") { const st = fxStages(r), a = si ? st[si - 1] : 0, b = st[si]; return r.steps.slice(a, b).map(s => fxPlain(s.name[L] || s.name.en)); }
+function fxStageCap(r, si, L = "en") {
+  const st = fxStages(r), a = si ? st[si - 1] : 0, b = st[si];
+  if (b - a === 1) return r.steps[a].cap[L] || r.steps[a].cap.en;
+  const nm = fxStageNames(r, si, L);
+  if (L === "ko") return nm.map(s => `*${s}*`).join(" + ") + " 한꺼번에 켜요.";
+  return "Add " + nm.slice(0, -1).map(s => `*${s}*`).join(", ") + " and *" + nm[nm.length - 1] + "*.";
+}
+// 모든 레이어의 준비(enter)를 똑같이 적용하고, 그 결과 체력을 처음부터 그 값인 것처럼 맞춤
+function fxPrepWorld(w) {
+  for (const s of w.R.steps) if (s.enter) s.enter(w);
+  for (const a of w.actors) { a.hpLag = a.hp; a._hpPrev = a.hp; a.barFlash = 0; a.lagWait = 0; }
+}
 const NOSFX = new Proxy({}, { get: () => () => {} });
 
 /* ───────── 등장인물 ───────── */
