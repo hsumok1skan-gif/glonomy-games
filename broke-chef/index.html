@@ -50,6 +50,8 @@
           <button type="button" class="magnet" data-act="go" data-to="chal"><span class="mag-img m2" aria-hidden="true"></span>챌린지</button>
           <button type="button" class="magnet" data-act="photo-take"><span class="mag-emoji" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5a2 2 0 0 1 2-2h2.2l1.5-2h5.6l1.5 2h2.2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.6"/><path class="ico-flash" d="M17.2 9.3h.6"/></svg></span>사진 찍기</button>
         </div>
+        <!-- R-10: 닫힌 문 아래 빈 면에 이번 주 날짜 칸 7개와 연속 지킨 날. 챌린지가 없으면 숨는다 -->
+        <div id="door-week" class="door-week" role="group" aria-label="이번 주 지킨 날" hidden></div>
         <button type="button" class="handle" data-act="fridge-door" aria-label="냉동실 문 열기"></button>
       </div>
       <div class="door right" id="door-r">
@@ -314,6 +316,7 @@
       <button type="button" class="primary big" id="price-cart-save" data-act="price-cart-save">담은 것 한 번에 저장</button>
     </div>
     <label class="check" id="price-spend-wrap"><input id="price-spend" type="checkbox" checked> <span>이 값을 챌린지 식비(장보기)에도 더하기</span></label>
+    <label class="check" id="price-fridge-wrap"><input id="price-fridge" type="checkbox" checked> <span>냉장고 칸에도 넣기</span></label>
     <div id="price-preview" aria-live="polite"></div>
   </div>
 </section>

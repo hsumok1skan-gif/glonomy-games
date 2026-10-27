@@ -255,6 +255,12 @@ var ART = {
 function startSteps() {
   var st = App.state;
   function mine(list) { return list.some(function (x) { return !x.sample; }); }
+  var priceDone = mine(st.history);
+  // R-12: 메뉴가 쓰는 재료 가운데 값 없는 첫 재료가 있으면 4단계는 그 재료 값 넣기로 바로 연다
+  var noPriceIng = null;
+  if (!priceDone) st.menus.some(function (m) {
+    return m.lines.some(function (l) { var g = ingById(l.ingId); if (g && !Calc.hasPrice(g)) { noPriceIng = g; return true; } return false; });
+  });
   return [
     { key: 'chal', title: '챌린지 고르기', text: '\'한 달 10만원\'처럼 기간과 목표를 정한다',
       done: st.challenges.length > 0, act: 'chal-open', btn: { act: 'chal-open', label: '고르기' } },
@@ -262,8 +268,10 @@ function startSteps() {
       done: mine(st.spends), act: 'spend-new', btn: { act: 'spend-new', label: '넣기' } },
     { key: 'menu', title: '메뉴 예시 하나 넣기', text: '자취 집밥 ' + MENU_TEMPLATES.length + '개 가운데 하나를 고른다',
       done: st.menus.length > 0, act: 'tpl-open menu', btn: { act: 'tpl-open', label: '고르기', data: { tab: 'menu' } } },
-    { key: 'price', title: '장 본 값 넣기', text: '산 값을 넣으면 한 끼 값과 남은 돈이 다시 계산된다',
-      done: mine(st.history), act: 'price-open', btn: { act: 'price-open', label: '넣기' } }
+    { key: 'price', title: '장 본 값 넣기',
+      text: noPriceIng ? esc(noPriceIng.name) + ' 산 값 하나면 한 끼 값과 남은 돈이 다시 계산된다' : '산 값을 넣으면 한 끼 값과 남은 돈이 다시 계산된다',
+      done: priceDone, act: noPriceIng ? 'price-for' : 'price-open',
+      btn: noPriceIng ? { act: 'price-for', label: '넣기', data: { id: noPriceIng.id } } : { act: 'price-open', label: '넣기' } }
   ];
 }
 // 냉장고·식비 화면 맨 위 카드. 네 단계를 다 하면 그리지 않는다
@@ -877,6 +885,7 @@ function renderPricePreview() {
   var d = ing ? priceDraft() : null;
   var all = priceChanges(d);
   $('price-spend-wrap').hidden = !ch || (!ing && !all.news.length);
+  $('price-fridge-wrap').hidden = !ing && !all.news.length; // R-11
   if (!ing && !all.news.length) { box.innerHTML = ''; return; }
   if (ing && !d && !all.news.length) {
     box.innerHTML = '<p class="hint">산 값과 산 양을 넣으면, 저장하기 전에 ' + (ch ? '챌린지 남은 돈과 ' : '') + '집밥 메뉴 한 끼 값이 어떻게 바뀌는지 여기 보인다. (쓰는 메뉴 ' + usedBy(ing.id).length + '개)</p>';
@@ -1087,6 +1096,23 @@ function renderFridge() {
       '<b class="note-big">' + big.replace(/원$/, '') + '<small>원</small></b>';
   } else {
     $('door-l-note').innerHTML = '<b>🎯 챌린지 없음</b><small>\'한 달 10만원\'부터</small>';
+  }
+  // R-10: 냉동실 문 아래 빈 면에 오늘까지 마지막 7일 칸 + 연속 지킨 날. 기간 앞쪽이라 7일이 안 되면 뒤 남은 날로 채운다
+  var dw = $('door-week');
+  if (ch) {
+    var wDays = chalDays(ch), wEnd = Math.max(0, Math.min(wDays.length - 1, Calc.daysBetween(ch.start, Calc.today())));
+    var wFrom = Math.max(0, Math.min(wEnd - 6, wDays.length - 7));
+    var wk = wDays.slice(wFrom, wFrom + 7), streak = streakOf(ch, wDays);
+    dw.innerHTML = '<small class="dw-head">이번 주</small>' +
+      '<ol class="dw-days">' + wk.map(function (d) {
+        return '<li class="day ' + d.state + (d.today ? ' today' : '') + '" aria-label="' + Calc.shortDay(d.date) + (d.today ? ' 오늘' : '') + ' ' + DAY_TEXT[d.state] +
+          (d.state === 'future' ? '' : ' ' + won(d.spent)) + '"' + (d.today ? ' aria-current="date"' : '') + '></li>';
+      }).join('') + '</ol>' +
+      '<b class="dw-streak">🔥 ' + streak + '일 연속</b>';
+    dw.hidden = false;
+  } else {
+    dw.innerHTML = '';
+    dw.hidden = true;
   }
   var soon = expSoon();
   var photo = latestPhoto();

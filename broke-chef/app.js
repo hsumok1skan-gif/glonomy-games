@@ -198,6 +198,7 @@ function openPrice(ingId) {
   App.priceIng = ingId && ingById(ingId) ? ingId : null;
   $('price-q').value = '';
   $('price-spend').checked = true;
+  $('price-fridge').checked = true;
   showPriceStep();
   openLayer('sheet-price');
 }
@@ -262,6 +263,7 @@ function submitPrice() {
 function commitPrices() {
   var all = priceChanges(null);
   if (!all.news.length) return;
+  var stepsBefore = startDoneCount();
   var rows = impactOf(all.olds, all.news);
   var day = Calc.today();
   var ch = activeChal();
@@ -277,8 +279,32 @@ function commitPrices() {
     ing.price = n.price; ing.buyQty = n.buyQty; ing.buyUnit = n.buyUnit; ing.updated = day;
     pushHistory(ing, olds[k]);
   });
+  // R-11: 담은 재료를 종류에 맞는 냉장고 칸에도 넣는다 (유통기한은 칸에서 잡는다)
+  var shelved = [];
+  if ($('price-fridge').checked) {
+    all.olds.forEach(function (ing, k) {
+      if (App.state.fridge.items.length >= 1000) return;
+      var n = all.news[k];
+      var x = { id: newId('k'), shelf: CAT_SHELF[ing.cat] || 'r3', name: ing.name.slice(0, 30),
+        qty: (fmtQty(n.buyQty) + n.buyUnit).slice(0, 20), exp: '', added: day, sample: false };
+      App.state.fridge.items.push(x);
+      shelved.push(x);
+    });
+  }
+  if (shelved.length) {
+    html += '<div class="shop-shelved"><p class="hint">냉장고 칸에 넣었다 · 유통기한은 칸을 열어 잡는다</p><ul>' + shelved.map(function (x) {
+      var s = shelfById(x.shelf);
+      return '<li><i aria-hidden="true">' + s.icon + '</i><b>' + esc(x.name) + '</b><small>' + esc(s.name) + '</small></li>';
+    }).join('') + '</ul></div>';
+  }
   var memo = names.length > 1 ? names[0] + ' 외 ' + (names.length - 1) + '개' : names[0];
   if (toChal) addSpend({ date: day, amount: all.total, kind: '장보기', memo: memo });
+  // R-12: 이 저장으로 시작 단계 네 개를 다 끝냈으면 결과 창 맨 위에 '처음 5분 끝' 카드를 한 번만 넣는다
+  var finished = stepsBefore === 3 && startDoneCount() === 4 && !App.state.onboardDone;
+  if (finished) {
+    App.state.onboardDone = true;
+    html = onboardDoneHtml() + html;
+  }
   save();
   App.flash = all.olds[all.olds.length - 1].id;
   App.priceCart = [];
@@ -286,7 +312,24 @@ function commitPrices() {
   rollChalNums();
   App.priceIng = null;
   showImpact(html, rows.map(function (r) { return r.m.id; }));
-  toast((names.length > 1 ? '재료 ' + names.length + '개' : names[0]) + ' 값을 바꿨다' + (toChal ? ' · 장보기 ' + won(all.total) + ' 더함' : ''));
+  toast((finished ? '처음 5분 끝! ' : '') + (names.length > 1 ? '재료 ' + names.length + '개' : names[0]) + ' 값을 바꿨다' + (toChal ? ' · 장보기 ' + won(all.total) + ' 더함' : '') + (shelved.length ? ' · 냉장고 ' + shelved.length + '개' : ''));
+}
+function startDoneCount() {
+  return startSteps().filter(function (s) { return s.done; }).length;
+}
+// R-12 '처음 5분 끝' 카드: 챌린지 오늘 쓸 돈과 가장 많이 아끼는 메뉴의 아낀 돈 (UI참고 둘째 그림처럼 큰 숫자 + 작은 이름)
+function onboardDoneHtml() {
+  var ch = activeChal();
+  var best = App.state.menus.map(function (m) { return { m: m, i: menuInfo(m) }; })
+    .filter(function (r) { return r.i.margin > 0; })
+    .sort(function (a, b) { return b.i.margin - a.i.margin; })[0];
+  var stats = [];
+  if (ch) stats.push('<p><b>' + won(chalInfo(ch).perDay) + '</b><small>오늘 쓸 수 있는 돈 · ' + esc(ch.name) + '</small></p>');
+  if (best) stats.push('<p><b>' + won(best.i.margin) + '</b><small>' + esc(best.m.name) + ' 한 끼 아낌</small></p>');
+  return '<div class="onboard-done" role="status">' +
+    '<div class="od-head"><span class="od-check" aria-hidden="true">✓</span><p><b>처음 5분 끝</b><small>네 단계를 모두 했다. 이제 밥 먹고 식비만 넣으면 된다</small></p></div>' +
+    (stats.length ? '<div class="od-stats">' + stats.join('') + '</div>' : '') +
+  '</div>';
 }
 // 결과 창: 장 본 값 하나로 바뀐 챌린지와 집밥 메뉴
 var lastImpact = { head: '', ids: [] };
