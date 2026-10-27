@@ -1,0 +1,22 @@
+{
+  "name": "Tide Haul",
+  "short_name": "Tide Haul",
+  "description": "줄 하나에 매달려 바다 밑 보물을 건져 올린다. 많이 들수록 숨이 가쁘다. 여덟 날 동안 섬의 납품 목표를 채우는 가로 화면 잠수 게임. 기록은 이 기기 브라우저에만 저장된다.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#071A2B",
+  "theme_color": "#071A2B",
+  "categories": ["games", "puzzle"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%23071A2B'/%3E%3Cpath d='M40 150q36-24 72 0t72 0 72 0 72 0 72 0 72 0' fill='none' stroke='%235FE0C8' stroke-width='14' stroke-linecap='round'/%3E%3Cpath d='M176 96h160l-24 40H200z' fill='%238A5A3C'/%3E%3Cpath d='M256 136v170' stroke='%23F2E2C0' stroke-width='10' stroke-dasharray='18 10'/%3E%3Cpath d='M236 300q20 30 40 0' fill='none' stroke='%23F2E2C0' stroke-width='10' stroke-linecap='round'/%3E%3Cpath d='M176 340q80-40 160 0l-14 96q-66 24-132 0z' fill='%23FFD166' stroke='%23000000' stroke-width='10' stroke-linejoin='round'/%3E%3Ccircle cx='256' cy='392' r='26' fill='%23FF8A5B' stroke='%23000000' stroke-width='8'/%3E%3Ccircle cx='376' cy='300' r='14' fill='none' stroke='%23BFF4FF' stroke-width='6'/%3E%3Ccircle cx='400' cy='248' r='9' fill='none' stroke='%23BFF4FF' stroke-width='5'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
