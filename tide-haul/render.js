@@ -118,12 +118,12 @@ var Render = (function () {
       var near = Math.max(Math.abs(c.x - p.x), Math.abs(c.y - p.y)) <= rad;
       if (near || (def.stay && map.seen[c.y][c.x])) drawIcon(def.icon, c.x, c.y, 0.66, near ? 1 : 0.55, t, c.x * 3 + c.y);
     });
-    // 안개: 안 본 칸은 까맣게, 본 칸이라도 등불 밖은 흐리게
+    // 안개: 안 본 칸은 짙게(구역 물색은 비치게), 본 칸이라도 등불 밖은 흐리게
     for (y = y0; y <= y1; y++) {
       var fy = (y - camY) * cell;
       for (x = 0; x < DATA.W; x++) {
         var d = Math.max(Math.abs(x - p.x), Math.abs(y - p.y));
-        if (!map.seen[y][x]) { ctx.globalAlpha = 0.94; }
+        if (!map.seen[y][x]) { ctx.globalAlpha = 0.8; }
         else if (d > rad) { ctx.globalAlpha = 0.45; }
         else continue;
         ctx.fillStyle = col['--fog'];

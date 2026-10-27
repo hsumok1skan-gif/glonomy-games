@@ -1,0 +1,12 @@
+{
+  "name": "Ride Tally",
+  "short_name": "Ride Tally",
+  "description": "콜마다 금액만 찍으면 시간당 실수입과 요일·시간대 지도를 보여 주는 배달 라이더 운행 기록",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0E1216",
+  "theme_color": "#0E1216",
+  "icons": []
+}
