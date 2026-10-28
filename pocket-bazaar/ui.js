@@ -413,11 +413,12 @@
     var r = Game.run;
     var list = $('hand-list');
     if (selHand >= r.hand.length) selHand = -1;
+    // 영업 중: 손 물건 자리에 오늘 장사 요약 카드(번 동전·남은 손님·자릿세까지 남은 돈)
+    var html = r.phase === 'sell' ? sellSummary(r) : '';
     if (!r.hand.length) {
-      list.innerHTML = '<p class="empty-note">' + (r.phase === 'stock' ? '손에 든 물건이 없다' : '내일 새 물건을 받는다') + '</p>';
+      list.innerHTML = html || '<p class="empty-note">' + (r.phase === 'stock' ? '손에 든 물건이 없다' : '내일 새 물건을 받는다') + '</p>';
       return;
     }
-    var html = '';
     r.hand.forEach(function (card, i) {
       var g = Game.goods(card.id);
       html += '<button class="hcard cat-' + g.cat + (i === selHand ? ' sel' : '') + '" data-hand="' + i + '"' + (r.phase !== 'stock' ? ' disabled' : '') +
@@ -426,6 +427,19 @@
         (g.tag ? ' <small>' + DATA.TAGS[g.tag].name + '</small>' : '') + '</span><span class="v">' + g.base + '</span></button>';
     });
     list.innerHTML = html;
+  }
+  function sellSummary(r) {
+    var left = Math.max(0, r.queue.length - r.qi);
+    var need = Math.max(0, r.rent - r.coins);
+    return '<div class="sell-summary" role="status" aria-label="오늘 장사">' +
+      '<div class="ss-title">오늘 장사</div>' +
+      '<div class="ss-row"><span>번 동전</span><b class="ss-earn">' + (r.dayEarned || 0) + '</b></div>' +
+      '<div class="ss-row"><span>판 물건</span><b>' + (r.daySold || 0) + '</b></div>' +
+      '<div class="ss-row"><span>남은 손님</span><b>' + left + '명</b></div>' +
+      '<div class="ss-row ss-rent' + (need ? ' short' : ' ok') + '"><span>자릿세까지</span><b>' +
+      (need ? need + ' 더' : '다 모았다 ✓') + '</b></div>' +
+      '<div class="ss-note">' + (need ? '자릿세 ' + r.rent + ' · 가진 동전 ' + r.coins : '남는 돈은 장터에서 쓴다') + '</div>' +
+      '</div>';
   }
 
   function selectHand(i) {

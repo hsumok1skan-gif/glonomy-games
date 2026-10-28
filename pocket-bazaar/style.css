@@ -237,6 +237,14 @@ body.reduce .slot.can-sell { animation: none; }
 .hcard.sel { box-shadow: 0 0 0 3px var(--teal); transform: translateX(-4px); }
 .hcard:not(:disabled):active, .hcard.pressed:not(:disabled) { transform: scale(0.96); }
 .hcard:disabled { opacity: 0.4; cursor: default; }
+.sell-summary { background: var(--face); color: var(--ink); border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; border-top: 6px solid var(--gold); box-shadow: 0 2px 0 var(--line); }
+.sell-summary .ss-title { font-weight: 900; font-size: var(--fs-s); color: var(--accent-dark); }
+.sell-summary .ss-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: var(--fs-s); border-bottom: 1px dashed var(--line); padding: 2px 0; }
+.sell-summary .ss-row b { font-weight: 900; }
+.sell-summary .ss-earn { font-size: var(--fs-l); color: var(--accent-dark); }
+.sell-summary .ss-rent.short b { color: var(--danger); }
+.sell-summary .ss-rent.ok b { color: #2E8B57; }
+.sell-summary .ss-note { font-size: var(--fs-xs); color: var(--accent-dark); }
 .side-buttons { display: flex; flex-direction: column; gap: 6px; }
 .empty-note { font-size: var(--fs-xs); color: var(--dim); }
 
