@@ -65,6 +65,8 @@
           <button type="button" class="magnet" data-act="go" data-to="ing"><span class="mag-img m5" aria-hidden="true"></span>재료 값</button>
         </div>
         <button type="button" class="handle" data-act="fridge-door" aria-label="냉장실 문 열기"></button>
+        <!-- R-15: 문을 한 번도 안 열었을 때만 손잡이 옆 말풍선. 손잡이는 깜빡이고(.fridge.coach), 한 번 열면 다시 뜨지 않는다 -->
+        <p id="door-coach" class="door-coach" role="note" hidden>손잡이를 누르면 문이 열린다</p>
       </div>
     </div>
   </section>
@@ -415,6 +417,8 @@
     <div class="field"><span id="lb-spend-kind">어디에 썼나요?</span>
       <div id="spend-kinds" class="kind-grid" role="radiogroup" aria-labelledby="lb-spend-kind"></div>
     </div>
+    <!-- R-14: 최근 넣은 식비(종류·금액·메모) 알약. 새로 쓰기로 열 때만 보인다 -->
+    <div id="spend-recent" class="spend-recent" role="group" aria-label="최근 넣은 식비 다시 넣기" hidden></div>
     <!-- R-07: 큰 금액 + 앱 숫자판. 기기 키보드가 올라와 미리보기·종류 버튼을 가리지 않게 금액 칸은 inputmode="none" (PC 는 그대로 타자) -->
     <output id="spend-display" class="spend-display" for="spend-amount" aria-live="polite">0원</output>
     <div id="spend-quick" class="quick-row" aria-label="자주 쓰는 값"></div>

@@ -11,7 +11,7 @@ var Store = (function () {
   }
   function defaults() {
     return { app: 'nae-sikbi', v: 3, ingredients: [], menus: [], history: [], challenges: [], spends: [], meals: [],
-      fridge: { memos: {}, items: [] }, settings: defaultSettings(), welcomed: false, onboardDone: false, nextId: 1 };
+      fridge: { memos: {}, items: [] }, settings: defaultSettings(), welcomed: false, onboardDone: false, fridgeOpened: false, nextId: 1 };
   }
   var PHOTO_KEY = 'nae-sikbi-photo-v1'; // 냉장고 사진은 크기가 커서 따로 둔다
   var MAX_PHOTOS = 4;
@@ -167,6 +167,7 @@ var Store = (function () {
         exp: Calc.isDay(x.exp) ? x.exp : '', added: Calc.isDay(x.added) ? x.added : Calc.today(), sample: x.sample === true }; }).slice(0, 1000);
     d.welcomed = o.welcomed !== false;
     d.onboardDone = o.onboardDone === true; // R-12 '처음 5분 끝' 카드를 이미 보였나
+    d.fridgeOpened = o.fridgeOpened === true; // R-15 손잡이로 냉장고 문을 한 번이라도 열었나 (안 열었으면 손잡이 안내)
     // 다음 번호는 이미 쓴 번호보다 크게
     var max = isNum(o.nextId) ? o.nextId : 1;
     [d.ingredients, d.menus, d.history, d.challenges, d.spends, d.meals, d.fridge.items, normalizePhotos(o.photos)].forEach(function (arr) {

@@ -187,6 +187,25 @@ function spendRow(x) {
     '</button>' +
   '</div>';
 }
+// R-13 식비를 날짜별로 묶는다: 날마다 머리(날짜·요일·그날 합계, 하루 기준을 넘었으면 표시) 아래에 그날 식비 줄
+var DOW = ['일', '월', '화', '수', '목', '금', '토'];
+function dowOf(s) { var p = String(s).split('-'); return DOW[new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay()]; }
+function spendGroupsHtml(list, ch) {
+  ch = ch || activeChal();
+  var base = ch ? dayBase(ch) : Infinity, today = Calc.today(), order = [], by = {};
+  list.forEach(function (x) {
+    if (!by[x.date]) { by[x.date] = []; order.push(x.date); }
+    by[x.date].push(x);
+  });
+  return order.map(function (d) {
+    var rows = by[d], sum = rows.reduce(function (a, x) { return a + x.amount; }, 0), over = sum > base;
+    return '<div class="day-group' + (over ? ' over' : '') + '" role="group" aria-label="' + Calc.shortDay(d) + ' ' + dowOf(d) + '요일 식비 ' + rows.length + '건 ' + won(sum) + (over ? ' 하루 기준 넘음' : '') + '">' +
+      '<h4 class="dg-head"><span class="dg-day">' + Calc.shortDay(d) + ' <small class="dg-dow">(' + dowOf(d) + ')</small>' + (d === today ? ' <span class="badge soft">오늘</span>' : '') + '</span>' +
+        '<span class="dg-sum">' + (over ? '<span class="badge lv-bad dg-over" title="하루 기준 ' + won(base) + '">기준 넘음</span> ' : '') + '<b>' + won(sum) + '</b></span></h4>' +
+      rows.map(spendRow).join('') +
+    '</div>';
+  }).join('');
+}
 // 먹은 집밥 한 줄 (챌린지 화면·메뉴 자세히가 같이 쓴다)
 function mealRow(x) {
   var saved = Math.max(0, x.out - x.cost);
@@ -394,7 +413,7 @@ function renderChal() {
       }).join('') + '</ul></div>' : '') +
       '<div class="btn-row">' + btn({ act: 'chal-quit', label: '이 챌린지 그만두기', cls: 'danger small' }) + '</div>';
     list.innerHTML = '<div class="sec-head"><h3>이 기간 식비 ' + spends.length + '건</h3><small>누르면 고친다</small></div>' + (spends.length
-      ? spends.map(spendRow).join('')
+      ? spendGroupsHtml(spends, ch)
       : emptyBox(ART.spend, '아직 넣은 식비가 없다', '장보기·배달·외식·편의점에 쓴 돈을 넣으면 남은 돈이 줄어든다.', [
           { act: 'spend-new', label: '+ 식비 쓰기', cls: 'primary' },
           { act: 'price-open', label: '🧾 장 본 값 넣기' }
@@ -466,6 +485,28 @@ function renderSpendKinds(chosen) {
   }).join('');
   var quick = { '장보기': [10000, 20000, 30000], '배달': [15000, 20000, 25000], '외식': [7000, 9000, 12000], '편의점': [3000, 5000, 8000], '카페·간식': [2000, 4500, 6000], '기타': [1000, 5000, 10000] }[chosen] || [];
   $('spend-quick').innerHTML = quick.map(function (v) { return btn({ act: 'spend-quick', label: won(v), cls: 'small', data: { v: v } }); }).join('');
+}
+// R-14 최근 식비: 예시가 아닌 식비를 최근 날짜(같은 날이면 나중에 넣은 것) 먼저 훑어 종류+금액+메모가 겹치지 않는 것 5개까지
+function recentSpends() {
+  var list = App.state.spends.map(function (x, i) { return { x: x, i: i }; }).filter(function (o) { return !o.x.sample; });
+  list.sort(function (a, b) { return a.x.date < b.x.date ? 1 : a.x.date > b.x.date ? -1 : b.i - a.i; });
+  var seen = {}, out = [];
+  for (var k = 0; k < list.length && out.length < 5; k++) {
+    var x = list[k].x, key = x.kind + '|' + x.amount + '|' + (x.memo || '');
+    if (seen[key]) continue;
+    seen[key] = true;
+    out.push(x);
+  }
+  return out;
+}
+// 새로 쓰기로 열 때만 종류 버튼 아래에 최근 식비 알약을 보인다. 누르면 그 종류·금액·메모로 고른 날짜에 바로 넣는다
+function renderSpendRecent() {
+  var box = $('spend-recent'), list = App.editSpendId ? [] : recentSpends();
+  box.hidden = !list.length;
+  box.innerHTML = list.length ? '<span class="sr-head">최근 넣은 것 · 누르면 바로 넣기</span><div class="sr-row">' + list.map(function (x, i) {
+    return '<button type="button" class="recent-chip" data-act="spend-repeat" data-i="' + i + '" aria-label="' + esc(x.kind + ' ' + won(x.amount) + (x.memo ? ' ' + x.memo : '') + ' 다시 넣기') + '">' +
+      '<i aria-hidden="true">' + kindIcon(x.kind) + '</i><b>' + won(x.amount) + '</b><small>' + esc(x.memo || x.kind) + '</small></button>';
+  }).join('') + '</div>' : '';
 }
 // R-07: 숫자판 위 큰 금액. 금액 칸이 바뀌는 모든 길(숫자판·자주 쓰는 값·타자·열기)이 미리보기를 거치므로 여기서 같이 그린다
 function renderSpendDisplay() {
@@ -1079,6 +1120,10 @@ function renderFridge() {
   var box = $('fridge');
   box.classList.toggle('open', open);
   showFridgeIn(open);
+  // R-15: 문을 한 번도 안 열었으면 손잡이를 깜빡이고(.coach) 냉장실 손잡이 옆 말풍선을 보인다
+  var coach = !App.state.fridgeOpened && !App.fridgeOpen;
+  box.classList.toggle('coach', coach);
+  $('door-coach').hidden = !coach;
   document.querySelectorAll('#fridge .handle').forEach(function (h) {
     h.setAttribute('aria-label', (h.closest('.left') ? '냉동실' : '냉장실') + ' 문 ' + (open ? '닫기' : '열기'));
   });

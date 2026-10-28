@@ -389,6 +389,7 @@ function openSpend(id) {
   $('spend-memo').value = x ? x.memo : '';
   $('spend-del').hidden = !x;
   renderSpendKinds(App.spendKind);
+  renderSpendRecent();
   renderSpendPreview();
   openLayer('sheet-spend');
 }
@@ -574,6 +575,8 @@ function deleteMeal(id) {
 // ---------- 내 냉장고: 문 열기·칸 메모·음식과 유통기한 (H-03) ----------
 function toggleFridge(open) {
   App.fridgeOpen = open == null ? !App.fridgeOpen : !!open;
+  // R-15: 한 번 열면 손잡이 안내는 다시 뜨지 않는다
+  if (App.fridgeOpen && !App.state.fridgeOpened) { App.state.fridgeOpened = true; save(); }
   if (App.screen !== 'fridge') { closeAllLayers(); setScreen('fridge'); }
   renderFridge();
   showFridgeIn(App.fridgeOpen);
@@ -1590,6 +1593,17 @@ var ACTIONS = {
   'spend-edit': function (d) { openSpend(d.id); },
   'spend-del': deleteSpend,
   'spend-kind': function (d) { App.spendKind = d.kind; renderSpendKinds(App.spendKind); renderSpendPreview(); },
+  // R-14: 최근 식비 알약 — 종류·금액·메모를 채우고(날짜는 시트에 고른 날 그대로) 바로 저장한다. 날짜가 틀리면 저장하지 않고 칸에 알린다
+  'spend-repeat': function (d) {
+    var x = recentSpends()[+d.i];
+    if (!x || App.editSpendId) return;
+    App.spendKind = x.kind;
+    $('spend-amount').value = x.amount;
+    $('spend-memo').value = x.memo || '';
+    renderSpendKinds(App.spendKind);
+    renderSpendPreview();
+    submitSpend();
+  },
   'spend-quick': function (d) {
     var a = $('spend-amount');
     a.value = d.v;
