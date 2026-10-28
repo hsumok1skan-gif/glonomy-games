@@ -328,6 +328,7 @@ window.UI = (function () {
     $('mix-root').innerHTML = h;
     renderMixOut();
   }
+  var pourSeen = { mix: null, all: false };
   function renderMixOut() {
     var s = S(), v = V(), m = v.mix, box = $('mix-out');
     if (!m || !box) return;
@@ -335,8 +336,23 @@ window.UI = (function () {
     var won = L.cost(r, m.lines, m.devProductId, s.products, s.settings);
     var mc = clientOf(m.clientId);
     var h = printHead('계량표' + (mc ? ' — ' + mc.name : ''));
-    h += '<div class="card"><div class="card-head"><h3>계량표</h3><span class="muted no-print">부은 줄을 누르세요</span></div>';
-    if (!m.lines.length || !(Number(m.total) > 0)) {
+    var ready = m.lines.length > 0 && Number(m.total) > 0;
+    // 부을 차례: 색 줄 순서대로, 그다음 산화제. 아직 안 지운 첫 줄이 '지금 부을 줄'
+    var order = [];
+    if (ready) {
+      r.lines.forEach(function (ml, i) { order.push({ key: i, cum: ml.cum }); });
+      if (m.ratio > 0) order.push({ key: 'dev', cum: r.cumDev });
+    }
+    var poured = order.filter(function (o) { return !!m.checks[o.key]; }).length;
+    var next = order.filter(function (o) { return !m.checks[o.key]; })[0] || { key: null };
+    var allPoured = order.length > 0 && poured === order.length;
+    h += '<div class="card">';
+    if (ready) {
+      h += '<div id="pour-progress" class="pour-progress no-print' + (allPoured ? ' all' : '') + '" aria-live="polite">' +
+        (allPoured ? '✓ 다 부었어요' : poured + ' / ' + order.length + '줄 부음 · 다음 저울 <b>' + L.gram(next.cum) + '</b>') + '</div>';
+    }
+    h += '<div class="card-head"><h3>계량표</h3><span class="muted no-print">부은 줄을 누르세요</span></div>';
+    if (!ready) {
       h += '<p class="muted">색 줄과 전체 g 을 넣으면 g 이 나와요.</p>';
     } else {
       h += '<div class="big-line">염모제 ' + L.gram(r.colorG) + (m.ratio > 0 ? ' + 산화제 ' + L.gram(r.devG) : '') + '</div>';
@@ -346,16 +362,21 @@ window.UI = (function () {
       h += '</div>';
       r.lines.forEach(function (ml, i) {
         var done = !!m.checks[i];
-        h += '<button type="button" class="pour' + (done ? ' done' : '') + '" data-act="pour" data-i="' + i + '" aria-pressed="' + done + '">' + sw(ml.shade) + '<span class="pname">' + esc(ml.shade) + ' <small>' + esc(ml.part) + '몫</small></span><span class="g">' + L.gram(ml.g) + '</span><span class="cum">저울 ' + L.gram(ml.cum) + '</span></button>';
+        var nx = !done && i === next.key;
+        h += '<button type="button" class="pour' + (done ? ' done' : '') + (nx ? ' next' : '') + '" data-act="pour" data-i="' + i + '" aria-pressed="' + done + '"' + (nx ? ' aria-current="step"' : '') + '>' + sw(ml.shade) + '<span class="pname">' + esc(ml.shade) + ' <small>' + esc(ml.part) + '몫</small></span><span class="g">' + L.gram(ml.g) + '</span><span class="cum">저울 ' + L.gram(ml.cum) + '</span></button>';
       });
       if (m.ratio > 0) {
         var dd = !!m.checks.dev;
-        h += '<button type="button" class="pour' + (dd ? ' done' : '') + '" data-act="pour" data-i="dev" aria-pressed="' + dd + '"><span class="sw" style="background:var(--line)"></span><span class="pname">산화제 ' + esc(m.dev) + '% <small>' + esc(L.ratioText(m.ratio)) + '</small></span><span class="g">' + L.gram(r.devG) + '</span><span class="cum">저울 ' + L.gram(r.cumDev) + '</span></button>';
+        var dn = !dd && next.key === 'dev';
+        h += '<button type="button" class="pour' + (dd ? ' done' : '') + (dn ? ' next' : '') + '" data-act="pour" data-i="dev" aria-pressed="' + dd + '"' + (dn ? ' aria-current="step"' : '') + '><span class="sw" style="background:var(--line)"></span><span class="pname">산화제 ' + esc(m.dev) + '% <small>' + esc(L.ratioText(m.ratio)) + '</small></span><span class="g">' + L.gram(r.devG) + '</span><span class="cum">저울 ' + L.gram(r.cumDev) + '</span></button>';
       }
       h += '<div class="row between" style="margin-top:8px"><span class="muted">이번 약값 어림</span><b>' + L.won(won) + '</b></div>';
     }
     h += '</div>';
     box.innerHTML = h;
+    // 마지막 줄을 지운 그 순간에만 한 번 번쩍임
+    if (allPoured && !(pourSeen.mix === m && pourSeen.all)) flash($('pour-progress'));
+    pourSeen = { mix: m, all: allPoured };
     // 다시 섞기: 지난 배합의 몫은 그대로, 오늘 전체 g 으로 나눈 배율
     var fromEl = $('mix-from'), src = m.fromSvc ? window.App.svcById(m.fromSvc) : null;
     if (fromEl && src) {

@@ -104,7 +104,7 @@ small, .small { font-size: var(--fs-xs); color: var(--muted); font-weight: 400; 
 .screen { display: none; padding: var(--gap); }
 .screen.on { display: block; animation: enter var(--t) ease-out; }
 @keyframes enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-body.reduce .screen.on, body.reduce .sheet, body.reduce .sheet-back, body.reduce .overlay, body.reduce .overlay .ov-card { animation: none !important; transition: none !important; }
+body.reduce .pour-progress, body.reduce .screen.on, body.reduce .sheet, body.reduce .sheet-back, body.reduce .overlay, body.reduce .overlay .ov-card { animation: none !important; transition: none !important; }
 
 /* 카드 */
 .card {
@@ -229,6 +229,14 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); bo
 .pour .cum { font-size: var(--fs-xs); color: var(--muted); min-width: 64px; text-align: right; }
 .pour.done { opacity: 0.45; }
 .pour.done .pname { text-decoration: line-through; }
+/* 지금 부을 줄: 자두색 2px 테두리, 저울 숫자를 크게 (곁눈으로 봐도 되게) */
+.pour.next { border: 2px solid var(--accent); padding: 7px 9px; background: var(--soft); }
+.pour.next .cum { font-size: var(--fs-l); font-weight: 800; color: var(--accent); }
+.pour-progress { margin: 0 0 8px; padding: 6px 12px; border-radius: var(--r-btn); background: var(--soft); color: var(--text); font-size: var(--fs-s); font-variant-numeric: tabular-nums; }
+.pour-progress b { color: var(--accent); font-size: var(--fs-m); }
+.pour-progress.all { background: var(--teal); color: var(--white); font-weight: 800; }
+.pour-progress.all.pulse { animation: pour-all 0.5s ease-out; }
+@keyframes pour-all { 0% { transform: scale(1.04); } 100% { transform: scale(1); } }
 .sum-bar { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: var(--soft); margin: 8px 0; }
 .sum-bar span { display: block; height: 100%; }
 .pulse { animation: pulse 0.5s ease-out; }
@@ -396,5 +404,7 @@ pre.test { white-space: pre-wrap; font-size: var(--fs-xs); background: var(--sof
   .hbar .track { height: 6px; }
   .pour.done { opacity: 1; }
   .pour.done .pname { text-decoration: none; }
+  .pour.next { padding: 3px 0; border: none; border-bottom: 1px solid var(--line); background: none; }
+  .pour.next .cum { font-size: var(--fs-xs); font-weight: normal; color: var(--muted); }
   .empty { padding: 8px; }
 }
