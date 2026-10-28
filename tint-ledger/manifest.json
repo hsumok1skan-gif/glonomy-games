@@ -1,0 +1,10 @@
+{
+  "name": "Tint Ledger",
+  "short_name": "Tint Ledger",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FBF7F2",
+  "theme_color": "#8A3B5C",
+  "icons": []
+}
