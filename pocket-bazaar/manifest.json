@@ -1,0 +1,20 @@
+{
+  "name": "Pocket Bazaar",
+  "short_name": "Pocket Bazaar",
+  "description": "작은 가판대 하나로 열 장날을 버틴다. 이웃 칸이 값을 정한다.",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#17322E",
+  "theme_color": "#17322E",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%2317322E'/%3E%3Cpath d='M64 112h64v96H64zM192 112h64v96h-64zM320 112h64v96h-64z' fill='%23FF7A3D'/%3E%3Cpath d='M128 112h64v96h-64zM256 112h64v96h-64zM384 112h64v96h-64z' fill='%23FFF3DC'/%3E%3Cg fill='%23FF7A3D'%3E%3Ccircle cx='96' cy='208' r='32'/%3E%3Ccircle cx='224' cy='208' r='32'/%3E%3Ccircle cx='352' cy='208' r='32'/%3E%3C/g%3E%3Cg fill='%23FFF3DC'%3E%3Ccircle cx='160' cy='208' r='32'/%3E%3Ccircle cx='288' cy='208' r='32'/%3E%3Ccircle cx='416' cy='208' r='32'/%3E%3C/g%3E%3Ccircle cx='256' cy='326' r='60' fill='%23FFC94A'/%3E%3Ccircle cx='256' cy='326' r='38' fill='none' stroke='%23C9541F' stroke-width='10'/%3E%3Crect x='96' y='392' width='320' height='28' rx='8' fill='%233FB8AF'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
