@@ -1,4 +1,4 @@
-/* Tomorrow Bag — 저장·불러오기·내보내기·가져오기 */
+/* 내일 가방 — 저장·불러오기·내보내기·가져오기 */
 var Store = (function () {
   var KEY = 'tomorrowbag.v1';
   var MAX_NAME = 30;
@@ -34,12 +34,14 @@ var Store = (function () {
       rules: DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; }),
       notes: [],
       checks: {},
+      skips: {},
       history: [],
       settings: {
         switchHour: 14,
         font: 1,
         reduce: false,
         dark: false,
+        mute: false,
         teacher: false,
         holidays: [],
         guardians: ['엄마', '아빠'],
@@ -76,7 +78,7 @@ var Store = (function () {
     try { localStorage.removeItem(KEY); } catch (e) { /* 저장소가 없어도 앱은 돈다 */ }
   }
 
-  // 빠진 칸을 처음 값으로 채운다 (예전 판 데이터·가져온 데이터)
+  // 비어 있는 칸을 처음 값으로 채운다 (예전 판 데이터·가져온 데이터)
   function fill(d) {
     var base = defaults();
     Object.keys(base).forEach(function (k) { if (d[k] === undefined) d[k] = base[k]; });
@@ -84,6 +86,8 @@ var Store = (function () {
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
     if (typeof d.checks !== 'object' || !d.checks || Array.isArray(d.checks)) d.checks = {};
+    if (typeof d.skips !== 'object' || !d.skips || Array.isArray(d.skips)) d.skips = {};
+    Object.keys(d.skips).forEach(function (k) { if (!Array.isArray(d.skips[k])) delete d.skips[k]; });
     d.kids.forEach(function (k) {
       if (!k.week) k.week = emptyWeek(k.periods || 6);
       for (var i = 1; i <= 5; i++) {
@@ -103,29 +107,30 @@ var Store = (function () {
   // 가져오기 전 형식 검사 — 틀린 곳마다 이유를 돌려준다
   function validate(d) {
     var errs = [];
-    if (!d || typeof d !== 'object') return { ok: false, errs: ['글이 Tomorrow Bag 내보내기 형식이 아닙니다.'] };
-    if (d.v !== 1) errs.push('이 앱에서 내보낸 글이 아니거나 다른 판의 글입니다.');
-    if (!Array.isArray(d.kids)) errs.push('아이 목록이 없습니다.');
+    if (!d || typeof d !== 'object') return { ok: false, errs: ['내일 가방에서 내보낸 글이 아니에요.'] };
+    if (d.v !== 1) errs.push('이 앱에서 내보낸 글이 아니거나 다른 판의 글이에요.');
+    if (!Array.isArray(d.kids)) errs.push('아이 목록이 없어요.');
     else d.kids.forEach(function (k, i) {
-      if (!k || typeof k.name !== 'string' || !k.name.trim()) errs.push((i + 1) + '번째 아이 이름이 비었습니다.');
-      if (k && (typeof k.periods !== 'number' || k.periods < 4 || k.periods > 7)) errs.push((i + 1) + '번째 아이의 교시 수가 4~7이 아닙니다.');
+      if (!k || typeof k.name !== 'string' || !k.name.trim()) errs.push((i + 1) + '번째 아이 이름이 비어 있어요.');
+      if (k && (typeof k.periods !== 'number' || k.periods < 4 || k.periods > 7)) errs.push((i + 1) + '번째 아이의 교시 수가 4~7이 아니에요.');
     });
-    if (!Array.isArray(d.packs)) errs.push('꾸러미 목록이 없습니다.');
+    if (!Array.isArray(d.packs)) errs.push('꾸러미 목록이 없어요.');
     else d.packs.forEach(function (p, i) {
-      if (!p || typeof p.name !== 'string' || !isStrArr(p.items)) errs.push((i + 1) + '번째 꾸러미의 이름이나 물건 목록이 잘못됐습니다.');
+      if (!p || typeof p.name !== 'string' || !isStrArr(p.items)) errs.push((i + 1) + '번째 꾸러미의 이름이나 물건 목록이 맞지 않아요.');
     });
-    if (d.notes !== undefined && !Array.isArray(d.notes)) errs.push('알림장 목록이 잘못됐습니다.');
+    if (d.notes !== undefined && !Array.isArray(d.notes)) errs.push('알림장 목록이 맞지 않아요.');
     else if (Array.isArray(d.notes)) d.notes.forEach(function (n, i) {
-      if (!n || !/^\d{4}-\d{2}-\d{2}$/.test(n.date) || !isStrArr(n.items)) errs.push((i + 1) + '번째 알림장의 날짜나 준비물이 잘못됐습니다.');
+      if (!n || !/^\d{4}-\d{2}-\d{2}$/.test(n.date) || !isStrArr(n.items)) errs.push((i + 1) + '번째 알림장의 날짜나 준비물이 맞지 않아요.');
     });
-    if (d.history !== undefined && !Array.isArray(d.history)) errs.push('챙긴 기록이 잘못됐습니다.');
+    if (d.history !== undefined && !Array.isArray(d.history)) errs.push('가방 달력 기록이 맞지 않아요.');
     else if (Array.isArray(d.history)) d.history.forEach(function (h, i) {
       if (!h || !/^\d{4}-\d{2}-\d{2}$/.test(h.date) || typeof h.total !== 'number' || typeof h.done !== 'number' || !isStrArr(h.missed)) {
-        errs.push((i + 1) + '번째 기록의 날짜나 개수가 잘못됐습니다.');
+        errs.push((i + 1) + '번째 가방 기록의 날짜나 개수가 맞지 않아요.');
       }
     });
-    if (d.checks !== undefined && (typeof d.checks !== 'object' || Array.isArray(d.checks))) errs.push('챙김 표시가 잘못됐습니다.');
-    if (!d.settings || typeof d.settings !== 'object') errs.push('설정이 없습니다.');
+    if (d.checks !== undefined && (typeof d.checks !== 'object' || Array.isArray(d.checks))) errs.push('챙긴 표시가 맞지 않아요.');
+    if (d.skips !== undefined && (typeof d.skips !== 'object' || !d.skips || Array.isArray(d.skips))) errs.push('뺀 물건 표시가 맞지 않아요.');
+    if (!d.settings || typeof d.settings !== 'object') errs.push('설정이 없어요.');
     return { ok: errs.length === 0, errs: errs.slice(0, 6) };
   }
 
@@ -135,9 +140,9 @@ var Store = (function () {
 
   function parseImport(text) {
     var t = (text || '').trim();
-    if (!t) return { ok: false, errs: ['붙여 넣은 글이 없습니다.'] };
+    if (!t) return { ok: false, errs: ['붙여 넣은 글이 없어요.'] };
     var d;
-    try { d = JSON.parse(t); } catch (e) { return { ok: false, errs: ['글이 잘렸거나 다른 글입니다. 내보내기 글을 처음부터 끝까지 붙여 넣어 주세요.'] }; }
+    try { d = JSON.parse(t); } catch (e) { return { ok: false, errs: ['글이 잘렸거나 다른 글이에요. 내보내기 글을 처음부터 끝까지 붙여 넣어 주세요.'] }; }
     var r = validate(d);
     if (!r.ok) return r;
     return { ok: true, data: fill(d) };

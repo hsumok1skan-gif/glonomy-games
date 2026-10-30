@@ -1,4 +1,4 @@
-/* Tomorrow Bag — 날짜 계산, 가방 목록 만들기, 기록 요약, 계산 점검 */
+/* 내일 가방 — 날짜 계산, 가방 목록 만들기, 물건 그림 찾기, 칭찬 스티커, 계산 점검 */
 var Logic = (function () {
   // ---- 날짜 (모두 기기 현지 날짜, 'YYYY-MM-DD') ----
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -68,6 +68,54 @@ var Logic = (function () {
     if (diff === -1) return '어제';
     return (-diff) + '일 전';
   }
+  // '11월 2일(월)' — 가족에게 보낼 한 줄, 가방 시트 제목
+  function dayLabel(k) {
+    var d = fromKey(k);
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일(' + DATA.DOW[d.getDay()] + ')';
+  }
+  // '11/2' — 칭찬 스티커 위 날짜
+  function shortDay(k) {
+    var d = fromKey(k);
+    return (d.getMonth() + 1) + '/' + d.getDate();
+  }
+  // 받침이 있는 한글 이름이면 '이'를 붙여 부르는 이름으로 (하윤 → 하윤이, 서아 → 서아)
+  function nameI(name) {
+    var s = String(name || '');
+    var c = s.charCodeAt(s.length - 1);
+    if (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0) return s + '이';
+    return s;
+  }
+
+  // ---- 물건 그림: 이름에 든 말로 가장 비슷한 그림을 찾는다. 없으면 가방 그림 ----
+  function iconFor(name) {
+    var n = norm(name).toLowerCase();
+    var best = null, score = 0;
+    DATA.ICONS.forEach(function (ic) {
+      ic.w.forEach(function (w) {
+        // 한 글자 말(자·풀·책·띠·물·공·옷·통)은 낱말 하나로 있을 때만 맞는다 (모자·연필 두 자루에 '자'가 붙지 않게)
+        var ok = w.length > 1 ? n.indexOf(w) >= 0 :
+          (n === w || n.indexOf(w + ' ') === 0 || n.slice(-(w.length + 1)) === ' ' + w || n.indexOf(' ' + w + ' ') >= 0);
+        if (ok && w.length > score) { score = w.length; best = ic; }
+      });
+    });
+    if (best) return best;
+    for (var i = 0; i < DATA.ICONS.length; i++) if (DATA.ICONS[i].id === 'bag') return DATA.ICONS[i];
+    return DATA.ICONS[DATA.ICONS.length - 1];
+  }
+
+  // ---- 칭찬 스티커: 날짜마다 정해진 하나 (12가지) ----
+  function stickerFor(k) {
+    var p = String(k).split('-');
+    return ((+p[0]) * 7 + (+p[1]) * 31 + (+p[2]) * 5) % 12;
+  }
+  // 그 달(YYYY-MM)에 가방을 다 챙긴 날 수 = 가방 달력의 스티커 수
+  function monthStickers(history, kidId, ym) {
+    var seen = {};
+    (history || []).forEach(function (h) {
+      if (h.kid === kidId && String(h.date).slice(0, 7) === ym && h.total > 0 && h.done === h.total) seen[h.date] = true;
+    });
+    return Object.keys(seen).length;
+  }
 
   // ---- 가방 목록 ----
   var GROUPS = ['note', 'rule', 'class', 'after', 'daily'];
@@ -85,13 +133,14 @@ var Logic = (function () {
     var map = {};
     var order = [];
     // icon: 처음 나온 출처의 그림 (꾸러미면 pk.icon, 알림장 📝, 요일 규칙 📅, 매일 🎒)
+    // pic: 물건 이름으로 찾은 물건 그림 id (가방 시트 칸에 그린다)
     function add(name, src, group, icon) {
       var n = norm(name);
       if (!n) return;
       var key = n.toLowerCase();
       var it = map[key];
       if (!it) {
-        it = { name: n, sources: [], group: group, icon: icon || '🎒' };
+        it = { name: n, sources: [], group: group, icon: icon || '🎒', pic: iconFor(n).id };
         map[key] = it;
         order.push(it);
       }
@@ -124,6 +173,9 @@ var Logic = (function () {
     }
     (state.daily || []).forEach(function (x) { add(x, '매일', 'daily', '🎒'); });
 
+    // 가방 시트에서 '내일은 빼기' 한 물건은 그날 가방에서만 뺀다
+    var skip = (state.skips && kid && state.skips[checkKey(kid.id, k)]) || [];
+    if (skip.length) order = order.filter(function (it) { return skip.indexOf(it.name) < 0; });
     order.sort(function (a, b) { return GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group); });
     return { date: k, items: order, periods: periods, pickups: pickups, school: isSchoolDay(k, state.settings.holidays) };
   }
@@ -164,23 +216,8 @@ var Logic = (function () {
     return added;
   }
 
-  // 기록 요약: 챙김률, 다 챙긴 날, 연속 다 챙긴 날, 자주 빠뜨린 것
-  function summary(history, kidId, fromKeyStr) {
-    var list = history.filter(function (h) { return h.kid === kidId && (!fromKeyStr || h.date >= fromKeyStr); });
-    list.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
-    var tot = 0, dn = 0, full = 0, streak = 0, miss = {};
-    list.forEach(function (h) {
-      tot += h.total; dn += h.done;
-      if (h.total > 0 && h.done === h.total) { full++; streak++; } else streak = 0;
-      h.missed.forEach(function (m) { miss[m] = (miss[m] || 0) + 1; });
-    });
-    var top = Object.keys(miss).map(function (m) { return { name: m, n: miss[m] }; })
-      .sort(function (a, b) { return b.n - a.n || (a.name < b.name ? -1 : 1); }).slice(0, 5);
-    return { days: list.length, rate: tot ? Math.round(dn * 100 / tot) : 0, full: full, streak: streak, top: top, list: list };
-  }
-
-  // 자주 빠뜨린 것: fromKey 부터(toKey 가 있으면 그날 앞까지) 그 아이 기록의 missed 를 이름(norm·소문자)별로 센다
-  // 가방 줄의 '최근 n번 빠뜨림' 표시에 쓴다 (ui.js checkList)
+  // 자주 덜 챙긴 물건: fromKey 부터(toKey 가 있으면 그날 앞까지) 그 아이 기록의 missed 를 이름(norm·소문자)별로 센다
+  // 화면에 말로 보이지 않는다. 가방 시트에서 2번 이상인 물건을 그 쪽 맨 앞 칸에 놓기만 한다 (ui.js bagPages)
   function missCounts(history, kidId, fromKey, toKey) {
     var out = {};
     (history || []).forEach(function (h) {
@@ -196,48 +233,32 @@ var Logic = (function () {
     return out;
   }
 
-  // 요일별 챙김률 (월~금)
-  function byWeekday(list) {
-    var r = {};
-    for (var i = 1; i <= 5; i++) r[i] = { t: 0, d: 0 };
-    list.forEach(function (h) {
-      var w = dow(h.date);
-      if (r[w]) { r[w].t += h.total; r[w].d += h.done; }
-    });
-    var out = [];
-    for (var j = 1; j <= 5; j++) out.push({ dow: j, pct: r[j].t ? Math.round(r[j].d * 100 / r[j].t) : null });
-    return out;
-  }
-
-  // 꾸러미 찾기·거르기·정렬: 이름이나 물건에 찾는 말이 든 것, 종류(all/subj/acad), 순서(base/name/many)
-  function findPacks(packs, q, kind, sort) {
+  // 알림장 준비물 고르기: 찾는 말(이름에 든 것)·갈래 거르기(all 또는 갈래 이름)·순서(base 갈래 순서 / name 가나다순 / often 자주 쓰는 순)
+  // usage: 지금까지 알림장에 넣은 횟수 { 이름(소문자): n }
+  function findSupplies(q, cat, sort, usage) {
     var t = norm(q).toLowerCase();
-    var list = packs.filter(function (p) {
-      if (kind && kind !== 'all' && p.kind !== kind) return false;
-      if (!t) return true;
-      return p.name.toLowerCase().indexOf(t) >= 0 || p.items.some(function (x) { return x.toLowerCase().indexOf(t) >= 0; });
+    var out = [], seen = {};
+    DATA.SUPPLIES.forEach(function (g) {
+      if (cat && cat !== 'all' && g.cat !== cat) return;
+      g.items.forEach(function (x) {
+        if (seen[x]) return;
+        if (t && x.toLowerCase().indexOf(t) < 0) return;
+        seen[x] = true;
+        out.push({ name: x, o: out.length });
+      });
     });
-    if (sort === 'name') list.sort(function (a, b) { return a.name.localeCompare(b.name, 'ko'); });
-    else if (sort === 'many') list.sort(function (a, b) { return b.items.length - a.items.length || a.name.localeCompare(b.name, 'ko'); });
-    return list;
+    usage = usage || {};
+    if (sort === 'name') out.sort(function (a, b) { return a.name.localeCompare(b.name, 'ko'); });
+    else if (sort === 'often') out.sort(function (a, b) { return (usage[b.name.toLowerCase()] || 0) - (usage[a.name.toLowerCase()] || 0) || a.o - b.o; });
+    return out.map(function (x) { return x.name; });
   }
-
-  // 기록 날짜별 거르기(all/miss/full)·정렬(new/old/low)·물건 찾기(빠진 물건 이름)
-  function filterHistory(list, show, sort, q) {
-    var t = norm(q).toLowerCase();
-    function pct(h) { return h.total ? h.done / h.total : 0; }
-    var out = list.filter(function (h) {
-      if (show === 'miss' && !h.missed.length) return false;
-      if (show === 'full' && h.missed.length) return false;
-      if (t && !h.missed.some(function (m) { return m.toLowerCase().indexOf(t) >= 0; })) return false;
-      return true;
+  // 알림장에 넣은 준비물 횟수 (자주 쓰는 순)
+  function supplyUsage(state) {
+    var u = {};
+    (state.notes || []).forEach(function (n) {
+      (n.items || []).forEach(function (x) { var key = norm(x).toLowerCase(); u[key] = (u[key] || 0) + 1; });
     });
-    out.sort(function (a, b) {
-      if (sort === 'low') return pct(a) - pct(b) || (a.date < b.date ? 1 : -1);
-      if (sort === 'old') return a.date < b.date ? -1 : 1;
-      return a.date < b.date ? 1 : -1;
-    });
-    return out;
+    return u;
   }
 
   // 며칠 뒤 준비물: fromKey 다음 날부터 days 일 안의 그 아이 알림장을 날짜순으로 (미리 사 둘 것)
@@ -271,32 +292,41 @@ var Logic = (function () {
     return { steps: steps, n: steps.filter(function (s) { return s.done; }).length, all: steps.every(function (s) { return s.done; }) };
   }
 
-  // 가족에게 보낼 글
-  function shareText(state, kid, bag) {
-    var done = state.checks[checkKey(kid.id, bag.date)] || [];
-    var lines = ['[' + kid.name + ' ' + shortLabel(bag.date) + ' 가방]'];
-    bag.items.forEach(function (it) {
-      lines.push((done.indexOf(it.name) >= 0 ? '☑ ' : '☐ ') + it.name + ' — ' + it.sources.join(', '));
-    });
-    if (bag.pickups.length) {
-      lines.push('');
-      lines.push('방과후');
-      bag.pickups.forEach(function (p) {
-        lines.push('· ' + (p.time || '시간 미정') + ' ' + p.name + (p.who ? ' — 데리러: ' + p.who : ''));
-      });
+  // 학년 기본 시간표: grade 가 든 묶음을 periods 길이로 자르고(모자라면 빈 칸), 지운 꾸러미 칸은 비운다
+  function gradeWeek(tables, packs, grade, periods) {
+    var t = null;
+    (tables || []).forEach(function (x) { if (x.grades.indexOf(grade) >= 0) t = x; });
+    if (!t) return null;
+    var w = {};
+    for (var d = 1; d <= 5; d++) {
+      var p = [];
+      for (var i = 0; i < periods; i++) {
+        var id = t.week[d][i];
+        p.push(id && findPack(packs, id) ? id : null);
+      }
+      w[d] = p;
     }
-    return lines.join('\n');
+    return w;
   }
 
-  // 다 챙겼을 때 가족·선생님께 보낼 한 줄: '하윤 내일 준비물 다 챙겼어요' (+ 날짜·물건 수)
-  // 다 챙기지 않았으면 '' — 화면은 이때 복사 버튼을 그리지 않는다
-  function doneText(state, kid, bag, todayKey) {
+  // 가족에게 보낼 글: 첫 줄 '하윤이 11월 2일(월) 가방 다 챙겼어요 🎒' (다 챙기기 전에는 '챙기고 있어요'),
+  // 데리러 갈 사람이 있으면 둘째 줄 '14:30 태권도 → 아빠' (여럿이면 · 로 이어 한 줄)
+  function shareText(state, kid, bag) {
+    var pr = progress(state, kid, bag);
+    var full = pr.total > 0 && pr.done === pr.total;
+    var first = nameI(kid.name) + ' ' + dayLabel(bag.date) + (full ? ' 가방 다 챙겼어요 🎒' : ' 가방을 챙기고 있어요 🎒');
+    var who = bag.pickups.filter(function (p) { return p.who; }).map(function (p) {
+      return (p.time ? p.time + ' ' : '') + p.name + ' → ' + p.who;
+    });
+    return who.length ? first + '\n' + who.join(' · ') : first;
+  }
+
+  // 다 챙겼을 때 가족·선생님께 보낼 글 (shareText 와 같다). 다 챙기지 않았으면 ''
+  function doneText(state, kid, bag) {
     if (!kid || !bag.items.length) return '';
     var done = state.checks[checkKey(kid.id, bag.date)] || [];
     if (!bag.items.every(function (it) { return done.indexOf(it.name) >= 0; })) return '';
-    var rel = relLabel(bag.date, todayKey);
-    var when = (rel === '오늘' || rel === '내일' || rel === '모레') ? rel : shortLabel(bag.date);
-    return kid.name + ' ' + when + ' 준비물 다 챙겼어요 ✓\n(' + shortLabel(bag.date) + ' 가방 ' + bag.items.length + '개 모두)';
+    return shareText(state, kid, bag);
   }
 
   // ---- 선생님 모드: 반 이름·날짜·준비물·메모를 링크 주소 # 뒤에 담는다 (서버 없음) ----
@@ -423,17 +453,28 @@ var Logic = (function () {
     eq('물병 출처 수', bottle ? bottle.sources.length : 0, 4);
     eq('맨 위 물건 (알림장 먼저)', bag.items[0].name, '색종이');
     eq('알림장 물건 그림', bag.items[0].icon, '📝');
-    eq('챙김 진행률', progress(st, kid, bag).pct, 29); // 2/7 = 28.6% → 29
-    // 5) 기록 요약: 10/10, 8/10, 5/5 → 23/25 = 92%, 다 챙긴 날 2, 연속 1
-    var sm = summary([
+    eq('진행 고리', progress(st, kid, bag).pct, 29); // 2/7 = 28.6% → 29
+    eq('물병 그림', bottle ? bottle.pic : '', 'bottle');
+    // 4-2) '내일은 빼기': 그날 가방에서만 뺀다 → 6개, 다른 날은 그대로
+    st.skips = { 'k|2026-10-26': ['필통'] };
+    eq('내일은 빼기 뒤 물건 수', buildBag(st, kid, '2026-10-26').items.length, 6);
+    delete st.skips;
+    // 5) 가방 달력: 10/21 다 챙김, 10/22 덜 챙김, 10/23 다 챙김, 11/2 다 챙김 → 10월 스티커 2장
+    var hs = [
       { kid: 'k', date: '2026-10-21', total: 10, done: 10, missed: [] },
       { kid: 'k', date: '2026-10-22', total: 10, done: 8, missed: ['리코더', '물병'] },
-      { kid: 'k', date: '2026-10-23', total: 5, done: 5, missed: [] }
-    ], 'k');
-    eq('챙김률', sm.rate, 92);
-    eq('다 챙긴 날', sm.full, 2);
-    eq('연속 다 챙긴 날', sm.streak, 1);
-    // 5-2) 자주 빠뜨린 것: 30일 앞(9/25)·다른 아이·그날(10/26) 기록은 빼고, ' 리코더'·'리코더' 는 같은 것 → 리코더 2, 물병 1
+      { kid: 'k', date: '2026-10-23', total: 5, done: 5, missed: [] },
+      { kid: 'k', date: '2026-11-02', total: 5, done: 5, missed: [] }
+    ];
+    eq('10월 칭찬 스티커', monthStickers(hs, 'k', '2026-10'), 2);
+    eq('스티커는 12가지 안', stickerFor('2026-11-02') >= 0 && stickerFor('2026-11-02') < 12, true);
+    // 5-1) 물건 그림 찾기: 이름에 든 말로, 한 글자 말은 낱말일 때만, 없으면 가방
+    eq('그림 찾기 가위', iconFor('가위').id, 'scissors');
+    eq('그림 찾기 실내화 주머니', iconFor('실내화 주머니').id, 'indoor');
+    eq('그림 찾기 30cm 자', iconFor('30cm 자').id, 'ruler');
+    eq('그림 찾기 연필 두 자루', iconFor('연필 두 자루').id, 'pencil');
+    eq('그림 찾기 없는 물건', iconFor('우주선 모형').id, 'bag');
+    // 5-2) 자주 덜 챙긴 것: 30일 앞(9/25)·다른 아이·그날(10/26) 기록은 빼고, ' 리코더'·'리코더' 는 같은 것 → 리코더 2, 물병 1
     var mc = missCounts([
       { kid: 'k', date: '2026-09-20', missed: ['리코더'] },
       { kid: 'k', date: '2026-10-20', missed: ['리코더', '물병'] },
@@ -441,7 +482,10 @@ var Logic = (function () {
       { kid: 'x', date: '2026-10-23', missed: ['리코더'] },
       { kid: 'k', date: '2026-10-26', missed: ['물병'] }
     ], 'k', addDays('2026-10-26', -30), '2026-10-26');
-    eq('최근 30일 빠뜨린 횟수', (mc['리코더'] || 0) + '|' + (mc['물병'] || 0), '2|1');
+    eq('맨 앞에 놓을 물건 횟수', (mc['리코더'] || 0) + '|' + (mc['물병'] || 0), '2|1');
+    // 5-3) 준비물 찾기: '풀' → 풀·딱풀, 자주 쓰는 순이면 많이 넣은 딱풀이 먼저
+    eq('준비물 찾기 풀', findSupplies('풀', 'all', 'base').join(','), '풀,딱풀');
+    eq('준비물 자주 쓰는 순', findSupplies('풀', 'all', 'often', { '딱풀': 3 })[0], '딱풀');
     // 6) 없는 날짜 거르기
     eq('2026-02-30 은 없는 날', validKey('2026-02-30'), false);
     // 7) 며칠 뒤 준비물: 10/26 가방 기준, 그날(10/26)·8일 뒤(11/3)·다른 아이는 빼고 10/28·11/2 두 개, 날짜순
@@ -475,13 +519,21 @@ var Logic = (function () {
     eq('링크 받기 합친 것', m1.merged.join(','), '색종이,물병');
     eq('링크 받은 뒤 가방 물건 수', buildBag(ps, pk, '2026-10-26').items.length, 3);
     eq('같은 링크 또 열기', mergeTeacher(ps, pk, link, 'n3').added.length + '|' + ps.notes.length, '0|2');
-    // 9-2) 다 챙김 문구: 하나라도 남으면 '', 다 챙기면 '하윤 내일 준비물 다 챙겼어요' 로 시작
+    // 9-2) 가족에게 보낼 글: 하나라도 남으면 다 챙김 글은 '', 다 챙기면 '하윤이 10월 26일(월) 가방 다 챙겼어요 🎒'
     var dk = { id: 'k', name: '하윤', week: pk.week };
     var dbag = buildBag(ps, dk, '2026-10-26');
     ps.checks[checkKey('k', '2026-10-26')] = ['풀'];
-    eq('다 챙김 문구 (남은 것 있음)', doneText(ps, dk, dbag, '2026-10-25'), '');
+    eq('다 챙김 글 (남은 것 있음)', doneText(ps, dk, dbag), '');
     ps.checks[checkKey('k', '2026-10-26')] = dbag.items.map(function (it) { return it.name; });
-    eq('다 챙김 문구 첫 줄', doneText(ps, dk, dbag, '2026-10-25').split('\n')[0], '하윤 내일 준비물 다 챙겼어요 ✓');
+    eq('다 챙김 글', doneText(ps, dk, dbag), '하윤이 10월 26일(월) 가방 다 챙겼어요 🎒');
+    // 9-3) 데리러 갈 사람 줄: '14:30 태권도 → 아빠' 한 줄만 더한다
+    var sb = { date: '2026-11-02', items: [], pickups: [{ time: '14:30', name: '태권도', who: '아빠' }, { time: '16:00', name: '수영', who: '' }] };
+    eq('가족 글 둘째 줄', shareText({ checks: {} }, { id: 'k', name: '서아' }, sb), '서아 11월 2일(월) 가방을 챙기고 있어요 🎒\n14:30 태권도 → 아빠');
+    // 9-4) 학년 기본 시간표: 4학년은 3~4학년 묶음, 4교시로 자르고 지운 꾸러미 칸은 비운다
+    var gt = [{ grades: [3, 4], week: { 1: ['a', 'b', 'x', 'a', 'b', 'a'], 2: ['b'], 3: [], 4: [], 5: [] } }];
+    var gw = gradeWeek(gt, [{ id: 'a' }, { id: 'b' }], 4, 4);
+    eq('학년 기본 시간표 (4교시)', gw[1].join(',') + '|' + gw[2].length, 'a,b,,a|4');
+    eq('학년 기본 시간표 (없는 학년)', gradeWeek(gt, [], 1, 6), null);
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -497,9 +549,10 @@ var Logic = (function () {
   return {
     toKey: toKey, fromKey: fromKey, addDays: addDays, dow: dow, validKey: validKey,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
-    label: label, shortLabel: shortLabel, relLabel: relLabel,
+    label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, progress: progress, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    summary: summary, missCounts: missCounts, byWeekday: byWeekday, findPacks: findPacks, filterHistory: filterHistory, upcoming: upcoming, setupSteps: setupSteps, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
+    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, findSupplies: findSupplies, supplyUsage: supplyUsage,
+    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

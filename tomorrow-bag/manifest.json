@@ -1,7 +1,7 @@
 {
-  "name": "Tomorrow Bag",
-  "short_name": "Tomorrow Bag",
-  "description": "시간표와 알림장으로 초등학생 아이의 내일 가방을 챙기는 앱",
+  "name": "내일 가방",
+  "short_name": "내일 가방",
+  "description": "시간표와 알림장으로 초등학생 아이와 함께 내일 가방을 챙기는 앱",
   "lang": "ko",
   "dir": "ltr",
   "start_url": "./index.html",
