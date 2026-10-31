@@ -196,7 +196,9 @@ body.reduce .wood-slot:active, body.reduce .offer:active { transform: none; bord
 body.reduce #scr-title::after { animation: none; }
 .title-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; width: 100%; margin: auto 0; }
 /* '야영지' 같은 버튼 글이 두 줄로 꺾이지 않게 한다 */
-#scr-title .menu .btn { white-space: nowrap; }
+#scr-title .menu .btn { white-space: nowrap; font-size: var(--fs-l); min-height: 52px; }
+/* 주 버튼은 두꺼운 아래 테두리로 누를 곳이 한눈에 보인다: 반투명 먹색이 모닥불색 바탕 위에 겹쳐 더 어두운 모닥불색이 된다 */
+#scr-title .menu .btn.primary { border-bottom: 4px solid rgba(var(--ink-rgb), 0.35); background-clip: border-box; }
 .meta-line { text-shadow: 0 1px 2px var(--ink); }
 /* 로고 그림 112px: 왼쪽 모닥불(엇갈린 장작 + 바깥 불꽃 + 속불) · 오른쪽 등불(고리 + 유리 + 속 불씨) · 아래 빛 웅덩이.
    자리·크기는 % 라서 낮은 화면에서 상자만 줄이면 그림이 같이 준다. 검은 그림자로 실루엣 테두리를 준다 */

@@ -256,6 +256,7 @@ var UI = (function () {
     h += '<div class="kv"><span>근무 시각</span><b>' + (sp ? esc(L.clock(sp.s) + ' ~ ' + L.clock(sp.e) + (L.dateOf(sp.e) !== date ? ' (다음 날)' : '') + ' · ' + L.hours(sp) + '시간') : s ? '쉬는 날' : '비어 있음') + '</b></div>';
     h += '<div class="kv"><span>' + (sl.kind === 'day' ? '나이트 뒤 잠' : '이날 아침까지 잠') + '</span><b class="' + (sl.short ? 't-warn' : '') + '">' + esc(sleepLine(sl)) + '</b></div>';
     if (sl.nap) h += '<div class="kv"><span>나이트 전 낮잠</span><b>' + esc(L.clock(sl.nap.s) + ' ~ ' + L.clock(sl.nap.e)) + '</b></div>';
+    h += timelineHtml(S, date, S.plans.filter(function (p) { return p.date === date; }));
     h += rs.length ? rs.map(function (r) { var i = L.riskInfo(r.type); return '<div class="risk lv-' + i.level + '"><b>' + esc(i.name) + '</b> ' + esc(L.riskText(r)) + '<br><span class="small-t">' + esc(i.fix) + '</span></div>'; }).join('') : '<p class="muted">이날은 위험이 없어요.</p>';
     var ps = S.plans.filter(function (p) { return p.date === date; }).sort(planSort);
     h += '<div class="card-head"><p class="card-k">이날 약속</p><button type="button" class="btn small" data-act="plan-new" data-date="' + date + '">약속 더하기</button></div>';
@@ -287,12 +288,60 @@ var UI = (function () {
     h += '</div><div id="plan-list">' + planListHtml(S, V) + '</div>';
     $('plans-root').innerHTML = h;
   }
+  /* 36시간 띠: 그날 00:00 ~ 다음 날 12:00 에 근무·통근·잠·낮잠·약속을 막대로 겹친다.
+     planCheck 와 같은 범위(근무 전날~다음 날, 잠 그날·다음 날)를 그려 겹친 곳(.tl-hit)이 판정과 맞는다.
+     plan 은 { start, dur } 하나 또는 그 배열(날 보기), 없으면 null */
+  function timelineHtml(S, date, plan) {
+    var MIN = 60000, set = S.set;
+    var t0 = L.at(date, '00:00'), t1 = L.at(L.addDays(date, 1), '12:00'), len = t1 - t0;
+    function bar(cls, s, e, title) {
+      s = Math.max(s, t0); e = Math.min(e, t1);
+      if (e <= s) return '';
+      var left = (s - t0) / len * 100, width = (e - s) / len * 100;
+      return '<i class="tl-bar ' + cls + '" style="left:' + left.toFixed(2) + '%;width:' + width.toFixed(2) + '%" title="' + esc(title + ' ' + L.clock(s) + '~' + L.clock(e)) + '"></i>';
+    }
+    var busy = [], h = '';
+    for (var i = -1; i <= 1; i++) {
+      var sp = L.span(S, L.addDays(date, i));
+      if (!sp) continue;
+      var c = set.commute * MIN;
+      if (c) { h += bar('tl-commute', sp.s - c, sp.s, '출근길') + bar('tl-commute', sp.e, sp.e + c, '퇴근길'); }
+      h += bar('tl-work', sp.s, sp.e, sp.t.name + ' 근무');
+      busy.push({ s: sp.s - c, e: sp.e + c });
+    }
+    [date, L.addDays(date, 1)].forEach(function (d) {
+      var sl = L.sleepFor(S, d);
+      if (sl.mins > 0) { h += bar('tl-sleep', sl.bed, sl.wake, sl.kind === 'day' ? '나이트 뒤 잠' : '잘 시간'); busy.push({ s: sl.bed, e: sl.wake }); }
+      if (sl.nap) { h += bar('tl-nap', sl.nap.s, sl.nap.e, '나이트 전 낮잠'); busy.push({ s: sl.nap.s, e: sl.nap.e }); }
+    });
+    var plans = !plan ? [] : Array.isArray(plan) ? plan : [plan];
+    var hits = 0;
+    plans.forEach(function (p) {
+      if (!L.validHM(p.start) || !(p.dur > 0)) return;
+      var ps = L.at(date, p.start) - set.travel * MIN, pe = L.at(date, p.start) + (p.dur + set.travel) * MIN;
+      h += bar('tl-plan', ps, pe, (p.title || '약속') + ' (오가는 시간 포함)');
+      busy.forEach(function (b) {
+        var s = Math.max(ps, b.s), e = Math.min(pe, b.e);
+        if (e > s) { h += bar('tl-hit', s, e, '겹침'); hits++; }
+      });
+    });
+    var ticks = '';
+    for (var k = 0; k <= 36; k += 6) {
+      var lab = L.pad(k % 24);
+      ticks += '<i class="tl-tick" style="left:' + (k / 36 * 100).toFixed(2) + '%"></i><span class="tl-lab" style="left:' + (k / 36 * 100).toFixed(2) + '%">' + lab + '</span>';
+    }
+    var label = L.md(date) + ' 0시부터 다음 날 12시까지 근무·잠·약속 띠' + (plans.length ? (hits ? ', 겹친 곳 ' + hits + '군데' : ', 겹친 곳 없음') : '');
+    return '<div class="tl-wrap"><div class="tl" role="img" aria-label="' + esc(label) + '">' + ticks + h + '</div>' +
+      '<p class="tl-key small-t" aria-hidden="true"><span><i class="tl-work"></i>근무</span><span><i class="tl-commute"></i>통근</span><span><i class="tl-sleep"></i>잠</span><span><i class="tl-nap"></i>낮잠</span>' +
+      (plans.length ? '<span><i class="tl-plan"></i>약속</span><span><i class="tl-hit"></i>겹침</span>' : '') + '<span class="tl-next">두 번째 00부터 다음 날</span></p></div>';
+  }
   function quickOut(S, q) {
     var e = quickErr(q);
     if (e) return '<p class="muted">' + esc(e) + '</p>';
     var v = L.planCheck(S, q.date, q.start, +q.dur);
     var s = L.shiftOf(S, q.date), prev = L.shiftOf(S, L.addDays(q.date, -1)), next = L.shiftOf(S, L.addDays(q.date, 1));
     return '<div class="verdict lv-' + v.level + '">' + badge(v.level) + '<span>' + esc(v.why) + '</span></div>' +
+      timelineHtml(S, q.date, { start: q.start, dur: +q.dur }) +
       '<p class="muted small-t">' + esc(L.md(q.date) + ' ' + q.start + '~' + L.fmtHM(L.hm(q.start) + +q.dur)) + ' · 전날 ' + (prev ? esc(prev.name) : '비어 있음') + ' · 그날 ' + (s ? esc(s.name) : '비어 있음') + ' · 다음 날 ' + (next ? esc(next.name) : '비어 있음') + ' · 오가는 시간 ' + S.set.travel + '분 포함</p>';
   }
   function quickErr(q) {
@@ -488,6 +537,6 @@ var UI = (function () {
     openOverlay: openOverlay, closeOverlay: closeOverlay, toast: toast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     renderToday: renderToday, renderRoster: renderRoster, renderPlans: renderPlans, renderLog: renderLog, renderMore: renderMore, renderHelp: renderHelp,
     dayHtml: dayHtml, planHtml: planHtml, sleepHtml: sleepHtml, sleepLen: sleepLen, patternHtml: patternHtml, shiftsHtml: shiftsHtml, shareHtml: shareHtml, backupHtml: backupHtml,
-    quickOut: quickOut, quickErr: quickErr, planListHtml: planListHtml, testsHtml: testsHtml, kindOf: kindOf
+    quickOut: quickOut, quickErr: quickErr, timelineHtml: timelineHtml, planListHtml: planListHtml, testsHtml: testsHtml, kindOf: kindOf
   };
 })();

@@ -168,6 +168,27 @@ button.no-ring:focus-visible { outline: none; }
 .verdict.lv-ok { background: var(--ok-soft); }
 .verdict.lv-tight { background: var(--warn-soft); }
 .verdict.lv-bad { background: var(--bad-soft); }
+/* 36시간 띠 (ui.js timelineHtml): 위 칸 근무·통근·잠·낮잠, 아래 칸 약속, 겹침은 칸 전체 빗금 */
+.tl-wrap { margin: 8px 0 6px; }
+.tl { position: relative; height: 34px; margin-bottom: 18px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; }
+.tl-bar { position: absolute; display: block; }
+.tl .tl-work, .tl .tl-commute, .tl .tl-sleep, .tl .tl-nap { top: 3px; height: 16px; border-radius: 3px; }
+.tl .tl-plan { top: 22px; height: 8px; border-radius: 4px; }
+.tl .tl-hit { top: 0; bottom: 0; border-radius: 2px; opacity: 0.75; }
+.tl-work { background: var(--c-e); }
+.tl-commute { background: var(--warn-soft); border: 1px dashed var(--warn); box-sizing: border-box; }
+.tl-sleep { background: var(--accent); }
+.tl-nap { background: var(--accent-soft); border: 1px solid var(--accent); box-sizing: border-box; }
+.tl-plan { background: var(--teal); }
+.tl-hit { background: repeating-linear-gradient(135deg, var(--bad) 0 4px, var(--bad-soft) 4px 8px); }
+.tl-tick { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+.tl-lab { position: absolute; top: 100%; transform: translateX(-50%); margin-top: 2px; font-size: var(--fs-xs); line-height: 1; color: var(--muted); }
+.tl-lab:first-of-type { transform: none; }
+.tl-lab:last-of-type { transform: translateX(-100%); }
+.tl-key { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: 0; color: var(--muted); }
+.tl-key span { display: inline-flex; align-items: center; gap: 4px; }
+.tl-key i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; }
+.tl-key .tl-next { margin-left: auto; }
 .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: none; }
 .dot.lv-bad { background: var(--bad); }
 .dot.lv-warn { background: var(--warn); }
@@ -268,8 +289,10 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--
 .row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .row3 label { margin-top: 6px; }
 .row3 input { font-size: var(--fs-sm); padding: 8px 6px; }
-#form-plan .row3 { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.15fr) minmax(0, 0.75fr); gap: 6px; }
+#form-plan .row3 { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 6px; }
 #form-plan .row3 input { padding: 8px 4px; }
+/* 크롬은 달력·시계 아이콘 앞에 24px 를 비워 '오후 07:0' 처럼 글자가 잘린다. 그 자리를 글자 칸에 준다 */
+#form-plan .row3 input::-webkit-calendar-picker-indicator { margin-inline-start: 2px; padding: 2px; }
 .toolbar { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
 .search { flex: 1; min-width: 0; }
 .shift-row { display: grid; grid-template-columns: auto 1fr minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: 8px; margin-top: 10px; }
