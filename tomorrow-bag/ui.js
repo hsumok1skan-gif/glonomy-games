@@ -180,9 +180,10 @@ var UI = (function () {
   };
 
   function emptyBox(art, title, text, btns) {
-    var h = '<div class="card empty">' + (ARTS[art] || '') + '<h3>' + esc(title) + '</h3><p>' + esc(text) + '</p><div class="row wrap" style="justify-content:center">';
+    var h = '<div class="card empty">' + (ARTS[art] || '') + '<h3>' + esc(title) + '</h3><p>' + esc(text) + '</p><div class="row wrap" style="justify-content:center;width:100%;max-width:360px">';
+    // 주 버튼은 폭을 채운 큰 버튼, 나머지는 그 아래로 세로로 쌓는다
     btns.forEach(function (b, i) {
-      h += '<button class="btn ' + (i === 0 ? 'main' : '') + '" type="button" data-act="' + b.act + '"' + (b.extra || '') + '>' + esc(b.label) + '</button>';
+      h += '<button class="btn ' + (i === 0 ? 'main big wide' : 'wide') + '" type="button" data-act="' + b.act + '"' + (b.extra || '') + '>' + esc(b.label) + '</button>';
     });
     return h + '</div></div>';
   }
@@ -493,17 +494,17 @@ var UI = (function () {
     var first = new Date(y, m - 1, 1, 12).getDay(), days = new Date(y, m, 0, 12).getDate();
     var full = {};
     S.history.forEach(function (h) { if (h.kid === kid.id && h.date.slice(0, 7) === ym && h.total > 0 && h.done === h.total) full[h.date] = true; });
-    var h = '';
+    var h = '', today = Logic.toKey(new Date());
     DATA.DOW.forEach(function (d) { h += '<span class="cal-h">' + d + '</span>'; });
     for (var i = 0; i < first; i++) h += '<span class="cal-d empty"></span>';
     for (var d = 1; d <= days; d++) {
       var k = ym + '-' + (d < 10 ? '0' : '') + d;
-      h += '<span class="cal-d' + (full[k] ? ' got' : '') + '"><span class="cn">' + d + '</span>' + (full[k] ? stickerHTML(k) : '') + '</span>';
+      h += '<span class="cal-d' + (full[k] ? ' got' : '') + (k === today ? ' today' : '') + '"' + (k === today ? ' aria-current="date"' : '') + '><span class="cn">' + d + '</span>' + (full[k] ? stickerHTML(k) : '') + '</span>';
     }
     $('cal-grid').innerHTML = h;
     var n = Logic.monthStickers(S.history, kid.id, ym);
     $('cal-sum').innerHTML = n ? '<p>이 달 칭찬 스티커 ' + n + '장이 모였어요</p>' :
-      miniEmpty('🎒', '가방을 다 챙기면 이 달력에 칭찬 스티커가 붙어요.', { act: 'cal-bag', label: '가방 챙기기' });
+      miniEmpty('🎒', '가방을 다 챙기면 이 달력에 칭찬 스티커가 붙어요.', { act: 'bag-open', label: '가방 챙기기' });
   }
 
   // ---- 며칠 뒤 준비물 시트 ----

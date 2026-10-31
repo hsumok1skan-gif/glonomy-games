@@ -302,6 +302,7 @@ body.reduce .stk.big { animation: none; }
 .cal-h { text-align: center; font-size: var(--t-1); font-weight: 800; color: var(--muted); }
 .cal-d { position: relative; aspect-ratio: 1; max-height: 52px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; font-size: var(--t-1); color: var(--muted); }
 .cal-d.empty { background: transparent; border-color: transparent; }
+.cal-d.today { border: 2px solid var(--accent); color: var(--ink); font-weight: 700; }
 .cal-d .cn { position: absolute; top: 2px; left: 4px; font-size: var(--t-1); }
 .cal-d.got .stk { width: 70%; height: 70%; max-width: 34px; max-height: 34px; font-size: var(--t-2); }
 .cal-sum { text-align: center; margin-top: 8px; }
@@ -375,6 +376,9 @@ body.reduce .stk.big { animation: none; }
 .empty .art { width: 120px; height: 120px; margin: 0 auto 8px; display: block; flex: none; }
 .empty h3 { font-size: var(--t-4); font-weight: 800; margin: 8px 0 6px; word-break: keep-all; }
 .empty p { color: var(--muted); }
+/* 빈 상태 카드 버튼: 한 줄에 하나씩 폭을 채워 쌓고, 주 버튼은 크게 */
+.empty .row .btn { flex: 1 1 100%; }
+.empty .row .btn.main { min-height: 56px; font-size: var(--t-4); }
 .mini-empty { width: 100%; text-align: center; padding: 12px 8px; border: 2px dashed var(--line); border-radius: 14px; }
 .mini-empty .em { display: block; font-size: var(--t-6); line-height: 1.2; }
 .mini-empty p { color: var(--muted); font-size: var(--t-2); margin: 4px 0 8px; }
@@ -507,7 +511,7 @@ body.reduce .bad { animation: none; }
 .warn-bar.on { display: block; }
 
 .welcome-art { width: 110px; height: 110px; display: block; margin: 4px auto; flex: none; }
-#ov-welcome h1 { text-align: center; word-break: keep-all; overflow-wrap: break-word; text-wrap: balance; }
+#ov-welcome h1 { font-size: var(--t-6); text-align: center; word-break: keep-all; overflow-wrap: break-word; text-wrap: balance; }
 .done-burst { animation: burst 0.5s ease-out; }
 @keyframes burst { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 body.reduce .done-burst { animation: none; }

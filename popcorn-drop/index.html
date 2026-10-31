@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E0C1C">
+<title>Popcorn Drop — 팝콘 팡팡</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app" class="app">
+<div id="frame" class="frame">
+
+  <!-- 시작 -->
+  <section id="scr-title" class="screen">
+    <div class="title-glow" aria-hidden="true"></div>
+    <div class="title-box">
+      <div class="logo" aria-hidden="true">🍿</div>
+      <h1 class="game-title">Popcorn Drop</h1>
+      <p class="game-sub">팝콘 팡팡</p>
+    </div>
+    <!-- 예고편: ui.js buildTrailer() 가 같은 규칙으로 연습 상영을 돌려 장면마다 그린다 -->
+    <div id="trailer" class="trailer" role="img" aria-label="예고편 — 옥수수를 떨궈 못에 불리고, 냄비에서 팡! 객석 손님 통을 가득 채워요">
+      <figure class="tr tall"><canvas id="tr-full" width="180" height="320"></canvas><figcaption id="tc-full"><b>한 화면</b></figcaption></figure>
+      <figure class="tr"><canvas id="tr-split" width="192" height="160"></canvas><figcaption id="tc-split"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-charge" width="192" height="160"></canvas><figcaption id="tc-charge"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-pop" width="192" height="160"></canvas><figcaption id="tc-pop"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-mega" width="192" height="160"></canvas><figcaption id="tc-mega"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-burn" width="192" height="160"></canvas><figcaption id="tc-burn"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-fill" width="192" height="160"></canvas><figcaption id="tc-fill"></figcaption></figure>
+    </div>
+    <div class="menu">
+      <button id="btn-start" class="btn primary big">상영 시작</button>
+      <button id="btn-daily" class="btn">오늘의 상영</button>
+      <div class="row2">
+        <button id="btn-help" class="btn">방법</button>
+        <button id="btn-records" class="btn">기록</button>
+        <button id="btn-settings" class="btn">설정</button>
+      </div>
+    </div>
+    <p id="title-meta" class="meta"></p>
+    <p class="meta small">세로 화면 전용 게임이에요 · 휴대폰을 가로로 돌리지 않아도 돼요</p>
+  </section>
+
+  <!-- 로비 (영화관 키우기) -->
+  <section id="scr-lobby" class="screen">
+    <header class="bar">
+      <button id="btn-lobby-back" class="btn small" aria-label="처음으로">◀</button>
+      <h2>로비</h2>
+      <span id="lobby-coins" class="coins">🎟 0</span>
+    </header>
+    <div class="scroll">
+      <div class="card hall-card">
+        <div class="hall-pick">
+          <button id="btn-hall-prev" class="btn small" aria-label="앞 상영관">◀</button>
+          <div class="hall-info">
+            <div id="lobby-hall" class="hall-no">상영관 1</div>
+            <div id="lobby-film" class="film"></div>
+          </div>
+          <button id="btn-hall-next" class="btn small" aria-label="다음 상영관">▶</button>
+        </div>
+        <p id="lobby-goal" class="goal"></p>
+        <button id="btn-play" class="btn primary big">상영 시작</button>
+      </div>
+      <h3>영화관 키우기</h3>
+      <div id="up-list" class="list"></div>
+      <div class="row2">
+        <button id="btn-pegs" class="btn">특수 못 끼우기</button>
+        <button id="btn-deco" class="btn">꾸미기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 특수 못 -->
+  <section id="scr-pegs" class="screen">
+    <header class="bar">
+      <button id="btn-pegs-back" class="btn small" aria-label="로비로">◀</button>
+      <h2>특수 못</h2>
+      <span id="pegs-coins" class="coins">🎟 0</span>
+    </header>
+    <div class="peg-shop" id="peg-shop"></div>
+    <p id="pegs-hint" class="meta">고른 못을 판의 보통 못에 눌러 끼워요. 끼운 못을 누르면 빠져요.</p>
+    <div class="pegcv-wrap"><canvas id="pegcv" class="pegcv" width="360" height="400" aria-label="못 판"></canvas></div>
+  </section>
+
+  <!-- 꾸미기 -->
+  <section id="scr-deco" class="screen">
+    <header class="bar">
+      <button id="btn-deco-back" class="btn small" aria-label="로비로">◀</button>
+      <h2>꾸미기</h2>
+      <span id="deco-coins" class="coins">🎟 0</span>
+    </header>
+    <div class="tabs" id="deco-tabs">
+      <button class="btn tab on" data-kind="hall">객석</button>
+      <button class="btn tab" data-kind="seat">의자</button>
+      <button class="btn tab" data-kind="screen">스크린</button>
+    </div>
+    <div id="deco-list" class="scroll list"></div>
+  </section>
+
+  <!-- 상영 (본 화면) -->
+  <section id="scr-play" class="screen play">
+    <canvas id="cv" class="cv" width="360" height="640" aria-label="팝콘 기계"></canvas>
+    <div id="hud" class="hud">
+      <div class="hud-l">
+        <span id="hud-hall" class="chip">상영관 1</span>
+        <span id="hud-corn" class="chip">통 100</span>
+      </div>
+      <div class="hud-c">
+        <div id="hud-time" class="clock">상영까지 90초</div>
+        <div id="hud-kern" class="kern">옥수수 0알</div>
+      </div>
+      <div class="hud-r">
+        <span id="hud-fill" class="chip">손님 0/2</span>
+        <button id="btn-pause" class="btn small" aria-label="멈춤">Ⅱ</button>
+      </div>
+    </div>
+    <div id="tut" class="tut hidden" role="status">
+      <p id="tut-text"></p>
+      <button id="btn-tut-skip" class="btn small">건너뛰기</button>
+    </div>
+    <button id="btn-more-corn" class="btn ad hidden">📺 광고 보고 옥수수 30알 더</button>
+    <div id="burners" class="burners">
+      <button class="burner" data-i="0" aria-label="1번 냄비 불">🔥<span>1</span></button>
+      <button class="burner" data-i="1" aria-label="2번 냄비 불">🔥<span>2</span></button>
+      <button class="burner" data-i="2" aria-label="3번 냄비 불">🔥<span>3</span></button>
+      <button class="burner" data-i="3" aria-label="4번 냄비 불">🔥<span>4</span></button>
+      <button class="burner" data-i="4" aria-label="5번 냄비 불">🔥<span>5</span></button>
+    </div>
+    <div id="fire-count" class="fire-count">불 0/2</div>
+  </section>
+
+  <!-- 방법 -->
+  <section id="scr-help" class="screen">
+    <header class="bar">
+      <button id="btn-help-back" class="btn small" aria-label="뒤로">◀</button>
+      <h2>방법</h2><span></span>
+    </header>
+    <div id="help-list" class="scroll"></div>
+  </section>
+
+  <!-- 설정 -->
+  <section id="scr-settings" class="screen">
+    <header class="bar">
+      <button id="btn-settings-back" class="btn small" aria-label="뒤로">◀</button>
+      <h2>설정</h2><span></span>
+    </header>
+    <div class="scroll">
+      <div id="set-list" class="list"></div>
+      <button id="btn-tut-again" class="btn">튜토리얼 다시 보기</button>
+      <button id="btn-noads" class="btn">광고 제거</button>
+      <button id="btn-wipe" class="btn danger">기록 지우기</button>
+      <div id="wipe-confirm" class="card hidden">
+        <p>동전·상영관·못·꾸미기·기록이 모두 지워져요. 정말 지울까요?</p>
+        <div class="row2">
+          <button id="btn-wipe-yes" class="btn danger">지우기</button>
+          <button id="btn-wipe-no" class="btn">그만두기</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 기록 -->
+  <section id="scr-records" class="screen">
+    <header class="bar">
+      <button id="btn-records-back" class="btn small" aria-label="뒤로">◀</button>
+      <h2>기록</h2><span></span>
+    </header>
+    <div class="scroll">
+      <div id="rec-lines" class="lines"></div>
+      <h3>최근 상영</h3>
+      <div id="rec-recent" class="lines"></div>
+      <h3 id="ach-title">업적</h3>
+      <div id="ach-list" class="list"></div>
+    </div>
+  </section>
+
+  <!-- 결과 (겹침) -->
+  <div id="ov-result" class="overlay">
+    <div class="panel">
+      <h2 id="res-title">상영 시작!</h2>
+      <p id="res-sub" class="meta"></p>
+      <div id="res-lines" class="lines"></div>
+      <button id="btn-ad-double" class="btn ad">📺 광고 보고 동전 2배</button>
+      <div class="row2">
+        <button id="btn-res-again" class="btn">한 번 더</button>
+        <button id="btn-res-next" class="btn primary">로비로</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 멈춤 (겹침) -->
+  <div id="ov-pause" class="overlay">
+    <div class="panel">
+      <h2>멈춤</h2>
+      <button id="btn-resume" class="btn primary">계속</button>
+      <button id="btn-pause-help" class="btn">방법</button>
+      <button id="btn-pause-settings" class="btn">설정</button>
+      <button id="btn-quit" class="btn danger">상영 그만두기</button>
+    </div>
+  </div>
+
+  <!-- 광고 자리 (겹침) — 광고 SDK 없음 -->
+  <div id="ov-ad" class="overlay">
+    <div class="panel">
+      <h2 id="ad-title">광고</h2>
+      <div class="ad-box" aria-hidden="true">📺</div>
+      <p id="ad-text" class="meta">광고 자리예요(준비 중).</p>
+      <button id="btn-ad-close" class="btn primary" disabled>닫기</button>
+    </div>
+  </div>
+
+  <div id="flash" class="flash"></div>
+  <div id="toast" class="toast" role="status"></div>
+</div>
+</div>
+<script src="./data.js"></script>
+<script src="./audio.js"></script>
+<script src="./physics.js"></script>
+<script src="./game.js"></script>
+<script src="./ui.js"></script>
+</body>
+</html>

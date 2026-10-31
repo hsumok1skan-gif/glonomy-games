@@ -964,7 +964,7 @@
     'day-prev': function () { V.offset--; renderAll(); },
     'day-next': function () { V.offset++; renderAll(); },
     'day-now': function () { V.offset = 0; renderAll(); },
-    'bag-open': openBag,
+    'bag-open': function () { if (UI.isOpen('sheet-cal')) UI.closeSheet('sheet-cal'); openBag(); },
     'check': toggleCheck,
     'check-all': checkAll,
     'bag-done': bagDone,
@@ -985,7 +985,6 @@
     'cal-open': openCal,
     // 가방 달력 빈 상태 버튼: 달력을 닫고 그 일을 연다 (달력 시트가 다른 시트 위에 있어서)
     'cal-kid': function () { UI.closeSheet('sheet-cal'); openKid(null); },
-    'cal-bag': function () { UI.closeSheet('sheet-cal'); openBag(); },
     'cal-prev': function () { calStep(-1); },
     'cal-next': function () { calStep(1); },
     'note-new': function () { openNote(null); },

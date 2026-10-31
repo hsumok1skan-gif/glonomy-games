@@ -1,0 +1,11 @@
+{
+  "name": "Popcorn Drop — 팝콘 팡팡",
+  "short_name": "Popcorn Drop",
+  "lang": "ko",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#0E0C1C",
+  "theme_color": "#0E0C1C",
+  "start_url": "./index.html",
+  "icons": []
+}
