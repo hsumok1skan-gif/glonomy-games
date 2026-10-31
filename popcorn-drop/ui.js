@@ -233,6 +233,12 @@
     if (gold) { c.fillStyle = C.popcorn; c.fillRect(x - 1, y - 2, 2, 2); }
   }
   function drawKernels(S) {
+    // 쏟는 동안에는 알 뒤에 버터빛 원을 깔아 쏟아지는 줄기가 밝게 보이게 한다
+    if (S.phase === 'pour' && S.world.kernels.length) {
+      cx.globalAlpha = 0.3; cx.fillStyle = C.butter;
+      for (const k of S.world.kernels) { cx.beginPath(); cx.arc(k.x, k.y, KERNEL_R + 3, 0, Math.PI * 2); cx.fill(); }
+      cx.globalAlpha = 1;
+    }
     for (const k of S.world.kernels) drawKernel(cx, k.x, k.y, k.gold, k.vx * 0.01);
     for (const r of S.rollers) {
       cx.globalAlpha = Math.max(0, 1 - r.t / 0.9);
