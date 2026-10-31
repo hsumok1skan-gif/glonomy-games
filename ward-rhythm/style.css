@@ -35,6 +35,16 @@
   --fs-lg: 20px;
   --fs-xl: 26px;
   --fs-xxl: 36px;
+  /* 인쇄용: 흰 종이·진한 글·작은 글자 단계 (@media print 가 쓴다) */
+  --p-ink: #1E2033;
+  --p-muted: #555A78;
+  --p-line: #BFC3D6;
+  --p-accent: #3D3A8C;
+  --p-xs: 9px;
+  --p-sm: 10px;
+  --p-md: 11px;
+  --p-lg: 14px;
+  --p-xl: 18px;
   --r-btn: 14px;
   --r-card: 18px;
   --pad: 16px;
@@ -109,6 +119,7 @@ h2 { font-size: var(--fs-lg); }
 .btn.icon { width: 44px; padding: 0; font-size: var(--fs-lg); line-height: 1; }
 .btn.wide { width: 100%; margin-top: 10px; }
 button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button.no-ring:focus-visible { outline: none; }
 .row { display: flex; }
 .gap { gap: 10px; }
 .row.gap .btn { flex: 1; }
@@ -122,6 +133,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .hero-k { font-size: var(--fs-sm); opacity: 0.85; }
 .hero-t { font-size: var(--fs-xl); font-weight: 800; line-height: 1.25; margin: 4px 0; }
 .hero-s { font-size: var(--fs-sm); opacity: 0.9; }
+.hero .btn.primary { background: var(--on-accent); border-color: var(--on-accent); color: var(--accent); margin-top: 14px; }
 .big-num { font-size: var(--fs-lg); font-weight: 800; }
 .tip p#tip-text { font-size: var(--fs-sm); margin-bottom: 6px; }
 .kv { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); }
@@ -191,7 +203,11 @@ button:disabled { opacity: 0.45; cursor: default; }
 .bchip.on { outline: 3px solid var(--text); outline-offset: 1px; }
 .bchip:not([class*=" c-"]) { background: var(--surface); }
 .bname { font-weight: 500; }
-.kinds .chip { min-height: 44px; }
+.chips.kinds {
+  flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity; scrollbar-width: thin; margin: 6px -4px 4px; padding: 2px 4px 8px;
+}
+.kinds .chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start; }
 .sort-row { align-items: center; margin-top: 0; }
 .sort-k { margin: 0 2px 0 0; }
 .hint { font-size: var(--fs-xs); color: var(--muted); margin: 2px 0 8px; }
@@ -252,6 +268,8 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--
 .row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .row3 label { margin-top: 6px; }
 .row3 input { font-size: var(--fs-sm); padding: 8px 6px; }
+#form-plan .row3 { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.15fr) minmax(0, 0.75fr); gap: 6px; }
+#form-plan .row3 input { padding: 8px 4px; }
 .toolbar { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
 .search { flex: 1; min-width: 0; }
 .shift-row { display: grid; grid-template-columns: auto 1fr minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: 8px; margin-top: 10px; }
@@ -339,8 +357,50 @@ body.calm *, body.calm *::before, body.calm *::after { animation: none !importan
   #app { padding-top: 12px; }
   .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+.print-only { display: none; }
+
+/* 인쇄: 지금 보는 화면(근무표 한 달·기록 한 달)을 A4 한 장에 */
+@page { size: A4 portrait; margin: 12mm; }
 @media print {
-  #tabs, #top .btn, .toast, .sheet-wrap, .overlay, .btn { display: none !important; }
-  body { background: var(--white); color: var(--text); }
-  .card { break-inside: avoid; }
+  body, body.dark, body.big {
+    --bg: var(--white); --surface: var(--white); --text: var(--p-ink); --muted: var(--p-muted);
+    --line: var(--p-line); --accent: var(--p-accent); --accent-soft: var(--white); --on-accent: var(--white);
+    --fs-xs: var(--p-xs); --fs-sm: var(--p-sm); --fs-md: var(--p-md); --fs-lg: var(--p-lg); --fs-xl: var(--p-xl); --fs-xxl: var(--p-xl);
+    --shadow: none;
+  }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; animation: none !important; transition: none !important; }
+  html, body { background: var(--white); color: var(--text); overflow: visible; }
+  #app { max-width: none; padding: 0; }
+  /* 누르는 것·떠 있는 것은 뺀다 */
+  #tabs, .toast, .sheet-wrap, .overlay, .store-warn, .btn, .brush, .hint, .chev { display: none !important; }
+  .print-only { display: block; font-size: var(--fs-xs); color: var(--muted); }
+  #top { padding: 0 0 4mm; border-bottom: 1px solid var(--line); margin-bottom: 3mm; }
+  .logo { width: 28px; height: 28px; }
+  .card, .stat { margin: 2.5mm 0; padding: 2.5mm 3mm; border-radius: 6px; break-inside: avoid; }
+  .hero { background: var(--white); color: var(--text); border-color: var(--line); }
+  .hero-t { margin: 0; }
+  .month-nav { justify-content: flex-start; margin: 0 0 2mm; }
+  .empty { padding: 4mm; }
+  .empty-art svg, .mini-empty svg { width: 32px; height: 32px; }
+  /* 근무표: 6줄 달력이 종이 폭을 다 쓴다 */
+  .grid-head, .grid { gap: 1.5mm; }
+  .cell { min-height: 16mm; padding: 1mm; border-radius: 4px; break-inside: avoid; }
+  .cell.has { border-width: 0; }
+  .cell.now { border: 1px solid var(--line); }
+  .cell .dn { font-size: var(--fs-sm); align-self: flex-start; }
+  .cell .cc { font-size: var(--fs-lg); }
+  .sumline { margin: 2mm 0; }
+  /* 목록 줄은 촘촘하게 두 단으로 */
+  .list-row { min-height: 0; padding: 1mm 0; break-inside: avoid; display: flex; }
+  .card > .list-row, .card > .list-row:last-child { border-bottom: 1px solid var(--line); }
+  #roster-root .card:not(.empty), #log-root .card:last-of-type { column-count: 2; column-gap: 6mm; }
+  .card-k, .card-head, .big-num, .card > .muted { column-span: all; }
+  .card-head { margin: 0 0 1mm; }
+  /* 기록: 숫자 칸 여섯 개를 한 줄 셋으로 */
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2mm; }
+  .stat { margin: 0; }
+  .bar-row { margin: 1mm 0; }
+  .bar { height: 8px; }
+  .mini-bar { width: 36px; height: 6px; }
+  .pic { width: 20px; font-size: var(--fs-md); }
 }

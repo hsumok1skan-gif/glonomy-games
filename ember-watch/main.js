@@ -60,19 +60,18 @@
     reset: function (seed) {
       EW.testMode = true;
       EW.stopLoop();
-      EW.newRun({ region: 0, lantern: 'old', prep: null, relicPool: null, seed: seed });
+      EW.newRun({ lantern: 'tin', camp: 'pine', prep: null, relicPool: null, seed: seed });
       return true;
     },
     actions: function () { return EW.actions(); },
     act: function (a) { EW.act(a); },
+    // 낮·밤에만 시간이 흐른다. 짓기·새벽 카드·쓰러짐·광고 자리가 떠 있으면 멈춘다 (화면에서와 같다)
     advance: function (ms) {
       const n = Math.max(0, Math.round((ms || 0) / (1000 * STEP)));
       for (let i = 0; i < n; i++) {
-        EW.update(STEP);
-        const s = EW.state();
-        if (s.over) break;
         const R = EW.getRun();
-        if (R && R.phase !== 'night') break;
+        if (!R || (R.phase !== 'day' && R.phase !== 'night')) break;
+        EW.update(STEP);
       }
     },
     state: function () { return EW.state(); }

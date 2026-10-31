@@ -1,0 +1,12 @@
+{
+  "name": "Ward Rhythm",
+  "short_name": "Ward Rhythm",
+  "description": "3교대 간호사의 근무표·잘 시간·약속 판정",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F5FB",
+  "theme_color": "#3D3A8C",
+  "icons": []
+}

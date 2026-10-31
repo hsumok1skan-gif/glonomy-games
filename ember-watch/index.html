@@ -11,49 +11,38 @@
 <body>
 <div id="app">
 
-  <!-- 1. 시작 -->
+  <!-- 1. 시작 — 어두운 숲과 모닥불 그림 위에 제목과 세 버튼만 -->
   <section id="scr-title" class="screen active" aria-label="시작 화면">
     <div class="title-wrap">
       <div class="logo" aria-hidden="true"><span class="logo-fire"></span><span class="logo-lamp"></span></div>
       <h1 class="game-title">Ember Watch</h1>
-      <p class="sub">장작 하나를 모닥불에 넣을까, 등불에 넣을까. 열 밤 동안 새벽까지 불을 지켜라.</p>
       <div class="menu">
-        <button id="btn-continue" class="btn primary">이어하기</button>
         <button id="btn-start" class="btn primary">시작</button>
-        <button id="btn-daily" class="btn daily">오늘의 도전<small id="daily-sub" class="daily-sub"></small></button>
-        <div class="row">
-          <button id="btn-help" class="btn">방법</button>
-          <button id="btn-settings" class="btn">설정</button>
-        </div>
-        <div class="row">
-          <button id="btn-camp" class="btn">야영지</button>
-          <button id="btn-codex" class="btn">도감</button>
-          <button id="btn-records" class="btn">기록</button>
-        </div>
+        <button id="btn-continue" class="btn">이어하기</button>
+        <button id="btn-settings" class="btn">설정</button>
       </div>
-      <p class="meta-line" id="title-meta"></p>
     </div>
   </section>
 
-  <!-- 2. 출발 준비 (지역·등불 고르기) -->
+  <!-- 2. 출발 준비 — 위: 야영지 카드(옆으로 밀어 고르기) / 아래: 등불 카드 줄(옆으로 밀어 고르기) / 맨 아래: 밤으로 -->
   <section id="scr-prep" class="screen" aria-label="출발 준비">
     <header class="bar-head">
       <button id="btn-prep-back" class="btn small" aria-label="처음으로">← 처음으로</button>
       <h2>출발 준비</h2>
       <span class="chip" id="prep-embers"></span>
     </header>
-    <div class="prep-cols">
-      <div class="col">
-        <h3>지역</h3>
-        <div id="region-list" class="list"></div>
-      </div>
-      <div class="col">
-        <h3>등불</h3>
-        <div id="lantern-list" class="list"></div>
-      </div>
+    <div class="camp-pick">
+      <button id="btn-camp-prev" class="btn icon nav" aria-label="앞 야영지">‹</button>
+      <div id="camp-track" class="camp-track" role="listbox" aria-label="야영지 — 옆으로 밀어 고르기"></div>
+      <button id="btn-camp-next" class="btn icon nav" aria-label="다음 야영지">›</button>
+    </div>
+    <div id="camp-dots" class="camp-dots" aria-hidden="true"></div>
+    <div class="lan-pick">
+      <div id="lan-track" class="lan-track" role="listbox" aria-label="등불 — 옆으로 밀어 고르기"></div>
     </div>
     <div class="foot">
-      <button id="btn-go" class="btn primary wide">밤 지키러 가기</button>
+      <p id="prep-why" class="prep-why" aria-live="polite"></p>
+      <button id="btn-go" class="btn primary wide">밤으로</button>
     </div>
   </section>
 
@@ -65,45 +54,57 @@
         <div class="meter fire-meter" id="fire-meter">
           <span class="meter-label"><i class="meter-ico ico-fire" aria-hidden="true">🔥</i>모닥불</span>
           <div class="meter-bar"><div class="meter-fill" id="fire-fill"></div></div>
-          <span class="meter-num" id="fire-num">70</span>
+          <span class="meter-num" id="fire-num">50</span>
         </div>
         <div class="hud-center">
-          <!-- 밤 하늘 호: 달이 왼쪽 땅끝에서 떠 오른쪽 해 뜨는 곳으로 간다 -->
+          <!-- 하늘 호: 낮에는 해가, 밤에는 달이 왼쪽 땅끝에서 떠 오른쪽으로 건넌다 -->
           <svg id="sky-arc" class="sky-arc" viewBox="0 0 200 50" aria-hidden="true">
             <line class="sky-ground" x1="4" y1="46" x2="196" y2="46"></line>
             <path class="sky-track" d="M12 46 A88 40 0 0 1 188 46"></path>
             <path id="sky-done" class="sky-done" d="M12 46 A88 40 0 0 1 188 46" pathLength="100"></path>
-            <circle class="sky-sun" cx="188" cy="46" r="8"></circle>
+            <g id="sky-sun"><circle class="sky-sun" r="8"></circle></g>
             <g id="sky-moon"><circle class="sky-moon" r="6"></circle><circle class="sky-moon-cut" cx="3" cy="-2" r="5"></circle></g>
           </svg>
-          <div id="hud-night" class="hud-night" role="timer">첫째 밤 · 남은 1:04</div>
+          <div id="hud-night" class="hud-night" role="timer">1일째 낮 · 남은 1:30</div>
         </div>
         <div class="hud-right">
-          <span class="chip" id="hud-embers">불씨 0</span>
+          <span class="chip" id="hud-days">버틴 밤 0</span>
+          <button id="btn-adwood" class="btn small ad-btn hidden" aria-label="광고 보고 장작 3개 받기">📺 장작 3개</button>
           <button id="btn-pause" class="btn icon" aria-label="잠시 멈춤">❚❚</button>
         </div>
       </div>
       <div class="hud-bottom">
         <div class="hud-stats">
-          <div class="meter small-meter">
-            <span class="meter-label"><i class="meter-ico ico-hp" aria-hidden="true">♥</i>체력</span>
-            <div class="meter-bar"><div class="meter-fill hp" id="hp-fill"></div></div>
-            <span class="meter-num" id="hp-num">100</span>
+          <div class="meter-row">
+            <div class="meter small-meter">
+              <span class="meter-label"><i class="meter-ico ico-hp" aria-hidden="true">♥</i>체력</span>
+              <div class="meter-bar"><div class="meter-fill hp" id="hp-fill"></div></div>
+              <span class="meter-num" id="hp-num">100</span>
+            </div>
+            <div class="meter small-meter" id="oil-meter">
+              <span class="meter-label"><i class="meter-ico ico-lamp" aria-hidden="true">🏮</i>등불</span>
+              <div class="meter-bar"><div class="meter-fill oil" id="oil-fill"></div></div>
+              <span class="meter-num" id="oil-num">60</span>
+            </div>
+            <div class="meter small-meter" id="hunger-meter">
+              <span class="meter-label"><i class="meter-ico ico-food" aria-hidden="true">🍓</i>배고픔</span>
+              <div class="meter-bar"><div class="meter-fill food" id="hunger-fill"></div></div>
+              <span class="meter-num" id="hunger-num">100</span>
+            </div>
           </div>
-          <div class="meter small-meter" id="oil-meter">
-            <span class="meter-label"><i class="meter-ico ico-lamp" aria-hidden="true">🏮</i>등불</span>
-            <div class="meter-bar"><div class="meter-fill oil" id="oil-fill"></div></div>
-            <span class="meter-num" id="oil-num">60</span>
-          </div>
-          <div id="wood-head" class="wood-head" aria-hidden="true">장작 0/3</div>
-          <div id="wood-slots" class="wood-slots" aria-label="들고 있는 장작"></div>
+          <div id="wood-head" class="wood-head" aria-hidden="true">장작 0 · 가방 0/8</div>
+          <div id="wood-slots" class="wood-slots" aria-label="가방 8칸"></div>
         </div>
         <div class="hud-actions">
-          <button id="btn-feed-fire" class="btn act fire" aria-label="모닥불에 넣기">🔥<small>불에 넣기</small></button>
-          <button id="btn-feed-lamp" class="btn act lamp" aria-label="등불에 넣기">🏮<small>등불에 넣기</small></button>
+          <button id="btn-build" class="btn act build hidden" aria-label="짓기">🔨<small>짓기</small></button>
+          <button id="btn-gather" class="btn act gather" aria-label="줍기/모으기 (누르고 있기)">✋<small>줍기/모으기</small></button>
+          <button id="btn-feed" class="btn act fire" aria-label="불에 넣기">🔥<small id="feed-label">불에 넣기</small></button>
         </div>
       </div>
-      <div id="hint" class="hint" role="status"></div>
+      <div id="tut" class="tut" role="status">
+        <span id="tut-text"></span>
+        <button id="btn-tut-skip" class="btn small">건너뛰기</button>
+      </div>
       <div id="banner" class="banner" aria-live="polite"></div>
       <div id="joy" class="joy" aria-hidden="true"><div id="joy-knob" class="joy-knob"></div></div>
     </div>
@@ -112,7 +113,9 @@
   <!-- 4. 결과 -->
   <section id="scr-result" class="screen" aria-label="결과">
     <div class="result-wrap">
-      <h2 id="res-title" class="res-title">새벽을 지켰다</h2>
+      <p class="res-days-label">버틴 날</p>
+      <p id="res-days" class="res-days">0</p>
+      <h2 id="res-title" class="res-title">불이 꺼졌다</h2>
       <p id="res-why" class="res-why"></p>
       <div id="res-lines" class="res-lines"></div>
       <div id="res-new" class="res-new"></div>
@@ -136,32 +139,35 @@
     <div class="scroll help">
       <div class="card-box">
         <h3>목표</h3>
-        <p>밤 열 개를 버틴다. 밤마다 화면 위 가운데의 <b>달</b>이 하늘 호를 따라 오른쪽 해 뜨는 곳에 닿으면(새벽) 그 밤을 이긴다. 모닥불이 꺼지거나 체력이 0이 되면 진다.</p>
+        <p>낮과 밤이 끝없이 이어진다. 모닥불이 꺼지거나 체력이 0이 되면 그 판은 끝이고 지은 것과 가방은 사라진다. <b>버틴 날의 수</b>만 기록에 남는다. 위 가운데 하늘 호를 낮에는 해가, 밤에는 달이 건넌다.</p>
+        <p>출발 준비에서 야영지(시작 지도)와 등불을 옆으로 밀어 고른다. 다음 야영지는 그 전 야영지에서 며칠 버티면 열리고, 새 등불은 가장 오래 버틴 날로 열린다.</p>
       </div>
       <div class="card-box">
-        <h3>장작 하나, 두 갈래</h3>
-        <p>어둠 속 장작을 주워 <b class="t-fire">🔥 모닥불</b>이나 <b class="t-lamp">🏮 등불</b> 중 한 곳에 넣는다.</p>
-        <p><b class="t-fire">모닥불</b>: 연료가 늘고 불빛 반경이 커진다. 불빛 안 그림자는 천천히 타고, 불빛 안에 서 있으면 체력이 찬다. 불빛 안이면 그 자리에서 던져 넣고, 멀면 불지기가 걸어가서 넣는다.</p>
-        <p><b class="t-lamp">등불</b>: 그 자리에서 기름이 찬다. 내 둘레 빛이 커지고, 등불 빛은 그림자를 세게 태운다. 기름은 늘 닳는다.</p>
-        <p>모닥불만 키우면 그림자를 늦게 태우고, 등불만 키우면 모닥불이 꺼진다. 장작마다 어디에 넣을지 고르는 것이 이 게임이다.</p>
+        <h3>낮 — 모으고 짓기 (90초)</h3>
+        <p>그림자가 없고 숲이 밝다. 나무·돌·풀·열매 덤불·버섯 곁에서 <b>✋ 줍기/모으기</b>를 누르고 있으면 모은다(나무는 장작 둘, 벤 나무는 나흘 뒤 다시 난다). 모은 것은 아래 가방 8칸에 쌓인다(장작은 한 칸에 5개). 낮 장작만으로는 밤을 넘기기 모자라다. 먼 숲일수록 송진 나무·단단한 돌 같은 좋은 재료가 있다.</p>
+        <p>모닥불 옆에 서면 <b>🔨 짓기</b>가 나온다: 화톳불·장작 더미·말뚝 울타리·덫·등불 손질·모닥불 키우기. 지은 것은 다음 날에도 남는다. 낮이 끝나기 20초 전 하늘이 붉어지며 '곧 밤이 와요'.</p>
       </div>
       <div class="card-box">
-        <h3>그림자</h3>
-        <p>그림자는 모닥불을 먹으러 오거나 불지기를 문다. 빛 안에서는 느려지고 탄다. 쓰러뜨리면 불씨를 얻고 가끔 장작을 떨어뜨린다. 다섯째 밤과 열째 밤에는 우두머리가 온다.</p>
-        <p>빛 안에서는 그림자 몸에 종류 글자 한 자(예: 늪 손은 '늪')가 보이고, 우두머리는 왕관을 쓴다. 땅에 떨어진 장작에도 장작 칸과 같은 글자가 적혀 있다. 글자 뜻은 도감에서 본다.</p>
+        <h3>밤 — 빛 지키기</h3>
+        <p>모닥불 연료는 가만히 있어도 1초에 1씩 준다 — 아무것도 넣지 않으면 첫째 밤 중간쯤 꺼진다. 장작은 빛 밖 어둠 속에만, 밤에 드는 양보다 늘 모자라게 떨어진다. 빛 밖에서는 어둠이 1초에 체력 3씩 갉아먹지만 <b class="t-lamp">🏮 등불</b>에 연료가 있으면 괜찮다(등불 연료는 빛 밖에 있을 때만 닳는다).</p>
+        <p>그림자는 첫째 밤부터 사방에서, 셋째 밤부터는 두 쪽에서 한꺼번에 몰려와 빛을 꺼뜨린다. 불에 닿으면 연료를 한 번에 15 깎고 스러진다. 등불은 그림자를 밀어내고 조금 깎을 뿐이라, 3초 넘게 비춰야 쓰러진다. 모닥불 빛 안에서는 등불 빛이 묻혀 그림자를 밀지 못하니, 불 곁에 서 있지만 말고 어둠으로 나가 맞선다. 큰 그림자는 등불로 쓰러지지 않는다 — 덫·울타리·화톳불로 막고 새벽까지 버틴다.</p>
+        <p><b class="t-lamp">빛 끌기</b>: 그림자는 가장 끌리는 빛으로 간다(밝을수록, 가까울수록). 장작을 등불에 넣어 등불이 불보다 밝아지면, 빛 밖에 선 불지기에게 그림자가 끌려온다 — 모닥불은 덜 깎이지만 내가 맞는다. 장작 하나를 불에 넣어 불을 미끼로 둘지, 등불에 넣어 내가 미끼가 될지 고른다. 모닥불 빛 안에서는 등불이 그림자를 끌지 못하고, 큰 그림자는 끌리지 않는다.</p>
+        <p><b class="t-fire">🔥 불에 넣기</b>: 가까운 불(모닥불·화톳불)에 장작을 넣는다. 밤에 빛 밖이면 등불에 넣어 등불 연료를 채우고, 그 밖에는 모닥불까지 걸어가서 넣는다. 모닥불 빛 안에서는 체력이 천천히 차고 버섯이 구워진다.</p>
       </div>
       <div class="card-box">
-        <h3>새벽</h3>
-        <p>새벽마다 강화 카드 셋 중 하나를 고른다. 셋째·여섯째·아홉째 새벽에는 유물도 하나 고른다. 밤이 시작될 때마다 저장되어 이어하기 할 수 있다.</p>
-        <p><b>오늘의 도전</b>: 날짜로 지역·등불·그림자·장작·카드가 정해진 같은 판을 하루 한 번 한다. 야영 준비와 열린 유물 없이 누구나 같은 조건이고, 이겨도 지역은 열리지 않는다. 다음 날 새 판이 열린다.</p>
+        <h3>배고픔·새벽·날이 갈수록</h3>
+        <p>배고픔은 낮과 밤 내내 줄어 하루 반이면 바닥난다 — 낮에 먹을 것을 모으지 않으면 이틀째 밤부터 체력이 준다. 가방의 열매·구운 버섯 칸을 누르면 먹는다.</p>
+        <p>장작은 차례로 열린다: 첫날은 마른 가지만, 셋째 날 참나무 장작, 닷새째 송진 장작(먼 숲의 송진 나무도), 이레째 젖은 장작(장작 더미에 하루 두어 말려 쓴다).</p>
+        <p>밤은 날마다 5초씩 길어지고 그림자 수와 종류가 는다. 닷새마다 큰 그림자가 온다. 사흘마다 새벽에 강화 카드 셋 중 하나를 고른다. 날이 시작될 때마다 저장되어 이어하기 할 수 있다.</p>
+        <p>쓰러지면 하루 한 번 '광고 보고 다시 일어나기'(체력 절반·모닥불 연료 절반). 둘째 날부터 낮마다 한 번 '광고 보고 장작 3개'. 사흘마다 낮이 시작될 때 광고 자리가 한 번 나온다. 밤 도중에는 광고가 끼어들지 않는다.</p>
       </div>
       <div class="card-box">
         <h3>조작</h3>
-        <p><b>휴대폰</b>: 화면 아무 곳이나 끌어 움직인다. 오른쪽 아래 🔥·🏮 버튼으로 넣는다. 들고 있는 장작 칸을 눌러 먼저 쓸 장작을 고른다.</p>
-        <p><b>키보드</b>: 방향키 또는 W·A·S·D 이동 · Q 또는 J 모닥불에 넣기 · 스페이스 또는 K 등불에 넣기 · 1~6 장작 고르기 · P 또는 Esc 잠시 멈춤 · 새벽 카드는 1·2·3 또는 ←·→ 와 엔터</p>
+        <p><b>휴대폰</b>: 왼쪽 엄지로 화면을 끌어 움직인다. 오른쪽 아래 🔥 불에 넣기 · ✋ 줍기/모으기(누르고 있기) · 🔨 짓기(모닥불 옆에서만). 가방 칸을 누르면 먹을 것은 먹고, 장작은 먼저 넣을 장작으로 고른다.</p>
+        <p><b>키보드</b>: 방향키 또는 W·A·S·D 이동 · J 또는 Q 불에 넣기 · K 또는 스페이스 줍기/모으기(누르고 있기) · B 짓기 · E 먹기 · 1~8 가방 칸 · P 또는 Esc 잠시 멈춤 · 새벽 카드는 1·2·3 또는 ←·→ 와 엔터</p>
       </div>
       <div class="card-box">
-        <h3>장작 종류</h3>
+        <h3>장작과 재료</h3>
         <div id="help-woods" class="mini-table"></div>
       </div>
     </div>
@@ -176,6 +182,16 @@
     </header>
     <div class="scroll">
       <div id="settings-list" class="list settings"></div>
+      <div id="more-box" class="card-box more-box">
+        <h3>더 보기</h3>
+        <p class="meta-line" id="title-meta"></p>
+        <div class="row more-row">
+          <button id="btn-daily" class="btn daily">오늘의 도전<small id="daily-sub" class="daily-sub"></small></button>
+          <button id="btn-camp" class="btn">야영 준비</button>
+          <button id="btn-codex" class="btn">도감</button>
+          <button id="btn-records" class="btn">기록</button>
+        </div>
+      </div>
       <div class="card-box danger-box">
         <h3>기록 지우기</h3>
         <p>불씨·해금·업적·일지·통계와 이어하기를 모두 지운다.</p>
@@ -190,16 +206,16 @@
       </div>
       <div class="card-box">
         <h3>정보</h3>
-        <p>Ember Watch · 인터넷 연결 없이 이 브라우저 안에서만 돈다. 기록은 이 기기 브라우저에만 저장된다.</p>
+        <p>Ember Watch · 기록은 이 기기 브라우저에만 저장된다. 광고 자리는 출시 때 광고가 들어갈 곳이다.</p>
       </div>
     </div>
   </section>
 
-  <!-- 7. 야영지 (불씨로 해금) -->
-  <section id="scr-camp" class="screen" aria-label="야영지">
+  <!-- 7. 야영 준비 (불씨로 유물·야영 준비 해금, 설정의 더 보기에서 연다) -->
+  <section id="scr-camp" class="screen" aria-label="야영 준비">
     <header class="bar-head">
-      <button id="btn-camp-back" class="btn small">← 처음으로</button>
-      <h2>야영지</h2>
+      <button id="btn-camp-back" class="btn small">← 돌아가기</button>
+      <h2>야영 준비</h2>
       <span class="chip" id="camp-embers"></span>
     </header>
     <div id="camp-tabs" class="tabs" role="tablist"></div>
@@ -209,7 +225,7 @@
   <!-- 8. 도감 -->
   <section id="scr-codex" class="screen" aria-label="도감">
     <header class="bar-head">
-      <button id="btn-codex-back" class="btn small">← 처음으로</button>
+      <button id="btn-codex-back" class="btn small">← 돌아가기</button>
       <h2>도감</h2>
       <span class="chip" id="codex-count"></span>
     </header>
@@ -220,7 +236,7 @@
   <!-- 9. 기록 (업적·야영 일지·통계) -->
   <section id="scr-records" class="screen" aria-label="기록">
     <header class="bar-head">
-      <button id="btn-records-back" class="btn small">← 처음으로</button>
+      <button id="btn-records-back" class="btn small">← 돌아가기</button>
       <h2>기록</h2>
       <span></span>
     </header>
@@ -250,6 +266,38 @@
         </div>
         <button id="btn-quit" class="btn danger">그만두기</button>
       </div>
+    </div>
+  </div>
+
+  <!-- 12. 짓기 (겹침, 모닥불 옆에서만) -->
+  <div id="ov-build" class="overlay" role="dialog" aria-label="짓기">
+    <div class="panel">
+      <h2>짓기</h2>
+      <p id="build-sub" class="sub"></p>
+      <div id="build-list" class="build-list"></div>
+      <button id="btn-build-close" class="btn">닫기</button>
+    </div>
+  </div>
+
+  <!-- 13. 쓰러짐 (겹침) -->
+  <div id="ov-down" class="overlay" role="dialog" aria-label="쓰러짐">
+    <div class="panel small-panel">
+      <h2 id="down-title">불이 꺼졌다</h2>
+      <p id="down-why" class="sub"></p>
+      <div class="menu">
+        <button id="btn-revive" class="btn primary">📺 광고 보고 다시 일어나기</button>
+        <button id="btn-down-end" class="btn danger">여기서 끝내기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 14. 광고 자리 (겹침) — 출시 때 광고 SDK 를 붙일 곳 -->
+  <div id="ov-ad" class="overlay" role="dialog" aria-label="광고">
+    <div class="panel small-panel ad-panel">
+      <h2 id="ad-title">광고</h2>
+      <p id="ad-text" class="sub"></p>
+      <div class="ad-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="ad-progress"><div id="ad-fill" class="ad-fill"></div></div>
+      <button id="btn-ad-close" class="btn primary">닫기</button>
     </div>
   </div>
 

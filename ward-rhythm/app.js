@@ -23,7 +23,7 @@ var App = (function () {
   function warn(msg) { var w = $('store-warn'); w.textContent = msg; w.hidden = !msg; }
   function setUndo() { undoSnap = Store.clone(S); }
   function undo() {
-    if (!undoSnap) return;
+    if (!undoSnap) { UI.toast('되돌릴 것이 없어요'); return; }
     S = undoSnap; undoSnap = null;
     save(); applyLook(); UI.closeSheet(); render();
     UI.toast('되돌렸어요');
@@ -96,6 +96,8 @@ var App = (function () {
       planE = { id: null, kind: k.id, title: '', date: preset.date || L.today(), start: preset.start || '19:00', dur: preset.dur || k.dur, memo: '' };
     }
     UI.openSheet('sheet-plan', UI.planHtml(S, planE));
+    var row = document.querySelector('#form-plan .kinds'), on = row && row.querySelector('.chip.on');
+    if (on) row.scrollLeft = Math.max(0, on.offsetLeft - row.offsetLeft - 16);
   }
   function openSleep(s) {
     if (s) sleepE = { id: s.id, date: s.date, bed: s.bed, wake: s.wake, q: s.q || 3, chips: (s.chips || []).slice() };
@@ -176,19 +178,27 @@ var App = (function () {
     'cell': function (el) {
       var d = el.getAttribute('data-date');
       if (V.brush === 'view') { openDay(d); return; }
-      if (V.brush === 'erase' || S.roster[d] === V.brush) delete S.roster[d];
+      var had = S.roster[d];
+      if (V.brush === 'erase' && !had) return;
+      // 찍힌 칸을 지우거나 바꿀 때만 되돌리기를 남긴다. 빈 칸 찍기는 지난 되돌리기를 끊는다
+      if (had) setUndo(); else undoSnap = null;
+      if (V.brush === 'erase' || had === V.brush) delete S.roster[d];
       else S.roster[d] = V.brush;
       save(); render();
       UI.flash('#roster-grid [data-date="' + d + '"]');
+      if (had) done(d.slice(5).replace('-', '/') + (S.roster[d] ? ' 근무를 바꿨어요' : ' 근무를 지웠어요'), true);
     },
     'day-open': function (el) { openDay(el.getAttribute('data-date')); },
     'day-move': function (el) { if (dayE) openDay(L.addDays(dayE.date, +el.getAttribute('data-d'))); },
     'day-set': function (el) {
       if (!dayE) return;
-      var id = el.getAttribute('data-id');
+      var id = el.getAttribute('data-id'), had = S.roster[dayE.date];
+      if ((had || '') === (id || '')) return;
+      if (had) setUndo(); else undoSnap = null;
       if (id) S.roster[dayE.date] = id; else delete S.roster[dayE.date];
       save(); refreshDay(); render();
       UI.flash('#sheet-day .kv');
+      if (had) done(id ? '근무를 바꿨어요' : '근무를 비웠어요', true);
     },
     'day-chip': function (el) {
       var c = el.getAttribute('data-chip'), i = dayE.chips.indexOf(c);
@@ -203,7 +213,10 @@ var App = (function () {
       var oldK = UI.kindOf(planE.kind);
       if (+planE.dur === oldK.dur) planE.dur = k.dur;
       planE.kind = k.id;
+      var row = el.parentNode, x = row ? row.scrollLeft : 0;
       UI.refreshSheet(UI.planHtml(S, planE));
+      var nrow = document.querySelector('#form-plan .kinds');
+      if (nrow) nrow.scrollLeft = x;
     },
     'plan-del': function (el) {
       var id = el.getAttribute('data-id');
@@ -250,6 +263,14 @@ var App = (function () {
     'open-share': function () { UI.openSheet('sheet-share', UI.shareHtml(S, V)); },
     'open-backup': function () { UI.openSheet('sheet-backup', UI.backupHtml(S)); },
     'copy': function (el) { copyFrom(el.getAttribute('data-from')); },
+    /* 인쇄: 지금 보는 화면(근무표·기록)을 종이 한 장으로. 모양은 style.css @media print */
+    'print': function () {
+      UI.closeSheet();
+      $('toast').hidden = true;
+      $('print-stamp').textContent = (cur === 'log' ? V.ly + '년 ' + V.lm + '월 기록' : V.ry + '년 ' + V.rm + '월 근무표') + ' · ' + L.md(L.today()) + ' 뽑음';
+      if (typeof window.print !== 'function') { UI.toast('이 브라우저에서는 인쇄를 열 수 없어요. 브라우저 메뉴의 인쇄를 써 주세요', 'bad'); return; }
+      try { window.print(); } catch (e) { UI.toast('인쇄를 열지 못했어요. 브라우저 메뉴의 인쇄를 써 주세요', 'bad'); }
+    },
     'clear-month': function () {
       var key = L.monthKey(V.ry, V.rm);
       askConfirm(V.ry + '년 ' + V.rm + '월 근무표와 근무 메모를 모두 지울까요?', '지우기', function () {
@@ -329,22 +350,25 @@ var App = (function () {
       if ((e = L.checkNum(planE.dur, 10, 1440, '길이'))) { $('p-date-err').textContent = e; return fail('p-dur', e); }
       if ((e = L.checkText(planE.memo, 100, '메모', false))) return fail('p-memo', e);
       var p = { id: planE.id || uid('p'), kind: planE.kind, title: planE.title.trim(), date: planE.date, start: planE.start, dur: Math.round(+planE.dur), memo: planE.memo.trim() };
+      setUndo();
       if (planE.id) { S.plans = S.plans.map(function (x) { return x.id === p.id ? p : x; }); }
       else S.plans.push(p);
       if (!save()) return;
       var v = L.planCheck(S, p.date, p.start, p.dur);
       UI.closeSheet(); render();
-      done('약속을 남겼어요 — ' + L.LEVEL_NAME[v.level]);
+      done((planE.id ? '약속을 고쳤어요 — ' : '약속을 남겼어요 — ') + L.LEVEL_NAME[v.level], true);
     },
     'form-day': function () {
       dayE.text = val('day-text');
       var e = L.checkText(dayE.text, 60, '메모', false);
       if (e) return fail('day-text', e);
+      var hadNote = !!S.notes[dayE.date];
+      setUndo();
       if (!dayE.chips.length && !dayE.text.trim()) delete S.notes[dayE.date];
       else S.notes[dayE.date] = { chips: dayE.chips.slice(), text: dayE.text.trim() };
       if (!save()) return;
       render();
-      done('메모를 남겼어요');
+      done(!S.notes[dayE.date] ? '메모를 지웠어요' : hadNote ? '메모를 고쳤어요' : '메모를 남겼어요', true);
     },
     'form-sleep': function () {
       readSleepForm();
@@ -355,12 +379,13 @@ var App = (function () {
       var mm = L.sleepMins(sleepE.bed, sleepE.wake);
       if (mm < 20 || mm > 16 * 60) { $('s-date-err').textContent = '잔 시간이 ' + L.dur(mm) + '이에요. 20분~16시간으로 넣어 주세요'; return fail('s-wake', '잔 시간 범위 밖'); }
       var s = { id: sleepE.id || uid('s'), date: sleepE.date, bed: sleepE.bed, wake: sleepE.wake, q: sleepE.q, chips: sleepE.chips.slice() };
+      setUndo();
       if (sleepE.id) S.sleeps = S.sleeps.map(function (x) { return x.id === s.id ? s : x; });
       else S.sleeps.push(s);
       if (!save()) return;
       var d = ym(s.date); V.ly = d[0]; V.lm = d[1];
       UI.closeSheet(); render();
-      done('잠 ' + L.dur(mm) + '을 남겼어요');
+      done('잠 ' + L.dur(mm) + (sleepE.id ? '으로 고쳤어요' : '을 남겼어요'), true);
     },
     'form-pattern': function () {
       readPatternForm();

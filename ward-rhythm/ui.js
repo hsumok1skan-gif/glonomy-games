@@ -58,7 +58,25 @@ var UI = (function () {
     sheetTimer = setTimeout(function () { if (!openSheetId) wrap.hidden = true; }, 230);
   }
   function sheetOpen() { return openSheetId; }
-  function openOverlay(id) { var el = $(id); el.hidden = false; animateIn(el, 'enter'); var b = el.querySelector('button'); if (b) b.focus(); }
+  /* 겹침 창은 주 버튼에 focus 를 준다. 키보드로 연 때만 테두리를 보인다 */
+  var byKey = false;
+  document.addEventListener('keydown', function () {
+    byKey = true;
+    var q = document.querySelectorAll('.no-ring');
+    for (var i = 0; i < q.length; i++) q[i].classList.remove('no-ring');
+  }, true);
+  document.addEventListener('pointerdown', function () { byKey = false; }, true);
+  /* 크롬은 focusVisible 옵션을 모르고 첫 화면 focus 에 테두리를 그린다. no-ring 으로 끈다 */
+  function openOverlay(id) {
+    var el = $(id); el.hidden = false; animateIn(el, 'enter');
+    var b = el.querySelector('.btn.primary') || el.querySelector('button');
+    if (!b) return;
+    if (!byKey) {
+      b.classList.add('no-ring');
+      b.addEventListener('blur', function off() { b.classList.remove('no-ring'); b.removeEventListener('blur', off); });
+    }
+    try { b.focus({ preventScroll: true, focusVisible: byKey }); } catch (e) { b.focus(); }
+  }
   function closeOverlay(id) { $(id).hidden = true; }
 
   /* ---------- 짧은 반응 ---------- */
@@ -140,8 +158,9 @@ var UI = (function () {
     var t = L.today(), now = Date.now(), h = '';
     var has = Object.keys(S.roster).length > 0;
     if (!has) {
-      h += '<div class="card hero"><p class="hero-k">' + esc(L.md(t)) + '</p><p class="hero-t">근무표가 비어 있어요</p><p class="hero-s">한 달 근무를 찍으면 오늘 잘 시간과 다가올 위험이 여기에 떠요.</p></div>';
-      h += emptyBox('cal', '근무표부터 찍어 볼까요?', '근무표 탭에서 D·E·N 칩을 고르고 날짜를 누르면 돼요. 돌아가는 근무면 패턴으로 한 번에 넣어요.', '근무표 찍기', 'go', ' data-to="roster"');
+      /* 첫 실행: hero 하나에 안내와 주 버튼을 모은다 */
+      h += '<div class="card hero hero-empty"><p class="hero-k">' + esc(L.md(t)) + '</p><p class="hero-t">근무표부터 찍어 볼까요?</p><p class="hero-s">D·E·N 칩을 고르고 날짜를 누르면 오늘 잘 시간과 다가올 위험이 여기에 떠요. 돌아가는 근무면 패턴으로 한 번에 넣어요.</p>' +
+        '<button type="button" class="btn primary wide" data-act="go" data-to="roster">근무표 찍기</button></div>';
     } else {
       var working = L.workingAt(S, now), nw = L.nextWork(S, now), off = L.nextOff(S, t);
       var big, small;
@@ -219,7 +238,8 @@ var UI = (function () {
       h += '<div class="card"><p class="card-k">이 달 위험 ' + all.length + '개</p>' + (all.length ? all.map(riskRow).join('') : '<p class="muted">이 달은 위험이 없어요. 👍</p>') + '</div>';
     }
     h += '<div class="btn-grid"><button type="button" class="btn" data-act="open-pattern">패턴으로 채우기</button><button type="button" class="btn" data-act="open-shifts">근무 시각</button>' +
-      '<button type="button" class="btn" data-act="open-share">쉬는 날 글</button><button type="button" class="btn" data-act="clear-month"' + (filled ? '' : ' disabled') + '>이 달 지우기</button></div>';
+      '<button type="button" class="btn" data-act="open-share">쉬는 날 글</button><button type="button" class="btn" data-act="print"' + (filled ? '' : ' disabled') + '>🖨 이 달 인쇄</button>' +
+      '<button type="button" class="btn" data-act="clear-month"' + (filled ? '' : ' disabled') + '>이 달 지우기</button></div>';
     $('roster-root').innerHTML = h;
   }
 
@@ -360,6 +380,7 @@ var UI = (function () {
       h += '<div class="mini-empty">' + ART.bed + '<p class="muted">이 달 잠 기록이 없어요. 일어나자마자 누운 시각·일어난 시각만 남겨도 평균이 보여요.</p><button type="button" class="btn" data-act="sleep-new">잠 남기기</button></div>';
     }
     h += '</div>';
+    if (st.filled || sl.length) h += '<button type="button" class="btn wide" data-act="print">🖨 이 달 기록 인쇄</button>';
     $('log-root').innerHTML = h;
   }
   function sleepHtml(S, E) {
