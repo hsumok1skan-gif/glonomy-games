@@ -50,6 +50,15 @@ html, body {
   font-size: var(--fs-m); -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
 }
 .app { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; touch-action: none; background: var(--bg); }
+/* 판 양옆 띠(가로 휴대폰·PC 에서 9:16 판 밖) 전체를 빈 객석 줄로 흐리게(0.3) 채운다. 판 가운데를 기준으로 좌우가 같게 놓인다.
+   판(.frame)이 뒤에 오므로 그 위를 덮고, 눌림은 막지 않는다 */
+.app::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.3;
+  background-image: radial-gradient(ellipse 40% 34% at 50% 48%, var(--seat) 92%, transparent 100%),
+    linear-gradient(180deg, transparent 0 76%, var(--line) 76% 86%, transparent 86% 100%);
+  background-size: 36px 32px, 100% 32px;
+  background-position: center top, center top;
+}
 /* 판 크기는 ui.js fit() 이 정한다(360×640 보다 작은 창이면 360×640 을 줄여 넣는다) */
 .frame {
   position: relative; overflow: hidden; background: var(--bg); flex: none; transform-origin: center center;
@@ -80,7 +89,8 @@ h1, h2, h3, p { margin: 0; }
 h2 { font-size: var(--fs-l); }
 h3 { font-size: var(--fs-m); color: var(--muted); margin: 14px 0 8px; }
 .meta { color: var(--muted); font-size: var(--fs-s); text-align: center; }
-.meta.small { font-size: var(--fs-xs); margin-top: 6px; }
+/* 맨 아래 안내 줄: 한 줄로 판 폭 안에서 끝난다(문구는 index.html 에서 짧게) */
+.meta.small { font-size: var(--fs-xs); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* 버튼: 모서리 14px, 눌리면 0.95배 + 그림자 줄어듦 */
 .btn {
@@ -97,9 +107,46 @@ h3 { font-size: var(--fs-m); color: var(--muted); margin: 14px 0 8px; }
 .btn:disabled { opacity: 0.38; cursor: default; }
 
 /* 시작 */
-#scr-title { justify-content: space-between; text-align: center; }
+/* 남는 높이를 칸마다 위 여백(auto)으로 고르게 나눠 메뉴 아래가 비지 않게 한다.
+   높이가 모자라면 auto 여백이 0 이 되어 위에서부터 쌓인다(넘쳐도 제목이 위로 잘리지 않는다) */
+#scr-title { justify-content: flex-start; text-align: center; }
+#scr-title > :not(.title-glow):not(.title-deco) { position: relative; z-index: 1; margin-top: auto; }
 .title-glow { position: absolute; left: 10%; right: 10%; top: 0; height: 38%; background: radial-gradient(ellipse at 50% 0%, var(--glow), transparent 70%); opacity: 0.22; pointer-events: none; }
-.title-box { margin-top: 2%; position: relative; }
+/* 상영관 배경: 위쪽 스크린 → 아래로 퍼지는 빛 띠, 양옆 아래 의자 줄, 떨어지는 팝콘 */
+.title-deco { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.deco-screen { position: absolute; left: 18%; right: 18%; top: 0; height: 6px; border-radius: 0 0 6px 6px; background: var(--screen-1); opacity: 0.55; box-shadow: 0 0 18px var(--glow); }
+.deco-beam {
+  position: absolute; left: 0; right: 0; top: 0; height: 100%;
+  clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, var(--glow), transparent 85%); opacity: 0.08;
+}
+.deco-seats {
+  position: absolute; bottom: 0; width: 13%; height: 62%; opacity: 0.4;
+  background-image: radial-gradient(ellipse 42% 34% at 50% 62%, var(--seat) 92%, transparent 100%),
+    linear-gradient(180deg, transparent 0 70%, #0E0C1C99 70% 100%);
+  background-size: 50% 26px, 100% 26px;
+  -webkit-mask-image: linear-gradient(0deg, #000 40%, transparent);
+  mask-image: linear-gradient(0deg, #000 40%, transparent);
+}
+.deco-seats.l { left: 0; }
+.deco-seats.r { right: 0; }
+.kernel {
+  position: absolute; top: -16px; width: 11px; height: 9px; background: var(--popcorn); opacity: 0.55;
+  border-radius: 60% 45% 55% 40%; box-shadow: 3px -2px 0 -1px var(--popcorn), -3px -1px 0 -2px var(--butter);
+  animation: kernelFall 7s linear infinite;
+}
+.kernel.k1 { left: 4%; animation-delay: 0s; }
+.kernel.k2 { left: 9%; animation-delay: -3.1s; animation-duration: 8.5s; }
+.kernel.k3 { left: 24%; animation-delay: -5.4s; animation-duration: 9.5s; }
+.kernel.k4 { right: 5%; animation-delay: -1.7s; animation-duration: 7.8s; }
+.kernel.k5 { right: 10%; animation-delay: -4.6s; }
+.kernel.k6 { right: 26%; animation-delay: -6.2s; animation-duration: 10s; }
+@keyframes kernelFall { 0% { top: -16px; transform: rotate(0deg); } 100% { top: 102%; transform: rotate(320deg); } }
+/* 움직임 줄이기: 팝콘은 떨어지지 않고 제자리에 흩어져 있다 */
+body.reduce .kernel { animation: none; }
+body.reduce .kernel.k1, body.reduce .kernel.k4 { top: 52%; }
+body.reduce .kernel.k2, body.reduce .kernel.k5 { top: 74%; }
+body.reduce .kernel.k3, body.reduce .kernel.k6 { top: 30%; }
 .logo { font-size: var(--fs-icon); line-height: 1; animation: bob 2.4s ease-in-out infinite; }
 body.reduce .logo { animation: none; }
 @keyframes bob { 50% { transform: translateY(-8px) rotate(-6deg); } }
@@ -112,9 +159,11 @@ body.reduce .logo { animation: none; }
 }
 .tr { margin: 0; display: flex; flex-direction: column; align-items: center; min-width: 0; }
 .tr canvas { width: 100%; aspect-ratio: 4 / 5; border-radius: 6px; background: var(--surface); display: block; }
-.tr figcaption { font-size: var(--fs-xs); line-height: 1.25; color: var(--muted); margin-top: 3px; text-align: center; white-space: normal; }
-.tr figcaption b { display: block; color: var(--butter); }
-.grow { font-size: var(--fs-xs); color: var(--popcorn); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; margin: 6px auto 0; }
+/* 칸 아래 글: 글자는 --fs-xs(12px) 아래로 줄이지 않고, 문구를 칸 폭(약 78px)에 맞게 짧게 쓴다(ui.js cap).
+   그래도 넘치면 칸 밖으로 나가지 않고 … 로 끝난다 */
+.tr figcaption { width: 100%; font-size: var(--fs-xs); line-height: 1.25; color: var(--muted); margin-top: 3px; text-align: center; white-space: normal; word-break: keep-all; overflow: hidden; text-overflow: ellipsis; }
+.tr figcaption b { display: block; color: var(--butter); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.grow { font-size: var(--fs-xs); word-break: keep-all; text-align: center; color: var(--popcorn); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; margin: 6px auto 0; }
 .menu { display: flex; flex-direction: column; gap: 4px; }
 .row2 { display: flex; gap: 8px; margin-top: 8px; }
 .row2 .btn { flex: 1; }
@@ -214,7 +263,10 @@ body.reduce .pop { animation: fade 0.9s ease-out forwards; }
 
 /* 기기 '동작 줄이기': ui.js followReduceMq() 가 body.reduce 를 켜기 전에도 큰 움직임을 멈춘다 */
 @media (prefers-reduced-motion: reduce) {
-  .logo, .hand, .glow-btn, .shake, .bump { animation: none; }
+  .logo, .hand, .glow-btn, .shake, .bump, .kernel { animation: none; }
+  .kernel.k1, .kernel.k4 { top: 52%; }
+  .kernel.k2, .kernel.k5 { top: 74%; }
+  .kernel.k3, .kernel.k6 { top: 30%; }
   .screen, .overlay, .overlay .panel { transition: none; }
   .pop { animation: fade 0.9s ease-out forwards; }
 }

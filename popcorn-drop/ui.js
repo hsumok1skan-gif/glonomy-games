@@ -112,7 +112,23 @@
   function popAt(x, y, text, o) {
     o = o || {};
     if (fx.length > 60) fx.shift();
-    fx.push({ x, y, text, color: o.color || 'butter', size: o.size || C['fs-m'], t: 0, life: o.life || 0.9 });
+    const f = { x, y, text, color: o.color || 'butter', size: o.size || C['fs-m'], t: 0, life: o.life || 0.9, kind: o.kind || '', at: performance.now(), n: 1 };
+    fx.push(f);
+    return f;
+  }
+  // 0.15초 안에 같은 종류·가까운 자리에서 오는 글자는 새로 쌓지 않고 하나로 묶어 '×n' 을 붙인다
+  const GROUP_MS = 150;
+  function popGroup(x, y, text, o) {
+    const now = performance.now();
+    for (let i = fx.length - 1; i >= 0; i--) {
+      const f = fx[i];
+      if (f.kind !== o.kind || now - f.at > GROUP_MS || Math.abs(f.x - x) > 60) continue;
+      f.n++; f.at = now;
+      f.text = text + ' ×' + f.n;
+      f.t = Math.min(f.t, 0.1); f.life = o.life || 0.9;   // 묶일 때마다 다시 또렷하게
+      return f;
+    }
+    return popAt(x, y, text, o);
   }
   function burst(x, y, color, n) {
     if (set().reduce) n = Math.min(n, 3);
@@ -208,9 +224,11 @@
       c.fillText(PEG_LABEL[p.k], p.x, p.y + 0.5);
     }
   }
+  // 어두운 판 위에서도 알·팝콘이 점이 아니라 모양으로 읽히게, 부딪힘 반지름(P.KR)보다 크게 그린다
+  const KERNEL_R = P.KR * 1.3, POP_S = 4.4, POP_S_CAR = 5.2;
   function drawKernel(c, x, y, gold, rot) {
     c.fillStyle = gold ? C.gold : C.corn;
-    c.beginPath(); c.ellipse(x, y, P.KR, P.KR * 0.8, rot || 0, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.ellipse(x, y, KERNEL_R, KERNEL_R * 0.8, rot || 0, 0, Math.PI * 2); c.fill();
     // 황금 옥수수는 색과 함께 가운데 점으로도 구분한다
     if (gold) { c.fillStyle = C.popcorn; c.fillRect(x - 1, y - 2, 2, 2); }
   }
@@ -265,7 +283,7 @@
     if (car) { c.fillStyle = C['pot-dark']; c.fillRect(x - 1, y - 1, 2, 2); }
   }
   function drawPops(S) {
-    for (const p of S.pops) drawPopcorn(cx, p.x, p.y, p.car ? 4.4 : 3.4, p.spin, p.car);
+    for (const p of S.pops) drawPopcorn(cx, p.x, p.y, p.car ? POP_S_CAR : POP_S, p.spin, p.car);
   }
   function drawBin(S) {
     const c = cx, x0 = P.BL - 2, w = P.BR - P.BL + 4, y0 = P.BIN_Y, h = P.BIN_B - P.BIN_Y;
@@ -288,8 +306,35 @@
   }
   // 손님 줄: 맨 앞(팝콘 통 옆)이 아래, 뒤로 갈수록 위
   const Q_Y0 = 490, Q_GAP = 32, Q_SHOW = 12;
+  // 줄 맨 위 빈 자리(y 50~100)의 매점 메뉴판: 상영작 이름과 팝콘 한 개 값
+  function fitText(c, s, w) {
+    if (c.measureText(s).width <= w) return s;
+    while (s.length > 1 && c.measureText(s + '…').width > w) s = s.slice(0, -1);
+    return s + '…';
+  }
+  function drawMenu(S) {
+    const c = cx, x0 = 4, y0 = 50, w = P.QW - 12, h = 50;
+    const th = D.THEATERS[S.theater - 1] || D.THEATERS[0];
+    const v = (1 + ((S.st && S.st.price) || 0) / 100) * th.pay;
+    const price = (Math.round(v * 10) / 10).toString();
+    // 걸이 줄과 판
+    c.strokeStyle = C.gold; c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(x0 + 10, 46); c.lineTo(x0 + 10, y0); c.moveTo(x0 + w - 10, 46); c.lineTo(x0 + w - 10, y0); c.stroke();
+    c.fillStyle = C.seat; rr(c, x0, y0, w, h, 6); c.fill();
+    c.strokeStyle = C.gold; c.lineWidth = 2; rr(c, x0 + 1, y0 + 1, w - 2, h - 2, 5); c.stroke();
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.font = font(C['fs-xxs'], true); c.fillStyle = C.gold;
+    c.fillText('MENU', x0 + w / 2, y0 + 10);
+    c.fillStyle = C.gold; c.globalAlpha = 0.6; c.fillRect(x0 + 8, y0 + 18, w - 16, 1); c.globalAlpha = 1;
+    c.font = font(C['fs-xxs']); c.fillStyle = C.popcorn;
+    c.fillText(fitText(c, S.film || '', w - 8), x0 + w / 2, y0 + 27);
+    c.font = font(C['fs-xxs'], true); c.fillStyle = C.popcorn;
+    const pl = '🍿1 = ' + price + '🎟';
+    c.fillText(c.measureText(pl).width <= w - 6 ? pl : '🍿1=' + price, x0 + w / 2, y0 + 40);
+  }
   function drawQueue(S, t) {
     const c = cx;
+    drawMenu(S);
     c.strokeStyle = C.gold; c.globalAlpha = 0.5; c.lineWidth = 2;
     c.beginPath(); c.moveTo(P.QW - 4, Q_Y0 + 14); c.lineTo(P.QW - 4, Q_Y0 - Q_GAP * (Q_SHOW - 1) - 14); c.stroke();
     c.globalAlpha = 1;
@@ -317,7 +362,7 @@
         const y = Q_Y0 + k * 30, x = 20 + k * 40;
         c.globalAlpha = 1 - k;
         c.font = font(C['fs-l']); c.fillStyle = C.text; c.fillText('😄', x, y);
-        drawPopcorn(c, x + 14, y - 4, 3.4, t * 3, false);
+        drawPopcorn(c, x + 14, y - 4, POP_S, t * 3, false);
         if (q.say && k < 0.8) { c.font = font(C['fs-xxs'], true); c.fillStyle = C.popcorn; c.fillText(q.say, P.QW / 2 + 6, y - 20); }
         c.globalAlpha = 1;
       } else if (q.state === 'sad') {
@@ -393,6 +438,7 @@
   // game.js sandbox 로 같은 규칙의 연습 판(첫 판: 옥수수 20알, 스킬 없음)을 돌리고, 그 순간을 판 화면과 같은 그리기로 칸에 담는다.
   function snap(id, S, box, labels) {
     const el = $(id), c = el.getContext('2d'), keep = cx;
+    el.dataset.drawn = '';
     const k = el.width / box.w, t = performance.now() / 1000;
     cx = c;
     try {
@@ -405,34 +451,55 @@
         c.lineWidth = 4; c.strokeStyle = C.bg; c.strokeText(l.text, l.x, l.y);
         c.fillStyle = col(l.color || 'butter', 0); c.fillText(l.text, l.x, l.y);
       });
+      el.dataset.drawn = '1';
     } finally { cx = keep; }
   }
   function cap(id, head, line) { $(id).innerHTML = '<b>' + head + '</b>' + line; }
+  // 못 그린 칸(그리다 멈춤·글 없음)은 빈 검은 칸으로 두지 않고 숨기고, 남은 칸이 띠 폭을 나눠 쓴다
+  function tidyTrailer() {
+    const figs = Array.prototype.slice.call(document.querySelectorAll('#trailer figure.tr'));
+    let shown = 0;
+    figs.forEach(f => {
+      const cv = f.querySelector('canvas'), fc = f.querySelector('figcaption');
+      const ok = !!cv && cv.dataset.drawn === '1' && !!fc && fc.textContent.trim() !== '';
+      f.classList.toggle('hidden', !ok);
+      if (ok) shown++;
+    });
+    $('trailer').style.gridTemplateColumns = shown ? 'repeat(' + shown + ', 1fr)' : '';
+    return shown;
+  }
   let trailerDone = false;
   function buildTrailer() {
     if (trailerDone) return;
     trailerDone = true;
     try {
       G.sandbox(() => {
-        const S = G.newRound();
         const step = (cond, sec) => { for (let i = 0; i < sec * 60 && !cond(); i++) G.update(1 / 60); return cond(); };
-        G.pour();
-        // ① 쏟아붓기: 위쪽 폭 전체에 흩어져 떨어지는 옥수수
-        step(() => S.time > 0.42, 2);
-        const xs = S.world.kernels.map(k => k.x);
-        const spread = xs.length ? Math.round(Math.max.apply(null, xs) - Math.min.apply(null, xs)) : 0;
-        snap('tr-pour', S, { x: 62, y: 30, w: 296, h: 370 });
-        cap('tc-pour', '쏟아붓기 한 번', S.world.poured + '알 · 폭 ' + spread + 'px');
-        // ② 프라이팬: 팬 안 알은 팡! 팝콘, 밖으로 떨어진 알은 굴러 사라진다
-        step(() => (S.pops.length >= 3 && S.rollers.length >= 1) || S.phase !== 'pour', 8);
-        snap('tr-pan', S, { x: 66, y: 290, w: 280, h: 350 }, S.pops.length ? [{ x: S.pops[0].x, y: S.pops[0].y - 22, text: '팡!', color: 'butter', size: C['fs-l'] }] : []);
+        // ①② 무작위 연습 판이라 '팡!' 순간(팬 위 팝콘)이 안 잡힐 수 있다 → 새 연습 판으로 세 번까지 다시 쏟는다
+        let S = null;
+        for (let tries = 0; tries < 3; tries++) {
+          S = G.newRound();
+          G.pour();
+          // ① 쏟아붓기: 위쪽 폭 전체에 흩어져 떨어지는 옥수수
+          step(() => S.time > 0.42, 2);
+          const xs = S.world.kernels.map(k => k.x);
+          const spread = xs.length ? Math.round(Math.max.apply(null, xs) - Math.min.apply(null, xs)) : 0;
+          snap('tr-pour', S, { x: 62, y: 30, w: 296, h: 370 });
+          // 칸 폭이 약 78px(글자 6개쯤)이라 문구는 짧게: 굵은 머리 한 줄 + 숫자 한 줄
+          cap('tc-pour', '쏟아붓기', S.world.poured + '알 ' + (spread > 200 ? '판 가득' : '한 번에'));
+          // ② 프라이팬: 팬 안 알은 팡! 팝콘, 밖으로 떨어진 알은 굴러 사라진다
+          step(() => (S.pops.length >= 3 && S.rollers.length >= 1) || S.phase !== 'pour', 8);
+          if (!S.pops.length) step(() => S.pops.length > 0 || S.phase !== 'pour', 10);   // 굴러 나간 알만 있으면 첫 팡을 기다린다
+          snap('tr-pan', S, { x: 66, y: 290, w: 280, h: 350 }, S.pops.length ? [{ x: S.pops[0].x, y: S.pops[0].y - 22, text: '팡!', color: 'butter', size: C['fs-l'] }] : []);
+          if (S.pops.length) break;
+        }
         step(() => S.phase !== 'pour', 10);
-        cap('tc-pan', '팬 안만 팝콘', '팬 ' + S.world.caught + ' · 밖 ' + S.world.missed + '알 → 팝콘 ' + S.made + '개');
+        cap('tc-pan', '팬 안만 팝콘', '팡 ' + S.made + ' · 밖 ' + S.world.missed);
         // ③ 손님: 맨 앞부터 받아 가고, 모자라면 팝콘 품절!
         step(() => S.soldOut || S.sellout, 15);
         step(() => S.endT < 0.75 || S.done, 2);
         snap('tr-serve', S, { x: 0, y: 236, w: 248, h: 310 }, S.soldOut ? [{ x: 150, y: 330, text: '팝콘 품절!', color: 'danger', size: C['fs-xl'] }] : []);
-        cap('tc-serve', S.soldOut ? '팝콘 품절!' : '매진!', '손님 ' + S.served + '/' + S.queue.length + '명 받음');
+        cap('tc-serve', S.soldOut ? '팝콘 품절!' : '매진!', '손님 ' + S.served + '/' + S.queue.length + '명');
         // ④ 스킬 트리: 이어진 칸만 산다 → 산 칸의 효과가 다음 판에 바로 보인다(옥수수 +5 → 다음 판 25알)
         step(() => S.done, 3);
         const before = G.pourCount();
@@ -445,12 +512,16 @@
           { x: P.PAN_X, y: 104, text: after + '알!', color: 'butter', size: C['fs-xl'] },
           { x: P.PAN_X, y: 138, text: '🌽 +5 산 다음 판', color: 'popcorn', size: C['fs-s'] }
         ] : []);
-        cap('tc-buy', bought ? '옥수수 +5 사면' : '스킬 사기', (bought ? '다음 판 ' + before + '→' + after + '알' : '사지 못함') + (farLocked ? ' · 먼 칸 잠김' : ''));
+        cap('tc-buy', bought ? '옥수수 +5' : '스킬 사기', bought ? before + '→' + after + '알' : (farLocked ? '먼 칸 잠김' : '사지 못함'));
       });
+    } catch (e) { /* 그리다 멈춘 칸은 아래 tidyTrailer 가 숨긴다 */ }
+    // 예고편을 하나도 못 그려도 시작 화면은 그대로 쓴다
+    if (!tidyTrailer()) $('trailer').classList.add('hidden');
+    try {
       const gr = G.growth();
-      $('tr-grow').textContent = '같은 규칙으로 60번씩: 첫 판 평균 팝콘 ' + gr.base.toFixed(1) + '개 → 스킬 10칸 뒤 ' + gr.ten.toFixed(1) + '개 (×' + gr.ratio.toFixed(1) + ')';
+      // 한 줄 안에 끝나게 짧게: 60번씩 쏟아 본 평균(game.js growth)
+      $('tr-grow').textContent = '스킬 10칸 뒤 팝콘 ×' + gr.ratio.toFixed(1) + ' (' + gr.base.toFixed(1) + '→' + gr.ten.toFixed(1) + '개)';
     } catch (e) {
-      $('trailer').classList.add('hidden');   // 예고편을 못 그려도 시작 화면은 그대로 쓴다
       $('tr-grow').classList.add('hidden');
     }
   }
@@ -773,9 +844,9 @@
         }
         break;
       case 'pop':
-        // 알마다 오므로 번쩍임·흔들림은 0.5초에 한 번, 글자·조각은 매번
+        // 알마다 오므로 번쩍임·흔들림은 0.5초에 한 번, 조각은 매번, 글자는 0.15초 안에 온 것끼리 '팡! ×n' 하나로
         Sfx.play('pop');
-        popAt(d.x, P.PAN_Y - 14, d.car ? '캐러멜 팡!' : '팡!', { color: d.car ? 'caramel' : 'popcorn', size: d.car ? C['fs-m'] : C['fs-s'], life: 0.6 });
+        popGroup(d.x, P.PAN_Y - 14, d.car ? '캐러멜 팡!' : '팡!', { kind: d.car ? 'popcar' : 'pop', color: d.car ? 'caramel' : 'popcorn', size: d.car ? C['fs-m'] : C['fs-s'], life: 0.6 });
         burst(d.x, P.PAN_Y, d.car ? 'caramel' : 'popcorn', 3);
         if (performance.now() - popT > 500) { popT = performance.now(); flash('good'); shake(null, 'soft'); }
         break;
