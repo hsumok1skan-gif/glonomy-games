@@ -19,8 +19,8 @@ var Store = (function () {
 
   function copyPacks() {
     var out = [];
-    DATA.SUBJECTS.forEach(function (s) { out.push({ id: s.id, kind: 'subj', name: s.name, icon: s.icon, items: s.items.slice() }); });
-    DATA.ACADEMIES.forEach(function (s) { out.push({ id: s.id, kind: 'acad', name: s.name, icon: s.icon, items: s.items.slice() }); });
+    DATA.SUBJECTS.forEach(function (s) { out.push({ id: s.id, kind: 'subj', name: s.name, icon: s.icon, pic: s.pic, items: s.items.slice() }); });
+    DATA.ACADEMIES.forEach(function (s) { out.push({ id: s.id, kind: 'acad', name: s.name, icon: s.icon, pic: s.pic, items: s.items.slice() }); });
     return out;
   }
 
@@ -48,7 +48,8 @@ var Store = (function () {
         ptimes: Logic.defaultTimes(),                        // 교시마다 [시작, 끝]
         gradeP: { 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6 },      // 학년별 교시 수 (새 아이에 쓴다)
         welcomed: false,
-        setupDone: false
+        setupDone: false,
+        firstBagSeen: false                                  // 아이를 넣자마자 보여 준 처음 가방 카드를 닫았다
       }
     };
   }

@@ -1,171 +1,233 @@
-/* Popcorn Drop (팝콘 팡팡) — 콘텐츠 데이터 */
+/* Popcorn Drop (팝콘 팡팡) — 콘텐츠 데이터 (스킬 칸 표·상영관·손님·글) */
 (function () {
   'use strict';
 
-  // 통 크기: S 작은 통 10개 · M 중간 25개 · L 큰 통 50개, 다 채우면 받는 영화 표 동전
-  const TUBS = {
-    S: { cap: 10, coin: 3, name: '작은 통' },
-    M: { cap: 25, coin: 8, name: '중간 통' },
-    L: { cap: 50, coin: 20, name: '큰 통' }
-  };
-
-  // 상영관 30: [한쪽 줄 수, 통 (왼쪽 위→아래, 오른쪽 위→아래 순서로 섞어 앉힘), 목표(다 채울 손님 수), 쥐구멍 수, 못 판 무늬 번호]
-  const HALLS = [
-    [3, 'SSSSSM', 2, 0, 0],
-    [3, 'SSSSMM', 3, 1, 1],
-    [4, 'SSSSSMMM', 3, 1, 2],
-    [4, 'SSSSMMMM', 4, 2, 3],
-    [4, 'SSSSMMML', 5, 2, 4],
-    [5, 'SSSSMMMMML', 6, 3, 5],
-    [5, 'SSSMMMMMLL', 6, 3, 6],
-    [5, 'SSMMMMMMLL', 6, 3, 7],
-    [6, 'SSSMMMMMMLLL', 6, 4, 8],
-    [6, 'SSMMMMMMMLLL', 7, 4, 9],
-    [6, 'SMMMMMMMMLLL', 7, 4, 10],
-    [6, 'SMMMMMMMLLLL', 8, 5, 11],
-    [7, 'SSMMMMMMMMLLLL', 8, 5, 12],
-    [7, 'SMMMMMMMMMLLLL', 8, 5, 13],
-    [7, 'SMMMMMMMMLLLLL', 9, 5, 14],
-    [7, 'MMMMMMMMMLLLLL', 9, 6, 15],
-    [7, 'MMMMMMMMLLLLLL', 10, 6, 16],
-    [8, 'SSMMMMMMMMLLLLLL', 10, 6, 17],
-    [8, 'SMMMMMMMMMLLLLLL', 10, 7, 18],
-    [8, 'MMMMMMMMMMLLLLLL', 11, 7, 19],
-    [8, 'MMMMMMMMMLLLLLLL', 11, 7, 20],
-    [8, 'MMMMMMMMLLLLLLLL', 11, 8, 21],
-    [8, 'SMMMMMMMLLLLLLLL', 12, 8, 22],
-    [8, 'MMMMMMMLLLLLLLLL', 12, 8, 23],
-    [8, 'MMMMMMLLLLLLLLLL', 12, 8, 0],
-    [8, 'MMMMMLLLLLLLLLLL', 13, 9, 5],
-    [8, 'MMMMLLLLLLLLLLLL', 13, 9, 10],
-    [8, 'MMMLLLLLLLLLLLLL', 13, 9, 15],
-    [8, 'MMLLLLLLLLLLLLLL', 14, 10, 20],
-    [8, 'MLLLLLLLLLLLLLLL', 14, 10, 23]
-  ].map((r, i) => ({ n: i + 1, rows: r[0], tubs: r[1], goal: r[2], rats: r[3], layout: r[4] }));
-
-  // 못 판 무늬 24: 두 배·네 배·황금 못 수와 놓일 곳(가운데 center·고르게 even·위 top·아래 low·양옆 wide)
-  const LAYOUTS = [
-    { id: 'L01', name: '첫 상영', x2: 5, x4: 0, gold: 0, zone: 'center' },
-    { id: 'L02', name: '나란히', x2: 5, x4: 0, gold: 0, zone: 'even' },
-    { id: 'L03', name: '위쪽 바람', x2: 5, x4: 1, gold: 0, zone: 'top' },
-    { id: 'L04', name: '두 줄 기차', x2: 6, x4: 0, gold: 0, zone: 'even' },
-    { id: 'L05', name: '한가운데', x2: 4, x4: 1, gold: 1, zone: 'center' },
-    { id: 'L06', name: '아랫마을', x2: 5, x4: 1, gold: 0, zone: 'low' },
-    { id: 'L07', name: '양날개', x2: 6, x4: 0, gold: 1, zone: 'wide' },
-    { id: 'L08', name: '별빛', x2: 5, x4: 1, gold: 1, zone: 'even' },
-    { id: 'L09', name: '눈사태', x2: 6, x4: 1, gold: 0, zone: 'top' },
-    { id: 'L10', name: '금가루', x2: 4, x4: 0, gold: 2, zone: 'center' },
-    { id: 'L11', name: '사다리', x2: 6, x4: 1, gold: 1, zone: 'even' },
-    { id: 'L12', name: '깊은 밤', x2: 5, x4: 1, gold: 1, zone: 'low' },
-    { id: 'L13', name: '쌍둥이 길', x2: 7, x4: 0, gold: 1, zone: 'wide' },
-    { id: 'L14', name: '불꽃놀이', x2: 5, x4: 2, gold: 1, zone: 'center' },
-    { id: 'L15', name: '모래시계', x2: 6, x4: 1, gold: 1, zone: 'top' },
-    { id: 'L16', name: '팡팡 거리', x2: 6, x4: 1, gold: 2, zone: 'even' },
-    { id: 'L17', name: '바닥 축제', x2: 6, x4: 2, gold: 1, zone: 'low' },
-    { id: 'L18', name: '넓은 객석', x2: 7, x4: 1, gold: 1, zone: 'wide' },
-    { id: 'L19', name: '황금 시사회', x2: 5, x4: 1, gold: 3, zone: 'center' },
-    { id: 'L20', name: '바둑판', x2: 7, x4: 1, gold: 2, zone: 'even' },
-    { id: 'L21', name: '폭포', x2: 7, x4: 2, gold: 1, zone: 'top' },
-    { id: 'L22', name: '심야 상영', x2: 6, x4: 2, gold: 2, zone: 'low' },
-    { id: 'L23', name: '날갯짓', x2: 8, x4: 1, gold: 2, zone: 'wide' },
-    { id: 'L24', name: '대축제', x2: 8, x4: 2, gold: 2, zone: 'center' }
+  // ---------- 스킬 칸 표 ----------
+  // 가지 다섯: 옥수수(위) · 못(오른쪽 위) · 프라이팬(오른쪽 아래) · 손님(왼쪽 아래) · 매점(왼쪽 위)
+  // 칸 자리: M1~M7 = 가지 가운데 줄(깊이 1~7), A2·A4·A6 = 시계 방향 옆칸, B3·B5·B6 = 반시계 방향 옆칸
+  // 효과 키: corn 옥수수 +n알 · gold 황금 옥수수 확률(%) · x2 두 배 못 · x3 세 배 못 · gpeg 황금 못 · rows 못 판 줄
+  //          pan 프라이팬 폭(px) · rim 가장자리 받침 · rimw 받침 넓히기(px) · pan2 프라이팬 하나 더
+  //          cust 손님 +n명 · price 팝콘 값(%) · tip 팁 확률(%) · vip VIP 손님 · bonus 판 끝 보너스 · sold 매진 보너스(%) · repour 다시 쏟기
+  const BRANCHES = [
+    { key: 'corn', name: '옥수수', angle: -90, color: 'corn' },
+    { key: 'peg', name: '못', angle: -18, color: 'mint' },
+    { key: 'pan', name: '프라이팬', angle: 54, color: 'pot' },
+    { key: 'cust', name: '손님', angle: 126, color: 'seat' },
+    { key: 'shop', name: '매점', angle: 198, color: 'gold' }
   ];
 
-  // 특수 못 종류
-  const PEG_KINDS = {
-    n: { name: '보통 못', desc: '튕기기만 한다' },
-    x2: { name: '두 배 못', desc: '닿은 알이 2개로 갈라진다(한 알당 한 번)', price: 30 },
-    x4: { name: '네 배 못', desc: '닿은 알이 4개로 갈라진다(한 알당 한 번)', price: 90 },
-    gold: { name: '황금 못', desc: '알이 황금 옥수수가 된다 → 캐러멜 팝콘(5개 몫)', price: 60 },
-    rat: { name: '쥐구멍', desc: '빠진 알은 사라진다' }
-  };
+  // [가지, 자리, 이름, 아이콘, 효과 키, 값]
+  const SKILL_TABLE = [
+    ['corn', 'M1', '옥수수 +5', '🌽', 'corn', 5],
+    ['corn', 'M2', '옥수수 +5', '🌽', 'corn', 5],
+    ['corn', 'M3', '옥수수 +8', '🌽', 'corn', 8],
+    ['corn', 'M4', '옥수수 +10', '🌽', 'corn', 10],
+    ['corn', 'M5', '옥수수 +12', '🌽', 'corn', 12],
+    ['corn', 'M6', '옥수수 +15', '🌽', 'corn', 15],
+    ['corn', 'M7', '옥수수 +20', '🌽', 'corn', 20],
+    ['corn', 'A2', '황금 옥수수 3%', '✨', 'gold', 3],
+    ['corn', 'B3', '옥수수 +6', '🌽', 'corn', 6],
+    ['corn', 'A4', '황금 옥수수 4%', '✨', 'gold', 4],
+    ['corn', 'B5', '옥수수 +10', '🌽', 'corn', 10],
+    ['corn', 'A6', '황금 옥수수 5%', '✨', 'gold', 5],
+    ['corn', 'B6', '옥수수 +15', '🌽', 'corn', 15],
 
-  // 영화관 키우기 20 단계
-  const UPGRADES = {
-    corn: { name: '옥수수 통 늘리기', unit: '알', levels: [
-      { add: 15, cost: 20 }, { add: 15, cost: 35 }, { add: 15, cost: 55 }, { add: 20, cost: 80 },
-      { add: 20, cost: 110 }, { add: 20, cost: 150 }, { add: 25, cost: 200 }, { add: 25, cost: 260 }] },
-    pot: { name: '냄비 크게', unit: '알', levels: [
-      { add: 25, cost: 15 }, { add: 25, cost: 30 }, { add: 25, cost: 50 }, { add: 25, cost: 75 },
-      { add: 25, cost: 100 }, { add: 25, cost: 130 }, { add: 25, cost: 170 }, { add: 25, cost: 220 }] },
-    fire: { name: '불 하나 더 켜기', unit: '개', levels: [{ add: 1, cost: 120 }] },
-    rat: { name: '쥐구멍 막기', unit: '개', levels: [{ add: 1, cost: 25 }, { add: 1, cost: 50 }, { add: 1, cost: 90 }] }
-  };
+    ['peg', 'M1', '두 배 못 +1', '✌', 'x2', 1],
+    ['peg', 'M2', '두 배 못 +1', '✌', 'x2', 1],
+    ['peg', 'M3', '세 배 못 +1', '🔱', 'x3', 1],
+    ['peg', 'M4', '못 판 줄 +1', '📏', 'rows', 1],
+    ['peg', 'M5', '황금 못 +1', '⭐', 'gpeg', 1],
+    ['peg', 'M6', '세 배 못 +1', '🔱', 'x3', 1],
+    ['peg', 'M7', '못 판 줄 +1', '📏', 'rows', 1],
+    ['peg', 'A2', '두 배 못 +1', '✌', 'x2', 1],
+    ['peg', 'B3', '황금 못 +1', '⭐', 'gpeg', 1],
+    ['peg', 'A4', '두 배 못 +1', '✌', 'x2', 1],
+    ['peg', 'B5', '세 배 못 +1', '🔱', 'x3', 1],
+    ['peg', 'A6', '두 배 못 +2', '✌', 'x2', 2],
+    ['peg', 'B6', '못 판 줄 +1', '📏', 'rows', 1],
 
-  // 손님 24
-  const CUSTOMERS = [
-    ['c01', '꼬마 관객', '🧒', 0], ['c02', '할머니', '👵', 1], ['c03', '할아버지', '👴', 1], ['c04', '영화 동아리', '🧑', 0],
-    ['c05', '데이트 손님', '👩', 1], ['c06', '회사원', '🧔', 0], ['c07', '학생', '👦', 0], ['c08', '수다쟁이', '👧', 0],
-    ['c09', '평론가', '🧐', 2], ['c10', '감독 지망생', '🤓', 1], ['c11', '아기 엄마', '👩‍🍼', 1], ['c12', '배고픈 손님', '😋', 2],
-    ['c13', '졸린 손님', '😪', 0], ['c14', '들뜬 손님', '🤩', 1], ['c15', '공포 영화 팬', '😱', 1], ['c16', '눈물 많은 손님', '🥲', 1],
-    ['c17', '미소 손님', '😊', 0], ['c18', '선글라스 손님', '😎', 2], ['c19', '모자 손님', '🤠', 1], ['c20', '노래꾼', '🎤', 1],
-    ['c21', '로봇 옷 손님', '🤖', 2], ['c22', '외계인 옷 손님', '👽', 2], ['c23', '곰 탈 손님', '🐻', 1], ['c24', '고양이 탈 손님', '🐱', 1]
-  ].map(r => ({ id: r[0], name: r[1], face: r[2], tip: r[3] }));
+    ['pan', 'M1', '프라이팬 넓게 +12', '🍳', 'pan', 12],
+    ['pan', 'M2', '프라이팬 넓게 +12', '🍳', 'pan', 12],
+    ['pan', 'M3', '가장자리 받침', '🛡', 'rim', 14],
+    ['pan', 'M4', '프라이팬 넓게 +14', '🍳', 'pan', 14],
+    ['pan', 'M5', '프라이팬 넓게 +14', '🍳', 'pan', 14],
+    ['pan', 'M6', '프라이팬 넓게 +16', '🍳', 'pan', 16],
+    ['pan', 'M7', '프라이팬 하나 더', '🥘', 'pan2', 1],
+    ['pan', 'A2', '프라이팬 넓게 +6', '🍳', 'pan', 6],
+    ['pan', 'B3', '받침 넓히기 +6', '🛡', 'rimw', 6],
+    ['pan', 'A4', '프라이팬 넓게 +8', '🍳', 'pan', 8],
+    ['pan', 'B5', '받침 넓히기 +6', '🛡', 'rimw', 6],
+    ['pan', 'A6', '프라이팬 넓게 +10', '🍳', 'pan', 10],
+    ['pan', 'B6', '받침 넓히기 +8', '🛡', 'rimw', 8],
 
-  // 꾸미기 36 (객석 12 · 의자 12 · 스크린 12) — 겉모습만 바뀐다
-  const DECO = [];
-  const DECO_SRC = {
-    hall: ['짙은 남색', '자줏빛 벽', '숲 속 극장', '별빛 천장', '붉은 벨벳', '바다 밑', '눈 오는 밤', '사막 극장', '단풍 극장', '네온 거리', '구름 위', '우주 정거장'],
-    seat: ['빨간 의자', '파란 의자', '초록 의자', '노란 의자', '보라 의자', '분홍 의자', '나무 의자', '구름 쿠션', '왕좌', '빈백', '흔들의자', '금빛 의자'],
-    screen: ['흰 스크린', '노을빛', '푸른 빛', '초록 빛', '분홍 빛', '황금 빛', '무지개', '별 무늬', '오로라', '바다 물결', '불꽃', '은하수']
-  };
-  // 색은 style.css :root 의 --deco-종류-n 변수 이름 (ui.js 가 그 값을 읽는다)
-  ['hall', 'seat', 'screen'].forEach(kind => {
-    DECO_SRC[kind].forEach((name, i) => {
-      DECO.push({ id: kind + (i + 1), kind, name, color: 'deco-' + kind + '-' + (i + 1), cost: i === 0 ? 0 : 20 + i * 15 });
-    });
+    ['cust', 'M1', '손님 +2명', '🙋', 'cust', 2],
+    ['cust', 'M2', '팝콘 값 +20%', '💲', 'price', 20],
+    ['cust', 'M3', '팁 확률 15%', '💝', 'tip', 15],
+    ['cust', 'M4', '손님 +3명', '🙋', 'cust', 3],
+    ['cust', 'M5', 'VIP 손님', '🎩', 'vip', 1],
+    ['cust', 'M6', '팝콘 값 +30%', '💲', 'price', 30],
+    ['cust', 'M7', 'VIP 손님 +1', '🎩', 'vip', 1],
+    ['cust', 'A2', '손님 +2명', '🙋', 'cust', 2],
+    ['cust', 'B3', '팝콘 값 +15%', '💲', 'price', 15],
+    ['cust', 'A4', '팁 확률 15%', '💝', 'tip', 15],
+    ['cust', 'B5', '손님 +3명', '🙋', 'cust', 3],
+    ['cust', 'A6', '팝콘 값 +25%', '💲', 'price', 25],
+    ['cust', 'B6', '팁 확률 20%', '💝', 'tip', 20],
+
+    ['shop', 'M1', '판 끝 보너스 +3', '🎁', 'bonus', 3],
+    ['shop', 'M2', '매진 보너스 +50%', '🏆', 'sold', 50],
+    ['shop', 'M3', '판 끝 보너스 +5', '🎁', 'bonus', 5],
+    ['shop', 'M4', '다시 쏟기', '🔁', 'repour', 50],
+    ['shop', 'M5', '매진 보너스 +100%', '🏆', 'sold', 100],
+    ['shop', 'M6', '판 끝 보너스 +10', '🎁', 'bonus', 10],
+    ['shop', 'M7', '다시 쏟기 크게', '🔁', 'repour', 25],
+    ['shop', 'A2', '판 끝 보너스 +2', '🎁', 'bonus', 2],
+    ['shop', 'B3', '매진 보너스 +50%', '🏆', 'sold', 50],
+    ['shop', 'A4', '판 끝 보너스 +4', '🎁', 'bonus', 4],
+    ['shop', 'B5', '판 끝 보너스 +6', '🎁', 'bonus', 6],
+    ['shop', 'A6', '매진 보너스 +100%', '🏆', 'sold', 100],
+    ['shop', 'B6', '판 끝 보너스 +8', '🎁', 'bonus', 8]
+  ];
+
+  // 칸 값: 깊이가 깊을수록(단계가 오를수록) 비싸다. 첫 판 돈(보통 3~10)으로 깊이 1 칸을 1~2개 산다.
+  const COST = [0, 3, 6, 10, 16, 26, 42, 65];
+  // 열쇠 네 개(네 귀퉁이): 열 때마다 값이 오른다
+  const KEY_COST = [150, 220, 300, 400];
+  const SIDE_OFF = 0.72;
+
+  function rad(a) { return a * Math.PI / 180; }
+  const SKILLS = [{ id: 'start', br: 'start', slot: 'S', name: '매점 문 열기', icon: '🍿', eff: 'none', val: 0, depth: 0, x: 0, y: 0, links: [] }];
+  const byId = { start: SKILLS[0] };
+  SKILL_TABLE.forEach(r => {
+    const b = BRANCHES.find(x => x.key === r[0]);
+    const slot = r[1], depth = Number(slot.slice(1)), side = slot[0] === 'M' ? 0 : slot[0] === 'A' ? 1 : -1;
+    const a = rad(b.angle), pa = rad(b.angle + 90);
+    const rr = side ? depth - 0.15 : depth;
+    const n = { id: r[0] + '_' + slot, br: r[0], slot, name: r[2], icon: r[3], eff: r[4], val: r[5], depth,
+      x: Math.cos(a) * rr + Math.cos(pa) * SIDE_OFF * side, y: Math.sin(a) * rr + Math.sin(pa) * SIDE_OFF * side, links: [] };
+    SKILLS.push(n); byId[n.id] = n;
   });
-  const DECO_KINDS = { hall: '객석', seat: '의자', screen: '스크린' };
+  // 열쇠 칸: 대각선 네 귀퉁이 (각 열쇠는 이웃한 두 가지의 깊이 6 옆칸과 이어진다)
+  const KEYS = [
+    { id: 'key_1', angle: -45, a: 'corn_A6', b: 'peg_B6' },
+    { id: 'key_2', angle: 45, a: 'peg_A6', b: 'pan_B6' },
+    { id: 'key_3', angle: 135, a: 'cust_A6', b: 'shop_B6' },
+    { id: 'key_4', angle: 225, a: 'shop_A6', b: 'corn_B6' }
+  ];
+  KEYS.forEach(k => {
+    const n = { id: k.id, br: 'key', slot: 'K', name: '열쇠 — 새 상영관', icon: '🔑', eff: 'key', val: 1, depth: 8,
+      x: Math.cos(rad(k.angle)) * 7.1, y: Math.sin(rad(k.angle)) * 7.1, links: [] };
+    SKILLS.push(n); byId[n.id] = n;
+  });
+  function link(a, b, kind) {
+    const A = byId[a], B = byId[b];
+    if (!A || !B || A.links.indexOf(b) >= 0) return;
+    A.links.push(b); B.links.push(a);
+    LINKS.push({ a, b, kind: kind || 'main' });
+  }
+  const LINKS = [];
+  BRANCHES.forEach((b, bi) => {
+    const p = b.key + '_';
+    link('start', p + 'M1');
+    for (let d = 1; d < 7; d++) link(p + 'M' + d, p + 'M' + (d + 1));
+    link(p + 'A2', p + 'M2'); link(p + 'B3', p + 'M3'); link(p + 'A4', p + 'M4'); link(p + 'B5', p + 'M5');
+    link(p + 'A6', p + 'M6'); link(p + 'B6', p + 'M6');
+    link(p + 'A4', p + 'A2', 'side'); link(p + 'A6', p + 'A4', 'side'); link(p + 'B5', p + 'B3', 'side'); link(p + 'B6', p + 'B5', 'side');
+    // 그물: 이웃 가지의 옆칸끼리 잇는다
+    const nb = BRANCHES[(bi + 1) % BRANCHES.length].key + '_';
+    link(p + 'A4', nb + 'B5', 'web');
+  });
+  KEYS.forEach(k => { link(k.id, k.a, 'key'); link(k.id, k.b, 'key'); });
+  link('pan_A6', 'cust_B6', 'web');
 
-  // 상영작 20 — 상영관마다 걸리는 영화 제목(지은 이름)
+  function costOf(n, keysOwned) {
+    if (n.eff === 'key') return KEY_COST[Math.min(KEY_COST.length - 1, keysOwned || 0)];
+    return COST[n.depth] || 0;
+  }
+  function descOf(n) {
+    const v = n.val;
+    switch (n.eff) {
+      case 'corn': return '쏟는 옥수수가 ' + v + '알 늘어요.';
+      case 'gold': return '쏟는 옥수수가 ' + v + '% 확률로 황금 옥수수(캐러멜 팝콘, 팝콘 5개 몫)가 돼요.';
+      case 'x2': return '두 배 못(×2)이 ' + v + '개 더 박혀요. 닿은 옥수수가 2알로 갈라져요.';
+      case 'x3': return '세 배 못(×3)이 하나 더 박혀요. 닿은 옥수수가 3알로 갈라져요.';
+      case 'gpeg': return '황금 못(★)이 하나 더 박혀요. 닿은 옥수수가 황금 옥수수가 돼요.';
+      case 'rows': return '못 판에 줄이 하나 더 생겨 더 많이 튕겨요.';
+      case 'pan': return '프라이팬이 ' + v + 'px 넓어져요.';
+      case 'rim': return '프라이팬 양쪽 가장자리에 받침이 생겨, 살짝 빗나간 알을 한 번 튕겨 넣어요.';
+      case 'rimw': return '가장자리 받침이 ' + v + 'px 넓어져요.';
+      case 'pan2': return '프라이팬이 둘이 돼요. 두 팬이 판을 더 넓게 받아요.';
+      case 'cust': return '줄 서는 손님이 ' + v + '명 늘어요.';
+      case 'price': return '손님이 내는 팝콘 값이 ' + v + '% 올라요.';
+      case 'tip': return '손님이 ' + v + '% 확률로 팁을 더 줘요.';
+      case 'vip': return '많이 사고(10~14개) 두 배로 내는 VIP 손님이 매 판 줄 끝에 와요.';
+      case 'bonus': return '판이 끝날 때마다 동전 ' + v + '개를 더 받아요.';
+      case 'sold': return '매진 보너스가 ' + v + '% 커져요.';
+      case 'repour': return v === 50 ? '한 판에 한 번, 쏟은 옥수수의 절반을 한 번 더 쏟아요.' : '다시 쏟을 때 절반 대신 3/4 을 쏟아요.';
+      case 'key': return '열면 새 상영관이 열려요. 배경·못 판 모양·손님이 바뀌고 손님이 더 많이 내요.';
+      default: return '매점의 시작 칸이에요.';
+    }
+  }
+
+  // ---------- 상영관 5 ----------
+  // 못 판 모양: even 짝수 줄 못 수, odd 홀수 줄 못 수, wave 줄마다 좌우 물결(px), shift 줄마다 엇갈림(px)
+  const THEATERS = [
+    { n: 1, name: '1관 동네 매점', shape: { even: 8, odd: 7, wave: 0, shift: 0 }, pay: 1, extra: 0 },
+    { n: 2, name: '2관 물결 상영관', shape: { even: 8, odd: 7, wave: 9, shift: 0 }, pay: 1.5, extra: 2 },
+    { n: 3, name: '3관 넓은 틈 상영관', shape: { even: 7, odd: 6, wave: 0, shift: 0 }, pay: 2, extra: 4 },
+    { n: 4, name: '4관 촘촘 상영관', shape: { even: 9, odd: 8, wave: 0, shift: 0 }, pay: 2.5, extra: 6 },
+    { n: 5, name: '5관 별빛 상영관', shape: { even: 8, odd: 7, wave: 5, shift: 7 }, pay: 3, extra: 8 }
+  ];
+
+  // ---------- 손님 24 (상영관마다 다른 손님 다섯 무리) + VIP ----------
+  const CUSTOMERS = [
+    ['꼬마 관객', '🧒', 1], ['할머니', '👵', 1], ['할아버지', '👴', 1], ['학생', '👦', 1], ['회사원', '🧔', 1],
+    ['데이트 손님', '👩', 2], ['영화 동아리', '🧑', 2], ['수다쟁이', '👧', 2], ['평론가', '🧐', 2], ['감독 지망생', '🤓', 2],
+    ['배고픈 손님', '😋', 3], ['들뜬 손님', '🤩', 3], ['공포 영화 팬', '😱', 3], ['졸린 손님', '😪', 3], ['선글라스 손님', '😎', 3],
+    ['모자 손님', '🤠', 4], ['노래꾼', '🎤', 4], ['로봇 옷 손님', '🤖', 4], ['외계인 옷 손님', '👽', 4], ['아기 엄마', '👩‍🍼', 4],
+    ['곰 탈 손님', '🐻', 5], ['고양이 탈 손님', '🐱', 5], ['여우 탈 손님', '🦊', 5], ['펭귄 탈 손님', '🐧', 5]
+  ].map((r, i) => ({ id: 'c' + (i + 1), name: r[0], face: r[1], hall: r[2] }));
+  const VIP = { id: 'vip', name: 'VIP 손님', face: '🤵', hall: 0 };
+
+  // ---------- 상영작 20 (화면 위 간판, 판마다 바뀐다) ----------
   const FILMS = [
     '달빛 우체부', '구름 위 고래', '여름밤의 로봇', '팝콘 행성', '마지막 기차', '고양이 탐정', '용과 우산', '별을 세는 아이',
     '바닷속 도서관', '시간 여행 빵집', '눈사람의 여름', '숲의 왕관', '안개 마을', '종이비행기', '꿈꾸는 등대', '거꾸로 시계',
     '사막의 정원', '하늘 자전거', '작은 영웅들', '오로라 너머'
   ];
 
-  // 오늘의 상영 규칙 12 — 날짜마다 하나
-  const DAILY_MODS = [
-    { id: 'd01', name: '두 배 잔치', desc: '두 배 못 +3', x2: 3 },
-    { id: 'd02', name: '네 배의 밤', desc: '네 배 못 +1', x4: 1 },
-    { id: 'd03', name: '황금 시사회', desc: '황금 못 +2', gold: 2 },
-    { id: 'd04', name: '쥐들의 소풍', desc: '쥐구멍 +2', rats: 2 },
-    { id: 'd05', name: '넉넉한 통', desc: '옥수수 +30알', corn: 30 },
-    { id: 'd06', name: '빠듯한 통', desc: '옥수수 -20알, 두 배 못 +2', corn: -20, x2: 2 },
-    { id: 'd07', name: '큰 냄비', desc: '냄비 최대 +50알', pot: 50 },
-    { id: 'd08', name: '불 셋', desc: '불을 3개까지', fire: 1 },
-    { id: 'd09', name: '짧은 예고편', desc: '시계 75초, 두 배 못 +2', time: -15, x2: 2 },
-    { id: 'd10', name: '긴 광고 시간', desc: '시계 105초', time: 15 },
-    { id: 'd11', name: '꽉 찬 객석', desc: '줄 +1', rows: 1 },
-    { id: 'd12', name: '조용한 밤', desc: '쥐구멍 없음', rats: -99 }
-  ];
+  // ---------- 손님 말 40 (받았을 때 20 · 품절로 돌아갈 때 20) ----------
+  const HAPPY = ['고소해요!', '바삭바삭!', '최고예요!', '딱 좋아요', '냄새 좋다', '영화 볼 맛 나요', '따끈따끈!', '또 올게요', '푸짐해요', '감사해요!',
+    '이거지!', '반짝반짝', '팡팡 맛!', '행복해요', '버터 향!', '한 통 더?', '친구도 데려올게요', '완벽해요', '맛있겠다', '야호!'];
+  const SAD = ['아쉽다…', '다음엔 꼭!', '품절이라니', '내일 올게요', '힝…', '조금만 빨리 올걸', '줄이 길었네', '또 올게요…', '배고파요', '다음 판에!',
+    '괜찮아요', '아까비', '헉, 다 팔렸네', '빈손이네', '영화만 볼게요', '아이참', '기다릴게요', '팝콘 없이…', '꼭 남겨 줘요', '흑흑'];
 
-  // 업적 24 — key 는 기록 이름, best 면 한 판 최고, 아니면 누적
+  // ---------- 업적 24 — key 는 기록 이름, best 면 한 번 최고, 아니면 누적 ----------
   const ACHS = [
-    ['a01', '첫 팝콘', '팝콘을 처음 튀긴다', 'popped', 1],
-    ['a02', '첫 손님', '손님 통을 처음 다 채운다', 'filled', 1],
+    ['a01', '첫 팝콘', '팝콘을 처음 만든다', 'popcorn', 1],
+    ['a02', '첫 손님', '손님에게 처음 팝콘을 준다', 'served', 1],
     ['a03', '톡!', '옥수수를 처음 갈라 본다', 'splits', 1],
-    ['a04', '대폭발!', '한 번에 50알 이상 터뜨린다', 'mega', 1],
-    ['a05', '매진', '모든 손님 통을 채운다', 'soldout', 1],
-    ['a06', '상영관 3', '상영관 3을 연다', 'hall', 3, true],
-    ['a07', '상영관 5', '상영관 5를 연다', 'hall', 5, true],
-    ['a08', '상영관 10', '상영관 10을 연다', 'hall', 10, true],
-    ['a09', '상영관 20', '상영관 20을 연다', 'hall', 20, true],
-    ['a10', '상영관 30', '상영관 30을 연다', 'hall', 30, true],
-    ['a11', '캐러멜 장인', '캐러멜 팝콘 50개', 'caramel', 50],
-    ['a12', '팝콘 산', '팝콘 1000개', 'popped', 1000],
-    ['a13', '단골 극장', '손님 100명 채우기', 'filled', 100],
-    ['a14', '네 갈래', '네 배 못으로 갈라 본다', 'quad', 1],
-    ['a15', '한 방', '한 번에 100알 이상 터뜨린다', 'biggest', 100, true],
-    ['a16', '줄줄이', '1초 안에 통 4개 연달아 채우기', 'chain', 4, true],
-    ['a17', '부자 극장', '동전 500개 모으기', 'coins', 500],
-    ['a18', '큰손', '동전 2000개 모으기', 'coins', 2000],
-    ['a19', '쥐 친구', '쥐구멍에 알 30개', 'ratted', 30],
-    ['a20', '탄내', '탄 옥수수 20개', 'burnt', 20],
-    ['a21', '꾸미기', '꾸미기 물건 3개 사기', 'decos', 3],
-    ['a22', '못 장인', '특수 못 10개 끼우기', 'placed', 10],
-    ['a23', '오늘의 상영', '오늘의 상영 처음 하기', 'daily', 1],
-    ['a24', '열 번 상영', '열 번 상영하기', 'shows', 10]
+    ['a04', '매진!', '줄 선 손님 모두에게 준다', 'sellouts', 1],
+    ['a05', '첫 스킬', '스킬 칸을 처음 산다', 'nodes', 1],
+    ['a06', '스킬 10칸', '스킬 칸 10개를 산다', 'nodes', 10],
+    ['a07', '스킬 30칸', '스킬 칸 30개를 산다', 'nodes', 30],
+    ['a08', '스킬 60칸', '스킬 칸 60개를 산다', 'nodes', 60],
+    ['a09', '새 상영관', '열쇠로 새 상영관을 연다', 'keys', 1],
+    ['a10', '상영관 다섯', '상영관 다섯을 모두 연다', 'keys', 4],
+    ['a11', '캐러멜 장인', '캐러멜 팝콘 30개', 'caramel', 30],
+    ['a12', '팝콘 산', '팝콘 1000개', 'popcorn', 1000],
+    ['a13', '단골 매점', '손님 100명에게 준다', 'served', 100],
+    ['a14', '세 갈래', '세 배 못으로 갈라 본다', 'triple', 1],
+    ['a15', '한 판 50', '한 판에 팝콘 50개', 'round', 50, true],
+    ['a16', '한 판 150', '한 판에 팝콘 150개', 'round', 150, true],
+    ['a17', '부자 매점', '동전 500개 모으기', 'coins', 500],
+    ['a18', '큰손', '동전 3000개 모으기', 'coins', 3000],
+    ['a19', '목표 5연속', '목표를 5판 이어서 채운다', 'streak', 5, true],
+    ['a20', '목표 15연속', '목표를 15판 이어서 채운다', 'streak', 15, true],
+    ['a21', '팁 부자', '팁 30번 받기', 'tips', 30],
+    ['a22', 'VIP 대접', 'VIP 손님 10명에게 준다', 'vips', 10],
+    ['a23', '다시 쏟기', '다시 쏟기를 처음 한다', 'repours', 1],
+    ['a24', '스무 판', '스무 판 하기', 'rounds', 20]
   ].map(r => ({ id: r[0], name: r[1], desc: r[2], key: r[3], need: r[4], best: !!r[5] }));
 
   const SETTINGS = [
@@ -174,19 +236,21 @@
     { key: 'shake', name: '화면 흔들림', def: true },
     { key: 'reduce', name: '움직임 줄이기', def: false },
     { key: 'big', name: '큰 글자', def: false },
-    { key: 'guide', name: '냄비 숫자 크게', def: false }
+    { key: 'guide', name: '손님 숫자 크게', def: false }
   ];
 
   const HELP = [
-    ['목표', '상영이 시작되기 전(90초)에 객석 손님들의 팝콘 통을 채운다. 목표만큼 채우면 다음 상영관이 열린다.'],
-    ['옥수수 떨구기', '화면을 누른 채 좌우로 끌면 깔때기가 따라오고, 누르는 동안 1초에 4알씩 떨어진다. 옥수수 통이 비면 끝.'],
-    ['특수 못', '두 배 못(×2)·네 배 못(×4)은 알을 갈라 늘린다. 황금 못은 캐러멜 팝콘(5개 몫)을 만든다. 가장자리 쥐구멍에 빠지면 사라진다.'],
-    ['냄비와 불', '불 꺼진 냄비에는 알이 쌓인다(최대 200). 버너 단추로 불을 켜면 2초 뒤 팡팡 터진다. 50알 이상이면 대폭발! 불은 한 번에 2개까지.'],
-    ['조심', '불을 켠 채 냄비가 6초 비면 냄비가 탄다. 그때 들어간 알은 탄 옥수수가 되어 팝콘이 되지 않는다. 불을 끄면 멈춘다.'],
-    ['손님', '튀어 오른 팝콘이 양옆 객석으로 떨어져 통에 들어간다. 위쪽 통부터 찬다. 통이 차면 손님이 환호하고 영화 표 동전을 준다.'],
-    ['영화관 키우기', '로비에서 동전으로 옥수수 통·냄비·불·특수 못·쥐구멍 막기·꾸미기를 산다. 동전·옥수수·못은 현금으로 팔지 않는다.'],
-    ['조작', '터치: 누르고 끌기, 버너 단추. 키보드: ←→ 깔때기, 스페이스 누르는 동안 떨구기, 1~5 버너, P·Esc 멈춤.']
+    ['한 판', '‘쏟아붓기!’를 누르면 위 옥수수 자루에서 옥수수가 한꺼번에 쏟아진다. 누를 것은 이것 하나뿐이다.'],
+    ['못 판', '옥수수는 못에 튕기며 떨어진다. 두 배 못(×2)·세 배 못(×3)에 닿으면 갈라져 불어나고, 황금 못(★)은 황금 옥수수를 만든다.'],
+    ['프라이팬', '맨 아래 프라이팬에 떨어진 옥수수만 잠깐 뒤 팡! 팝콘이 되어 아래 팝콘 통에 모인다. 밖으로 떨어진 옥수수는 굴러 사라진다.'],
+    ['손님', '판이 끝나면 왼쪽 줄 맨 앞 손님부터 머리 위 숫자만큼 팝콘을 받아 가고 동전을 낸다. 모자라면 팝콘 품절! 남은 손님은 돌아간다(벌칙 없음).'],
+    ['목표', '판마다 ‘목표 팝콘’이 있다. 지금 스킬로 보통 나오는 만큼보다 조금 낮게 정해진다. 이어서 채우면 연속 기록이 쌓인다.'],
+    ['스킬 트리', '번 동전으로 스킬 칸을 산다. 이미 연 칸과 이어진 칸만 살 수 있다. 끌어서 움직이고, 두 손가락(또는 휠·＋−)으로 확대·축소한다.'],
+    ['열쇠와 상영관', '네 귀퉁이 끝의 열쇠를 열면 새 상영관이 열린다. 못 판 모양과 손님이 바뀌고 손님이 더 많이 낸다.'],
+    ['오늘의 도전', '시작 화면 ‘오늘 도전’. 날짜로 정해진 스킬·상영관·손님 줄·떨어지는 자리가 같은 판을 하루 한 번 쏟는다. 번 동전은 내 매점에 들어오고, 연속 기록과는 따로 센다.'],
+    ['조작', '터치: 단추 누르기, 스킬 트리 끌기·두 손가락 확대. 키보드: 스페이스·엔터 쏟아붓기/다음 판, T 스킬 트리, 방향키·＋− 트리 움직이기, P·Esc 멈춤.']
   ];
 
-  window.DATA = { TUBS, HALLS, LAYOUTS, PEG_KINDS, UPGRADES, CUSTOMERS, DECO, DECO_KINDS, FILMS, DAILY_MODS, ACHS, SETTINGS, HELP };
+  window.DATA = { BRANCHES, SKILL_TABLE, SKILLS, SKILL: byId, LINKS, KEYS, COST, KEY_COST, costOf, descOf,
+    THEATERS, CUSTOMERS, VIP, FILMS, HAPPY, SAD, ACHS, SETTINGS, HELP };
 })();

@@ -175,6 +175,10 @@
       <div><label class="f" for="note-date">가져갈 날</label><input id="note-date" type="date"></div>
       <div><label class="f" for="note-title">무엇 때문에</label><input id="note-title" type="text" maxlength="40"></div>
     </div>
+    <div class="row paste-row">
+      <textarea id="note-paste" rows="2" maxlength="1000" placeholder="알림장 글 붙여 넣기" aria-label="알림장 글 붙여 넣기"></textarea>
+      <button class="btn" type="button" data-act="note-parse">뽑기</button>
+    </div>
     <label class="f" for="note-add">준비물</label>
     <div class="row">
       <input id="note-add" type="text" maxlength="40" autocomplete="off">

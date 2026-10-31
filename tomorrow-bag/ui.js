@@ -75,7 +75,19 @@ var UI = (function () {
   // ---- 물건 그림 (data.js ICONS, 사람 그림이 오기 전까지 선 SVG) ----
   function pic(name) {
     var ic = Logic.iconFor(name);
+    return svgPic(ic);
+  }
+  function svgPic(ic) {
     return '<svg class="pic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ic.d + '</svg>';
+  }
+  // 과목·학원 꾸러미 그림: p.pic → (예전에 저장한 기본 꾸러미면 data.js 의 pic) → 이름으로 찾은 그림
+  function packPic(p) {
+    p = p || {};
+    var id = p.pic;
+    if (!id && p.id) DATA.SUBJECTS.concat(DATA.ACADEMIES).forEach(function (d) { if (d.id === p.id) id = d.pic; });
+    if (!id) id = Logic.iconFor(p.name).id;
+    for (var i = 0; i < DATA.ICONS.length; i++) if (DATA.ICONS[i].id === id) return svgPic(DATA.ICONS[i]);
+    return svgPic(Logic.iconFor(p.name));
   }
 
   // ---- 쪽 넘기기: 옆으로 밀거나 아래 점을 누른다. id 마다 하나 ----
@@ -234,6 +246,19 @@ var UI = (function () {
     return h + '</div>';
   }
 
+  // 처음 가방 카드: 기본 시간표로 아이를 넣자마자 그 시간표가 만든 가방을 알려 준다 (app.js submitKid 가 V.firstBag 을 둔다)
+  function firstBagCard(bag) {
+    var cnt = groupCounts(bag, []);
+    var parts = [];
+    PAGE_G.forEach(function (g) { if (cnt[g]) parts.push(PAGE_NAME[g] + ' ' + cnt[g].t); });
+    return '<div class="card first-bag no-print" id="first-bag">' +
+      '<h3>' + esc(Logic.dayLabel(bag.date)) + ' 가방이 만들어졌어요</h3>' +
+      '<p class="fb-count">' + esc(parts.join(' · ') || '챙길 물건 0') + '</p>' +
+      '<p class="tiny">시간표의 수업마다 챙길 물건을 모았어요. 다른 날도 시간표만 맞으면 저절로 바뀌어요.</p>' +
+      '<div class="row wrap"><button class="btn small" type="button" data-act="first-bag-week">시간표 고치기</button>' +
+      '<button class="btn small main" type="button" data-act="first-bag-ok">알겠어요</button></div></div>';
+  }
+
   function renderBag(S, V, kid, k, todayKey) {
     var root = $('bag-root');
     if (!kid) {
@@ -246,8 +271,8 @@ var UI = (function () {
     var pr = Logic.progress(S, kid, bag);
     var h = '';
 
-    // 처음 설정 카드가 있으면 날짜 카드 자리를 대신한다
-    var setup = setupCard(S, kid, k);
+    // 아이를 막 넣었으면 처음 가방 카드, 아니면 처음 설정 카드가 날짜 카드 자리를 대신한다
+    var setup = (V.firstBag && !S.settings.firstBagSeen && bag.school) ? firstBagCard(bag) : setupCard(S, kid, k);
     h += setup || ('<div class="card date-card" data-swipe="day">' +
       '<button class="icon-btn" type="button" data-act="day-prev" aria-label="앞 학교 가는 날">‹</button>' +
       '<div class="mid"><span class="rel">' + Logic.relLabel(k, todayKey) + ' 가방</span><div class="big">' + Logic.label(k) + '</div></div>' +
@@ -283,7 +308,7 @@ var UI = (function () {
     h += '<div class="strip" aria-label="방과후와 데리러 갈 사람"><span class="lab">방과후</span>';
     if (!bag.pickups.length) h += '<span class="tiny">없어요</span>';
     bag.pickups.forEach(function (p) {
-      h += '<span class="pk">' + esc(p.icon) + ' ' + esc(p.time || '') + ' ' + esc(p.name) + (p.who ? ' → <b>' + esc(p.who) + '</b>' : '') + '</span>';
+      h += '<span class="pk"><span class="em" aria-hidden="true">' + packPic(p) + '</span>' + esc(p.time || '') + ' ' + esc(p.name) + (p.who ? ' → <b>' + esc(p.who) + '</b>' : '') + '</span>';
     });
     h += '</div>';
 
@@ -543,7 +568,7 @@ var UI = (function () {
         var pk = kid.week[e].p[i] ? Logic.findPack(S.packs, kid.week[e].p[i]) : null;
         h += '<button class="cell' + (pk ? ' full' : '') + '" type="button" data-act="cell" data-d="' + e + '" data-i="' + i + '" id="cell-' + e + '-' + i + '" aria-label="' +
           DATA.DOW[e] + '요일 ' + (i + 1) + '교시 ' + (pk ? esc(pk.name) : '빈 칸') + '">' +
-          (pk ? '<span class="ic" aria-hidden="true">' + esc(pk.icon) + '</span>' + esc(pk.name) : '+') + '</button>';
+          (pk ? '<span class="ic" aria-hidden="true">' + packPic(pk) + '</span>' + esc(pk.name) : '+') + '</button>';
       }
     }
     // 방과후 줄: 요일마다 학원 이름 · 시작 시각 · 데리러 갈 사람 (여러 개면 칸 안에서 줄을 나눈다)
@@ -572,7 +597,7 @@ var UI = (function () {
     var h = '';
     af.slice(0, 6).forEach(function (a) {
       var p = Logic.findPack(S.packs, a.packId);
-      h += '<div class="after-row"><span aria-hidden="true">' + esc(p ? p.icon : '❔') + '</span><span style="flex:1;min-width:0"><b>' + esc(a.time || '') + '</b> ' + esc(p ? p.name : '지운 꾸러미') +
+      h += '<div class="after-row"><span class="em" aria-hidden="true">' + (p ? packPic(p) : '❔') + '</span><span style="flex:1;min-width:0"><b>' + esc(a.time || '') + '</b> ' + esc(p ? p.name : '지운 꾸러미') +
         (a.who ? ' → <b>' + esc(a.who) + '</b>' : '') + '</span>' +
         '<button class="btn small" type="button" data-act="after-edit" data-d="' + d + '" data-id="' + a.id + '">고치기</button></div>';
     });
@@ -590,7 +615,7 @@ var UI = (function () {
     var pages = [];
     for (var s = 0; s < list.length; s += 16) {
       pages.push({ html: '<div class="grid r4">' + list.slice(s, s + 16).map(function (p) {
-        return '<button class="pick' + (p.id === cur ? ' on' : '') + '" type="button" data-act="cell-set" data-id="' + p.id + '"><span class="em" aria-hidden="true">' + esc(p.icon) + '</span>' + esc(p.name) + '</button>';
+        return '<button class="pick' + (p.id === cur ? ' on' : '') + '" type="button" data-act="cell-set" data-id="' + p.id + '"><span class="em" aria-hidden="true">' + packPic(p) + '</span>' + esc(p.name) + '</button>';
       }).join('') + '</div>' });
     }
     $('cell-picks').innerHTML = pages.length ? pagerHTML('cellp', pages, 0) :
@@ -615,7 +640,7 @@ var UI = (function () {
       var pages = [];
       for (var s = 0; s < list.length; s += 9) {
         pages.push({ html: '<div class="grid c3">' + list.slice(s, s + 9).map(function (p) {
-          return '<button class="pcard' + (p.kind === 'acad' ? ' acad' : '') + '" type="button" data-act="pack-edit" data-id="' + p.id + '"><span class="em" aria-hidden="true">' + esc(p.icon) + '</span>' +
+          return '<button class="pcard' + (p.kind === 'acad' ? ' acad' : '') + '" type="button" data-act="pack-edit" data-id="' + p.id + '"><span class="em" aria-hidden="true">' + packPic(p) + '</span>' +
             '<span class="nm">' + esc(p.name) + '</span><span class="tiny">' + (p.kind === 'acad' ? '방과후' : '수업') + ' · ' + p.items.length + '개</span></button>';
         }).join('') + '</div>' });
       }
@@ -940,7 +965,7 @@ var UI = (function () {
   }
 
   return {
-    $: $, esc: esc, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
+    $: $, esc: esc, packPic: packPic, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, cellByName: cellByName,
     fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, renderCal: renderCal, renderUpcoming: renderUpcoming,

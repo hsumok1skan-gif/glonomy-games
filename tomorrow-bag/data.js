@@ -1,41 +1,41 @@
 /* 내일 가방 — 기본 내용 (과목·방과후 꾸러미, 요일 규칙, 알림장 준비물 사전, 행사 꾸러미, 도움말, 물건 그림, 칭찬 스티커) */
 var DATA = (function () {
-  // 과목 꾸러미 15 — 그 과목이 시간표에 있는 날 가방에 들어갈 것
+  // 과목 꾸러미 15 — 그 과목이 시간표에 있는 날 가방에 들어갈 것 (pic: 카드·칸에 그리는 ICONS 의 선 그림 id)
   var SUBJECTS = [
-    { id: 's-kor', name: '국어', icon: '📖', items: ['국어 교과서', '국어 활동 책', '받아쓰기 공책'] },
-    { id: 's-math', name: '수학', icon: '➗', items: ['수학 교과서', '수학 익힘 책', '30cm 자'] },
-    { id: 's-int', name: '통합교과', icon: '🌱', items: ['통합 교과서', '색연필', '풀'] },
-    { id: 's-safe', name: '안전한 생활', icon: '🦺', items: ['안전한 생활 책'] },
-    { id: 's-soc', name: '사회', icon: '🗺️', items: ['사회 교과서', '사회과 부도'] },
-    { id: 's-sci', name: '과학', icon: '🔬', items: ['과학 교과서', '실험 관찰 책'] },
-    { id: 's-eng', name: '영어', icon: '🔤', items: ['영어 교과서', '영어 공책'] },
-    { id: 's-mor', name: '도덕', icon: '🤝', items: ['도덕 교과서'] },
-    { id: 's-prac', name: '실과', icon: '🧵', items: ['실과 교과서', '앞치마'] },
-    { id: 's-pe', name: '체육', icon: '🏃', items: ['체육복', '운동화', '물병', '머리끈'] },
-    { id: 's-mus', name: '음악', icon: '🎵', items: ['음악 교과서', '리코더'] },
-    { id: 's-art', name: '미술', icon: '🎨', items: ['미술 교과서', '크레파스', '물감과 붓', '팔토시'] },
-    { id: 's-cre', name: '창의적 체험활동', icon: '🧩', items: ['활동지 파일'] },
-    { id: 's-read', name: '아침 독서', icon: '📚', items: ['읽을 책 한 권', '독서록'] },
-    { id: 's-dict', name: '받아쓰기 시험', icon: '✏️', items: ['받아쓰기 공책', '연필 두 자루'] }
+    { id: 's-kor', name: '국어', icon: '📖', pic: 'kor', items: ['국어 교과서', '국어 활동 책', '받아쓰기 공책'] },
+    { id: 's-math', name: '수학', icon: '➗', pic: 'math', items: ['수학 교과서', '수학 익힘 책', '30cm 자'] },
+    { id: 's-int', name: '통합교과', icon: '🌱', pic: 'sprout', items: ['통합 교과서', '색연필', '풀'] },
+    { id: 's-safe', name: '안전한 생활', icon: '🦺', pic: 'shield', items: ['안전한 생활 책'] },
+    { id: 's-soc', name: '사회', icon: '🗺️', pic: 'map', items: ['사회 교과서', '사회과 부도'] },
+    { id: 's-sci', name: '과학', icon: '🔬', pic: 'flask', items: ['과학 교과서', '실험 관찰 책'] },
+    { id: 's-eng', name: '영어', icon: '🔤', pic: 'abc', items: ['영어 교과서', '영어 공책'] },
+    { id: 's-mor', name: '도덕', icon: '🤝', pic: 'heart', items: ['도덕 교과서'] },
+    { id: 's-prac', name: '실과', icon: '🧵', pic: 'apron', items: ['실과 교과서', '앞치마'] },
+    { id: 's-pe', name: '체육', icon: '🏃', pic: 'gym', items: ['체육복', '운동화', '물병', '머리끈'] },
+    { id: 's-mus', name: '음악', icon: '🎵', pic: 'sheetmusic', items: ['음악 교과서', '리코더'] },
+    { id: 's-art', name: '미술', icon: '🎨', pic: 'paint', items: ['미술 교과서', '크레파스', '물감과 붓', '팔토시'] },
+    { id: 's-cre', name: '창의적 체험활동', icon: '🧩', pic: 'puzzle', items: ['활동지 파일'] },
+    { id: 's-read', name: '아침 독서', icon: '📚', pic: 'book', items: ['읽을 책 한 권', '독서록'] },
+    { id: 's-dict', name: '받아쓰기 시험', icon: '✏️', pic: 'pencil', items: ['받아쓰기 공책', '연필 두 자루'] }
   ];
 
   // 방과후·학원 꾸러미 15
   var ACADEMIES = [
-    { id: 'a-tkd', name: '태권도', icon: '🥋', items: ['도복', '띠', '물병'] },
-    { id: 'a-swim', name: '수영', icon: '🏊', items: ['수영복', '수모', '물안경', '수건', '세면도구 주머니'] },
-    { id: 'a-piano', name: '피아노', icon: '🎹', items: ['피아노 교재', '연습 기록장'] },
-    { id: 'a-art', name: '미술학원', icon: '🖌️', items: ['스케치북', '앞치마'] },
-    { id: 'a-eng', name: '영어학원', icon: '🗣️', items: ['영어학원 교재', '단어장', '영어 숙제'] },
-    { id: 'a-math', name: '수학학원', icon: '📐', items: ['수학 문제집', '수학 숙제', '계산 공책'] },
-    { id: 'a-soc', name: '축구', icon: '⚽', items: ['축구화', '정강이 보호대', '축구복', '물병'] },
-    { id: 'a-rope', name: '줄넘기', icon: '🪢', items: ['줄넘기', '운동화'] },
-    { id: 'a-ballet', name: '발레', icon: '🩰', items: ['발레복', '타이츠', '발레 슈즈', '머리망'] },
-    { id: 'a-code', name: '코딩 교실', icon: '💻', items: ['코딩 교재', '계정 적은 쪽지'] },
-    { id: 'a-baduk', name: '바둑', icon: '⚫', items: ['바둑 교재'] },
-    { id: 'a-sci', name: '방과후 과학', icon: '🧪', items: ['실험 공책', '방과후 출석 카드'] },
-    { id: 'a-care', name: '돌봄교실', icon: '🏫', items: ['돌봄 간식', '읽을 책 한 권'] },
-    { id: 'a-essay', name: '독서논술', icon: '📝', items: ['이번 주 읽은 책', '논술 공책'] },
-    { id: 'a-choir', name: '합창', icon: '🎤', items: ['악보 파일', '물병'] }
+    { id: 'a-tkd', name: '태권도', icon: '🥋', pic: 'dobok', items: ['도복', '띠', '물병'] },
+    { id: 'a-swim', name: '수영', icon: '🏊', pic: 'goggles', items: ['수영복', '수모', '물안경', '수건', '세면도구 주머니'] },
+    { id: 'a-piano', name: '피아노', icon: '🎹', pic: 'keys', items: ['피아노 교재', '연습 기록장'] },
+    { id: 'a-art', name: '미술학원', icon: '🖌️', pic: 'brush', items: ['스케치북', '앞치마'] },
+    { id: 'a-eng', name: '영어학원', icon: '🗣️', pic: 'abc', items: ['영어학원 교재', '단어장', '영어 숙제'] },
+    { id: 'a-math', name: '수학학원', icon: '📐', pic: 'math', items: ['수학 문제집', '수학 숙제', '계산 공책'] },
+    { id: 'a-soc', name: '축구', icon: '⚽', pic: 'ball', items: ['축구화', '정강이 보호대', '축구복', '물병'] },
+    { id: 'a-rope', name: '줄넘기', icon: '🪢', pic: 'jumprope', items: ['줄넘기', '운동화'] },
+    { id: 'a-ballet', name: '발레', icon: '🩰', pic: 'tights', items: ['발레복', '타이츠', '발레 슈즈', '머리망'] },
+    { id: 'a-code', name: '코딩 교실', icon: '💻', pic: 'laptop', items: ['코딩 교재', '계정 적은 쪽지'] },
+    { id: 'a-baduk', name: '바둑', icon: '⚫', pic: 'baduk', items: ['바둑 교재'] },
+    { id: 'a-sci', name: '방과후 과학', icon: '🧪', pic: 'flask', items: ['실험 공책', '방과후 출석 카드'] },
+    { id: 'a-care', name: '돌봄교실', icon: '🏫', pic: 'school', items: ['돌봄 간식', '읽을 책 한 권'] },
+    { id: 'a-essay', name: '독서논술', icon: '📝', pic: 'notebook', items: ['이번 주 읽은 책', '논술 공책'] },
+    { id: 'a-choir', name: '합창', icon: '🎤', pic: 'mic', items: ['악보 파일', '물병'] }
   ];
 
   // 매일 챙길 것 (처음 값, 사람이 고친다)
@@ -108,7 +108,7 @@ var DATA = (function () {
 
   var DOW = ['일', '월', '화', '수', '목', '금', '토'];
 
-  // 물건 그림 70 — 사람이 그린 그림이 오기 전까지 쓰는 24×24 선 SVG (stroke 는 currentColor)
+  // 물건 그림 80 — 사람이 그린 그림이 오기 전까지 쓰는 24×24 선 SVG (stroke 는 currentColor)
   // [id, 이름, 찾는 말(| 로 나눔, 한 글자 말은 낱말 하나일 때만 맞음), 그림]
   // 이름이 여러 말에 맞으면 가장 긴 말이 이긴다. 같으면 앞에 있는 것. 그래서 넓은 뜻(교과서·공책·봉투·가방)은 맨 뒤에 둔다
   var ICON_ROWS = [
@@ -174,6 +174,17 @@ var DATA = (function () {
     ['laptop', '코딩', '코딩|계정|노트북', '<rect x="5" y="5" width="14" height="10" rx="1"/><path d="M3 19h18l-2-4H5z"/>'],
     ['baduk', '바둑', '바둑', '<rect x="3" y="3" width="18" height="18" rx="1"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/><circle cx="9" cy="9" r="2"/><circle cx="15" cy="15" r="2"/>'],
     ['nametag', '이름표', '이름표|카드', '<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M10 4h4v4h-4zM7 13h4M7 16h7"/>'],
+    // 과목·학원 그림 10 — 꾸러미의 pic 으로 쓴다. 찾는 말은 물건 이름에 나오지 않는 말만 둔다 (가방 칸 그림이 바뀌지 않게)
+    ['kor', '국어', '한글', '<path d="M4 6h7v4c0 4-2 7-6 9"/><path d="M16 3v18M16 12h4"/>'],
+    ['math', '수학', '사칙연산', '<path d="M5 12h14"/><circle cx="12" cy="6.5" r="1.3"/><circle cx="12" cy="17.5" r="1.3"/>'],
+    ['sprout', '새싹', '새싹|화분', '<path d="M12 21v-9"/><path d="M12 12C12 8 9 6 5 6c0 4 3 6 7 6zM12 10c0-3 2-5 6-5 0 3-2 5-6 5z"/>'],
+    ['shield', '안전', '안전모|호루라기', '<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/>'],
+    ['flask', '실험', '비커|플라스크', '<path d="M9 3h6M10 3v6L5 19c-.5 1 .2 2 1.2 2h11.6c1 0 1.7-1 1.2-2L14 9V3"/><path d="M7 15h10"/>'],
+    ['abc', '영어', '알파벳', '<path d="M3 17l3.5-9 3.5 9M4.5 14h4"/><path d="M13 8v9M13 8h2.5a2.25 2.25 0 0 1 0 4.5H13M13 12.5h3a2.25 2.25 0 0 1 0 4.5H13"/>'],
+    ['heart', '마음', '하트', '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'],
+    ['puzzle', '퍼즐', '퍼즐', '<path d="M4 8h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4H4z"/>'],
+    ['school', '학교', '학교', '<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M10 21v-5h4v5M12 5V2h3"/>'],
+    ['mic', '마이크', '마이크', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/>'],
     ['notice', '알림장', '알림장', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
     ['homework', '숙제', '숙제|학습지|문제집|활동지', '<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4M8 13l2 2 4-4"/>'],
     ['paper', '서류', '가정통신문|통신문|동의서|검진표|신청서|회신|보고서|서명|계획표|자료|일지', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7M9 18h4"/>'],

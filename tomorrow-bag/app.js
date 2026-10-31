@@ -6,7 +6,8 @@
     screen: 'bag', offset: 0, pg: {}, kidMode: false, cal: null,
     noteQ: '', noteCat: 'all', noteSort: 'base',          // 알림장 준비물 찾기·거르기·순서
     cell: null, after: null, day: null, note: null, pack: null, eventPick: null, kidEdit: null, teach: null,
-    times: null, help: null                                // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
+    times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
+    firstBag: false                                        // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
   };
   var undoSnap = null;
   var confirmFn = null;
@@ -186,7 +187,19 @@
     renderAll();
     if (!V.kidEdit && pendingTeach) return applyTeach();   // 선생님 링크로 받아 둔 준비물을 이 아이 가방에
     UI.toast(V.kidEdit ? '고쳤어요' : filled ? grade + '학년 기본 시간표로 채웠어요' : Logic.nameI(name) + ' 시간표를 채워 볼까요?', !!V.kidEdit);
-    if (!V.kidEdit) { UI.closeSheet('sheet-kids'); go('week'); }
+    if (!V.kidEdit) {
+      UI.closeSheet('sheet-kids');
+      // 기본 시간표로 칸을 채웠으면 그 시간표가 만든 내일 가방을 바로 보여 준다
+      if (filled) { V.offset = 0; V.firstBag = true; renderAll(); go('bag'); }
+      else go('week');
+    }
+  }
+  // 처음 가방 카드를 닫는다 (한 번 보면 다시 띄우지 않는다)
+  function seeFirstBag() {
+    V.firstBag = false;
+    if (S.settings.firstBagSeen) return;
+    S.settings.firstBagSeen = true;
+    save();
   }
   function deleteKid() {
     var id = V.kidEdit;
@@ -418,11 +431,13 @@
     $('note-date').value = n ? n.date : (dateKey || bagKey());
     $('note-title').value = n ? (n.title || '') : '';
     $('note-add').value = '';
+    $('note-paste').value = '';
     $('note-q').value = '';
     $('note-sort').value = V.noteSort;
     $('note-del').style.display = n ? '' : 'none';
     UI.clearErr('note-add', 'note-err');
     UI.clearErr('note-date', null);
+    UI.clearErr('note-paste', null);
     UI.renderNoteItems(V.note.items);
     UI.renderSupplies(S, V, V.note.items);
     UI.closeSheet('sheet-upcoming');
@@ -446,6 +461,22 @@
     else noteAddItem(name);
     UI.renderNoteItems(V.note.items);
     UI.renderSupplies(S, V, V.note.items);
+  }
+  // 알림장 글 붙여 넣기 → 가져갈 날과 준비물을 뽑아 넣는다 (이미 넣은 것은 그대로, 30개까지)
+  function noteParse() {
+    var r = Logic.parseNoteText($('note-paste').value, Logic.toKey(new Date()));
+    var add = 0;
+    r.items.forEach(function (x) {
+      var have = V.note.items.some(function (y) { return y.toLowerCase() === x.toLowerCase(); });
+      if (!have && V.note.items.length < 30) { V.note.items.push(x); add++; }
+    });
+    if (r.date) { $('note-date').value = r.date; UI.clearErr('note-date', null); }
+    if (!add && !r.date) return UI.fieldErr('note-paste', 'note-err', '글에서 준비물을 찾지 못했어요.');
+    UI.clearErr('note-paste', 'note-err');
+    $('note-paste').value = '';
+    UI.renderNoteItems(V.note.items);
+    UI.renderSupplies(S, V, V.note.items);
+    UI.toast((r.date ? Logic.shortLabel(r.date) + ' · ' : '') + '준비물 ' + add + '개 넣었어요');
   }
   function submitNote() {
     var kid = curKid();
@@ -1079,7 +1110,9 @@
     'day-prev': function () { V.offset--; renderAll(); },
     'day-next': function () { V.offset++; renderAll(); },
     'day-now': function () { V.offset = 0; renderAll(); },
-    'bag-open': function () { if (UI.isOpen('sheet-cal')) UI.closeSheet('sheet-cal'); openBag(); },
+    'bag-open': function () { if (UI.isOpen('sheet-cal')) UI.closeSheet('sheet-cal'); if (V.firstBag) { seeFirstBag(); renderAll(); } openBag(); },
+    'first-bag-ok': function () { seeFirstBag(); renderAll(); },
+    'first-bag-week': function () { seeFirstBag(); renderAll(); go('week'); },
     'check': toggleCheck,
     'check-all': checkAll,
     'bag-done': bagDone,
@@ -1110,6 +1143,7 @@
     'note-cat': function (b) { V.noteCat = b.getAttribute('data-v'); V.pg.sup = 0; UI.renderSupplies(S, V, V.note.items); },
     'note-q-clear': function () { V.noteQ = ''; V.noteCat = 'all'; V.pg.sup = 0; $('note-q').value = ''; UI.renderSupplies(S, V, V.note.items); },
     'note-del': deleteNote,
+    'note-parse': noteParse,
     'event-new': openEvent,
     'event-pick': function (b) { V.eventPick = b.getAttribute('data-id'); $('event-err').textContent = ''; UI.renderEvents(V.eventPick); },
     'cell': function (b) { openCell(+b.getAttribute('data-d'), +b.getAttribute('data-i')); },
@@ -1213,7 +1247,7 @@
   // 시트 안 동작은 그 시트를 연 뒤에만 (열린 적 없는 시트의 버튼이 눌려도 아무 일 없게)
   var NEED = {
     'cell-set': 'cell', 'cell-clear': 'cell', 'cell-copy': 'cell', 'cell-copy-to': 'cell',
-    'note-add': 'note', 'note-item-del': 'note', 'note-supply': 'note', 'note-cat': 'note', 'note-q-clear': 'note', 'note-del': 'note',
+    'note-add': 'note', 'note-item-del': 'note', 'note-supply': 'note', 'note-cat': 'note', 'note-q-clear': 'note', 'note-del': 'note', 'note-parse': 'note',
     'pack-add': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
     'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid',
     'check': 'kid', 'check-all': 'kid', 'bag-done': 'kid', 'skip-item': 'kid',

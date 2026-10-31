@@ -361,6 +361,14 @@ body.reduce .stk.big { animation: none; }
 .pcard .em { font-size: var(--t-6); line-height: 1.1; }
 .pcard .nm { font-size: var(--t-2); font-weight: 800; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 .pcard.acad { background: var(--soft); }
+/* 과목·학원 선 그림 (ui.js packPic) — 물건 칸 그림과 같은 선 굵기·글자색 */
+.pcard .em .pic { width: var(--t-6); height: var(--t-6); color: var(--ink); }
+.pick .em .pic { width: var(--t-5); height: var(--t-5); color: var(--ink); }
+.cell .ic { width: auto; height: auto; }
+.cell .ic .pic { width: var(--t-4); height: var(--t-4); margin: 0 auto 2px; color: var(--ink); }
+.after-row .em { flex: none; width: 24px; height: 24px; color: var(--ink); }
+.strip .pk { display: inline-flex; align-items: center; gap: 4px; }
+.strip .pk .em { flex: none; width: 1.2em; height: 1.2em; }
 .item-area { height: min(40dvh, 300px); flex: none; margin-top: 8px; }
 .item-area .check .x { position: absolute; top: 2px; right: 6px; font-size: var(--t-1); color: var(--muted); }
 .sup-area { height: min(30dvh, 200px); flex: none; }
@@ -403,6 +411,10 @@ body.reduce .stk.big { animation: none; }
 .setup-steps .step.done .st-no { background: var(--sub); border-color: var(--sub); color: var(--on-accent); }
 .setup-steps .step.done b { color: var(--muted); text-decoration: line-through; }
 .setup-steps .step b { font-size: var(--t-2); }
+.first-bag { flex: none; border-color: var(--accent); word-break: keep-all; }
+.first-bag h3 { margin: 0 0 4px; font-size: var(--t-4); }
+.first-bag .fb-count { margin: 0 0 4px; font-weight: 800; color: var(--accent); font-size: var(--t-3); }
+.first-bag .row { justify-content: flex-end; margin-top: 8px; }
 
 /* 빈 화면 */
 .empty { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px 12px; }
@@ -515,6 +527,10 @@ body.reduce .bad { animation: none; }
 .picker-row { margin-top: 8px; }
 .picker-row input { flex: 1 1 60%; }
 .picker-row select { flex: 0 0 auto; width: auto; }
+/* 알림장 글 붙여 넣기: 두 줄 칸 + 뽑기 (시트 높이를 늘리지 않게 작게) */
+.paste-row { margin-top: 8px; align-items: stretch; }
+.paste-row textarea { flex: 1 1 auto; min-height: 52px; height: 52px; max-height: 52px; padding: 6px 12px; }
+.paste-row .btn { flex: none; }
 .toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; min-height: 48px; padding: 2px 0; border-bottom: 1px solid var(--line); }
 .toggle > span { flex: 1 1 140px; min-width: 0; }
 .toggle:last-child { border-bottom: 0; }

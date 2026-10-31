@@ -20,19 +20,21 @@
       <h1 class="game-title">Popcorn Drop</h1>
       <p class="game-sub">팝콘 팡팡</p>
     </div>
-    <!-- 예고편: ui.js buildTrailer() 가 같은 규칙으로 연습 상영을 돌려 장면마다 그린다 -->
-    <div id="trailer" class="trailer" role="img" aria-label="예고편 — 옥수수를 떨궈 못에 불리고, 냄비에서 팡! 객석 손님 통을 가득 채워요">
-      <figure class="tr tall"><canvas id="tr-full" width="180" height="320"></canvas><figcaption id="tc-full"><b>한 화면</b></figcaption></figure>
-      <figure class="tr"><canvas id="tr-split" width="192" height="160"></canvas><figcaption id="tc-split"></figcaption></figure>
-      <figure class="tr"><canvas id="tr-charge" width="192" height="160"></canvas><figcaption id="tc-charge"></figcaption></figure>
-      <figure class="tr"><canvas id="tr-pop" width="192" height="160"></canvas><figcaption id="tc-pop"></figcaption></figure>
-      <figure class="tr"><canvas id="tr-mega" width="192" height="160"></canvas><figcaption id="tc-mega"></figcaption></figure>
-      <figure class="tr"><canvas id="tr-burn" width="192" height="160"></canvas><figcaption id="tc-burn"></figcaption></figure>
-      <figure class="tr"><canvas id="tr-fill" width="192" height="160"></canvas><figcaption id="tc-fill"></figcaption></figure>
+    <!-- 예고편: ui.js buildTrailer() 가 같은 규칙으로 연습 판을 돌려 그 순간을 그린다 -->
+    <div id="trailer" class="trailer" role="img" aria-label="예고편 — 옥수수를 한꺼번에 쏟고, 프라이팬에서 팡! 줄 선 손님에게 나눠 주고, 스킬을 사면 다음 판에 옥수수가 늘어요">
+      <figure class="tr"><canvas id="tr-pour" width="160" height="200"></canvas><figcaption id="tc-pour"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-pan" width="160" height="200"></canvas><figcaption id="tc-pan"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-serve" width="160" height="200"></canvas><figcaption id="tc-serve"></figcaption></figure>
+      <figure class="tr"><canvas id="tr-buy" width="160" height="200"></canvas><figcaption id="tc-buy"></figcaption></figure>
     </div>
+    <p id="tr-grow" class="grow"></p>
     <div class="menu">
-      <button id="btn-start" class="btn primary big">상영 시작</button>
-      <button id="btn-daily" class="btn">오늘의 상영</button>
+      <button id="btn-start" class="btn primary big">매점 열기</button>
+      <div class="row2">
+        <button id="btn-title-tree" class="btn">스킬 트리</button>
+        <button id="btn-title-halls" class="btn">상영관</button>
+        <button id="btn-daily" class="btn" aria-label="오늘의 도전 — 날짜로 정한 같은 판, 하루 한 번">오늘 도전</button>
+      </div>
       <div class="row2">
         <button id="btn-help" class="btn">방법</button>
         <button id="btn-records" class="btn">기록</button>
@@ -43,92 +45,59 @@
     <p class="meta small">세로 화면 전용 게임이에요 · 휴대폰을 가로로 돌리지 않아도 돼요</p>
   </section>
 
-  <!-- 로비 (영화관 키우기) -->
-  <section id="scr-lobby" class="screen">
-    <header class="bar">
-      <button id="btn-lobby-back" class="btn small" aria-label="처음으로">◀</button>
-      <h2>로비</h2>
-      <span id="lobby-coins" class="coins">🎟 0</span>
-    </header>
-    <div class="scroll">
-      <div class="card hall-card">
-        <div class="hall-pick">
-          <button id="btn-hall-prev" class="btn small" aria-label="앞 상영관">◀</button>
-          <div class="hall-info">
-            <div id="lobby-hall" class="hall-no">상영관 1</div>
-            <div id="lobby-film" class="film"></div>
-          </div>
-          <button id="btn-hall-next" class="btn small" aria-label="다음 상영관">▶</button>
-        </div>
-        <p id="lobby-goal" class="goal"></p>
-        <button id="btn-play" class="btn primary big">상영 시작</button>
-      </div>
-      <h3>영화관 키우기</h3>
-      <div id="up-list" class="list"></div>
-      <div class="row2">
-        <button id="btn-pegs" class="btn">특수 못 끼우기</button>
-        <button id="btn-deco" class="btn">꾸미기</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 특수 못 -->
-  <section id="scr-pegs" class="screen">
-    <header class="bar">
-      <button id="btn-pegs-back" class="btn small" aria-label="로비로">◀</button>
-      <h2>특수 못</h2>
-      <span id="pegs-coins" class="coins">🎟 0</span>
-    </header>
-    <div class="peg-shop" id="peg-shop"></div>
-    <p id="pegs-hint" class="meta">고른 못을 판의 보통 못에 눌러 끼워요. 끼운 못을 누르면 빠져요.</p>
-    <div class="pegcv-wrap"><canvas id="pegcv" class="pegcv" width="360" height="400" aria-label="못 판"></canvas></div>
-  </section>
-
-  <!-- 꾸미기 -->
-  <section id="scr-deco" class="screen">
-    <header class="bar">
-      <button id="btn-deco-back" class="btn small" aria-label="로비로">◀</button>
-      <h2>꾸미기</h2>
-      <span id="deco-coins" class="coins">🎟 0</span>
-    </header>
-    <div class="tabs" id="deco-tabs">
-      <button class="btn tab on" data-kind="hall">객석</button>
-      <button class="btn tab" data-kind="seat">의자</button>
-      <button class="btn tab" data-kind="screen">스크린</button>
-    </div>
-    <div id="deco-list" class="scroll list"></div>
-  </section>
-
-  <!-- 상영 (본 화면) -->
+  <!-- 판 (본 화면) -->
   <section id="scr-play" class="screen play">
-    <canvas id="cv" class="cv" width="360" height="640" aria-label="팝콘 기계"></canvas>
+    <canvas id="cv" class="cv" width="360" height="640" aria-label="옥수수 자루, 못 판, 프라이팬, 팝콘 통과 손님 줄"></canvas>
     <div id="hud" class="hud">
       <div class="hud-l">
-        <span id="hud-hall" class="chip">상영관 1</span>
-        <span id="hud-corn" class="chip">통 100</span>
+        <span id="hud-round" class="chip">1판</span>
+        <span id="hud-hall" class="chip">1관</span>
       </div>
       <div class="hud-c">
-        <div id="hud-time" class="clock">상영까지 90초</div>
-        <div id="hud-kern" class="kern">옥수수 0알</div>
+        <div id="hud-pop" class="popnum">팝콘 0개</div>
+        <div id="hud-goal" class="goal-chip">목표 팝콘 0개</div>
       </div>
       <div class="hud-r">
-        <span id="hud-fill" class="chip">손님 0/2</span>
+        <span id="hud-coins" class="chip coin">🎟 0</span>
         <button id="btn-pause" class="btn small" aria-label="멈춤">Ⅱ</button>
       </div>
+    </div>
+    <div id="controls" class="controls">
+      <button id="btn-pour" class="btn primary big pour">쏟아붓기!</button>
+      <button id="btn-play-tree" class="btn small sub">스킬<br>트리</button>
+      <button id="btn-play-halls" class="btn small sub">상영관</button>
+      <button id="btn-adcorn" class="btn small sub ad" aria-label="광고 보고 옥수수 두 배로 쏟기 (하루 한 번)">📺<br>두 배</button>
     </div>
     <div id="tut" class="tut hidden" role="status">
       <p id="tut-text"></p>
       <button id="btn-tut-skip" class="btn small">건너뛰기</button>
     </div>
-    <button id="btn-more-corn" class="btn ad hidden">📺 광고 보고 옥수수 30알 더</button>
-    <div id="burners" class="burners">
-      <button class="burner" data-i="0" aria-label="1번 냄비 불">🔥<span>1</span></button>
-      <button class="burner" data-i="1" aria-label="2번 냄비 불">🔥<span>2</span></button>
-      <button class="burner" data-i="2" aria-label="3번 냄비 불">🔥<span>3</span></button>
-      <button class="burner" data-i="3" aria-label="4번 냄비 불">🔥<span>4</span></button>
-      <button class="burner" data-i="4" aria-label="5번 냄비 불">🔥<span>5</span></button>
+  </section>
+
+  <!-- 스킬 트리 -->
+  <section id="scr-tree" class="screen play">
+    <canvas id="treecv" class="treecv" width="360" height="640" aria-label="스킬 트리 — 끌어서 움직이고 두 손가락으로 확대·축소"></canvas>
+    <header class="bar tree-bar">
+      <button id="btn-tree-back" class="btn small" aria-label="닫기">◀</button>
+      <h2>스킬 트리</h2>
+      <span id="tree-coins" class="coins">🎟 0</span>
+    </header>
+    <p id="tree-hint" class="tree-hint">밝은 칸을 눌러 사요 · 끌어서 움직이고 두 손가락으로 확대</p>
+    <div class="zoom">
+      <button id="btn-zoom-in" class="btn small" aria-label="확대">＋</button>
+      <button id="btn-zoom-out" class="btn small" aria-label="축소">－</button>
+      <button id="btn-zoom-fit" class="btn small" aria-label="가운데로">◎</button>
     </div>
-    <div id="fire-count" class="fire-count">불 0/2</div>
+  </section>
+
+  <!-- 상영관 -->
+  <section id="scr-halls" class="screen">
+    <header class="bar">
+      <button id="btn-halls-back" class="btn small" aria-label="뒤로">◀</button>
+      <h2>상영관</h2><span></span>
+    </header>
+    <p class="meta">스킬 트리 네 귀퉁이의 🔑 열쇠를 열면 새 상영관이 열려요.</p>
+    <div id="hall-list" class="scroll list"></div>
   </section>
 
   <!-- 방법 -->
@@ -148,11 +117,13 @@
     </header>
     <div class="scroll">
       <div id="set-list" class="list"></div>
-      <button id="btn-tut-again" class="btn">튜토리얼 다시 보기</button>
-      <button id="btn-noads" class="btn">광고 제거</button>
-      <button id="btn-wipe" class="btn danger">기록 지우기</button>
+      <div class="list" style="margin-top: 10px">
+        <button id="btn-tut-again" class="btn">처음 안내 다시 보기</button>
+        <button id="btn-noads" class="btn">광고 제거</button>
+        <button id="btn-wipe" class="btn danger">기록 지우기</button>
+      </div>
       <div id="wipe-confirm" class="card hidden">
-        <p>동전·상영관·못·꾸미기·기록이 모두 지워져요. 정말 지울까요?</p>
+        <p>동전·스킬·상영관·기록이 모두 지워져요. 정말 지울까요?</p>
         <div class="row2">
           <button id="btn-wipe-yes" class="btn danger">지우기</button>
           <button id="btn-wipe-no" class="btn">그만두기</button>
@@ -169,24 +140,43 @@
     </header>
     <div class="scroll">
       <div id="rec-lines" class="lines"></div>
-      <h3>최근 상영</h3>
+      <h3>최근 판</h3>
       <div id="rec-recent" class="lines"></div>
       <h3 id="ach-title">업적</h3>
       <div id="ach-list" class="list"></div>
     </div>
   </section>
 
+  <!-- 스킬 칸 (겹침) -->
+  <div id="ov-node" class="overlay">
+    <div class="panel">
+      <div id="node-icon" class="node-icon" aria-hidden="true">🌽</div>
+      <h2 id="node-name">옥수수 +5</h2>
+      <p id="node-desc" class="meta"></p>
+      <p id="node-cost" class="node-cost"></p>
+      <div class="row2">
+        <button id="btn-node-buy" class="btn primary">사기</button>
+        <button id="btn-node-close" class="btn">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 결과 (겹침) -->
   <div id="ov-result" class="overlay">
     <div class="panel">
-      <h2 id="res-title">상영 시작!</h2>
+      <h2 id="res-title">팝콘 품절!</h2>
       <p id="res-sub" class="meta"></p>
       <div id="res-lines" class="lines"></div>
-      <button id="btn-ad-double" class="btn ad">📺 광고 보고 동전 2배</button>
+      <button id="btn-ad-double" class="btn ad">📺 광고 보고 돈 2배</button>
       <div class="row2">
-        <button id="btn-res-again" class="btn">한 번 더</button>
-        <button id="btn-res-next" class="btn primary">로비로</button>
+        <button id="btn-res-tree" class="btn">스킬 트리</button>
+        <button id="btn-res-next" class="btn primary">다음 판</button>
       </div>
+      <div class="row2">
+        <button id="btn-res-home" class="btn">처음으로</button>
+        <button id="btn-res-copy" class="btn" aria-label="결과 문구 복사">📋 결과 복사</button>
+      </div>
+      <textarea id="res-share" class="share-box hidden" rows="3" readonly aria-label="결과 문구 — 길게 눌러 복사"></textarea>
     </div>
   </div>
 
@@ -197,7 +187,7 @@
       <button id="btn-resume" class="btn primary">계속</button>
       <button id="btn-pause-help" class="btn">방법</button>
       <button id="btn-pause-settings" class="btn">설정</button>
-      <button id="btn-quit" class="btn danger">상영 그만두기</button>
+      <button id="btn-pause-home" class="btn danger">처음으로</button>
     </div>
   </div>
 
@@ -211,6 +201,7 @@
     </div>
   </div>
 
+  <div id="hand" class="hand hidden" aria-hidden="true">👆</div>
   <div id="flash" class="flash"></div>
   <div id="toast" class="toast" role="status"></div>
 </div>
@@ -219,6 +210,7 @@
 <script src="./audio.js"></script>
 <script src="./physics.js"></script>
 <script src="./game.js"></script>
+<script src="./tree.js"></script>
 <script src="./ui.js"></script>
 </body>
 </html>

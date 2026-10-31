@@ -1,26 +1,26 @@
-/* Popcorn Drop — 게임 규칙 (상영·냄비·손님·영화관 키우기·저장·시험 훅) */
+/* Popcorn Drop — 게임 규칙 (쏟아붓기·프라이팬·손님 줄·스킬 트리·저장·시험 훅) */
 (function () {
   'use strict';
   const D = window.DATA, P = window.Phys;
 
-  const KEY = 'popcorn-drop-v1';
-  const TEST_STAGES = 6;            // 시험 판: 상영관 1부터 6까지 이어서
-  const DROP_GAP = 0.25;            // 1초에 4알
-  const BASE_CORN = 100, BASE_POT = 200, BASE_FIRES = 2, SHOW_TIME = 90;
-  const FIRE_DELAY = 2, BURN_DELAY = 6, MEGA = 50, STREAM = 10;
-  const MAX_PLACED = 15;
+  const KEY = 'popcorn-drop-v2';
+  const TEST_STAGES = 6;              // 시험 판: 첫 판부터 6판까지 목표를 이어서 채우면 이김
+  const BASE_CORN = 20;               // 첫 판 옥수수 20알
+  const BASE_PAN = 132;               // 큰 프라이팬 하나 (판 폭의 약 절반)
+  const BASE_QUEUE = 8, MAX_QUEUE = 28;
+  const SERVE_GAP = 0.3;              // 손님 한 명씩 0.3초 간격
+  const CAL_POURS = 40;               // 목표를 정할 때 같은 규칙으로 미리 쏟아 보는 횟수
+  const GOAL_C = 0.8, GOAL_C_FIRST = 2;
+  const DAILY_ROUND = 7;              // 오늘의 도전: 손님 줄은 7판째 길이
+  const DAILY_NODES = [6, 10];        // 오늘의 도전: 날짜로 고른 스킬 6~10칸
 
   // ---------- 저장 ----------
   function defaults() {
     const settings = {};
     D.SETTINGS.forEach(s => { settings[s.key] = s.def; });
     return {
-      settings, coins: 0, hall: 1, pick: 1,
-      up: { corn: 0, pot: 0, fire: 0, rat: 0 },
-      inv: { x2: 0, x4: 0, gold: 0 }, placed: [],
-      deco: { owned: ['hall1', 'seat1', 'screen1'], eq: { hall: 'hall1', seat: 'seat1', screen: 'screen1' } },
-      tot: {}, best: {}, hallBest: {}, achs: {}, recent: [], tutDone: false, sinceAd: 0,
-      daily: { date: '', best: 0, played: false }
+      settings, coins: 0, owned: { start: true }, theater: 1, theaters: 1, round: 1, streak: 0,
+      tot: {}, best: {}, achs: {}, recent: [], tutDone: false, sinceAd: 0, adDay: '', daily: null
     };
   }
   const Store = {
@@ -31,10 +31,8 @@
         if (raw) {
           const d = JSON.parse(raw), base = defaults();
           this.data = Object.assign(base, d);
-          this.data.settings = Object.assign(base.settings, d.settings || {});
-          this.data.up = Object.assign(defaults().up, d.up || {});
-          this.data.inv = Object.assign(defaults().inv, d.inv || {});
-          this.data.deco = Object.assign(defaults().deco, d.deco || {});
+          this.data.settings = Object.assign(defaults().settings, d.settings || {});
+          this.data.owned = Object.assign({ start: true }, d.owned || {});
         }
       } catch (e) { this.ok = false; this.data = defaults(); }
     },
@@ -49,430 +47,516 @@
   };
 
   let handler = function () {};
-  let sink = null;                  // 연습 상영(sandbox) 동안 사건을 화면 대신 여기에 모은다
+  let sink = null;                    // 연습 판(sandbox) 동안 사건을 화면 대신 여기에 모은다
   function emit(type, data) {
     if (sink) sink.push({ type, data: data || {} });
-    else if (!Game.testMode) handler(type, data || {});
+    else if (!Game.testMode) {
+      // 오늘의 도전 중이면 화면 반응(조각·흔들림)은 보통 무작위를 쓴다 — 도전 판의 씨앗 차례를 건드리지 않게
+      if (!outerRandom) { handler(type, data || {}); return; }
+      const r = Math.random;
+      Math.random = outerRandom;
+      try { handler(type, data || {}); } finally { Math.random = r; }
+    }
+  }
+  // ---------- 오늘의 도전: 날짜 씨앗 ----------
+  // 도전 판의 규칙 계산(쏟기·못·손님·팁) 동안만 Math.random 을 날짜 씨앗 난수로 바꿔 끼운다.
+  // 그래서 같은 날에는 누구나 같은 판(같은 스킬·상영관·손님 줄·떨어지는 자리)을 한다.
+  let dailyRng = null, outerRandom = null, mainS = null;
+  function daily(fn) {
+    if (!dailyRng || !S || !S.daily || outerRandom) return fn();
+    outerRandom = Math.random; Math.random = dailyRng;
+    try { return fn(); } finally { Math.random = outerRandom; outerRandom = null; }
+  }
+  function daySeed(day) {
+    let h = 2166136261;
+    for (let i = 0; i < day.length; i++) h = Math.imul(h ^ day.charCodeAt(i), 16777619);
+    return h >>> 0;
+  }
+  // 그날의 판: 시작 칸에서 이어진 칸을 씨앗 차례로 6~10칸 산 스킬, 상영관 하나, 상영작 하나
+  function dailyPlan(day) {
+    const seed = daySeed(day), r = P.seeded(seed ^ 0x5bd1e995);
+    const owned = { start: true }, nodes = [];
+    const n = DAILY_NODES[0] + Math.floor(r() * (DAILY_NODES[1] - DAILY_NODES[0] + 1));
+    for (let i = 0; i < n; i++) {
+      const cand = D.SKILLS.filter(s => !owned[s.id] && s.eff !== 'key' && s.links.some(l => owned[l]));
+      if (!cand.length) break;
+      const s = cand[Math.floor(r() * cand.length)];
+      owned[s.id] = true; nodes.push(s.id);
+    }
+    const theater = 1 + Math.floor(r() * D.THEATERS.length);
+    return { day, seed, owned, nodes, theater, film: D.FILMS[Math.floor(r() * D.FILMS.length)] };
   }
   function stat(key, n) { const t = Store.data.tot; t[key] = (t[key] || 0) + (n == null ? 1 : n); }
   function best(key, v) { const b = Store.data.best; if (!(b[key] >= v)) b[key] = v; }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
   function today() {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
-  function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
-  function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
-  // ---------- 영화관 키우기 값 ----------
-  function upTotal(key) { const L = D.UPGRADES[key].levels; let s = 0; for (let i = 0; i < Store.data.up[key]; i++) s += L[i].add; return s; }
-  function cornMax() { return BASE_CORN + upTotal('corn'); }
-  function potCap() { return BASE_POT + upTotal('pot'); }
-  function firesMax() { return BASE_FIRES + upTotal('fire'); }
-  function upNext(key) { return D.UPGRADES[key].levels[Store.data.up[key]] || null; }
-
-  // ---------- 상영 하나 ----------
-  let S = null;
-
-  function buildPegs(hall, mode, mod, seed) {
-    const pegs = P.makePegs();
-    const layout = D.LAYOUTS[hall.layout % D.LAYOUTS.length];
-    const extra = mod ? { x2: mod.x2 || 0, x4: mod.x4 || 0, gold: mod.gold || 0 } : {};
-    let rats = hall.rats + (mod && mod.rats ? mod.rats : 0);
-    if (mode !== 'daily') rats -= upTotal('rat');
-    P.applyLayout(pegs, layout, extra, Math.max(0, rats), seed);
-    if (mode !== 'daily') {
-      Store.data.placed.forEach(pl => { const p = pegs[pl.i]; if (p && p.k !== 'rat') { p.k = pl.k; p.own = true; } });
-    }
-    return { pegs, layout };
+  // ---------- 스킬 → 숫자 ----------
+  function stats(owned) {
+    owned = owned || Store.data.owned;
+    const s = { corn: BASE_CORN, gold: 0, x2: 0, x3: 0, gpeg: 0, rows: P.BASE_ROWS, pan: BASE_PAN, rim: 0, rimw: 0, pan2: false,
+      cust: 0, price: 0, tip: 0, vip: 0, bonus: 0, sold: 0, repour: 0, nodes: 0, keys: 0 };
+    Object.keys(owned).forEach(id => {
+      const n = D.SKILL[id];
+      if (!owned[id] || !n || id === 'start') return;
+      s.nodes++;
+      switch (n.eff) {
+        case 'corn': s.corn += n.val; break;
+        case 'gold': s.gold += n.val; break;
+        case 'x2': s.x2 += n.val; break;
+        case 'x3': s.x3 += n.val; break;
+        case 'gpeg': s.gpeg += n.val; break;
+        case 'rows': s.rows += n.val; break;
+        case 'pan': s.pan += n.val; break;
+        case 'rim': s.rim += n.val; break;
+        case 'rimw': s.rimw += n.val; break;
+        case 'pan2': s.pan2 = true; break;
+        case 'cust': s.cust += n.val; break;
+        case 'price': s.price += n.val; break;
+        case 'tip': s.tip += n.val; break;
+        case 'vip': s.vip += n.val; break;
+        case 'bonus': s.bonus += n.val; break;
+        case 'sold': s.sold += n.val; break;
+        case 'repour': s.repour += n.val; break;
+        case 'key': s.keys++; break;
+        default: break;
+      }
+    });
+    s.rows = Math.min(P.MAX_ROWS, s.rows);
+    s.rimAll = s.rim + s.rimw;          // 받침 넓히기만 있어도 좁은 받침이 생긴다
+    return s;
+  }
+  function keysOwned() { return D.KEYS.filter(k => Store.data.owned[k.id]).length; }
+  function costOf(id) { return D.costOf(D.SKILL[id], keysOwned()); }
+  function canBuy(id) {
+    const n = D.SKILL[id], o = Store.data.owned;
+    if (!n || o[id]) return false;
+    return n.links.some(l => o[l]);           // 이미 연 칸과 이어진 칸만
+  }
+  function nodeState(id) {
+    if (Store.data.owned[id]) return 'owned';
+    if (!canBuy(id)) return 'far';
+    return Store.data.coins >= costOf(id) ? 'buy' : 'near';
   }
 
-  function makeSeats(rows, tubs) {
-    const kinds = shuffle(tubs.split(''));
-    const seats = [];
-    const faces = shuffle(D.CUSTOMERS.slice());
-    let c = 0;
-    for (let side = 0; side < 2; side++) {
-      for (let r = 0; r < rows; r++) {
-        const kind = kinds[c] || 'S';
-        const t = D.TUBS[kind];
-        seats.push({ id: c, side, row: r, x: side === 0 ? P.SIDE / 2 : P.W - P.SIDE / 2, y: P.rowY(r) - 8,
-          kind, cap: t.cap, coin: t.coin, fill: 0, full: false, cust: faces[c % faces.length], cheer: 0, bump: 0 });
-        c++;
+  // ---------- 판(쏟아붓기 한 번)의 세계: 진짜 판과 미리 쏟아 보기가 같은 함수를 쓴다 ----------
+  function boardFor(st, t) {
+    const th = D.THEATERS[t - 1] || D.THEATERS[0];
+    return P.makeBoard(th.shape, st.rows, 1000 + t * 7919, { x2: st.x2, x3: st.x3, gpeg: st.gpeg });
+  }
+  function makeWorld(st, t) {
+    return { st, board: boardFor(st, t), pans: P.makePans(st.pan, st.pan2), rim: st.rimAll, kernels: [],
+      poured: 0, caught: 0, missed: 0, splits: 0, triples: 0, golds: 0, repourDone: false };
+  }
+  // 옥수수 n알을 화면 위쪽 폭 전체에 흩어 한꺼번에 쏟는다
+  function spawn(w, n, goldPct) {
+    for (let i = 0; i < n; i++) {
+      w.kernels.push({ x: P.BL + P.KR + 2 + Math.random() * (P.USABLE - 4), y: P.SPAWN_Y0 + Math.random() * (P.SPAWN_Y1 - P.SPAWN_Y0),
+        vx: (Math.random() - 0.5) * 30, vy: 20 + Math.random() * 80, life: 0, gen: 0, gold: Math.random() * 100 < goldPct,
+        lastPeg: -1, wait: Math.random() * 0.28, out: false });
+    }
+    w.poured += n;
+  }
+  function panHit(w, x) {
+    for (const p of w.pans) {
+      const d = Math.abs(x - p.x);
+      if (d <= p.w / 2) return 'in';
+      if (w.rim && d <= p.w / 2 + w.rim) return 'rim';
+    }
+    return null;
+  }
+  // 특수 못: 두 배 못은 2알, 세 배 못은 3알로 가른다. 한 알 줄기는 두 번까지 갈라진다(같은 못에서 두 번은 안 됨).
+  function onPeg(w, k, p, cb) {
+    if (p.k === 'n') return;
+    p.glow = 1;
+    if (p.k === 'gold') {
+      if (!k.gold) { k.gold = true; w.golds++; if (cb.gold) cb.gold(p); }
+      return;
+    }
+    if (k.gen >= 2) return;
+    const n = p.k === 'x3' ? 3 : 2;
+    k.gen++;
+    const sp = n === 3 ? [-1, 1, 0] : [-1, 1];
+    k.vx = sp[0] * (60 + Math.random() * 40);
+    for (let c = 1; c < n; c++) {
+      w.kernels.push({ x: k.x + sp[c] * 3, y: k.y, vx: sp[c] * (60 + Math.random() * 40) + (Math.random() - 0.5) * 20, vy: k.vy * 0.5 - 30,
+        life: k.life, gen: k.gen, gold: k.gold, lastPeg: p.i, wait: 0, out: false });
+    }
+    w.splits++; if (n === 3) w.triples++;
+    w.poured += n - 1;
+    if (cb.split) cb.split(p, n);
+  }
+  function stepKernels(w, dt, cb) {
+    const ks = w.kernels;
+    const hit = (kk, p) => onPeg(w, kk, p, cb);
+    for (let i = ks.length - 1; i >= 0; i--) {
+      const k = ks[i];
+      if (k.wait > 0) { k.wait -= dt; continue; }
+      const y0 = k.y;
+      P.stepKernel(k, dt, w.board, hit);
+      if (!k.out && y0 < P.PAN_Y && k.y >= P.PAN_Y) {
+        const h = panHit(w, k.x);
+        if (h) { ks.splice(i, 1); w.caught++; cb.land(k, h); continue; }
+        k.out = true;                          // 프라이팬 밖: 바닥으로 떨어져 굴러 사라진다
+      }
+      if (k.out && k.y >= P.FLOOR) { ks.splice(i, 1); w.missed++; cb.miss(k); }
+    }
+  }
+
+  // 미리 쏟아 보기: 같은 세계·같은 걸음으로 한 판을 그리지 않고 끝까지 돌려 팝콘 수만 센다
+  function virtualPour(st, t) {
+    const w = makeWorld(st, t);
+    let made = 0;
+    const cb = { land(k) { made += k.gold ? 5 : 1; }, miss() {}, split: null, gold: null };
+    spawn(w, st.corn, st.gold);
+    for (let g = 0; g < 1200; g++) {
+      stepKernels(w, 1 / 60, cb);
+      if (!w.kernels.length) {
+        if (st.repour && !w.repourDone) { w.repourDone = true; spawn(w, Math.floor(st.corn * Math.min(75, st.repour) / 100), st.gold); }
+        else break;
       }
     }
-    const bySide = [0, 1].map(s => seats.filter(x => x.side === s).sort((a, b) => a.y - b.y));
-    return { seats, bySide };
+    return made;
+  }
+  const calCache = {};
+  function calKey(st, t) { return [t, st.corn, st.gold, st.x2, st.x3, st.gpeg, st.rows, st.pan, st.rimAll, st.pan2 ? 1 : 0, st.repour].join(','); }
+  function calibrate(st, t, m) {
+    m = m || CAL_POURS;
+    const key = calKey(st, t) + '|' + m;
+    if (calCache[key]) return calCache[key];
+    let s = 0, s2 = 0;
+    for (let i = 0; i < m; i++) { const v = virtualPour(st, t); s += v; s2 += v * v; }
+    const mean = s / m, sd = Math.sqrt(Math.max(0, s2 / m - mean * mean));
+    calCache[key] = { mean, sd };
+    return calCache[key];
+  }
+  // 목표 팝콘 = 지금 스킬로 보통 나오는 팝콘(평균)에서 흔들림(표준편차)의 0.8배를 뺀 만큼. 맨 첫 판은 연습이라 2배를 뺀다.
+  function targetFor(st, t, first) {
+    const c = calibrate(st, t);
+    return Math.max(1, Math.floor(c.mean - (first ? GOAL_C_FIRST : GOAL_C) * c.sd));
   }
 
-  function startShow(hallNo, mode) {
-    mode = mode || 'hall';
-    let hall, mod = null, seed;
-    if (mode === 'daily') {
-      const dseed = hashStr(today());
-      const base = D.HALLS[4];
-      mod = D.DAILY_MODS[dseed % D.DAILY_MODS.length];
-      hall = Object.assign({}, base, { layout: dseed % D.LAYOUTS.length, n: 0 });
-      seed = dseed;
-    } else {
-      hall = D.HALLS[Math.max(1, Math.min(D.HALLS.length, hallNo)) - 1];
-      seed = hall.n * 7919 + 13;
-    }
-    const built = buildPegs(hall, mode, mod, seed);
-    const rows = Math.min(8, hall.rows + (mod && mod.rows ? mod.rows : 0));
-    let tubs = hall.tubs;
-    while (tubs.length < rows * 2) tubs += 'M';
-    const st = makeSeats(rows, tubs);
-    const daily = mode === 'daily';
-    const corn = daily ? BASE_CORN + (mod.corn || 0) : cornMax();
-    S = {
-      mode, hall, hallNo: hall.n, mod, layout: built.layout, pegs: built.pegs,
-      film: D.FILMS[(Math.max(1, hall.n) - 1) % D.FILMS.length] || D.FILMS[0],
-      seats: st.seats, bySide: st.bySide, goal: Math.min(hall.goal, st.seats.length),
-      corn, cornMax: corn, kernelTotal: 0, funnelX: 180, holding: false, dropAcc: DROP_GAP,
-      kernels: [], pops: [], rolls: [],
-      pots: [0, 1, 2, 3, 4].map(i => ({ i, n: 0, gold: 0, fire: false, fireT: 0, emptyT: 0, burning: false, popping: false, acc: 0, bump: 0 })),
-      potCap: daily ? BASE_POT + (mod.pot || 0) : potCap(),
-      firesMax: daily ? BASE_FIRES + (mod.fire || 0) : firesMax(),
-      time: 0, timeMax: SHOW_TIME + (mod && mod.time ? mod.time : 0),
-      clockOn: true, idle: 0, done: false, result: null,
-      coins: 0, filled: 0, biggest: 0, chain: 0, chainT: -9, bestChain: 0,
-      popped: 0, caramel: 0, burnt: 0, ratted: 0, splits: 0, overflow: 0, lost: 0,
-      adCornUsed: false, cornOutSaid: false,
-      prevBig: Store.data.best.biggest || 0,
-      tut: 0
+  // ---------- 손님 줄 ----------
+  function queueSize(st, t, round) {
+    const th = D.THEATERS[t - 1] || D.THEATERS[0];
+    return Math.min(MAX_QUEUE, BASE_QUEUE + Math.floor((round - 1) / 2) + st.cust + th.extra);
+  }
+  function newCustomer(t, vip) {
+    if (vip) return { cust: D.VIP, want: 10 + Math.floor(Math.random() * 5), vip: true, state: 'wait', t: 0, say: '', coins: 0 };
+    const faces = D.CUSTOMERS.filter(c => c.hall === t);
+    return { cust: pick(faces.length ? faces : D.CUSTOMERS), want: 3 + Math.floor(Math.random() * 6), vip: false, state: 'wait', t: 0, say: '', coins: 0 };
+  }
+  function fitQueue() {
+    const want = queueSize(S.st, S.theater, S.round);
+    const plain = S.queue.filter(q => !q.vip), vips = S.queue.filter(q => q.vip);
+    while (plain.length < want) plain.push(newCustomer(S.theater, false));
+    while (vips.length < S.st.vip) vips.push(newCustomer(S.theater, true));
+    S.queue = plain.concat(vips);               // VIP 손님은 줄 끝
+  }
+  function payOf(q) {
+    const th = D.THEATERS[S.theater - 1] || D.THEATERS[0];
+    const coins = Math.round(q.want * (1 + S.st.price / 100) * th.pay * (q.vip ? 2 : 1));
+    let tip = 0;
+    if (S.st.tip && Math.random() * 100 < S.st.tip) tip = 1 + Math.floor(Math.random() * Math.max(2, q.want / 2));
+    return { coins: coins + tip, tip };
+  }
+
+  // ---------- 판 하나 ----------
+  let S = null;
+  function blankRound(st, t, round) {
+    return {
+      phase: 'ready', round, theater: t, st, world: makeWorld(st, t), queue: [],
+      film: D.FILMS[(round - 1) % D.FILMS.length], first: round === 1,
+      pending: [], pops: [], rollers: [], popcorn: 0, made: 0, served: 0, coins: 0, tips: 0, vips: 0,
+      serveIdx: 0, serveT: 0, endT: 0, soldOut: false, sellout: false, double: false,
+      target: 0, cfgKey: '', time: 0, done: false, result: null, tut: 0, daily: null
     };
-    if (mode === 'hall' && !Game.testMode && !Store.data.tutDone && hall.n === 1) { S.tut = 1; S.clockOn = false; }
-    stat('shows');
-    if (daily) stat('daily');
-    emit('start', { mode });
+  }
+  function newRound() {
+    const d = Store.data, st = stats();
+    dailyRng = null; mainS = null;              // 보통 판을 새로 열면 오늘의 도전 판은 끝난다
+    d.theater = Math.max(1, Math.min(d.theaters, d.theater || 1));
+    const t = d.theater;
+    S = blankRound(st, t, d.round);
+    fitQueue();
+    if (S.first) S.queue[0].want = 3;           // 맨 첫 판의 첫 손님은 3개만 산다(나눠 주는 걸 꼭 보게)
+    refreshTarget();
+    if (!Game.testMode && !d.tutDone) S.tut = 1;
+    emit('round', { round: S.round });
     return S;
   }
-
-  // ---------- 조작 ----------
-  function setFunnel(x) { if (S && !S.done) S.funnelX = Math.max(P.FUNNEL_MIN, Math.min(P.FUNNEL_MAX, x)); }
-  function moveFunnel(dx) { if (S) setFunnel(S.funnelX + dx); }
-  function setHold(on) {
-    if (!S || S.done) return;
-    if (on && !S.holding) S.dropAcc = DROP_GAP;
-    S.holding = !!on;
+  // 쏟기 전에 스킬을 사면 목표·줄·못 판을 바로 다시 맞춘다
+  function refreshTarget() {
+    if (!S || S.phase !== 'ready' || S.daily) return;
+    const st = stats();
+    S.st = st;
+    S.world = makeWorld(st, S.theater);
+    fitQueue();
+    const key = calKey(st, S.theater);
+    if (key !== S.cfgKey) { S.cfgKey = key; S.target = targetFor(st, S.theater, S.first); }
   }
-  function firesOn() { return S ? S.pots.filter(p => p.fire).length : 0; }
-  function canFire(i) { const p = S && S.pots[i]; return !!p && !S.done && (p.fire || firesOn() < S.firesMax); }
-  function toggleFire(i) {
-    if (!S || S.done) return false;
-    const p = S.pots[i];
-    if (!p) return false;
-    if (p.fire) {
-      p.fire = false; p.fireT = 0; p.emptyT = 0; p.burning = false; p.popping = false; p.acc = 0;
-      emit('fire', { i, on: false });
-      return true;
-    }
-    if (firesOn() >= S.firesMax) { emit('fireFull', { i, max: S.firesMax }); return false; }
-    p.fire = true; p.fireT = 0; p.emptyT = 0; p.popping = false; p.acc = 0;
-    emit('fire', { i, on: true });
+  function pourCount() { return S ? S.st.corn * (S.double ? 2 : 1) : 0; }
+
+  function pour() {
+    if (!S || S.phase !== 'ready') return false;
+    if (S.daily) { Store.data.daily = { day: S.daily.day, done: false }; Store.save(); }   // 쏟으면 오늘 한 번을 쓴 것
+    else refreshTarget();
+    S.phase = 'pour';
+    const n = pourCount();
+    daily(() => spawn(S.world, n, S.st.gold));
+    stat('rounds');
+    emit('pour', { n });
+    if (S.tut === 1) tutTo(2);
     return true;
   }
 
-  // ---------- 못 ----------
-  function onPeg(k, p) {
-    if (p.k === 'n') return;
-    p.glow = 1;
-    if (p.k === 'rat') {
-      k.dead = true; S.ratted++; stat('ratted');
-      emit('rat', { x: p.x, y: p.y });
-      return;
-    }
-    if (p.k === 'gold') {
-      if (!k.gold) { k.gold = true; emit('gold', { x: p.x, y: p.y }); }
-      return;
-    }
-    if (k.split) return;                 // 한 알당 한 번만 갈라진다
-    const n = p.k === 'x4' ? 4 : 2;
-    k.split = true;
-    const sp = [-1, 1, -0.45, 0.45];
-    for (let c = 1; c < n; c++) {
-      S.kernels.push({ x: k.x + sp[c % 4] * 3, y: k.y, vx: sp[c] * (70 + Math.random() * 40), vy: k.vy * 0.5 - 30,
-        life: k.life, split: true, gold: k.gold, lastPeg: p.i, dead: false });
-    }
-    k.vx = sp[0] * (70 + Math.random() * 40);
-    S.kernelTotal += n - 1; S.splits++;
-    stat('splits');
-    if (n === 4) stat('quad');
-    emit('split', { x: p.x, y: p.y, n });
-    if (S.tut === 1) tutNext();
+  const realCb = {
+    land(k, h) {
+      S.pending.push({ t: 0.3 + Math.random() * 0.35, x: k.x, gold: k.gold });
+      emit('land', { x: k.x, rim: h === 'rim', gold: k.gold });
+    },
+    miss(k) {
+      S.rollers.push({ x: k.x, vx: k.x < P.PAN_X ? -80 : 80, t: 0, gold: k.gold });
+      emit('miss', { x: k.x });
+    },
+    split(p, n) { stat('splits'); if (n === 3) stat('triple'); emit('split', { x: p.x, y: p.y, n }); },
+    gold(p) { emit('gold', { x: p.x, y: p.y }); }
+  };
+  function popOut(q) {
+    S.pops.push({ x: q.x + (Math.random() - 0.5) * 10, y: P.PAN_Y - 4, vx: (Math.random() - 0.5) * 130, vy: -(280 + Math.random() * 140),
+      v: q.gold ? 5 : 1, car: q.gold, spin: Math.random() * 6, vs: (Math.random() - 0.5) * 12 });
+    if (q.gold) stat('caramel');
+    emit('pop', { x: q.x, car: q.gold });
   }
 
-  function land(k) {
-    const pot = S.pots[P.potAt(k.x)];
-    pot.bump = 1;
-    if (pot.burning) { S.burnt++; stat('burnt'); emit('burnt', { i: pot.i }); return; }
-    if (pot.n >= S.potCap) {
-      S.overflow++;
-      S.rolls.push({ x: P.potX(pot.i), y: P.POT_TOP, vx: (Math.random() < 0.5 ? -1 : 1) * 60, t: 0 });
-      emit('overflow', { i: pot.i });
-      return;
-    }
-    pot.n++;
-    if (k.gold) pot.gold++;
-  }
-
-  // ---------- 터뜨리기 ----------
-  const LEFT_BIAS = [0.85, 0.72, 0.5, 0.28, 0.15];
-  function popMany(pot, count, big) {
-    count = Math.min(count, pot.n);
-    if (count <= 0) return;
-    const boost = big ? 1.18 : 1;
-    let car = 0;
-    for (let c = 0; c < count; c++) {
-      const isCar = pot.gold > 0 && Math.random() < pot.gold / pot.n;
-      if (isCar) { pot.gold--; car++; }
-      pot.n--;
-      const dir = Math.random() < LEFT_BIAS[pot.i] ? -1 : 1;
-      S.pops.push({ x: P.potX(pot.i) + (Math.random() - 0.5) * 24, y: P.POT_TOP - 2,
-        vx: dir * (50 + Math.random() * 115) * boost, vy: -(330 + Math.random() * 200) * boost,
-        car: isCar, spin: Math.random() * 6, vs: (Math.random() - 0.5) * 12 });
-    }
-    S.popped += count; S.caramel += car;
-    stat('popped', count); if (car) stat('caramel', car);
-    if (count > S.biggest) S.biggest = count;
-    best('biggest', count);
-    if (big) stat('mega');
-    pot.bump = 1;
-    emit(big ? 'mega' : 'pop', { i: pot.i, n: count });
-    if (S.tut === 2) tutNext();
-  }
-
-  function updatePot(pot, dt) {
-    if (pot.bump > 0) pot.bump = Math.max(0, pot.bump - dt * 4);
-    if (!pot.fire) return;
-    pot.fireT += dt;
-    if (pot.fireT < FIRE_DELAY) return;
-    if (pot.n > 0) {
-      pot.emptyT = 0;
-      if (!pot.popping) {
-        pot.popping = true;
-        const big = pot.n >= MEGA;
-        popMany(pot, big ? Math.ceil(pot.n * 0.6) : Math.ceil(pot.n * 0.35), big);
-      } else {
-        pot.acc += dt * STREAM;
-        while (pot.acc >= 1 && pot.n > 0) { pot.acc -= 1; popMany(pot, 1, false); }
-      }
-    } else {
-      pot.popping = false; pot.acc = 0;
-      if (!pot.burning) {
-        pot.emptyT += dt;
-        if (pot.emptyT >= BURN_DELAY) { pot.burning = true; emit('burn', { i: pot.i }); }
-      }
-    }
-  }
-
-  // ---------- 손님 통 ----------
-  function catchAt(pc, side, y0, y1) {
-    const list = S.bySide[side];
-    for (let i = 0; i < list.length; i++) {
-      const s = list[i];
-      if (s.y > y0 && s.y <= y1) {
-        if (s.full) continue;
-        s.fill += pc.car ? 5 : 1;
-        s.bump = 1;
-        if (s.fill >= s.cap) { s.fill = s.cap; fillSeat(s); }
-        else emit('catch', { seat: s.id, car: pc.car });
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function coinTier(v) { return v >= 40 ? 3 : v >= 15 ? 2 : v >= 5 ? 1 : 0; }
-  function fillSeat(s) {
-    s.full = true; s.cheer = 1;
-    S.chain = S.time - S.chainT <= 1 ? S.chain + 1 : 1;
-    S.chainT = S.time;
-    if (S.chain > S.bestChain) S.bestChain = S.chain;
-    best('chain', S.chain);
-    const coins = Math.round((s.coin + s.cust.tip) * (1 + 0.5 * (S.chain - 1)));
-    S.coins += coins; S.filled++;
-    stat('filled');
-    emit('fill', { seat: s.id, x: s.x, y: s.y, coins, tier: coinTier(coins), chain: S.chain });
-    if (S.tut === 3) tutNext();
-    if (S.filled >= S.seats.length) endShow('soldout');
-  }
-
-  // ---------- 튜토리얼 ----------
-  function tutNext() {
-    if (!S || !S.tut) return;
-    S.tut++;
-    if (S.tut > 3) { S.tut = 0; S.clockOn = true; Store.data.tutDone = true; Store.save(); }
-    emit('tut', { step: S.tut });
-  }
-  function skipTut() {
-    if (!S || !S.tut) return;
-    S.tut = 0; S.clockOn = true; Store.data.tutDone = true; Store.save();
-    emit('tut', { step: 0 });
-  }
-
-  // ---------- 한 걸음 ----------
   function update(dt) {
     if (!S || S.done) return;
-    if (S.clockOn) S.time += dt;
-    // 떨구기
-    if (S.holding && S.corn > 0) {
-      S.dropAcc += dt;
-      while (S.dropAcc >= DROP_GAP && S.corn > 0) {
-        S.dropAcc -= DROP_GAP;
-        S.corn--; S.kernelTotal++;
-        S.kernels.push({ x: S.funnelX + (Math.random() - 0.5) * 4, y: P.FUNNEL_Y, vx: (Math.random() - 0.5) * 20, vy: 40,
-          life: 0, split: false, gold: false, lastPeg: -1, dead: false });
-        emit('drop', {});
+    if (S.daily) daily(() => tick(dt));
+    else tick(dt);
+  }
+  function tick(dt) {
+    S.time += dt;
+    const w = S.world;
+    for (let i = S.rollers.length - 1; i >= 0; i--) {
+      const r = S.rollers[i]; r.t += dt; r.x += r.vx * dt;
+      if (r.t > 0.9) S.rollers.splice(i, 1);
+    }
+    for (const q of S.queue) if (q.state !== 'wait') q.t += dt;
+    if (S.phase === 'pour') {
+      stepKernels(w, dt, realCb);
+      for (const p of w.board.all) if (p.glow > 0) p.glow = Math.max(0, p.glow - dt * 3);
+      for (let i = S.pending.length - 1; i >= 0; i--) {
+        const q = S.pending[i]; q.t -= dt;
+        if (q.t <= 0) { S.pending.splice(i, 1); popOut(q); }
+      }
+      for (let i = S.pops.length - 1; i >= 0; i--) {
+        const p = S.pops[i];
+        if (P.stepPop(p, dt) === 'bin') { S.pops.splice(i, 1); S.popcorn += p.v; S.made += p.v; emit('bin', { v: p.v, x: p.x }); }
+      }
+      if (!w.kernels.length && !S.pending.length && !S.pops.length) {
+        if (S.st.repour && !w.repourDone) {
+          w.repourDone = true;
+          const n = Math.floor(pourCount() * Math.min(75, S.st.repour) / 100);
+          spawn(w, n, S.st.gold);
+          stat('repours');
+          emit('repour', { n });
+        } else startServe();
+      }
+    } else if (S.phase === 'serve') {
+      if (S.endT > 0) { S.endT -= dt; if (S.endT <= 0) finishRound(); }
+      else {
+        S.serveT -= dt;
+        if (S.serveT <= 0) { S.serveT = SERVE_GAP; serveNext(); }
       }
     }
-    if (S.corn <= 0 && !S.cornOutSaid) { S.cornOutSaid = true; emit('cornOut', { ad: !S.adCornUsed }); }
-    // 알
-    const ks = S.kernels;
-    for (let i = ks.length - 1; i >= 0; i--) {
-      const k = ks[i];
-      const r = P.stepKernel(k, dt, S.pegs, onPeg);
-      if (k.dead) { ks.splice(i, 1); continue; }
-      if (r === 'pot') { ks.splice(i, 1); land(k); }
-    }
-    for (const p of S.pegs) if (p.glow > 0) p.glow = Math.max(0, p.glow - dt * 3);
-    // 냄비
-    for (const pot of S.pots) updatePot(pot, dt);
-    // 팝콘
-    const ps = S.pops;
-    for (let i = ps.length - 1; i >= 0; i--) {
-      const r = P.stepPop(ps[i], dt, catchAt);
-      if (r === 'caught') ps.splice(i, 1);
-      else if (r === 'lost') { ps.splice(i, 1); S.lost++; }
-      if (S.done) return;
-    }
-    for (let i = S.rolls.length - 1; i >= 0; i--) {
-      const r = S.rolls[i]; r.t += dt; r.x += r.vx * dt;
-      if (r.t > 1.2) S.rolls.splice(i, 1);
-    }
-    for (const s of S.seats) { if (s.bump > 0) s.bump = Math.max(0, s.bump - dt * 4); if (s.cheer > 0 && s.cheer < 3) s.cheer += dt; }
-    // 끝
-    if (S.time >= S.timeMax) { endShow('time'); return; }
-    const empty = S.corn <= 0 && !ks.length && !ps.length && S.pots.every(p => p.n === 0);
-    if (empty && (S.adCornUsed || Game.testMode || S.mode === 'daily') && !S.tut) {
-      S.idle += dt;
-      if (S.idle > 1.5) endShow('empty');
-    } else S.idle = 0;
   }
 
-  function endShow(why) {
+  // ---------- 나눠 주기 ----------
+  function startServe() {
+    S.phase = 'serve';
+    S.serveT = 0.45;
+    emit('serveStart', { made: S.made });
+    if (S.tut === 2) tutTo(3);
+  }
+  function serveNext() {
+    const q = S.queue[S.serveIdx];
+    if (!q) { S.sellout = true; S.endT = 0.8; emit('sellout', {}); return; }
+    if (S.popcorn >= q.want) {
+      S.popcorn -= q.want;
+      const pay = payOf(q);
+      q.state = 'got'; q.t = 0; q.coins = pay.coins; q.say = pick(D.HAPPY);
+      S.coins += pay.coins; S.served++;
+      stat('served');
+      if (pay.tip) { S.tips++; stat('tips'); }
+      if (q.vip) { S.vips++; stat('vips'); }
+      emit('serve', { i: S.serveIdx, coins: pay.coins, tip: pay.tip, vip: q.vip });
+      S.serveIdx++;
+    } else {
+      S.soldOut = true;
+      for (let j = S.serveIdx; j < S.queue.length; j++) {
+        const r = S.queue[j];
+        r.state = 'sad'; r.t = -(j - S.serveIdx) * 0.06; r.say = j - S.serveIdx < 3 ? pick(D.SAD) : '';
+      }
+      S.endT = 1.1;
+      emit('soldout', { left: S.queue.length - S.serveIdx, popcorn: S.popcorn });
+    }
+  }
+  function finishRound() {
     if (!S || S.done) return;
-    S.done = true; S.holding = false;
-    const soldout = S.filled >= S.seats.length;
-    let bonus = 0;
-    if (soldout) { bonus = 30 + Math.round(S.coins * 0.5); stat('soldout'); }
-    const total = S.coins + bonus;
-    const passed = S.mode === 'hall' && S.filled >= S.goal;
-    const res = { why, mode: S.mode, hallNo: S.hallNo, film: S.film, filled: S.filled, seats: S.seats.length, goal: S.goal,
-      coins: total, bonus, soldout, biggest: S.biggest, popped: S.popped, caramel: S.caramel, burnt: S.burnt,
-      ratted: S.ratted, splits: S.splits, overflow: S.overflow, bestChain: S.bestChain, passed, opened: false,
-      doubled: false, newDaily: false, time: Math.round(S.time) };
-    Store.data.coins += total; stat('coins', total);
-    if (passed && S.hallNo >= Store.data.hall && Store.data.hall < D.HALLS.length) {
-      Store.data.hall = S.hallNo + 1; Store.data.pick = Store.data.hall; res.opened = true;
+    const d = Store.data, st = S.st, w = S.world;
+    const bonus = st.bonus;
+    let soldBonus = 0;
+    if (S.sellout) { soldBonus = 5 + Math.round(S.coins * (0.2 + st.sold / 100)); stat('sellouts'); }
+    const hit = S.made >= S.target;
+    // 오늘의 도전은 연속·한 판 최고·최근 판·전면 광고 차례를 건드리지 않고, 도전 기록만 따로 남긴다
+    const bestKey = S.daily ? 'daily' : 'round';
+    if (!S.daily) { d.streak = hit ? (d.streak || 0) + 1 : 0; best('streak', d.streak); }
+    const total = S.coins + bonus + soldBonus;
+    d.coins += total;
+    stat('coins', total); stat('popcorn', S.made);
+    const prevBest = d.best[bestKey] || 0;
+    best(bestKey, S.made);
+    const res = {
+      round: S.round, theater: S.theater, film: S.film, base: pourCount(), poured: w.poured, made: S.made,
+      served: S.served, queue: S.queue.length, coins: S.coins, bonus, soldBonus, total, sellout: S.sellout,
+      soldOut: S.soldOut, leftover: S.popcorn, target: S.target, hit, streak: d.streak, splits: w.splits,
+      caught: w.caught, missed: w.missed, tips: S.tips, newBest: S.made > prevBest && prevBest > 0, bestRound: d.best[bestKey] || 0,
+      doubled: false, daily: S.daily ? S.daily.day : ''
+    };
+    S.phase = 'result'; S.done = true; S.result = res;
+    if (S.daily) {
+      stat('dailies');
+      d.daily = { day: S.daily.day, done: true, made: S.made, served: S.served, queue: S.queue.length, coins: total, hit, target: S.target };
+    } else {
+      d.sinceAd = (d.sinceAd || 0) + 1;
+      d.recent.unshift({ round: S.round, t: S.theater, made: S.made, served: S.served, queue: S.queue.length, coins: total, hit });
+      d.recent = d.recent.slice(0, 5);
     }
-    best('hall', Store.data.hall);
-    // 최고 기록: 가장 크게 터진 한 번(모든 상영)과 상영관마다 번 동전
-    res.bestBig = Store.data.best.biggest || 0;
-    res.newBig = S.biggest > 0 && S.biggest > S.prevBig;
-    if (S.mode === 'hall') {
-      const hb = Store.data.hallBest || (Store.data.hallBest = {});
-      const prev = hb[S.hallNo] || 0;
-      res.newHallBest = total > prev;
-      if (res.newHallBest) hb[S.hallNo] = total;
-      res.hallBest = hb[S.hallNo] || 0;
-    }
-    if (S.mode === 'daily') {
-      const t = today();
-      if (Store.data.daily.date !== t) Store.data.daily = { date: t, best: 0, played: false };
-      Store.data.daily.played = true;
-      if (total > Store.data.daily.best) { Store.data.daily.best = total; res.newDaily = true; }
-    }
-    Store.data.sinceAd = (Store.data.sinceAd || 0) + 1;
-    Store.data.recent.unshift({ hall: S.hallNo, mode: S.mode, filled: S.filled, seats: S.seats.length, coins: total, big: S.biggest });
-    Store.data.recent = Store.data.recent.slice(0, 5);
-    S.result = res;
     checkAchs();
     Store.save();
     emit('end', res);
+    if (S.tut === 3) tutTo(4);
+  }
+  function next() {
+    if (!S || S.phase !== 'result' || S.daily) return false;
+    if (S.tut) { Store.data.tutDone = true; }
+    Store.data.round = (Store.data.round || 1) + 1;
+    Store.save();
+    newRound();
+    return true;
+  }
+
+  // ---------- 스킬 트리 ----------
+  function buy(id) {
+    if (!canBuy(id)) return false;
+    const c = costOf(id);
+    if (Store.data.coins < c) return false;
+    const d = Store.data, n = D.SKILL[id];
+    d.coins -= c; d.owned[id] = true;
+    stat('nodes');
+    let opened = 0;
+    if (n.eff === 'key') {
+      stat('keys');
+      d.theaters = Math.min(D.THEATERS.length, (d.theaters || 1) + 1);
+      d.theater = d.theaters; opened = d.theater;
+    }
+    Store.save();
+    emit('buy', { id, cost: c, opened });
+    checkAchs();
+    if (S && S.phase === 'ready' && !S.daily) {
+      if (opened) { const keepTut = S.tut; newRound(); S.tut = keepTut; } else refreshTarget();
+    }
+    if (S && S.tut === 5 && id === S.tutNode) tutTo(6);
+    return true;
+  }
+  // 상영관 고르기: 쏟기 전이면 바로, 아니면 다음 판부터
+  function setTheater(t) {
+    const d = Store.data;
+    if (t < 1 || t > d.theaters) return false;
+    d.theater = t; Store.save();
+    if (S && S.phase === 'ready' && !S.daily) { const keepTut = S.tut; newRound(); S.tut = keepTut; }
+    return true;
   }
 
   // ---------- 광고 자리 (광고 SDK 없음: 자리만 두고 보상을 준다) ----------
-  function adCorn() {
-    if (!S || S.done || S.adCornUsed || S.corn > 0) return false;
-    S.adCornUsed = true; S.corn += 30; S.cornMax += 30; S.cornOutSaid = false;
-    emit('adCorn', {});
-    return true;
-  }
   function adDouble(res) {
-    if (!res || res.doubled) return false;
-    res.doubled = true; Store.data.coins += res.coins; stat('coins', res.coins);
+    if (!res || res.doubled || res.total <= 0 || res.daily) return false;
+    res.doubled = true; Store.data.coins += res.total; stat('coins', res.total);
     checkAchs(); Store.save();
     return true;
   }
-  function needInterstitial() { return (Store.data.sinceAd || 0) >= 3; }
+  function canAdCorn() { return !!S && S.phase === 'ready' && !S.double && !S.daily && Store.data.adDay !== today(); }
+  function adCorn() {
+    if (!canAdCorn()) return false;
+    Store.data.adDay = today(); S.double = true; Store.save();
+    emit('adCorn', { n: pourCount() });
+    return true;
+  }
+  // 전면 광고: 첫 5판은 없고, 그 뒤 판 4번마다 결과 창 뒤에 한 번
+  function needInterstitial() { return !!S && !S.daily && S.round > 5 && (Store.data.sinceAd || 0) >= 4; }
   function interstitialShown() { Store.data.sinceAd = 0; Store.save(); }
 
-  // ---------- 영화관 키우기 ----------
-  function buyUp(key) {
-    const nx = upNext(key);
-    if (!nx || Store.data.coins < nx.cost) return false;
-    Store.data.coins -= nx.cost; Store.data.up[key]++;
-    Store.save(); emit('buy', { key }); checkAchs();
+  // ---------- 오늘의 도전 (하루 한 번) ----------
+  function dailyDone() { const x = Store.data.daily; return !!x && x.day === today(); }
+  function dailyInfo() {
+    const day = today(), plan = dailyPlan(day), x = Store.data.daily;
+    const done = dailyDone();
+    return { day, done, last: done ? x : null, best: Store.data.best.daily || 0, theater: plan.theater, nodes: plan.nodes.length,
+      corn: stats(plan.owned).corn, playing: !!S && !!S.daily };
+  }
+  // 그날의 판을 연다. 보통 판(S)은 그대로 두었다가 endDaily 에서 되돌린다.
+  function startDaily() {
+    if (dailyDone() || (S && S.daily)) return false;
+    const plan = dailyPlan(today());
+    const st = stats(plan.owned), t = plan.theater;
+    const target = targetFor(st, t, false);       // 목표는 보통 무작위로 미리 쏟아 본다(씨앗 차례를 쓰지 않음)
+    mainS = S;
+    dailyRng = P.seeded(plan.seed);
+    S = blankRound(st, t, DAILY_ROUND);
+    S.first = false; S.film = plan.film; S.target = target; S.cfgKey = calKey(st, t);
+    S.daily = { day: plan.day, seed: plan.seed, nodes: plan.nodes.length };
+    daily(fitQueue);
+    emit('round', { round: S.round, daily: true });
     return true;
   }
-  function pegPrice(kind) { return D.PEG_KINDS[kind].price; }
-  function buyPeg(kind) {
-    if (!D.PEG_KINDS[kind] || !D.PEG_KINDS[kind].price || Store.data.coins < pegPrice(kind)) return false;
-    Store.data.coins -= pegPrice(kind); Store.data.inv[kind]++;
-    Store.save(); emit('buy', { key: kind });
-    return true;
-  }
-  function boardPreview() { return buildPegs(D.HALLS[Store.data.pick - 1] || D.HALLS[0], 'hall', null, (Store.data.pick) * 7919 + 13).pegs; }
-  function placePeg(kind, i) {
-    if (!Store.data.inv[kind] || Store.data.placed.length >= MAX_PLACED) return false;
-    if (Store.data.placed.some(p => p.i === i)) return false;
-    const pegs = boardPreview();
-    if (!pegs[i] || pegs[i].k !== 'n') return false;
-    Store.data.inv[kind]--; Store.data.placed.push({ i, k: kind });
-    stat('placed'); Store.save(); emit('place', { i, kind }); checkAchs();
-    return true;
-  }
-  function removePeg(i) {
-    const at = Store.data.placed.findIndex(p => p.i === i);
-    if (at < 0) return false;
-    const pl = Store.data.placed.splice(at, 1)[0];
-    Store.data.inv[pl.k]++; Store.save(); emit('unplace', { i });
-    return true;
-  }
-  function randomFreePeg() {
-    const pegs = boardPreview().filter(p => p.k === 'n' && p.r >= 1 && !Store.data.placed.some(q => q.i === p.i));
-    return pegs.length ? pegs[Math.floor(Math.random() * pegs.length)].i : -1;
-  }
-  function buyDeco(id) {
-    const d = D.DECO.find(x => x.id === id);
-    if (!d) return false;
-    const o = Store.data.deco;
-    if (o.owned.indexOf(id) < 0) {
-      if (Store.data.coins < d.cost) return false;
-      Store.data.coins -= d.cost; o.owned.push(id); stat('decos');
+  // 도전 판을 닫고 보통 판으로 돌아간다. 쏟는 중이었으면 화면 없이 끝까지 돌려 결과를 남긴다.
+  function endDaily() {
+    if (!S || !S.daily) return false;
+    if (S.phase !== 'ready' && !S.done) {
+      const keep = sink;
+      sink = [];
+      try {
+        for (let i = 0; i < 4000 && !S.done; i++) update(1 / 60);
+        if (!S.done) daily(finishRound);
+      } finally { sink = keep; }
     }
-    o.eq[d.kind] = id;
-    Store.save(); emit('deco', { id }); checkAchs();
+    S = mainS; mainS = null; dailyRng = null;
     return true;
   }
-  function pickHall(dir) {
-    Store.data.pick = Math.max(1, Math.min(Store.data.hall, (Store.data.pick || 1) + dir));
-    Store.save();
+
+  // ---------- 처음 하는 사람 ----------
+  // ① 쏟아붓기! 만 반짝 ② 쏟아지고 팝콘이 되는 걸 본다 ③ 손님에게 나눠 주고 품절을 본다 ④ 결과 창 ‘스킬 트리’ ⑤ ‘옥수수 +5’ 사기 ⑥ ‘다음 판’
+  function tutTo(step) {
+    if (!S || !S.tut) return;
+    S.tut = step;
+    if (step === 5) {
+      // 사 볼 칸: 첫 칸 ‘옥수수 +5’. 이미 샀으면(안내 다시 보기) 지금 살 수 있는 가장 싼 칸
+      const list = D.SKILLS.filter(n => canBuy(n.id)).sort((a, b) => costOf(a.id) - costOf(b.id));
+      S.tutNode = canBuy('corn_M1') ? 'corn_M1' : (list[0] ? list[0].id : '');
+    }
+    emit('tut', { step });
   }
-  function dailyState() {
-    const d = Store.data.daily, t = today();
-    return { date: t, played: d.date === t && d.played, best: d.date === t ? d.best : 0, mod: D.DAILY_MODS[hashStr(t) % D.DAILY_MODS.length] };
+  function tutEvent(what) {
+    if (!S || !S.tut) return;
+    if (what === 'tree' && S.tut === 4) tutTo(5);
+  }
+  function skipTut() {
+    if (!S || !S.tut) return;
+    S.tut = 0; Store.data.tutDone = true; Store.save();
+    emit('tut', { step: 0, skipped: true });
   }
 
   // ---------- 업적 ----------
@@ -484,81 +568,87 @@
     });
   }
 
-  // ---------- 연습 상영 (시작 화면 예고편) ----------
-  // 같은 규칙으로 따로 한 판을 돌린다. 저장·기록·지금 상영은 건드리지 않고 끝나면 되돌린다.
+  // ---------- 연습 판 (시작 화면 예고편·성장 재기) ----------
+  // 같은 규칙으로 따로 돌린다. 저장·기록·지금 판은 건드리지 않고 끝나면 되돌린다.
   function sandbox(fn) {
-    const keep = { S, data: Store.data, mute: Store.mute, test: Game.testMode, sink };
+    const keep = { S, data: Store.data, mute: Store.mute, test: Game.testMode, sink, dailyRng, mainS };
     const d = defaults();
-    d.tutDone = true; d.settings = keep.data.settings; d.deco = keep.data.deco;   // 꾸미기·설정은 보기만 한다
+    d.tutDone = true; d.settings = keep.data.settings;
     Store.data = d; Store.mute = true; Game.testMode = true; sink = [];
     try { return fn(sink); } finally {
       S = keep.S; Store.data = keep.data; Store.mute = keep.mute; Game.testMode = keep.test; sink = keep.sink;
+      dailyRng = keep.dailyRng; mainS = keep.mainS;
     }
+  }
+  // 스킬 10칸을 산 뒤 팝콘이 첫 판(스킬 없음)보다 몇 배 나오나 — 같은 규칙으로 60번씩 쏟아 본 평균
+  const PLAN10 = ['corn_M1', 'corn_M2', 'corn_M3', 'corn_B3', 'pan_M1', 'pan_M2', 'pan_M3', 'peg_M1', 'peg_M2', 'peg_M3'];
+  function growth() {
+    const own0 = { start: true }, own10 = { start: true };
+    PLAN10.forEach(id => { own10[id] = true; });
+    const a = calibrate(stats(own0), 1, 60), b = calibrate(stats(own10), 1, 60);
+    return { base: a.mean, ten: b.mean, ratio: a.mean ? b.mean / a.mean : 0, plan: PLAN10 };
   }
 
   // ---------- 시험 훅 (기획지시 14장) ----------
-  const run = { stage: 1, time: 0, over: false, won: false, phase: 'play' };
+  // 시험 판 = 처음 하는 사람이 첫 판부터 이어서 한다. 판마다 목표 팝콘을 못 채우면 그 판에서 끝(진 판), 6판 모두 채우면 이긴 판.
+  const run = { round: 1, time: 0, over: false, won: false, view: 'play', judged: false };
   function testActions() {
-    if (run.over) return [];
-    if (run.phase === 'lobby') {
+    if (run.over || !S) return [];
+    if (run.view === 'tree') {
       const a = [];
-      ['corn', 'pot', 'fire', 'rat'].forEach(k => { const nx = upNext(k); if (nx && Store.data.coins >= nx.cost) a.push('up:' + k); });
-      ['x2', 'x4', 'gold'].forEach(k => { if (Store.data.coins >= pegPrice(k) && Store.data.placed.length < MAX_PLACED) a.push('peg:' + k); });
-      a.push('next');
+      D.SKILLS.forEach(n => { if (canBuy(n.id) && Store.data.coins >= costOf(n.id)) a.push('buy:' + n.id); });
+      a.push('close');
       return a;
     }
-    if (!S || S.done) return [];
-    const a = ['left', 'right', S.holding ? 'release' : 'hold'];
-    for (let i = 0; i < 5; i++) if (canFire(i)) a.push('fire:' + i);
-    return a;
+    if (S.phase === 'ready') return ['pour', 'tree'];
+    if (S.phase === 'result') return ['tree', 'next'];
+    return [];
   }
   function testAct(a) {
-    const [cmd, arg] = String(a).split(':');
-    if (cmd === 'left') moveFunnel(-30);
-    else if (cmd === 'right') moveFunnel(30);
-    else if (cmd === 'hold') setHold(true);
-    else if (cmd === 'release') setHold(false);
-    else if (cmd === 'fire') toggleFire(Number(arg));
-    else if (cmd === 'up') buyUp(arg);
-    else if (cmd === 'peg') { if (buyPeg(arg)) { const i = randomFreePeg(); if (i >= 0) placePeg(arg, i); } }
-    else if (cmd === 'next') { run.phase = 'play'; Store.data.pick = run.stage; startShow(run.stage, 'hall'); }
+    const s = String(a), i = s.indexOf(':');
+    const cmd = i < 0 ? s : s.slice(0, i), arg = i < 0 ? '' : s.slice(i + 1);
+    if (cmd === 'pour') pour();
+    else if (cmd === 'tree') run.view = 'tree';
+    else if (cmd === 'close') run.view = 'play';
+    else if (cmd === 'buy') buy(arg);
+    else if (cmd === 'next' && S && S.phase === 'result' && !run.over) { run.round++; run.judged = false; next(); }
   }
-  function afterShow() {
-    if (!S || !S.done || run.phase !== 'play' || run.over) return;
-    if (!S.result.passed) { run.over = true; run.won = false; return; }
-    if (run.stage >= TEST_STAGES) { run.over = true; run.won = true; return; }
-    run.stage++; run.phase = 'lobby';
+  function judge() {
+    if (!S || S.phase !== 'result' || run.judged || run.over) return;
+    run.judged = true;
+    if (!S.result.hit) { run.over = true; run.won = false; }
+    else if (run.round >= TEST_STAGES) { run.over = true; run.won = true; }
   }
   window.__test = {
     reset(seed) {
       Game.testMode = true;
       Store.mute = true; Store.data = defaults(); Store.data.tutDone = true;
-      run.stage = 1; run.time = 0; run.over = false; run.won = false; run.phase = 'play';
-      startShow(1, 'hall');
+      run.round = 1; run.time = 0; run.over = false; run.won = false; run.view = 'play'; run.judged = false;
+      newRound();
       return seed;
     },
     actions() { return testActions(); },
-    act(a) { testAct(a); afterShow(); },
+    act(a) { testAct(a); judge(); },
     advance(ms) {
       const steps = Math.max(1, Math.round(ms / (1000 / 60)));
       for (let i = 0; i < steps && !run.over; i++) {
-        if (run.phase === 'play' && S && !S.done) update(1 / 60);
+        if (!S || S.done || S.phase === 'ready') { run.time += (steps - i) / 60; break; }
+        update(1 / 60);
         run.time += 1 / 60;
-        afterShow();
-        if (run.phase === 'lobby') { run.time += (steps - i - 1) / 60; break; }
+        judge();
       }
     },
-    state() { return { over: run.over, won: run.won, stage: run.stage, stageMax: TEST_STAGES, time: run.time }; }
+    state() { return { over: run.over, won: run.won, stage: run.round, stageMax: TEST_STAGES, time: run.time }; }
   };
 
   const Game = {
     Store, testMode: false,
     get S() { return S; },
     on(fn) { handler = fn; },
-    startShow, update, endShow, setFunnel, moveFunnel, setHold, toggleFire, canFire, firesOn,
-    skipTut, adCorn, adDouble, needInterstitial, interstitialShown,
-    buyUp, upNext, upTotal, buyPeg, pegPrice, placePeg, removePeg, boardPreview, buyDeco, pickHall, dailyState,
-    cornMax, potCap, firesMax, coinTier, checkAchs, today, sandbox, MAX_PLACED, MEGA
+    newRound, pour, update, next, buy, canBuy, costOf, nodeState, keysOwned, setTheater, stats, pourCount,
+    adDouble, canAdCorn, adCorn, needInterstitial, interstitialShown, tutEvent, skipTut,
+    startDaily, endDaily, dailyInfo, dailyDone, dailyPlan,
+    checkAchs, today, sandbox, growth, calibrate, targetFor, BASE_CORN, PLAN10
   };
   Store.load();
   window.Game = Game;

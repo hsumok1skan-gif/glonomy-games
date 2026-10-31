@@ -168,7 +168,7 @@ var Logic = (function () {
         var pk = findPack(state.packs, a.packId);
         if (!pk) return;
         pk.items.forEach(function (x) { add(x, '방과후 ' + pk.name, 'after', pk.icon); });
-        pickups.push({ time: a.time || '', name: pk.name, icon: pk.icon, who: a.who || '' });
+        pickups.push({ id: pk.id, time: a.time || '', name: pk.name, icon: pk.icon, pic: pk.pic, who: a.who || '' });
       });
     }
     (state.daily || []).forEach(function (x) { add(x, '매일', 'daily', '🎒'); });
@@ -259,6 +259,68 @@ var Logic = (function () {
       (n.items || []).forEach(function (x) { var key = norm(x).toLowerCase(); u[key] = (u[key] || 0) + 1; });
     });
     return u;
+  }
+
+  // 알림장 글 붙여 넣기: 학교 알림 앱·문자로 온 글에서 가져갈 날과 준비물을 뽑는다 → { date: 'YYYY-MM-DD' 또는 null, items: [...] }
+  // items: ① 글 안에 든 DATA.SUPPLIES 이름 (긴 말 먼저 찾고 찾은 자리는 지워 '딱풀' 안의 '풀'이 또 잡히지 않게, 한 글자 말은 낱말일 때만)
+  //        ② '준비물:'·'준비물 -' 뒤(빈 줄 앞까지)를 쉼표·줄바꿈·'/'로 나눈 말 (norm, 40자 이하). 대소문자·띄어쓰기 무시하고 중복 없음
+  // date: 글에서 가장 먼저 나온 '내일'·'모레'·'n월 n일'·'n/n'. 해가 없는 날짜가 baseKey 보다 60일 넘게 앞이면 다음 해로 본다
+  var SUP_BY_LEN = null;
+  function parseNoteText(text, baseKey) {
+    var raw = String(text || '');
+    var items = [], seen = {};
+    function push(x) {
+      var n = norm(x);
+      var key = n.toLowerCase();
+      if (!n || n.length > 40 || seen[key]) return;
+      seen[key] = true;
+      items.push(n);
+    }
+    if (!SUP_BY_LEN) {
+      var all = [];
+      DATA.SUPPLIES.forEach(function (g) { g.items.forEach(function (x) { if (all.indexOf(x) < 0) all.push(x); }); });
+      SUP_BY_LEN = all.map(function (x, i) { return { x: x, i: i }; })
+        .sort(function (a, b) { return b.x.length - a.x.length || a.i - b.i; })
+        .map(function (o) { return o.x; });
+    }
+    var hay = raw.replace(/\s+/g, ' ').toLowerCase();
+    SUP_BY_LEN.forEach(function (x) {
+      var w = x.toLowerCase(), from = 0, hit = false, at;
+      while ((at = hay.indexOf(w, from)) >= 0) {
+        from = at + w.length;
+        if (w.length === 1) {
+          var pv = hay.charAt(at - 1), nx = hay.charAt(at + 1);
+          if (/[가-힣a-z0-9]/.test(pv)) continue;
+          if (/[가-힣]/.test(nx) && '을를이가은는과와도랑만'.indexOf(nx) < 0) continue;
+        }
+        hit = true;
+        hay = hay.slice(0, at) + new Array(w.length + 1).join('\u0001') + hay.slice(at + w.length);
+      }
+      if (hit) push(x);
+    });
+    var mk = /준비물\s*(?::|：|-)\s*/.exec(raw);
+    if (mk) {
+      raw.slice(mk.index + mk[0].length).split(/\n\s*\n/)[0].split(/[,，、\n\/]/).forEach(function (p) {
+        push(p.replace(/^\s*(?:[-•·*▶▷○●◦]+|\d+[.)])\s*/, ''));
+      });
+    }
+
+    var cands = [];
+    var re, m;
+    re = /내일\s*모레|내일|모레/g;
+    while ((m = re.exec(raw))) cands.push({ at: m.index, key: addDays(baseKey, m[0] === '내일' ? 1 : 2) });
+    function md(at, mo, d) {
+      var y = +baseKey.slice(0, 4);
+      var k = y + '-' + pad(mo) + '-' + pad(d);
+      if (validKey(k) && k < addDays(baseKey, -60)) k = (y + 1) + '-' + pad(mo) + '-' + pad(d);
+      if (validKey(k)) cands.push({ at: at, key: k });
+    }
+    re = /(\d{1,2})\s*월\s*(\d{1,2})\s*일/g;
+    while ((m = re.exec(raw))) md(m.index, +m[1], +m[2]);
+    re = /(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?![\d\/])/g;
+    while ((m = re.exec(raw))) md(m.index + m[1].length, +m[2], +m[3]);
+    cands.sort(function (a, b) { return a.at - b.at; });
+    return { date: cands.length ? cands[0].key : null, items: items };
   }
 
   // 며칠 뒤 준비물: fromKey 다음 날부터 days 일 안의 그 아이 알림장을 날짜순으로 (미리 사 둘 것)
@@ -510,6 +572,10 @@ var Logic = (function () {
     eq('그림 찾기 30cm 자', iconFor('30cm 자').id, 'ruler');
     eq('그림 찾기 연필 두 자루', iconFor('연필 두 자루').id, 'pencil');
     eq('그림 찾기 없는 물건', iconFor('우주선 모형').id, 'bag');
+    // 5-1b) 과목·학원 꾸러미 30개의 pic 은 모두 있는 선 그림 id
+    var picIds = {};
+    DATA.ICONS.forEach(function (ic) { picIds[ic.id] = true; });
+    eq('꾸러미 그림 모두 있음', DATA.SUBJECTS.concat(DATA.ACADEMIES).filter(function (p) { return !picIds[p.pic]; }).length, 0);
     // 5-2) 자주 덜 챙긴 것: 30일 앞(9/25)·다른 아이·그날(10/26) 기록은 빼고, ' 리코더'·'리코더' 는 같은 것 → 리코더 2, 물병 1
     var mc = missCounts([
       { kid: 'k', date: '2026-09-20', missed: ['리코더'] },
@@ -522,6 +588,14 @@ var Logic = (function () {
     // 5-3) 준비물 찾기: '풀' → 풀·딱풀, 자주 쓰는 순이면 많이 넣은 딱풀이 먼저
     eq('준비물 찾기 풀', findSupplies('풀', 'all', 'base').join(','), '풀,딱풀');
     eq('준비물 자주 쓰는 순', findSupplies('풀', 'all', 'often', { '딱풀': 3 })[0], '딱풀');
+    // 5-4) 알림장 글 뽑기: 날짜 'n월 n일', 긴 말 먼저(딱풀 안의 풀은 안 잡음), '준비물:' 뒤 쉼표·'/'·줄바꿈 말, 중복 없음
+    var pn = parseNoteText('[알림장] 11월 3일 준비물: 색종이, 딱풀 / 휴지 심 2개\n체육복', '2026-11-01');
+    eq('알림장 글 날짜', pn.date, '2026-11-03');
+    eq('알림장 글 준비물', pn.items.join(','), '휴지 심,색종이,체육복,딱풀,휴지 심 2개');
+    eq('알림장 글 모레 (해 넘김)', parseNoteText('모레 현장체험 있어요', '2026-12-31').date, '2027-01-02');
+    eq('알림장 글 n/n (다음 해)', parseNoteText('1/5 개학', '2026-12-28').date, '2027-01-05');
+    eq('알림장 글 날짜 없음', parseNoteText('준비물 - 모자', '2026-11-01').date, null);
+    eq('알림장 글 한 글자 말', parseNoteText('모자, 자세히 보기', '2026-11-01').items.join(','), '모자');
     // 6) 없는 날짜 거르기
     eq('2026-02-30 은 없는 날', validKey('2026-02-30'), false);
     // 7) 며칠 뒤 준비물: 10/26 가방 기준, 그날(10/26)·8일 뒤(11/3)·다른 아이는 빼고 10/28·11/2 두 개, 날짜순
@@ -596,7 +670,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, progress: progress, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, findSupplies: findSupplies, supplyUsage: supplyUsage,
+    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
