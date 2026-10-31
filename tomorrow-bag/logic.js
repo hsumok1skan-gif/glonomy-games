@@ -309,6 +309,42 @@ var Logic = (function () {
     return w;
   }
 
+  // ---- 교시 시간: 기본 1교시 09:00~09:40, 쉬는 시간 10분, 4교시 뒤 점심 50분 ----
+  var MAX_P = 7;
+  function hm(min) { var h = Math.floor(min / 60), m = min % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
+  function toMin(t) { var m = /^(\d{2}):(\d{2})$/.exec(t || ''); return m ? (+m[1]) * 60 + (+m[2]) : -1; }
+  function defaultTimes() {
+    var out = [], t = 9 * 60;
+    for (var i = 0; i < MAX_P; i++) {
+      out.push([hm(t), hm(t + 40)]);
+      t += 40 + (i === 3 ? 50 : 10);
+    }
+    return out;
+  }
+  // 저장된 교시 시간이 맞으면 그대로, 아니면 기본값
+  function periodTimes(settings) {
+    var p = settings && settings.ptimes;
+    if (!Array.isArray(p) || p.length !== MAX_P) return defaultTimes();
+    var ok = p.every(function (x) { return Array.isArray(x) && toMin(x[0]) >= 0 && toMin(x[1]) > toMin(x[0]); });
+    return ok ? p : defaultTimes();
+  }
+  // 고친 교시 시간 검사: 틀린 첫 칸 { i, end, msg } 또는 null
+  function checkTimes(list) {
+    for (var i = 0; i < list.length; i++) {
+      var s = toMin(list[i][0]), e = toMin(list[i][1]);
+      if (s < 0) return { i: i, end: false, msg: (i + 1) + '교시 시작 시각을 골라 주세요.' };
+      if (e < 0) return { i: i, end: true, msg: (i + 1) + '교시 끝 시각을 골라 주세요.' };
+      if (e <= s) return { i: i, end: true, msg: (i + 1) + '교시는 시작보다 늦게 끝나야 해요.' };
+      if (i && s < toMin(list[i - 1][1])) return { i: i, end: false, msg: (i + 1) + '교시는 ' + i + '교시가 끝난 뒤에 시작해요.' };
+    }
+    return null;
+  }
+  // 점심: 앞 교시 끝과 다음 교시 시작 사이가 30분 이상인 첫 자리 (그 앞 교시 번호, 0 부터). 없으면 -1
+  function lunchAfter(list, n) {
+    for (var i = 0; i + 1 < Math.min(n, list.length); i++) if (toMin(list[i + 1][0]) - toMin(list[i][1]) >= 30) return i;
+    return -1;
+  }
+
   // 가족에게 보낼 글: 첫 줄 '하윤이 11월 2일(월) 가방 다 챙겼어요 🎒' (다 챙기기 전에는 '챙기고 있어요'),
   // 데리러 갈 사람이 있으면 둘째 줄 '14:30 태권도 → 아빠' (여럿이면 · 로 이어 한 줄)
   function shareText(state, kid, bag) {
@@ -534,6 +570,15 @@ var Logic = (function () {
     var gw = gradeWeek(gt, [{ id: 'a' }, { id: 'b' }], 4, 4);
     eq('학년 기본 시간표 (4교시)', gw[1].join(',') + '|' + gw[2].length, 'a,b,,a|4');
     eq('학년 기본 시간표 (없는 학년)', gradeWeek(gt, [], 1, 6), null);
+    // 9-5) 교시 시간: 기본값과 검사
+    var dt = defaultTimes();
+    eq('기본 1교시 시간', dt[0].join('~'), '09:00~09:40');
+    eq('기본 5교시 시간 (점심 50분 뒤)', dt[4].join('~'), '13:00~13:40');
+    eq('기본 7교시 시간', dt[6].join('~'), '14:40~15:20');
+    eq('점심 자리', lunchAfter(dt, 6), 3);
+    var bt = dt.map(function (x) { return x.slice(); });
+    bt[2][0] = '10:20';
+    eq('겹친 교시 시간', (checkTimes(bt) || {}).i, 2);
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -552,7 +597,7 @@ var Logic = (function () {
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, progress: progress, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, findSupplies: findSupplies, supplyUsage: supplyUsage,
-    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
+    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

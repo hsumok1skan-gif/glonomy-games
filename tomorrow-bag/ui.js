@@ -180,7 +180,7 @@ var UI = (function () {
   };
 
   function emptyBox(art, title, text, btns) {
-    var h = '<div class="card empty">' + (ARTS[art] || '') + '<h3>' + esc(title) + '</h3><p>' + esc(text) + '</p><div class="row wrap" style="justify-content:center;width:100%;max-width:360px">';
+    var h = '<div class="card empty">' + (ARTS[art] || '') + '<h3>' + esc(title) + '</h3>' + (text ? '<p>' + esc(text) + '</p>' : '') + '<div class="row wrap" style="justify-content:center;width:100%;max-width:360px">';
     // 주 버튼은 폭을 채운 큰 버튼, 나머지는 그 아래로 세로로 쌓는다
     btns.forEach(function (b, i) {
       h += '<button class="btn ' + (i === 0 ? 'main big wide' : 'wide') + '" type="button" data-act="' + b.act + '"' + (b.extra || '') + '>' + esc(b.label) + '</button>';
@@ -204,7 +204,7 @@ var UI = (function () {
     S.kids.forEach(function (k) {
       h += '<button class="chip' + (k.id === S.cur ? ' on' : '') + '" type="button" data-act="kid-pick" data-id="' + k.id + '">' + esc(k.name) + (k.sample ? ' (예시)' : '') + '</button>';
     });
-    h += '<button class="chip" type="button" data-act="kid-new" aria-label="아이 넣기">+ 아이</button>';
+    h += '<button class="chip add" type="button" data-act="kid-new" aria-label="아이 넣기">+</button>';
     $('kids').innerHTML = h;
   }
 
@@ -234,7 +234,7 @@ var UI = (function () {
   function renderBag(S, V, kid, k, todayKey) {
     var root = $('bag-root');
     if (!kid) {
-      root.innerHTML = emptyBox('bag', '내일 가방을 함께 챙겨요', '아이 이름과 학년만 알려 주면 바로 시작해요. 예시로 먼저 둘러봐도 좋아요.', [
+      root.innerHTML = emptyBox('bag', '아이를 알려 주세요', '', [
         { act: 'kid-new', label: '시작하기' }, { act: 'sample-add', label: '예시로 둘러보기' }]);
       $('print-area').innerHTML = '';
       return;
@@ -243,7 +243,14 @@ var UI = (function () {
     var pr = Logic.progress(S, kid, bag);
     var h = '';
 
-    // 며칠 뒤 준비물: 날짜 카드 위 작은 알약, 누르면 시트
+    // 처음 설정 카드가 있으면 날짜 카드 자리를 대신한다
+    var setup = setupCard(S, kid, k);
+    h += setup || ('<div class="card date-card" data-swipe="day">' +
+      '<button class="icon-btn" type="button" data-act="day-prev" aria-label="앞 학교 가는 날">‹</button>' +
+      '<div class="mid"><span class="rel">' + Logic.relLabel(k, todayKey) + ' 가방</span><div class="big">' + Logic.label(k) + '</div></div>' +
+      '<button class="icon-btn" type="button" data-act="day-next" aria-label="다음 학교 가는 날">›</button></div>');
+
+    // 며칠 뒤 준비물: 날짜 카드 바로 아래 작은 알약, 누르면 시트
     var up = Logic.upcoming(S, kid, k, 7);
     var top = '';
     if (up.length) {
@@ -253,15 +260,8 @@ var UI = (function () {
     if (V.offset !== 0) top += '<span class="spacer"></span><button class="chip" type="button" data-act="day-now">↺ 지금 가방</button>';
     if (top) h += '<div class="top-row no-print">' + top + '</div>';
 
-    // 처음 설정 카드가 있으면 날짜 카드 자리를 대신한다
-    var setup = setupCard(S, kid, k);
-    h += setup || ('<div class="card date-card" data-swipe="day">' +
-      '<button class="icon-btn" type="button" data-act="day-prev" aria-label="앞 학교 가는 날">‹</button>' +
-      '<div class="mid"><span class="rel">' + Logic.relLabel(k, todayKey) + ' 가방</span><div class="big">' + Logic.label(k) + '</div></div>' +
-      '<button class="icon-btn" type="button" data-act="day-next" aria-label="다음 학교 가는 날">›</button></div>');
-
     if (!bag.school) {
-      root.innerHTML = h + emptyBox('rest', '이날은 쉬는 날이에요', '주말이나 쉬는 날로 넣어 둔 날이에요. 다음 학교 가는 날 가방을 볼까요?', [{ act: 'day-next', label: '다음 학교 가는 날' }]);
+      root.innerHTML = h + emptyBox('rest', '이날은 쉬는 날이에요', '', [{ act: 'day-next', label: '다음 학교 가는 날' }]);
       $('print-area').innerHTML = '';
       return;
     }
@@ -278,7 +278,7 @@ var UI = (function () {
 
     // 방과후 · 데리러 갈 사람 한 줄
     h += '<div class="strip" aria-label="방과후와 데리러 갈 사람"><span class="lab">방과후</span>';
-    if (!bag.pickups.length) h += '<span class="tiny">이날은 방과후가 없어요</span>';
+    if (!bag.pickups.length) h += '<span class="tiny">없어요</span>';
     bag.pickups.forEach(function (p) {
       h += '<span class="pk">' + esc(p.icon) + ' ' + esc(p.time || '') + ' ' + esc(p.name) + (p.who ? ' → <b>' + esc(p.who) + '</b>' : '') + '</span>';
     });
@@ -365,7 +365,7 @@ var UI = (function () {
     var html = pages.map(function (p) {
       return { g: p.g, html: '<div class="grid' + (V.kidMode ? ' c3' : '') + '">' + p.rows.map(function (r) { return cellHTML(r.it, done.indexOf(r.it.name) >= 0); }).join('') + '</div>' };
     });
-    if (!html.length) html = [{ g: '', html: miniEmpty('🎒', '이날 챙길 물건이 아직 없어요. 알림장 준비물을 넣어 보세요.', { act: 'note-new', label: '+ 알림장' }) }];
+    if (!html.length) html = [{ g: '', html: miniEmpty('🎒', '챙길 물건이 없어요',{ act: 'note-new', label: '+ 알림장' }) }];
     $('bs-pages').innerHTML = pagerHTML('bag', html, cur);
     V.pg.bag = cur;
     var ca = sheet.querySelector('[data-act="check-all"]');
@@ -487,7 +487,7 @@ var UI = (function () {
     $('cal-month').textContent = y + '년 ' + m + '월';
     $('cal-title').textContent = kid ? Logic.nameI(kid.name) + ' 가방 달력' : '가방 달력';
     if (!kid) {
-      $('cal-grid').innerHTML = miniEmpty('🧒', '아이를 먼저 알려 주세요. 가방을 다 챙긴 날마다 이 달력에 스티커가 붙어요.', { act: 'cal-kid', label: '시작하기' });
+      $('cal-grid').innerHTML = miniEmpty('🧒', '아이를 알려 주세요',{ act: 'cal-kid', label: '시작하기' });
       $('cal-sum').innerHTML = '';
       return;
     }
@@ -504,7 +504,7 @@ var UI = (function () {
     $('cal-grid').innerHTML = h;
     var n = Logic.monthStickers(S.history, kid.id, ym);
     $('cal-sum').innerHTML = n ? '<p>이 달 칭찬 스티커 ' + n + '장이 모였어요</p>' :
-      miniEmpty('🎒', '가방을 다 챙기면 이 달력에 칭찬 스티커가 붙어요.', { act: 'bag-open', label: '가방 챙기기' });
+      miniEmpty('🎒', '이 달 스티커가 없어요',{ act: 'bag-open', label: '가방 챙기기' });
   }
 
   // ---- 며칠 뒤 준비물 시트 ----
@@ -516,32 +516,26 @@ var UI = (function () {
         '<span class="tx"><b>' + Logic.shortLabel(n.date) + '</b> ' + esc(n.title || '알림장') + '<span class="tiny">' + esc(n.items.join(', ')) + '</span></span>' +
         '<button class="btn small" type="button" data-act="note-edit" data-id="' + n.id + '">고치기</button></div>';
     });
-    if (!list.length) h = miniEmpty('📅', '일주일 안에 미리 챙길 준비물이 없어요. 알림장에 적힌 준비물을 넣어 보세요.', { act: 'note-new', label: '+ 알림장' });
+    if (!list.length) h = miniEmpty('📅', '며칠 뒤 준비물이 없어요',{ act: 'note-new', label: '+ 알림장' });
     $('up-list').innerHTML = h;
   }
 
-  // ---- 시간표: 월~금 × 교시 격자 하나 ----
+  // ---- 시간표: 한 표 — 위 머리 줄 월~금, 왼쪽 열 교시(이름 아래 시간), 맨 아래 방과후 줄 ----
+  function sortAfter(list) { return list.slice().sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); }); }
   function renderWeek(S, V, kid, todayKey) {
     var root = $('week-root');
     if (!kid) {
-      root.innerHTML = '<h1>시간표</h1>' + emptyBox('week', '아이를 먼저 알려 주세요', '아이마다 시간표가 따로 있어요.', [{ act: 'kid-new', label: '시작하기' }]);
+      root.innerHTML = '<h1>시간표</h1>' + emptyBox('week', '아이를 알려 주세요', '', [{ act: 'kid-new', label: '시작하기' }]);
       return;
     }
     var tw = Logic.dow(todayKey);
-    var h = '<div class="row head-row"><h1>' + esc(Logic.nameI(kid.name)) + ' 시간표</h1><div class="seg" role="group" aria-label="교시 수">';
-    [4, 5, 6, 7].forEach(function (n) {
-      h += '<button class="chip' + (kid.periods === n ? ' on' : '') + '" type="button" data-act="set-periods" data-v="' + n + '" aria-pressed="' + (kid.periods === n) + '" aria-label="' + n + '교시까지">' + n + '</button>';
-    });
-    h += '</div></div>';
-    h += '<p class="tiny">칸을 누르면 과목을, 요일을 누르면 방과후를 넣어요. 오른쪽 숫자는 교시 수예요.</p>';
-    h += '<div class="week" style="grid-template-rows:minmax(44px,auto) repeat(' + kid.periods + ', minmax(0,1fr))"><div></div>';
-    for (var d = 1; d <= 5; d++) {
-      var na = kid.week[d].after.length;
-      h += '<button class="hd' + (d === tw ? ' today' : '') + '" type="button" data-act="day-open" data-d="' + d + '" aria-label="' + DATA.DOW[d] + '요일 방과후 ' + na + '개">' +
-        DATA.DOW[d] + '<span class="tiny">' + (na ? '방과후 ' + na : '방과후 +') + '</span></button>';
-    }
+    var pt = Logic.periodTimes(S.settings);
+    var h = '<div class="row head-row"><h1>' + esc(Logic.nameI(kid.name)) + ' 시간표</h1></div>';
+    h += '<div class="week" style="grid-template-rows:minmax(32px,auto) repeat(' + kid.periods + ', minmax(44px,1fr)) minmax(72px,auto)"><div class="corner"></div>';
+    for (var d = 1; d <= 5; d++) h += '<div class="hd' + (d === tw ? ' today' : '') + '">' + DATA.DOW[d] + '</div>';
     for (var i = 0; i < kid.periods; i++) {
-      h += '<div class="pn">' + (i + 1) + '</div>';
+      var t = pt[i] || ['', ''];
+      h += '<div class="pn"><b>' + (i + 1) + '교시</b><span class="tm">' + t[0] + '<br>~' + t[1] + '</span></div>';
       for (var e = 1; e <= 5; e++) {
         var pk = kid.week[e].p[i] ? Logic.findPack(S.packs, kid.week[e].p[i]) : null;
         h += '<button class="cell' + (pk ? ' full' : '') + '" type="button" data-act="cell" data-d="' + e + '" data-i="' + i + '" id="cell-' + e + '-' + i + '" aria-label="' +
@@ -549,22 +543,37 @@ var UI = (function () {
           (pk ? '<span class="ic" aria-hidden="true">' + esc(pk.icon) + '</span>' + esc(pk.name) : '+') + '</button>';
       }
     }
+    // 방과후 줄: 요일마다 학원 이름 · 시작 시각 · 데리러 갈 사람 (여러 개면 칸 안에서 줄을 나눈다)
+    h += '<div class="pn after-lab"><b>방과후</b></div>';
+    for (var w = 1; w <= 5; w++) {
+      var af = sortAfter(kid.week[w].after);
+      var lines = '', label = DATA.DOW[w] + '요일 방과후 ';
+      af.slice(0, 3).forEach(function (a) {
+        var p = Logic.findPack(S.packs, a.packId);
+        var nm = p ? p.name : '지운 꾸러미';
+        lines += '<span class="af"><b>' + esc(nm) + '</b><span>' + esc(a.time || '') + '</span>' + (a.who ? '<span class="who">' + esc(a.who) + '</span>' : '') + '</span>';
+        label += nm + ' ' + (a.time || '') + (a.who ? ' ' + a.who : '') + ', ';
+      });
+      if (af.length > 3) lines += '<span class="af more">+' + (af.length - 3) + '</span>';
+      h += '<button class="cell after' + (af.length ? ' full' : '') + '" type="button" data-act="after-cell" data-d="' + w + '" aria-label="' + esc(af.length ? label.replace(/, $/, '') : label + '빈 칸') + '">' +
+        (lines || '+') + '</button>';
+    }
     h += '</div>';
     root.innerHTML = h;
   }
 
-  // 요일 방과후 시트
+  // 요일 방과후 시트 (방과후가 있는 칸을 누르면)
   function renderDay(S, kid, d) {
     $('day-title').textContent = DATA.DOW[d] + '요일 방과후';
-    var af = kid.week[d].after.slice().sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); });
+    var af = sortAfter(kid.week[d].after);
     var h = '';
     af.slice(0, 6).forEach(function (a) {
       var p = Logic.findPack(S.packs, a.packId);
       h += '<div class="after-row"><span aria-hidden="true">' + esc(p ? p.icon : '❔') + '</span><span style="flex:1;min-width:0"><b>' + esc(a.time || '') + '</b> ' + esc(p ? p.name : '지운 꾸러미') +
-        '<br><span class="tiny">데리러 갈 사람: ' + esc(a.who || '정하지 않음') + '</span></span>' +
+        (a.who ? ' → <b>' + esc(a.who) + '</b>' : '') + '</span>' +
         '<button class="btn small" type="button" data-act="after-edit" data-d="' + d + '" data-id="' + a.id + '">고치기</button></div>';
     });
-    if (!af.length) h += miniEmpty('🏫', '이 요일은 방과후가 없어요. 학원·돌봄이 있으면 넣어 주세요.', { act: 'after-new', label: '+ 방과후 넣기', extra: ' data-d="' + d + '"' });
+    if (!af.length) h += miniEmpty('🏫', '방과후가 없어요', { act: 'after-new', label: '+ 방과후 넣기', extra: ' data-d="' + d + '"' });
     else if (af.length < 6) h += '<button class="btn main wide" type="button" data-act="after-new" data-d="' + d + '" style="margin-top:12px">+ 방과후 넣기</button>';
     $('day-list').innerHTML = h;
   }
@@ -582,7 +591,7 @@ var UI = (function () {
       }).join('') + '</div>' });
     }
     $('cell-picks').innerHTML = pages.length ? pagerHTML('cellp', pages, 0) :
-      miniEmpty('📚', '고를 과목 꾸러미가 없어요. 꾸러미를 먼저 만들어 주세요.', { act: 'pack-new', label: '+ 새 꾸러미' });
+      miniEmpty('📚', '과목 꾸러미가 없어요',{ act: 'pack-new', label: '+ 새 꾸러미' });
     $('cell-copy-row').innerHTML = '';
   }
 
@@ -598,7 +607,7 @@ var UI = (function () {
       '<div class="row"><button class="btn small" type="button" data-act="daily-open">매일 · 요일</button><button class="btn small" type="button" data-act="event-new">행사 꾸러미</button></div>';
     var list = S.packs.filter(function (p) { return p.kind === 'subj'; }).concat(S.packs.filter(function (p) { return p.kind !== 'subj'; }));
     if (!list.length) {
-      h += emptyBox('pack', '꾸러미가 없어요', '새 꾸러미를 만들어 늘 챙기는 물건을 넣어 두세요.', [{ act: 'pack-new', label: '+ 새 꾸러미' }]);
+      h += emptyBox('pack', '꾸러미가 없어요', '',[{ act: 'pack-new', label: '+ 새 꾸러미' }]);
     } else {
       var pages = [];
       for (var s = 0; s < list.length; s += 9) {
@@ -621,7 +630,7 @@ var UI = (function () {
       }).join('') + '</div>' });
     }
     $('pack-items').innerHTML = pages.length ? pagerHTML('pitems', pages, cur || 0) :
-      miniEmpty('✏️', '아직 물건이 없어요. 이 꾸러미에 늘 챙기는 물건을 넣어 주세요.', { act: 'focus', label: '물건 넣기', extra: ' data-target="pack-add"' });
+      miniEmpty('✏️', '물건이 없어요',{ act: 'focus', label: '물건 넣기', extra: ' data-target="pack-add"' });
   }
 
   // 매일 · 요일 시트
@@ -630,10 +639,10 @@ var UI = (function () {
     S.daily.forEach(function (x, i) {
       h += '<button class="chip" type="button" data-act="daily-del" data-i="' + i + '" aria-label="' + esc(x) + ' 빼기">' + esc(x) + ' ✕</button>';
     });
-    if (!S.daily.length) h = miniEmpty('🧴', '매일 챙길 것이 비어 있어요. 기본 다섯 가지를 넣거나 아래에 직접 넣어 주세요.', { act: 'daily-default', label: '기본 넣기' });
+    if (!S.daily.length) h = miniEmpty('🧴', '매일 챙길 것이 없어요',{ act: 'daily-default', label: '기본 넣기' });
     $('daily-chips').innerHTML = h;
     var r = '';
-    if (!S.rules.length) r = miniEmpty('📅', '요일마다 챙길 것이 없어요. 실내화 주머니 같은 기본 규칙을 넣어 보세요.', { act: 'rules-default', label: '기본 규칙 넣기' });
+    if (!S.rules.length) r = miniEmpty('📅', '요일마다 챙길 것이 없어요',{ act: 'rules-default', label: '기본 규칙 넣기' });
     S.rules.forEach(function (x) {
       r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button></div>';
     });
@@ -663,7 +672,7 @@ var UI = (function () {
       }).join('') + '</div>' });
     }
     $('note-supplies').innerHTML = pages.length ? pagerHTML('sup', pages, V.pg.sup || 0) :
-      miniEmpty('🔍', '‘' + V.noteQ + '’에 맞는 준비물이 없어요. 위 칸에 직접 써서 넣어도 돼요.', { act: 'note-q-clear', label: '찾기 지우기' });
+      miniEmpty('🔍', '‘' + V.noteQ + '’ 준비물이 없어요',{ act: 'note-q-clear', label: '찾기 지우기' });
   }
 
   function renderEvents(sel) {
@@ -673,40 +682,64 @@ var UI = (function () {
     });
     $('event-list').innerHTML = h;
     var ev = DATA.EVENTS.filter(function (e) { return e.id === sel; })[0];
-    $('event-items').textContent = ev ? '들어갈 것: ' + ev.items.join(', ') : '행사를 골라 주세요.';
+    $('event-items').textContent = ev ? ev.items.join(', ') : '';
   }
 
-  // ---- 더보기: 칸 격자 한 화면 ----
-  function tile(act, ic, nm, sub, extra, cls) {
-    return '<button class="tile' + (cls ? ' ' + cls : '') + '" type="button" data-act="' + act + '"' + (extra || '') + '><span class="t-ic" aria-hidden="true">' + ic + '</span><span class="t-nm">' + esc(nm) + '</span>' +
-      (sub ? '<span class="t-sub">' + esc(sub) + '</span>' : '') + '</button>';
+  // ---- 설정: 한 줄에 하나씩, 왼쪽 이름 · 오른쪽 지금 값이나 › ----
+  function setRow(act, nm, val, extra, cls) {
+    return '<button class="set-row' + (cls ? ' ' + cls : '') + '" type="button" data-act="' + act + '"' + (extra || '') + '><span class="nm">' + esc(nm) + '</span>' +
+      (val ? '<span class="val">' + esc(val) + '</span>' : '') + '<span class="chev" aria-hidden="true">›</span></button>';
   }
   var FONT_NAME = { 1: '보통', 1.15: '크게', 1.3: '아주 크게' };
   function renderMore(S, kid) {
     var st = S.settings;
     var ym = Logic.toKey(new Date()).slice(0, 7);
-    var hasSample = S.kids.some(function (k) { return k.sample; });
-    var h = '<h1>더보기</h1><div class="tiles">' +
-      tile('kids-open', '🧒', '아이', S.kids.length + '명') +
-      tile('guard-open', '🙋', '데리러 갈 사람', st.guardians.length + '명') +
-      tile('days-open', '🏖️', '쉬는 날', st.holidays.length + '일') +
-      tile('cal-open', '📅', '가방 달력', kid ? '스티커 ' + Logic.monthStickers(S.history, kid.id, ym) : '') +
-      tile('font', '🔠', '글자 크기', FONT_NAME[st.font] || '보통') +
-      tile('toggle-set', st.dark ? '🌙' : '☀️', '화면 색', st.dark ? '어둡게' : '밝게', ' data-k="dark" aria-pressed="' + !!st.dark + '"', st.dark ? 'on' : '') +
-      tile('toggle-set', '🐢', '움직임 줄이기', st.reduce ? '켜짐' : '꺼짐', ' data-k="reduce" aria-pressed="' + !!st.reduce + '"', st.reduce ? 'on' : '') +
-      tile('toggle-set', st.mute ? '🔕' : '🔔', '소리', st.mute ? '꺼짐' : '켜짐', ' data-k="mute" aria-pressed="' + !st.mute + '"', st.mute ? '' : 'on') +
-      // 선생님 모드는 부모가 쓰는 화면에 섞이지 않게 여기서 켤 때만 링크 칸이 보인다
-      tile('toggle-set', '🧑‍🏫', '선생님 모드', st.teacher ? '켜짐' : '꺼짐', ' data-k="teacher" aria-pressed="' + !!st.teacher + '"', st.teacher ? 'on' : '') +
-      (st.teacher ? tile('teacher-open', '🔗', '반 준비물 링크', 'QR코드') : '') +
-      tile('export-open', '📤', '내보내기', '글 복사') +
-      tile('backup', '📥', '가져오기', '붙여 넣기') +
-      (hasSample ? tile('sample-del', '🧸', '예시 빼기', '') : tile('sample-add', '🧸', '예시 넣기', '둘러보기')) +
-      tile('print', '🖨️', '인쇄', '그날 가방') +
-      tile('selftest-open', '✅', '계산 점검', '') +
-      tile('help', '❓', '도움말', '') +
-      tile('clear-all', '🗑️', '전체 지우기', '', '', 'danger') +
-      '</div><p class="tiny">넣은 내용은 이 기기 브라우저에만 저장돼요. 서버로 보내지 않아요.</p>';
+    var pt = Logic.periodTimes(st);
+    var h = '<h1 class="set-h">설정</h1><div class="set-list">' +
+      setRow('kids-open', '아이', S.kids.length + '명') +
+      setRow('guard-open', '데리러 갈 사람', st.guardians.length + '명') +
+      setRow('times-open', '교시 시간', '1교시 ' + pt[0][0]) +
+      setRow('days-open', '쉬는 날', st.holidays.length + '일') +
+      setRow('font', '글자 크기', FONT_NAME[st.font] || '보통') +
+      setRow('look-open', '화면 색', st.dark ? '어둡게' : '밝게') +
+      // 선생님 모드는 부모가 쓰는 화면에 섞이지 않게 여기서 켤 때만 링크 줄이 보인다
+      setRow('toggle-set', '선생님 모드', st.teacher ? '켜짐' : '꺼짐', ' data-k="teacher" aria-pressed="' + !!st.teacher + '"', st.teacher ? 'on' : '') +
+      (st.teacher ? setRow('teacher-open', '반 준비물 링크', '', '', 'sub') : '') +
+      setRow('export-open', '내보내기', '') +
+      setRow('backup', '가져오기', '') +
+      setRow('cal-open', '가방 달력', kid ? '스티커 ' + Logic.monthStickers(S.history, kid.id, ym) + '장' : '') +
+      setRow('help', '도움말', '') +
+      setRow('privacy-open', '개인정보 처리방침', '') +
+      '</div>';
     $('more-root').innerHTML = h;
+  }
+  // 화면 색 시트: 화면 색 · 움직임 줄이기 · 소리
+  function renderLook(S) {
+    var st = S.settings;
+    $('look-list').innerHTML =
+      setRow('toggle-set', '화면 색', st.dark ? '어둡게' : '밝게', ' data-k="dark" aria-pressed="' + !!st.dark + '"', st.dark ? 'on' : '') +
+      setRow('toggle-set', '움직임 줄이기', st.reduce ? '켜짐' : '꺼짐', ' data-k="reduce" aria-pressed="' + !!st.reduce + '"', st.reduce ? 'on' : '') +
+      setRow('toggle-set', '소리', st.mute ? '꺼짐' : '켜짐', ' data-k="mute" aria-pressed="' + !st.mute + '"', st.mute ? '' : 'on');
+  }
+  // 교시 시간 시트: 교시마다 시작·끝 시각, 점심 자리 표시, 학년별 교시 수
+  function renderTimes(list, gp) {
+    var lunch = Logic.lunchAfter(list, list.length);
+    var h = '';
+    list.forEach(function (t, i) {
+      h += '<div class="pt-row"><b>' + (i + 1) + '교시</b>' +
+        '<input type="time" id="pt-s-' + i + '" value="' + t[0] + '" aria-label="' + (i + 1) + '교시 시작">' +
+        '<span aria-hidden="true">~</span>' +
+        '<input type="time" id="pt-e-' + i + '" value="' + t[1] + '" aria-label="' + (i + 1) + '교시 끝"></div>';
+      if (i === lunch) h += '<div class="lunch">점심 ' + t[1] + '~' + list[i + 1][0] + '</div>';
+    });
+    $('times-list').innerHTML = h;
+    var g = '';
+    for (var y = 1; y <= 6; y++) {
+      g += '<label class="gp"><span>' + y + '학년</span><select id="gp-' + y + '" aria-label="' + y + '학년 교시 수">';
+      for (var n = 4; n <= Logic.MAX_P; n++) g += '<option value="' + n + '"' + (n === gp[y] ? ' selected' : '') + '>' + n + '교시</option>';
+      g += '</select></label>';
+    }
+    $('grade-list').innerHTML = g;
   }
 
   function renderKidsSheet(S) {
@@ -714,7 +747,7 @@ var UI = (function () {
     S.kids.forEach(function (k) {
       h += '<div class="toggle"><span>' + esc(k.name) + (k.sample ? ' (예시)' : '') + ' · ' + k.grade + '학년</span><button class="btn small" type="button" data-act="kid-edit" data-id="' + k.id + '">고치기</button></div>';
     });
-    if (!S.kids.length) h = miniEmpty('🧒', '아직 아이가 없어요. 이름과 학년만 알려 주면 시작해요.', { act: 'kid-new', label: '시작하기' });
+    if (!S.kids.length) h = miniEmpty('🧒', '아이가 없어요',{ act: 'kid-new', label: '시작하기' });
     $('kids-list').innerHTML = h;
   }
   function renderGuards(S) {
@@ -722,7 +755,7 @@ var UI = (function () {
     S.settings.guardians.forEach(function (g, i) {
       h += '<button class="chip" type="button" data-act="guard-del" data-i="' + i + '" aria-label="' + esc(g) + ' 빼기">' + esc(g) + ' ✕</button>';
     });
-    if (!S.settings.guardians.length) h = miniEmpty('🙋', '데리러 갈 사람이 없어요. 엄마·아빠·할머니처럼 넣어 두면 방과후마다 고를 수 있어요.', { act: 'focus', label: '사람 넣기', extra: ' data-target="guard-add"' });
+    if (!S.settings.guardians.length) h = miniEmpty('🙋', '데리러 갈 사람이 없어요',{ act: 'focus', label: '사람 넣기', extra: ' data-target="guard-add"' });
     $('guard-chips').innerHTML = h;
   }
   function renderDays(S, todayKey) {
@@ -736,8 +769,7 @@ var UI = (function () {
       h += '<button class="chip" type="button" data-act="holiday-del" data-date="' + d + '" aria-label="' + Logic.shortLabel(d) + ' 빼기">' + Logic.shortLabel(d) + ' ✕</button>';
     });
     if (list.length > 12) h += '<span class="tiny">그 뒤 ' + (list.length - 12) + '일 더 있어요</span>';
-    if (past) h += '<span class="tiny">지난 쉬는 날 ' + past + '일은 감췄어요</span>';
-    if (!st.holidays.length) h = miniEmpty('🏖️', '넣은 쉬는 날이 없어요. 주말은 저절로 건너뛰니 재량휴업일만 넣어 주세요.', { act: 'focus', label: '쉬는 날 고르기', extra: ' data-target="holiday-add"' });
+    if (!list.length) h = miniEmpty('🏖️', '쉬는 날이 없어요',{ act: 'focus', label: '쉬는 날 고르기', extra: ' data-target="holiday-add"' });
     $('holiday-chips').innerHTML = h;
   }
 
@@ -757,21 +789,140 @@ var UI = (function () {
     var h = '<div class="teach-card">' +
       '<h3>' + esc(o.cls) + ' · ' + Logic.dayLabel(o.d) + ' 준비물 ' + o.n + '개</h3>' +
       '<div class="qr-box">' + o.qr + '</div>' +
-      '<label class="f" for="teach-link">링크 (부모님이 열면 가방에 들어가요)</label>' +
+      '<label class="f" for="teach-link">링크</label>' +
       '<textarea id="teach-link" class="teach-link" readonly>' + esc(o.link) + '</textarea>' +
       '<div class="row wrap" style="margin-top:8px">' +
       '<button class="btn main" type="button" data-act="teach-share" style="flex:1 1 100%">' + SHARE_IC + '공유하기</button>' +
       '<button class="btn" type="button" data-act="teach-copy">링크 복사</button>' +
       '<button class="btn" type="button" data-act="teach-edit">내용 고치기</button></div>';
-    if (o.local) h += '<p class="tiny">지금은 이 기기의 파일로 열려 있어 다른 기기에서는 이 링크가 열리지 않아요. 웹 주소로 열고 만들면 어디서나 열려요.</p>';
     el.innerHTML = h + '</div>';
     flash(el.firstChild);
   }
 
-  // ---- 도움말 한 줄: 한 쪽에 하나씩 ----
-  function renderHelp(V) {
-    var pages = DATA.TIPS.map(function (t) { return { html: '<div class="tip">' + esc(t) + '</div>' }; });
-    $('help-tips').innerHTML = pagerHTML('tips', pages, V.pg.tips || 0);
+  // ---- 도움말: 예시 데이터로 그린 실제 화면을 찍어 두고, 그 위에 번호 점 + 옆에 한 줄 말풍선 ----
+  var HELP_PAGES = [
+    { title: '가방', notes: [
+      ['.kids', '아이 고르기 · + 로 더하기'],
+      ['.top .icon-btn', '가족에게 보낼 글 복사'],
+      ['.date-card', '‹ › 로 다른 날 가방'],
+      ['.up-pill', '며칠 뒤 준비물 모아 보기'],
+      ['.bag-stage', '챙긴 만큼 가방이 차올라요'],
+      ['.strip', '그날 수업과 방과후'],
+      ['.bag-btns', '가방 챙기기 · 알림장 넣기']] },
+    { title: '가방 시트', notes: [
+      ['.kid-btn', '아이가 챙기면 칸이 커져요'],
+      ['.band', '쪽 이름을 눌러 넘겨요'],
+      ['.grid .check:not(.done)', '누르면 가방에 쏙'],
+      ['.grid .check.done', '✓ 는 챙긴 물건'],
+      ['.grid .check:nth-child(6)', '길게 누르면 왜 필요한지'],
+      ['.dots', '옆으로 밀어 다음 쪽'],
+      ['.bs-foot', '모두 ✓ · 오늘은 여기까지']] },
+    { title: '시간표', notes: [
+      ['.week .hd', '월~금 요일'],
+      ['.week .pn', '교시와 그 교시 시간'],
+      ['.week .cell.full', '누르면 과목 고르기'],
+      ['.week .cell.after.full', '학원 · 시각 · 데리러 갈 사람'],
+      ['.week .cell.after:not(.full)', '빈 칸을 눌러 방과후 넣기']] },
+    { title: '꾸러미', notes: [
+      ['.head-row .main', '새 꾸러미 만들기'],
+      ['.fill > .row:not(.head-row)', '매일 · 요일 · 행사 꾸러미'],
+      ['.pcard', '누르면 늘 챙기는 물건 고치기'],
+      ['.pcard.acad', '방과후 · 학원 꾸러미'],
+      ['.dots', '옆으로 밀어 다음 쪽']] },
+    { title: '설정', notes: [
+      ['.set-row:nth-child(1)', '아이 이름 · 학년'],
+      ['.set-row:nth-child(3)', '교시마다 시작 · 끝 시각'],
+      ['.set-row:nth-child(7)', '켜면 반 준비물 링크'],
+      ['.set-row:nth-child(8)', '모든 내용을 글로 복사'],
+      ['.set-row:nth-child(9)', '내보낸 글로 되살리기'],
+      ['.set-row:nth-child(10)', '다 챙긴 날 칭찬 스티커'],
+      ['.set-row:nth-child(12)', '넣은 내용은 이 기기에만']] }
+  ];
+  var HELP_N = HELP_PAGES.length + 1;   // 마지막 쪽은 도움말 한 줄
+
+  // 화면 하나를 그림처럼 복사한다: id·동작을 떼고 버튼·입력은 span 으로 (누를 수 없고 탭으로 옮겨 가지 않게)
+  function makeShot(src, isSheet) {
+    var c = src.cloneNode(true);
+    var hid = c.querySelectorAll('.screen:not(.on)');
+    for (var i = 0; i < hid.length; i++) hid[i].parentNode.removeChild(hid[i]);
+    var all = [c].concat([].slice.call(c.querySelectorAll('*')));
+    all.forEach(function (el) { el.removeAttribute('id'); el.removeAttribute('data-act'); el.removeAttribute('for'); el.removeAttribute('aria-live'); });
+    [].slice.call(c.querySelectorAll('button, input, select, textarea, label')).forEach(function (b) {
+      var s = document.createElement('span');
+      s.className = 'as-btn' + (b.className ? ' ' + b.className : '');
+      s.innerHTML = b.innerHTML;
+      if (b.getAttribute('style')) s.setAttribute('style', b.getAttribute('style'));
+      b.parentNode.replaceChild(s, b);
+    });
+    if (!isSheet) { c.className = 'app-frame'; return c; }
+    var f = document.createElement('div');
+    f.className = 'app-frame sheet-frame';
+    f.appendChild(c);
+    return f;
+  }
+
+  // 그림 안에 보이는 첫 요소 (크기가 0 이거나 옆 쪽에 숨은 것은 건너뛴다)
+  function firstShown(root, sel, br) {
+    var list = root.querySelectorAll(sel);
+    for (var i = 0; i < list.length; i++) {
+      var r = list[i].getBoundingClientRect();
+      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      if (r.width > 0 && r.height > 0 && cx > br.left && cx < br.right && cy > br.top && cy < br.bottom) return r;
+    }
+    return null;
+  }
+
+  function renderHelpPage(i, shots, V) {
+    var last = i >= HELP_PAGES.length;
+    var page = HELP_PAGES[i];
+    $('help-title').textContent = last ? '도움말 한 줄' : page.title;
+    $('help-count').textContent = (i + 1) + ' / ' + HELP_N;
+    $('help-prev').disabled = i === 0;
+    $('help-next').textContent = i === HELP_N - 1 ? '닫기' : '다음';
+    var body = $('help-body');
+    if (last || !shots[i]) {
+      body.innerHTML = '<div class="tips-page"><div id="help-tips" class="fill"></div>' +
+        '<button class="btn wide" type="button" data-act="selftest-open">계산 점검</button></div>';
+      var pages = DATA.TIPS.map(function (t) { return { html: '<div class="tip">' + esc(t) + '</div>' }; });
+      $('help-tips').innerHTML = pagerHTML('tips', pages, V.pg.tips || 0);
+      return;
+    }
+    body.innerHTML = '<div class="tour"><div class="shot-box" aria-hidden="true"><div class="shot"></div></div><ol class="notes"></ol></div>';
+    var tour = body.firstChild, box = tour.firstChild, list = tour.lastChild;
+    box.firstChild.appendChild(shots[i]);
+    var br = box.getBoundingClientRect(), tr = tour.getBoundingClientRect();
+    var n = 0, items = [];
+    page.notes.forEach(function (p) {
+      var r = firstShown(shots[i], p[0], br);
+      if (!r) return;
+      n++;
+      var x = r.left + r.width / 2 - br.left, y = r.top + r.height / 2 - br.top;
+      var d = document.createElement('span');
+      d.className = 'hdot';
+      d.textContent = n;
+      d.style.left = x.toFixed(0) + 'px';
+      d.style.top = y.toFixed(0) + 'px';
+      box.appendChild(d);
+      var li = document.createElement('li');
+      li.className = 'note';
+      li.innerHTML = '<span class="no" aria-hidden="true">' + n + '</span><span>' + esc(p[1]) + '</span>';
+      list.appendChild(li);
+      items.push({ el: li, y: y + br.top - tr.top });
+    });
+    // 말풍선을 그 점 높이에 맞추되 서로 겹치지 않게 (아래로 밀고, 넘치면 위로 당긴다)
+    var bottom = 0, H = tour.clientHeight;
+    items.forEach(function (it) {
+      var h = it.el.offsetHeight;
+      it.top = Math.max(it.y - h / 2, bottom + 4);
+      bottom = it.top + h;
+    });
+    var limit = H;
+    for (var j = items.length - 1; j >= 0; j--) {
+      var hh = items[j].el.offsetHeight;
+      if (items[j].top + hh > limit) items[j].top = Math.max(0, limit - hh);
+      limit = items[j].top - 4;
+    }
+    items.forEach(function (it) { it.el.style.top = it.top.toFixed(0) + 'px'; });
   }
   // 계산 점검 결과: 한 쪽에 10줄
   function renderSelfTest(res) {
@@ -792,7 +943,7 @@ var UI = (function () {
     fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, renderCal: renderCal, renderUpcoming: renderUpcoming,
     renderWeek: renderWeek, renderDay: renderDay, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
-    renderEvents: renderEvents, renderMore: renderMore, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
-    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderHelp: renderHelp, renderSelfTest: renderSelfTest
+    renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
+    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest
   };
 })();

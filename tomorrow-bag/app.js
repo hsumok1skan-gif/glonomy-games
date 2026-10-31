@@ -5,7 +5,8 @@
   var V = {                     // 화면 상태 (저장하지 않음)
     screen: 'bag', offset: 0, pg: {}, kidMode: false, cal: null,
     noteQ: '', noteCat: 'all', noteSort: 'base',          // 알림장 준비물 찾기·거르기·순서
-    cell: null, after: null, day: null, note: null, pack: null, eventPick: null, kidEdit: null, teach: null
+    cell: null, after: null, day: null, note: null, pack: null, eventPick: null, kidEdit: null, teach: null,
+    times: null, help: null                                // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
   };
   var undoSnap = null;
   var confirmFn = null;
@@ -78,6 +79,7 @@
     if (UI.isOpen('sheet-daily')) UI.renderDaily(S);
     if (UI.isOpen('sheet-day') && kid && V.day) UI.renderDay(S, kid, V.day);
     if (UI.isOpen('sheet-cal') && V.cal) UI.renderCal(S, kid, V.cal);
+    if (UI.isOpen('sheet-look')) UI.renderLook(S);
   }
 
   function go(name) {
@@ -171,7 +173,8 @@
     var filled = false;
     if (k) { k.name = name; k.grade = grade; }
     else {
-      k = { id: Store.uid('k'), name: name, grade: grade, periods: 6, week: Store.emptyWeek(6) };
+      var np = S.settings.gradeP[grade] || 6;   // 학년별 교시 수 (설정 → 교시 시간)
+      k = { id: Store.uid('k'), name: name, grade: grade, periods: np, week: Store.emptyWeek(np) };
       var tw = $('kid-template').checked ? Logic.gradeWeek(DATA.TIMETABLES, S.packs, grade, k.periods) : null;
       if (tw) for (var d = 1; d <= 5; d++) { k.week[d].p = tw[d]; if (tw[d].some(Boolean)) filled = true; }
       S.kids.push(k);
@@ -182,7 +185,7 @@
     UI.closeSheet('sheet-kid');
     renderAll();
     if (!V.kidEdit && pendingTeach) return applyTeach();   // 선생님 링크로 받아 둔 준비물을 이 아이 가방에
-    UI.toast(V.kidEdit ? '고쳤어요' : filled ? grade + '학년 기본 시간표로 채웠어요. 다른 칸만 눌러 고쳐 주세요' : Logic.nameI(name) + ' 시간표를 채워 볼까요?', !!V.kidEdit);
+    UI.toast(V.kidEdit ? '고쳤어요' : filled ? grade + '학년 기본 시간표로 채웠어요' : Logic.nameI(name) + ' 시간표를 채워 볼까요?', !!V.kidEdit);
     if (!V.kidEdit) { UI.closeSheet('sheet-kids'); go('week'); }
   }
   function deleteKid() {
@@ -533,27 +536,116 @@
       UI.toast(DATA.DOW[to] + '요일에 복사했어요', true);
     });
   }
-  // 교시 수는 시간표에서 정한다. 채운 칸이 잘리면 한 번 더 묻는다
-  function setPeriods(n) {
-    var kid = curKid();
-    if (!kid || n === kid.periods || n < 4 || n > 7) return;
+  // ---- 교시 시간: 교시마다 시작·끝 시각과 학년별 교시 수 (설정 → 교시 시간) ----
+  function lostCells(kid, n) {
     var lost = 0;
     for (var d = 1; d <= 5; d++) kid.week[d].p.slice(n).forEach(function (x) { if (x) lost++; });
+    return lost;
+  }
+  function resizeKid(kid, n) {
+    for (var e = 1; e <= 5; e++) {
+      var p = kid.week[e].p;
+      while (p.length < n) p.push(null);
+      kid.week[e].p = p.slice(0, n);
+    }
+    kid.periods = n;
+  }
+  // 학년마다 지금 교시 수: 그 학년 아이가 있으면 그 아이의 교시 수, 없으면 설정 값
+  function gradeNow() {
+    var gp = {};
+    for (var g = 1; g <= 6; g++) {
+      var k = S.kids.filter(function (x) { return x.grade === g; })[0];
+      gp[g] = k ? k.periods : (S.settings.gradeP[g] || 6);
+    }
+    return gp;
+  }
+  function openTimes() {
+    V.times = true;
+    UI.renderTimes(Logic.periodTimes(S.settings), gradeNow());
+    UI.clearErr(null, 'times-err');
+    openSheet('sheet-times');
+  }
+  function readTimes() {
+    var list = [];
+    for (var i = 0; i < Logic.MAX_P; i++) list.push([$('pt-s-' + i).value, $('pt-e-' + i).value]);
+    return list;
+  }
+  function submitTimes() {
+    var list = readTimes();
+    var bad = Logic.checkTimes(list);
+    if (bad) return UI.fieldErr('pt-' + (bad.end ? 'e' : 's') + '-' + bad.i, 'times-err', bad.msg);
+    UI.clearErr(null, 'times-err');
+    var gp = {};
+    for (var g = 1; g <= 6; g++) gp[g] = +$('gp-' + g).value;
+    var change = S.kids.filter(function (k) { return gp[k.grade] && gp[k.grade] !== k.periods; });
+    var lost = 0;
+    change.forEach(function (k) { lost += lostCells(k, gp[k.grade]); });
     function apply() {
       rememberUndo();
-      for (var e = 1; e <= 5; e++) {
-        var p = kid.week[e].p;
-        while (p.length < n) p.push(null);
-        kid.week[e].p = p.slice(0, n);
-      }
-      kid.periods = n;
+      S.settings.ptimes = list;
+      S.settings.gradeP = gp;
+      change.forEach(function (k) { resizeKid(k, gp[k.grade]); });
       save();
+      UI.closeSheet('sheet-times');
       renderAll();
-      UI.toast(n + '교시까지로 바꿨어요', true);
+      UI.toast('교시 시간을 저장했어요', true);
     }
-    if (lost) askConfirm(n + '교시 뒤 칸 ' + lost + '개가 빠져요. 바꿀까요?', '바꾸기', apply);
+    if (lost) askConfirm('교시 수가 줄어 채운 칸 ' + lost + '개가 지워져요. 바꿀까요?', '바꾸기', apply);
     else apply();
   }
+  function timesDefault() {
+    Logic.defaultTimes().forEach(function (t, i) { $('pt-s-' + i).value = t[0]; $('pt-e-' + i).value = t[1]; });
+    UI.clearErr(null, 'times-err');
+  }
+
+  // ---- 도움말: 예시 데이터를 넣은 화면을 그려 찍고(UI.makeShot) 바로 원래 화면으로 돌린다 ----
+  function captureShots() {
+    var realS = S, keep = { screen: V.screen, offset: V.offset, kidMode: V.kidMode, pg: V.pg };
+    var shots = [];
+    try {
+      S = Store.defaults();
+      S.settings.welcomed = true;
+      S.settings.dark = realS.settings.dark;
+      S.settings.font = realS.settings.font;
+      S.settings.reduce = realS.settings.reduce;
+      fillSample(S);
+      V.offset = 0; V.kidMode = false; V.pg = { bag: 1 };
+      var kid = curKid(), k = bagKey();
+      var bag = Logic.buildBag(S, kid, k);
+      // 반쯤 챙긴 모습 (가방 그림이 차오르고 칸에 ✓ 도장)
+      S.checks[Logic.checkKey(kid.id, k)] = bag.items.filter(function (it, i) { return i % 2 === 0; }).map(function (it) { return it.name; });
+      renderAll();
+      ['bag', 'sheet', 'week', 'packs', 'more'].forEach(function (n) {
+        if (n === 'sheet') {
+          UI.renderBagSheet(S, V, kid, Logic.buildBag(S, kid, k));
+          shots.push(UI.makeShot(document.querySelector('#sheet-bag .bag-sheet'), true));
+          return;
+        }
+        UI.show(n);
+        shots.push(UI.makeShot($('app'), false));
+      });
+    } catch (e) { shots = []; }
+    S = realS;
+    V.offset = keep.offset; V.kidMode = keep.kidMode; V.pg = keep.pg;
+    renderAll();
+    UI.show(keep.screen);
+    V.screen = keep.screen;
+    var kd = curKid();
+    if (kd) UI.renderBagSheet(S, V, kd, Logic.buildBag(S, kd, bagKey()));
+    return shots;
+  }
+  function openHelp() {
+    V.help = { i: 0, shots: captureShots() };
+    UI.renderHelpPage(0, V.help.shots, V);
+    openSheet('sheet-help');
+  }
+  function helpStep(d) {
+    var i = V.help.i + d;
+    if (i >= UI.HELP_N) return UI.closeSheet('sheet-help');
+    V.help.i = Math.max(0, i);
+    UI.renderHelpPage(V.help.i, V.help.shots, V);
+  }
+
   function openDay(d) {
     var kid = curKid();
     if (!kid) return;
@@ -735,7 +827,7 @@
 
   // ---- 선생님 모드: 반 준비물을 링크 주소(#t=…) 안에 담고 QR코드로 그린다. 서버 없음 ----
   function openTeacher() {
-    if (!S.settings.teacher) return UI.toast('더보기에서 선생님 모드를 먼저 켜 주세요');
+    if (!S.settings.teacher) return UI.toast('설정에서 선생님 모드를 먼저 켜 주세요');
     V.teach = { items: [] };
     $('teach-date').value = Logic.bagDate(now(), S.settings);
     $('teach-add').value = '';
@@ -776,8 +868,10 @@
     if (!qr) return UI.fieldErr('teach-memo', 'teach-err', '내용이 길어 QR코드에 다 담기지 않아요. 준비물이나 메모를 줄여 주세요.');
     UI.clearErr('teach-class', 'teach-err');
     V.teach.out = { cls: cls, d: d, n: V.teach.items.length, link: link };
-    UI.renderTeachOut({ cls: cls, d: d, n: V.teach.items.length, link: link, qr: qr, local: !/^https?:$/.test(location.protocol) });
-    UI.toast('링크와 QR코드를 만들었어요');
+    var local = !/^https?:$/.test(location.protocol);
+    UI.renderTeachOut({ cls: cls, d: d, n: V.teach.items.length, link: link, qr: qr });
+    // 이 기기 파일로 열었으면 다른 기기에서는 링크가 열리지 않는다 (화면에 글을 두지 않고 알림으로만)
+    UI.toast(local ? '링크를 만들었어요. 이 기기 파일로 열려 있어 다른 기기에서는 열리지 않아요' : '링크와 QR코드를 만들었어요');
   }
   // 지금 화면에 보이는 링크만 보낸다 (내용을 고치러 가면 링크를 치운다)
   function teachOut() {
@@ -874,6 +968,9 @@
   function openBackup() {
     $('restore-text').value = '';
     UI.clearErr('restore-text', 'restore-err');
+    var hasSample = S.kids.some(function (k) { return k.sample; });
+    $('bk-sample-add').style.display = hasSample ? 'none' : '';
+    $('bk-sample-del').style.display = hasSample ? '' : 'none';
     openSheet('sheet-backup');
   }
   function restore() {
@@ -895,6 +992,17 @@
   function addSample() {
     if (S.kids.some(function (k) { return k.sample; })) return UI.toast('예시가 이미 들어 있어요');
     rememberUndo();
+    fillSample(S);
+    S.settings.welcomed = true;
+    V.offset = 0;
+    save();
+    renderAll();
+    go('bag');
+    UI.closeSheet('sheet-backup');
+    UI.toast('예시를 넣었어요', true);
+  }
+  // 받은 상태(S)에 예시 아이를 넣는다 (도움말 화면 찍기도 이것을 쓴다)
+  function fillSample(S) {
     var id = Store.uid('k');
     var w = Store.emptyWeek(6);
     var T = {
@@ -928,12 +1036,6 @@
       var m = part[i] && names.length ? [names[names.length - 1]] : [];
       S.history.push({ kid: id, date: k, total: names.length, done: names.length - m.length, missed: m, sample: true });
     }
-    S.settings.welcomed = true;
-    V.offset = 0;
-    save();
-    renderAll();
-    go('bag');
-    UI.toast('예시를 넣었어요. 더보기에서 뺄 수 있어요', true);
   }
   function removeSample() {
     var ids = S.kids.filter(function (k) { return k.sample; }).map(function (k) { return k.id; });
@@ -942,12 +1044,14 @@
       rememberUndo();
       ids.forEach(removeKid);
       save();
+      UI.closeSheet('sheet-backup');
       renderAll();
       UI.toast('예시를 뺐어요', true);
     });
   }
 
   function runSelfTest() {
+    UI.closeSheet('sheet-help');   // 도움말 마지막 쪽에서 연다 (도움말 시트가 위에 있어서)
     UI.renderSelfTest(Logic.selfTest());
     openSheet('sheet-selftest');
   }
@@ -955,7 +1059,18 @@
   // ---- 눌림 처리 ----
   var ACTIONS = {
     'go': function (b) { go(b.getAttribute('data-to')); },
-    'help': function () { UI.renderHelp(V); openSheet('sheet-help'); },
+    'help': openHelp,
+    'help-step': function (b) { helpStep(+b.getAttribute('data-d')); },
+    'times-open': openTimes,
+    'times-default': timesDefault,
+    'look-open': function () { UI.renderLook(S); openSheet('sheet-look'); },
+    'privacy-open': function () { openSheet('sheet-privacy'); },
+    // 시간표 방과후 칸: 비었으면 바로 넣기, 있으면 그 요일 방과후 목록
+    'after-cell': function (b) {
+      var kid = curKid(), d = +b.getAttribute('data-d');
+      if (!kid) return;
+      if (kid.week[d].after.length) openDay(d); else openAfter(d, null);
+    },
     'kid-pick': function (b) { S.cur = b.getAttribute('data-id'); V.offset = 0; save(); renderAll(); },
     'kid-new': function () { openKid(null); },
     'kid-edit': function (b) { openKid(b.getAttribute('data-id')); },
@@ -1002,8 +1117,6 @@
     'cell-clear': function () { setCell(null); },
     'cell-copy': function () { UI.renderCopyRow(V.cell.d); },
     'cell-copy-to': function (b) { copyDay(+b.getAttribute('data-d')); },
-    'set-periods': function (b) { setPeriods(+b.getAttribute('data-v')); },
-    'day-open': function (b) { openDay(+b.getAttribute('data-d')); },
     'after-new': function (b) { openAfter(+b.getAttribute('data-d') || 1, null); },
     'after-edit': function (b) { openAfter(+b.getAttribute('data-d'), b.getAttribute('data-id')); },
     'after-del': deleteAfter,
@@ -1083,6 +1196,7 @@
         S.settings.welcomed = true;
         undoSnap = null;
         V.offset = 0;
+        UI.closeSheet('sheet-backup');
         save(); renderAll(); go('bag');
         UI.toast('모두 지웠어요');
       });
@@ -1103,14 +1217,15 @@
     'pack-add': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
     'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid',
     'check': 'kid', 'check-all': 'kid', 'bag-done': 'kid', 'skip-item': 'kid',
-    'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach'
+    'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach',
+    'times-default': 'times', 'form-times': 'times', 'help-step': 'help'
   };
   function ready(name) {
     var need = NEED[name];
     if (!need) return true;
     if (need === 'kid') return !!curKid();
     if (!V[need]) return false;
-    return need === 'pack' || need === 'teach' || !!curKid();
+    return need === 'pack' || need === 'teach' || need === 'times' || need === 'help' || !!curKid();
   }
 
   // ---- 길게 누르기(칸의 이유·내일은 빼기, 아이가 챙겨요 끄기)와 옆으로 밀기(쪽·날짜) ----
@@ -1190,7 +1305,7 @@
     'form-kid': submitKid, 'form-after': submitAfter, 'form-note': submitNote, 'form-pack': submitPack,
     'form-event': submitEvent, 'form-backup': restore,
     'form-daily': function () { addDaily($('daily-add').value); },
-    'form-guard': addGuardian, 'form-holiday': addHoliday, 'form-teacher': submitTeacher
+    'form-guard': addGuardian, 'form-holiday': addHoliday, 'form-teacher': submitTeacher, 'form-times': submitTimes
   };
   function onSubmit(e) {
     var f = FORMS[e.target.id];

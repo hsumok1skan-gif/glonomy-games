@@ -45,6 +45,8 @@ var Store = (function () {
         teacher: false,
         holidays: [],
         guardians: ['엄마', '아빠'],
+        ptimes: Logic.defaultTimes(),                        // 교시마다 [시작, 끝]
+        gradeP: { 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6 },      // 학년별 교시 수 (새 아이에 쓴다)
         welcomed: false,
         setupDone: false
       }
@@ -85,6 +87,10 @@ var Store = (function () {
     Object.keys(base.settings).forEach(function (k) { if (d.settings[k] === undefined) d.settings[k] = base.settings[k]; });
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
+    d.settings.ptimes = Logic.periodTimes(d.settings).map(function (x) { return x.slice(); });
+    var gp = d.settings.gradeP;
+    if (!gp || typeof gp !== 'object') gp = d.settings.gradeP = {};
+    for (var g = 1; g <= 6; g++) if (!(gp[g] >= 4 && gp[g] <= 7)) gp[g] = base.settings.gradeP[g];
     if (typeof d.checks !== 'object' || !d.checks || Array.isArray(d.checks)) d.checks = {};
     if (typeof d.skips !== 'object' || !d.skips || Array.isArray(d.skips)) d.skips = {};
     Object.keys(d.skips).forEach(function (k) { if (!Array.isArray(d.skips[k])) delete d.skips[k]; });
