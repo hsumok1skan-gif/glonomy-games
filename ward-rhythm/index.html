@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#3D3A8C">
+<meta name="description" content="3교대 간호사의 근무표·잘 시간·약속 판정">
+<title>Ward Rhythm</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="1" y="1" width="38" height="38" rx="11" style="fill:var(--accent)"/>
+        <path d="M24 9a12 12 0 1 0 8 19A10 10 0 0 1 24 9z" style="fill:var(--sun)"/>
+        <rect x="9" y="27" width="5" height="5" rx="1.5" style="fill:var(--c-off)"/>
+      </svg>
+      <div>
+        <h1>Ward Rhythm</h1>
+        <p class="sub">근무표 · 잘 시간 · 약속 판정</p>
+      </div>
+    </div>
+    <button id="btn-help" class="btn ghost small" type="button" data-act="go" data-to="help">방법</button>
+  </header>
+  <p id="store-warn" class="store-warn" role="alert" hidden></p>
+
+  <main id="main">
+    <section id="screen-today" class="screen" aria-label="오늘"><div id="today-root"></div></section>
+    <section id="screen-roster" class="screen" aria-label="근무표" hidden><div id="roster-root"></div></section>
+    <section id="screen-plans" class="screen" aria-label="약속" hidden><div id="plans-root"></div></section>
+    <section id="screen-log" class="screen" aria-label="기록" hidden><div id="log-root"></div></section>
+    <section id="screen-more" class="screen" aria-label="더보기" hidden><div id="more-root"></div></section>
+    <section id="screen-help" class="screen" aria-label="방법" hidden><div id="help-root"></div></section>
+  </main>
+
+  <nav id="tabs" aria-label="화면 고르기">
+    <button type="button" class="tab" data-act="go" data-to="today" data-tab="today"><span class="ti" aria-hidden="true">☀</span>오늘</button>
+    <button type="button" class="tab" data-act="go" data-to="roster" data-tab="roster"><span class="ti" aria-hidden="true">▦</span>근무표</button>
+    <button type="button" class="tab" data-act="go" data-to="plans" data-tab="plans"><span class="ti" aria-hidden="true">✓</span>약속</button>
+    <button type="button" class="tab" data-act="go" data-to="log" data-tab="log"><span class="ti" aria-hidden="true">☾</span>기록</button>
+    <button type="button" class="tab" data-act="go" data-to="more" data-tab="more"><span class="ti" aria-hidden="true">⋯</span>더보기</button>
+  </nav>
+</div>
+
+<div id="sheet-wrap" class="sheet-wrap" hidden>
+  <div class="sheet-back" data-act="close-sheet"></div>
+  <div id="sheet-day" class="sheet" role="dialog" aria-modal="true" aria-label="날 보기" hidden><div id="day-root"></div></div>
+  <div id="sheet-plan" class="sheet" role="dialog" aria-modal="true" aria-label="약속" hidden><div id="plan-root"></div></div>
+  <div id="sheet-sleep" class="sheet" role="dialog" aria-modal="true" aria-label="잠 기록" hidden><div id="sleep-root"></div></div>
+  <div id="sheet-pattern" class="sheet" role="dialog" aria-modal="true" aria-label="패턴으로 채우기" hidden><div id="pattern-root"></div></div>
+  <div id="sheet-shifts" class="sheet" role="dialog" aria-modal="true" aria-label="근무 시각" hidden><div id="shifts-root"></div></div>
+  <div id="sheet-share" class="sheet" role="dialog" aria-modal="true" aria-label="쉬는 날 글" hidden><div id="share-root"></div></div>
+  <div id="sheet-backup" class="sheet" role="dialog" aria-modal="true" aria-label="내보내기·가져오기" hidden><div id="backup-root"></div></div>
+</div>
+
+<div id="ov-welcome" class="overlay" role="dialog" aria-modal="true" aria-label="처음 안내" hidden>
+  <div class="ov-card">
+    <svg class="ov-art" viewBox="0 0 120 80" aria-hidden="true">
+      <rect x="6" y="14" width="108" height="60" rx="12" style="fill:var(--surface);stroke:var(--line)"/>
+      <rect x="16" y="26" width="18" height="18" rx="5" style="fill:var(--c-d)"/>
+      <rect x="38" y="26" width="18" height="18" rx="5" style="fill:var(--c-e)"/>
+      <rect x="60" y="26" width="18" height="18" rx="5" style="fill:var(--c-n)"/>
+      <rect x="82" y="26" width="18" height="18" rx="5" style="fill:var(--c-off)"/>
+      <rect x="16" y="50" width="84" height="12" rx="6" style="fill:var(--accent-soft)"/>
+      <circle cx="98" cy="14" r="10" style="fill:var(--sun)"/>
+    </svg>
+    <h2>근무표를 찍으면 잘 시간과 약속이 보여요</h2>
+    <p>데이·이브닝·나이트를 한 달에 한 번 칸으로 찍으면, 날마다 잘 수 있는 시간과 퀵리턴·연속 나이트를 계산하고 약속 시각을 넣으면 괜찮음·빠듯·무리로 알려 줘요.</p>
+    <p class="muted small-t">기록은 이 기기 브라우저에만 저장돼요. 어디로도 보내지 않아요.</p>
+    <div class="row gap">
+      <button type="button" class="btn" data-act="welcome-sample">예시로 둘러보기</button>
+      <button type="button" class="btn primary" data-act="welcome-start">내 근무표 찍기</button>
+    </div>
+  </div>
+</div>
+
+<div id="ov-confirm" class="overlay" role="alertdialog" aria-modal="true" aria-labelledby="confirm-text" hidden>
+  <div class="ov-card">
+    <p id="confirm-text" class="confirm-text"></p>
+    <div class="row gap">
+      <button type="button" class="btn" data-act="confirm-cancel">그만두기</button>
+      <button type="button" id="confirm-ok" class="btn danger" data-act="confirm-ok">지우기</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="./data.js"></script>
+<script src="./logic.js"></script>
+<script src="./store.js"></script>
+<script src="./ui.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

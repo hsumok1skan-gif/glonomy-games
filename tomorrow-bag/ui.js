@@ -199,6 +199,9 @@ var UI = (function () {
     // 아이가 없으면 줄을 숨긴다(가방 빈 화면 카드의 '시작하기'가 같은 일을 한다)
     var empty = S.kids.length === 0;
     $('kids').classList.toggle('hidden', empty);
+    // 보낼 글이 없으니 머리의 보내기 버튼도 숨긴다
+    var share = document.querySelector('.top [data-act=share]');
+    if (share) share.hidden = empty;
     if (empty) { $('kids').innerHTML = ''; return; }
     var h = '';
     S.kids.forEach(function (k) {
@@ -803,7 +806,7 @@ var UI = (function () {
   var HELP_PAGES = [
     { title: '가방', notes: [
       ['.kids', '아이 고르기 · + 로 더하기'],
-      ['.top .icon-btn', '가족에게 보낼 글 복사'],
+      ['.top [data-act=share]', '가족에게 보낼 글 복사'],
       ['.date-card', '‹ › 로 다른 날 가방'],
       ['.up-pill', '며칠 뒤 준비물 모아 보기'],
       ['.bag-stage', '챙긴 만큼 가방이 차올라요'],
