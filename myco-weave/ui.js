@@ -103,6 +103,23 @@
     $('title-best').textContent = d.best.score > 0
       ? '최고 점수 ' + d.best.score + ' · 가장 깊이 간 숲 ' + d.best.stage + ' · 판 ' + d.totals.runs
       : '처음이라면 방법을 먼저 보세요.';
+    var today = todayKey();
+    var dy = S.daily();
+    var played = S.dailyPlayed(today);
+    var ds = byId(D.STRAINS, GM.dailyStrain(today));
+    var b = $('btn-daily');
+    b.disabled = played;
+    b.textContent = played ? '오늘의 도전 · 내일 다시' : '오늘의 도전';
+    b.setAttribute('aria-label', played ? '오늘의 도전은 오늘 이미 했다' : '오늘의 도전 시작 (' + today + ', ' + ds.name + ')');
+    $('title-daily').textContent = !played
+      ? '오늘의 도전 ' + today + ' · ' + ds.icon + ' ' + ds.name + ' · 보통 — 하루 한 번'
+      : (dy.done ? '오늘의 도전 점수 ' + dy.score + ' · 숲 ' + dy.stage + (dy.won ? ' · 이김' : '') : '오늘의 도전 진행 중 — 이어하기로 계속한다');
+  }
+  // 이 기기의 오늘 날짜 (YYYY-MM-DD) — 오늘의 도전 시드
+  function todayKey() {
+    var t = new Date();
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return t.getFullYear() + '-' + p(t.getMonth() + 1) + '-' + p(t.getDate());
   }
 
   // ---------- 균주 고르기 ----------
@@ -141,9 +158,9 @@
     return list[0];
   }
 
-  function startRun(strain, diff) {
+  function startRun(strain, diff, daily) {
     if (ui.lock) return;   // 전환 중 두 번 누르면 판을 두 번 만들지 않는다
-    GM.newRun({ strain: strain, diff: diff });
+    GM.newRun({ strain: strain, diff: diff, daily: daily || '' });
     ui.mode = 'grow';
     ui.cursor = GM.CENTER;
     press('start');
@@ -825,7 +842,7 @@
   function renderIntro() {
     var G = GM.get();
     var F = GM.forestDef();
-    $('intro-kicker').textContent = '숲 ' + (G.forest + 1) + ' / ' + D.FORESTS.length;
+    $('intro-kicker').textContent = (G.daily ? '오늘의 도전 ' + G.daily + ' · ' : '') + '숲 ' + (G.forest + 1) + ' / ' + D.FORESTS.length;
     $('intro-name').textContent = F.name;
     $('intro-desc').textContent = F.desc;
     var stage = G.forest + 1;
@@ -868,13 +885,14 @@
     S.clearRun();
     var why = { heart: '심장이 다쳐 망이 무너졌다', time: '날이 다 가도록 포자가 모자랐다', giveup: '이 판을 그만두었다', win: '여덟 숲을 모두 넘겼다' }[G.endWhy] || '';
     $('result-title').textContent = G.won ? '숲 심장에 닿았다!' : '숲을 떠났다';
-    $('result-sub').textContent = GM.forestDef().name + ' · ' + why;
+    $('result-sub').textContent = (G.daily ? '오늘의 도전 ' + G.daily + ' · ' : '') + GM.forestDef().name + ' · ' + why;
     var st = $('result-stats'); st.innerHTML = '';
     [['점수', G.score], ['넘긴 숲', G.stats.cleared + '/8'], ['모은 포자', G.totalSpores], ['쓰러뜨린 위협', G.stats.kills],
      ['뻗은 칸', G.stats.grown], ['피운 버섯', G.stats.mush], ['형질', G.traits.length], ['시간', fmtTime(G.simTime)]].forEach(function (x) {
       st.appendChild(el('div', 'stat', '<b>' + esc(x[1]) + '</b><span>' + esc(x[0]) + '</span>'));
     });
-    $('result-best').textContent = res.newBest ? '새 최고 점수!' : '최고 점수 ' + S.data().best.score;
+    $('result-best').textContent = (res.newBest ? '새 최고 점수!' : '최고 점수 ' + S.data().best.score) +
+      (G.daily ? ' · 오늘의 도전은 내일 새 판이 열린다' : '');
     $('result-ach').textContent = res.fresh.length ? '새 업적: ' + res.fresh.map(function (a) { return a.name; }).join(', ') : '';
     forceScreen('screen-result');
   }
@@ -964,7 +982,7 @@
     if (!d.history.length) hl.appendChild(el('li', '', '아직 끝낸 판이 없다.'));
     d.history.forEach(function (h) {
       var s = byId(D.STRAINS, h.strain), df = byId(D.DIFFS, h.diff);
-      hl.appendChild(el('li', '', esc(h.date + ' · ' + s.name + ' · ' + df.name + ' · 숲 ' + h.cleared + '/8 · 포자 ' + h.spores + ' · 점수 ' + h.score + (h.won ? ' · 이김' : ''))));
+      hl.appendChild(el('li', '', esc(h.date + ' · ' + s.name + ' · ' + df.name + ' · 숲 ' + h.cleared + '/8 · 포자 ' + h.spores + ' · 점수 ' + h.score + (h.won ? ' · 이김' : '') + (h.daily ? ' · 오늘의 도전' : ''))));
     });
     var ag = $('rec-ach'); ag.innerHTML = '';
     var got = 0;
@@ -1056,6 +1074,11 @@
     b.addEventListener('click', function (ev) { window.Sfx.unlock(); if (ui.lock) return; fn(ev); });
   }
   on('btn-start', function () { press('click'); go('screen-setup'); });
+  on('btn-daily', function () {
+    var today = todayKey();
+    if (!S.startDaily(today)) { press('deny'); renderTitle(); banner('오늘의 도전은 오늘 이미 했다 · 내일 새 판이 열린다'); return; }
+    startRun(null, 'normal', today);
+  });
   on('btn-continue', function () {
     var saved = S.loadRun();
     if (saved && GM.load(saved)) {
@@ -1085,7 +1108,12 @@
     askConfirm('이 판을 그만둘까요?', '지금까지 모은 포자로 점수를 매기고 끝낸다.', function () { GM.giveUp(); });
   });
   on('btn-intro-go', function () { press('start'); GM.ackIntro(); });
-  on('btn-again', function () { startRun(GM.get() ? GM.get().strain : ui.setupStrain, GM.get() ? GM.get().diff : ui.setupDiff); });
+  on('btn-again', function () {
+    var G = GM.get();
+    // 오늘의 도전은 하루 한 번 — 다시 하기는 보통 판(마지막으로 고른 균주·난이도)으로 연다
+    if (!G || G.daily) startRun(ui.setupStrain, ui.setupDiff);
+    else startRun(G.strain, G.diff);
+  });
   on('btn-home', function () { press('click'); go('screen-title'); });
   function backFrom() {
     press('click');

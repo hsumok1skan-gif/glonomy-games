@@ -1,0 +1,11 @@
+{
+  "name": "Spray Gate",
+  "short_name": "Spray Gate",
+  "lang": "ko",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F1E8",
+  "theme_color": "#2E7A4E",
+  "icons": []
+}

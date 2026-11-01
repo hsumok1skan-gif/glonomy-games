@@ -53,7 +53,23 @@ window.Game = (function () {
       try { listeners[i](o); } catch (e) { /* 화면 쪽 오류가 규칙을 멈추지 않게 */ }
     }
   }
-  function rnd(n) { return Math.floor(Math.random() * n); }
+  // 무작위: 오늘의 도전 판은 날짜 시드(G.rs, 저장·이어하기에 함께 남는다), 보통 판은 Math.random
+  function seedOf(str) {
+    var h = 2166136261;
+    for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return h >>> 0;
+  }
+  function rand() {
+    if (!G || typeof G.rs !== 'number') return Math.random();
+    G.rs = (G.rs + 0x6D2B79F5) >>> 0;
+    var t = G.rs;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  // 날짜(YYYY-MM-DD)로 정해지는 오늘의 도전 균주 — 모두에게 같다
+  function dailyStrain(date) { return D.STRAINS[seedOf('strain:' + date) % D.STRAINS.length].id; }
+  function rnd(n) { return Math.floor(rand() * n); }
   function shuffle(a) {
     for (var i = a.length - 1; i > 0; i--) { var j = rnd(i + 1); var t = a[i]; a[i] = a[j]; a[j] = t; }
     return a;
@@ -66,7 +82,7 @@ window.Game = (function () {
     var sum = 0, i;
     for (i = 0; i < list.length; i++) sum += Math.max(0, wf(list[i]));
     if (sum <= 0) return list[0] || null;
-    var x = Math.random() * sum;
+    var x = rand() * sum;
     for (i = 0; i < list.length; i++) { x -= Math.max(0, wf(list[i])); if (x <= 0) return list[i]; }
     return list[list.length - 1];
   }
@@ -100,10 +116,13 @@ window.Game = (function () {
   // ---------- 새 판 ----------
   function newRun(opts) {
     opts = opts || {};
+    var daily = typeof opts.daily === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(opts.daily) ? opts.daily : '';
     G = {
       v: 1,
-      strain: opts.strain || 'white',
-      diff: opts.diff || 'normal',
+      strain: daily ? dailyStrain(daily) : (opts.strain || 'white'),
+      diff: daily ? 'normal' : (opts.diff || 'normal'),
+      daily: daily,
+      rs: daily ? seedOf('myco:' + daily) : null,
       sim: !!opts.sim,
       forest: 0,
       traits: [],
@@ -661,7 +680,7 @@ window.Game = (function () {
 
   function bounce(t, i) {
     var h = G.hexes[i];
-    var keep = mod('thickKeep') > 0 && Math.random() < 0.5;
+    var keep = mod('thickKeep') > 0 && rand() < 0.5;
     if (!keep) h.thick = Math.max(0, h.thick - 1);
     G.stats.bounces++;
     emit('bounce', { i: i });
@@ -824,7 +843,7 @@ window.Game = (function () {
     var F = forestDef();
     var mult = diffDef().spawn * (1 - mod('spawnCut') / 100);
     var exp = (F.spawn + F.grow * G.day) * mult + (extra || 0);
-    var n = Math.floor(exp) + (Math.random() < exp - Math.floor(exp) ? 1 : 0);
+    var n = Math.floor(exp) + (rand() < exp - Math.floor(exp) ? 1 : 0);
     var stage = G.forest + 1;
     var pool = D.THREATS.filter(function (t) { return t.weight > 0 && t.minForest <= stage; });
     for (var k = 0; k < n; k++) {
@@ -918,7 +937,7 @@ window.Game = (function () {
   function rollEvent() {
     var luck = mod('eventLuck');
     var chance = 0.35 + luck * 0.05;
-    if (Math.random() >= chance) return null;
+    if (rand() >= chance) return null;
     var ev = weighted(D.EVENTS, function (e) { return e.good ? 1 + luck : 1; });
     G.stats.events++;
     seen('event', ev.id);
@@ -1109,7 +1128,7 @@ window.Game = (function () {
   function runRecord() {
     var s = G.stats;
     return {
-      strain: G.strain, diff: G.diff, stage: G.forest + 1, cleared: s.cleared, spores: G.totalSpores,
+      strain: G.strain, diff: G.diff, daily: G.daily || '', stage: G.forest + 1, cleared: s.cleared, spores: G.totalSpores,
       score: G.score, won: G.won, kills: s.kills, grown: s.grown, mush: s.mush, kinds: Object.keys(s.kinds).length,
       maxPartners: s.maxPartners, digest: s.digest, thick: s.thick, bounces: s.bounces, heartHits: s.heartHits,
       fastest: s.fastest, traits: G.traits.length, skills: s.skills, events: s.events, maxIncome: s.maxIncome,
@@ -1164,7 +1183,7 @@ window.Game = (function () {
     R: R, HEX: HEX, NB: NB, CENTER: CENTER, hd: hd,
     on: function (fn) { listeners.push(fn); },
     get: function () { return G; },
-    newRun: newRun, load: load, ackIntro: ackIntro, endDay: endDay, pickReward: pickReward, giveUp: giveUp,
+    newRun: newRun, load: load, dailyStrain: dailyStrain, ackIntro: ackIntro, endDay: endDay, pickReward: pickReward, giveUp: giveUp,
     grow: grow, fruit: fruit, thicken: thicken, useSkill: useSkill,
     canGrow: canGrow, canFruit: canFruit, canThick: canThick, canSkill: canSkill, why: why,
     growCost: growCost, fruitCost: fruitCost, thickCost: thickCost, thickMax: thickMax,
