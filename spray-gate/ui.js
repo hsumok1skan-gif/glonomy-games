@@ -159,8 +159,15 @@
     var stats = st.fields.map(function (f) { return L.fieldStatus(st, f, now); });
     var closed = stats.filter(function (s) { return !s.open; }).length;
     var bad = stats.filter(function (s) { return s.verdict === 'bad'; }).length;
-    // 머리 문장 (V-03): 겹치는 밭 수는 var(--bad), 닫힌 밭 수·열린 밭 수는 var(--accent)
-    h += '<h2>' + (bad ? '수확 예정과 겹치는 밭 <b class="hl hl-bad">' + bad + '곳</b>' : closed ? '수확 문이 닫힌 밭 <b class="hl">' + closed + '곳</b>' : '밭 <b class="hl">' + stats.length + '곳</b> 모두 수확 문이 열려 있어요') + '</h2></div>';
+    // 머리 문장 (V-03·V-06): 숫자만 <b class="hl"> — 겹치는 밭 수는 .hl-bad 안에서 var(--bad), 닫힌 밭 수·열린 밭 수는 var(--accent)
+    var badHl = '<span class="hl-bad"><b class="hl">' + bad + '곳</b></span>';
+    var closedHl = '<b class="hl">' + closed + '곳</b>';
+    var head;
+    if (bad && closed) head = '수확과 겹치는 밭 ' + badHl + ' · 닫힌 밭 ' + closedHl;
+    else if (bad) head = '수확 예정과 겹치는 밭 ' + badHl;
+    else if (closed) head = '수확 문이 닫힌 밭 ' + closedHl;
+    else head = '밭 <b class="hl">' + stats.length + '곳</b> 모두 수확 문이 열려 있어요';
+    h += '<h2>' + head + '</h2></div>';
     h += todoCard(L.todayTasks(st, now));
     if (!st.products.length) {
       h += '<div class="card hint mini-empty">' + ART.bottle + '<p>약 카드가 아직 없어요. 약 병 라벨의 희석배수와 "수확 며칠 전까지" 를 옮겨 적어 두면 살포 때 바로 계산돼요.</p><button type="button" class="btn" data-act="open-product">약 카드 만들기</button></div>';
@@ -268,6 +275,32 @@
     root.innerHTML = h;
   }
 
+  // 살포 판정 날짜 줄 (R-01): 뿌린 날·수확 문·수확 예정을 날짜 차이 비율대로 한 줄에 찍고,
+  // 수확 문~수확 예정 사이 막대를 판정 색으로 칠해 며칠 겹치는지·남는지 한눈에 보이게 한다
+  function gateTimeline(r, dr) {
+    if (r.verdict === 'none' || !r.after || !L.validDate(dr.date)) return '';
+    var days = [dr.date, r.after];
+    if (r.harvest) days.push(r.harvest);
+    var lo = days.reduce(function (a, b) { return b < a ? b : a; });
+    var hi = days.reduce(function (a, b) { return b > a ? b : a; });
+    var span = Math.max(1, L.diff(lo, hi));
+    // 양 끝 글자가 넘치지 않게 6%~94% 안에 놓는다
+    function pos(d) { return Math.round((6 + L.diff(lo, d) / span * 88) * 10) / 10; }
+    function mark(cls, d, cap) {
+      return '<span class="tl-mark ' + cls + '" style="left:' + pos(d) + '%"><i aria-hidden="true"></i><b>' + esc(cap) + '</b><em>' + L.md(d) + '</em></span>';
+    }
+    var color = { ok: 'var(--accent)', tight: 'var(--warn)', bad: 'var(--bad)' }[r.verdict];
+    var h = '<div class="tl" role="img" aria-label="' + esc('뿌린 날 ' + L.md(dr.date) + ', 수확 문 ' + L.md(r.after) + (r.harvest ? ', 수확 예정 ' + L.md(r.harvest) : '')) + '"><span class="tl-line"></span>';
+    if (r.harvest) {
+      var a = pos(r.after), b = pos(r.harvest), gap = L.diff(r.after, r.harvest);
+      h += '<span class="tl-gap" style="left:' + Math.min(a, b) + '%;width:' + Math.max(0.8, Math.abs(b - a)) + '%;background:' + color + '"></span>';
+      h += '<span class="tl-days" style="left:' + ((a + b) / 2) + '%;color:' + color + '">' + (gap < 0 ? (-gap) + '일 겹침' : '여유 ' + gap + '일') + '</span>';
+    }
+    h += mark('tl-spray', dr.date, '뿌린 날') + mark('tl-gate', r.after, '수확 문');
+    if (r.harvest) h += mark('tl-harvest', r.harvest, '수확 예정');
+    return h + '</div>';
+  }
+
   function sprayCalcHtml(st, dr) {
     if (!dr.pids.length) return '<p class="sub calc-hint">약 카드를 누르면 통에 넣을 양과 수확 판정이 여기 나와요.</p>';
     var water = Number(dr.water), tanks = Math.max(1, Math.floor(Number(dr.tanks) || 1));
@@ -282,6 +315,7 @@
     if (!(water > 0)) h += '<p class="err">물 양을 넣어야 약 양이 나와요.</p>';
     var r = L.planSpray(st, dr.fieldId, dr.date, dr.pids, dr.editId);
     var gateTxt = r.after ? '수확 문: ' + (r.before && r.before !== r.after ? L.md(r.before) + ' → ' : '') + L.md(r.after) + ' 부터' : '';
+    h += gateTimeline(r, dr);
     h += verdictBand(r.verdict, (r.verdict === 'none' ? '판정 없음' : L.VERDICT[r.verdict]) + (gateTxt ? ' · ' + gateTxt : ''), r.reasons);
     if (r.rows.length) {
       h += '<ul class="plan-rows">' + r.rows.map(function (row) {

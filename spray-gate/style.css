@@ -93,10 +93,10 @@ p { margin: 6px 0; }
 .titlebar .title { margin: 0; font-size: var(--fs-4); text-align: center; flex: 1; min-width: 0; }
 .hello { margin: 4px 0 12px; }
 .hello .date { color: var(--sub); font-size: var(--fs-2); margin: 0; }
-/* 머리 문장 (V-03): 큰 굵은 제목에 숫자만 강조색 */
+/* 머리 문장 (V-03·V-06): 큰 굵은 제목에 숫자만 강조색 */
 .hello h2 { font-size: var(--fs-6); font-weight: 800; line-height: 1.25; word-break: keep-all; overflow-wrap: anywhere; margin-top: 2px; }
-.hello h2 .hl { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
-.hello h2 .hl.hl-bad { color: var(--bad); }
+.hl { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
+.hl-bad .hl { color: var(--bad); }
 
 /* 카드 */
 .card {
@@ -203,6 +203,21 @@ button:disabled { opacity: 0.45; cursor: default; transform: none; }
 .band.v-none { background: var(--bg); } .band.v-none .band-ic { background: var(--sub); }
 .plan-rows { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-2); }
 .plan-rows li { display: flex; gap: 8px; align-items: center; }
+
+/* 살포 판정 날짜 줄 (R-01): 맨 위 겹침·여유 날수 → 수확 문 이름 → 줄 → 뿌린 날·수확 예정 이름 */
+.tl { position: relative; height: 92px; margin: 12px 18px 4px; font-size: var(--fs-1); }
+.tl-line { position: absolute; left: 4%; right: 4%; top: 54px; height: 4px; border-radius: 2px; background: var(--line); }
+.tl-gap { position: absolute; top: 52px; height: 8px; border-radius: 4px; }
+.tl-days { position: absolute; top: 0; transform: translateX(-50%); font-weight: 800; white-space: nowrap; }
+.tl-mark { position: absolute; top: 0; height: 100%; width: 0; }
+.tl-mark i { position: absolute; top: 49px; left: -7px; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 3px solid var(--sub); box-sizing: border-box; }
+.tl-mark b, .tl-mark em { position: absolute; left: 0; transform: translateX(-50%); white-space: nowrap; font-style: normal; line-height: 1.2; }
+.tl-mark b { top: 66px; color: var(--sub); font-weight: 600; }
+.tl-mark em { top: 79px; color: var(--ink); font-weight: 800; }
+.tl-spray i { border-color: var(--ink); background: var(--ink); }
+.tl-gate i { border-color: var(--ink); width: 16px; height: 16px; left: -8px; top: 48px; border-radius: 4px; }
+.tl-gate b { top: 18px; } .tl-gate em { top: 31px; }
+.tl-harvest i { border-color: var(--accent); }
 
 /* 표 */
 .dose { width: 100%; border-collapse: collapse; font-size: var(--fs-2); table-layout: fixed; }
