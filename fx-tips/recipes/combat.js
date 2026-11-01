@@ -200,6 +200,7 @@
               // Fire is attached to the enemy for the whole burn duration.
               w.burnT=2.35;w.burnAge=0;w.tickT=.42;
               w.flamePulse=0;
+              if(window.PIXELFX){const f=w.foe;w.pfx("status/burning",{x:f.x+f.ox,y:f.gy+f.oy,scale:2.2,stopAfter:2.2,follow:f});}
               w.emit("ignite",hit);
             }
           };
@@ -226,7 +227,7 @@
           f.burn=.13;
           // Visible flames climb the silhouette, not a floating ring.
           w.flamePulse+=dt;
-          while(w.flamePulse>=.065){
+          while(!window.PIXELFX&&w.flamePulse>=.065){
             w.flamePulse-=.065;
             const x=f.x+f.ox+rand(-f.w*.27,f.w*.25);
             const y=f.gy+f.oy-rand(f.h*.20,f.h*.83);

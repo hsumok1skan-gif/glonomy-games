@@ -1126,7 +1126,7 @@ class World {
     }
     if (dt > 0) this.step(dt);
     if (this._pend) this._pfxFlush();
-    if (dt > 0 && this.pfxs) { for (const q of this.pfxs) { q.inst.update(dt); if (q.stopAt != null && q.inst.t >= q.stopAt) { q.inst.stop(); q.stopAt = null; } } this.pfxs = this.pfxs.filter(q => !q.inst.done() && !(q.follow && !this.shots.includes(q.follow) && !this.parts.includes(q.follow) && !q.follow.keepFx)); }
+    if (dt > 0 && this.pfxs) { for (const q of this.pfxs) { q.inst.update(dt); if (q.stopAt != null && q.inst.t >= q.stopAt) { q.inst.stop(); q.stopAt = null; } } this.pfxs = this.pfxs.filter(q => !q.inst.done() && !(q.follow && !this.shots.includes(q.follow) && !this.parts.includes(q.follow) && !this.actors.includes(q.follow) && !q.follow.keepFx)); }
   }
   // pixelfx(MIT) 효과 하나를 월드 좌표에 띄움. o: { x, y, palette, flip, seed, light, layer, scale, stopAfter, ...효과 옵션 }
   pfx(id, o = {}) {
@@ -1680,7 +1680,7 @@ function pxTowerShield(ctx, x, y, h = 86) {
 }
 // ── pixelfx 그리기: 효과마다 작은 픽셀 화면에 그려 색은 그대로, 빛은 더하기로 얹음 (S = 월드 몇 칸이 1픽셀)
 const PFX_S = 3, PFX_BUF = {};
-const PFX_AUTO_KIND = { spark: "spark", circle: "spark", square: "spark", star: "star", ring: "flash", glow: "flash", arc: "flash", smoke: "smoke", chunk: "debris", crack: "bolt", rays: "rays", slash: "slash", beam: "beam" };
+const PFX_AUTO_KIND = { spark: "spark", circle: "spark", square: "spark", star: "star", ring: "flash", glow: "flash", arc: "slash", smoke: "smoke", chunk: "debris", crack: "bolt", rays: "rays", slash: "slash", beam: "beam" };
 // "r,g,b" 한 색에서 어둠→흰색 8칸 사다리
 function pfxRamp(c) {
   const [r, g, b] = String(c || "255,255,255").split(",").map(Number), h = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0");
@@ -1721,7 +1721,9 @@ function pfxPick0(g, K, w) {
   const spread = Math.max(...g.map(q => Math.hypot(q.vx || 0, q.vy || 0))) || 200, S = Math.max(1.5, Math.min(3.2, spread / 160 + (n > 12 ? 0.6 : 0)));
   const nearGround = cy > G - 26, flip = vx < -1, o = (x = cx, y = cy, extra = {}) => Object.assign({ x, y, scale: S, flip, palette: pfxRamp(col) }, extra);
   if (K.beam) return g.filter(q => q.type === "beam").slice(0, 4).map(b => ({ id: "pickups/loot-beam", o: { x: b.x, y: b.y + 14 * Math.max(1.5, Math.min(3, (b.h || 400) / 150)), scale: Math.max(1.5, Math.min(3, (b.h || 400) / 150)), stopAfter: Math.max(0.3, (b.life || 0.6) - 0.2), palette: pfxRamp(b.color) } }));
-  if (K.slash) return g.filter(q => q.type === "slash").slice(0, 6).map(s => {
+  if (K.slash) return g.filter(q => q.type === "slash" || q.type === "arc").slice(0, 6).map(s => {
+    if (s.type === "arc") { const m = ((s.a0 ?? -1) + (s.a1 ?? 1)) / 2, fl = Math.cos(m) < -0.2, S = Math.max(1.5, Math.min(3, (s.size1 || s.size || 60) / 30));
+      return { id: "melee/sword-slash", o: { x: s.x + (fl ? 40 : -40) * S * 0.6, y: s.y + 36 * S * 0.6, scale: S, flip: fl, palette: pfxRamp(s.color).slice(1) } }; }
     const len = s.len || 80, ang = s.ang || 0;
     // 가늘고 긴 줄 = 레이저 빔 (기울여 얹음), 나머지 = 칼 베기
     if ((s.size || 8) <= 8 && len >= 100) { const S = 1.5, ux = Math.cos(ang), uy = Math.sin(ang), sx = s.x - ux * len / 2, sy = s.y - uy * len / 2;
@@ -1732,8 +1734,9 @@ function pfxPick0(g, K, w) {
   if (K.rays) { const s = g.find(q => q.type === "rays"), sc = Math.max(1.5, Math.min(4, (s.size1 || s.size || 120) / 70)); return [{ id: "holy/sunburst", o: o(s.x, s.y, { stopAfter: Math.max(0.4, (s.life || 0.6) - 0.3), scale: sc, layer: s.under ? "back" : null, rays: Math.min(16, s.n || 10), palette: pfxRamp(s.color) }) }]; }
   if (K.bolt) { const b = g.find(q => q.type === "crack"); return [{ id: "lightning/zap-hit", o: o(cx, cy + 20, { scale: 2, palette: pfxRamp(b.color) }) }]; }
   if ((K.debris || 0) >= 6 && nearGround) return [{ id: "impacts/ground-slam", o: o(cx, G, { scale: 2, palette: undefined }) }];
-  if (K.smoke && !K.spark && !K.debris) return [{ id: nearGround ? "impacts/heavy-landing" : "spawn/poof", o: o(cx, nearGround ? G : cy + 30, { scale: 2, palette: undefined }) }];
-  if (warm && (K.smoke || 0) >= 3 && (K.spark || K.debris)) return [{ id: "explosions/small-explosion", o: o(cx, Math.min(G, cy + 60), { scale: 2, palette: undefined }) }];
+  if (K.smoke && !K.spark && !K.debris) { const sm = g.find(q => q.type === "smoke"); return [{ id: nearGround ? "impacts/heavy-landing" : "spawn/poof", o: o(cx, nearGround ? G : cy + 30, { scale: 2, palette: pfxRamp(sm.color || "120,120,130").map((c, i) => i > 5 ? "#e8e4f0" : c) }) }]; }
+  if (nearGround && (K.smoke || 0) >= 3 && !K.flash) return [{ id: "impacts/heavy-landing", o: o(cx, G, { scale: 2.4, palette: undefined }) }];
+  if (warm && (K.smoke || 0) >= 3 && K.flash && (K.spark || K.debris)) return [{ id: "explosions/small-explosion", o: o(cx, Math.min(G, cy + 60), { scale: 2, palette: undefined }) }];
   if (K.star && !K.spark) return [{ id: "pickups/collect-burst", o: o(cx, cy + 30) }];
   if (K.spark) return [{ id: n >= 10 ? "impacts/crit-hit" : "impacts/hit-spark", o: o(cx, cy + 10, { scale: n >= 10 ? 2.2 : 2 }) }];
   if (K.debris) return [{ id: "impacts/blunt-hit", o: o(cx, cy + 10, { scale: 2 }) }];
