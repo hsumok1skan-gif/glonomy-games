@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14110D">
+<title>Myco Weave</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 시작 -->
+  <section id="screen-title" class="screen active" aria-label="시작 화면">
+    <div class="title-wrap">
+      <div class="logo" aria-hidden="true"><span class="logo-cap">🍄</span><span class="logo-net"></span></div>
+      <h1 class="game-title">Myco Weave</h1>
+      <p class="tagline">숲 바닥 밑으로 균사를 뻗어 나무와 손잡고, 끊기지 않게 버티며 포자를 모은다.</p>
+      <div class="title-btns">
+        <button id="btn-continue" class="btn primary" hidden>이어하기</button>
+        <button id="btn-start" class="btn primary">시작</button>
+        <button id="btn-help" class="btn">방법</button>
+        <button id="btn-settings" class="btn">설정</button>
+        <button id="btn-codex" class="btn">도감</button>
+        <button id="btn-records" class="btn">기록</button>
+      </div>
+      <p class="title-best" id="title-best"></p>
+    </div>
+  </section>
+
+  <!-- 균주 고르기 -->
+  <section id="screen-setup" class="screen" aria-label="균주 고르기">
+    <header class="sub-head">
+      <button id="btn-setup-back" class="btn small">← 뒤로</button>
+      <h2>균주와 난이도</h2>
+      <span></span>
+    </header>
+    <div class="setup-body">
+      <div class="setup-col">
+        <h3>균주</h3>
+        <div id="setup-strains" class="card-grid"></div>
+      </div>
+      <div class="setup-col narrow">
+        <h3>난이도</h3>
+        <div id="setup-diffs" class="diff-row"></div>
+        <div id="setup-summary" class="summary"></div>
+        <button id="btn-setup-go" class="btn primary wide">숲으로</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 본 화면 -->
+  <section id="screen-game" class="screen" aria-label="본 화면">
+    <header class="hud">
+      <div class="hud-left">
+        <span class="hud-forest" id="hud-forest">이끼 언덕</span>
+        <span class="hud-day" id="hud-day">1/10일</span>
+      </div>
+      <div class="hud-spores" aria-label="포자 진행">
+        <span class="hud-ico">✦</span>
+        <div class="bar"><div class="bar-fill" id="hud-spore-bar"></div></div>
+        <span id="hud-spores">0/10</span>
+      </div>
+      <div class="hud-right">
+        <span class="chip" id="hud-energy" aria-label="기운">⚡ 0</span>
+        <span class="chip heart" id="hud-heart" aria-label="심장">♥ 5</span>
+        <button id="btn-pause" class="btn small icon" aria-label="메뉴">☰</button>
+      </div>
+    </header>
+    <div class="game-body">
+      <aside class="side-left">
+        <div class="panel income">
+          <h4>오늘 기운 <span id="income-total" class="num">+0</span></h4>
+          <ul id="income-list" class="mini-list scroll" aria-label="오늘 기운 내역"></ul>
+        </div>
+        <div class="panel">
+          <h4>다가오는 것</h4>
+          <ul id="threat-list" class="mini-list"></ul>
+        </div>
+        <div class="panel grow-1">
+          <h4>숲 소식</h4>
+          <ul id="log-list" class="mini-list log"></ul>
+        </div>
+      </aside>
+      <div id="board-wrap" class="board-wrap">
+        <canvas id="board" aria-label="숲 바닥 판"></canvas>
+        <div id="fx-layer" class="fx-layer" aria-hidden="true"></div>
+        <div id="banner" class="banner" aria-live="polite"></div>
+        <div id="tutor" class="tutor" role="status" aria-live="polite" hidden>
+          <p class="tutor-step" id="tutor-step">첫 판 안내 1/4</p>
+          <p class="tutor-text" id="tutor-text"></p>
+          <div class="tutor-btns">
+            <button id="btn-tutor-next" class="btn small">건너뛰기</button>
+            <button id="btn-tutor-off" class="btn small">다시 보지 않기</button>
+          </div>
+        </div>
+      </div>
+      <aside class="side-right">
+        <div class="mode-row" role="group" aria-label="행동 고르기">
+          <button id="btn-mode-grow" class="btn mode on" data-mode="grow"><b>뻗기</b><small>Q</small></button>
+          <button id="btn-mode-fruit" class="btn mode" data-mode="fruit"><b>버섯</b><small>W</small></button>
+          <button id="btn-mode-thick" class="btn mode" data-mode="thick"><b>굵히기</b><small>E</small></button>
+        </div>
+        <div class="panel info" id="hex-info">칸을 눌러 보세요.</div>
+        <button id="btn-skill" class="btn skill">기술</button>
+        <button id="btn-end" class="btn primary end">날 넘기기<small>Space</small></button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 결과 -->
+  <section id="screen-result" class="screen" aria-label="결과">
+    <div class="result-wrap">
+      <h2 id="result-title">숲을 떠났다</h2>
+      <p id="result-sub" class="result-sub"></p>
+      <div id="result-stats" class="stat-grid"></div>
+      <p id="result-best" class="result-best"></p>
+      <div id="result-ach" class="ach-new"></div>
+      <div class="result-btns">
+        <button id="btn-again" class="btn primary">다시 하기</button>
+        <button id="btn-home" class="btn">처음으로</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 방법 -->
+  <section id="screen-help" class="screen" aria-label="방법">
+    <header class="sub-head">
+      <button id="btn-help-back" class="btn small">← 뒤로</button>
+      <h2>방법</h2>
+      <span></span>
+    </header>
+    <div class="scroll-body help-body">
+      <h3>목표</h3>
+      <p>숲마다 정해진 날 안에 포자를 목표만큼 모으면 다음 숲으로 간다. 여덟 숲을 모두 넘기면 이긴다. 심장(가운데 칸)이 다 다치거나 날이 끝나면 진다.</p>
+      <h3>하루</h3>
+      <p>날이 밝으면 기운을 받는다. 기운으로 칸을 뻗고, 버섯을 피우고, 칸을 굵힌다. 다 했으면 <b>날 넘기기</b>. 밤에 이어진 버섯이 포자를 내고, 위협이 움직인다.</p>
+      <h3>망과 흐름 (가장 중요)</h3>
+      <p>심장에서 이어진 칸만 살아 있다. 나무 곁 칸이 망에 이어지면 그 나무와 짝을 맺어 날마다 기운을 나눠 준다. 하지만 심장에서 멀수록 덜 도착한다 — 세 칸마다 1씩 준다. 망 한가운데가 갉아 먹히면 그 너머는 끊겨 기운도 포자도 멈추고, 이틀 뒤 시든다. 고리처럼 두 길로 잇거나 굵혀 두면 끊겨도 버틴다.</p>
+      <h3>행동</h3>
+      <ul>
+        <li><b>뻗기</b> — 망에 붙은 빈 칸을 차지한다. 젖은 흙 1, 흙·낙엽 2, 마른 흙·통나무 3. 곰팡이 칸은 삭여서 차지한다.</li>
+        <li><b>버섯</b> — 망 칸에 버섯을 피운다(기운 4). 자리에 따라 종류가 정해지고 포자를 더 낸다.</li>
+        <li><b>굵히기</b> — 칸을 굵힌다(기운 2). 걸어온 위협은 굵은 칸에 튕겨 다치고 굵기가 하나 준다.</li>
+        <li><b>기술</b> — 균주마다 다른 기술. 쓰면 며칠 쉬어야 다시 쓴다.</li>
+      </ul>
+      <h3>땅</h3>
+      <p>땅은 색과 함께 무늬로도 나뉜다. 칸을 누르면 칸 정보에 땅 이름과 무늬가 나온다.</p>
+      <ul>
+        <li><b>흙</b> — 고랑 두 줄 · 뻗기 2</li>
+        <li><b>젖은 흙</b> — 물결 ≈ · 뻗기 1</li>
+        <li><b>마른 흙</b> — 갈라진 금 · 뻗기 3</li>
+        <li><b>낙엽 더미</b> — 흩어진 점 · 뻗기 2</li>
+        <li><b>썩은 통나무</b> — 🪵 그림 · 뻗기 3</li>
+        <li><b>바위</b> — 빗금 · 뻗을 수 없다</li>
+        <li><b>나무</b> — 나무 그림 · 뻗을 수 없고, 곁 칸을 이으면 짝을 맺는다</li>
+      </ul>
+      <h3>위협</h3>
+      <p>딱정벌레는 칸을 갉고, 톡토기는 버섯을 먹고, 개미는 기운을 훔치고, 곰팡이는 번진다. 판 가장자리에서 나타나 가까운 망으로 다가온다.</p>
+      <h3>조작</h3>
+      <ul>
+        <li>휴대폰: 아래 오른쪽 버튼으로 행동을 고르고 칸을 누른다.</li>
+        <li>키보드: Q 뻗기 · W 버섯 · E 굵히기 · R 기술 · 방향키로 칸 고르기 · Enter 하기 · Space 날 넘기기 · Esc 메뉴</li>
+        <li>첫 판에는 판 왼쪽 위에 한 동작씩 안내가 뜬다. 다시 보려면 설정에서 <b>첫 판 안내</b>를 켠다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 설정 -->
+  <section id="screen-settings" class="screen" aria-label="설정">
+    <header class="sub-head">
+      <button id="btn-settings-back" class="btn small">← 뒤로</button>
+      <h2>설정</h2>
+      <span></span>
+    </header>
+    <div class="scroll-body">
+      <div id="settings-list" class="settings-list"></div>
+      <button id="btn-wipe" class="btn danger">기록 지우기</button>
+      <p class="fine">이 게임은 기록을 이 기기 브라우저에만 저장한다.</p>
+    </div>
+  </section>
+
+  <!-- 도감 -->
+  <section id="screen-codex" class="screen" aria-label="도감">
+    <header class="sub-head">
+      <button id="btn-codex-back" class="btn small">← 뒤로</button>
+      <h2>도감</h2>
+      <span id="codex-count" class="num"></span>
+    </header>
+    <div class="tab-row" id="codex-tabs" role="tablist"></div>
+    <div class="scroll-body"><div id="codex-grid" class="codex-grid"></div></div>
+  </section>
+
+  <!-- 기록 -->
+  <section id="screen-records" class="screen" aria-label="기록">
+    <header class="sub-head">
+      <button id="btn-records-back" class="btn small">← 뒤로</button>
+      <h2>기록</h2>
+      <span></span>
+    </header>
+    <div class="scroll-body rec-body">
+      <div id="rec-stats" class="stat-grid"></div>
+      <h3>지난 판</h3>
+      <ul id="rec-history" class="hist-list"></ul>
+      <h3>업적 <span id="rec-ach-count" class="num"></span></h3>
+      <div id="rec-ach" class="ach-grid"></div>
+    </div>
+  </section>
+
+  <!-- 숲 소개 -->
+  <div id="overlay-intro" class="overlay" aria-label="숲 소개">
+    <div class="sheet">
+      <p class="sheet-kicker" id="intro-kicker">숲 1 / 8</p>
+      <h2 id="intro-name">이끼 언덕</h2>
+      <p id="intro-desc"></p>
+      <div id="intro-goal" class="intro-goal"></div>
+      <button id="btn-intro-go" class="btn primary wide">뻗어 나가기</button>
+    </div>
+  </div>
+
+  <!-- 형질 고르기 -->
+  <div id="overlay-reward" class="overlay" aria-label="형질 고르기">
+    <div class="sheet wide">
+      <p class="sheet-kicker">숲을 넘겼다 · 심장이 조금 낫는다</p>
+      <h2>형질 하나를 고른다</h2>
+      <div id="reward-list" class="reward-list"></div>
+    </div>
+  </div>
+
+  <!-- 메뉴 -->
+  <div id="overlay-pause" class="overlay" aria-label="메뉴">
+    <div class="sheet">
+      <h2>쉬는 중</h2>
+      <div id="pause-traits" class="trait-chips"></div>
+      <button id="btn-resume" class="btn primary wide">계속</button>
+      <button id="btn-pause-help" class="btn wide">방법</button>
+      <button id="btn-pause-settings" class="btn wide">설정</button>
+      <button id="btn-giveup" class="btn danger wide">이 판 그만두기</button>
+    </div>
+  </div>
+
+  <!-- 확인 -->
+  <div id="overlay-confirm" class="overlay" aria-label="확인">
+    <div class="sheet">
+      <h2 id="confirm-title">정말요?</h2>
+      <p id="confirm-text"></p>
+      <div class="row">
+        <button id="btn-confirm-no" class="btn">아니요</button>
+        <button id="btn-confirm-yes" class="btn danger">네</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 세로 안내 -->
+  <div id="rotate" class="rotate" aria-live="polite">
+    <div class="rotate-ico" aria-hidden="true">📱↻</div>
+    <p>가로로 돌려 주세요</p>
+    <small>Myco Weave 는 가로 화면에서 한다.</small>
+  </div>
+</div>
+
+<script src="./data.js"></script>
+<script src="./store.js"></script>
+<script src="./audio.js"></script>
+<script src="./game.js"></script>
+<script src="./ui.js"></script>
+</body>
+</html>
