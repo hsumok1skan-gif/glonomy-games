@@ -177,6 +177,7 @@ var Logic = (function () {
     var skip = (state.skips && kid && state.skips[checkKey(kid.id, k)]) || [];
     if (skip.length) order = order.filter(function (it) { return skip.indexOf(it.name) < 0; });
     order.sort(function (a, b) { return GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group); });
+    order.forEach(function (it) { it.morning = isMorning(state, it.name); });   // 가방 시트에서 '아침' 쪽으로 모은다
     return { date: k, items: order, periods: periods, pickups: pickups, school: isSchoolDay(k, state.settings.holidays) };
   }
 
@@ -189,12 +190,27 @@ var Logic = (function () {
     return { done: n, total: bag.items.length, pct: bag.items.length ? Math.round(n * 100 / bag.items.length) : 0 };
   }
 
-  // 그날 가방을 기록 한 줄로
+  // 아침에 넣을 물건(물병·도시락처럼 밤에는 넣지 않는 것)인지: 이름을 다듬어 소문자로 비교한다
+  function isMorning(state, name) {
+    var key = norm(name).toLowerCase();
+    return (state.morning || []).some(function (m) { return norm(m).toLowerCase() === key; });
+  }
+
+  // 밤에 챙길 것(아침 물건을 뺀 나머지)이 하나 이상 있고 모두 챙겼으면 true — 아침 물건은 남아도 다 챙긴 것으로 친다
+  function nightDone(state, kid, bag) {
+    if (!kid || !bag.items.length) return false;
+    var done = state.checks[checkKey(kid.id, bag.date)] || [];
+    var night = bag.items.filter(function (it) { return !isMorning(state, it.name); });
+    return night.length > 0 && night.every(function (it) { return done.indexOf(it.name) >= 0; });
+  }
+
+  // 그날 가방을 기록 한 줄로 (챙기지 않은 아침 물건은 아침에 넣으니 덜 챙긴 것으로 세지 않는다)
   function snapshot(state, kid, k) {
     var bag = buildBag(state, kid, k);
     var done = state.checks[checkKey(kid.id, k)] || [];
-    var missed = bag.items.filter(function (it) { return done.indexOf(it.name) < 0; }).map(function (it) { return it.name; });
-    return { kid: kid.id, date: k, total: bag.items.length, done: bag.items.length - missed.length, missed: missed };
+    var items = bag.items.filter(function (it) { return done.indexOf(it.name) >= 0 || !isMorning(state, it.name); });
+    var missed = items.filter(function (it) { return done.indexOf(it.name) < 0; }).map(function (it) { return it.name; });
+    return { kid: kid.id, date: k, total: items.length, done: items.length - missed.length, missed: missed };
   }
 
   // 지나간 날 가운데 체크를 했지만 기록이 없는 날을 기록으로 닫는다
@@ -411,7 +427,7 @@ var Logic = (function () {
   // 데리러 갈 사람이 있으면 둘째 줄 '14:30 태권도 → 아빠' (여럿이면 · 로 이어 한 줄)
   function shareText(state, kid, bag) {
     var pr = progress(state, kid, bag);
-    var full = pr.total > 0 && pr.done === pr.total;
+    var full = (pr.total > 0 && pr.done === pr.total) || nightDone(state, kid, bag);
     var first = nameI(kid.name) + ' ' + dayLabel(bag.date) + (full ? ' 가방 다 챙겼어요 🎒' : ' 가방을 챙기고 있어요 🎒');
     var who = bag.pickups.filter(function (p) { return p.who; }).map(function (p) {
       return (p.time ? p.time + ' ' : '') + p.name + ' → ' + p.who;
@@ -423,7 +439,7 @@ var Logic = (function () {
   function doneText(state, kid, bag) {
     if (!kid || !bag.items.length) return '';
     var done = state.checks[checkKey(kid.id, bag.date)] || [];
-    if (!bag.items.every(function (it) { return done.indexOf(it.name) >= 0; })) return '';
+    if (!bag.items.every(function (it) { return done.indexOf(it.name) >= 0; }) && !nightDone(state, kid, bag)) return '';
     return shareText(state, kid, bag);
   }
 
@@ -639,6 +655,16 @@ var Logic = (function () {
     // 9-3) 데리러 갈 사람 줄: '14:30 태권도 → 아빠' 한 줄만 더한다
     var sb = { date: '2026-11-02', items: [], pickups: [{ time: '14:30', name: '태권도', who: '아빠' }, { time: '16:00', name: '수영', who: '' }] };
     eq('가족 글 둘째 줄', shareText({ checks: {} }, { id: 'k', name: '서아' }, sb), '서아 11월 2일(월) 가방을 챙기고 있어요 🎒\n14:30 태권도 → 아빠');
+    // 9-3b) 아침에 넣을 물건: 4번 가방(7개)에서 물병을 아침에 넣으면, 밤에 나머지 6개만 챙겨도 다 챙김. 기록은 6개 가운데 6개
+    var ms = { packs: st.packs, daily: st.daily, rules: st.rules, notes: st.notes, settings: st.settings, morning: [' 물병 '],
+      checks: { 'k|2026-10-26': ['색종이', '필통', '실내화 주머니', '체육복', '국어 교과서'] } };
+    var mbag = buildBag(ms, kid, '2026-10-26');
+    eq('밤 물건 하나 남음', nightDone(ms, kid, mbag), false);
+    ms.checks['k|2026-10-26'].push('수영복');
+    eq('밤 물건 다 챙김 (물병은 아침에)', nightDone(ms, kid, mbag), true);
+    var msn = snapshot(ms, kid, '2026-10-26');
+    eq('아침 물건 뺀 기록', msn.done + '/' + msn.total, '6/6');
+    eq('아침 물건 없으면 다 챙겨야', nightDone(st, kid, bag), false);
     // 9-4) 학년 기본 시간표: 4학년은 3~4학년 묶음, 4교시로 자르고 지운 꾸러미 칸은 비운다
     var gt = [{ grades: [3, 4], week: { 1: ['a', 'b', 'x', 'a', 'b', 'a'], 2: ['b'], 3: [], 4: [], 5: [] } }];
     var gw = gradeWeek(gt, [{ id: 'a' }, { id: 'b' }], 4, 4);
@@ -669,7 +695,7 @@ var Logic = (function () {
     toKey: toKey, fromKey: fromKey, addDays: addDays, dow: dow, validKey: validKey,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, progress: progress, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, progress: progress, isMorning: isMorning, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME

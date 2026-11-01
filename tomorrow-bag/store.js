@@ -31,6 +31,7 @@ var Store = (function () {
       cur: null,
       packs: copyPacks(),
       daily: DATA.DAILY.slice(),
+      morning: ['물병', '도시락', '간식'],                   // 아침에 넣을 물건 (밤에는 남아도 다 챙긴 것으로 친다)
       rules: DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; }),
       notes: [],
       checks: {},
@@ -86,6 +87,8 @@ var Store = (function () {
     var base = defaults();
     Object.keys(base).forEach(function (k) { if (d[k] === undefined) d[k] = base[k]; });
     Object.keys(base.settings).forEach(function (k) { if (d.settings[k] === undefined) d.settings[k] = base.settings[k]; });
+    if (!Array.isArray(d.morning)) d.morning = base.morning.slice();
+    d.morning = d.morning.filter(function (x) { return typeof x === 'string' && x.trim(); });
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
     d.settings.ptimes = Logic.periodTimes(d.settings).map(function (x) { return x.slice(); });

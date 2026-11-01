@@ -134,7 +134,7 @@ var UI = (function () {
     return n;
   }
 
-  // ---- 가방 그림: 둘레 진행 고리 + 챙긴 만큼 물건이 차오르는 가방 (0 빈 가방 · 1~3 차오름 · 4 다 차서 닫힘) ----
+  // ---- 가방 그림: 둘레 진행 고리 + 챙긴 물건 그림이 몸통 위로 쌓이는 가방 (0 빈 가방 · 1~3 차오름 · 4 다 차서 닫힘) ----
   var RING_R = 100, RING_C = 2 * Math.PI * RING_R;
   var LV_Y = 108, LV_H = 50;
   function stageOf(pr) {
@@ -145,19 +145,60 @@ var UI = (function () {
     return 3;
   }
   function artLabel(pr) { return '가방 그림: ' + pr.total + '개 중 ' + pr.done + '개 챙겼어요'; }
-  function bagArt(pr) {
+  // 가방 몸통 위로 삐죽 나오는 챙긴 물건 자리 6개 (x, y, 기울기). 앞줄 3 → 뒷줄 2 → 맨 위 1 차례로 채운다
+  var BAG_SLOTS = [[64, 62, -12], [96, 58, 0], [128, 62, 12], [78, 38, -6], [114, 38, 8], [96, 18, 0]];
+  function iconById(id) {
+    for (var i = 0; i < DATA.ICONS.length; i++) if (DATA.ICONS[i].id === id) return DATA.ICONS[i];
+    return null;
+  }
+  function bagItemHTML(id, slot, settle) {
+    var ic = iconById(id), s = BAG_SLOTS[slot];
+    if (!ic || !s) return '';
+    return '<g class="bag-item' + (settle ? ' settle' : '') + '" data-pic="' + id + '" data-slot="' + slot + '" transform="translate(' + s[0] + ' ' + s[1] + ') rotate(' + s[2] + ' 14 14)">' +
+      '<g class="bi"><rect width="28" height="28" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>' +
+      '<g transform="translate(2 2)" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ic.d + '</g></g></g>';
+  }
+  // 챙긴 물건 그림 id: 챙긴 차례대로, 넘치면 마지막 6개
+  function checkedPics(S, kid, bag) {
+    var done = S.checks[Logic.checkKey(kid.id, bag.date)] || [];
+    var by = {};
+    bag.items.forEach(function (it) { by[it.name] = it.pic; });
+    var out = [];
+    done.forEach(function (n) { if (by[n]) out.push(by[n]); });
+    return out.slice(-BAG_SLOTS.length);
+  }
+  // 이미 그린 .bag-item 은 그대로 두고, 빠진 그림만 빼고 새 그림만 빈 자리에 더한다 (새로 들어간 것에 settle)
+  function setBagItems(art, pics) {
+    var box = art.querySelector('.items');
+    if (!box) return;
+    var want = {};
+    pics.forEach(function (p) { want[p] = (want[p] || 0) + 1; });
+    var used = {};
+    var els = box.querySelectorAll('.bag-item');
+    for (var i = 0; i < els.length; i++) {
+      var p = els[i].getAttribute('data-pic');
+      if (want[p]) { want[p]--; used[els[i].getAttribute('data-slot')] = true; }
+      else box.removeChild(els[i]);
+    }
+    var add = '';
+    pics.forEach(function (p) {
+      if (!want[p]) return;
+      want[p]--;
+      for (var s = 0; s < BAG_SLOTS.length; s++) if (!used[s]) { used[s] = true; add += bagItemHTML(p, s, true); break; }
+    });
+    if (add) box.insertAdjacentHTML('beforeend', add);
+  }
+  function bagArt(pr, pics) {
     var st = stageOf(pr);
     var hh = LV_H * pr.pct / 100;
+    var items = '';
+    (pics || []).slice(0, BAG_SLOTS.length).forEach(function (p, i) { items += bagItemHTML(p, i, false); });
     return '<svg class="bag-art s' + st + '" viewBox="0 0 220 220" role="img" aria-label="' + artLabel(pr) + '">' +
       '<circle class="bgc" cx="110" cy="110" r="' + RING_R + '" fill="none" stroke-width="10"/>' +
       '<circle class="fg" cx="110" cy="110" r="' + RING_R + '" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + RING_C.toFixed(1) +
       '" stroke-dashoffset="' + (RING_C * (1 - pr.pct / 100)).toFixed(1) + '" transform="rotate(-90 110 110)"/>' +
       '<path d="M86 84 V70 a24 22 0 0 1 48 0 V84" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"/>' +
-      '<g class="items">' +
-      '<g class="lv lv1"><rect x="72" y="58" width="20" height="40" rx="3" fill="var(--sub)"/><path d="M78 62 h8" stroke="var(--surface)" stroke-width="2"/></g>' +
-      '<g class="lv lv2"><rect x="98" y="46" width="9" height="52" rx="2" fill="var(--gold)"/><path d="M98 46 l4.5 -8 4.5 8z" fill="var(--ink)"/><rect x="111" y="60" width="18" height="38" rx="3" fill="var(--violet)"/></g>' +
-      '<g class="lv lv3"><rect x="133" y="54" width="16" height="44" rx="6" fill="var(--surface)" stroke="var(--sub)" stroke-width="3"/><rect x="137" y="48" width="8" height="8" rx="2" fill="var(--sub)"/></g>' +
-      '</g>' +
+      '<g class="items">' + items + '</g>' +
       '<rect x="56" y="84" width="108" height="94" rx="24" fill="var(--accent)"/>' +
       '<rect x="72" y="' + LV_Y + '" width="76" height="' + LV_H + '" rx="12" fill="var(--soft)"/>' +
       '<rect class="lvfill" x="72" y="' + (LV_Y + LV_H - hh).toFixed(1) + '" width="76" height="' + hh.toFixed(1) + '" rx="12" fill="var(--sub)"/>' +
@@ -294,7 +335,7 @@ var UI = (function () {
       return;
     }
 
-    h += '<div class="bag-stage" id="bag-ring">' + bagArt(pr) + '</div>';
+    h += '<div class="bag-stage" id="bag-ring">' + bagArt(pr, checkedPics(S, kid, bag)) + '</div>';
     h += '<p class="bag-count" id="bag-count" aria-live="polite">' + countText(pr) + '</p>';
 
     // 그날 수업 한 줄 (넘치면 옆으로 밀기)
@@ -323,23 +364,24 @@ var UI = (function () {
   function renderPrint(kid, bag) {
     var h = '<h1>' + esc(Logic.nameI(kid.name)) + ' ' + Logic.dayLabel(bag.date) + ' 가방</h1>';
     PAGE_G.forEach(function (g) {
-      var list = bag.items.filter(function (it) { return pageGroup(it.group) === g; });
+      var list = bag.items.filter(function (it) { return pageGroup(it) === g; });
       if (!list.length) return;
       h += '<h2>' + PAGE_NAME[g] + '</h2><ul>' + list.map(function (it) { return '<li>☐ ' + esc(it.name) + ' — ' + esc(it.sources.join(' · ')) + '</li>'; }).join('') + '</ul>';
     });
     $('print-area').innerHTML = h;
   }
 
-  // ---- 가방 시트: 쪽 이름 띠(알림장 · 수업 · 방과후 · 매일), 한 쪽에 12칸(아이가 챙겨요는 9칸) ----
-  var PAGE_G = ['note', 'class', 'after', 'daily'];
-  var PAGE_NAME = { note: '알림장', class: '수업', after: '방과후', daily: '매일' };
-  function pageGroup(g) { return g === 'rule' ? 'daily' : g; }   // 요일마다 챙길 것은 매일 쪽 맨 앞에
+  // ---- 가방 시트: 쪽 이름 띠(알림장 · 수업 · 방과후 · 매일 · 아침), 한 쪽에 12칸(아이가 챙겨요는 9칸) ----
+  var PAGE_G = ['note', 'class', 'after', 'daily', 'morning'];
+  var PAGE_NAME = { note: '알림장', class: '수업', after: '방과후', daily: '매일', morning: '아침' };
+  // 요일마다 챙길 것은 매일 쪽 맨 앞에, 아침에 넣을 물건(S.morning)은 맨 끝 아침 쪽에
+  function pageGroup(it) { return it.morning ? 'morning' : (it.group === 'rule' ? 'daily' : it.group); }
 
   // 자주 덜 챙긴 물건(최근 30일 2번 이상)은 말없이 그 쪽 맨 앞 칸에 놓기만 한다
   function bagPages(bag, miss, per) {
     var by = {};
     bag.items.forEach(function (it, i) {
-      var g = pageGroup(it.group);
+      var g = pageGroup(it);
       (by[g] || (by[g] = [])).push({ it: it, i: i, first: (miss[Logic.norm(it.name).toLowerCase()] || 0) >= 2 ? 1 : 0 });
     });
     var pages = [];
@@ -358,7 +400,7 @@ var UI = (function () {
   function groupCounts(bag, done) {
     var cnt = {};
     bag.items.forEach(function (it) {
-      var g = pageGroup(it.group);
+      var g = pageGroup(it);
       var c = cnt[g] || (cnt[g] = { d: 0, t: 0 });
       c.t++;
       if (done.indexOf(it.name) >= 0) c.d++;
@@ -415,6 +457,7 @@ var UI = (function () {
     var art = document.querySelector('#bag-ring .bag-art');
     if (!art) return false;
     setArt(art, pr);
+    setBagItems(art, checkedPics(S, kid, bag));
     var cnt = $('bag-count');
     if (cnt) cnt.textContent = countText(pr);
     if (!isOpen('sheet-bag')) return true;
@@ -425,7 +468,7 @@ var UI = (function () {
     var on = done.indexOf(name) >= 0;
     btn.classList.toggle('done', on);
     btn.setAttribute('aria-pressed', String(on));
-    var g = pageGroup(item.group);
+    var g = pageGroup(item);
     var head = document.querySelector('#bs-band .group-title[data-g="' + g + '"]');
     if (head) {
       var c = groupCounts(bag, done)[g] || { d: 0, t: 0 };
@@ -476,11 +519,12 @@ var UI = (function () {
     btn.classList.add('pop');
   }
 
-  // 길게 누르면: 왜 필요한지 + '내일은 빼기' (아이가 챙겨요일 때는 이유만)
+  // 길게 누르면: 왜 필요한지 + '내일은 빼기' · '아침에 넣기'/'밤에 넣기' (아이가 챙겨요일 때는 이유만)
   function showBubble(btn, it, word, kidMode) {
     var b = $('bubble'), sheet = b.parentNode;
     b.innerHTML = '<b>' + esc(it.name) + '</b>' +
-      (kidMode ? '' : '<button class="btn small" type="button" data-act="skip-item" data-name="' + esc(it.name) + '">' + word + '은 빼기</button>') +
+      (kidMode ? '' : '<button class="btn small" type="button" data-act="skip-item" data-name="' + esc(it.name) + '">' + word + '은 빼기</button>' +
+        '<button class="btn small" type="button" data-act="morning-toggle" data-name="' + esc(it.name) + '">' + (it.morning ? '밤에 넣기' : '아침에 넣기') + '</button>') +
       '<span class="tiny">' + esc(it.sources.join(' · ')) + '</span>';
     b.hidden = false;
     var sr = sheet.getBoundingClientRect(), r = btn.getBoundingClientRect();
@@ -627,6 +671,24 @@ var UI = (function () {
     var h = '';
     for (var w = 1; w <= 5; w++) if (w !== d) h += '<button class="chip" type="button" data-act="cell-copy-to" data-d="' + w + '">' + DATA.DOW[d] + ' → ' + DATA.DOW[w] + '</button>';
     $('cell-copy-row').innerHTML = h;
+  }
+
+  // 아이 넣기 시트의 방과후 고르기: 꾸러미는 하나만, 요일(월~금)은 여러 개
+  function renderKidAfter(S, sel) {
+    sel = sel || { pack: null, days: [] };
+    var acad = S.packs.filter(function (p) { return p.kind === 'acad'; });
+    $('kid-after-packs').innerHTML = acad.map(function (p) {
+      var on = p.id === sel.pack;
+      return '<button class="chip' + (on ? ' on' : '') + '" type="button" data-act="kid-after-pack" data-id="' + p.id + '" aria-pressed="' + on + '">' + packPic(p) + esc(p.name) + '</button>';
+    }).join('');
+    var h = '';
+    for (var d = 1; d <= 5; d++) {
+      var dn = sel.days.indexOf(d) >= 0;
+      h += '<button class="chip' + (dn ? ' on' : '') + '" type="button" data-act="kid-after-day" data-d="' + d + '" aria-pressed="' + dn + '"' + (sel.pack ? '' : ' disabled') + '>' + DATA.DOW[d] + '</button>';
+    }
+    $('kid-after-days').innerHTML = h;
+    $('kid-after-time').disabled = !sel.pack;
+    $('kid-after').style.display = acad.length ? '' : 'none';
   }
 
   // ---- 꾸러미: 그림 카드 격자 (한 쪽 9개), 옆으로 넘긴다 ----
@@ -969,7 +1031,7 @@ var UI = (function () {
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, cellByName: cellByName,
     fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, renderCal: renderCal, renderUpcoming: renderUpcoming,
-    renderWeek: renderWeek, renderDay: renderDay, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow,
+    renderWeek: renderWeek, renderDay: renderDay, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
     renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest

@@ -191,8 +191,10 @@ p { margin: 4px 0; }
 /* 가방 그림: 챙긴 만큼 물건이 차오르고(s0~s3), 다 챙기면 덮개가 닫힌다(s4) */
 .bag-art .bgc { stroke: var(--line); }
 .bag-art .fg { stroke: var(--sub); transition: stroke-dashoffset 0.4s ease-out; }
-.bag-art .lv { opacity: 0; transform: translateY(16px); transition: opacity var(--dur), transform 0.3s ease-out; }
-.bag-art.s1 .lv1, .bag-art.s2 .lv1, .bag-art.s2 .lv2, .bag-art.s3 .lv1, .bag-art.s3 .lv2, .bag-art.s3 .lv3 { opacity: 1; transform: none; }
+.bag-art .items { transition: opacity 0.3s; }
+.bag-art .bag-item .bi { transform-box: fill-box; transform-origin: 50% 100%; }
+.bag-art .bag-item.settle .bi { animation: settle 0.4s ease-out; }
+@keyframes settle { 0% { transform: translateY(-34px) scale(0.6); opacity: 0; } 60% { transform: translateY(3px) scale(1.06); opacity: 1; } 100% { transform: none; } }
 .bag-art .lvfill { transition: y 0.4s ease-out, height 0.4s ease-out; }
 .bag-art .flap { transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(0); transition: transform 0.35s ease-out; }
 .bag-art.s4 .flap { transform: scaleY(1); }
@@ -228,6 +230,8 @@ body.reduce .bag-art * { transition: none !important; animation: none !important
 .group-title .g-count { font-size: var(--t-1); font-weight: 800; padding: 1px 7px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); }
 .group-title.all-done .g-count { background: var(--sub); border-color: var(--sub); color: var(--on-accent); }
 .group-title.all-done .g-count::before { content: '✓ '; }
+.group-title.g-morning { border-style: dashed; }
+.group-title.g-morning::before { content: '☀'; }
 
 /* 물건 칸: 그림 + 한글 이름, 챙기면 초록 ✓ 도장 */
 .check {
@@ -515,6 +519,15 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--sub); borde
 .tpl-row { display: flex; align-items: center; gap: 10px; min-height: 48px; margin-top: 10px; font-size: var(--t-3); font-weight: 700; cursor: pointer; }
 .tpl-row input { width: 24px; height: 24px; flex: none; margin: 0; accent-color: var(--accent); }
 .tpl-row .tiny { display: block; font-weight: 400; }
+/* 아이 넣기 시트의 방과후 고르기: 칩 두 줄이 옆으로만 밀려 시트 높이가 한 화면 안에 머문다 */
+.kid-after { margin-top: 4px; }
+.kid-after .f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }
+.kid-after .f .tiny { font-weight: 400; }
+.kid-after .chip { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.kid-after .chip .pic { width: var(--t-4); height: var(--t-4); color: currentColor; }
+.ka-row { margin-top: 6px; align-items: center; }
+.ka-row .chips { flex: 1; min-width: 0; }
+.ka-row input { flex: 0 0 auto; width: 108px; }
 .err { color: var(--danger); font-size: var(--t-2); min-height: 0; margin-top: 2px; }
 .err:empty { display: none; }
 .bad { border-color: var(--danger) !important; animation: shake 0.3s; }
