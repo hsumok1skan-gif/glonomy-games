@@ -1,7 +1,7 @@
 "use strict";
 /* 받아 간 사람이 그대로 열어 쓰는 실행 파일 만들기 (사이트와 코드 안내 페이지가 같이 씀) */
 window.FXExport = (() => {
-  const V = "202611011628";
+  const V = "202611011644";
   const plain = s => String(s).replace(/\*/g, "");
   const close = "<" + "/script>", open = "<" + "script>", cm = t => "<" + "!-- " + t + " --" + ">";
 
@@ -80,7 +80,7 @@ makeSprites().then(() => { reset(); requestAnimationFrame(t0 => { last = t0; loo
 <style>html,body{margin:0;background:#0b0c09;color:#ece9de;font:14px system-ui,sans-serif}canvas{display:block;width:min(100vw,900px);margin:0 auto;aspect-ratio:3/2;touch-action:manipulation}#ui{text-align:center;padding:12px}button{margin:3px;padding:8px 12px;border-radius:8px;border:1px solid #333;background:#1b1e16;color:#ece9de;font:inherit}button.on{background:#c8f03c;color:#141708;border-color:#c8f03c}p{text-align:center;color:#8d9081}</style>
 </head><body>
 <canvas id="c"></canvas><div id="ui"></div>
-<p>${plain(r.title.en)} · tap the scene to fire · pick a layer above · guide: glonomy.com/fx-tips/code.html#${r.id}</p>
+<p>${plain(r.title.en)} · tap the scene to fire · pick a layer above · guide: gamefeelfx.github.io/#${r.id}</p>
 ${cm("1) engine: World, particles, actors, sounds (no need to edit)")}
 ${open}
 ${eng}

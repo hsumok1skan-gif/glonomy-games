@@ -312,7 +312,7 @@ const FX = { style: "art", colors: { hero: DOT.hero, foe: DOT.foe, gun: [214, 21
   pixelLevels: 7,  // 색 단계 수(채널마다). 적을수록 픽셀 아트 느낌
 };
 // FX.style = "art" 일 때 쓰는 기본 그림 (FX Lab 기본 캐릭터·총·배경)
-const FX_ART_BASE = (() => { try { const s = document.currentScript && document.currentScript.src; if (s) return s.replace(/engine\.js.*$/, "") + "art/"; } catch (e) {} return "https://glonomy.com/fx-tips/art/"; })();
+const FX_ART_BASE = (() => { try { const s = document.currentScript && document.currentScript.src; if (s) return s.replace(/engine\.js.*$/, "") + "art/"; } catch (e) {} return "https://gamefeelfx.github.io/art/"; })();
 const FX_ART = { images: { hero: FX_ART_BASE + "hero.webp", foe: FX_ART_BASE + "foe.webp", gun: FX_ART_BASE + "gun.webp", bg: FX_ART_BASE + "bg-ruins-px.png", heroTop: FX_ART_BASE + "heroTop-px.png", foeTop: FX_ART_BASE + "foeTop-px.png" },
   hand: [0.44, 0.73], gunGrip: [0.22, 0.5], gunMuzzle: [1.0, 0.27] };
 const FX_DOTPT = { hand: [0.27, 0.62], gunGrip: [0.28, 0.72], gunMuzzle: [0.98, 0.28] };
