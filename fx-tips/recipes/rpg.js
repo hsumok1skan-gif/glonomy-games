@@ -189,9 +189,9 @@
         {
           id: "circle", name: { en: "Magic Circle", ko: "바닥 마법진" }, param: "r 80 · back ease",
           cap: { en: "Draw a *circle* under the caster first.", ko: "시전자 발밑에 *마법진*부터 깔아요." },
-          cast(w, C) { C.a = 1; C.s = 0; w.tween(C, { s: 1 }, 0.35, "back"); },
+          cast(w, C) { C.a = 1; C.s = 0; w.tween(C, { s: 1 }, 0.35, "back"); if (window.PIXELFX) C.px = w.pfx("arcane/magic-circle-cast", { x: w.hero.x, y: G + 4, scale: 2, stopAfter: 0.75, palette: pfxRamp("167,139,250") }); },
           release(w, C) { w.tween(C, { a: 0 }, 0.4, "in"); },
-          back(w, ctx) { const C = w.C; magicCircle(ctx, w.hero.x, G, 85 * C.s, C.rot, C.a, "167,139,250"); },
+          back(w, ctx) { const C = w.C; if (C.px) return; magicCircle(ctx, w.hero.x, G, 85 * C.s, C.rot, C.a, "167,139,250"); },
         },
         {
           id: "spin", name: { en: "Spin Up", ko: "점점 빨리 회전" }, param: "rot ×6 while casting",
@@ -2065,12 +2065,12 @@
         w.after(1.45, () => { g.alpha = 0; w.C.a = 0; w.busy = false; });
       },
       update(w, dt) { w.C.rot += dt * 2; },
-      drawBack(w, ctx) { magicCircle(ctx, 360, G, 120, w.C.rot, w.C.a, "96,165,250", 0.26); },
+      drawBack(w, ctx) { if (w.C.px) return; magicCircle(ctx, 360, G, 120, w.C.rot, w.C.a, "96,165,250", 0.26); },
       steps: [
         {
           id: "circle", name: { en: "Summon Circle", ko: "소환진" }, param: "r 120 · 350ms lead",
           cap: { en: "Draw the *circle* first. The ground announces it.", ko: "*소환진*부터. 땅이 먼저 알려줘요." },
-          summon(w) { w.C.a = 0; w.tween(w.C, { a: 1 }, 0.3, "out"); },
+          summon(w) { w.C.a = 0; w.tween(w.C, { a: 1 }, 0.3, "out"); if (window.PIXELFX) { w.C.px = 1; w.pfx("arcane/rune-circle", { x: 360, y: G + 4, scale: 2.4, stopAfter: 1.2, palette: pfxRamp("96,165,250") }); } },
         },
         {
           id: "rise", name: { en: "Rise From Below", ko: "땅에서 솟아오름" }, param: "scaleY 0 → 1 back",

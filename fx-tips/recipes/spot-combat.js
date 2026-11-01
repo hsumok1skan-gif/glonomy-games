@@ -571,7 +571,7 @@
         }
       },
       drawFront(w, ctx) {
-        const b = w.beam; if (!b || b.t > b.life) return;
+        const b = w.beam; if (!b || b.t > b.life || (b.big && b.px)) return;
         const k = b.t / b.life, fade = 1 - Math.pow(k, 4), len = b.x1 - b.x0;
         ctx.save(); ctx.globalCompositeOperation = "lighter";
         if (!b.big) { ctx.strokeStyle = `rgba(255,230,120,${fade})`; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(b.x0, b.y); ctx.lineTo(b.x1, b.y); ctx.stroke(); }
@@ -611,6 +611,8 @@
           release(w, h, f, bm) {
             bm.big = true; bm.grow = 0;
             w.tween(bm, { grow: 1 }, 0.1, "out");
+            if (window.PIXELFX) { const S = Math.max(1.5, (bm.x1 - bm.x0) / 150); bm.px = true;
+              w.pfx("arcane/arcane-beam", { x: bm.x0 - 15 * S, y: bm.y + 24 * S, scale: S, stopAfter: bm.life * 0.85, palette: ["#1a0838", "#3a1670", "#6a2cc0", "#9a4cff", "#ff9a30", "#ffb640", "#fff4cc", "#ffffff"] }); }
           },
         },
         {

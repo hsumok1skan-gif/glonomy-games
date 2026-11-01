@@ -1060,8 +1060,8 @@ class World {
     const cd = this._pfxCd || (this._pfxCd = {});
     for (const [key, g] of groups) {
       const kinds = {}; for (const q of g) { const k = pfxKind(q); kinds[k] = (kinds[k] || 0) + 1; }
-      const big = g.length >= 3 || kinds.slash || kinds.rays || kinds.ground || g.some(q => q.type === "ring") || g.some(q => (q.size1 || q.size || 0) >= 40);
-      if (!big || (cd[key] && this.time - cd[key] < 0.18)) { for (const q of g) { this.parts.push(q); } continue; }
+      const big = g.length >= 3 || kinds.slash || kinds.rays || kinds.beam || kinds.ground || g.some(q => q.type === "ring") || g.some(q => (q.size1 || q.size || 0) >= 40);
+      if (!big || (cd[key] && this.time - cd[key] < 0.18 && !(kinds.rays || kinds.slash || kinds.beam || kinds.ground))) { for (const q of g) { this.parts.push(q); } continue; }
       cd[key] = this.time;
       const pick = pfxPick(g, kinds, this);
       if (!pick) { for (const q of g) this.parts.push(q); continue; }
@@ -1680,7 +1680,7 @@ function pxTowerShield(ctx, x, y, h = 86) {
 }
 // ── pixelfx 그리기: 효과마다 작은 픽셀 화면에 그려 색은 그대로, 빛은 더하기로 얹음 (S = 월드 몇 칸이 1픽셀)
 const PFX_S = 3, PFX_BUF = {};
-const PFX_AUTO_KIND = { spark: "spark", circle: "spark", square: "spark", star: "star", ring: "flash", glow: "flash", arc: "flash", smoke: "smoke", chunk: "debris", crack: "bolt", rays: "rays", slash: "slash" };
+const PFX_AUTO_KIND = { spark: "spark", circle: "spark", square: "spark", star: "star", ring: "flash", glow: "flash", arc: "flash", smoke: "smoke", chunk: "debris", crack: "bolt", rays: "rays", slash: "slash", beam: "beam" };
 // "r,g,b" 한 색에서 어둠→흰색 8칸 사다리
 function pfxRamp(c) {
   const [r, g, b] = String(c || "255,255,255").split(",").map(Number), h = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0");
@@ -1708,7 +1708,10 @@ function pfxPick(g, K, w) {
   if (!K.ground) return pfxPick0(g, K, w);
   const rs = g.filter(q => q.flat), rest = g.filter(q => !q.flat), r = rs.reduce((a, q) => (q.size1 || q.size || 0) > (a.size1 || a.size || 0) ? q : a, rs[0]);
   const K2 = Object.assign({}, K); delete K2.ground;
-  const out = [{ id: "impacts/heavy-landing", o: { x: r.x, y: r.y, scale: Math.max(1.5, Math.min(4, (r.size1 || r.size || 80) / 45)), palette: pfxRamp(r.color) } }];
+  const rr = r.size1 || r.size || 80;
+  // 작은 바닥 고리 = 물방울 튐, 큰 고리 = 착지 충격파
+  if (rr < 50 && (w.pfxs || []).filter(q => q.id === "water/rain-splash").length >= 6) return rest.length ? pfxPick0(rest, K2, w) || [] : [];
+  const out = [rr < 50 ? { id: "water/rain-splash", o: { x: r.x, y: r.y, scale: 1.2, palette: pfxRamp(r.color) } } : { id: "impacts/heavy-landing", o: { x: r.x, y: r.y, scale: Math.max(1.5, Math.min(4, rr / 45)), palette: pfxRamp(r.color) } }];
   return rest.length ? out.concat(pfxPick0(rest, K2, w) || []) : out;
 }
 function pfxPick0(g, K, w) {
@@ -1717,6 +1720,7 @@ function pfxPick0(g, K, w) {
   const [r, gg, b] = String(col).split(",").map(Number), warm = r > 180 && b < 140, vx = g.reduce((a, q) => a + (q.vx || 0), 0);
   const spread = Math.max(...g.map(q => Math.hypot(q.vx || 0, q.vy || 0))) || 200, S = Math.max(1.5, Math.min(3.2, spread / 160 + (n > 12 ? 0.6 : 0)));
   const nearGround = cy > G - 26, flip = vx < -1, o = (x = cx, y = cy, extra = {}) => Object.assign({ x, y, scale: S, flip, palette: pfxRamp(col) }, extra);
+  if (K.beam) return g.filter(q => q.type === "beam").slice(0, 4).map(b => ({ id: "pickups/loot-beam", o: { x: b.x, y: b.y + 14 * Math.max(1.5, Math.min(3, (b.h || 400) / 150)), scale: Math.max(1.5, Math.min(3, (b.h || 400) / 150)), stopAfter: Math.max(0.3, (b.life || 0.6) - 0.2), palette: pfxRamp(b.color) } }));
   if (K.slash) return g.filter(q => q.type === "slash").slice(0, 6).map(s => {
     const len = s.len || 80, ang = s.ang || 0;
     // 가늘고 긴 줄 = 레이저 빔 (기울여 얹음), 나머지 = 칼 베기
