@@ -1097,6 +1097,14 @@ class World {
       dt = rdt * this.ts;
     }
     if (dt > 0) this.step(dt);
+    if (dt > 0 && this.pfxs) { for (const q of this.pfxs) { q.inst.update(dt); if (q.stopAt != null && q.inst.t >= q.stopAt) { q.inst.stop(); q.stopAt = null; } } this.pfxs = this.pfxs.filter(q => !q.inst.done()); }
+  }
+  // pixelfx(MIT) 효과 하나를 월드 좌표에 띄움. o: { x, y, palette, flip, seed, light, layer, scale, stopAfter, ...효과 옵션 }
+  pfx(id, o = {}) {
+    const P = window.PIXELFX, mod = P && P.FX[id]; if (!mod) return null;
+    const S = o.scale || PFX_S, inst = P.createFx(mod, Object.assign({}, o, { x: Math.round(o.x / S), y: Math.round(o.y / S) }));
+    const q = { inst, S, layer: o.layer || null, stopAt: o.stopAfter ?? null };
+    (this.pfxs || (this.pfxs = [])).push(q); return q;
   }
   step(dt) {
     this.time += dt;
@@ -1237,8 +1245,10 @@ class World {
 
     for (const p of this.parts) if (p.under) drawPart(ctx, p);
     for (const a of this.actors) drawShadow(ctx, a);
+    pfxDraw(ctx, this, "back");
     if (this.R.drawBack) this.R.drawBack(this, ctx);
     for (const a of this.actors) drawActor(ctx, a, this);
+    pfxDraw(ctx, this, "front");
     if (this.R.drawOver) this.R.drawOver(this, ctx); // 반투명 물·유리처럼 픽셀 효과층에 넣으면 불투명해지는 것
     // 효과 층: 픽셀 그림이면 작은 화면에 따로 그려 경계를 또렷하게 + 색을 단계로 끊어서 얹음
     const fx = FX.pixelFx && FX._art && FX._art.hero ? pixFxBegin(ctx, OM, v.r) : null, fc = fx || ctx;
@@ -1632,6 +1642,29 @@ function pxTowerShield(ctx, x, y, h = 86) {
   const my = Math.round(y + h * 0.4);
   ctx.fillStyle = "#2b303b"; ctx.fillRect(X + 5, my, 12, 12); ctx.fillStyle = "#b8c0cc"; ctx.fillRect(X + 7, my + 2, 8, 8); ctx.fillStyle = "#eef2f7"; ctx.fillRect(X + 8, my + 3, 3, 3);
   ctx.fillStyle = "#d6dce5"; for (const ry of [8, 24, h - 30, h - 18]) { ctx.fillRect(X + 3, y + ry, 2, 2); ctx.fillRect(X + 17, y + ry, 2, 2); }
+}
+// ── pixelfx 그리기: 효과마다 작은 픽셀 화면에 그려 색은 그대로, 빛은 더하기로 얹음 (S = 월드 몇 칸이 1픽셀)
+const PFX_S = 3, PFX_BUF = {};
+function pfxDraw(ctx, w, layer) {
+  if (!w.pfxs || !w.pfxs.length || !window.PIXELFX) return;
+  const P = window.PIXELFX;
+  for (const S of [...new Set(w.pfxs.map(q => q.S))]) {
+    const X0 = -80, Y0 = -80, W = Math.ceil(700 / S), H = Math.ceil(520 / S), key = S + ":" + W + "x" + H;
+    const B = PFX_BUF[key] || (PFX_BUF[key] = { f: P.createFrame(W, H, Math.round(X0 / S), Math.round(Y0 / S)), c: Object.assign(document.createElement("canvas"), { width: W, height: H }), l: Object.assign(document.createElement("canvas"), { width: W, height: H }) });
+    P.clearFrame(B.f);
+    let any = false;
+    for (const q of w.pfxs) if (q.S === S) { const want = q.layer || layer; if (q.layer && q.layer !== layer) continue; q.inst.draw(B.f, q.layer ? null : layer); any = true; }
+    if (!any) continue;
+    const cx = B.c.getContext("2d"), lx = B.l.getContext("2d");
+    cx.putImageData(new ImageData(new Uint8ClampedArray(B.f.color.buffer.slice(0)), W, H), 0, 0);
+    const L = new Uint8ClampedArray(B.f.light.buffer.slice(0)); for (let i = 3; i < L.length; i += 4) L[i] = 255;
+    lx.putImageData(new ImageData(L, W, H), 0, 0);
+    const sm = ctx.imageSmoothingEnabled, op = ctx.globalCompositeOperation; ctx.imageSmoothingEnabled = false;
+    const dx = B.f.ox * S, dy = B.f.oy * S;
+    ctx.globalCompositeOperation = "source-over"; ctx.drawImage(B.c, dx, dy, W * S, H * S);
+    ctx.globalCompositeOperation = "lighter"; ctx.drawImage(B.l, dx, dy, W * S, H * S);
+    ctx.globalCompositeOperation = op; ctx.imageSmoothingEnabled = sm;
+  }
 }
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }

@@ -1788,7 +1788,7 @@ RECIPES.push(
       drawChestPx(ctx, C, w);
       ctx.restore();
       // 빛기둥: 열리는 순간 솟았다가 서서히 잦아듦
-      if (C.open && w.on("rays") && ot < 2) chestBeams(ctx, x, y - 66, w.time, Math.min(1, ot * 5) * (ot > 1.3 ? Math.max(0, 1 - (ot - 1.3) / 0.7) : 1));
+      if (C.open && w.on("rays") && ot < 2 && !window.PIXELFX) chestBeams(ctx, x, y - 66, w.time, Math.min(1, ot * 5) * (ot > 1.3 ? Math.max(0, 1 - (ot - 1.3) / 0.7) : 1));
       // 아이템: 상자 입구 아래로는 잘라서, 안에서 솟아오르게
       if (C.item > 0) {
         const iy = Math.round(y - 74 - C.item * 104 + (C.item > 0.98 ? Math.sin(w.time * 3) * 3 : 0));
@@ -1818,7 +1818,8 @@ RECIPES.push(
       {
         id: "rays", name: { en: "Light Pillars", ko: "빛기둥" }, param: "5 pillars · 2s",
         cap: { en: "*Light* pours up out of the box.", ko: "상자 안에서 *빛기둥*이 솟아요." },
-        open() {},
+        // pixelfx(MIT) holy/sunburst: 상자 입구 뒤에서 금빛 햇살이 터졌다 잦아듦
+        open(w) { w.pfx("holy/sunburst", { x: 270, y: G - 150, layer: "back", scale: 3, stopAfter: 1.4, rays: 12 }); w.pfx("pickups/loot-beam", { x: 270, y: G - 60, layer: "back", scale: 2, stopAfter: 1.2, palette: ["#1e1206", "#4a2c08", "#86520c", "#c48412", "#f0b424", "#ffe066", "#fff6c4", "#ffffff"] }); },
       },
       {
         id: "coins", name: { en: "Coin Fountain", ko: "동전 분수" }, param: "12 coins · spin · bounce",
@@ -1835,7 +1836,8 @@ RECIPES.push(
       {
         id: "rarity", name: { en: "Rarity Aura", ko: "등급 오라" }, param: "purple = epic",
         cap: { en: "A *rarity aura* blooms behind it. Purple means *epic*.", ko: "뒤로 *등급 오라*가 피어요. 보라는 *에픽*." },
-        open(w) { w.after(0.55, () => { w.flash("168,85,247", 0.25); w.spawn({ x: 270, y: G - 178, life: 0.22, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 56, k, "214,170,255") }); }); },
+        // pixelfx(MIT) pickups/collect-burst를 보라(에픽)로: 하얀 섬광 + 고리 + 휘어 나가는 별
+        open(w) { w.after(0.55, () => { w.flash("168,85,247", 0.2); w.pfx("pickups/collect-burst", { x: 270, y: G - 178 + 90, layer: "front", scale: 3, palette: ["#140a24", "#2c1250", "#4b1d86", "#7330c0", "#a050f0", "#c890ff", "#ecd4ff", "#ffffff"] }); }); },
       },
       {
         id: "sound", name: { en: "Sound", ko: "소리" }, param: "rattle / creak / swell / jingle",
