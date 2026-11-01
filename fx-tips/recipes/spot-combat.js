@@ -93,7 +93,7 @@
         plinth(ctx, 270, G + 8, 236, 40, "#1f0d07", "rgba(255,150,80,0.45)");
       },
       drawHud(w, ctx) {
-        const d = w.dmg; if (!d || d.t > 1.7) return;
+        const d = w.dmg; if (!d || d.t > 1.7 || d.px) return;
         const a = Math.min(1, (1.7 - d.t) * 3), y = d.y - 26 * E.out(Math.min(1, d.t / 1.2));
         ctx.save(); ctx.globalAlpha = a;
         if (!d.big) label(ctx, d.v, d.x, y, 14, "#ffffff");
@@ -113,8 +113,9 @@
           id: "number", name: { en: "Giant Number", ko: "거대한 숫자" }, param: "66px · ×2.2 → ×1",
           cap: { en: "Make the number *huge*. Slam it down from *2×*.", ko: "숫자를 *크게*, *두 배*에서 쾅 줄여요." },
           crit(w, f, d) {
-            d.big = true; d.scale = 2.2; d.sh = 9;
-            w.tween(d, { scale: 1 }, 0.32, "back");
+            d.big = true;
+            if (window.PIXELFX) { d.px = true; w.pfx("ui/crit-number", { x: d.x - 4, y: d.y + 20, scale: 1.6, text: "4812!", label: "CRIT" }); }
+            else { d.scale = 2.2; d.sh = 9; w.tween(d, { scale: 1 }, 0.32, "back"); }
           },
         },
         {
@@ -319,7 +320,7 @@
       },
       drawFront(w, ctx) {
         const s = w.sh, f = w.foe;
-        if (w.stun > 0) for (let i = 0; i < 3; i++) {
+        if (w.stun > 0 && !window.PIXELFX) for (let i = 0; i < 3; i++) {
           const a = w.time * 6 + i * TAU / 3;
           ctx.fillStyle = "#ffe14a"; starPath(ctx, f.x + Math.cos(a) * 36, f.gy - 150 + Math.sin(a) * 9, 8); ctx.fill();
         }
@@ -393,7 +394,7 @@
           id: "stagger", name: { en: "Stagger", ko: "비틀거림" }, param: "knock 50 · stun 1.6s",
           cap: { en: "Knock it *back*. Spin *stun stars*. Call *BREAK!*", ko: "*휘청* 밀리고, 머리 위로 *별*, *BREAK!*" },
           break(w, s) {
-            w.foe.ox = 50; w.foe.tint = 0.8; w.stun = 1.6;
+            w.foe.ox = 50; w.foe.tint = 0.8; w.stun = 1.6; if (window.PIXELFX) w.pfx("status/stunned", { x: w.foe.x, y: w.foe.gy - 110, scale: 2, stopAfter: 1.3 });
             w.spawn({ type: "text", x: s.cx, y: 66, text: "BREAK!", size: 34, color: "#8ffcff", life: 1.5 });
             w.spawn({ type: "ring", flat: true, x: s.cx, y: G + 8, size: 30, size1: 260, life: 0.6, w: 10, color: "150,255,250" });
           },

@@ -206,7 +206,7 @@ RECIPES.push(
       {
         id: "core", name: { en: "Hot Core", ko: "밝은 중심" },
         cap: { en: "*White-hot* center, colored glow around it.", ko: "가운데는 *하얗게*, 바깥은 색으로." },
-        launch(w, o) { o.core = true; },
+        launch(w, o) { o.core = true; if (w.pfx("arcane/arcane-orb", { x: o.x, y: o.y + 50, scale: 1.2, follow: o })) o.draw = () => {}; },
       },
       {
         id: "trail", name: { en: "Trail", ko: "꼬리" },
@@ -299,7 +299,7 @@ RECIPES.push(
         swing(w, at) {
           // 칼끝 궤적 + 앞으로 날아가는 거대한 초승달 참격파
           w.spawn({ x: at.x - 34, y: at.y + 6, life: 0.16, draw: (ctx, p, k) => pxCrescent(ctx, p.x, p.y, 62, -2.1, 0.85, 12, k, "190,245,255") });
-          w.spawn({ x: at.x - 40, y: at.y - 4, vx: 620, life: 0.42, draw: (ctx, p, k) => pxWave(ctx, p.x, p.y, 66 + k * 26, 27, k) });
+          w.pfx("melee/sword-slash", { x: at.x - 10, y: at.y + 60, scale: 2.6, palette: pfxRamp("120,215,255").slice(1) });
           for (let i = 0; i < 16; i++) { const a = rand(-1.2, 1.2); w.spawn({ type: "spark", x: at.x - 40 + Math.cos(a) * 60, y: at.y - 4 + Math.sin(a) * 60, vx: rand(250, 700), vy: Math.sin(a) * rand(60, 220), drag: 4, life: rand(0.18, 0.36), size: rand(2, 3.4), color: pick(["160,235,255", "255,255,255", "90,170,255"]) }); }
           w.shake(0.14, 1);
         },
@@ -558,7 +558,6 @@ RECIPES.push(
         id: "ring", name: { en: "Shockwave", ko: "충격파" },
         cap: { en: "A *ring* that pushes everything *away*.", ko: "주변을 *밀어내는* 고리." },
         boom(w, e) {
-          w.spawn({ x: e.x, y: e.y - 36, life: 0.18, draw: (ctx, p, k) => pxImpact(ctx, p.x, p.y, 66, k, "255,226,170") });
           w.spawn({ type: "ring", x: e.x, y: e.y - 30, size: 10, size1: 150, life: 0.38, w: 10, color: "255,210,150" });
           w.spawn({ type: "ring", x: e.x, y: e.y, size: 10, size1: 150, life: 0.35, w: 6, color: "255,200,120", flat: true });
           const r = w.foe; if (r.alive) { r.flash = 1; r.ox += 40; r.sx = 0.8; r.sy = 1.2; }
@@ -569,12 +568,8 @@ RECIPES.push(
         id: "fire", name: { en: "Fire → Smoke", ko: "불 → 연기" },
         cap: { en: "Fire *fades into smoke*. Smoke *lingers*.", ko: "불은 *연기로* 바뀌고, 연기는 *오래* 남아요." },
         boom(w, e) {
-          // 불덩이: 계단식 빛 + 주황·노랑 불꽃 덩어리가 위로 솟구침
-          w.spawn({ type: "glow", x: e.x, y: e.y - 40, size: 80, size1: 30, life: 0.3, color: "255,170,60" });
-          for (let i = 0; i < 16; i++) w.spawn({ type: "glow", x: e.x + rand(-20, 20), y: e.y - rand(10, 40), vx: rand(-240, 240), vy: rand(-340, -60), drag: 3.5, size: rand(22, 34), size1: 4, life: rand(0.35, 0.6), color: i % 3 ? "255,140,40" : "255,220,120" });
-          w.after(0.12, () => {
-            for (let i = 0; i < 12; i++) w.spawn({ type: "smoke", x: e.x + rand(-50, 50), y: e.y - rand(20, 80), vx: rand(-60, 60), vy: rand(-70, -25), drag: 1, size: rand(14, 22), size1: rand(40, 60), life: rand(1.1, 1.8), color: "70,70,82" });
-          });
+          // 불덩이 → 연기: pixelfx 큰 폭발
+          w.pfx("explosions/big-explosion", { x: e.x, y: e.y + 6, scale: 1.4 });
         },
       },
       {

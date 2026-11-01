@@ -859,6 +859,14 @@ function studioPayoff(w, ev, args) {
 function studioHeroEvent(w, ev, args) {
   if (w.bare || w.n !== w.R.steps.length) return;
   const id=w.R.id;
+  if (window.PIXELFX) {
+    // 손그림 마무리 대신 pixelfx
+    if (id==="magic"&&ev==="charge"){ w.pfx("arcane/spell-charge",{x:(w.hero?.x||110)+50,y:G-72+40,scale:1.5,stopAfter:0.5}); return; }
+    if (id==="weapon-railgun"&&ev==="charge"){ w.pfx("lightning/charge-up",{x:(w.hero?.x||80)+150,y:G-75+40,scale:1.5,stopAfter:0.7}); return; }
+    if (id==="weapon-railgun"&&ev==="fire"){ const m=args[0]; if(m&&Number.isFinite(m.x)) w.pfx("arcane/arcane-beam",{x:m.x-15*2,y:m.y+24*2,scale:2,stopAfter:0.45,palette:pfxRamp("100,231,255")}); return; }
+    if (id==="weapon-katana"&&ev==="cut"){ const c=args[0]; if(c) w.pfx("melee/sword-slash",{x:(c.x0+c.x1)/2-40,y:c.y+50,scale:2.4,palette:pfxRamp("172,244,250").slice(1)}); return; }
+    if (id==="magic"&&ev==="hit") return;
+  }
   if(["weapon-railgun","weapon-katana","magic"].includes(id)) {
     if((id==="weapon-railgun"&&(ev==="charge"||ev==="fire"))||
        (id==="weapon-katana"&&(ev==="cut"||ev==="sheathe"))||
@@ -901,7 +909,7 @@ function studioHeroEvent(w, ev, args) {
   }
 }
 function drawStudioHero(ctx,w){
-  if(w.bare||w.n!==w.R.steps.length)return;
+  if(w.bare||w.n!==w.R.steps.length||window.PIXELFX)return; // pixelfx가 있으면 손그림 대신 아래 studioPfx가 맡음
   const h=w.studioHero,c=w.studioCharge;
   // Charged spell and railgun rings: one glow gradient, two wireframe arcs.
   if(c && w.time-c.start<.78&&(w.R.id==="magic"||w.R.id==="weapon-railgun")){
@@ -1038,7 +1046,8 @@ class World {
     if (q.add == null) q.add = ["glow", "spark", "star", "ring", "arc", "slash", "beam", "rays"].includes(q.type);
     if (q.seek) { q.x0 = q.x; q.y0 = q.y; }
     // pixelfx 자동 교체: 손으로 그리던 입자(불꽃·고리·연기·파편…)는 모아 두었다가 한 프레임에 한 번, 알맞은 pixelfx 효과로 바꿈
-    if (PFX_AUTO_KIND[q.type] && !q.draw && !q.keep && (!q.under || q.type === "rays") && !q.back && !q.flat && !(q.type === "crack" && !q.add) && this.R.pfx !== false && FX.pfxAuto !== false && window.PIXELFX && this.n > 0 && !this.bare) { (this._pend || (this._pend = [])).push(q); return q; }
+    if (q.draw && !q.keep && this.R.pfx !== false && FX.pfxAuto !== false && window.PIXELFX && this.n > 0 && !this.bare && pfxFromDraw(this, q)) return q;
+    if (PFX_AUTO_KIND[q.type] && !q.draw && !q.keep && (!q.under || q.type === "rays") && !q.back && !(q.flat && q.type !== "ring") && !(q.type === "crack" && !q.add) && this.R.pfx !== false && FX.pfxAuto !== false && window.PIXELFX && this.n > 0 && !this.bare) { (this._pend || (this._pend = [])).push(q); return q; }
     this.parts.push(q);
     if (this.parts.length > 700) this.parts.shift();
     return q;
@@ -1050,8 +1059,8 @@ class World {
     for (const q of P) { const k = Math.round(q.x / 70) + ":" + Math.round(q.y / 70); (groups.get(k) || groups.set(k, []).get(k)).push(q); }
     const cd = this._pfxCd || (this._pfxCd = {});
     for (const [key, g] of groups) {
-      const kinds = {}; for (const q of g) kinds[PFX_AUTO_KIND[q.type]] = (kinds[PFX_AUTO_KIND[q.type]] || 0) + 1;
-      const big = g.length >= 3 || kinds.slash || kinds.rays || g.some(q => (q.size1 || q.size || 0) >= 40);
+      const kinds = {}; for (const q of g) { const k = pfxKind(q); kinds[k] = (kinds[k] || 0) + 1; }
+      const big = g.length >= 3 || kinds.slash || kinds.rays || kinds.ground || g.some(q => q.type === "ring") || g.some(q => (q.size1 || q.size || 0) >= 40);
       if (!big || (cd[key] && this.time - cd[key] < 0.18)) { for (const q of g) { this.parts.push(q); } continue; }
       cd[key] = this.time;
       const pick = pfxPick(g, kinds, this);
@@ -1117,14 +1126,15 @@ class World {
     }
     if (dt > 0) this.step(dt);
     if (this._pend) this._pfxFlush();
-    if (dt > 0 && this.pfxs) { for (const q of this.pfxs) { q.inst.update(dt); if (q.stopAt != null && q.inst.t >= q.stopAt) { q.inst.stop(); q.stopAt = null; } } this.pfxs = this.pfxs.filter(q => !q.inst.done()); }
+    if (dt > 0 && this.pfxs) { for (const q of this.pfxs) { q.inst.update(dt); if (q.stopAt != null && q.inst.t >= q.stopAt) { q.inst.stop(); q.stopAt = null; } } this.pfxs = this.pfxs.filter(q => !q.inst.done() && !(q.follow && !this.shots.includes(q.follow) && !this.parts.includes(q.follow) && !q.follow.keepFx)); }
   }
   // pixelfx(MIT) 효과 하나를 월드 좌표에 띄움. o: { x, y, palette, flip, seed, light, layer, scale, stopAfter, ...효과 옵션 }
   pfx(id, o = {}) {
     const P = window.PIXELFX, mod = P && P.FX[id]; if (!mod) return null;
     const S = o.scale || PFX_S, oo = {}; for (const k in o) if (o[k] !== undefined) oo[k] = o[k];
     const inst = P.createFx(mod, Object.assign(oo, { x: Math.round(o.x / S), y: Math.round(o.y / S) }));
-    const q = { inst, S, layer: o.layer || null, stopAt: o.stopAfter ?? null };
+    const q = { id, inst, S, layer: o.layer || null, stopAt: o.stopAfter ?? null, rot: o.rot || 0, px: o.px ?? o.x, py: o.py ?? o.y, follow: o.follow || null };
+    if (q.follow) { q.fx0 = q.follow.x; q.fy0 = q.follow.y; }
     (this.pfxs || (this.pfxs = [])).push(q); return q;
   }
   step(dt) {
@@ -1576,6 +1586,7 @@ function pxGlow(ctx, x, y, r, c, a) {
    색은 "r,g,b" 문자열. k = 0(시작) → 1(끝) */
 // 총구 불꽃: 앞으로 뾰족한 다이아몬드 + 위아래 갈래, 흰 심지 → 노랑 → 주황 테
 function pxMuzzle(ctx, x, y, s, k, ang = 0) {
+  if (PX_PROBE) { PX_PROBE.push(["pxMuzzle", [...arguments].slice(1)]); return; }
   const sz = s * (k < 0.35 ? 1 : 1 - (k - 0.35) * 1.4); if (sz <= 1) return;
   ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
   const dia = (len, wid, col) => { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(-len * 0.25, 0); ctx.lineTo(0, -wid); ctx.lineTo(len, 0); ctx.lineTo(0, wid); ctx.closePath(); ctx.fill(); };
@@ -1587,6 +1598,7 @@ function pxMuzzle(ctx, x, y, s, k, ang = 0) {
 }
 // 명중 섬광: 8방향 가시(긴 것/짧은 것 번갈아) + 계단식 심지
 function pxImpact(ctx, x, y, s, k, c = "255,236,180") {
+  if (PX_PROBE) { PX_PROBE.push(["pxImpact", [...arguments].slice(1)]); return; }
   const sz = s * (k < 0.25 ? 0.7 + k * 1.2 : 1 - (k - 0.25) * 1.3); if (sz <= 1) return;
   ctx.save(); ctx.translate(x, y); ctx.rotate(0.2);
   for (const [kk, sh] of [[1, 0.55], [0.7, 1], [0.42, 1.7]]) {
@@ -1605,6 +1617,7 @@ function pxChip(ctx, x, y, s, rot, light, dark) {
 }
 // 초승달 베기 자국: 두께가 가운데서 가장 두꺼운 띠, 바깥 어둡게 → 안쪽 흰 심지 (k: 0→1 동안 그어졌다 사라짐)
 function pxCrescent(ctx, x, y, r, a0, a1, th, k, c = "255,236,200") {
+  if (PX_PROBE) { PX_PROBE.push(["pxCrescent", [...arguments].slice(1)]); return; }
   const grow = Math.min(1, k * 5), fade = k < 0.4 ? 1 : 1 - (k - 0.4) / 0.6; if (fade <= 0) return;
   const end = a0 + (a1 - a0) * grow, n = 28;
   for (const [kk, sh] of [[1, 0.5], [0.7, 0.85], [0.42, 1.25], [0.18, 1.8]]) {
@@ -1626,6 +1639,7 @@ function pxWave(ctx, x, y, r, th, k, c = "120,215,255", dark = "16,26,64") {
 }
 // 몸을 가로지르는 베인 선: 하얗게 그어졌다가 양쪽으로 갈라지며 사라짐
 function pxCutLine(ctx, x, y, len, ang, k, c = "190,245,255") {
+  if (PX_PROBE) { PX_PROBE.push(["pxCutLine", [...arguments].slice(1)]); return; }
   const grow = Math.min(1, k * 6), fade = k < 0.5 ? 1 : 1 - (k - 0.5) / 0.5; if (fade <= 0) return;
   const dx = Math.cos(ang), dy = Math.sin(ang), L = len * grow, nx = -dy, ny = dx, gap = k * 6;
   ctx.lineCap = "butt";
@@ -1672,14 +1686,45 @@ function pfxRamp(c) {
   const [r, g, b] = String(c || "255,255,255").split(",").map(Number), h = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0");
   return [0.1, 0.22, 0.38, 0.58, 0.8, 1, 1.25, 1.6].map(k => k <= 1 ? "#" + h(r * k) + h(g * k) + h(b * k) : "#" + h(r + (255 - r) * (k - 1) / 0.6) + h(g + (255 - g) * (k - 1) / 0.6) + h(b + (255 - b) * (k - 1) / 0.6));
 }
-// 입자 묶음을 보고 어울리는 pixelfx 효과를 고름
+let PX_PROBE = null;
+const PX_PROBE_RE = /^\(?ctx, p(, k)?\)?\s*=>\s*px(Impact|Crescent|CutLine|Muzzle)\(/;
+// 손으로 그린 픽셀 섬광·초승달·베기선·총구 화염을 같은 자리의 pixelfx 효과로 바꿈
+function pfxFromDraw(w, q) {
+  if (!PX_PROBE_RE.test(String(q.draw))) return false;
+  const c = pfxFromDraw.c || (pfxFromDraw.c = document.createElement("canvas").getContext("2d"));
+  PX_PROBE = []; try { q.draw(c, q, 0.3); } catch (e) {} const got = PX_PROBE; PX_PROBE = null;
+  if (got.length !== 1) return false;
+  const [fn, a] = got[0], cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  if (fn === "pxImpact") { const [x, y, sz, , c0] = a; w.pfx(sz >= 40 ? "impacts/crit-hit" : "impacts/hit-spark", { x, y: y + 12, scale: cl(sz / 24, 1.5, 3.2), palette: pfxRamp(c0 || "255,236,180") }); return true; }
+  if (fn === "pxCrescent") { const [x, y, r, a0, a1, , , c0] = a, m = (a0 + a1) / 2, fl = Math.cos(m) < -0.2, S = cl(r / 30, 1.5, 3.2);
+    w.pfx("melee/sword-slash", { x: x + (fl ? 44 : -44) * S * 0.6, y: y + 40 * S * 0.6, scale: S, flip: fl, palette: c0 ? pfxRamp(c0).slice(1) : undefined }); return true; }
+  if (fn === "pxCutLine") { const [x, y, len, ang, , c0] = a, S = cl(len / 40, 1.5, 3); w.pfx("melee/sword-slash", { x: x - 20 * S, y: y + 30 * S, scale: S, palette: c0 ? pfxRamp(c0).slice(1) : undefined }); return true; }
+  if (fn === "pxMuzzle") { const [x, y, sz, , ang] = a, fl = Math.cos(ang || 0) < 0; w.pfx("projectiles/muzzle-pistol", { x, y, scale: cl(sz / 10, 1.5, 3), flip: fl }); return true; }
+  return false;
+}
+const pfxKind = q => q.flat ? "ground" : PFX_AUTO_KIND[q.type];
+// 입자 묶음을 보고 어울리는 pixelfx 효과를 고름 (바닥 고리는 따로 착지 충격파로)
 function pfxPick(g, K, w) {
+  if (!K.ground) return pfxPick0(g, K, w);
+  const rs = g.filter(q => q.flat), rest = g.filter(q => !q.flat), r = rs.reduce((a, q) => (q.size1 || q.size || 0) > (a.size1 || a.size || 0) ? q : a, rs[0]);
+  const K2 = Object.assign({}, K); delete K2.ground;
+  const out = [{ id: "impacts/heavy-landing", o: { x: r.x, y: r.y, scale: Math.max(1.5, Math.min(4, (r.size1 || r.size || 80) / 45)), palette: pfxRamp(r.color) } }];
+  return rest.length ? out.concat(pfxPick0(rest, K2, w) || []) : out;
+}
+function pfxPick0(g, K, w) {
   const n = g.length, cx = g.reduce((a, q) => a + q.x, 0) / n, cy = g.reduce((a, q) => a + q.y, 0) / n;
   const main = (K.spark ? g.find(q => PFX_AUTO_KIND[q.type] === "spark") : g[0]) || g[0], col = main.color || "255,255,255";
   const [r, gg, b] = String(col).split(",").map(Number), warm = r > 180 && b < 140, vx = g.reduce((a, q) => a + (q.vx || 0), 0);
   const spread = Math.max(...g.map(q => Math.hypot(q.vx || 0, q.vy || 0))) || 200, S = Math.max(1.5, Math.min(3.2, spread / 160 + (n > 12 ? 0.6 : 0)));
   const nearGround = cy > G - 26, flip = vx < -1, o = (x = cx, y = cy, extra = {}) => Object.assign({ x, y, scale: S, flip, palette: pfxRamp(col) }, extra);
-  if (K.slash) { const s = g.find(q => q.type === "slash"); return [{ id: "melee/sword-slash", o: o(cx, cy + 20, { angle: s.ang || 0, scale: 2, flip: false }) }]; }
+  if (K.slash) return g.filter(q => q.type === "slash").slice(0, 6).map(s => {
+    const len = s.len || 80, ang = s.ang || 0;
+    // 가늘고 긴 줄 = 레이저 빔 (기울여 얹음), 나머지 = 칼 베기
+    if ((s.size || 8) <= 8 && len >= 100) { const S = 1.5, ux = Math.cos(ang), uy = Math.sin(ang), sx = s.x - ux * len / 2, sy = s.y - uy * len / 2;
+      return { id: "arcane/arcane-beam", o: { x: sx - 15 * S, y: sy + 24 * S, rot: ang, px: sx, py: sy, scale: S, stopAfter: s.life || 0.3, palette: pfxRamp(s.color), seed: 3 } }; }
+    const fl = Math.cos(ang) < -0.2, S = Math.max(1.5, Math.min(3, len / 45));
+    return { id: "melee/sword-slash", o: { x: s.x + (fl ? 40 : -40) * S * 0.6, y: s.y + 36 * S * 0.6, scale: S, flip: fl, palette: pfxRamp(s.color).slice(1) } };
+  });
   if (K.rays) { const s = g.find(q => q.type === "rays"), sc = Math.max(1.5, Math.min(4, (s.size1 || s.size || 120) / 70)); return [{ id: "holy/sunburst", o: o(s.x, s.y, { stopAfter: Math.max(0.4, (s.life || 0.6) - 0.3), scale: sc, layer: s.under ? "back" : null, rays: Math.min(16, s.n || 10), palette: pfxRamp(s.color) }) }]; }
   if (K.bolt) { const b = g.find(q => q.type === "crack"); return [{ id: "lightning/zap-hit", o: o(cx, cy + 20, { scale: 2, palette: pfxRamp(b.color) }) }]; }
   if ((K.debris || 0) >= 6 && nearGround) return [{ id: "impacts/ground-slam", o: o(cx, G, { scale: 2, palette: undefined }) }];
@@ -1691,27 +1736,37 @@ function pfxPick(g, K, w) {
   if (K.flash) return [{ id: "impacts/hit-flash", o: o(cx, cy + 10, { scale: 2 }) }];
   return null;
 }
+function pfxBlit(ctx, B, W, H, S, rot, ax, ay, mx = 0, my = 0) {
+  const cx = B.c.getContext("2d"), lx = B.l.getContext("2d");
+    cx.putImageData(new ImageData(new Uint8ClampedArray(B.f.color.buffer.slice(0)), W, H), 0, 0);
+    const L = new Uint8ClampedArray(B.f.light.buffer.slice(0)); for (let i = 3; i < L.length; i += 4) L[i] = 255;
+    lx.putImageData(new ImageData(L, W, H), 0, 0);
+    const sm = ctx.imageSmoothingEnabled, op = ctx.globalCompositeOperation; ctx.imageSmoothingEnabled = false;
+    const dx = B.f.ox * S, dy = B.f.oy * S;
+    const tf = rot || mx || my;
+    if (tf) { ctx.save(); ctx.translate(ax + mx, ay + my); ctx.rotate(rot || 0); ctx.translate(-ax, -ay); }
+    ctx.globalCompositeOperation = "source-over"; ctx.drawImage(B.c, dx, dy, W * S, H * S);
+    ctx.globalCompositeOperation = "lighter"; ctx.drawImage(B.l, dx, dy, W * S, H * S);
+    if (tf) ctx.restore();
+    ctx.globalCompositeOperation = op; ctx.imageSmoothingEnabled = sm;
+}
 function pfxDraw(ctx, w, layer) {
   if (!w.pfxs || !w.pfxs.length || !window.PIXELFX) return;
   const P = window.PIXELFX;
   for (const S of [...new Set(w.pfxs.map(q => q.S))]) {
     const X0 = -80, Y0 = -80, W = Math.ceil(700 / S), H = Math.ceil(520 / S), key = S + ":" + W + "x" + H;
     const B = PFX_BUF[key] || (PFX_BUF[key] = { f: P.createFrame(W, H, Math.round(X0 / S), Math.round(Y0 / S)), c: Object.assign(document.createElement("canvas"), { width: W, height: H }), l: Object.assign(document.createElement("canvas"), { width: W, height: H }) });
-    P.clearFrame(B.f);
     let any = false;
-    for (const q of w.pfxs) if (q.S === S) { const want = q.layer || layer; if (q.layer && q.layer !== layer) continue; q.inst.draw(B.f, q.layer ? null : layer); any = true; }
+    for (const q of w.pfxs) if (q.S === S && (q.rot || q.follow)) { if (q.layer && q.layer !== layer) continue;
+      // 기울인 효과: 따로 그려 그 자리를 축으로 돌려 얹음
+      P.clearFrame(B.f); q.inst.draw(B.f, q.layer ? null : layer); pfxBlit(ctx, B, W, H, S, q.rot, q.px, q.py, q.follow ? q.follow.x - q.fx0 : 0, q.follow ? q.follow.y - q.fy0 : 0); }
+    P.clearFrame(B.f);
+    for (const q of w.pfxs) if (q.S === S && !q.rot && !q.follow) { if (q.layer && q.layer !== layer) continue; q.inst.draw(B.f, q.layer ? null : layer); any = true; }
     if (!any) continue;
-    const cx = B.c.getContext("2d"), lx = B.l.getContext("2d");
-    cx.putImageData(new ImageData(new Uint8ClampedArray(B.f.color.buffer.slice(0)), W, H), 0, 0);
-    const L = new Uint8ClampedArray(B.f.light.buffer.slice(0)); for (let i = 3; i < L.length; i += 4) L[i] = 255;
-    lx.putImageData(new ImageData(L, W, H), 0, 0);
-    const sm = ctx.imageSmoothingEnabled, op = ctx.globalCompositeOperation; ctx.imageSmoothingEnabled = false;
-    const dx = B.f.ox * S, dy = B.f.oy * S;
-    ctx.globalCompositeOperation = "source-over"; ctx.drawImage(B.c, dx, dy, W * S, H * S);
-    ctx.globalCompositeOperation = "lighter"; ctx.drawImage(B.l, dx, dy, W * S, H * S);
-    ctx.globalCompositeOperation = op; ctx.imageSmoothingEnabled = sm;
+    pfxBlit(ctx, B, W, H, S, 0);
   }
 }
+
 // 십자 반짝이
 function pxPlus(ctx, x, y, s, col) { const w = Math.max(2, s * 0.35); ctx.fillStyle = col; ctx.fillRect(x - s, y - w / 2, s * 2, w); ctx.fillRect(x - w / 2, y - s, w, s * 2); }
 function pixFxBegin(ctx, OM, r) {
