@@ -1037,9 +1037,28 @@ class World {
     const q = Object.assign({ x: 0, y: 0, vx: 0, vy: 0, g: 0, drag: 0, life: 0.5, age: 0, size: 4, color: "255,255,255", type: "circle", rot: 0, vr: 0 }, p);
     if (q.add == null) q.add = ["glow", "spark", "star", "ring", "arc", "slash", "beam", "rays"].includes(q.type);
     if (q.seek) { q.x0 = q.x; q.y0 = q.y; }
+    // pixelfx 자동 교체: 손으로 그리던 입자(불꽃·고리·연기·파편…)는 모아 두었다가 한 프레임에 한 번, 알맞은 pixelfx 효과로 바꿈
+    if (PFX_AUTO_KIND[q.type] && !q.draw && !q.keep && (!q.under || q.type === "rays") && !q.back && !q.flat && !(q.type === "crack" && !q.add) && this.R.pfx !== false && FX.pfxAuto !== false && window.PIXELFX && this.n > 0 && !this.bare) { (this._pend || (this._pend = [])).push(q); return q; }
     this.parts.push(q);
     if (this.parts.length > 700) this.parts.shift();
     return q;
+  }
+  // 모아 둔 입자 묶음 → pixelfx 효과. 한 개짜리(꼬리·불티 같은 흐름)는 원래 입자로 그대로 둠
+  _pfxFlush() {
+    const P = this._pend; this._pend = null; if (!P || !P.length) return;
+    const groups = new Map();
+    for (const q of P) { const k = Math.round(q.x / 70) + ":" + Math.round(q.y / 70); (groups.get(k) || groups.set(k, []).get(k)).push(q); }
+    const cd = this._pfxCd || (this._pfxCd = {});
+    for (const [key, g] of groups) {
+      const kinds = {}; for (const q of g) kinds[PFX_AUTO_KIND[q.type]] = (kinds[PFX_AUTO_KIND[q.type]] || 0) + 1;
+      const big = g.length >= 3 || kinds.slash || kinds.rays || g.some(q => (q.size1 || q.size || 0) >= 40);
+      if (!big || (cd[key] && this.time - cd[key] < 0.18)) { for (const q of g) { this.parts.push(q); } continue; }
+      cd[key] = this.time;
+      const pick = pfxPick(g, kinds, this);
+      if (!pick) { for (const q of g) this.parts.push(q); continue; }
+      for (const e of pick) this.pfx(e.id, e.o);
+    }
+    if (this.parts.length > 700) this.parts.splice(0, this.parts.length - 700);
   }
   shoot(p) { p.age = 0; this.shots.push(p); return p; }
   after(t, fn) { this.timers.push({ t, fn }); }
@@ -1097,12 +1116,14 @@ class World {
       dt = rdt * this.ts;
     }
     if (dt > 0) this.step(dt);
+    if (this._pend) this._pfxFlush();
     if (dt > 0 && this.pfxs) { for (const q of this.pfxs) { q.inst.update(dt); if (q.stopAt != null && q.inst.t >= q.stopAt) { q.inst.stop(); q.stopAt = null; } } this.pfxs = this.pfxs.filter(q => !q.inst.done()); }
   }
   // pixelfx(MIT) 효과 하나를 월드 좌표에 띄움. o: { x, y, palette, flip, seed, light, layer, scale, stopAfter, ...효과 옵션 }
   pfx(id, o = {}) {
     const P = window.PIXELFX, mod = P && P.FX[id]; if (!mod) return null;
-    const S = o.scale || PFX_S, inst = P.createFx(mod, Object.assign({}, o, { x: Math.round(o.x / S), y: Math.round(o.y / S) }));
+    const S = o.scale || PFX_S, oo = {}; for (const k in o) if (o[k] !== undefined) oo[k] = o[k];
+    const inst = P.createFx(mod, Object.assign(oo, { x: Math.round(o.x / S), y: Math.round(o.y / S) }));
     const q = { inst, S, layer: o.layer || null, stopAt: o.stopAfter ?? null };
     (this.pfxs || (this.pfxs = [])).push(q); return q;
   }
@@ -1645,6 +1666,31 @@ function pxTowerShield(ctx, x, y, h = 86) {
 }
 // ── pixelfx 그리기: 효과마다 작은 픽셀 화면에 그려 색은 그대로, 빛은 더하기로 얹음 (S = 월드 몇 칸이 1픽셀)
 const PFX_S = 3, PFX_BUF = {};
+const PFX_AUTO_KIND = { spark: "spark", circle: "spark", square: "spark", star: "star", ring: "flash", glow: "flash", arc: "flash", smoke: "smoke", chunk: "debris", crack: "bolt", rays: "rays", slash: "slash" };
+// "r,g,b" 한 색에서 어둠→흰색 8칸 사다리
+function pfxRamp(c) {
+  const [r, g, b] = String(c || "255,255,255").split(",").map(Number), h = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0");
+  return [0.1, 0.22, 0.38, 0.58, 0.8, 1, 1.25, 1.6].map(k => k <= 1 ? "#" + h(r * k) + h(g * k) + h(b * k) : "#" + h(r + (255 - r) * (k - 1) / 0.6) + h(g + (255 - g) * (k - 1) / 0.6) + h(b + (255 - b) * (k - 1) / 0.6));
+}
+// 입자 묶음을 보고 어울리는 pixelfx 효과를 고름
+function pfxPick(g, K, w) {
+  const n = g.length, cx = g.reduce((a, q) => a + q.x, 0) / n, cy = g.reduce((a, q) => a + q.y, 0) / n;
+  const main = (K.spark ? g.find(q => PFX_AUTO_KIND[q.type] === "spark") : g[0]) || g[0], col = main.color || "255,255,255";
+  const [r, gg, b] = String(col).split(",").map(Number), warm = r > 180 && b < 140, vx = g.reduce((a, q) => a + (q.vx || 0), 0);
+  const spread = Math.max(...g.map(q => Math.hypot(q.vx || 0, q.vy || 0))) || 200, S = Math.max(1.5, Math.min(3.2, spread / 160 + (n > 12 ? 0.6 : 0)));
+  const nearGround = cy > G - 26, flip = vx < -1, o = (x = cx, y = cy, extra = {}) => Object.assign({ x, y, scale: S, flip, palette: pfxRamp(col) }, extra);
+  if (K.slash) { const s = g.find(q => q.type === "slash"); return [{ id: "melee/sword-slash", o: o(cx, cy + 20, { angle: s.ang || 0, scale: 2, flip: false }) }]; }
+  if (K.rays) { const s = g.find(q => q.type === "rays"), sc = Math.max(1.5, Math.min(4, (s.size1 || s.size || 120) / 70)); return [{ id: "holy/sunburst", o: o(s.x, s.y, { stopAfter: Math.max(0.4, (s.life || 0.6) - 0.3), scale: sc, layer: s.under ? "back" : null, rays: Math.min(16, s.n || 10), palette: pfxRamp(s.color) }) }]; }
+  if (K.bolt) { const b = g.find(q => q.type === "crack"); return [{ id: "lightning/zap-hit", o: o(cx, cy + 20, { scale: 2, palette: pfxRamp(b.color) }) }]; }
+  if ((K.debris || 0) >= 6 && nearGround) return [{ id: "impacts/ground-slam", o: o(cx, G, { scale: 2, palette: undefined }) }];
+  if (K.smoke && !K.spark && !K.debris) return [{ id: nearGround ? "impacts/heavy-landing" : "spawn/poof", o: o(cx, nearGround ? G : cy + 30, { scale: 2, palette: undefined }) }];
+  if (warm && (K.smoke || 0) >= 3 && (K.spark || K.debris)) return [{ id: "explosions/small-explosion", o: o(cx, Math.min(G, cy + 60), { scale: 2, palette: undefined }) }];
+  if (K.star && !K.spark) return [{ id: "pickups/collect-burst", o: o(cx, cy + 30) }];
+  if (K.spark) return [{ id: n >= 10 ? "impacts/crit-hit" : "impacts/hit-spark", o: o(cx, cy + 10, { scale: n >= 10 ? 2.2 : 2 }) }];
+  if (K.debris) return [{ id: "impacts/blunt-hit", o: o(cx, cy + 10, { scale: 2 }) }];
+  if (K.flash) return [{ id: "impacts/hit-flash", o: o(cx, cy + 10, { scale: 2 }) }];
+  return null;
+}
 function pfxDraw(ctx, w, layer) {
   if (!w.pfxs || !w.pfxs.length || !window.PIXELFX) return;
   const P = window.PIXELFX;
