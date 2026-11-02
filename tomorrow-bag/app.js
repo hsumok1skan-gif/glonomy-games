@@ -268,6 +268,7 @@
     var k = bagKey(), name = btn.getAttribute('data-name');
     var ck = Logic.checkKey(kid.id, k);
     var list = S.checks[ck] || (S.checks[ck] = []);
+    var wasNight = Logic.nightDone(S, kid, Logic.buildBag(S, kid, k));
     var i = list.indexOf(name);
     if (i >= 0) list.splice(i, 1); else list.push(name);
     refreshHistory(kid, k);
@@ -281,8 +282,8 @@
       UI.stamp(cell);
       UI.fly(cell, V.kidMode);
       (V.kidMode ? SFX.inKid : SFX.in)();
-      // 아침에 넣을 물건만 남아도 밤에는 다 챙긴 것으로 친다
-      if ((pr.total && pr.done === pr.total) || Logic.nightDone(S, kid, bag)) completeBag(kid, k);
+      // 아침에 넣을 물건만 남아도 밤에는 다 챙긴 것으로 친다. 아침 물건을 하나씩 넣을 때는(가방 화면 아침 줄) 다 넣었을 때만 다시 띄운다
+      if ((pr.total && pr.done === pr.total) || (!wasNight && Logic.nightDone(S, kid, bag))) completeBag(kid, k);
     } else SFX.out();
   }
   function completeBag(kid, k) {
@@ -1117,6 +1118,23 @@
       UI.toast('예시를 뺐어요', true);
     });
   }
+  // 가방 화면 맨 위 '내 아이로 시작': 예시를 빼고, 진짜 아이가 없으면 아이 넣기 시트를 연다
+  function sampleStart() {
+    var ids = S.kids.filter(function (k) { return k.sample; }).map(function (k) { return k.id; });
+    if (!ids.length) return;
+    askConfirm('예시를 빼고 우리 아이로 시작할까요?', '시작하기', function () {
+      rememberUndo();
+      ids.forEach(removeKid);
+      var real = S.kids[0];
+      if (real) S.cur = real.id;
+      V.offset = 0;
+      save();
+      renderAll();
+      go('bag');
+      if (real) UI.toast('예시를 뺐어요 · ' + Logic.nameI(real.name) + ' 가방이에요', true);
+      else openKid(null);
+    });
+  }
 
   function runSelfTest() {
     UI.closeSheet('sheet-help');   // 도움말 마지막 쪽에서 연다 (도움말 시트가 위에 있어서)
@@ -1275,6 +1293,7 @@
     'print': function () { go('bag'); try { window.print(); } catch (e) { UI.toast('인쇄할 수 없는 브라우저예요'); } },
     'sample-add': function () { UI.closeSheet('ov-welcome'); addSample(); },
     'sample-del': removeSample,
+    'sample-start': sampleStart,
     'clear-all': function () {
       askConfirm('모든 아이·시간표·꾸러미·가방 달력을 지울까요? 되돌릴 수 없으니 먼저 내보내기를 해 두세요.', '전체 지우기', function () {
         Store.clear();

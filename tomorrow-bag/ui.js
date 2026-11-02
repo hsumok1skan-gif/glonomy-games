@@ -219,10 +219,27 @@ var UI = (function () {
       lv.setAttribute('height', hh.toFixed(1));
     }
   }
-  function countText(pr) {
+  // morning: 밤 물건을 다 챙기고 남은 아침 물건 수 (morningLeft 의 길이)
+  function countText(pr, morning) {
     if (!pr.total) return '아직 챙길 물건이 없어요';
     if (pr.done >= pr.total) return '가방 다 챙겼어요!';
+    if (morning) return '아침에 넣을 것 ' + morning + '개 남았어요';
     return pr.total + '개 중 ' + pr.done + '개 챙겼어요';
+  }
+  // 밤 물건을 다 챙겼으면(Logic.nightDone) 아직 안 챙긴 아침 물건들, 아니면 []
+  function morningLeft(S, kid, bag) {
+    if (!Logic.nightDone(S, kid, bag)) return [];
+    var done = S.checks[Logic.checkKey(kid.id, bag.date)] || [];
+    return bag.items.filter(function (it) { return done.indexOf(it.name) < 0; });
+  }
+  // 가방 화면의 아침 물건 줄: 칩을 누르면 가방 시트 칸과 같은 toggleCheck 로 챙긴다
+  function morningRowHTML(list) {
+    if (!list.length) return '';
+    return '<div class="strip morning-left no-print" id="morning-left" aria-label="아침에 넣을 것"><span class="lab">아침</span>' +
+      list.map(function (it) {
+        return '<button class="chip ml-chip" type="button" data-act="check" data-name="' + esc(it.name) + '" aria-label="' + esc(it.name) + ' 챙기기">' +
+          '<span class="it-ic" aria-hidden="true">' + pic(it.name) + '</span>' + esc(it.name) + '</button>';
+      }).join('') + '</div>';
   }
 
   var ARTS = {
@@ -312,6 +329,13 @@ var UI = (function () {
     var pr = Logic.progress(S, kid, bag);
     var h = '';
 
+    // 예시 아이를 보고 있으면 맨 위에 '내 아이로 시작' 한 줄
+    if (kid.sample) {
+      h += '<div class="sample-bar no-print" id="sample-bar"><span class="sb-tag">예시예요</span>' +
+        '<span class="sb-txt">' + esc(Logic.nameI(kid.name)) + ' 가방은 둘러보기용이에요</span>' +
+        '<button class="btn small main" type="button" data-act="sample-start">내 아이로 시작</button></div>';
+    }
+
     // 아이를 막 넣었으면 처음 가방 카드, 아니면 처음 설정 카드가 날짜 카드 자리를 대신한다
     var setup = (V.firstBag && !S.settings.firstBagSeen && bag.school) ? firstBagCard(bag) : setupCard(S, kid, k);
     h += setup || ('<div class="card date-card" data-swipe="day">' +
@@ -335,8 +359,9 @@ var UI = (function () {
       return;
     }
 
+    var ml = morningLeft(S, kid, bag);
     h += '<div class="bag-stage" id="bag-ring">' + bagArt(pr, checkedPics(S, kid, bag)) + '</div>';
-    h += '<p class="bag-count" id="bag-count" aria-live="polite">' + countText(pr) + '</p>';
+    h += '<p class="bag-count" id="bag-count" aria-live="polite">' + countText(pr, ml.length) + '</p>';
 
     // 그날 수업 한 줄 (넘치면 옆으로 밀기)
     h += '<div class="strip" aria-label="수업"><span class="lab">수업</span>';
@@ -352,6 +377,9 @@ var UI = (function () {
       h += '<span class="pk"><span class="em" aria-hidden="true">' + packPic(p) + '</span>' + esc(p.time || '') + ' ' + esc(p.name) + (p.who ? ' → <b>' + esc(p.who) + '</b>' : '') + '</span>';
     });
     h += '</div>';
+
+    // 밤 물건을 다 챙겼으면 버튼 위에 아침에 넣을 물건 줄
+    h += morningRowHTML(ml);
 
     h += '<div class="bag-btns no-print">' +
       '<button class="btn main big" type="button" data-act="bag-open"' + (bag.items.length ? '' : ' disabled') + '>가방 챙기기</button>' +
@@ -458,8 +486,22 @@ var UI = (function () {
     if (!art) return false;
     setArt(art, pr);
     setBagItems(art, checkedPics(S, kid, bag));
+    var ml = morningLeft(S, kid, bag);
     var cnt = $('bag-count');
-    if (cnt) cnt.textContent = countText(pr);
+    if (cnt) cnt.textContent = countText(pr, ml.length);
+    // 아침 물건 줄: 챙긴 칩만 빼고, 다 챙기면 줄을 지운다. 새로 생겨야 하면 다시 그린다(false)
+    var row = $('morning-left');
+    var want = ml.map(function (it) { return it.name; });
+    if (row) {
+      var chips = row.querySelectorAll('[data-act="check"]');
+      var have = [];
+      for (var j = 0; j < chips.length; j++) {
+        var cn = chips[j].getAttribute('data-name');
+        if (want.indexOf(cn) < 0) row.removeChild(chips[j]); else have.push(cn);
+      }
+      if (!want.length) row.parentNode.removeChild(row);
+      else if (have.length !== want.length) return false;
+    } else if (want.length) return false;
     if (!isOpen('sheet-bag')) return true;
     var btn = cellByName(name);
     var item = bag.items.filter(function (it) { return it.name === name; })[0];
