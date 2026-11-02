@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lantern Garden — 등불 정원</title>
+  <!-- 아이콘: 남색 바탕의 금빛 등불 SVG (글 안에 적은 그림). 사람 그림 icon 이 들어오면 art.js 가 바꾼다 -->
+  <link id="favicon" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2312162b'/%3E%3Ccircle cx='16' cy='17' r='12' fill='%23f4c95d' opacity='.22'/%3E%3Crect x='12.5' y='6.6' width='7' height='2.6' rx='1.2' fill='%234a3a2c'/%3E%3Cellipse cx='16' cy='17' rx='6.4' ry='7.6' fill='%23f4c95d' stroke='%23d9952f'/%3E%3Cellipse cx='15.4' cy='16' rx='2.6' ry='3.6' fill='%23fff6d6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./art.js"></script>
+</head>
+<body>
+  <div id="app">
+
+    <!-- 시작 화면 -->
+    <section id="startScreen" class="screen on">
+      <div class="start-sky" aria-hidden="true">
+        <!-- 밤 정원 풍경. 길을 따라 등불이 켜져 있고 아래 끝은 어두운 남색(--bg)으로 사라진다 -->
+        <svg class="start-art" viewBox="0 0 400 440" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <linearGradient id="ssSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#0f1330"/>
+              <stop offset="0.7" stop-color="#1d2747"/>
+              <stop offset="1" stop-color="#2b3c4f"/>
+            </linearGradient>
+            <linearGradient id="ssGround" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1f3129"/>
+              <stop offset="1" stop-color="#151d22"/>
+            </linearGradient>
+            <linearGradient id="ssPath" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#6d6650"/>
+              <stop offset="1" stop-color="#a59878"/>
+            </linearGradient>
+            <linearGradient id="ssFade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#12162b" stop-opacity="0"/>
+              <stop offset="1" stop-color="#12162b"/>
+            </linearGradient>
+            <radialGradient id="ssGlow">
+              <stop offset="0" stop-color="#f4c95d" stop-opacity="0.55"/>
+              <stop offset="1" stop-color="#f4c95d" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ssMoonGlow">
+              <stop offset="0.4" stop-color="#f3ead0" stop-opacity="0.22"/>
+              <stop offset="1" stop-color="#f3ead0" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="ssLampBody" cx="0.5" cy="0.4" r="0.6">
+              <stop offset="0" stop-color="#fff6d6"/>
+              <stop offset="0.55" stop-color="#f4c95d"/>
+              <stop offset="1" stop-color="#d9952f"/>
+            </radialGradient>
+            <mask id="ssMoonCut">
+              <rect width="400" height="440" fill="#fff"/>
+              <circle cx="331" cy="62" r="19" fill="#000"/>
+            </mask>
+            <g id="ssLamp">
+              <ellipse cx="0" cy="0" rx="16" ry="4.5" fill="#f4c95d" opacity="0.28"/>
+              <circle cx="0" cy="-38" r="26" fill="url(#ssGlow)"/>
+              <path d="M0 0V-30" stroke="#3b2f2a" stroke-width="2.4" stroke-linecap="round"/>
+              <rect x="-6.5" y="-49" width="13" height="3.4" rx="1.6" fill="#4a3a30" stroke="#2a211c" stroke-width="0.8"/>
+              <ellipse class="lamp-body" cx="0" cy="-39" rx="6.4" ry="7.6" fill="url(#ssLampBody)" stroke="#9c6a26" stroke-width="0.8"/>
+              <rect x="-4" y="-32" width="8" height="2.4" rx="1.2" fill="#4a3a30"/>
+            </g>
+          </defs>
+
+          <rect width="400" height="250" fill="url(#ssSky)"/>
+          <g class="stars" fill="#f3ead0">
+            <circle cx="34" cy="40" r="1.3" opacity="0.8"/><circle cx="78" cy="88" r="1"/><circle cx="122" cy="30" r="1.5" opacity="0.7"/>
+            <circle cx="168" cy="72" r="0.9"/><circle cx="206" cy="24" r="1.2" opacity="0.8"/><circle cx="248" cy="110" r="1"/>
+            <circle cx="268" cy="44" r="1.4" opacity="0.6"/><circle cx="372" cy="128" r="1.1"/><circle cx="56" cy="150" r="0.9" opacity="0.7"/>
+            <circle cx="140" cy="140" r="1.1" opacity="0.6"/><circle cx="380" cy="30" r="1"/><circle cx="20" cy="104" r="1.2" opacity="0.6"/>
+          </g>
+          <g class="moon">
+            <circle cx="320" cy="70" r="46" fill="url(#ssMoonGlow)"/>
+            <circle cx="320" cy="70" r="22" fill="#f3ead0" mask="url(#ssMoonCut)"/>
+          </g>
+
+          <!-- 먼 언덕과 울타리 -->
+          <path d="M0 236Q70 206 150 226T300 218T400 226V260H0Z" fill="#1a2a2e"/>
+          <rect y="246" width="400" height="194" fill="url(#ssGround)"/>
+          <g fill="#243a30">
+            <circle cx="10" cy="250" r="16"/><circle cx="36" cy="246" r="14"/><circle cx="62" cy="250" r="15"/><circle cx="90" cy="247" r="13"/>
+            <circle cx="116" cy="251" r="14"/><circle cx="142" cy="248" r="12"/><circle cx="168" cy="251" r="12"/><circle cx="194" cy="250" r="10"/>
+            <circle cx="268" cy="250" r="11"/><circle cx="292" cy="247" r="13"/><circle cx="318" cy="250" r="14"/><circle cx="344" cy="246" r="15"/>
+            <circle cx="372" cy="249" r="14"/><circle cx="396" cy="246" r="16"/>
+          </g>
+
+          <!-- 꽃밭 (COLORS 의 이끼·라벤더·살구·장미·하늘) -->
+          <g class="beds">
+            <ellipse cx="160" cy="282" rx="44" ry="9" fill="#d49a6a" opacity="0.7"/>
+            <ellipse cx="96" cy="318" rx="66" ry="14" fill="#6e8b57" opacity="0.8"/>
+            <ellipse cx="44" cy="368" rx="74" ry="20" fill="#8a7db5" opacity="0.75"/>
+            <ellipse cx="330" cy="290" rx="54" ry="10" fill="#b86e7e" opacity="0.7"/>
+            <ellipse cx="372" cy="336" rx="62" ry="16" fill="#d49a6a" opacity="0.7"/>
+            <ellipse cx="384" cy="392" rx="70" ry="22" fill="#6a96b8" opacity="0.65"/>
+          </g>
+          <g class="blooms">
+            <g fill="#f0c7a2"><circle cx="146" cy="280" r="1.6"/><circle cx="162" cy="284" r="1.6"/><circle cx="178" cy="280" r="1.6"/><circle cx="358" cy="332" r="2.2"/><circle cx="376" cy="338" r="2.2"/><circle cx="394" cy="332" r="2.2"/></g>
+            <g fill="#bfd6a4"><circle cx="70" cy="316" r="2"/><circle cx="92" cy="322" r="2"/><circle cx="114" cy="314" r="2"/><circle cx="136" cy="320" r="2"/></g>
+            <g fill="#d6cdf2"><circle cx="14" cy="366" r="2.6"/><circle cx="38" cy="374" r="2.6"/><circle cx="62" cy="362" r="2.6"/><circle cx="86" cy="370" r="2.6"/></g>
+            <g fill="#ecc0ca"><circle cx="312" cy="288" r="1.8"/><circle cx="330" cy="292" r="1.8"/><circle cx="350" cy="287" r="1.8"/></g>
+            <g fill="#cfe2f0"><circle cx="352" cy="388" r="2.8"/><circle cx="376" cy="396" r="2.8"/><circle cx="398" cy="386" r="2.8"/></g>
+          </g>
+          <g fill="#1d3029">
+            <circle cx="6" cy="300" r="30"/><circle cx="34" cy="292" r="20"/>
+            <circle cx="398" cy="276" r="26"/><circle cx="372" cy="270" r="16"/>
+          </g>
+
+          <!-- 앞으로 굽이쳐 오는 정원 길 -->
+          <path class="garden-path" d="M224 248C212 282 258 300 246 334C232 372 150 396 110 440H310C300 402 296 368 290 336C284 300 240 280 236 248Z" fill="url(#ssPath)"/>
+          <g fill="#c9bd9c" opacity="0.5">
+            <ellipse cx="236" cy="268" rx="3" ry="1.2"/><ellipse cx="260" cy="314" rx="4" ry="1.6"/><ellipse cx="246" cy="350" rx="5" ry="2"/>
+            <ellipse cx="214" cy="384" rx="6" ry="2.4"/><ellipse cx="250" cy="406" rx="7" ry="2.6"/>
+          </g>
+
+          <!-- 길을 따라 켜진 등불: 멀리서 가까이로 갈수록 크게 -->
+          <use class="path-lamp" href="#ssLamp" transform="translate(216 256) scale(0.4)"/>
+          <use class="path-lamp" href="#ssLamp" transform="translate(268 292) scale(0.55)"/>
+          <use class="path-lamp" href="#ssLamp" transform="translate(228 326) scale(0.7)"/>
+          <use class="path-lamp" href="#ssLamp" transform="translate(306 356) scale(0.85)"/>
+          <use class="path-lamp" href="#ssLamp" transform="translate(166 372) scale(0.95)"/>
+          <use class="path-lamp" href="#ssLamp" transform="translate(324 398) scale(1.05)"/>
+
+          <!-- 아래 끝은 제목·버튼 자리의 어두운 바탕으로 사라진다 -->
+          <rect y="360" width="400" height="80" fill="url(#ssFade)"/>
+        </svg>
+      </div>
+      <div class="start-body">
+        <!-- 앱 아이콘: 꽃밭 위 금빛 등불과 초승달이 있는 남색 아이콘 -->
+        <span class="title-icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40">
+            <rect width="40" height="40" rx="9" fill="#1b2448"/>
+            <path d="M31 6.5a5 5 0 1 0 2.6 8.6a4 4 0 1 1-2.6-8.6Z" fill="#f3ead0"/>
+            <circle cx="8" cy="9" r="0.9" fill="#f3ead0"/><circle cx="13" cy="5.5" r="0.7" fill="#f3ead0"/>
+            <rect x="4" y="28" width="11" height="8" rx="2" fill="#6e8b57"/>
+            <rect x="15" y="28" width="11" height="8" rx="2" fill="#8a7db5"/>
+            <rect x="26" y="28" width="10" height="8" rx="2" fill="#d49a6a"/>
+            <circle cx="20" cy="21" r="11" fill="#f4c95d" opacity="0.22"/>
+            <rect x="16.6" y="11.4" width="6.8" height="2.4" rx="1.1" fill="#4a3a2c"/>
+            <ellipse cx="20" cy="20.6" rx="6" ry="7" fill="#f4c95d" stroke="#d9952f" stroke-width="1"/>
+            <ellipse cx="19.4" cy="19.6" rx="2.4" ry="3.4" fill="#fff6d6"/>
+          </svg>
+        </span>
+        <h1 class="title">Lantern Garden</h1>
+        <p class="subtitle">등불 정원</p>
+        <p class="start-rule">가로로 한 줄·세로로 한 줄·꽃밭 하나마다 등불을 하나씩.<br>등불끼리는 대각선으로도 닿지 않게 놓아요.</p>
+        <button id="playBtn" type="button" class="big primary">시작</button>
+        <button id="dailyBtn" type="button" class="big"><span class="daily-mark" aria-hidden="true"></span>오늘의 정원 <span id="streakText" class="pill"></span></button>
+        <div class="start-row">
+          <button id="startHowBtn" type="button">방법</button>
+          <button id="startSetBtn" type="button"><span aria-hidden="true">⚙</span> 설정</button>
+        </div>
+        <p id="startInfo" class="small"></p>
+      </div>
+    </section>
+
+    <!-- 레벨 지도 -->
+    <section id="mapScreen" class="screen">
+      <header class="bar">
+        <button id="mapBackBtn" type="button" class="icon-btn" aria-label="처음으로">←</button>
+        <div class="bar-mid"><b>정원 길</b> <span id="mapStars" class="small"></span></div>
+        <button id="mapSetBtn" type="button" class="icon-btn" aria-label="설정">⚙</button>
+      </header>
+      <div id="mapList" class="map-list"></div>
+    </section>
+
+    <!-- 레벨 풀이 -->
+    <section id="playScreen" class="screen">
+      <header class="bar">
+        <button id="playBackBtn" type="button" class="icon-btn" aria-label="지도로">←</button>
+        <div class="bar-mid">
+          <b id="levelText">레벨 1</b>
+          <span id="dailyMark" class="daily-mark" aria-hidden="true" hidden></span>
+          <span id="badgeText" class="badge">쉬움</span>
+          <span id="timeText" class="time">0:00</span>
+        </div>
+        <button id="pauseBtn" type="button" class="icon-btn" aria-label="일시정지">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.6" height="14" rx="1.4" fill="currentColor"/><rect x="13.9" y="5" width="3.6" height="14" rx="1.4" fill="currentColor"/></svg>
+        </button>
+        <button id="playSetBtn" type="button" class="icon-btn" aria-label="설정">⚙</button>
+      </header>
+      <p id="ruleText" class="rule">가로줄·세로줄·꽃밭마다 등불 하나, 서로 닿지 않게</p>
+      <div id="boardArea" class="board-area">
+        <div id="board" aria-label="정원 판" role="grid"></div>
+      </div>
+      <p id="msg" class="msg" aria-live="polite"></p>
+      <nav class="actions">
+        <button id="undoBtn" type="button" class="act">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.5 19.5Q20.5 9.5 4 9M8.4 4.8Q6 7.2 4 9Q6 10.9 8.4 13.2M15.9 11.9Q16.2 8.4 17.4 6.4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17.9" cy="5.1" r="1.5" fill="currentColor"/></svg>
+          <span>되돌리기</span>
+        </button>
+        <button id="xBtn" type="button" class="act" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5.5Q11.2 11.4 18 18.5M18 5.5Q12.8 11.4 6 18.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="5.2" cy="4.6" r="1.5" fill="currentColor"/><circle cx="18.8" cy="4.6" r="1.5" fill="currentColor"/></svg>
+          <span id="xLabel">× 표시 끔</span>
+        </button>
+        <button id="hintBtn" type="button" class="act">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.6" r="1.5" fill="currentColor"/><path d="M12 7.4V13.2M10.8 9Q6.4 6.8 5 10.6Q7.8 12 10.8 10.8M13.2 9Q17.6 6.8 19 10.6Q16.2 12 13.2 10.8M12 20.8v1.4M7.6 18.6l-1.2.8M16.4 18.6l1.2.8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle class="glow" cx="12" cy="16.4" r="2.8" fill="currentColor"/></svg>
+          <span id="hintLabel">힌트 (무료 1)</span>
+        </button>
+      </nav>
+      <div id="clearGlow" class="clear-glow" aria-hidden="true"><div id="clearHole" class="clear-hole"></div></div>
+    </section>
+
+    <!-- 겹침 화면 -->
+    <div id="overlay" class="overlay hidden">
+      <section id="clearPanel" class="panel">
+        <h2 id="clearTitle">정원이 밝아졌어요</h2>
+        <div id="clearStars" class="slam" role="img" aria-label="별"></div>
+        <p class="clear-score"><span class="small">걸린 시간</span> <b id="clearScore">0:00</b></p>
+        <p id="clearText"></p>
+        <p id="clearBest" class="clear-best"><span class="small">최고 기록</span> <b id="clearBestText">-</b> <span id="clearNew" class="pill new-record" hidden>새 기록!</span></p>
+        <p id="clearTech" class="clear-tech"></p>
+        <div class="row">
+          <button id="nextBtn" type="button" class="primary">다음 레벨</button>
+          <button id="retryBtn" type="button">다시 하기</button>
+          <button id="clearMapBtn" type="button">지도</button>
+          <button id="clearHomeBtn" type="button">처음으로</button>
+        </div>
+      </section>
+
+      <section id="pausePanel" class="panel" aria-labelledby="pauseTitle">
+        <h2 id="pauseTitle">잠깐 멈췄어요</h2>
+        <p class="clear-score"><span class="small">걸린 시간</span> <b id="pauseTime">0:00</b></p>
+        <p id="pauseText" class="small">멈춘 동안 시간이 흐르지 않고 판도 가려져요. (키보드: 엔터·P·Esc 이어하기, S 설정, Q 나가기)</p>
+        <div class="row">
+          <button id="pauseResumeBtn" type="button" class="primary">이어하기</button>
+          <button id="pauseSetBtn" type="button">설정</button>
+          <button id="pauseMapBtn" type="button">나가기</button>
+        </div>
+      </section>
+
+      <section id="adPanel" class="panel">
+        <p class="small">광고</p>
+        <div class="ad-box">광고가 나오는 자리예요</div>
+        <div class="row">
+          <button id="adCloseBtn" type="button" class="primary">닫기</button>
+        </div>
+      </section>
+
+      <section id="rewardPanel" class="panel">
+        <h2>힌트를 더 받을까요?</h2>
+        <p>이 레벨의 무료 힌트를 썼어요. 짧은 광고를 보면 다음 추리 한 단계를 알려 드려요. 힌트는 한 판에 3번까지, 쓸 때마다 걸린 시간에 20초가 더해져요.</p>
+        <div class="row">
+          <button id="rewardBtn" type="button" class="primary">광고 보고 힌트 받기</button>
+          <button id="rewardNoBtn" type="button">그만두기</button>
+        </div>
+      </section>
+
+      <section id="settingsPanel" class="panel">
+        <h2>설정</h2>
+        <div class="set-list">
+          <button id="setSound" type="button" class="set" aria-pressed="true">소리 <b>켬</b></button>
+          <button id="setAutoX" type="button" class="set" aria-pressed="false">자동 × (등불 둘레·같은 줄에 ×) <b>끔</b></button>
+          <button id="setCb" type="button" class="set" aria-pressed="false">색약 모드 (꽃밭 무늬) <b>끔</b></button>
+          <button id="setStill" type="button" class="set" aria-pressed="false">움직임 줄이기 <b>끔</b></button>
+          <button id="setClearBoard" type="button" class="set">이 판 지우기</button>
+          <button id="setHow" type="button" class="set">방법</button>
+          <button id="setNoAds" type="button" class="set">광고 제거</button>
+          <button id="setReset" type="button" class="set danger">기록 모두 지우기</button>
+        </div>
+        <p id="setSaved" class="small set-note">설정은 바꾸는 즉시 이 기기에 저장돼요.</p>
+        <div class="row">
+          <button id="setCloseBtn" type="button" class="primary">닫기</button>
+        </div>
+      </section>
+
+      <section id="resetPanel" class="panel" role="alertdialog" aria-labelledby="resetTitle">
+        <h2 id="resetTitle">기록을 모두 지울까요?</h2>
+        <p>깬 레벨·별·가장 빠른 시간·오늘의 정원 연속 일수·풀던 판이 모두 사라져요. 되돌릴 수 없어요.</p>
+        <p class="small">설정(소리·자동 ×·색약 모드·움직임 줄이기)은 그대로 남아요.</p>
+        <div class="row">
+          <button id="resetNoBtn" type="button" class="primary">그만두기</button>
+          <button id="resetYesBtn" type="button" class="danger-btn">모두 지우기</button>
+        </div>
+      </section>
+
+      <section id="howPanel" class="panel">
+        <h2>방법</h2>
+        <h3 class="how-h">목표</h3>
+        <ul>
+          <li>판의 모든 가로줄·세로줄·꽃밭에 등불을 하나씩 놓아 <b>정원을 다 밝히면</b> 레벨을 깨요.</li>
+          <li>정원 길의 레벨 1000개를 하나씩 깨 나가요. 뒤로 갈수록 판이 커지고 어려워져요.</li>
+          <li>오늘의 정원은 날마다 바뀌는 판 하나예요. 며칠 이어서 풀었는지 시작 화면에 보여요.</li>
+        </ul>
+        <h3 class="how-h">규칙</h3>
+        <ul>
+          <li>가로줄마다, 세로줄마다, 색 꽃밭마다 등불이 <b>꼭 하나</b>씩 있어야 해요.</li>
+          <li>등불끼리는 위아래·옆·대각선으로 <b>닿으면 안 돼요.</b> 규칙에 걸린 등불은 빨갛게 깜빡이고, 그 칸에 까닭이 떠요.</li>
+          <li>모든 판은 짐작 없이 추리만으로 풀리고, 답은 하나뿐이에요. 틀려도 지는 일은 없으니 언제든 고칠 수 있어요.</li>
+        </ul>
+        <h3 class="how-h">조작</h3>
+        <ul>
+          <li>칸을 누르면 등불이 놓이고, 다시 누르면 빠져요.</li>
+          <li><b>× 표시</b>를 켜면 칸을 누를 때 ×가 찍혀요(다시 누르면 지워져요). 누른 채 끌면 지나간 빈칸에 ×가 줄줄이 찍혀요.</li>
+          <li><b>되돌리기</b>는 바로 앞에 한 일을 하나씩 거둬요. 설정의 <b>자동 ×</b> 를 켜면 등불 둘레·같은 줄·꽃밭에 ×가 저절로 찍혀요.</li>
+          <li>키보드(풀이): <b>방향키</b> 칸 옮기기, <b>스페이스·엔터</b> 칸 누르기, <b>X</b> × 표시, <b>Z</b> 되돌리기, <b>H</b> 힌트, <b>P·Esc</b> 일시정지.</li>
+          <li>키보드(그 밖): 시작 화면 <b>엔터</b> 시작·<b>D</b> 오늘의 정원, 지도 <b>엔터</b> 지금 레벨·<b>Esc</b> 처음으로, 완료 창 <b>엔터</b> 다음·<b>R</b> 다시 하기·<b>M</b> 지도, 어디서나 <b>S</b> 설정·<b>?</b> 이 방법 창, 창은 <b>Esc</b> 로 닫아요. <b>Tab</b> 으로 버튼을 골라 엔터로 눌러도 돼요.</li>
+          <li>풀이 화면 위 <b>일시정지</b>(두 줄 단추)를 누르면 시간이 멈추고 판이 가려져요. 다른 앱·탭으로 가면 저절로 멈춰요.</li>
+        </ul>
+        <h3 class="how-h">힌트와 별</h3>
+        <ul>
+          <li>힌트는 다음에 쓸 추리 한 단계를 이유와 함께 보여 줘요. 자리가 맞지 않는 등불이 있으면 그것부터 치워 줘요.</li>
+          <li>힌트는 한 판에 3번까지(1번 무료, 그 뒤는 광고), 쓸 때마다 걸린 시간에 20초가 더해져요.</li>
+          <li>별 하나: 깼어요. 별 둘: 힌트 없이 깼어요. 별 셋: 힌트 없이, 그 판의 목표 시간 안에 깼어요.</li>
+        </ul>
+        <p class="small">이 창은 시작 화면의 <b>방법</b>, 또는 설정(시작 화면 <b>설정</b>, 지도·풀이 화면 오른쪽 위 ⚙) 안의 <b>방법</b>으로 언제든 다시 열 수 있어요. 창이 열린 동안 시간은 멈춰요.</p>
+        <div class="row">
+          <button id="howCloseBtn" type="button" class="primary">알겠어요</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="slamFlash" class="slam-flash" aria-hidden="true"></div>
+    <div id="toast" class="toast" role="status"></div>
+    <div id="rotateNote" class="rotate-note">휴대폰을 세로로 세워 주세요</div>
+  </div>
+
+  <script src="./levels.js"></script>
+  <script src="./daily.js"></script>
+  <script src="./logic.js"></script>
+  <script src="./clear_fx.js"></script>
+  <script src="./game.js"></script>
+</body>
+</html>

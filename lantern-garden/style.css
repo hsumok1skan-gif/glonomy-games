@@ -1,0 +1,1173 @@
+:root {
+  --bg: #12162b;
+  --bg2: #1d2340;
+  --panel: #262d50;
+  --line: #3a4270;
+  --text: #efe9d6;
+  --muted: #b9b3a0;
+  --gold: #f4c95d;
+  --gold-deep: #d9952f;
+  --danger: #e2566a;
+  --on: #6fbf9a;
+  --fs-s: 13px;
+  --fs-m: 15px;
+  --fs-l: 18px;
+  --fs-xl: 24px;
+  --fs-xxl: 40px;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-size: var(--fs-m);
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background: radial-gradient(circle at 50% -10%, #2c3463 0%, var(--bg) 62%);
+  overflow: hidden;
+  touch-action: manipulation;   /* 화면 어디서도 두 번 눌러 확대하지 않는다 (지도 끌어 넘기기는 된다) */
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0);
+}
+
+.screen.on { display: flex; }
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  min-height: 44px;
+  padding: 8px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.08s, background 0.2s, color 0.2s;
+}
+
+/* 키보드 Tab 으로 고른 버튼 */
+button:focus-visible {
+  outline: 3px solid #9fd0ff;
+  outline-offset: 2px;
+}
+
+button:active { transform: scale(0.96); }
+button:disabled { opacity: 0.5; }
+
+button.primary {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #2a2234;
+  font-weight: 700;
+}
+
+.icon-btn {
+  min-width: 44px;
+  font-size: var(--fs-l);
+  padding: 4px 10px;
+}
+.icon-btn svg { display: block; width: 22px; height: 22px; margin: 0 auto; }
+
+/* 일시정지 창이 뜬 동안 판을 가린다 (멈춘 채 판을 보고 추리하지 못하게) */
+body.paused #board { visibility: hidden; }
+
+
+.small { font-size: var(--fs-s); color: var(--muted); }
+
+.pill {
+  display: inline-block;
+  min-width: 2em;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(244, 201, 93, 0.18);
+  color: var(--gold);
+  font-size: var(--fs-s);
+}
+
+/* ---------- 시작 ---------- */
+
+/* 시작 화면 그림.
+   위쪽 .start-sky 가 남은 높이를 모두 채우고, 그 안의 svg.start-art 가 밤 정원 풍경(별·초승달 .moon·울타리·꽃밭·굽은 길·
+   길을 따라 켜진 등불 .path-lamp 6개)을 아래 끝 기준으로 꽉 채워 그린다. 풍경 아래 끝은 --bg 로 사라지고, 그 아래 .start-body
+   (제목·버튼)는 --bg 어두운 바탕이다. */
+.start-sky {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: #0f1330;
+}
+
+.start-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.start-art .path-lamp { animation: startLamp 3.2s ease-in-out infinite; }
+.start-art .path-lamp:nth-of-type(2n) { animation-delay: -1.1s; }
+.start-art .path-lamp:nth-of-type(3n) { animation-delay: -2.3s; }
+
+@keyframes startLamp {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.86; }
+}
+
+/* 보통은 글·버튼 높이 그대로(줄지 않음). 화면이 낮아 다 들어가지 않으면 위 그림 자리가 먼저 0 까지 줄고,
+   그래도 모자라면 이 칸이 줄며 안에서 밀어 볼 수 있다(버튼이 화면 밖으로 잘리지 않음) */
+.start-body {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 12px 24px 28px;
+  text-align: center;
+}
+
+/* 앱 아이콘: 제목 위 작은 아이콘 */
+.title-icon { display: block; width: 44px; height: 44px; margin-bottom: -4px; filter: drop-shadow(0 0 8px rgba(244, 201, 93, 0.35)); }
+.title-icon svg { display: block; width: 100%; height: 100%; }
+
+.title { margin: 0; font-size: var(--fs-xxl); color: var(--gold); letter-spacing: 1px; }
+.subtitle { margin: -6px 0 0; color: var(--muted); }
+.start-rule { margin: 4px 0 8px; line-height: 1.6; }
+
+.big { width: 100%; max-width: 320px; min-height: 56px; font-size: var(--fs-l); }
+
+/* 시작 화면 아래 줄: 방법·설정 */
+.start-row { display: flex; gap: 12px; width: 100%; max-width: 320px; }
+.start-row button { flex: 1 1 0; min-height: 48px; }
+
+/* ---------- 위 띠 ---------- */
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 6px 8px;
+  flex: none;
+}
+
+.bar-mid {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: var(--fs-l);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--fs-s);
+  font-weight: 700;
+  background: #3d6b55;
+}
+
+.badge.b1 { background: #3d6b55; }
+.badge.b2 { background: #5f6aa8; }
+.badge.b3 { background: #a2683f; }
+.badge.b4 { background: #a4425a; }
+.badge.daily { background: #4c5a8f; }
+
+/* 오늘의 정원 배지 (game.js DAILY_SVG): 금빛 테두리 남색 원 + 초승달 + 등불 하나, 원 밖은 투명.
+   시작 화면 #dailyBtn 글자 앞 28px, 풀이 화면 위 띠 #dailyMark(오늘의 정원일 때만) 24px. */
+.daily-mark {
+  display: inline-block;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 4px rgba(244, 201, 93, 0.45));
+}
+.daily-mark[hidden] { display: none; }
+.daily-mark svg { display: block; width: 100%; height: 100%; }
+#dailyBtn .daily-mark { width: 28px; height: 28px; margin: 0 8px 0 0; }
+
+.time { font-variant-numeric: tabular-nums; color: var(--muted); font-size: var(--fs-m); }
+
+/* ---------- 지도 ---------- */
+
+.map-list {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0 40px;
+  scrollbar-width: none;          /* 스크롤 막대는 숨기고 손가락으로 밀어 움직이는 것은 그대로 (H-18) */
+  -ms-overflow-style: none;
+}
+.map-list::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* 구역은 틈 없이 위아래로 붙는다. 모든 구역의 위·아래 끝은 같은 짙은 풀색(--map-edge)이라
+   어느 구역끼리 붙어도 이음매가 없다. 길(.zone-path)은 game.js zonePathSvg 가 경계에서 이어지게 그린다. */
+.zone {
+  --map-edge: #17211d;
+  position: relative;
+  margin: 0 10px;
+  padding: 28px 0 60px;
+  overflow: hidden;
+  background: linear-gradient(var(--map-edge), var(--zc) 70px, var(--zc) calc(100% - 70px), var(--map-edge));
+}
+
+.map-list .zone:first-of-type { border-radius: 18px 18px 0 0; }
+.map-list .zone:last-of-type { border-radius: 0 0 18px 18px; }
+
+/* 구역마다 다른 꾸밈. 위아래 끝 40px 은 흐려져 경계에서 사라진다 */
+.zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent);
+  mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent);
+}
+
+.zone-path {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.zone-path path { fill: none; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.zone-path .edge { stroke: rgba(10, 16, 12, 0.45); stroke-width: 34px; }
+.zone-path .soil { stroke: rgba(150, 128, 92, 0.30); stroke-width: 26px; }
+.zone-path .pebble { stroke: rgba(239, 233, 214, 0.14); stroke-width: 2px; stroke-dasharray: 2 11; }
+
+/* 구역 이름: 구역이 바뀌는 자리(구역 아래 끝)의 가운데, 반투명 어두운 띠 위. 모든 구역이 같은 모양 (H-18) */
+.zone h3.zone-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  z-index: 2;
+  margin: 0;
+  padding: 7px 12px;
+  text-align: center;
+  background: rgba(8, 12, 20, 0.62);
+  border-top: 1px solid rgba(239, 233, 214, 0.22);
+  border-bottom: 1px solid rgba(239, 233, 214, 0.22);
+  pointer-events: none;
+}
+.zone h3.zone-name span {
+  font-size: var(--fs-m);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #f6edd2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* 장미 정원: 길 양쪽 장미 덤불(장미색·포도주색 꽃송이) */
+.zone-0 { --zc: #2a2340; }
+.zone-0::before {
+  background:
+    radial-gradient(circle at 8% 30%, rgba(184, 110, 126, 0.55) 0 4px, transparent 5px),
+    radial-gradient(circle at 92% 70%, rgba(184, 110, 126, 0.55) 0 4px, transparent 5px),
+    radial-gradient(circle at 5% 75%, rgba(122, 52, 72, 0.6) 0 5px, transparent 6px),
+    radial-gradient(circle at 95% 25%, rgba(122, 52, 72, 0.6) 0 5px, transparent 6px),
+    radial-gradient(ellipse 14% 40px at 6% 50%, rgba(78, 110, 70, 0.35), transparent 70%),
+    radial-gradient(ellipse 14% 40px at 94% 50%, rgba(78, 110, 70, 0.35), transparent 70%);
+  background-size: 100% 96px;
+}
+
+/* 연못: 왼쪽에 별이 비치는 어두운 연못과 연잎, 오른쪽 작은 물웅덩이 */
+.zone-1 { --zc: #1c2c45; }
+.zone-1::before {
+  background:
+    radial-gradient(circle at 9% 38%, rgba(239, 233, 214, 0.5) 0 1px, transparent 2px),
+    radial-gradient(circle at 14% 62%, rgba(110, 139, 87, 0.55) 0 5px, transparent 6px),
+    radial-gradient(circle at 6% 55%, rgba(138, 125, 181, 0.6) 0 3px, transparent 4px),
+    radial-gradient(ellipse 15% 46% at 8% 50%, rgba(106, 150, 184, 0.32), transparent 72%),
+    radial-gradient(ellipse 10% 30% at 93% 50%, rgba(106, 150, 184, 0.22), transparent 72%);
+  background-size: 100% 180px;
+}
+
+/* 대나무 숲: 양쪽에 곧게 선 대나무 줄기와 마디 */
+.zone-2 { --zc: #1e3329; }
+.zone-2::before {
+  background:
+    repeating-linear-gradient(0deg, rgba(10, 20, 14, 0.35) 0 2px, transparent 2px 46px),
+    linear-gradient(90deg,
+      rgba(79, 154, 142, 0.30) 0 4px, transparent 4px 16px,
+      rgba(110, 139, 87, 0.30) 16px 20px, transparent 20px 30px,
+      rgba(79, 154, 142, 0.22) 30px 33px, transparent 33px calc(100% - 33px),
+      rgba(79, 154, 142, 0.22) calc(100% - 33px) calc(100% - 30px), transparent calc(100% - 30px) calc(100% - 20px),
+      rgba(110, 139, 87, 0.30) calc(100% - 20px) calc(100% - 16px), transparent calc(100% - 16px) calc(100% - 4px),
+      rgba(79, 154, 142, 0.30) calc(100% - 4px));
+}
+
+/* 온실: 양쪽 유리 온실 틀과 안의 살구빛 불빛 */
+.zone-3 { --zc: #26343a; }
+.zone-3::before {
+  background:
+    radial-gradient(ellipse 9% 36px at 8% 50%, rgba(212, 154, 106, 0.35), transparent 75%),
+    radial-gradient(ellipse 9% 36px at 92% 50%, rgba(212, 154, 106, 0.35), transparent 75%),
+    linear-gradient(90deg, rgba(200, 220, 230, 0.10) 0 15%, transparent 15% 85%, rgba(200, 220, 230, 0.10) 85%),
+    repeating-linear-gradient(90deg, rgba(200, 220, 230, 0.18) 0 1px, transparent 1px 18px);
+  background-size: 100% 120px, 100% 120px, 100% 100%, 100% 100%;
+  -webkit-mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(90deg, #000 16%, transparent 16% 84%, #000 84%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(90deg, #000 16%, transparent 16% 84%, #000 84%);
+  mask-composite: intersect;
+}
+
+/* 허브 밭: 가로로 놓인 낮은 허브 이랑(라벤더·세이지) */
+.zone-4 { --zc: #2a3324; }
+.zone-4::before {
+  background:
+    repeating-linear-gradient(0deg, rgba(138, 125, 181, 0.28) 0 5px, transparent 5px 16px, rgba(130, 160, 110, 0.22) 16px 21px, transparent 21px 32px);
+  -webkit-mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(90deg, #000 18%, transparent 24% 76%, #000 82%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(90deg, #000 18%, transparent 24% 76%, #000 82%);
+  mask-composite: intersect;
+}
+
+/* 버드나무 길: 양쪽에서 늘어진 가지와 땅 위 옅은 안개 */
+.zone-5 { --zc: #24302e; }
+.zone-5::before {
+  background:
+    radial-gradient(ellipse 50% 22px at 50% 100%, rgba(200, 210, 210, 0.08), transparent 80%),
+    linear-gradient(rgba(110, 139, 87, 0.35), transparent 70%),
+    linear-gradient(rgba(110, 139, 87, 0.35), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(110, 139, 87, 0.26) 0 2px, transparent 2px 9px);
+  background-size: 100% 128px, 22% 128px, 22% 128px, 100% 100%;
+  background-repeat: repeat-y, repeat-y, repeat-y, no-repeat;
+  background-position: 0 0, 0 0, 100% 0, 0 0;
+  -webkit-mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(90deg, #000 20%, transparent 26% 74%, #000 80%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(90deg, #000 20%, transparent 26% 74%, #000 80%);
+  mask-composite: intersect;
+}
+
+/* 돌다리: 가운데를 가로지르는 개울(달빛 물결)과 이끼 낀 돌 */
+.zone-6 { --zc: #2c2c35; }
+.zone-6::before {
+  background:
+    radial-gradient(circle at 10% 30%, rgba(154, 160, 168, 0.45) 0 6px, transparent 7px),
+    radial-gradient(circle at 88% 70%, rgba(154, 160, 168, 0.45) 0 7px, transparent 8px),
+    radial-gradient(circle at 20% 80%, rgba(110, 139, 87, 0.35) 0 4px, transparent 5px),
+    linear-gradient(transparent 44%, rgba(106, 150, 184, 0.30) 44% 56%, transparent 56%),
+    repeating-linear-gradient(90deg, transparent 0 14px, rgba(239, 233, 214, 0.10) 14px 22px);
+  background-size: 100% 160px, 100% 160px, 100% 160px, 100% 320px, 100% 320px;
+}
+
+/* 별빛 언덕: 넓은 밤하늘의 작은 별과 은하수, 풀 속 반딧불 */
+.zone-7 { --zc: #232647; }
+.zone-7::before {
+  background:
+    radial-gradient(circle at 12% 20%, rgba(239, 233, 214, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 45%, rgba(239, 233, 214, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 35% 80%, rgba(239, 233, 214, 0.5) 0 1px, transparent 2px),
+    radial-gradient(circle at 90% 10%, rgba(244, 201, 93, 0.7) 0 1.5px, transparent 2.5px),
+    linear-gradient(115deg, transparent 35%, rgba(138, 125, 181, 0.16) 50%, transparent 65%);
+  background-size: 61px 53px, 47px 71px, 83px 59px, 113px 97px, 100% 100%;
+}
+
+/* 한 줄 76px (game.js ROW_H): 등불 50px + 받침 + 아래 별 세 칸. 지도는 아래에서 위로 — 1단계가 맨 아래 줄이다 */
+.node-row { height: 76px; position: relative; z-index: 1; }
+
+/* 등불 자리: 몸통(.node) = 둥근 종이 등불, ::before = 나무 뚜껑, ::after = 이끼 낀 돌 받침. */
+.node {
+  position: absolute;
+  top: 5px;
+  width: 46px;
+  height: 50px;
+  min-width: 44px;
+  min-height: 44px;
+  margin-left: -23px;
+  padding: 0;
+  border: 1px solid rgba(42, 34, 52, 0.55);
+  border-radius: 50% / 46%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: var(--fs-s);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.node::before,
+.node::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+}
+
+.node::before {
+  top: -5px;
+  width: 18px;
+  height: 6px;
+  margin-left: -9px;
+  border-radius: 3px 3px 1px 1px;
+  background: #4a3426;
+}
+
+.node::after {
+  bottom: -6px;
+  width: 28px;
+  height: 6px;
+  margin-left: -14px;
+  border-radius: 3px;
+  background: linear-gradient(#5d6b55, #3d4a3b);
+}
+
+/* 깬 레벨: 켜진 등불 — 속이 금빛으로 밝고 둘레에 둥근 빛 */
+.node.lit {
+  background: radial-gradient(ellipse at 50% 42%, #fff1c2, var(--gold) 52%, var(--gold-deep));
+  color: #2a2234;
+  box-shadow: 0 0 18px 5px rgba(244, 201, 93, 0.4), inset 0 -4px 6px rgba(160, 90, 30, 0.35);
+}
+
+/* 지금 할 레벨: 살짝 켜진 등불(속 금빛이 가볍게 깜빡임)과 금빛 빛 테두리 */
+.node.now {
+  background: radial-gradient(ellipse at 50% 45%, rgba(244, 201, 93, 0.55), #5a4a3e 58%, #3b3346);
+  border: 2px solid var(--gold);
+  color: #fff6d6;
+  text-shadow: 0 0 4px rgba(42, 34, 52, 0.9);
+  animation: lampNow 1.8s ease-in-out infinite;
+}
+
+/* 아직 못 여는 레벨: 꺼진 등불 — 빛 없는 어두운 청회색 종이, 뚜껑·받침까지 어둡게 */
+.node.locked {
+  background: radial-gradient(ellipse at 50% 42%, #3a4058, #262a3e 70%);
+  border-color: #1a1d2c;
+  color: #6c6f8a;
+  box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.35);
+  filter: brightness(0.7) saturate(0.6);
+}
+
+/* 지도 등불 아래(받침 밑) 별 세 칸: 받은 별 금빛, 못 받은 칸 회색 */
+.node .st {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  display: flex;
+  gap: 1px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.node .st .star { width: 12px; height: 12px; }
+.node .st .star.on { filter: drop-shadow(0 0 2px rgba(244, 201, 93, 0.7)); }
+.node .st .star.on path { stroke: #a8681c; }
+.node .st .star.off path { fill: rgba(120, 124, 136, 0.45); stroke: #8d919c; }
+
+/* 깨고 돌아왔을 때: 다음 등불은 빛이 올라오는 0.6초 동안 꺼져 있다가(.wait) 불이 켜진다(.arrive) */
+.node.now.wait {
+  background: radial-gradient(ellipse at 50% 42%, #3a4058, #262a3e 70%);
+  border-color: #1a1d2c;
+  color: #6c6f8a;
+  animation: none;
+}
+.node.now.arrive { animation: lampArrive 0.5s ease-out, lampNow 1.8s ease-in-out 0.5s infinite; }
+
+@keyframes lampArrive {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 201, 93, 0); }
+  40% { transform: scale(1.3); box-shadow: 0 0 26px 10px rgba(244, 201, 93, 0.75); }
+  100% { transform: scale(1); box-shadow: 0 0 6px 2px rgba(244, 201, 93, 0.3); }
+}
+
+/* 깬 등불에서 다음 등불까지 길을 따라 올라가는 빛 (game.js advanceLight 가 0.6초 옮긴다) */
+.map-spark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbe6 0%, var(--gold) 45%, rgba(244, 201, 93, 0) 72%);
+  box-shadow: 0 0 18px 8px rgba(244, 201, 93, 0.55);
+  pointer-events: none;
+  z-index: 3;
+}
+
+@keyframes lampNow {
+  0%, 100% { box-shadow: 0 0 6px 2px rgba(244, 201, 93, 0.3), inset 0 0 6px 1px rgba(244, 201, 93, 0.25); }
+  35% { box-shadow: 0 0 16px 5px rgba(244, 201, 93, 0.5), inset 0 0 10px 3px rgba(244, 201, 93, 0.45); }
+  45% { box-shadow: 0 0 13px 4px rgba(244, 201, 93, 0.42), inset 0 0 7px 2px rgba(244, 201, 93, 0.3); }
+  60% { box-shadow: 0 0 20px 6px rgba(244, 201, 93, 0.55), inset 0 0 12px 4px rgba(244, 201, 93, 0.5); }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 6px 2px rgba(244, 201, 93, 0.25); }
+  50% { box-shadow: 0 0 20px 6px rgba(244, 201, 93, 0.55); }
+}
+
+.map-note { text-align: center; padding: 16px; color: var(--muted); }
+
+/* ---------- 풀이 ---------- */
+
+.rule {
+  flex: none;
+  margin: 0;
+  padding: 2px 12px 6px;
+  text-align: center;
+  font-size: var(--fs-m);
+  color: var(--text);
+}
+
+.board-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+#board {
+  position: relative;
+  display: grid;
+  border: 2px solid #0d1022;
+  border-radius: 8px;
+  overflow: visible;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.6s, filter 0.6s;
+}
+
+#board.won {
+  box-shadow: 0 0 60px 14px rgba(244, 201, 93, 0.5);
+  filter: brightness(1.18);
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* 꽃밭 칸 무늬:꽃밭 색(game.js 가 칸마다 넣는 background) 위에 아주 옅은 흰 꽃과 잎을 칸마다 2x2 번 이어 붙인다.
+   칸의 색은 인라인 background 라 무늬 쪽에 !important 를 쓴다. 색약 모드에서는 무늬(::before)와 겹치지 않게 뺀다. */
+#board .cell {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.16'%3E%3Ccircle cx='3.7' cy='4' r='.9'/%3E%3Ccircle cx='6.3' cy='4' r='.9'/%3E%3Ccircle cx='3.7' cy='6.6' r='.9'/%3E%3Ccircle cx='6.3' cy='6.6' r='.9'/%3E%3Cpath d='M12.5 15.5Q12.5 11.5 16.5 11.5Q16.5 15.5 12.5 15.5Z'/%3E%3C/g%3E%3Ccircle cx='5' cy='5.3' r='.8' fill='white' opacity='.3'/%3E%3C/svg%3E") !important;
+  background-size: 50% 50% !important;
+  background-repeat: repeat !important;
+}
+
+.cell.cursor::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 2px solid #9fd0ff;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.cell.hfocus { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7); }
+.cell.htarget {
+  z-index: 1;
+  box-shadow: inset 0 0 0 4px #fff4c4, 0 0 12px 2px rgba(255, 244, 196, 0.75);
+  animation: hintGlow 1.2s ease-in-out infinite;
+}
+
+@keyframes hintGlow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.3); }
+}
+
+/* 색약 모드 무늬 11가지 (p0 점 · p1 가로줄 · p2 세로줄 · p3 사선 · p4 물결 · p5 격자 · p6 작은 원 · p7 작은 꽃 · p8 잎 · p9 별 · p10 마름모)
+   이 파일 안에 적은 SVG 정사각 타일(20x20, 바탕 투명, 반투명 흰색 opacity .45)을 칸마다 4x4 번 이어 붙인다.
+   타일 가장자리가 서로 맞물려 칸 안과 칸 사이에 이음매가 없다. */
+.cb .cell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-size: 25% 25%;
+}
+.cb .p0::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Ccircle cx='10' cy='10' r='2.8'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p1::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Crect x='0' y='8.8' width='20' height='2.4'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p2::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Crect x='8.8' y='0' width='2.4' height='20'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p3::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg stroke='white' stroke-width='2.4' opacity='.45'%3E%3Cpath d='M-2 22L22 -2M-12 12L12 -12M8 32L32 8'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p4::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2.2' opacity='.45'%3E%3Cpath d='M-5 10Q-2.5 16 0 10T5 10T10 10T15 10T20 10T25 10'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p5::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Cpath d='M0 0H20V1.8H0ZM0 1.8H1.8V20H0Z'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p6::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2' opacity='.45'%3E%3Ccircle cx='10' cy='10' r='4.6'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p7::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Ccircle cx='10' cy='5.9' r='2.6'/%3E%3Ccircle cx='13.9' cy='8.7' r='2.6'/%3E%3Ccircle cx='12.4' cy='13.3' r='2.6'/%3E%3Ccircle cx='7.6' cy='13.3' r='2.6'/%3E%3Ccircle cx='6.1' cy='8.7' r='2.6'/%3E%3C/g%3E%3Ccircle cx='10' cy='10' r='1.6' fill='white' opacity='.75'/%3E%3C/svg%3E"); }
+.cb .p8::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' stroke='white' stroke-width='1.4' stroke-linecap='round' opacity='.45'%3E%3Cpath d='M5.5 14.5Q5 5 15 5Q15 15 5.5 14.5Z' stroke='none'/%3E%3Cpath d='M5.5 14.5L3 17'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p9::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Cpath d='M10 4.2L11.6 8.3L16 8.5L12.6 11.3L13.8 15.6L10 13.1L6.2 15.6L7.4 11.3L4 8.5L8.4 8.3Z'/%3E%3C/g%3E%3C/svg%3E"); }
+.cb .p10::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2' stroke-linejoin='round' opacity='.45'%3E%3Cpath d='M10 4L16 10L10 16L4 10Z'/%3E%3C/g%3E%3C/svg%3E"); }
+
+.xmark {
+  width: 46%;
+  height: 46%;
+  pointer-events: none;
+  color: rgba(16, 18, 36, 0.72);
+}
+
+.xmark.auto { color: rgba(16, 18, 36, 0.42); }
+
+.lamp {
+  position: relative;
+  width: 58%;
+  height: 64%;
+  border-radius: 45% 45% 40% 40%;
+  background: radial-gradient(circle at 50% 42%, #fffbe6 0%, var(--gold) 52%, var(--gold-deep) 100%);
+  box-shadow: 0 0 calc(var(--cell, 40px) * 0.45) calc(var(--cell, 40px) * 0.14) rgba(244, 201, 93, 0.6);
+  pointer-events: none;
+  z-index: 2;
+  animation: lampOn 0.35s ease-out;
+}
+
+.lamp::before {
+  content: "";
+  position: absolute;
+  top: -12%;
+  left: 32%;
+  width: 36%;
+  height: 12%;
+  border-radius: 2px;
+  background: #4a3a2c;
+}
+
+.cell.bad .lamp {
+  background: radial-gradient(circle at 50% 42%, #ffe4e4 0%, #f07b88 50%, #b8283f 100%);
+  animation: badBlink 0.8s ease-in-out infinite;
+}
+
+.cell.lit .lamp { animation: lampWin 0.5s ease-out both; }
+
+@keyframes lampOn {
+  from { transform: scale(0.3); opacity: 0.2; box-shadow: 0 0 0 0 rgba(244, 201, 93, 0); }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes badBlink {
+  0%, 100% { box-shadow: 0 0 10px 3px rgba(226, 86, 106, 0.8); opacity: 1; }
+  50% { box-shadow: 0 0 2px 0 rgba(226, 86, 106, 0.2); opacity: 0.55; }
+}
+
+@keyframes lampWin {
+  0% { filter: brightness(1); }
+  60% { filter: brightness(1.8); transform: scale(1.15); }
+  100% { filter: brightness(1.35); transform: scale(1); }
+}
+
+.why {
+  position: absolute;
+  left: 50%;
+  bottom: 88%;
+  transform: translateX(-50%);
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* 튜토리얼 손가락
+   game.js `FINGER_SVG` 둥근 손을 투명 바탕에 그린다. 손가락 끝은 그림의 (27.5%, 17.5%) 이고, margin 이 그 점을 `renderFinger` 가 준 칸 가운데에 맞춘다. */
+.finger {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: -7.7px 0 0 -12.1px;
+  background: transparent;
+  pointer-events: none;
+  z-index: 6;
+  transform-origin: 27.5% 17.5%;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+  animation: tap 1.1s ease-in-out infinite;
+}
+
+.finger svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.finger .ring {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.6;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tapRing 1.1s ease-out infinite;
+}
+
+@keyframes tap {
+  0%, 100% { transform: translate(7px, 9px) scale(1); }
+  45%, 55% { transform: translate(0, 0) scale(0.9); }
+}
+
+@keyframes tapRing {
+  0%, 40% { opacity: 0; transform: scale(0.4); }
+  50% { opacity: 0.9; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+
+/* 레벨 완료 장면 겹
+   풀이 화면 전체를 덮는 투명 겹. 판 자리 `.clear-hole` 은 속을 비우고, 그 바깥 그림자로 금빛이 판 둘레에서 화면 끝까지 번진다. */
+.clear-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 8;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.clear-glow.on {
+  opacity: 1;
+  visibility: visible;
+  animation: glowIn 0.9s ease-out;
+}
+
+.clear-hole {
+  position: absolute;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow:
+    0 0 26px 10px rgba(255, 230, 150, 0.55),
+    0 0 90px 46px rgba(244, 201, 93, 0.32),
+    0 0 220px 120px rgba(244, 201, 93, 0.16),
+    0 0 0 200vmax rgba(244, 201, 93, 0.07);
+}
+
+@keyframes glowIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fly {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff2b0;
+  box-shadow: 0 0 10px 4px rgba(255, 230, 140, 0.7);
+  animation: fly 1.5s ease-out forwards;
+}
+
+@keyframes fly {
+  from { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  to { transform: translateY(-120px); opacity: 0; }
+}
+
+.msg {
+  flex: none;
+  min-height: 2.6em;
+  margin: 0;
+  padding: 6px 14px 4px;
+  text-align: center;
+  font-size: var(--fs-m);
+  line-height: 1.35;
+}
+
+.msg.hint { color: #fff2c4; }
+.msg.bad { color: #ffb3bd; }
+.msg.ok { color: #c4f0d2; }
+
+/* 등불 수가 바뀔 때 안내 줄: 늘면 금빛으로 튀고, 줄면 옅어졌다 돌아오고, 걸림이 풀리면 초록빛으로 튄다 (game.js noteChange) */
+.msg.fx-up { animation: msgUp 0.45s ease-out; }
+.msg.fx-down { animation: msgDown 0.4s ease-out; }
+.msg.fx-fix { animation: msgFix 0.55s ease-out; }
+
+@keyframes msgUp {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.12); color: var(--gold); text-shadow: 0 0 10px rgba(244, 201, 93, 0.7); }
+  100% { transform: scale(1); }
+}
+
+@keyframes msgDown {
+  0% { opacity: 1; }
+  40% { opacity: 0.45; transform: translateY(2px); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes msgFix {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.1); text-shadow: 0 0 10px rgba(140, 230, 170, 0.75); }
+  100% { transform: scale(1); }
+}
+
+/* 방금 누른 칸: 맞게 놓으면 금빛 고리가 번지고, 규칙에 걸리면 빨갛게 흔들리고, 빼면 잠깐 어두워진다 (game.js flashCell) */
+.cell.fx-ok { z-index: 1; animation: cellOk 0.55s ease-out; }
+.cell.fx-bad { z-index: 1; animation: cellBad 0.4s ease-in-out; }
+.cell.fx-off { animation: cellOff 0.35s ease-out; }
+
+@keyframes cellOk {
+  0% { box-shadow: inset 0 0 0 0 rgba(255, 236, 170, 0.9), 0 0 0 0 rgba(244, 201, 93, 0.8); }
+  50% { box-shadow: inset 0 0 0 3px rgba(255, 236, 170, 0.7), 0 0 14px 6px rgba(244, 201, 93, 0.45); }
+  100% { box-shadow: inset 0 0 0 0 rgba(255, 236, 170, 0), 0 0 22px 10px rgba(244, 201, 93, 0); }
+}
+
+@keyframes cellBad {
+  0%, 100% { transform: translateX(0); box-shadow: inset 0 0 0 0 rgba(226, 86, 106, 0); }
+  20% { transform: translateX(-4px); box-shadow: inset 0 0 0 3px rgba(226, 86, 106, 0.85); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); box-shadow: inset 0 0 0 3px rgba(226, 86, 106, 0.6); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes cellOff {
+  0% { filter: brightness(0.7); }
+  100% { filter: brightness(1); }
+}
+
+.actions {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 6px 8px 12px;
+}
+
+.act {
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: var(--fs-m);
+}
+
+/* 판 아래 버튼 아이콘 세 개(되돌리기 휘어진 나뭇가지·× 엇갈린 잔가지·힌트 반딧불)는 같은 굵기 2.6 선과 끝눈 r1.5 로 그린다. */
+.act svg { width: 26px; height: 26px; overflow: visible; }
+#hintBtn .glow { fill: var(--gold); filter: drop-shadow(0 0 3px rgba(244, 201, 93, 0.8)); }
+/* 한 판 힌트 3번을 다 쓰면 흐리게 (눌러도 '다 썼어요' 안내만) */
+#hintBtn.spent { opacity: 0.5; }
+#hintBtn.spent .glow { filter: none; }
+
+#xBtn.on {
+  background: var(--on);
+  border-color: #a8e8c8;
+  color: #10261c;
+  font-weight: 700;
+  box-shadow: 0 0 0 3px rgba(111, 191, 154, 0.35);
+}
+
+#xBtn.teach, #hintBtn.teach { animation: pulse 1.4s ease-in-out infinite; }
+
+/* ---------- 겹침 ---------- */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(8, 10, 24, 0.72);
+  z-index: 20;
+}
+
+.overlay.hidden { display: none; }
+
+.panel {
+  display: none;
+  width: 100%;
+  max-width: 400px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 20px 18px;
+  border-radius: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  line-height: 1.55;
+}
+
+.panel.show { display: block; }
+.panel h2 { margin: 0 0 10px; color: var(--gold); font-size: var(--fs-xl); }
+.panel ul { text-align: left; padding-left: 20px; margin: 0 0 12px; }
+.panel li { margin-bottom: 6px; }
+.panel .how-h { margin: 12px 0 4px; text-align: left; color: var(--gold); font-size: var(--fs-m); }
+#howPanel .small { text-align: left; margin: 0; }
+
+.row { display: flex; justify-content: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.row button { min-width: 120px; }
+.row button[hidden] { display: none; }
+
+/* 별 두 상태 (game.js starHtml): 같은 둥근 끝 별, 바탕 투명.
+   받은 별 = 금빛 속 + 진한 금빛 윤곽 + 둘레 빛, 못 받은 별 = 어두운 반투명 속 + 흐린 라벤더 윤곽, 빛 없음. */
+.star { display: inline-block; vertical-align: middle; }
+.star svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.star path { stroke-width: 1.6; stroke-linejoin: round; }
+.star.on path { fill: var(--gold); stroke: var(--gold-deep); }
+.star.on { filter: drop-shadow(0 0 6px rgba(244, 201, 93, 0.6)); }
+.star.off path { fill: rgba(16, 19, 38, 0.55); stroke: #8c88ad; }
+
+.stars { display: flex; justify-content: center; gap: 10px; }
+.stars .star { width: 40px; height: 40px; }
+
+/* 완료 창 별 자리 (clear_fx.js): 540x250 좌표계 한 칸. 캔버스는 빛줄기·불꽃이 나가도록 둘레로 더 넓다(가로 180·세로 160 씩).
+   캔버스는 창 글자 밑에 깔리고, 별 자리 위아래 글자는 그 위에 온다 */
+#clearPanel { position: relative; overflow: hidden; }
+#clearPanel > * { position: relative; z-index: 1; }
+#clearPanel > .slam { z-index: 0; }
+.slam {
+  width: 100%;
+  aspect-ratio: 540 / 250;
+  margin: -6px 0 0;
+}
+.slam .stars { height: 100%; align-items: center; }
+.slam-canvas {
+  position: absolute;
+  left: -33.333%;
+  top: -64%;
+  width: 166.667%;
+  height: 228%;
+  pointer-events: none;
+}
+.clear-score { margin: 0 0 4px; font-size: var(--fs-l); }
+.clear-score b { color: var(--gold); font-size: var(--fs-xl); font-variant-numeric: tabular-nums; margin-left: 4px; }
+/* 최고 기록 줄: 이 레벨에서 받은 가장 많은 별과 가장 빠른 시간 (오늘의 정원은 오늘 가장 빠른 시간·최고 연속 일수) */
+.clear-best { margin: 0 0 4px; }
+.clear-best b { font-variant-numeric: tabular-nums; }
+.clear-tech { margin: 0 0 4px; font-size: var(--fs-s); opacity: 0.8; }
+.clear-tech:empty { display: none; }
+.new-record { background: var(--gold); color: #2a211c; font-weight: 700; }
+.new-record[hidden] { display: none; }
+
+/* 세 번째 별 피날레의 화면 전체 금빛 번쩍임 (clear_fx.js 가 0.25초 opacity 를 내린다) */
+.slam-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: rgb(255, 230, 170);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ad-box {
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: repeating-linear-gradient(45deg, #2d3358 0 12px, #283050 12px 24px);
+  color: var(--muted);
+}
+
+.set-list { display: flex; flex-direction: column; gap: 8px; }
+.set { display: flex; justify-content: space-between; align-items: center; text-align: left; }
+.set[aria-pressed="true"] b { color: var(--on); }
+.set.danger { color: #ffb3bd; }
+.set-note { margin: 10px 0 0; text-align: center; }
+.danger-btn { background: var(--danger); color: #fff; border-color: var(--danger); }
+#resetPanel p { margin: 8px 0; }
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 110px;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #0d1022;
+  border: 1px solid var(--line);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 30;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  text-align: center;
+}
+
+.toast.show { opacity: 1; }
+
+/* ---------- 화면 크기 ----------
+   폭 360px(작은 휴대폰)~1280px(데스크톱)에서 판과 버튼이 화면 안에 들어오게 한다.
+   #app 은 폭 480px 까지 가운데 한 줄이고, 판 크기는 game.js resize() 가 판 자리(#boardArea)에 맞춘다. */
+
+/* 좁은 폭(360px 근처): 위 띠의 버튼 네 개(각 44px)와 레벨·배지·시간이 한 줄에 들어가게 틈과 글자를 줄인다 */
+@media (max-width: 400px) {
+  .bar { gap: 4px; padding: 6px 4px; }
+  .bar-mid { gap: 4px; font-size: var(--fs-m); }
+  .bar-mid .badge { padding: 2px 6px; }
+  .start-body { padding: 10px 16px 20px; }
+  .row button { min-width: 0; flex: 1 1 120px; }
+  .overlay { padding: 10px; }
+  .panel { padding: 16px 12px; }
+}
+
+/* 낮은 화면(창을 낮게 줄인 데스크톱, 작은 휴대폰): 판 둘레 띠·버튼 높이를 줄여 판 자리를 넓힌다. 누르는 곳은 44px 이상 그대로 */
+@media (max-height: 640px) {
+  .bar { height: 48px; padding-top: 2px; padding-bottom: 2px; }
+  .rule { padding-bottom: 2px; font-size: var(--fs-s); }
+  .msg { min-height: 2.2em; padding-top: 2px; font-size: var(--fs-s); }
+  .act { min-height: 56px; padding: 4px 6px; gap: 2px; }
+  .actions { padding-bottom: 6px; }
+  .start-body { gap: 8px; padding-top: 8px; padding-bottom: 14px; }
+  .big { min-height: 48px; }
+  .start-rule { margin: 0 0 4px; line-height: 1.45; }
+}
+
+/* 넓은 데스크톱 창: 가운데 한 줄 둘레에 옅은 테두리를 둘러 바탕과 나눈다 */
+@media (min-width: 720px) {
+  #app { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+}
+
+.rotate-note {
+  display: none;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--gold);
+  font-size: var(--fs-l);
+  z-index: 50;
+}
+
+/* 휴대폰을 눕히면 세로로 세워 달라고 한다 (화면은 세로 고정) */
+@media (orientation: landscape) and (max-height: 500px) {
+  .rotate-note { display: flex; }
+}
+
+/* ---------- 사람 그림 바꿔 끼우기 (H-16) ----------
+   art.js 의 ART_READY 에 이름을 적으면 <html> 에 `art-이름` 이 붙고 아래 규칙만 켜진다. 이름은 이미지프롬프트.md 의 파일 이름(확장자 뺌) 그대로다.
+   그림은 :root 의 `--art-이름` 변수로 깐다. 그림이 들어오는 `사람 그림 적용` 차례에서 그 변수 한 줄을 :root 에 적는다(지금은 하나도 없다 — 그림 파일 경로 없음).
+   그 위 각 자리의 CSS·SVG 는 그림이 오기 전 같은 자리를 그린 것이다. 움직임(깜빡임·빛 번짐·떠오름)은 그대로 코드가 맡는다. */
+:root {
+  /* 예: --art-lamp: url(그림 경로); */
+}
+
+/* 1 icon */
+.art-icon .title-icon { background: var(--art-icon) center / contain no-repeat; border-radius: 9px; }
+.art-icon .title-icon svg { display: none; }
+
+/* 2 lamp · 3 lamp_bad — 빛 번짐 box-shadow 와 깜빡임은 그대로 */
+.art-lamp .lamp { background: var(--art-lamp) center / contain no-repeat; }
+.art-lamp .lamp::before { display: none; }
+.art-lamp_bad .cell.bad .lamp { background: var(--art-lamp_bad) center / contain no-repeat; }
+.art-lamp_bad .cell.bad .lamp::before { display: none; }
+
+/* 4 xmark — 자동 × 는 더 흐리게 */
+.art-xmark .xmark { background: var(--art-xmark) center / contain no-repeat; }
+.art-xmark .xmark > * { display: none; }
+.art-xmark .xmark.auto { opacity: 0.55; }
+
+/* 5 bg */
+.art-bg #app { background: var(--bg) var(--art-bg) center / cover no-repeat; }
+
+/* 6 cell_flowers */
+.art-cell_flowers #board .cell { background-image: var(--art-cell_flowers) !important; background-size: 100% 100% !important; }
+
+/* 7 map_zone_0~7 — 세로로 이어 붙이고 CSS 꾸밈·흙길은 숨긴다 */
+.art-map_zone_0 .zone-0 { background: var(--map-edge) var(--art-map_zone_0) center top / 100% auto repeat-y; }
+.art-map_zone_1 .zone-1 { background: var(--map-edge) var(--art-map_zone_1) center top / 100% auto repeat-y; }
+.art-map_zone_2 .zone-2 { background: var(--map-edge) var(--art-map_zone_2) center top / 100% auto repeat-y; }
+.art-map_zone_3 .zone-3 { background: var(--map-edge) var(--art-map_zone_3) center top / 100% auto repeat-y; }
+.art-map_zone_4 .zone-4 { background: var(--map-edge) var(--art-map_zone_4) center top / 100% auto repeat-y; }
+.art-map_zone_5 .zone-5 { background: var(--map-edge) var(--art-map_zone_5) center top / 100% auto repeat-y; }
+.art-map_zone_6 .zone-6 { background: var(--map-edge) var(--art-map_zone_6) center top / 100% auto repeat-y; }
+.art-map_zone_7 .zone-7 { background: var(--map-edge) var(--art-map_zone_7) center top / 100% auto repeat-y; }
+.art-map_zone_0 .zone-0::before, .art-map_zone_0 .zone-0 .zone-path,
+.art-map_zone_1 .zone-1::before, .art-map_zone_1 .zone-1 .zone-path,
+.art-map_zone_2 .zone-2::before, .art-map_zone_2 .zone-2 .zone-path,
+.art-map_zone_3 .zone-3::before, .art-map_zone_3 .zone-3 .zone-path,
+.art-map_zone_4 .zone-4::before, .art-map_zone_4 .zone-4 .zone-path,
+.art-map_zone_5 .zone-5::before, .art-map_zone_5 .zone-5 .zone-path,
+.art-map_zone_6 .zone-6::before, .art-map_zone_6 .zone-6 .zone-path,
+.art-map_zone_7 .zone-7::before, .art-map_zone_7 .zone-7 .zone-path { display: none; }
+
+/* 8 map_lamp_lit/now/locked — 숫자·별은 그대로 위에 쓴다. now 의 빛 테두리 깜빡임(lampNow)은 그대로 */
+.art-map_lamp_lit .node.lit { background: var(--art-map_lamp_lit) center / contain no-repeat; border-color: transparent; }
+.art-map_lamp_now .node.now { background: var(--art-map_lamp_now) center / contain no-repeat; border-color: transparent; }
+.art-map_lamp_locked .node.locked { background: var(--art-map_lamp_locked) center / contain no-repeat; border-color: transparent; box-shadow: none; filter: none; }
+.art-map_lamp_lit .node.lit::before, .art-map_lamp_lit .node.lit::after,
+.art-map_lamp_now .node.now::before, .art-map_lamp_now .node.now::after,
+.art-map_lamp_locked .node.locked::before, .art-map_lamp_locked .node.locked::after { display: none; }
+
+/* 9 star_on/off — 완료 창 캔버스는 clear_fx.js 가 ART.url 로 같은 변수를 읽는다 */
+.art-star_on .star.on { background: var(--art-star_on) center / contain no-repeat; }
+.art-star_off .star.off { background: var(--art-star_off) center / contain no-repeat; }
+.art-star_on .star.on svg, .art-star_off .star.off svg { display: none; }
+
+/* 10 btn_undo/x/hint — svg 칸(26px)에 그림을 깔고 선은 숨긴다 */
+.art-btn_undo #undoBtn svg { background: var(--art-btn_undo) center / contain no-repeat; }
+.art-btn_x #xBtn svg { background: var(--art-btn_x) center / contain no-repeat; }
+.art-btn_hint #hintBtn svg { background: var(--art-btn_hint) center / contain no-repeat; }
+.art-btn_undo #undoBtn svg > *, .art-btn_x #xBtn svg > *, .art-btn_hint #hintBtn svg > * { display: none; }
+
+/* 11 clear_glow — 반딧불 .fly 는 그대로 */
+.art-clear_glow .clear-glow.on { background: var(--art-clear_glow) center / 100% 100% no-repeat; }
+.art-clear_glow .clear-hole { box-shadow: none; }
+
+/* 12 finger — 손가락 끝 (27.5%, 17.5%) 이 같으면 margin 그대로 */
+.art-finger .finger { background: var(--art-finger) center / contain no-repeat; }
+.art-finger .finger svg { display: none; }
+
+/* 13 daily_badge */
+.art-daily_badge .daily-mark { background: var(--art-daily_badge) center / contain no-repeat; }
+.art-daily_badge .daily-mark svg { display: none; }
+
+/* 14 start_scene — 그림 아래쪽 어두운 자리가 .start-body 뒤에 온다 */
+.art-start_scene #startScreen { background: var(--bg) var(--art-start_scene) center top / 100% auto no-repeat; }
+.art-start_scene .start-sky, .art-start_scene .start-body { background: transparent; }
+.art-start_scene .start-art { display: none; }
+
+/* 15 cb_0~10 — 크기 25% 25% 반복은 그대로 */
+.art-cb_0 .cb .p0::before { background-image: var(--art-cb_0); }
+.art-cb_1 .cb .p1::before { background-image: var(--art-cb_1); }
+.art-cb_2 .cb .p2::before { background-image: var(--art-cb_2); }
+.art-cb_3 .cb .p3::before { background-image: var(--art-cb_3); }
+.art-cb_4 .cb .p4::before { background-image: var(--art-cb_4); }
+.art-cb_5 .cb .p5::before { background-image: var(--art-cb_5); }
+.art-cb_6 .cb .p6::before { background-image: var(--art-cb_6); }
+.art-cb_7 .cb .p7::before { background-image: var(--art-cb_7); }
+.art-cb_8 .cb .p8::before { background-image: var(--art-cb_8); }
+.art-cb_9 .cb .p9::before { background-image: var(--art-cb_9); }
+.art-cb_10 .cb .p10::before { background-image: var(--art-cb_10); }
+
+/* 색약 모드에서는 꽃밭 칸 무늬(6)를 빼고 구역 무늬만 보인다 (위 규칙들보다 뒤에 둔다) */
+#board.cb .cell { background-image: none !important; }
+
+.still *, .still *::before, .still *::after { animation: none !important; transition: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01s !important; animation-iteration-count: 1 !important; transition: none !important; }
+}
