@@ -1,896 +1,820 @@
 /* 한끼 계산기 — 화면 꾸밈 */
-/* 색: 냉장고 안처럼 밝고 차가운 바탕(서리 흰색·얼음 파랑) + 신선한 채소 색(상추 초록·당근 주황·토마토 빨강) */
-/* H-06 (UI참고): 옅은 회청색 바탕 위에 테두리 없는 흰 카드, 강조색 하나를 통째로 칠한 큰 카드, 알약 모양 버튼 (기획서 `## 디자인 규칙`) */
+/* H-16 디자인 규칙: 색은 하늘색 바탕 · 진한 파랑 강조 · 당근색 경고 세 가지. 빨강은 유통기한 지남에만.
+   카드 모서리 20px · 카드 사이 12px · 화면 옆 여백 16px 한 가지 규칙. 보조 글은 흰 바탕 대비 4.5:1 이상.
+   UI참고 — 둘째 그림: 강조색 하나를 통째로 칠한 큰 카드 + 큰 숫자·작은 이름, 첫째 그림: 고를 것을 화면 가운데에 둥글게 */
 :root {
-  --bg: #edf2f6;
+  --bg: #e6f2fc;        /* 하늘색 바탕 */
   --card: #ffffff;
-  --soft: #e2edf7;
-  --ink: #14222f;
-  --ink2: #5b6b7b;
-  --line: #d6e1ea;
-  --accent: #1f78c8;
+  --soft: #d6e9f8;      /* 옅은 하늘 (칸·막대 바탕) */
+  --ink: #12243a;
+  --ink2: #4a5d72;      /* 보조 글: 흰 바탕 대비 약 6.6:1 */
+  --line: #c8dcee;
+  --accent: #1660b0;    /* 진한 파랑 */
   --accent-ink: #ffffff;
-  --accent2: #ff8c42;
-  --good: #12a06a;
-  --mid: #e08a00;
-  --bad: #e5483b;
-  --none: #8b9bab;
-  --shadow: 0 2px 4px rgba(20, 60, 100, .04), 0 10px 26px rgba(20, 60, 100, .08);
-  --radius: 22px;
+  --warn: #e86a12;      /* 당근색 경고 */
+  --warn-soft: #fde8d6;
+  --warn-ink: #a8470a;  /* 당근색 글: 흰 바탕 대비 약 5.5:1 */
+  --expired: #c62f22;   /* 빨강: 유통기한 지남에만 */
+  --shadow: 0 2px 4px rgba(22, 96, 176, .05), 0 8px 22px rgba(22, 96, 176, .10);
+  --radius: 20px;
+  --gap: 12px;
+  --side: 16px;
   --pill: 999px;
-  /* 글꼴 크기 단계: 보통 글자(16px)에서 12 · 14 · 16 · 20 · 28 · 40px. 글자 크기 설정을 따라 함께 커지고 작아진다 */
+  /* 글꼴 크기 단계: 보통 글자(16px)에서 12 · 14 · 16 · 20 · 28 · 40px */
   --fs-1: .75em; --fs-2: .875em; --fs-3: 1em; --fs-4: 1.25em; --fs-5: 1.75em; --fs-6: 2.5em;
   --t: .22s;
-  /* 사람 그림 위에 까는 덮개 (H-05). 밝은 화면은 문 그림 그대로, 안쪽은 글이 읽히게 흰색 70% */
-  --veil-door: rgba(255, 255, 255, 0);
-  --veil-in: rgba(255, 255, 255, .7);
+  /* 냉장고 문 그림 위 막은 H-54 로 지웠다 — 문은 불투명 그림 + --door-shade (아래 H-53) */
+  --veil-in: rgba(255, 255, 255, .72);
+  /* H-17 전체 원칙: 한 화면(390×844)에 다 보임, 넘기는 곳은 칸 음식 목록·유통기한 목록 둘뿐.
+     열린 냉장고의 창은 냉장고 안쪽 틀 안에 좌우 16px·위아래 24px 이상 띄우고, 불투명 흰 바탕(95%).
+     창끼리 잇지 않고, 설명 글은 두지 않는다 */
+  --win-pad-x: 16px;
+  --win-pad-y: 24px;
+  --win-bg: rgba(255, 255, 255, .95);
+  /* H-56 완료 기준: 칸을 누르면 뜨는 창(칸 음식 목록·음식 넣기)도 유통기한 판처럼 비치지 않는 흰색(투명도 없음) */
+  --win-solid: #ffffff;
+  /* H-22 첫 화면 — 냉장고 문: 문 위에는 그림(문) · 메모지 · 자석 · 손잡이만. 문 이름 글자는 두지 않는다(냉장고 안쪽에만).
+     자석은 지름 72px 둥근 그림 + 짧은 이름표, 설정은 화면 오른쪽 위에 작게(36px 그림, 누르는 자리 44px) */
+  --mag-size: 72px;
+  --set-size: 36px;
+  /* H-27 열린 냉장고 — 칸별: 칸 버튼은 냉장고 그림 속 실제 선반·서랍 자리에, 바탕은 훨씬 투명하게(20~30%).
+     칸을 누르면 보기만 하는 음식 목록 창(위아래로 넘김): 1줄 이름 굵게·크게 / 2줄 수량 + D-n 배지·날짜 / 3줄 메모 작고 옅게,
+     음식 사이 가는 구분선. 칸 메모는 없다. 창 아래 왼쪽 '음식 넣기', 오른쪽 '문 닫기' */
+  --shelf-bg: rgba(255, 255, 255, .25);
+  --veil-shelf: rgba(255, 255, 255, .15);   /* 칸별 탭에서 그림 위 막: 선반이 비치게 옅게 (H-28) */
+  --row-line: 1px solid var(--line);
+  --row-name: var(--fs-4);
+  --row-sub: var(--fs-3);    /* 2줄 수량은 보통 글자 16px (H-30) */
+  --row-memo: var(--fs-1);
+  --qty-line: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);   /* H-57 수량 알약 테두리 */
+  --qty-pad-x: 8px;
+  --memo-bar: 3px solid var(--warn);   /* H-57 메모 쪽지 왼쪽 막대 */
+  /* H-33 음식 넣기 창: 칸 다섯 줄(이름 · 수량 · 넣을 칸 · 유통기한 · 메모 선택)을 위에서 아래로.
+     줄마다 위에 작은 이름표, 입력 칸 높이 48px, 줄 사이 10px. 유통기한은 연·월·일 날짜 고르기 하나,
+     그 오른쪽에 카메라 그림 버튼('자동 인식', 48px 둥근 네모). 맨 아래 '넣기' 한 줄 */
+  --field-h: 48px;
+  --field-label: var(--fs-1);
+  --form-gap: 10px;
+  --cam-size: 48px;
+  /* H-38 열린 냉장고 — 유통기한: 판은 비치지 않는 불투명 흰색, 냉장고 틀 안.
+     위에서 '📷 유통기한 찍기'(48px 알약) · 유통기한 가까운 순 목록(이름 굵게 · 수량 · D-n 배지 · 칸 이름 작게 · 메모 작게, 위아래로 넘김) ·
+     아래 왼쪽 '음식 넣기', 오른쪽 '문 닫기'. 줄은 눌러도 창이 뜨지 않는다 */
+  --exp-bg: #ffffff;
+  --exp-shelf: var(--fs-1);
+  --exp-cam-h: 48px;
+  /* H-44 열린 냉장고 — 사진: 판은 비치지 않는 불투명 흰색, 냉장고 틀 안. 냉장고 안을 찍어 두는 지금 기능은 그대로.
+     가운데 큰 '사진 칸' 하나(누르면 바로 카메라, H-45) · 그 아래 이름표·날짜 한 줄 + '지우기' · 작은 사진 4칸 */
+  --photo-bg: #ffffff;
+  --photo-slot-r: 16px;
+  --photo-cam-dot: 36px;
+  /* H-53 어두운 화면: 냉장고 안쪽은 지금 그대로. 냉장고 바깥 배경은 짙은 남색 단색(그림·비침 없음),
+     문은 투명하게 하지 않고 불투명한 문 그림 위에 검정 막 한 겹으로 밝기만 한 단계 낮춘다.
+     문 위 자석·메모지는 막 밖이라 원래 색 그대로. 밝게에서는 바깥 = 하늘색 바탕, 막 없음 */
+  --out-bg: #e6f2fc;
+  --door-shade: rgba(0, 0, 0, 0);
 }
 body[data-theme="dark"] {
-  --bg: #0f1a26; --card: #182636; --soft: #1e3247; --ink: #eaf3fb; --ink2: #a3b6c8; --line: #2c4157;
-  --accent: #5cb4ff; --accent-ink: #08182a; --accent2: #ffa266; --good: #3ed39a; --mid: #ffbe4d; --bad: #ff7a6b; --none: #8fa2b4;
+  --bg: #0e1a28; --card: #172638; --soft: #1e3349; --ink: #eaf3fb; --ink2: #b3c4d6; --line: #2d4560;
+  --accent: #6db6ff; --accent-ink: #08182a; --warn: #ff9a4d; --warn-soft: #3d2a1a; --warn-ink: #ffb27a; --expired: #ff7a6b;
   --shadow: 0 1px 2px rgba(0, 0, 0, .4);
-  --veil-door: rgba(15, 26, 38, .72); --veil-in: rgba(15, 26, 38, .8);
+  --veil-in: rgba(14, 26, 40, .82);
+  --win-bg: rgba(23, 38, 56, .95);
+  --win-solid: #172638;
+  --shelf-bg: rgba(23, 38, 56, .25);
+  --veil-shelf: rgba(14, 26, 40, .82);
+  --exp-bg: #172638;
+  --photo-bg: #172638;
+  --out-bg: #0b1733;
+  --door-shade: rgba(0, 0, 0, .18);
 }
 @media (prefers-color-scheme: dark) {
   body[data-theme="auto"] {
-    --bg: #0f1a26; --card: #182636; --soft: #1e3247; --ink: #eaf3fb; --ink2: #a3b6c8; --line: #2c4157;
-    --accent: #5cb4ff; --accent-ink: #08182a; --accent2: #ffa266; --good: #3ed39a; --mid: #ffbe4d; --bad: #ff7a6b; --none: #8fa2b4;
+    --bg: #0e1a28; --card: #172638; --soft: #1e3349; --ink: #eaf3fb; --ink2: #b3c4d6; --line: #2d4560;
+    --accent: #6db6ff; --accent-ink: #08182a; --warn: #ff9a4d; --warn-soft: #3d2a1a; --warn-ink: #ffb27a; --expired: #ff7a6b;
     --shadow: 0 1px 2px rgba(0, 0, 0, .4);
-    --veil-door: rgba(15, 26, 38, .72); --veil-in: rgba(15, 26, 38, .8);
+    --veil-in: rgba(14, 26, 40, .82);
+    --win-bg: rgba(23, 38, 56, .95);
+    --win-solid: #172638;
+    --shelf-bg: rgba(23, 38, 56, .25);
+    --veil-shelf: rgba(14, 26, 40, .82);
+    --exp-bg: #172638;
+    --photo-bg: #172638;
+    --out-bg: #0b1733;
+    --door-shade: rgba(0, 0, 0, .18);
   }
 }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { -webkit-text-size-adjust: 100%; }
+/* H-18: 화면은 한 장(390×844)에 다 들어간다. 페이지는 위아래·옆으로 넘어가지 않고,
+   넘기는 곳은 칸 안 음식 목록(#shelf-items)과 유통기한 목록(#fridge-exp) 둘뿐이다 */
+html { -webkit-text-size-adjust: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
 body {
   margin: 0; background: var(--bg); color: var(--ink);
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
-  line-height: 1.5; overflow-x: hidden;
+  line-height: 1.5; overflow: hidden; touch-action: manipulation; overscroll-behavior: none;
+  word-break: keep-all; overflow-wrap: break-word;   /* 낱말 중간에서 끊지 않는다 (H-16) */
+  height: 100vh; height: 100dvh; display: flex; flex-direction: column;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 body.font-s { font-size: 14px; }
 body.font-m { font-size: 16px; }
 body.font-l { font-size: 19px; }
 body.locked { overflow: hidden; }
-
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .skip { position: absolute; left: -999px; top: 0; }
 .skip:focus { left: 8px; top: 8px; background: var(--card); padding: 8px; z-index: 99; }
-h2 { font-size: 1.25em; margin: 0; }
-h3 { font-size: 1.02em; margin: 14px 0 8px; }
-h3 small, .sec-head small { color: var(--ink2); font-weight: 400; font-size: .8em; }
-small { font-size: .82em; }
-p { margin: 6px 0; }
-.hint { color: var(--ink2); font-size: .9em; word-break: keep-all; overflow-wrap: anywhere; }
-.warn-text { color: var(--bad); }
+h2 { font-size: var(--fs-4); margin: 0; }
+h3 { font-size: var(--fs-3); margin: 0 0 8px; }
+p { margin: 0; }
+small { font-size: var(--fs-2); }
+code { font-size: var(--fs-1); }
+.hint { color: var(--ink2); font-size: var(--fs-2); }
+.warn-text { color: var(--warn-ink); }
 
-/* 머리 (H-11: 아래 탭 줄은 없앴다. 화면 사이는 냉장고 자석·문 안쪽 메뉴·설정의 '모든 화면'으로 오간다) */
-.top {
-  position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 14px; background: linear-gradient(180deg, var(--card), var(--bg)); border-bottom: 1px solid var(--line);
-  box-shadow: inset 0 3px 0 var(--accent);
-}
-.brand { font-size: 1.15em; margin: 0; letter-spacing: -.01em; }
-.brand-mark { color: var(--accent); }
-.warn-bar { background: var(--bad); color: #fff; padding: 8px 14px; font-size: .9em; }
-main { max-width: 760px; margin: 0 auto; padding: 12px 14px 20px; }
-.ico { display: block; width: 24px; height: 24px; flex: none; }
-/* 첫 화면은 냉장고만: 머리 띠도 숨긴다 */
-body.on-fridge .top { display: none; }
-.back-btn { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent); }
-.back-btn .ico { width: 20px; height: 20px; stroke-width: 2.16; }
-/* 설정 안 '모든 화면': 탭 줄에 있던 선 아이콘 한 벌을 그대로 옮겼다. 지금 화면(aria-current)은 강조색 */
-.nav-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.nav-list button {
-  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 2px; min-height: 64px;
-  font-size: var(--fs-1); color: var(--ink2); border: 2px solid transparent; border-radius: 20px;
-}
-.nav-list button span { display: grid; place-items: center; height: 26px; line-height: 1; }
-.nav-list button .ico { transition: transform .12s ease; }
-.nav-list button[aria-current="page"] { color: var(--accent); font-weight: 700; background: color-mix(in srgb, var(--accent) 10%, var(--card)); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
-.nav-list button[aria-current="page"] .ico { transform: translateY(-1px); stroke-width: 2.1; }
-
-/* 버튼 */
+/* ---------- 버튼: 글자는 줄바꿈하지 않는다. 넘치면 버튼이 넓어진다 (H-16) ---------- */
 button {
-  font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-  min-height: 44px; min-width: 44px; padding: 8px 14px; cursor: pointer; touch-action: manipulation;
-  transition: transform .08s ease, box-shadow .12s ease, background .12s ease;
-  -webkit-tap-highlight-color: transparent;
+  font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: var(--pill);
+  min-height: 44px; min-width: 44px; padding: 8px 16px; cursor: pointer; white-space: nowrap; flex: none;
+  transition: transform .12s ease, background var(--t) ease, box-shadow var(--t) ease;
 }
-button:active:not(:disabled) { transform: scale(.96); box-shadow: inset 0 2px 5px rgba(0, 0, 0, .15); }
-button:disabled { opacity: .45; cursor: not-allowed; }
-button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .sheet:focus-visible { outline: 3px solid var(--accent2); outline-offset: 2px; }
+button:active:not(:disabled) { transform: scale(.96); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .12); }
+button:disabled { opacity: .45; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
 button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
-button.danger { color: var(--bad); border-color: var(--bad); }
+button.danger { color: var(--warn-ink); border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); }   /* 지우기는 당근색 — 빨강은 유통기한 지남에만 (H-16) */
 button.ghost { background: transparent; border-color: transparent; }
-button.big { width: 100%; font-size: 1.12em; min-height: 56px; margin: 4px 0 12px; box-shadow: var(--shadow); }
-button.wide { width: 100%; margin: 8px 0; }
-button.small { min-height: 44px; padding: 6px 10px; font-size: .88em; }
-button.icon { padding: 0; width: 44px; }
+button.small { min-height: 44px; padding: 6px 12px; font-size: var(--fs-2); }
+button.big { min-height: 56px; font-size: var(--fs-3); font-weight: 700; }
+button.wide { width: 100%; }
+button.icon { width: 44px; padding: 0; }
+button.text-btn { background: transparent; border-color: transparent; color: var(--ink2); text-decoration: underline; font-size: var(--fs-2); }
+.btn-row, .btn-pair, .sheet-actions, .chip-row, .quick-row, .foot-btns, .empty-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-pair { gap: var(--gap); }
+.btn-pair button { flex: 1 1 140px; }
+.sheet-actions { justify-content: flex-end; margin-top: 8px; }
+.foot-btns { justify-content: center; margin: 8px 0 24px; }
+.chip { min-height: 44px; padding: 6px 14px; font-size: var(--fs-2); background: var(--soft); border-color: transparent; }
+.chip.on, .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chip.warn { background: var(--warn-soft); color: var(--warn-ink); font-weight: 700; }
 
-/* 입력 */
-.field { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; min-width: 0; }
-.field > span, .field > label { font-size: .88em; color: var(--ink2); }
+/* ---------- 입력 ---------- */
+.field { display: flex; flex-direction: column; gap: 4px; margin: 0 0 10px; min-width: 0; }
+.field > span, .field > label { font-size: var(--fs-2); color: var(--ink2); }
 input, select, textarea {
-  font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-  min-height: 44px; padding: 8px 10px; width: 100%; min-width: 0;
+  font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  min-height: 44px; padding: 8px 12px; width: 100%; min-width: 0;
 }
-textarea { resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85em; }
-.check { display: flex; gap: 10px; align-items: center; min-height: 44px; margin: 6px 0; }
-.check input { width: 22px; height: 22px; min-height: 0; flex: none; }
-.err { color: var(--bad); font-style: normal; font-size: .85em; min-height: 0; }
-.err:empty { display: none; }
-.bad { border-color: var(--bad) !important; background: color-mix(in srgb, var(--bad) 8%, var(--card)); animation: shake .32s ease; }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.qty-unit { display: grid; grid-template-columns: 1fr 74px; gap: 6px; }
-.filters { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
-@media (max-width: 520px) {
-  .filters { grid-template-columns: 1fr 1fr; }
-  .filters .field:first-child { grid-column: 1 / -1; }
-  .row2 { grid-template-columns: 1fr; gap: 0; }
-}
+textarea { resize: vertical; line-height: 1.45; }
+.err { color: var(--warn-ink); font-style: normal; font-size: var(--fs-2); min-height: 0; }
+.bad { border-color: var(--warn) !important; animation: shake .3s ease; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
+.check input { width: 22px; height: 22px; min-height: 0; }
+.row2, .row3 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.row3 { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 420px) { .row3 { grid-template-columns: 1fr 1fr; } .row3 .field:last-child { grid-column: 1 / -1; } }
 
-/* 카드·목록 */
-.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin: 10px 0; box-shadow: var(--shadow); }
-.card h3:first-child { margin-top: 0; }
+/* ---------- 카드·배지 ---------- */
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 0 0 var(--gap); }
 .card.soft { background: var(--soft); box-shadow: none; }
-.card.tip { font-size: .92em; background: color-mix(in srgb, var(--accent2) 14%, var(--card)); }
-.bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin: 4px 0 6px; }
-.bar-btns, .btn-row, .empty-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-.sec-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-top: 16px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 8px; }
 .sec-head h3 { margin: 0; }
-.count { color: var(--ink2); font-size: .85em; margin: 6px 2px; }
-.row {
-  display: flex; align-items: stretch; gap: 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-  margin: 8px 0; overflow: hidden; box-shadow: var(--shadow);
+.sec-head small { color: var(--ink2); }
+.badge { display: inline-block; padding: 2px 10px; border-radius: var(--pill); font-size: var(--fs-1); font-weight: 700; white-space: nowrap; background: var(--soft); color: var(--accent); }
+.badge.soft { background: var(--soft); color: var(--ink2); }
+.badge.lv-good { background: color-mix(in srgb, var(--accent) 14%, var(--card)); color: var(--accent); }
+.badge.lv-mid { background: var(--warn-soft); color: var(--warn-ink); }
+.badge.lv-bad { background: var(--warn-ink); color: var(--card); }   /* 넘음: 진한 당근색 채움 */
+.badge.lv-expired { background: color-mix(in srgb, var(--expired) 14%, var(--card)); color: var(--expired); }   /* 빨강은 유통기한 지남에만 */
+.badge.lv-none { background: var(--soft); color: var(--ink2); }
+.badge.rec { background: var(--warn); color: #fff; }
+.count { color: var(--ink2); font-size: var(--fs-2); margin: 0 0 8px; }
+
+/* ---------- 화면·전환 ---------- */
+.view { opacity: 0; transform: translateY(8px); transition: opacity var(--t) ease, transform var(--t) ease; }
+.view.in { opacity: 1; transform: none; }
+.step { transform: translateX(14px); }
+.step.in { transform: none; }
+.top {
+  position: relative; flex: none; z-index: 20; display: flex; align-items: center; gap: 8px;
+  padding: 8px var(--side); background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px);
 }
-.row.compact { align-items: center; padding-right: 8px; gap: 8px; }
-.row-main {
-  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left;
-  border: 0; border-radius: 0; background: transparent; padding: 10px 12px;
-}
-.row-main.static { cursor: default; }
-.row-title { font-weight: 700; overflow-wrap: anywhere; }
-.row-sub { color: var(--ink2); font-size: .85em; overflow-wrap: anywhere; }
-.row-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; color: var(--ink2); }
-.row-btn { border: 0; border-left: 1px solid var(--line); border-radius: 0; background: var(--soft); font-size: .88em; flex: none; }
-.row.compact .row-btn { border: 1px solid var(--line); border-radius: 10px; }
-.badge { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: .8em; font-weight: 700; color: #fff; background: var(--none); }
-.badge.lv-good { background: var(--good); }
-.badge.lv-mid { background: var(--mid); }
-.badge.lv-bad { background: var(--bad); }
-.badge.soft { background: var(--soft); color: var(--ink2); border: 1px solid var(--line); font-weight: 400; }
-.sug { font-size: .82em; color: var(--bad); font-weight: 700; }
-.meter { display: block; width: 100%; height: 5px; border-radius: 4px; background: var(--soft); overflow: hidden; margin-top: 4px; }
-.meter i { display: block; height: 100%; background: var(--none); border-radius: 4px; transition: width .35s ease; }
-.meter i.lv-good { background: var(--good); }
-.meter i.lv-mid { background: var(--mid); }
-.meter i.lv-bad { background: var(--bad); }
+.back-btn { background: var(--card); border-color: transparent; box-shadow: var(--shadow); font-weight: 700; color: var(--accent); }
+.top-title { font-size: var(--fs-4); margin: 0; }
+body.on-fridge .top { display: none; }
+main { flex: 1 1 auto; min-height: 0; width: 100%; max-width: 760px; margin: 0 auto; padding: 8px var(--side) 12px; overflow: hidden; display: flex; flex-direction: column; }
+body.on-fridge main { padding: 0 var(--side); }
+/* H-54: 첫 화면 냉장고 바깥은 한 색(어둡게는 짙은 남색 --out-bg, 밝게는 하늘색 바탕). 그라데이션·그림·비침 없음 */
+body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background: var(--out-bg); }
+.screen { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.warn-bar { flex: none; background: var(--warn-soft); color: var(--warn-ink); padding: 10px var(--side); font-size: var(--fs-2); }
 
-.today h3 { display: flex; justify-content: space-between; }
-.todo { list-style: none; padding: 0; margin: 0; }
-.todo li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
-.todo li:first-child { border-top: 0; }
-.todo-ic { font-size: 1.3em; width: 28px; text-align: center; flex: none; }
-.todo-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.todo-tx small { color: var(--ink2); overflow-wrap: anywhere; }
-.ok-line { margin: 4px 0; }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.stat { display: flex; flex-direction: column; min-width: 0; }
-.stat small { color: var(--ink2); }
-.stat b { font-size: 1.05em; overflow-wrap: anywhere; }
-@media (max-width: 400px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-
-/* 챌린지 */
-.btn-pair { display: grid; grid-template-columns: 3fr 2fr; gap: 8px; }
-.btn-pair button.big { margin: 4px 0 12px; }
-.btn-pair button[hidden] + button { grid-column: 1 / -1; }
-.chal { border-left: 6px solid var(--good); }
-.chal.pace-mid { border-left-color: var(--mid); }
-.chal.pace-bad { border-left-color: var(--bad); }
-.chal-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
-.chal-head h3 { margin: 0; }
-.chal-head small { color: var(--ink2); }
-.chal-big { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
-.chal-big span { display: flex; flex-direction: column; min-width: 0; }
-.chal-big small { color: var(--ink2); }
-.chal-big b { font-size: 1.45em; letter-spacing: -.02em; overflow-wrap: anywhere; }
-.chal-meter { position: relative; height: 12px; border-radius: 6px; background: var(--soft); overflow: visible; margin: 6px 0 2px; }
-.chal-meter i { display: block; height: 100%; border-radius: 6px; background: var(--good); transition: width .45s ease; }
-.chal-meter i.lv-mid { background: var(--mid); }
-.chal-meter i.lv-bad { background: var(--bad); }
-.chal-meter .time { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--ink); border-radius: 2px; }
-.pace-line { font-size: .92em; }
-.chal-cta { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.chal-cta p { margin: 0; flex: 1 1 200px; }
-.chal-delta { margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--line); }
-.kinds { list-style: none; padding: 0; margin: 0; }
-.kinds li { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
-.kinds li b { display: flex; flex-direction: column; align-items: flex-end; }
-.kinds li b small { color: var(--ink2); font-weight: 400; }
-.kinds .meter { grid-column: 1 / -1; }
-.amt { margin-left: 4px; }
-.sug.good { color: var(--good); }
-.kind-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-.kind { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 6px 4px; font-size: .88em; }
-.kind span { font-size: 1.3em; }
-.kind.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
-.quick-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 2px 0 6px; }
-.preset small { line-height: 1.4; }
-.hrow.chal-row { grid-template-columns: 70px 1fr auto; }
-
-/* 내 냉장고: 양문형 냉장고 첫 화면 (H-03). 문은 바깥쪽 경첩으로 좁아지며 열린다 (2D scaleX) */
+/* ---------- 1. 첫 화면 냉장고 (사람 그림 assets/한끼_계산기_6.png, 941×1672 한 장) ---------- */
+/* 390×844 에서 스크롤 없이 한 번에: 그림 비율을 지키며 높이에 맞춘다 (H-16) */
+#screen-fridge { display: flex; align-items: center; justify-content: center; }
 .fridge {
-  position: relative; height: clamp(380px, 64vh, 540px); margin: 4px 0 12px; border-radius: 24px; overflow: hidden;
-  background: var(--soft); border: 3px solid var(--line); box-shadow: var(--shadow), inset 0 0 0 4px var(--card);
+  position: relative; width: min(100%, calc((100vh - 24px) * 941 / 1672)); width: min(100%, calc((100dvh - 24px) * 941 / 1672));
+  aspect-ratio: 941 / 1672; margin: 12px auto; border-radius: 28px; overflow: hidden;
+  background: linear-gradient(100deg, var(--card), var(--soft)); box-shadow: 0 18px 40px rgba(22, 96, 176, .22);
 }
 .door {
-  position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; gap: 10px; padding: 14px 10px;
-  background: linear-gradient(100deg, var(--card) 0%, var(--soft) 55%, var(--card) 100%);
-  transition: transform var(--t) ease, opacity var(--t) ease; z-index: 2;
-}
-.door.left { left: 0; width: 45%; padding-right: 50px; transform-origin: left center; border-right: 2px solid var(--line); }
-.door.right { right: 0; width: 55%; padding-left: 50px; transform-origin: right center; }
-/* 사람 그림 assets/한끼_계산기_6.png (닫힌 양문 한 장, 941×1672). 그림의 문 틈이 왼쪽에서 41.7% 라
-   왼쪽 문은 0~41.7% (가로 240%), 오른쪽 문은 41.7~100% (가로 171.5%) 를 잘라 쓴다. 아래 그라데이션은 그림을 못 불러올 때 */
-.door.left, .door.right {
-  background-image: linear-gradient(var(--veil-door), var(--veil-door)), url("assets/한끼_계산기_6.png"), linear-gradient(100deg, var(--card) 0%, var(--soft) 55%, var(--card) 100%);
+  position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+  padding: 14px 10px; z-index: 2; transition: transform var(--t) ease;
+  /* H-54: 문은 비치지 않는다 — 불투명 문 그림(+ 그림이 늦게 뜰 때도 밝은 색 그대로인 바탕) 위에 검정 막 --door-shade 한 겹.
+     어둡게는 18% 로 밝기만 한 단계 낮추고, 밝게는 0. 자석·메모지는 문의 자식이라 이 막 밖에서 원래 색 그대로 */
+  /* H-60: 어둡게에서도 문 자체는 늘 불투명 — opacity 1 고정(전환에서 opacity 를 뺌), 뒤 층과 섞이지 않게 isolation */
+  opacity: 1; isolation: isolate;
+  background-color: #f3f8fc;
+  background-image: linear-gradient(var(--door-shade), var(--door-shade)), url("assets/한끼_계산기_6.png"), linear-gradient(100deg, #ffffff, #d6e9f8);
   background-repeat: no-repeat;
 }
-.door.left { background-size: 100% 100%, 240% 100%, 100% 100%; background-position: 0 0, left top, 0 0; }
-.door.right { background-size: 100% 100%, 171.5% 100%, 100% 100%; background-position: 0 0, right top, 0 0; }
-.door-tag { margin: 0; font-size: .78em; color: var(--ink2); letter-spacing: .12em; font-weight: 700; }
-.handle {
-  position: absolute; top: 28%; height: 34%; width: 44px; padding: 0; border: 0; background: transparent; box-shadow: none; border-radius: 12px;
+/* 그림의 문 틈이 왼쪽에서 41.7% 라 왼쪽 문은 0~41.7%, 오른쪽 문은 41.7~100% 를 잘라 쓴다 */
+.door.left { left: 0; width: 41.7%; padding-right: 34px; transform-origin: left center; background-size: 100% 100%, 240% 100%, 100% 100%; background-position: 0 0, left top, 0 0; }
+.door.right { right: 0; width: 58.3%; padding-left: 34px; transform-origin: right center; background-size: 100% 100%, 171.5% 100%, 100% 100%; background-position: 0 0, right top, 0 0; }
+/* 문 위에는 '냉동실'·'냉장실' 글자를 두지 않는다 — 칸 이름은 열린 냉장고 안쪽(.col-tag)에만 (H-25) */
+/* 설정: 화면(냉장고) 오른쪽 위에 작게 — 자석 그림체로 새로 그린 SVG 36px, 누르는 자리 44px (H-26).
+   냉장실 문 메모지는 그 아래에서 시작해 겹치지 않는다 */
+.set-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 4; width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+  padding: 0; border: 0; border-radius: 50%; background: transparent; display: grid; place-items: center;
+  transition: transform .12s ease, opacity var(--t) ease;
 }
-.handle::before { content: ""; position: absolute; top: 0; bottom: 0; left: 15px; width: 12px; border-radius: 8px; background: linear-gradient(90deg, var(--line), var(--card), var(--line)); box-shadow: 0 2px 6px rgba(31, 90, 150, .25); }
-.door.left .handle { right: 2px; }
-.door.right .handle { left: 2px; }
+.set-btn svg { width: var(--set-size); height: var(--set-size); filter: drop-shadow(0 3px 4px rgba(22, 60, 100, .3)); }
+.set-btn:active:not(:disabled) { box-shadow: none; transform: scale(.9) rotate(20deg); }
+.fridge.open .set-btn { visibility: hidden; opacity: 0; pointer-events: none; }
+.door.right { padding-top: 54px; }
+/* 손잡이: 누르는 자리는 44px 이상(A-11), 보이는 막대(::before)는 문 틈 가까이 14px, 진한 파랑 테두리와 그림자로 또렷하게 (V-20) */
+.handle { position: absolute; top: 36%; height: 24%; width: 44px; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: transparent; border-radius: 12px; z-index: 3; }
+.handle::before { content: ""; position: absolute; top: 0; bottom: 0; width: 14px; box-sizing: border-box; border: 2px solid var(--accent); border-radius: 8px; background: linear-gradient(90deg, #b9cfe3, #fff, #b9cfe3); box-shadow: 0 3px 8px rgba(22, 96, 176, .45); }
+.door.left .handle { right: 0; }
+.door.left .handle::before { right: 10px; }
+.door.right .handle { left: 0; }
+.door.right .handle::before { left: 10px; }
+/* 메모지: 글씨가 놓이는 곳에만 배경 (H-16). 문 위 포스트잇(크림색·옅은 파랑, 살짝 기울임, 그림자)은 그대로 둔다 (H-24) */
 .note {
-  display: flex; flex-direction: column; gap: 0; padding: 7px 9px; border-radius: 6px; font-size: .8em; line-height: 1.35;
-  background: color-mix(in srgb, var(--accent2) 18%, var(--card)); box-shadow: 0 2px 6px rgba(31, 90, 150, .15); transform: rotate(-2deg);
+  position: relative; display: flex; flex-direction: column; gap: 0; padding: 8px 10px; border-radius: 6px; line-height: 1.3;
+  background: #fff8e8; color: #12243a; box-shadow: 0 3px 8px rgba(22, 60, 100, .2); transform: rotate(-2deg);
 }
-.door.right .note { transform: rotate(1.5deg); background: color-mix(in srgb, var(--good) 14%, var(--card)); }
-.note small { color: var(--ink2); overflow-wrap: anywhere; }
-/* 메모지 글은 낱말 중간에서 끊지 않는다 ('챌린지 없/음' 막기, V-05) */
-.note b, .note small { word-break: keep-all; }
-/* R-04: 닫힌 문 메모지의 오늘 쓸 돈 — 숫자는 크게, 단위·이름은 작게 (UI참고 — 스크린샷 103920 '19 %' 처럼).
-   쓴 비율은 둘레 100 짜리 원 두 개(바탕·값)로 그린다 */
-.note-row { display: flex; align-items: center; gap: 5px; margin-top: 3px; }
-.note-row small { font-size: .9em; line-height: 1.25; font-variant-numeric: tabular-nums; }
-.note-ring { flex: none; width: 30px; height: 30px; transform: rotate(-90deg); }
-.note-ring circle { fill: none; stroke-width: 4.5; }
-.note-ring .ring-bg { stroke: color-mix(in srgb, var(--ink2) 22%, transparent); }
-.note-ring .ring-val { stroke: var(--good); stroke-linecap: round; transition: stroke-dasharray var(--t) ease; }
-.note-ring.lv-good .ring-val { stroke: var(--good); }
-.note-ring.lv-mid .ring-val { stroke: var(--mid); }
-.note-ring.lv-bad .ring-val { stroke: var(--bad); }
+.door.right .note { transform: rotate(1.5deg); background: #f2f8ff; }
+.note small { color: #4a5d72; font-size: var(--fs-1); }
+.note-title { font-size: var(--fs-2); padding-right: 24px; }
 .note .note-big { font-size: var(--fs-5); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.note-big small { font-size: .5em; font-weight: 700; color: var(--ink2); margin-left: 1px; }
-/* V-11: 자석은 문 맨 아래가 아니라 메모지 바로 밑(고정 여백 16px)에 둔다. 360x640 에서 처음 안내 시트(위 끝 약 346px)에 가리지 않고
-   문 위·가운데에 보인다 (UI참고 첫째 그림 — 고를 것을 화면 가운데에) */
-.magnets { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-.magnet { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 6px 4px; font-size: .86em; font-weight: 700; border-radius: 16px; box-shadow: var(--shadow); }
-.magnet span { font-size: 1.4em; line-height: 1.2; }
-/* 사람 그림 assets/한끼_계산기_5.png (자석 5개 한 줄, 2172×724). 원 하나가 그림 폭의 18% 라 가로 560% 로 키워
-   원 하나가 36px 칸에 차게 하고, 원 가운데(11.5·31·50·69·88.5%)에 맞춰 자른다 */
-.magnet .mag-img {
-  display: block; width: 36px; height: 36px; margin-bottom: 2px;
+.note-big small { font-size: .5em; font-weight: 700; margin-left: 1px; }
+.note .warn-text { color: #a8470a; }
+.note-ring { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; transform: rotate(-90deg); }
+.note-ring circle { fill: none; stroke-width: 5; }
+.note-ring .ring-bg { stroke: #d6e2ee; }
+.note-ring .ring-val { stroke: #1660b0; stroke-linecap: round; transition: stroke-dasharray var(--t) ease; }
+.note-ring.lv-mid .ring-val, .note-ring.lv-bad .ring-val { stroke: #e86a12; }
+/* 자석: 지름 72px 둥근 그림 + 아래 짧은 이름표, 조금씩 기울여 붙인다 (사람 그림 assets/한끼_계산기_5.png 5개 한 줄) */
+.magnets { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 10px; }
+.magnet { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0; background: transparent; border: 0; border-radius: 40px; min-width: var(--mag-size); }
+.magnet:active:not(:disabled) { box-shadow: none; }
+.magnet.tilt-a { transform: rotate(-5deg); }
+.magnet.tilt-b { transform: rotate(4deg); }
+.magnet.tilt-a:active, .magnet.tilt-b:active { transform: scale(.94); }
+.mag-img {
+  display: block; width: var(--mag-size); height: var(--mag-size); border-radius: 50%;
   background: url("assets/한끼_계산기_5.png") no-repeat; background-size: 560% auto; background-position-y: 50%;
+  filter: drop-shadow(0 4px 6px rgba(22, 60, 100, .3));
 }
 .mag-img.m1 { background-position-x: 3.1%; }
 .mag-img.m2 { background-position-x: 26.9%; }
 .mag-img.m3 { background-position-x: 50%; }
 .mag-img.m4 { background-position-x: 73.1%; }
 .mag-img.m5 { background-position-x: 96.9%; }
+.mag-name { font-size: var(--fs-1); font-weight: 800; background: #fff; color: #12243a; border-radius: var(--pill); padding: 1px 8px; box-shadow: 0 1px 3px rgba(22, 60, 100, .2); white-space: nowrap; }
+/* 냉동실 문 아래: 이번 주 7칸 */
+/* H-60: 문 위 판(이번 주·다음 할 일)도 반투명 흰색 대신 불투명 흰색 — 어둡게에서 막 낀 문이 비쳐 보이지 않게 */
+.door-week { background: #ffffff; color: #12243a; border-radius: 12px; padding: 6px 8px; box-shadow: 0 2px 6px rgba(22, 60, 100, .15); }
+.dw-head { display: block; font-size: var(--fs-1); font-weight: 700; color: #4a5d72; }
+.dw-days { list-style: none; margin: 4px 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.dw-days .day { position: relative; aspect-ratio: 1; border-radius: 4px; background: #d6e2ee; }
+.dw-days .day.good { background: #1660b0; }
+.dw-days .day.bad { background: #e86a12; }
+.dw-days .day.today { outline: 2px solid #12243a; outline-offset: 1px; }
+.rice-dot { position: absolute; right: -2px; bottom: -2px; width: 6px; height: 6px; border-radius: 50%; background: #fff; border: 1px solid #12243a; }
+/* V-19: 좁은 문(390px 화면 냉동실 문 41.7%)에서도 카드 밖으로 잘리지 않게 줄을 바꾼다 (UI참고 — 카드 안 글은 한 덩어리로) */
+.dw-streak { display: block; font-size: var(--fs-1); line-height: 1.25; white-space: normal; overflow-wrap: anywhere; word-break: keep-all; }
+/* 냉장실 문 아래: 다음 할 일 (n / 3 은 한 줄) */
+.door-next { background: #ffffff; color: #12243a; border-radius: 12px; padding: 8px 10px; box-shadow: 0 2px 6px rgba(22, 60, 100, .15); display: flex; flex-direction: column; gap: 4px; }
+.dn-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.dn-head small { color: #4a5d72; font-weight: 700; font-size: var(--fs-1); }
+.dn-count { white-space: nowrap; font-size: var(--fs-2); color: #1660b0; }
+.dn-title { font-size: var(--fs-2); }
+.dn-sub { color: #4a5d72; font-size: var(--fs-1); }
+.door-next button { align-self: flex-start; }
+/* 처음 3초만 손잡이가 깜빡인다 (H-21: 말풍선 글은 뺐다) */
+.fridge.coach .handle::before { animation: blink 1s ease-in-out infinite; }
+/* H-21: 안내 글을 뺀 뒤 빈 칸이 된 자리는 접는다 */
+#spend-preview:empty, .ocr-q:empty, .dw-streak:empty, #chal-calc:empty { display: none; }
+/* 열린 냉장고 */
 .fridge.open .door { transform: scaleX(.07); pointer-events: none; }
 .fridge.open .door > * { visibility: hidden; opacity: 0; }
-.fridge-in { position: absolute; inset: 0; padding: 10px; overflow-y: auto; background: linear-gradient(180deg, var(--card), var(--soft)); z-index: 1; transform: scale(.97); }
-/* 사람 그림 assets/한끼_계산기_4.png (연 냉장고 안쪽, 941×1672). 칸 글이 읽히게 --veil-in 덮개를 함께 깐다 */
 .fridge-in {
+  position: absolute; inset: 0; padding: 12px; overflow: hidden; z-index: 1; transform: scale(.97);
   background: linear-gradient(var(--veil-in), var(--veil-in)), url("assets/한끼_계산기_4.png") center / cover no-repeat, linear-gradient(180deg, var(--card), var(--soft));
+  display: flex; flex-direction: column; gap: 10px;
 }
-/* 문 안쪽은 toggleView 로 보이고 숨는다: 문이 열리는 것과 같은 --t 동안 흐려졌다 커진다 */
 .fridge-in.in { transform: none; }
-.fridge-mode { margin: 0 0 8px; }
-.fridge-mode button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
-.fridge-cols { display: grid; grid-template-columns: 45fr 55fr; gap: 8px; }
-.fridge-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 6px; border-radius: 14px; border: 1px solid var(--line); background: color-mix(in srgb, var(--accent) 5%, var(--card)); }
-.fridge-col.freezer { background: color-mix(in srgb, var(--accent) 11%, var(--card)); }
-.col-tag { margin: 0 2px; font-size: .78em; font-weight: 700; color: var(--accent); }
-.shelf { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left; padding: 6px 8px; font-size: .84em; min-width: 0; border-radius: 10px; border-bottom-width: 3px; }
-.shelf.door-shelf { border-style: dashed; }
-.shelf-name { font-weight: 700; overflow-wrap: anywhere; }
-.shelf-sub { color: var(--ink2); font-size: .92em; overflow-wrap: anywhere; }
-.shelf-memo { font-size: .88em; overflow-wrap: anywhere; background: var(--soft); border-radius: 6px; padding: 0 5px; }
-.fridge-photo-in { text-align: center; }
-.photo-big { display: block; width: 100%; max-height: 300px; object-fit: contain; border-radius: 12px; background: var(--ink); }
-.photo-fig { margin: 4px 0; }
-.photo-fig figcaption { margin-top: 6px; font-size: .9em; }
-.photo-fig .photo-big { max-height: 56vh; }
-.thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-.thumbs .count { grid-column: 1 / -1; }
-.thumb { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; min-width: 0; font-size: .78em; }
-.thumb img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 8px; }
-.thumb.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
-/* 사진 글자 읽기 (H-08) */
-.ocr-head { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 6px; font-size: var(--fs-2); }
-.ocr-bar { height: 10px; border-radius: var(--pill); background: var(--card); overflow: hidden; }
-.ocr-bar span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--accent); transition: width var(--t); }
-.ocr-file { font-size: var(--fs-2); }
-.ocr-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--fs-2); max-height: 30vh; overflow-y: auto; }
-/* H-09 유통기한 읽기: 칸 시트의 사진 버튼과 '넣을까요?' 카드 (UI참고 — 알림 줄 왼쪽의 굵은 색 막대) */
-.ocr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 4px 0 8px; }
-.ocr-row .hint { flex: 1 1 180px; font-size: var(--fs-1); }
-.ocr-ask { border-left: 5px solid var(--accent2); background: var(--soft); box-shadow: none; transition: border-color var(--t) ease; }
-/* H-13: 날짜를 확인해 칸 메모에 넣었으면 왼쪽 막대가 상추색이 된다 */
-.ocr-ask.saved { border-left-color: var(--good); }
-.ocr-out .ocr-ask { padding: 10px 12px; border-radius: 14px; margin: 0 0 10px; }
-.ocr-q { margin: 0 0 8px; font-size: var(--fs-2); line-height: 1.5; }
-.ocr-q b { font-size: var(--fs-4); font-weight: 800; color: var(--ink); letter-spacing: .02em; }
-.ocr-read summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: var(--fs-2); color: var(--ink2); }
-/* H-10 설정의 정보·라이선스 카드 */
-.license-list { list-style: none; padding: 0; margin: 8px 0 0; font-size: var(--fs-2); }
-.license-list li { padding: 4px 0; overflow-wrap: anywhere; line-height: 1.5; }
-.license-more .license-list { font-size: var(--fs-1); color: var(--ink2); }
-.info-card code { font-size: var(--fs-1); overflow-wrap: anywhere; }
-textarea.plain { font-family: inherit; font-size: 1em; }
-.row.compact > .badge { flex: none; }
-@media (max-width: 400px) {
-  .door { padding-top: 10px; padding-bottom: 10px; }
-  /* 왼쪽 문은 손잡이를 문 가장자리에 반쯤 걸쳐 메모지 폭을 넓힌다 (누르는 칸 44px 는 그대로) */
-  .door.left { padding-right: 34px; }
-  .door.left .handle { right: -10px; }
-  .door.right { padding-left: 46px; }
-  .note b, .note small { word-break: keep-all; }
-  .shelf { padding: 5px 6px; }
+/* H-19: 열린 냉장고 안 창(📝 칸 목록·⏰ 유통기한·📷 사진)은 냉장고 틀에서 좌우 16px·위아래 24px 띄우고,
+   불투명 흰 바탕(95%) 판 위에 글을 얹는다. 화면 끝·바닥에 붙지 않는다 */
+.fridge-in { padding: var(--win-pad-y) var(--win-pad-x); }
+#fridge-shelves, #fridge-exp, #fridge-photo-in { background: var(--win-bg); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); }
+.seg { display: flex; gap: 6px; background: var(--card); border-radius: var(--pill); padding: 4px; box-shadow: var(--shadow); }
+.seg button { flex: 1 1 0; border: 0; background: transparent; padding: 6px 4px; font-size: var(--fs-2); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+/* H-18: 열린 냉장고 안 세 탭은 남은 높이를 나눠 쓴다. 칸별·사진은 넘기지 않고, 유통기한 목록만 위아래로 넘긴다 */
+.seg, .in-menu { flex: none; }
+#fridge-shelves, #fridge-exp, #fridge-photo-in { flex: 1 1 auto; min-height: 0; }
+.fridge-exp { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+/* H-39: 유통기한 판은 뒤 냉장고 그림이 비치지 않게 불투명 바탕(--exp-bg, 투명도 없음)을 깐다.
+   냉장고 틀(.fridge-in) 안 좌우 16px·위아래 24px 여백 안에 들고, 칸 층·그림 막보다 위에 놓인다 */
+#fridge-exp.fridge-exp {
+  position: relative; z-index: 1; isolation: isolate;
+  background: var(--exp-bg); background-clip: padding-box;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(10, 30, 50, .18);
+  padding: 12px; margin: 0;
 }
+#fridge-exp.fridge-exp .row, #fridge-exp.fridge-exp .row-main { background: transparent; }
+/* H-40: 유통기한 목록. 판은 세로 flex, 목록(.exp-list)만 남은 높이를 쓰고 그 안에서 위아래로 넘긴다.
+   한 줄: 이름 굵게(--row-name, 800) · 수량 보통 글자(--row-sub) · D-n 색 배지 · 칸 이름 작게(--exp-shelf, --ink2) · 메모 작게(--row-memo, 있을 때만).
+   좁으면 줄 안에서 접히되 낱말 중간에서 끊지 않는다. 줄 사이 가는 구분선 --row-line, 마지막 줄 없음 */
+#fridge-exp.fridge-exp:has(> .exp-list) { display: flex; flex-direction: column; overflow: hidden; }
+#fridge-exp .exp-list { flex: 1 1 96px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+#fridge-exp .exp-row-1 { align-items: center; border-bottom: var(--row-line); padding: 8px 0; }
+#fridge-exp .exp-row-1:last-child { border-bottom: 0; }
+#fridge-exp .exp-row-1 .row-main { flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: flex-start; column-gap: 8px; row-gap: 2px; padding: 2px 0; line-height: 1.35; word-break: keep-all; }
+#fridge-exp .ex-name { display: inline-flex; align-items: center; gap: 6px; font-size: var(--row-name); font-weight: 800; color: var(--ink); }
+#fridge-exp .ex-qty { font-size: var(--row-sub); font-weight: 400; color: var(--ink); }
+#fridge-exp .exp-row-1 .badge { align-self: center; font-size: var(--fs-1); }
+#fridge-exp .ex-shelf { font-size: var(--exp-shelf); color: var(--ink2); white-space: nowrap; }
+#fridge-exp .ex-memo { font-size: var(--row-memo); font-weight: 400; color: var(--ink2); }
+/* H-41: 유통기한 목록 줄은 보기만 한다. 누르는 곳처럼 보이지 않게(손가락 모양·눌림 반응 없음), 줄은 판 폭을 다 쓴다 */
+#fridge-exp .exp-row-1, #fridge-exp .exp-row-1 .row-main { cursor: default; -webkit-tap-highlight-color: transparent; }
+#fridge-exp .exp-row-1 .row-main { flex: 1 1 100%; }
+/* H-42: 목록 위 '📷 유통기한 찍기' — 판 폭 가득한 48px(--exp-cam-h) 알약 하나, 옅은 하늘 바탕 + 파랑 글자·테두리.
+   목록보다 위라 넘기지 않는다. 날짜를 읽는 동안(aria-busy) 버튼이 옅게 숨쉰다 */
+#fridge-exp .exp-snap { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: var(--exp-cam-h); margin: 0 0 8px; border-radius: 999px; background: var(--soft); color: var(--accent); border: 1.5px solid var(--accent); font-size: var(--fs-3); font-weight: 800; white-space: nowrap; }
+#fridge-exp .exp-snap:active { transform: scale(.96); }
+#fridge-exp .exp-snap[aria-busy="true"] { animation: snap-busy 1s ease-in-out infinite alternate; }
+@keyframes snap-busy { from { opacity: 1; } to { opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { #fridge-exp .exp-snap[aria-busy="true"] { animation: none; opacity: .7; } }
+#fridge-exp.fridge-exp:has(> .exp-snap) { display: flex; flex-direction: column; overflow: hidden; }
+/* H-43: 판 맨 아래 버튼 줄 — 왼쪽 '음식 넣기'(옅은 하늘 + 파랑 글자 + 파랑 동그라미 ＋), 오른쪽 '문 닫기'(파랑 채움).
+   칸 창 아래 줄(H-32)과 같은 모양·높이 48px. 목록 밖이라 넘기지 않고, 이 탭에서는 판 밖 '🚪 문 닫기' 줄을 숨겨 닫기는 하나 */
+#fridge-exp .exp-foot { flex: 0 0 auto; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; gap: 12px; margin: auto 0 0; padding-top: 10px; border-top: var(--row-line); }
+#fridge-exp .exp-foot button { min-height: 48px; padding: 8px 18px; white-space: nowrap; font-weight: 700; }
+#fridge-exp .foot-add { display: inline-flex; align-items: center; gap: 6px; background: var(--soft); color: var(--accent); border-color: transparent; }
+#fridge-exp .foot-add .foot-ic { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: var(--fs-2); line-height: 1; }
+#fridge-exp .foot-close { margin-left: auto; }
+.fridge-in[data-mode="exp"] > .in-menu { display: none; }
+/* H-28: 칸 버튼은 냉장고 그림(assets/한끼_계산기_4.png) 속 실제 선반·서랍 자리에 놓는다.
+   칸별 판은 흰 판 없이 그림 전체를 덮는 투명한 층이고, 버튼 자리·크기는 ui.js 가 FRIDGE_SHELVES at(%)로 준다.
+   버튼 바탕은 --shelf-bg(흰 25%), 그림 위 막도 칸별에서는 옅게(--veil-shelf) 해 선반이 비친다 */
+.fridge-in { --veil-now: var(--veil-in); background-image: linear-gradient(var(--veil-now), var(--veil-now)), url("assets/한끼_계산기_4.png"), linear-gradient(180deg, var(--card), var(--soft)); }
+.fridge-in[data-mode="shelf"] { --veil-now: var(--veil-shelf); }
+.fridge-in > .seg, .fridge-in > .in-menu { position: relative; z-index: 1; }
+#fridge-shelves.fridge-cols { position: absolute; inset: 0; padding: 0; background: transparent; box-shadow: none; border-radius: 0; }
+.fridge-col { position: absolute; inset: 0; pointer-events: none; }
+.col-tag { position: absolute; top: 84.6%; font-size: var(--fs-1); font-weight: 800; color: #fff; text-align: center; text-shadow: 0 1px 2px rgba(10, 30, 70, .6); }
+.fridge-col.freezer .col-tag { left: 13%; width: 24.9%; }
+.fridge-col.chiller .col-tag { left: 45.7%; width: 41.2%; }
+.shelf {
+  position: absolute; pointer-events: auto; min-height: 44px; min-width: 44px; overflow: hidden;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px; text-align: left;
+  padding: 6px; font-size: var(--fs-1); line-height: 1.3; border-radius: 12px; white-space: normal;
+  background: var(--shelf-bg); border: 1.5px solid color-mix(in srgb, var(--accent) 35%, transparent); box-shadow: none;
+}
+.shelf .shelf-name { text-shadow: 0 0 3px var(--card); }
+.shelf.door-shelf { border-style: dashed; align-items: center; padding: 6px 2px; }
+.shelf.door-shelf .shelf-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.shelf.door-shelf .shelf-sub, .shelf.door-shelf .shelf-tag { display: none; }
+.shelf-n { display: none; }
+.shelf.door-shelf .shelf-n { display: block; min-width: 20px; padding: 0 5px; border-radius: var(--pill); background: var(--accent); color: var(--accent-ink); font-weight: 800; text-align: center; }
+.shelf-name { font-weight: 700; }
+.shelf-sub { color: var(--ink2); display: flex; flex-wrap: wrap; gap: 3px; }
+.shelf-item { background: color-mix(in srgb, var(--card) 75%, transparent); border-radius: var(--pill); padding: 0 6px; font-size: .92em; }
+.shelf-more { font-size: .9em; }
+.in-menu { margin-top: auto; display: flex; justify-content: flex-end; }
+/* 사진 탭: 큰 사진이 남은 높이만큼 줄고, 작은 사진 4장은 한 줄 (H-18) */
+.fridge-photo-in { display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+.fridge-photo-in > * { flex: none; }
+.fridge-photo-in > #photo-view { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
+/* H-45: 사진 판은 불투명 --photo-bg(유통기한 판과 같은 방식), 가운데 큰 사진 칸 하나가 남은 높이를 다 쓰는 버튼이다.
+   누르면 바로 카메라. 빈 칸은 파랑 점선 + 카메라 그림 + '사진 찍기', 사진이 있으면 꽉 차게 + 오른쪽 아래 📷 동그라미 */
+#fridge-photo-in.fridge-photo-in {
+  position: relative; z-index: 1; isolation: isolate;
+  background: var(--photo-bg); background-clip: padding-box;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(10, 30, 50, .18);
+  padding: 12px; margin: 0;
+}
+.photo-slot {
+  position: relative; flex: 1 1 auto; min-height: 96px; width: 100%; padding: 0; margin: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border-radius: var(--photo-slot-r); background: var(--soft); border: 0; box-shadow: none; overflow: hidden;
+  color: var(--accent); font-weight: 800; font-size: var(--fs-3); white-space: nowrap;
+}
+.photo-slot.empty-slot { border: 1.5px dashed var(--accent); }
+.photo-slot:active { transform: scale(.98); }
+.photo-slot .slot-cam { display: grid; place-items: center; }
+.photo-big { flex: 1 1 auto; min-height: 0; height: 0; width: 100%; object-fit: contain; border-radius: var(--photo-slot-r); display: block; }
+.photo-slot .slot-dot {
+  position: absolute; right: 8px; bottom: 8px; width: var(--photo-cam-dot); height: var(--photo-cam-dot);
+  display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+  font-size: var(--fs-2); line-height: 1; box-shadow: var(--shadow);
+}
+.photo-cap { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.photo-cap .cap-txt { min-width: 0; font-size: var(--fs-2); color: var(--ink2); word-break: keep-all; }
+.photo-cap .cap-txt b { color: var(--ink); }
+.photo-cap button { flex: none; white-space: nowrap; }
+/* 글자 읽기 중·읽은 뒤에는 사진·이름표·작은 사진을 접어 그 자리를 쓴다 */
+.fridge-photo-in:has(#ocr-out:not([hidden])) > #photo-view,
+.fridge-photo-in:has(#ocr-out:not([hidden])) > #photo-thumbs,
+.fridge-photo-in:has(#ocr-out:not([hidden])) > #photo-label-ask { display: none; }
+.thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.thumbs .count { grid-column: 1 / -1; margin: 0; }
+.thumb { display: flex; flex-direction: column; align-items: center; padding: 4px; border-radius: 12px; white-space: normal; }
+.thumb img { width: 100%; max-width: 52px; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 8px; }
+.thumb small { font-size: var(--fs-1); text-align: center; }
+.thumb.on { border-color: var(--accent); border-width: 2px; }
+.label-ask .ask-q { font-weight: 700; margin-bottom: 8px; }
 
-/* 기록 */
-.month-nav { display: flex; align-items: center; justify-content: center; gap: 14px; }
-.hrow { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px; align-items: center; padding: 10px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin: 6px 0; }
-.h-date { color: var(--ink2); font-size: .85em; }
-.h-name { display: flex; flex-direction: column; min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
-.h-name small, .h-ch small { font-weight: 400; color: var(--ink2); }
-.h-ch { display: flex; flex-direction: column; align-items: flex-end; font-weight: 700; text-align: right; }
-.hrow.up .h-ch { color: var(--bad); }
-.hrow.down .h-ch { color: var(--good); }
-.hrow.first .h-ch { color: var(--ink2); }
-.bars { display: flex; gap: 6px; align-items: flex-end; height: 140px; padding-top: 6px; }
-.bar-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; height: 100%; }
-.bar-col small { font-size: .7em; color: var(--ink2); white-space: nowrap; overflow: hidden; max-width: 100%; }
-.bar-col.cur small { color: var(--accent); font-weight: 700; }
-.bar-stack { position: relative; flex: 1; width: 70%; max-width: 34px; display: flex; align-items: flex-end; }
-.bar-stack i, .bar-stack b { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 5px 5px 0 0; transition: height .35s ease; }
-.bar-stack i { background: color-mix(in srgb, var(--accent) 35%, var(--soft)); }
-.bar-stack i.solid { background: var(--accent); }
-.bar-stack b { background: var(--bad); width: 50%; left: 25%; }
-
-/* 빈 화면 */
-.empty { text-align: center; padding: 26px 14px; background: var(--card); border: 1px dashed var(--line); border-radius: var(--radius); margin: 10px 0; }
-.empty h3 { margin: 8px 0 4px; }
-/* V-18: 빈 화면 안내 글은 낱말 중간에서 끊지 않는다 ('식 / 비' 막기). 아주 긴 낱말만 넘치지 않게 끊는다 */
-.empty p { color: var(--ink2); max-width: 420px; margin: 0 auto 12px; word-break: keep-all; overflow-wrap: anywhere; }
+/* ---------- 빈 화면 ---------- */
+.empty { text-align: center; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.empty h3 { margin: 0; }
+.empty p { color: var(--ink2); font-size: var(--fs-2); max-width: 30em; }
 .empty-btns { justify-content: center; }
-.empty-art { color: var(--ink2); }
 .emoji-art { font-size: 2.4em; letter-spacing: .1em; }
-/* 사람 그림 빈 화면 (H-05). assets/한끼_계산기_2.png 는 3칸×2줄(1536×1024), _3.png 는 왼쪽 빈 냉장고·오른쪽 사진 없음(1448×1086) */
+/* 사람 그림 빈 화면: assets/한끼_계산기_2.png 3칸×2줄, _3.png 왼쪽 빈 냉장고·오른쪽 사진 없음 */
 .art-img { display: inline-block; width: 120px; height: 120px; background-repeat: no-repeat; animation: sway 3.2s ease-in-out infinite; transform-origin: 50% 25%; }
 .art-img.six { background-image: url("assets/한끼_계산기_2.png"); background-size: 300% 200%; }
-.six.c1 { background-position: 0 0; }
 .six.c2 { background-position: 50% 0; }
 .six.c3 { background-position: 100% 0; }
-.six.c4 { background-position: 0 100%; }
 .six.c5 { background-position: 50% 100%; }
-.six.c6 { background-position: 100% 100%; }
-.art-img.two { width: 150px; height: 150px; background-image: url("assets/한끼_계산기_3.png"); background-size: 200% auto; }
+.art-img.two { width: 140px; height: 140px; background-image: url("assets/한끼_계산기_3.png"); background-size: 200% auto; }
 .two.left { background-position: left center; }
 .two.right { background-position: right center; }
-.art { display: inline-block; animation: sway 3.2s ease-in-out infinite; transform-origin: 50% 25%; }
-.art .a0 { fill: var(--ink2); opacity: .55; }
-.art .a1 { fill: var(--accent); }
-.art .a2 { fill: var(--accent2); }
-.art .a3 { fill: var(--bad); opacity: .8; }
-.art .a-line { stroke: var(--ink2); stroke-width: 5; stroke-linecap: round; fill: none; }
-.art .a-line.thin { stroke-width: 2; }
-@keyframes sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
-.empty-line { text-align: center; padding: 10px; border: 1px dashed var(--line); border-radius: 12px; }
 
-/* 시트·겹침 창 */
-.view { opacity: 0; transition: opacity var(--t) ease, transform var(--t) ease; }
-.view.in { opacity: 1; }
-.screen { transform: translateY(8px); }
-.screen.in { transform: none; }
-/* 시트 안 단계·탭: 옆에서 밀려 들어온다 */
-.step { transform: translateX(14px); }
-.step.in { transform: none; }
-.backdrop { position: fixed; inset: 0; background: rgba(12, 30, 48, .4); z-index: 40; }
-.backdrop.soft { background: rgba(12, 30, 48, .14); }
+/* ---------- 줄 ---------- */
+.row { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); padding: 4px 0; }
+.row:last-child { border-bottom: 0; }
+.row-main { flex: 1 1 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; background: transparent; border: 0; padding: 6px 0; min-width: 0; white-space: normal; border-radius: 10px; }
+.item-row .row-main { flex-direction: column; align-items: flex-start; gap: 0; }
+.row-title { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.row-title small { color: var(--ink2); }
+.row-sub { color: var(--ink2); font-size: var(--fs-1); }
+.item-ic { flex: none; }
+.amt { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row-btn { padding: 6px 12px; font-size: var(--fs-2); }
+/* H-30 칸 창의 음식 한 개: 1줄 이름 굵게·크게 / 2줄 수량 보통 글자 + D-n 색 배지 + 날짜 / 3줄 메모 작고 옅게(있을 때만).
+   음식 사이 가는 구분선 1px */
+.item-row.item-3 { align-items: center; border-bottom: var(--row-line); padding: 8px 0; }
+.item-row.item-3:last-child { border-bottom: 0; }
+.item-3 .row-main { gap: 2px; padding: 2px 0; line-height: 1.35; }
+.item-3 .it-name { display: flex; align-items: center; gap: 6px; font-size: var(--row-name); font-weight: 800; color: var(--ink); min-width: 0; }
+.item-3 .it-sub { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: var(--row-sub); font-weight: 400; color: var(--ink); }
+/* H-57 네 가지가 서로 다른 글자 모양: 이름 = 크고 굵은 진한 글자 / 수량 = 파랑 테두리 알약 안 보통 크기 파랑 글자 /
+   유통기한 = 색 채운 D-n 배지 + 고정폭 숫자 날짜 '…까지' / 메모 = 옅은 하늘 쪽지 위 작은 글자 + 왼쪽 당근색 세로 막대 */
+.item-3 .it-qty { display: inline-flex; align-items: center; padding: 0 var(--qty-pad-x); border: var(--qty-line); border-radius: var(--pill); color: var(--accent); font-weight: 600; line-height: 1.5; white-space: nowrap; }
+.item-3 .it-sub .badge { font-size: var(--fs-1); }
+.item-3 .it-date { font-size: var(--fs-2); font-weight: 500; color: var(--ink2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.item-3 .it-memo { align-self: flex-start; max-width: 100%; margin-top: 2px; padding: 2px 8px; border-left: var(--memo-bar); border-radius: 0 6px 6px 0; background: var(--soft); font-size: var(--row-memo); font-weight: 400; color: var(--ink2); }
+.flash { animation: flash .9s ease; }
+
+/* ---------- 3. 식비 챌린지 ---------- */
+/* H-18: 한 화면에 ① 파란 카드 ② 버튼 ③ 보기 탭(날짜 판·어디에 썼나·식비 기록·집밥 기록·지난 챌린지) ④ 그 탭 한 장 ⑤ 맨 아래 글자 버튼.
+   ④는 남은 높이에 들어가는 줄만 그리고 '‹ 앞'·'다음 ›' 으로 쪽을 넘긴다 (스크롤 없음) */
+#screen-chal { display: flex; flex-direction: column; gap: 10px; }
+#screen-chal > * { flex: none; }
+#screen-chal .card { margin: 0; }
+#chal-tabs:empty { display: none; }
+.chal-tabs button { flex: 1 1 auto; font-size: var(--fs-1); padding: 6px 4px; }
+#screen-chal > #chal-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+#chal-panel:empty { display: none; }
+.pg-card { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 12px 16px; }
+.pg-card > * { flex: none; }
+.pg-list { flex: 0 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.pg-nav { margin-top: auto; padding-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pg-nav[hidden] { display: none !important; }
+.pg-at { font-size: var(--fs-1); color: var(--ink2); font-variant-numeric: tabular-nums; }
+.pg-nav button { padding: 6px 12px; font-size: var(--fs-2); }
+.pg-row + .pg-row > .chal-days { margin-top: 4px; }
+.pg-row > .row:last-child { border-bottom: 1px solid var(--line); }
+.pg-row:last-child > .row:last-child { border-bottom: 0; }
+.pg-row > .dg-head { margin-top: 6px; }
+.pg-card .empty { padding: 4px; gap: 6px; }
+.pg-card .art-img { width: 72px; height: 72px; }
+.kind-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; padding: 4px 0; }
+.kind-row b small { color: var(--ink2); font-weight: 400; margin-left: 6px; }
+/* ① 파란 카드 네 줄: 남은 돈(큰 숫자) / 오늘 쓸 수 있는 돈 / 진행 막대·상태 배지 / 집밥 n끼 · 한 끼 평균 */
+.chal-hero { background: var(--accent); color: var(--accent-ink); display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; }
+.hero-name { font-weight: 700; font-size: var(--fs-2); }
+.hero-name small { font-weight: 400; opacity: .9; font-size: var(--fs-1); }
+.chal-big { display: flex; flex-direction: column; }
+.chal-big small { opacity: .9; font-size: var(--fs-2); }
+.hero-left b { font-size: var(--fs-6); font-weight: 800; line-height: 1.05; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.hero-day { flex-direction: row; align-items: baseline; justify-content: space-between; gap: 8px; }
+.hero-day b { font-size: var(--fs-4); font-variant-numeric: tabular-nums; }
+.hero-meter-row { display: flex; align-items: center; gap: 10px; }
+.chal-meter { position: relative; flex: 1; height: 10px; border-radius: var(--pill); background: rgba(255, 255, 255, .3); overflow: visible; }
+.chal-meter .used { position: absolute; left: 0; top: 0; bottom: 0; border-radius: var(--pill); background: #fff; transition: width .6s ease; }
+.chal-hero.pace-mid .chal-meter .used, .chal-hero.pace-bad .chal-meter .used { background: #ffb27a; }
+.chal-meter .time { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1px; background: #12243a; border-radius: 2px; }
+.badge.pace { background: #fff; color: var(--accent); }
+.badge.pace.lv-mid, .badge.pace.lv-bad { background: #ffd9bd; color: #8a3a06; }
+.hero-ahead { font-size: var(--fs-2); background: rgba(255, 255, 255, .16); border-radius: 10px; padding: 4px 10px; align-self: flex-start; }
+.hero-meal { font-size: var(--fs-2); font-weight: 700; border-top: 1px solid rgba(255, 255, 255, .3); padding-top: 6px; }
+.rolling { opacity: .9; }
+#chal-acts { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+#chal-acts .big { min-height: 48px; }
+#chal-foot .foot-btns { margin: 0; }
+.meal-btn { background: var(--card); color: var(--accent); border: 2px solid var(--accent); }
+.saving-line { background: var(--card); border-radius: 14px; padding: 10px 12px; font-size: var(--fs-2); box-shadow: var(--shadow); }
+.saving-line b { color: var(--accent); }
+.saving-line small { display: block; color: var(--ink2); font-size: var(--fs-1); }
+.today-checks .chip { font-size: var(--fs-1); }
+/* ③ 날짜 판 */
+.chal-days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.chal-days .day { position: relative; min-height: 40px; border-radius: 10px; background: var(--soft); color: var(--ink2); font-size: var(--fs-1); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.chal-days .day.good { background: color-mix(in srgb, var(--accent) 16%, var(--card)); color: var(--accent); font-weight: 700; }
+.chal-days .day.bad { background: var(--warn-soft); color: var(--warn-ink); font-weight: 700; }
+.chal-days .day.today { outline: 2px solid var(--accent); outline-offset: 1px; }
+.rice { font-size: 8px; line-height: 1; letter-spacing: -1px; }
+.day-legend { margin-top: 8px; }
+.meal-log { margin-top: 8px; border-top: 1px solid var(--line); }
+.meal-log summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.meal-log summary small { font-weight: 400; color: var(--ink2); font-size: var(--fs-1); }
+.meal-row .row-title { flex: 1 1 auto; }
+.meal-n { white-space: nowrap; font-size: var(--fs-2); color: var(--ink2); }
+.meal-n .rice { font-size: var(--fs-1); letter-spacing: 0; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: middle; margin-right: 3px; }
+.dot.good { background: var(--accent); }
+.dot.bad { background: var(--warn); }
+.dot.future { background: var(--soft); border: 1px solid var(--line); }
+/* ④ 어디에 썼나 */
+.kinds { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.kinds li { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
+.kinds b small { color: var(--ink2); font-weight: 400; margin-left: 6px; }
+.meter { grid-column: 1 / -1; height: 8px; border-radius: var(--pill); background: var(--soft); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: var(--pill); }
+/* ⑤ 식비 기록: 기준을 넘은 날은 합계 옆 작은 주황 점만 */
+.day-group { margin: 0 0 8px; }
+.dg-head { display: flex; justify-content: space-between; align-items: center; margin: 8px 0 2px; font-size: var(--fs-2); color: var(--ink2); }
+.dg-head small { font-size: inherit; }
+.dg-sum { display: flex; align-items: center; gap: 6px; color: var(--ink); }
+.over-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--warn); }
+.past summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+.hrow { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); font-size: var(--fs-2); }
+.h-name small, .h-ch small { display: block; color: var(--ink2); font-size: var(--fs-1); }
+.h-ch { text-align: right; }
+
+/* ---------- 겹침 창 ---------- */
+.backdrop { position: fixed; inset: 0; background: rgba(10, 30, 50, .4); z-index: 40; }
+/* 시트·겹침 창도 넘기지 않는다: 화면 높이 안에서 머리 띠 + 몸통, 몸통은 남은 높이를 나눠 쓴다 (H-18).
+   칸 시트의 음식 목록(#shelf-items)만 그 안에서 위아래로 넘긴다 */
 .sheet {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: 92vh; display: flex; flex-direction: column;
-  background: var(--bg); border-radius: 18px 18px 0 0; box-shadow: 0 -6px 30px rgba(0, 0, 0, .25);
-  transform: translateY(40px);
+  position: fixed; left: 0; right: 0; bottom: 0; max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); overflow: hidden; z-index: 41;
+  display: flex; flex-direction: column;
+  background: var(--bg); border-radius: 24px 24px 0 0; box-shadow: 0 -10px 30px rgba(10, 30, 50, .2);
+  transform: translateY(24px);
 }
 .sheet.in { transform: none; }
-.sheet-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 10px 6px 16px; border-bottom: 1px solid var(--line); }
-.sheet-body { overflow-y: auto; padding: 6px 16px 18px; -webkit-overflow-scrolling: touch; }
-.sheet-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
-.sheet-actions .danger { margin-right: auto; }
-.sheet-actions.wrap button { flex: 1 1 140px; }
-@media (min-width: 760px) {
-  .sheet { left: 0; right: 0; margin: 0 auto; bottom: auto; top: 50%; width: 640px; max-width: calc(100vw - 32px); max-height: 86vh; border-radius: 18px; transform: translateY(-46%); }
-  .sheet.in { transform: translateY(-50%); }
-}
-.overlay { position: fixed; inset: 0; z-index: 41; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(12, 30, 48, .4); }
-.ov-box { background: var(--bg); border-radius: 18px; padding: 18px; width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto; transform: scale(.94); transition: transform var(--t) ease; box-shadow: 0 10px 40px rgba(0, 0, 0, .3); }
+.sheet-head { flex: none; position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 8px var(--side); background: var(--bg); }
+.sheet-body { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 0 var(--side) 12px; display: flex; flex-direction: column; }
+.sheet-body > * { flex: none; }
+.sheet-body .card { margin-bottom: 8px; }
+.overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--side); z-index: 41; }
+.ov-box { background: var(--card); border-radius: var(--radius); padding: 20px; width: min(100%, 440px); max-height: calc(100dvh - 32px); overflow: hidden; box-shadow: var(--shadow); transform: scale(.96); transition: transform var(--t) ease; }
 .overlay.in .ov-box { transform: none; }
-.welcome-art { text-align: center; color: var(--accent); animation: sway 3.2s ease-in-out infinite; }
-.welcome-fridge { display: block; width: 140px; height: auto; margin: 0 auto 4px; }
-.welcome-fridge .wf-body { fill: var(--soft); stroke: var(--accent); stroke-width: 4; }
-.welcome-fridge .wf-seam { stroke: var(--accent); stroke-width: 3; }
-.welcome-fridge .wf-handle, .welcome-fridge .wf-foot { fill: var(--accent); }
-.welcome-fridge .wf-panel { fill: var(--card); stroke: var(--accent); stroke-width: 2; }
-.welcome-fridge .wf-mag.a { fill: var(--accent2); }
-.welcome-fridge .wf-mag.b { fill: var(--good); }
-.welcome-fridge .wf-shadow { fill: var(--line); }
-.steps { padding-left: 22px; }
-.steps li { margin: 4px 0; }
+.ov-box h2 { margin-bottom: 10px; }
+@media (min-width: 760px) {
+  .sheet { left: 0; right: 0; margin: 0 auto; width: 560px; bottom: 24px; border-radius: 24px; max-height: calc(100dvh - 48px); }
+}
+/* H-19: 냉장고 화면에서 연 칸 창(음식 목록·음식 넣기)은 냉장고 틀 안에 든다.
+   app.js fitFridgeWin 이 냉장고 자리(--fr-top·--fr-left·--fr-w·--fr-h)를 넘기고, 여기서 좌우 16px·위아래 24px 띄운다.
+   화면 아래 끝에 붙지 않는다.
+   H-56: 바탕은 95% 가 아니라 투명도 없는 흰색(--win-solid, 어둡게는 면색 #172638)이라 뒤 냉장고 그림·막이 비치지 않는다.
+   1px 테두리로 냉장고 그림과 판 가장자리를 가른다 */
+.sheet.in-fridge {
+  top: calc(var(--fr-top) + var(--win-pad-y)); left: calc(var(--fr-left) + var(--win-pad-x)); right: auto; bottom: auto; margin: 0;
+  width: calc(var(--fr-w) - 2 * var(--win-pad-x)); height: calc(var(--fr-h) - 2 * var(--win-pad-y)); max-height: none;
+  background: var(--win-solid); background-clip: padding-box; border: 1px solid var(--line); isolation: isolate;
+  border-radius: var(--radius); box-shadow: 0 12px 30px rgba(10, 30, 50, .25);
+  transform: scale(.97);
+}
+.sheet.in-fridge.in { transform: none; }
+.sheet.in-fridge .sheet-head { background: transparent; padding: 8px 12px; }
+.sheet.in-fridge .sheet-body { padding: 0 12px 12px; }
 
-.pick-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
-.pick { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-.pick small { color: var(--ink2); }
-.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; }
-.seg button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+/* ---------- 식비 쓰기: 종류 → 금액 → 숫자판 → 저장 이 한 화면에 ---------- */
+.spend-body { display: flex; flex-direction: column; gap: 8px; }
+.kind-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.kind { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 6px; font-size: var(--fs-2); border-radius: 14px; }
+.kind.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+.spend-recent { display: flex; flex-direction: column; gap: 4px; }
+.sr-head { font-size: var(--fs-1); color: var(--ink2); }
+.sr-row { display: flex; flex-wrap: wrap; gap: 6px; max-height: 44px; overflow: hidden; }   /* 옆으로 넘기지 않는다: 한 줄에 들어가는 것만 (H-18) */
+.recent-chip { display: flex; align-items: center; gap: 4px; padding: 4px 12px; font-size: var(--fs-2); background: var(--card); }
+.spend-display { display: block; text-align: right; font-size: var(--fs-6); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; padding: 4px 6px; }
+.spend-display.empty-amt { color: var(--ink2); }
+.num-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.spend-body .row3 { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.spend-body .row3 .field { grid-column: auto; margin: 0; }
+.spend-body .row3 input { padding: 8px 6px; }
+#spend-preview { margin: 0; padding: 8px 12px; }
+.num-pad button { min-height: 46px; border-radius: 14px; font-size: var(--fs-4); font-variant-numeric: tabular-nums; padding: 4px; }
+.num-pad .pad-fn { font-size: var(--fs-2); background: var(--soft); border-color: transparent; }
+.num-pad .pad-back { grid-column: span 2; }
+.spend-body .sheet-actions { margin: 0; }
+.spend-body .sheet-actions .primary { flex: 1; min-height: 52px; }
+.chal-delta { font-size: var(--fs-2); }
+/* R-17 사 먹은 돈 → 집밥 끼니 */
+.meal-equiv { display: flex; align-items: center; gap: 10px; margin: 8px 0 0; padding: 10px 12px; border-radius: 14px; background: var(--soft); font-size: var(--fs-2); word-break: keep-all; }
+.meal-equiv .me-ic { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--card); display: grid; place-items: center; }
+.meal-equiv .me-n { font-style: normal; font-size: var(--fs-4); font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.meal-equiv small { display: block; color: var(--ink2); font-size: var(--fs-1); }
 
-.line { display: grid; grid-template-columns: 1fr 66px 64px 44px; gap: 6px; align-items: center; margin: 6px 0; padding: 6px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); }
-.line select, .line input { padding: 6px; }
-.ln-cost { grid-column: 1 / 3; font-size: .82em; color: var(--ink2); }
-.line .err { grid-column: 1 / -1; }
-.impact-head { font-size: 1.02em; }
-.chg.up { color: var(--bad); font-weight: 700; }
-.chg.down { color: var(--good); font-weight: 700; }
-.impact { list-style: none; padding: 0; margin: 6px 0; }
-.impact li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; margin: 4px 0; background: var(--card); border-left: 5px solid var(--none); }
-.impact li.lv-good { border-left-color: var(--good); }
-.impact li.lv-mid { border-left-color: var(--mid); }
-.impact li.lv-bad { border-left-color: var(--bad); }
-.imp-name { flex: 1; min-width: 0; display: flex; flex-direction: column; font-weight: 700; overflow-wrap: anywhere; }
-.imp-name small, .imp-rate small { color: var(--ink2); font-weight: 400; }
-.imp-rate { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
-/* R-08 장바구니: 테두리 없는 흰 카드에 담은 줄, 합계는 강조색을 통째로 칠한 알약 (디자인 규칙 `장 본 값 장바구니 (R-08)`) */
-.price-cart { margin: 14px 0 8px; padding: 12px 14px 14px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
-.price-cart h3 { margin: 0 0 6px; font-size: var(--fs-3); }
-.pc-list { list-style: none; padding: 0; margin: 0; }
-.pc-list li { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); }
-.pc-list li.now { color: var(--accent); }
-.pc-name { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow-wrap: anywhere; }
-.pc-name small { color: var(--ink2); font-size: var(--fs-1); }
-.pc-won { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pc-sum { display: flex; justify-content: space-between; align-items: baseline; margin: 10px 0; padding: 8px 16px; border-radius: var(--pill); background: var(--accent); color: var(--accent-ink); }
-.pc-sum b { font-size: var(--fs-4); font-weight: 800; font-variant-numeric: tabular-nums; }
-#price-cart-save { width: 100%; }
-.parts { list-style: none; padding: 0; margin: 0; }
-.parts li { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
-.parts .meter { grid-column: 1 / -1; }
-.p-name { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
-.p-name small { color: var(--ink2); }
-.p-cost { display: flex; flex-direction: column; align-items: flex-end; font-weight: 700; }
-.p-cost small { color: var(--ink2); font-weight: 400; }
-.memo { background: var(--soft); border-radius: 10px; padding: 6px 10px; }
-.terms dt { font-weight: 700; margin-top: 8px; }
-.terms dd { margin: 2px 0 0; color: var(--ink2); }
-.tips { padding-left: 24px; }
-.tips li { margin: 6px 0; }
-.test-list { list-style: none; padding: 0; margin: 0; font-size: .88em; }
-.test-list li { padding: 3px 0; overflow-wrap: anywhere; }
-.test-list .ok { color: var(--good); }
-.test-list .no { color: var(--bad); font-weight: 700; }
-.test-sum { font-weight: 700; }
-.danger-zone { border-color: color-mix(in srgb, var(--bad) 40%, var(--line)); }
+/* ---------- 칸 시트 ---------- */
+/* H-18: 넘기는 곳은 '칸 안 음식 목록' 하나. 목록이 남은 높이를 쓴다
+   H-29: 칸 창은 보기만 한다 — 머리 줄 · 음식 목록(위아래로 넘김) · 아래 버튼 줄. 음식 넣기는 #sheet-item 창으로 따로 (칸 메모는 없다, H-31) */
+#sheet-shelf .sheet-body > #shelf-items { flex: 1 1 96px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; margin: 0 0 8px; }
+/* H-32: 창 아래 버튼 줄 — 왼쪽 '음식 넣기'(옅은 하늘 + 파랑 글자), 오른쪽 '문 닫기'(파랑 채움).
+   늘 창 맨 아래에 붙고(margin-top:auto), 한 줄을 지킨다(줄바꿈 없음). 위에 가는 선으로 목록과 나눈다 */
+#sheet-shelf .shelf-foot { flex-wrap: nowrap; justify-content: space-between; align-items: center; gap: 12px; margin: auto 0 0; padding-top: 10px; border-top: var(--row-line); }
+#sheet-shelf .shelf-foot button { min-height: 48px; padding: 8px 18px; white-space: nowrap; font-weight: 700; }
+#sheet-shelf .foot-add { display: inline-flex; align-items: center; gap: 6px; background: var(--soft); color: var(--accent); border-color: transparent; }
+#sheet-shelf .foot-add .foot-ic { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: var(--fs-2); line-height: 1; }
+#sheet-shelf .foot-close { margin-left: auto; }
+#item-form { padding: 12px; }
+/* H-34: 칸 다섯 개 — 이름 / 수량 · 넣을 칸(두 칸 한 줄) / 유통기한 / 메모(선택). 줄마다 위에 작은 이름표, 입력 칸 48px, 줄 사이 10px */
+#item-form .field { margin-bottom: var(--form-gap); gap: 2px; }
+#item-form .field > span, #item-form .field > label { font-size: var(--field-label); font-weight: 700; color: var(--ink2); white-space: nowrap; }
+#item-form .field > span small { font-weight: 400; font-size: inherit; }
+#item-form input, #item-form select { min-height: var(--field-h); }
+#item-form .item-pair { gap: var(--form-gap); grid-template-columns: 2fr 3fr; }
+#item-form .item-pair select { padding: 8px 10px; text-overflow: ellipsis; }
+.shelf-quick { max-height: 44px; overflow: hidden; }   /* 바로 넣기는 한 줄에 들어가는 것만 */
+/* H-35 유통기한 날짜 고르기: 연 · 월 · 일 세 칸을 한 줄에(연 칸이 조금 넓게). 칸은 알약 모양,
+   날짜가 정해지면 세 칸 모두 파랑 테두리 + 옅은 하늘 바탕으로 '골라진 것'을 보인다
+   (UI참고 — 첫째 그림: 고른 줄만 강조색 테두리의 둥근 알약으로 띄움. 세로 돌림판은 쓰지 않고 칸 세 개로) */
+.date-pick { display: grid; grid-template-columns: 4fr 3fr 3fr; gap: 6px; }
+#item-form .date-pick select { min-width: 0; padding: 8px 10px; border-radius: var(--pill); text-align: center; text-align-last: center; font-weight: 700; color: var(--ink2); }
+#item-form .date-pick.set select { border-color: var(--accent); background: var(--soft); color: var(--ink); }
+/* H-36: 날짜 고르기 오른쪽에 카메라 그림 버튼 '자동 인식' (48px 둥근 네모, 옅은 하늘 + 파랑 그림, 그림 아래 짧은 이름).
+   읽은 날짜는 바로 칸에 채우고, 채워진 칸은 잠깐 빛나 '사진에서 읽었다' 를 보인다 (UI참고 — 둘째 그림: 둥근 네모 안 그림 하나 + 작은 이름표) */
+.exp-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.exp-cam { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; min-width: var(--cam-size); height: var(--cam-size); min-height: var(--cam-size); padding: 2px 6px; border-radius: 14px; background: var(--soft); color: var(--accent); border: 2px solid transparent; white-space: nowrap; line-height: 1.1; }
+.exp-cam svg { flex: none; }
+.exp-cam .cam-name { font-size: var(--fs-1); font-weight: 700; }
+.exp-cam[aria-busy="true"] { border-color: var(--accent); background: var(--card); }
+#item-exp-pick.read select { animation: expRead 1.2s ease; }
+@keyframes expRead { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
+.reduce-motion #item-exp-pick.read select { animation: none; }
+#item-exp-out:empty { display: none; }
+.quick-row button { flex: 0 0 auto; }
+.shelf-quick { margin: 0 0 10px; }
+.shelf-quick .chip { border-radius: var(--pill); }
 
-/* 반응: 바뀐 칸 번쩍임·알림 */
-.flash { animation: flash 1.1s ease; }
-@keyframes flash { 0% { background: color-mix(in srgb, var(--accent2) 45%, var(--card)); } 100% { background: inherit; } }
+/* ---------- 사진 글자 읽기 ---------- */
+.ocr-head { display: flex; justify-content: space-between; }
+.ocr-bar { height: 8px; background: var(--card); border-radius: var(--pill); overflow: hidden; margin: 6px 0; }
+.ocr-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s ease; }
+.ocr-q { margin-bottom: 8px; }
+.ocr-ask.saved .ocr-q, .ocr-out .ocr-ask.saved .ocr-q { border-left: 4px solid var(--accent); padding-left: 8px; }
+.ocr-sub { font-size: var(--fs-2); color: var(--ink2); margin: 8px 0 4px; }
+.ocr-own-row { display: flex; gap: 6px; }
+.ocr-all { margin-top: 10px; }
+.ocr-text { white-space: pre-wrap; font-size: var(--fs-2); background: var(--soft); border-radius: 12px; padding: 8px; }
+/* H-15 → H-18: 화면이 넘어가지 않게 읽힌 글자는 세 줄만 보이고, 전체는 '📋 복사' 로 한 번에 가져간다. 길게 눌러 골라도 된다 */
+.ocr-all .ocr-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; max-height: calc(4.35em + 16px); overflow: hidden; overflow-wrap: anywhere; user-select: text; -webkit-user-select: text; }
+.ocr-all .sec-head { margin-bottom: 4px; }
+/* 사진 탭의 이름 후보 버튼은 두 줄까지. 맞는 것이 없으면 '직접 쓰기' (음식 넣기 창에는 이름 후보가 없다, H-36) */
+#ocr-names { max-height: 96px; overflow: hidden; }
+.ocr-out:has(.ocr-own:not([hidden])) .ocr-all, .ocr-ask:has(.ocr-own:not([hidden])) .ocr-all { display: none; }
+.ocr-out { padding: 12px; }
+.ocr-out .field { margin-bottom: 6px; }
+.ocr-count { color: var(--ink2); font-weight: 400; font-size: var(--fs-1); }
+.ocr-copy { background: var(--card); color: var(--accent); border: 2px solid var(--accent); border-radius: var(--pill); white-space: nowrap; transition: background var(--t) ease, color var(--t) ease; }
+.ocr-copy.done { background: var(--accent); color: var(--accent-ink); }
+.chip.own { background: var(--card); border-color: var(--line); }
+
+/* ---------- 챌린지 고르기 ---------- */
+/* H-18: '골라서 시작' 과 '직접 정하기' 를 위 두 칸 버튼으로 바꿔 한 번에 하나만 보인다. 12개는 3칸 판 */
+.chal-sheet-mode { margin: 0 0 10px; }
+.chal-quiz { padding: 12px 14px; }
+.chal-quiz h3 { margin-bottom: 6px; }
+.quiz-row .chip { padding: 4px 10px; font-size: var(--fs-1); }
+#chal-quiz-out:empty { display: none; }
+#chal-quiz-out { margin-top: 6px; }
+.pick-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; }
+.pick-list .count { grid-column: 1 / -1; margin: 0; }
+.pick { display: flex; flex-direction: column; align-items: flex-start; text-align: left; border-radius: 14px; padding: 6px 8px; white-space: normal; font-size: var(--fs-2); line-height: 1.3; }
+.pick small { color: var(--ink2); font-size: var(--fs-1); }
+.pick .badge.rec { padding: 0 6px; }
+#chal-form { padding: 12px 14px; }
+#chal-form .field { margin-bottom: 8px; }
+.pick.recommend { border: 2px solid var(--warn); }
+
+/* ---------- 결과 창 ---------- */
+.result-hero { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.result-badge { font-size: 2.4em; }
+.result-hero small { display: block; color: var(--ink2); }
+.result-list { list-style: none; margin: 0 0 10px; padding: 0; }
+.result-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+.res-name small { display: block; color: var(--ink2); font-size: var(--fs-1); }
+
+/* ---------- 설정 ---------- */
+/* H-18: 카드 셋(화면 · 기록 · 정보)이 한 화면에. 줄마다 왼쪽 이름, 오른쪽 고르기. 사용법·개인정보처리방침은 버튼으로 여는 창(H-51) */
+#screen-more { display: flex; flex-direction: column; gap: 10px; }
+#screen-more > * { flex: none; }
+#screen-more .card { margin: 0; padding: 12px 14px; }
+#screen-more .sec-head { margin-bottom: 4px; }
+/* H-47: 줄마다 왼쪽 이름, 오른쪽 고르는 버튼(둥근 알약). 고른 것만 강조색으로 채운다 (UI참고 — 이름 글자 왼쪽, 둥근 버튼 오른쪽) */
+.set-list { display: flex; flex-direction: column; }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0; min-height: 48px; padding: 4px 0; }
+.set-row + .set-row { border-top: 1px solid var(--line); }
+.set-row > span { flex: none; font-size: var(--fs-3); font-weight: 700; color: var(--ink); white-space: nowrap; }
+.set-pick { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; min-width: 0; }
+.set-pick button { padding: 6px 12px; font-size: var(--fs-2); white-space: nowrap; }
+.set-pick button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+/* H-48: '화면' 한 줄 — 왼쪽 이름, 오른쪽에 작은 이름(12px)이 붙은 고르기 둘을 위아래로 (UI참고 — 이름 글자 옆에 둥근 버튼, 고른 것만 색) */
+.set-row.set-screen { align-items: flex-start; padding: 6px 0; }
+.set-row.set-screen > span { padding-top: 11px; }
+.set-sub { display: flex; flex-direction: column; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.set-subrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px 8px; }
+.set-subrow > small { font-size: var(--fs-1); font-weight: 700; color: var(--ink2); white-space: nowrap; }
+.set-subrow .set-pick button { padding: 6px 10px; }
+/* H-59: 설정은 넘기지 않고 한 화면에 다 보인다. 카드는 글 높이만큼만(남은 높이를 넘지 않음), 줄은 줄어들지 않고,
+   '화면' 줄의 고르기는 한 줄을 지킨다(큰 글자에서는 버튼 옆 여백만 줄임). 키가 낮은 화면은 줄 위아래 여백만 줄인다.
+   설명 문장은 두지 않는다 — 줄 이름과 버튼뿐 (UI참고 — 스크린샷 103826 넘기는 띠 없이 이름 + 둥근 버튼만) */
+#screen-more { justify-content: flex-start; }
+#screen-more .set-list { flex: 0 1 auto; min-height: 0; max-height: 100%; }
+.set-list > .set-row { flex: none; }
+.set-subrow { flex-wrap: nowrap; }
+.set-subrow .set-pick { flex-wrap: nowrap; }
+body.font-l .set-subrow .set-pick button { padding: 6px 8px; }
+body.font-l .set-row { gap: 8px; }
+@media (max-width: 370px) {
+  .set-subrow, .set-subrow .set-pick { flex-wrap: wrap; }
+}
+@media (max-height: 720px) {
+  #screen-more .card { padding: 6px 14px; }
+  .set-row { min-height: 44px; padding: 0; }
+  .set-row.set-screen { padding: 2px 0; }
+  .set-sub { gap: 2px; }
+}
+/* H-49: 기록 옮기기 — 내보내기·가져오기는 따로 여는 창 둘. 창마다 글 칸 하나 + 맨 아래 주 버튼 하나(파랑 채움 알약)
+   (UI참고 — 흰 판 안에 값 한 덩어리, 판 맨 아래 버튼 줄. 고른 하나만 강조색) */
+.move-body { gap: 10px; }
+.move-body .field { margin: 0; }
+.move-body textarea { height: 30vh; height: 30dvh; min-height: 140px; max-height: 260px; resize: none; font-size: var(--fs-1); font-family: ui-monospace, Consolas, monospace; word-break: break-all; }
+#export-text { background: var(--soft); }
+.move-foot { padding-top: 10px; border-top: var(--row-line); }
+.move-foot button { min-height: 48px; }
+/* H-52: 사용법은 [사용법] 을 누를 때만 뜨는 짧은 창 — 줄마다 왼쪽 이름, 오른쪽 한 줄 (설정 줄과 같은 모양) */
+.sheet.howto-sheet { max-height: min(60vh, 420px); max-height: min(60dvh, 420px); }
+.howto-list { margin: 0; }
+.howto-list > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; border-bottom: var(--row-line); }
+.howto-list > div:last-child { border-bottom: 0; }
+.howto-list dt { font-weight: 700; font-size: var(--fs-2); white-space: nowrap; }
+.howto-list dd { margin: 0; font-size: var(--fs-2); color: var(--ink2); text-align: right; }
+.license-list { padding-left: 1.2em; font-size: var(--fs-1); margin: 6px 0 0; }
+.license-body .license-list { font-size: var(--fs-2); }
+.license-body code { overflow-wrap: anywhere; }
+.privacy-body h3 { margin: 10px 0 2px; }
+.privacy-body p { font-size: var(--fs-2); line-height: 1.45; }
+/* H-51: 설정 정보 줄은 [개인정보 처리방침] [사용법] 둘. 저작권 문구는 방침 창 맨 아래 알약 버튼 하나로 연다 (UI참고 — 판 맨 아래에 버튼 하나) */
+.privacy-license { margin: 4px 0 0; }
+.privacy-license button { min-height: 44px; padding: 6px 14px; font-size: var(--fs-2); white-space: nowrap; }
+
+/* ---------- 알림 ---------- */
 .toast {
-  position: fixed; left: 12px; right: 12px; margin: 0 auto; width: fit-content; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 90; transform: translateY(20px);
-  max-width: calc(100vw - 24px); display: flex; gap: 10px; align-items: center;
-  background: var(--ink); color: var(--bg); padding: 8px 10px 8px 16px; border-radius: 999px; opacity: 0;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+  position: fixed; left: var(--side); right: var(--side); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); margin: 0 auto; max-width: 520px; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: #12243a; color: #fff; padding: 10px 14px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
 }
-.toast.pop { animation: toastIn .25s ease forwards; }
-.toast button { background: transparent; color: var(--accent2); border-color: var(--accent2); min-height: 44px; padding: 4px 12px; }
-.toast > span { min-width: 0; overflow-wrap: anywhere; }
-@keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.toast button { background: transparent; color: #9fd0ff; border-color: #9fd0ff; }
+.toast.pop { animation: toastIn .25s ease; }
 
-/* 움직임 줄이기 */
-body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after {
-  animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .001s !important;
-}
-body.reduce-motion .toast.pop { opacity: 1; transform: none; }
+/* ---------- 움직임 ---------- */
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes flash { 0% { background-color: color-mix(in srgb, var(--accent) 22%, transparent); } 100% { background-color: transparent; } }
+@keyframes toastIn { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
+body.reduce-motion *, body.reduce-motion *::before { transition-duration: .001s !important; animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .fridge.coach .handle::before, .art-img { animation: none; } }
 
-/* ---------- H-06 화면 디자인 (UI참고를 보고 정함, 기획서 `## 디자인 규칙`) ----------
-   버튼: 알약 모양, 보조 버튼은 테두리 없이 옅은 면색. 카드: 테두리 없이 흰 면 + 넓게 퍼지는 옅은 그림자, 모서리 22px.
-   배치: 화면 맨 위에 크고 굵은 제목, 그 아래 강조색으로 칠한 챌린지 카드(큰 숫자 + 작은 이름), 맨 아래 떠 있는 둥근 탭 띠. */
-/* 요소 선택자라 .primary·.ghost·.tabs button 같은 클래스 규칙이 그대로 이긴다 */
-button { border-radius: var(--pill); padding: 8px 18px; background: var(--soft); border-color: transparent; }
-button.primary { box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 30%, transparent); }
-button.danger { background: color-mix(in srgb, var(--bad) 8%, var(--card)); }
-button.icon { border-radius: 50%; }
-button.big { font-size: var(--fs-4); min-height: 58px; font-weight: 700; }
-input, select, textarea { border-radius: 14px; background: var(--card); }
-.field > span, .field > label { font-size: var(--fs-2); font-weight: 600; }
-
-/* 머리: 띠 대신 바탕과 이어진 흰 줄, 로고는 강조색 동그라미 */
-.top { background: var(--bg); border-bottom: 0; box-shadow: none; padding: 10px 16px 4px; }
-.brand { font-size: var(--fs-4); font-weight: 800; display: flex; align-items: center; gap: 8px; }
-.brand-mark { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--card); box-shadow: var(--shadow); font-size: var(--fs-3); color: var(--accent); }
-/* 20px 로 줄여도 아래 탭 아이콘(24px · 1.8)과 같은 1.8px 선으로 보이게 1.8 × 24/20 */
-.brand-mark .ico { width: 20px; height: 20px; stroke-width: 2.16; }
-main { padding: 6px 16px 24px; }
-
-/* 화면 제목: 크고 굵게 왼쪽에 (UI참고 둘째 그림의 큰 제목 자리) */
-.bar { margin: 6px 0 12px; }
-.bar h2 { font-size: var(--fs-5); font-weight: 800; letter-spacing: -.02em; line-height: 1.2; }
-h3 { font-size: var(--fs-4); font-weight: 800; letter-spacing: -.01em; }
-.card h3, .empty h3 { font-size: var(--fs-3); }
-.sec-head h3 { font-size: var(--fs-4); }
-
-/* 카드·줄: 테두리 없이 흰 면과 그림자 */
-.card, .row, .hrow, .line { border-color: transparent; }
-.card { padding: 16px 18px; margin: 12px 0; }
-.card.soft { background: var(--soft); }
-.row { border-radius: 18px; }
-.row-btn { border-left: 0; background: var(--soft); color: var(--accent); font-weight: 700; border-radius: 0 18px 18px 0; }
-.row.compact .row-btn { border: 0; border-radius: var(--pill); }
-.hrow { border-radius: 18px; box-shadow: var(--shadow); }
-.badge { padding: 2px 10px; font-size: var(--fs-1); }
-.empty { border: 0; background: var(--card); box-shadow: var(--shadow); padding: 28px 18px; }
-.pick { border-radius: 18px; background: var(--card); border-color: transparent; box-shadow: var(--shadow); }
-.kind { border-radius: 18px; }
-
-/* 챌린지 카드: 강조색을 통째로 칠한 큰 카드, 숫자는 크게·이름은 작게 아래에 (UI참고 둘째 그림의 오른쪽 숫자 판) */
-.chal { background: var(--accent); color: var(--accent-ink); border-left: 0; box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 32%, transparent); position: relative; overflow: hidden; }
-.chal::after { content: ""; position: absolute; right: -40px; top: -40px; width: 150px; height: 150px; border-radius: 50%; background: color-mix(in srgb, var(--accent-ink) 10%, transparent); pointer-events: none; }
-.chal > * { position: relative; z-index: 1; }
-.chal.pace-mid { box-shadow: inset 0 -6px 0 var(--mid), 0 12px 28px color-mix(in srgb, var(--accent) 32%, transparent); }
-.chal.pace-bad { box-shadow: inset 0 -6px 0 var(--bad), 0 12px 28px color-mix(in srgb, var(--accent) 32%, transparent); }
-.chal h3 { font-size: var(--fs-4); }
-.chal .hint, .chal small, .chal .chal-head small, .chal .chal-big small { color: color-mix(in srgb, var(--accent-ink) 78%, transparent); }
-.chal-big { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
-.chal-big span { flex-direction: column-reverse; }
-.chal-big b { font-size: var(--fs-6); font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
-.chal-big b.rolling { opacity: .92; } /* R-01 숫자가 굴러가는 동안 */
-.chal-big span + span b { font-size: var(--fs-5); }
-.chal .warn-text { color: var(--accent-ink); text-decoration: underline wavy var(--accent2); }
-.chal-meter { background: color-mix(in srgb, var(--accent-ink) 25%, transparent); height: 10px; }
-.chal-meter i { background: var(--accent-ink); }
-.chal-meter i.lv-mid { background: var(--accent2); }
-.chal-meter i.lv-bad { background: var(--bad); }
-.chal-meter .time { background: var(--accent2); }
-.chal .badge.lv-good { background: var(--accent-ink); color: var(--good); }
-.chal .btn-row button { background: var(--accent-ink); color: var(--accent); border-color: transparent; box-shadow: none; font-weight: 700; }
-.chal .btn-row button.primary { background: color-mix(in srgb, var(--accent-ink) 18%, transparent); color: var(--accent-ink); }
-.streak-line { display: inline-block; margin: 6px 0 2px; padding: 4px 12px; border-radius: var(--pill); font-weight: 700; background: color-mix(in srgb, var(--accent-ink) 16%, transparent); }
-
-/* R-02 날짜 판: 7칸 격자, 지킨 날 상추색·넘은 날 토마토색·남은 날 옅은 칸, 오늘은 강조색 테두리 */
-.chal-board h3 small { color: var(--ink2); font-weight: 400; }
-.chal-days { list-style: none; margin: 8px 0 4px; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
-.day {
-  display: flex; align-items: center; justify-content: center; aspect-ratio: 1; min-height: 32px; border-radius: 12px;
-  font-size: var(--fs-1); font-weight: 700; font-variant-numeric: tabular-nums; overflow: hidden;
-}
-.day.good { background: var(--good); color: #fff; }
-.day.bad { background: var(--bad); color: #fff; }
-.day.bad, .dot.bad { animation: none; border-color: transparent !important; } /* 입력 오류 .bad 흔들림을 받지 않는다 */
-.day.future { background: var(--soft); color: var(--ink2); font-weight: 400; }
-.day.today { outline: 3px solid var(--accent); outline-offset: 2px; }
-.day-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
-.dot.good { background: var(--good); }
-.dot.bad { background: var(--bad); }
-.dot.future { background: var(--soft); border: 1px solid var(--line); }
-
-/* R-05 챌린지 끝 결과 창: 성공은 강조색을 통째로 칠한 머리 카드(챌린지 카드와 같은 모양), 실패는 옅은 면. 아래 다섯 줄은 결과 창 .impact 줄을 그대로 쓴다 */
-.result-hero { display: flex; align-items: center; gap: 12px; padding: 14px 16px; margin: 10px 0 6px; border-radius: var(--radius); background: var(--accent); color: var(--accent-ink); }
-.result-hero.lost { background: var(--soft); color: var(--ink); }
-.result-hero p { margin: 0; min-width: 0; display: flex; flex-direction: column; font-size: var(--fs-4); overflow-wrap: anywhere; }
-.result-hero p b { font-weight: 800; }
-.result-hero small { font-size: var(--fs-2); opacity: .82; }
-.result-badge { flex: none; font-size: var(--fs-6); line-height: 1; animation: resultPop .32s ease-out; }
-@keyframes resultPop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
-.result-list li > b { font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; }
-.res-icon { flex: none; width: 28px; text-align: center; }
-.res-name { flex: 1; min-width: 0; display: flex; flex-direction: column; font-weight: 700; overflow-wrap: anywhere; }
-.res-name small { color: var(--ink2); font-weight: 400; font-size: var(--fs-2); }
-
-/* R-12 '처음 5분 끝' 카드: 상추색 ✓ 동그라미 머리 + 큰 숫자 둘(작은 이름 아래), 결과 창 맨 위 (UI참고 둘째 그림의 큰 숫자·작은 이름 짝) */
-.onboard-done { padding: 14px 16px; margin: 0 0 10px; border-radius: var(--radius); background: color-mix(in srgb, var(--good) 12%, var(--card)); border: 1px solid color-mix(in srgb, var(--good) 40%, var(--line)); }
-.od-head { display: flex; align-items: center; gap: 10px; }
-.od-head p { margin: 0; min-width: 0; display: flex; flex-direction: column; }
-.od-head b { font-size: var(--fs-4); font-weight: 800; }
-.od-head small { color: var(--ink2); font-size: var(--fs-2); word-break: keep-all; overflow-wrap: anywhere; }
-.od-check { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--good); color: #fff; font-weight: 800; animation: resultPop .32s ease-out; }
-.od-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
-.od-stats p { margin: 0; min-width: 0; display: flex; flex-direction: column; }
-.od-stats b { font-size: var(--fs-5); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.od-stats small { color: var(--ink2); font-size: var(--fs-1); overflow-wrap: anywhere; word-break: keep-all; }
-
-/* R-03 처음 5분 시작 단계: 줄마다 동그란 번호, 끝낸 줄은 상추색 ✓ 동그라미, 다음 할 줄만 옅은 강조색 알약 (UI참고 둘째 그림의 카드 모서리 ✓ 동그라미) */
-.start-card { padding: 14px 16px; }
-.start-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.start-head h3 { margin: 0; font-size: var(--fs-4); font-weight: 800; }
-.start-head small { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
-.start-meter { height: 8px; border-radius: var(--pill); background: var(--soft); overflow: hidden; margin: 8px 0 6px; }
-.start-meter i { display: block; height: 100%; border-radius: var(--pill); background: var(--good); transition: width var(--t) ease; }
-.start-steps { list-style: none; margin: 0; padding: 0; }
-.start-step { display: flex; align-items: center; gap: 10px; padding: 6px 8px; margin: 2px -8px; border-radius: 18px; }
-.start-step.next { background: color-mix(in srgb, var(--accent) 9%, var(--card)); }
-.start-no {
-  flex: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  font-size: var(--fs-2); font-weight: 800; background: var(--soft); color: var(--ink2);
-}
-.start-step.next .start-no { background: var(--accent); color: var(--accent-ink); }
-.start-step.done .start-no { background: var(--good); color: #fff; }
-.start-step.done .todo-tx b { color: var(--ink2); text-decoration: line-through; font-weight: 600; }
-.start-step button { flex: none; }
-
-/* 고르기 띠(칸별 메모/사진, 재료/메뉴 예시): 옅은 홈 안에서 고른 쪽만 흰 알약으로 떠오른다 */
-.seg { background: var(--soft); border-radius: var(--pill); padding: 4px; gap: 4px; }
-.seg button { background: transparent !important; border-color: transparent; box-shadow: none; }
-.seg button[aria-selected="true"], .fridge-mode button[aria-pressed="true"] {
-  background: var(--card) !important; color: var(--accent); border-color: transparent; box-shadow: var(--shadow);
-}
-
-/* 냉장고 */
-.fridge { border-radius: 30px; border: 0; box-shadow: var(--shadow); }
-.magnet { border-radius: 20px; background: var(--card); border-color: transparent; }
-.shelf { border-radius: 14px; border-color: transparent; border-bottom-width: 1px; box-shadow: 0 1px 3px rgba(20, 60, 100, .08); background: var(--card); }
-.fridge-col { border: 0; border-radius: 18px; }
-/* V-09: 넓은 화면에서는 냉장고를 그림 비율(941:1672)대로 묶어 가운데 둔다. 높이에서 폭을 구해 문 그림이 가로로 퍼지지 않는다 */
-@media (min-width: 760px) {
-  .fridge {
-    --fh: clamp(520px, 72vh, 720px);
-    height: var(--fh); width: calc(var(--fh) * 941 / 1672); max-width: 440px; aspect-ratio: 941 / 1672;
-    margin: 4px auto 12px;
-  }
-}
-
-/* H-11: 아래 탭 줄을 없앴다. 첫 화면은 냉장고 하나가 화면을 채운다 (UI참고 첫째 그림 — 한 화면에 하나만, 고른 것만 강조) */
-.toast { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
-body.on-fridge main { padding-top: 10px; padding-bottom: 10px; }
-body.on-fridge .fridge { height: clamp(420px, calc(100vh - 24px), 820px); height: clamp(420px, calc(100dvh - 24px), 820px); margin: 0; }
-@media (min-width: 760px) {
-  body.on-fridge .fridge { --fh: clamp(520px, calc(100vh - 24px), 820px); height: var(--fh); margin: 0 auto; }
-}
-/* 문 위쪽 줄: 문 이름 + 둥근 ⚙ 자석(설정) */
-.door-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.magnet.mini { flex: none; width: 44px; height: 44px; padding: 0; border-radius: 50%; justify-content: center; color: var(--accent); }
-.magnet.mini .ico { width: 22px; height: 22px; }
-/* V-16: '사진 찍기' 자석도 다른 자석(.mag-img 사람 그림 동그라미)과 같은 36px 흰 원판에 선 SVG 카메라를 담아 한 벌로 보이게 한다 */
-.magnet .mag-emoji {
-  display: grid; place-items: center; box-sizing: border-box; width: 36px; height: 36px; margin-bottom: 2px; line-height: 1;
-  background: var(--card); border: 1.5px solid color-mix(in srgb, var(--ink) 70%, transparent); border-radius: 50%;
-  box-shadow: inset 0 -3px 6px color-mix(in srgb, var(--accent) 12%, transparent), var(--shadow); color: var(--accent);
-}
-.magnet .mag-emoji .ico { width: 20px; height: 20px; }
-.magnet .mag-emoji .ico-flash { stroke: var(--accent2); stroke-width: 2.4; }
-/* 문 안쪽 메뉴: 위에 칸별·유통기한·사진 고르기 띠, 아래에 붙은 사진 찍기·문 닫기 */
-.fridge-in { display: flex; flex-direction: column; }
-.fridge-mode { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.fridge-mode button { padding: 6px 4px; font-size: var(--fs-2); min-width: 0; }
-.fridge-exp .row { background: var(--card); }
-/* V-12: 문 안쪽 시작 카드는 다음 할 단계 한 줄 + n / 4 만 (UI참고 첫째 그림 — 지금 할 하나만 알약으로 띄운다). 칸 이름은 낱말 가운데서 끊지 않는다 */
-.fridge-start .start-card { margin: 0 0 8px; padding: 6px 10px; display: flex; align-items: center; gap: 8px; }
-.fridge-start .start-head { order: 2; flex: none; }
-.fridge-start .start-head h3, .fridge-start .start-meter { display: none; }
-.fridge-start .start-steps { flex: 1; min-width: 0; }
-.fridge-start .start-step:not(.next) { display: none; }
-.fridge-start .start-step { margin: 0; padding: 4px 6px; }
-.fridge-start .start-step small { display: none; }
-.shelf-name { word-break: keep-all; }
-/* V-15: 아래 버튼 줄은 문 안쪽 여백(10px) 안에 둔다. 버튼 끝이 냉장고 둥근 모서리(30px)에 잘리지 않는다
-   (UI참고 둘째 그림 — 아래 버튼이 둥근 판 안에 여유 있게 들어간다) */
-.in-menu {
-  position: sticky; bottom: 0; display: grid; grid-template-columns: 3fr 2fr; gap: 8px; margin: auto 0 0; padding: 10px; border-radius: 20px;
-  background: linear-gradient(180deg, transparent, var(--card) 30%);
-}
-.in-menu button { min-width: 0; font-weight: 700; }
-/* R-06: 닫힌 냉장실 문 메모지 아래 '다음 할 일' 카드 — 흰 카드에 번호 동그라미·n / 4, 짧은 제목, 강조색 알약 버튼 하나
-   (UI참고 첫째 그림 — 고른 하나만 강조색 테두리 알약으로 띄운다, 둘째 그림 — 짧은 카드 아래 버튼이 바로 보인다) */
-.door-next {
-  display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 8px 10px; border-radius: 18px;
-  background: var(--card); box-shadow: var(--shadow); border: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
-}
-.dn-head { display: flex; align-items: center; gap: 6px; margin: 0; }
-.dn-head .start-no { width: 24px; height: 24px; font-size: var(--fs-1); background: var(--accent); color: var(--accent-ink); }
-.dn-head small { color: var(--accent); font-size: var(--fs-1); font-weight: 800; font-variant-numeric: tabular-nums; word-break: keep-all; }
-/* V-17: 'n / 4' 는 한 덩어리 — 좁은 화면에서도 '4'만 다음 줄로 떨어지지 않는다 */
-.dn-count { white-space: nowrap; font-weight: 900; }
-.dn-title { font-size: var(--fs-2); line-height: 1.3; word-break: keep-all; }
-.door-next button { width: 100%; }
-/* R-15: 문을 한 번도 안 열었을 때 손잡이 안내 — 손잡이 막대가 강조색으로 1.6초마다 깜빡이며 빛나고,
-   냉장실 손잡이 바로 아래에 위로 꼬리를 단 강조색 말풍선 하나 (UI참고 첫째 그림 — 고를 곳 하나만 색으로 띄운다).
-   말풍선은 누름을 가로채지 않아 그 아래 자석·카드는 그대로 눌린다. 움직임 줄이기면 깜빡임 없이 강조색만 */
-.fridge.coach .handle::before {
-  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 35%, var(--card)), var(--accent));
-  animation: handle-coach 1.6s ease-in-out infinite;
-}
-@keyframes handle-coach {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
-  50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 0%, transparent), 0 0 14px 2px color-mix(in srgb, var(--accent) 45%, transparent); }
-}
-.door-coach {
-  position: absolute; z-index: 3; left: 8px; top: calc(62% + 10px); max-width: min(170px, calc(100% - 16px)); margin: 0;
-  padding: 7px 11px; border-radius: 14px; background: var(--accent); color: var(--accent-ink);
-  font-size: var(--fs-1); font-weight: 800; line-height: 1.35; word-break: keep-all; box-shadow: var(--shadow); pointer-events: none;
-}
-.door-coach::before {
-  content: ""; position: absolute; top: -6px; left: 9px; width: 12px; height: 12px; background: inherit; transform: rotate(45deg); border-radius: 2px;
-}
-@media (prefers-reduced-motion: reduce) { .fridge.coach .handle::before { animation: none; } }
-/* R-10: 닫힌 냉동실 문 아래 빈 면의 이번 주 칸 — margin-top:auto 로 문 아래쪽에 붙는다. 날짜 판(R-02)과 같은 색 칸 7개를
-   한 줄로(좁은 문이라 글자 없이 색만, 날짜·돈은 aria-label), 오늘만 강조색 테두리, 그 아래 연속 지킨 날 한 줄
-   (UI참고 둘째 그림 — 작은 칸을 모아 상태를 한눈에, 첫째 그림 — 고른 하나만 색 테두리) */
-.door-week {
-  margin-top: auto; display: flex; flex-direction: column; gap: 5px; padding: 8px 8px 7px; border-radius: 16px;
-  background: color-mix(in srgb, var(--card) 88%, transparent); box-shadow: var(--shadow);
-}
-.dw-head { color: var(--ink2); font-size: var(--fs-1); font-weight: 700; letter-spacing: .08em; }
-.dw-days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
-.door-week .day { min-height: 0; border-radius: 4px; font-size: 0; }
-.door-week .day.today { outline-width: 2px; outline-offset: 1px; }
-.dw-streak { font-size: var(--fs-1); font-weight: 800; white-space: nowrap; font-variant-numeric: tabular-nums; }
-/* R-11: 장 본 재료가 들어간 냉장고 칸 — 결과 창에 흰 카드를 가로로 넘기는 줄, 카드마다 칸 아이콘 원·재료 이름·칸 이름
-   (UI참고 둘째 그림 — 작은 카드를 가로로 줄 세워 하나씩 보여 줌, 첫째 그림 — 둥근 아이콘 판 옆에 이름) */
-.shop-shelved { margin: 10px 0; }
-.shop-shelved ul { list-style: none; margin: 6px 0 0; padding: 0 0 4px; display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; }
-.shop-shelved li {
-  flex: none; display: grid; grid-template-columns: auto 1fr; gap: 0 8px; align-items: center; min-width: 120px; max-width: 170px;
-  padding: 8px 12px 8px 8px; border-radius: 18px; background: var(--card); box-shadow: var(--shadow); scroll-snap-align: start;
-}
-.shop-shelved i { grid-row: 1 / 3; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-style: normal; background: color-mix(in srgb, var(--accent) 12%, var(--card)); }
-.shop-shelved b { font-size: var(--fs-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.shop-shelved small { color: var(--ink2); font-size: var(--fs-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* R-07: 식비 쓰기 큰 금액 + 앱 숫자판 — 금액은 40px 단계 굵게·자릿수 폭 고정, 아래 4칸 알약 키(숫자 흰 판, 기능 키는 강조색 글)
-   (UI참고 둘째 그림 — 숫자를 크게 주인공으로, 첫째 그림 — 같은 모양 판을 줄 세움) */
-#spend-display {
-  display: block; margin: 6px 0 4px; padding: 6px 4px; text-align: right;
-  font-size: var(--fs-6); font-weight: 800; line-height: 1.1; letter-spacing: -.02em;
-  font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  border-bottom: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
-}
-#spend-display.empty-amt { color: var(--ink2); }
-.num-pad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 6px 0 8px; }
-.num-pad button { padding: 6px 0; background: var(--card); box-shadow: var(--shadow); font-size: var(--fs-4); font-weight: 700; font-variant-numeric: tabular-nums; }
-.num-pad .pad-fn { background: var(--soft); box-shadow: none; color: var(--accent); font-size: var(--fs-2); font-weight: 800; }
-.num-pad .pad-back { grid-column: span 2; font-size: var(--fs-4); }
-/* R-09: 챌린지 고르기 맨 위 '지난달 식비' 카드 — 옅은 면 카드에 알약 범위 버튼, 고른 범위는 강조색 알약.
-   추천 프리셋은 강조색 2px 테두리 + 옅은 강조색 면, 이름 옆 강조색 '추천' 알약 (UI참고 첫째 그림 — 줄 가운데 고른 하나만 테두리 알약으로 띄운다) */
-.chal-quiz { background: var(--soft); box-shadow: none; margin-top: 4px; }
-.chal-quiz h3 { margin: 0 0 2px; font-size: var(--fs-3); font-weight: 800; }
-.chal-quiz .hint { margin: 0 0 8px; }
-.chal-quiz #chal-quiz-out { margin: 8px 0 0; color: var(--accent); font-weight: 700; }
-.chal-quiz #chal-quiz-out:empty { display: none; }
-.quiz-row .chip { font-variant-numeric: tabular-nums; word-break: keep-all; }
-.pick.recommend {
-  border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--card));
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 22%, transparent);
-  animation: rec-in .32s ease-out;
-}
-.badge.rec { background: var(--accent); color: var(--accent-ink); margin-left: 4px; vertical-align: 1px; }
-@keyframes rec-in { from { transform: scale(.96); } to { transform: none; } }
-@media (prefers-reduced-motion: reduce) { .pick.recommend { animation: none; } }
-/* R-13: 챌린지 '이 기간 식비'를 날짜별로 묶는다 — 날짜 머리는 카드 밖 작은 띠(날짜 굵게·요일 옅게, 오른쪽 그날 합계 자릿수 고정),
-   하루 기준을 넘은 날은 합계를 토마토색 + '기준 넘음' 알약, 묶음 왼쪽에 3px 토마토색 선
-   (UI참고 둘째 그림 — 굵은 제목 아래 카드를 묶어 보여 줌, 큰 숫자·작은 이름 짝) */
-.day-group { margin: 12px 0 4px; }
-.day-group .row { margin: 6px 0; }
-.dg-head {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-  margin: 0; padding: 0 4px 2px; font-size: var(--fs-2); font-weight: 800;
-}
-.dg-dow { color: var(--ink2); font-weight: 400; }
-.dg-sum { display: inline-flex; align-items: baseline; gap: 6px; white-space: nowrap; }
-.dg-sum b { font-size: var(--fs-3); font-variant-numeric: tabular-nums; }
-.day-group.over { border-left: 3px solid var(--bad); padding-left: 8px; }
-.day-group.over .dg-sum b { color: var(--bad); }
-.dg-over { font-size: var(--fs-1); }
-/* R-14: 식비 쓰기 종류 버튼 아래 '최근 넣은 것' — 옆으로 미는 흰 알약 줄. 알약은 동그란 종류 아이콘 + 금액 굵게(자릿수 고정) + 메모 작게
-   (UI참고 첫째 그림 — 동그란 아이콘 옆에 짧은 이름을 붙인 알약을 줄 세움, 둘째 그림 — 숫자는 크게·이름은 작게 짝) */
-.spend-recent { margin: 8px 0 2px; }
-.sr-head { display: block; font-size: var(--fs-1); font-weight: 700; color: var(--ink2); margin: 0 2px 4px; }
-.sr-row { display: flex; gap: 6px; overflow-x: auto; scroll-snap-type: x proximity; padding: 2px 2px 6px; scrollbar-width: none; }
-.sr-row::-webkit-scrollbar { display: none; }
-.recent-chip {
-  flex: 0 0 auto; display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 8px; align-items: center; text-align: left;
-  max-width: 170px; padding: 6px 14px 6px 6px; border-radius: 22px; background: var(--card); box-shadow: var(--shadow); scroll-snap-align: start;
-}
-.recent-chip i { grid-row: 1 / 3; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-style: normal; background: color-mix(in srgb, var(--accent) 12%, var(--card)); }
-.recent-chip b { font-size: var(--fs-2); font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.recent-chip small { font-size: var(--fs-1); color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.recent-chip:active { transform: scale(.96); }
-/* 사진에서 읽은 글자 (H-11): 이름 고르기 버튼, 읽힌 글자 전체 + 전체 복사 */
-.ocr-sub { margin: 10px 0 6px; font-size: var(--fs-2); font-weight: 700; }
-.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip-row .hint { flex-basis: 100%; margin: 0; font-size: var(--fs-1); }
-.chip { padding: 6px 14px; font-size: var(--fs-2); background: var(--card); box-shadow: 0 1px 3px rgba(20, 60, 100, .12); max-width: 100%; overflow-wrap: anywhere; }
-.chip.on { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
-.chip.own { background: transparent; border: 1px dashed var(--ink2); box-shadow: none; color: var(--ink2); }
-/* H-14 음식 이름 고르기: 고른 글자는 ✓ + 강조색 알약, 직접 쓴 이름은 맨 앞에 강조색 테두리 알약, 직접 쓰기 칸은 카드 안에 펼친다 */
-.chip.typed:not(.on) { background: var(--card); border: 2px solid var(--accent); color: var(--accent); }
-.chip.own[aria-expanded="true"] { border-style: solid; border-color: var(--accent); color: var(--accent); }
-.ocr-own { margin-top: 8px; }
-.ocr-own label { display: block; font-size: var(--fs-1); font-weight: 700; margin-bottom: 4px; }
-.ocr-own-row { display: flex; gap: 8px; }
-.ocr-own-row input { flex: 1 1 auto; min-width: 0; }
-.ocr-own-row button { flex: 0 0 auto; }
-.ocr-out .field { margin-top: 8px; }
-.ocr-out .wide { margin-top: 10px; }
-.ocr-all { margin-top: 12px; }
-.ocr-all .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.ocr-all .sec-head h3 { margin: 0; font-size: var(--fs-3); }
-.ocr-all .ocr-text { background: var(--card); border-radius: 14px; padding: 8px 12px; margin: 6px 0 0; }
-/* H-15 읽힌 글자 전체: 높이를 자르지 않고 다 펼친다. 제목 옆 작은 줄·글자 수, 복사 버튼은 강조색 테두리 알약 → 복사하면 상추색 */
-.ocr-all .ocr-text { max-height: none; overflow-y: visible; -webkit-user-select: text; user-select: text; }
-.ocr-all .ocr-text:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.ocr-count { font-size: var(--fs-1); font-weight: 700; color: var(--ink2); vertical-align: super; margin-left: 2px; font-variant-numeric: tabular-nums; }
-.ocr-all .ocr-copy { flex: none; background: var(--card); border: 2px solid var(--accent); color: var(--accent); font-weight: 700; transition: background var(--t), border-color var(--t), color var(--t); }
-.ocr-all .ocr-copy.done { background: var(--good); border-color: var(--good); color: var(--card); }
-.ocr-all .sec-head h3 { min-width: 0; }
-
-/* 시트·창: 크게 둥근 위 모서리 + 끌어내리는 손잡이 모양 */
-.sheet { border-radius: 28px 28px 0 0; }
-.sheet::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 8px auto 0; flex: none; }
-.sheet-head { border-bottom: 0; }
-.sheet-head h2 { font-size: var(--fs-4); font-weight: 800; }
-.ov-box { border-radius: 28px; }
-@media (min-width: 760px) {
-  .sheet { border-radius: 28px; }
-}
-
-/* 처음 안내: 가운데 창 대신 아래에서 올라오는 시트. 위쪽 양문형 냉장고(#fridge)가 옅은 덮개 너머로 보인다 (V-04)
-   V-07: 시트를 화면 높이 46% 까지로 줄여 360x640 에서 #fridge 윗부분 약 64%(70~345px)가 가리지 않는다. 덮개 알파 .14 */
-#ov-welcome.overlay { align-items: flex-end; padding: 0; background: rgba(12, 30, 48, .14); }
-#ov-welcome .ov-box.welcome-sheet {
-  max-width: 640px; max-height: 46vh; border-radius: 28px 28px 0 0; padding: 0 16px calc(10px + env(safe-area-inset-bottom, 0px));
-  transform: translateY(40px); box-shadow: 0 -6px 30px rgba(0, 0, 0, .22);
-}
-#ov-welcome.overlay.in .welcome-sheet { transform: none; }
-.welcome-sheet::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 8px auto 4px; }
-.welcome-head { display: flex; align-items: center; gap: 12px; }
-.welcome-head .welcome-art { flex: none; }
-.welcome-sheet .welcome-fridge { width: 64px; margin: 0; }
-.welcome-head h2 { font-size: var(--fs-4); font-weight: 800; line-height: 1.25; margin: 0; }
-.welcome-sheet .steps { font-size: var(--fs-2); margin: 8px 0 4px; }
-.welcome-sheet .hint { margin: 0; }
-.welcome-sheet .sheet-actions {
-  position: sticky; bottom: 0; background: var(--bg); margin: 8px 0 0; padding: 8px 0 2px;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-}
-.welcome-sheet .sheet-actions button { min-width: 0; }
-.welcome-sheet .sheet-actions button.primary { grid-column: 1 / -1; }
-
-/* 인쇄: 지금 화면 목록만 (집밥 한 끼 값·챌린지 식비·값 기록) */
+/* ---------- 인쇄: 챌린지 화면을 종이 한 장에 ---------- */
 @media print {
-  @page { margin: 12mm; }
-  .top, .toast, .backdrop, .sheet, .overlay, .bar-btns, .filters, .row-btn, button.big, .warn-bar, .skip,
-  .empty-btns, .card.tip, .month-nav button, .todo button, button.wide, .meter, .btn-row, .chal-cta button, .fridge, .thumbs, .start-card { display: none !important; }
-  .chal-meter { border: 1px solid #000; }
-  .chal-meter i { background: #999 !important; }
-  body { background: #fff; color: #000; padding: 0; font-size: 10.5pt !important; line-height: 1.35; }
-  body * { color: #000 !important; animation: none !important; transition: none !important; }
-  main { max-width: none; padding: 0; }
-  .view { opacity: 1 !important; transform: none !important; }
-  .card, .row, .hrow, .empty { box-shadow: none; border-color: #999; break-inside: avoid; margin: 4px 0; padding: 4px 8px; }
-  .card, .row, .hrow, .empty { border: 1px solid #999; }
-  .chal { background: #fff !important; }
-  .chal::after { display: none; }
-  .day { border: 1px solid #999; background: #fff !important; }
-  .day.bad { border: 2px solid #000 !important; text-decoration: line-through; }
-  .row-main { padding: 3px 6px; min-height: 0; }
-  .badge { background: none !important; border: 1px solid #000; }
-  .bars { height: 90px; }
-  .bar-stack i, .bar-stack i.solid { background: #bbb !important; }
-  .bar-stack b { background: #000 !important; }
+  .top, .toast, .backdrop, .sheet, .overlay, #chal-acts, .foot-btns, #screen-fridge, #screen-more { display: none !important; }
+  html, body, main, .screen, .pg-card, .pg-list { height: auto; overflow: visible; display: block; }
+  .pg-nav, #chal-tabs { display: none !important; }
+  body { background: #fff; }
+  .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  .chal-hero { background: #fff; color: #000; }
 }
