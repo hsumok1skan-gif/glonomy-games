@@ -116,6 +116,16 @@ var Logic = (function () {
     });
     return Object.keys(seen).length;
   }
+  // 스티커 모음판: 그 아이가 다 챙긴 날(같은 날은 한 번)을 스티커 12가지별로 센다 → 길이 12 배열
+  function stickerBook(history, kidId) {
+    var out = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], seen = {};
+    (history || []).forEach(function (h) {
+      if (h.kid !== kidId || !(h.total > 0 && h.done === h.total) || seen[h.date]) return;
+      seen[h.date] = true;
+      out[stickerFor(h.date)]++;
+    });
+    return out;
+  }
 
   // ---- 가방 목록 ----
   var GROUPS = ['note', 'rule', 'class', 'after', 'daily'];
@@ -582,6 +592,9 @@ var Logic = (function () {
     ];
     eq('10월 칭찬 스티커', monthStickers(hs, 'k', '2026-10'), 2);
     eq('스티커는 12가지 안', stickerFor('2026-11-02') >= 0 && stickerFor('2026-11-02') < 12, true);
+    // 5-0) 스티커 모음판: 다 챙긴 3일(10/21 5번·10/23 3번·11/2 1번)만, 다른 아이·같은 날 두 줄은 빼고 → 칸 12개 합 3
+    var sb0 = stickerBook(hs.concat([{ kid: 'x', date: '2026-10-24', total: 3, done: 3 }, { kid: 'k', date: '2026-10-21', total: 2, done: 2 }]), 'k');
+    eq('스티커 모음판', sb0.length + '|' + sb0.reduce(function (a, b) { return a + b; }, 0) + '|' + sb0[5] + sb0[3] + sb0[1], '12|3|111');
     // 5-1) 물건 그림 찾기: 이름에 든 말로, 한 글자 말은 낱말일 때만, 없으면 가방
     eq('그림 찾기 가위', iconFor('가위').id, 'scissors');
     eq('그림 찾기 실내화 주머니', iconFor('실내화 주머니').id, 'indoor');
@@ -696,7 +709,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, progress: progress, isMorning: isMorning, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
+    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };

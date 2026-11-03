@@ -265,6 +265,9 @@ body.reduce .bag-art * { transition: none !important; animation: none !important
 .check.pop .box { animation: stamp 0.3s ease-out; }
 @keyframes stamp { 0% { transform: scale(1.8) rotate(-30deg); opacity: 0; } 70% { transform: scale(0.9) rotate(-10deg); opacity: 1; } 100% { transform: rotate(-12deg); } }
 body.reduce .check.pop .box { animation: none; }
+.check.coach { border-color: var(--accent); animation: coach 1.2s ease-out infinite; }
+@keyframes coach { 0% { box-shadow: 0 0 0 0 var(--accent); } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+body.reduce .check.coach { animation: none; box-shadow: 0 0 0 3px var(--accent); }
 .bag-sheet.kid .check .nm { font-size: var(--t-3); }
 .bag-sheet.kid .check .box { width: 34px; height: 34px; font-size: var(--t-3); }
 .bag-sheet.kid .check.pop .box { animation: stamp 0.45s cubic-bezier(.3, 1.6, .5, 1); }
@@ -322,6 +325,14 @@ body.reduce .stk.big { animation: none; }
 .cal-sum { text-align: center; margin-top: 8px; }
 .cal-sum p { margin: 0; }
 .cal .mini-empty { grid-column: 1 / -1; }
+/* 스티커 모음판: 12칸, 못 받은 칸은 흑백·흐리게 */
+.stk-book { margin-top: 8px; }
+.stk-book-h { text-align: center; font-weight: 800; margin-bottom: 4px; }
+.stk-book-g { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; justify-items: center; }
+.stk-book .stk { position: relative; width: 34px; height: 34px; font-size: var(--t-2); }
+.stk-book .stk.locked { filter: grayscale(1); opacity: 0.35; }
+.stk-book .stk .sn { position: absolute; right: -4px; bottom: -4px; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 8px; background: var(--ink); color: var(--bg); font-size: 10px; font-weight: 900; line-height: 16px; text-align: center; }
+.done-sticker .new-stk { display: inline-block; margin-top: 2px; padding: 1px 8px; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-size: var(--t-1); font-weight: 900; }
 
 /* ---- 시간표 ---- */
 /* 한 표: 위 머리 줄 월~금 · 왼쪽 열 교시(이름 아래 시간) · 맨 아래 방과후 줄 */
@@ -606,6 +617,14 @@ body.reduce .bad { animation: none; }
 .done-burst { animation: burst 0.5s ease-out; }
 @keyframes burst { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 body.reduce .done-burst { animation: none; }
+.confetti { position: absolute; top: -16px; z-index: 2; width: 9px; height: 14px; border-radius: 2px; pointer-events: none; opacity: 0; animation: confetti 0.9s ease-in forwards; }
+.confetti.round { width: 10px; height: 10px; border-radius: 50%; }
+@keyframes confetti {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translate(var(--dx, 0px), 70vh) rotate(var(--rot, 540deg)); opacity: 0; }
+}
+body.reduce .confetti { display: none; }
 .print-only { display: none; }
 
 @media (min-width: 720px) {
@@ -638,6 +657,9 @@ body.reduce .done-burst { animation: none; }
   .welcome-art { width: 72px; height: 72px; }
   .pick-area { height: 40dvh; }
   .help-sheet { --shot-s: 0.26; }
+  .cal-d { max-height: 38px; }
+  .stk-book-g { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .stk-book .stk { width: 28px; height: 28px; }
 }
 @media print {
   html, body { height: auto; overflow: visible; }

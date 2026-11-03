@@ -271,6 +271,12 @@
     var wasNight = Logic.nightDone(S, kid, Logic.buildBag(S, kid, k));
     var i = list.indexOf(name);
     if (i >= 0) list.splice(i, 1); else list.push(name);
+    // 처음 한 칸을 눌렀으면 누르기 안내를 끈다 (다시 띄우지 않는다)
+    if (!S.settings.coachSeen) {
+      S.settings.coachSeen = true;
+      var co = document.querySelectorAll('#sheet-bag .check.coach');
+      for (var c = 0; c < co.length; c++) co[c].classList.remove('coach');
+    }
     refreshHistory(kid, k);
     save();
     var bag = Logic.buildBag(S, kid, k);
@@ -303,6 +309,7 @@
       UI.closeSheet('sheet-bag');
       UI.renderDone(S, kid, k);
       openSheet('ov-done');
+      UI.confetti($('ov-done'));
       renderAll();
     }, wait);
   }

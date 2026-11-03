@@ -50,7 +50,8 @@ var Store = (function () {
         gradeP: { 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6 },      // 학년별 교시 수 (새 아이에 쓴다)
         welcomed: false,
         setupDone: false,
-        firstBagSeen: false                                  // 아이를 넣자마자 보여 준 처음 가방 카드를 닫았다
+        firstBagSeen: false,                                 // 아이를 넣자마자 보여 준 처음 가방 카드를 닫았다
+        coachSeen: false                                     // 가방 시트에서 처음 한 칸을 눌러 봤다 (누르기 안내를 끈다)
       }
     };
   }

@@ -312,5 +312,23 @@
     }
   }
 
-  window.ClearFx = { play: play, step: step, stop: stop, SLOTS: SLOTS };
+  // 다음 프레임을 그려야 하나 (G-29). 보이지 않거나 다 멈췄으면 false — game.js 가 고리를 쉬고, 창을 다시 열면 깨운다.
+  // 움직임 줄이기가 아니면 빛줄기가 창이 떠 있는 동안 계속 돌아서 보이는 동안은 true 다
+  function busy() {
+    if (!fx) return false;
+    if (!fx.cv.isConnected) { stop(); return false; }
+    if (!fx.cv.clientWidth || !fx.cv.clientHeight) {   // 다른 창에 가려졌다: 흔들림·번쩍임을 남겨 두지 않는다
+      if (fx.o.screen) fx.o.screen.style.transform = '';
+      if (fx.o.flash) fx.o.flash.style.opacity = '0';
+      return false;
+    }
+    if (!fx.still) return true;
+    if (fx.count || fx.parts.length || fx.hold > 0) return true;
+    for (var i = 0; i < fx.stars.length; i++) if (fx.stars[i].state !== 2) return true;
+    if (fx.rays && fx.rays.age < 0.35) return true;
+    if (fx.text && fx.text.age < fx.text.life) return true;
+    return false;
+  }
+
+  window.ClearFx = { play: play, step: step, stop: stop, busy: busy, SLOTS: SLOTS };
 })();

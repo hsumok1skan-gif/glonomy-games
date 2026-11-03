@@ -162,8 +162,9 @@ body.paused #board { visibility: hidden; }
 .big { width: 100%; max-width: 320px; min-height: 56px; font-size: var(--fs-l); }
 
 /* 시작 화면 아래 줄: 방법·설정 */
-.start-row { display: flex; gap: 12px; width: 100%; max-width: 320px; }
-.start-row button { flex: 1 1 0; min-height: 48px; }
+/* 방법·업적·통계·설정 네 버튼을 두 줄 두 칸으로 (360px 에서도 글자가 한 줄에) */
+.start-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; width: 100%; max-width: 320px; }
+.start-row button { min-width: 0; min-height: 48px; }
 
 /* ---------- 위 띠 ---------- */
 
@@ -485,7 +486,20 @@ body.paused #board { visibility: hidden; }
 .node .st .star { width: 12px; height: 12px; }
 .node .st .star.on { filter: drop-shadow(0 0 2px rgba(244, 201, 93, 0.7)); }
 .node .st .star.on path { stroke: #a8681c; }
-.node .st .star.off path { fill: rgba(120, 124, 136, 0.45); stroke: #8d919c; }
+.node .st .star.off path { fill: none; stroke: #8d919c; }
+
+/* 아직 못 여는 레벨: 번호 아래(별 자리)에 자물쇠 기호 (G-24, 어두운 색만으로 가르지 않음) */
+.node .lock {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%);
+  color: #8d919c;
+  pointer-events: none;
+}
+.node .lock svg { display: block; width: 100%; height: 100%; }
 
 /* 깨고 돌아왔을 때: 다음 등불은 빛이 올라오는 0.6초 동안 꺼져 있다가(.wait) 불이 켜진다(.arrive) */
 .node.now.wait {
@@ -541,6 +555,32 @@ body.paused #board { visibility: hidden; }
   font-size: var(--fs-m);
   color: var(--text);
 }
+
+/* 첫 판 안내 띠 (레벨 1~3, game.js renderCoach): 지금 할 동작 하나와 '다시 보지 않기' */
+.coach {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 12px 6px;
+  padding: 4px 4px 4px 12px;
+  border: 1px solid rgba(244, 201, 93, 0.55);
+  border-radius: 12px;
+  background: rgba(244, 201, 93, 0.12);
+  color: #fff2c4;
+  font-size: var(--fs-s);
+  line-height: 1.35;
+}
+.coach[hidden] { display: none; }
+.coach-step { flex: none; color: var(--gold); white-space: nowrap; }
+.coach-text { flex: 1; min-width: 0; }
+.coach-off { flex: none; min-height: 44px; padding: 0 10px; font-size: var(--fs-s); white-space: nowrap; }
+.coach.fx-next { animation: coachNext 0.4s ease-out; }
+@keyframes coachNext {
+  from { transform: scale(0.96); opacity: 0.4; }
+  to { transform: none; opacity: 1; }
+}
+.cell.cfocus { box-shadow: inset 0 0 0 3px rgba(255, 242, 196, 0.85); }
 
 .board-area {
   flex: 1;
@@ -606,10 +646,11 @@ body.paused #board { visibility: hidden; }
   50% { filter: brightness(1.3); }
 }
 
-/* 색약 모드 무늬 11가지 (p0 점 · p1 가로줄 · p2 세로줄 · p3 사선 · p4 물결 · p5 격자 · p6 작은 원 · p7 작은 꽃 · p8 잎 · p9 별 · p10 마름모)
+/* 꽃밭 무늬 11가지 (p0 점 · p1 가로줄 · p2 세로줄 · p3 사선 · p4 물결 · p5 격자 · p6 작은 원 · p7 작은 꽃 · p8 잎 · p9 별 · p10 마름모)
    이 파일 안에 적은 SVG 정사각 타일(20x20, 바탕 투명, 반투명 흰색 opacity .45)을 칸마다 4x4 번 이어 붙인다.
-   타일 가장자리가 서로 맞물려 칸 안과 칸 사이에 이음매가 없다. */
-.cb .cell::before {
+   타일 가장자리가 서로 맞물려 칸 안과 칸 사이에 이음매가 없다.
+   꽃밭을 색만으로 가르지 않도록(G-24) 늘 옅게 깔고, 색약 모드(.cb)에서는 진하게 보인다. */
+#board .cell::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -617,20 +658,24 @@ body.paused #board { visibility: hidden; }
   background-repeat: repeat;
   background-position: 0 0;
   background-size: 25% 25%;
+  opacity: 0.5;
 }
-.cb .p0::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Ccircle cx='10' cy='10' r='2.8'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p1::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Crect x='0' y='8.8' width='20' height='2.4'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p2::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Crect x='8.8' y='0' width='2.4' height='20'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p3::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg stroke='white' stroke-width='2.4' opacity='.45'%3E%3Cpath d='M-2 22L22 -2M-12 12L12 -12M8 32L32 8'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p4::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2.2' opacity='.45'%3E%3Cpath d='M-5 10Q-2.5 16 0 10T5 10T10 10T15 10T20 10T25 10'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p5::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Cpath d='M0 0H20V1.8H0ZM0 1.8H1.8V20H0Z'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p6::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2' opacity='.45'%3E%3Ccircle cx='10' cy='10' r='4.6'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p7::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Ccircle cx='10' cy='5.9' r='2.6'/%3E%3Ccircle cx='13.9' cy='8.7' r='2.6'/%3E%3Ccircle cx='12.4' cy='13.3' r='2.6'/%3E%3Ccircle cx='7.6' cy='13.3' r='2.6'/%3E%3Ccircle cx='6.1' cy='8.7' r='2.6'/%3E%3C/g%3E%3Ccircle cx='10' cy='10' r='1.6' fill='white' opacity='.75'/%3E%3C/svg%3E"); }
-.cb .p8::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' stroke='white' stroke-width='1.4' stroke-linecap='round' opacity='.45'%3E%3Cpath d='M5.5 14.5Q5 5 15 5Q15 15 5.5 14.5Z' stroke='none'/%3E%3Cpath d='M5.5 14.5L3 17'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p9::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Cpath d='M10 4.2L11.6 8.3L16 8.5L12.6 11.3L13.8 15.6L10 13.1L6.2 15.6L7.4 11.3L4 8.5L8.4 8.3Z'/%3E%3C/g%3E%3C/svg%3E"); }
-.cb .p10::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2' stroke-linejoin='round' opacity='.45'%3E%3Cpath d='M10 4L16 10L10 16L4 10Z'/%3E%3C/g%3E%3C/svg%3E"); }
+#board.cb .cell::before { opacity: 1; }
+#board .p0::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Ccircle cx='10' cy='10' r='2.8'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p1::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Crect x='0' y='8.8' width='20' height='2.4'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p2::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Crect x='8.8' y='0' width='2.4' height='20'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p3::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg stroke='white' stroke-width='2.4' opacity='.45'%3E%3Cpath d='M-2 22L22 -2M-12 12L12 -12M8 32L32 8'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p4::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2.2' opacity='.45'%3E%3Cpath d='M-5 10Q-2.5 16 0 10T5 10T10 10T15 10T20 10T25 10'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p5::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Cpath d='M0 0H20V1.8H0ZM0 1.8H1.8V20H0Z'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p6::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2' opacity='.45'%3E%3Ccircle cx='10' cy='10' r='4.6'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p7::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Ccircle cx='10' cy='5.9' r='2.6'/%3E%3Ccircle cx='13.9' cy='8.7' r='2.6'/%3E%3Ccircle cx='12.4' cy='13.3' r='2.6'/%3E%3Ccircle cx='7.6' cy='13.3' r='2.6'/%3E%3Ccircle cx='6.1' cy='8.7' r='2.6'/%3E%3C/g%3E%3Ccircle cx='10' cy='10' r='1.6' fill='white' opacity='.75'/%3E%3C/svg%3E"); }
+#board .p8::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' stroke='white' stroke-width='1.4' stroke-linecap='round' opacity='.45'%3E%3Cpath d='M5.5 14.5Q5 5 15 5Q15 15 5.5 14.5Z' stroke='none'/%3E%3Cpath d='M5.5 14.5L3 17'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p9::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='white' opacity='.45'%3E%3Cpath d='M10 4.2L11.6 8.3L16 8.5L12.6 11.3L13.8 15.6L10 13.1L6.2 15.6L7.4 11.3L4 8.5L8.4 8.3Z'/%3E%3C/g%3E%3C/svg%3E"); }
+#board .p10::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox='0 0 20 20'%3E%3Cg fill='none' stroke='white' stroke-width='2' stroke-linejoin='round' opacity='.45'%3E%3Cpath d='M10 4L16 10L10 16L4 10Z'/%3E%3C/g%3E%3C/svg%3E"); }
 
 .xmark {
+  position: relative;
+  z-index: 1;
   width: 46%;
   height: 46%;
   pointer-events: none;
@@ -667,6 +712,19 @@ body.paused #board { visibility: hidden; }
   animation: badBlink 0.8s ease-in-out infinite;
 }
 
+/* 걸린 등불은 빨간색에 더해 가운데 `!` 기호로도 알린다 (G-24, 움직임 줄이기에서도 남음) */
+.cell.bad .lamp::after {
+  content: "!";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--cell, 40px) * 0.42);
+  font-weight: 900;
+  line-height: 1;
+  color: #5a0f1d;
+}
 .cell.lit .lamp { animation: lampWin 0.5s ease-out both; }
 
 @keyframes lampOn {
@@ -936,7 +994,8 @@ body.paused #board { visibility: hidden; }
 .star path { stroke-width: 1.6; stroke-linejoin: round; }
 .star.on path { fill: var(--gold); stroke: var(--gold-deep); }
 .star.on { filter: drop-shadow(0 0 6px rgba(244, 201, 93, 0.6)); }
-.star.off path { fill: rgba(16, 19, 38, 0.55); stroke: #8c88ad; }
+/* 못 받은 별은 속을 비우고 점선 테두리만 — 받은 별(속 채움)과 모양으로도 가른다 (G-24) */
+.star.off path { fill: none; stroke: #8c88ad; stroke-dasharray: 2.2 1.8; }
 
 .stars { display: flex; justify-content: center; gap: 10px; }
 .stars .star { width: 40px; height: 40px; }
@@ -967,8 +1026,55 @@ body.paused #board { visibility: hidden; }
 .clear-best b { font-variant-numeric: tabular-nums; }
 .clear-tech { margin: 0 0 4px; font-size: var(--fs-s); opacity: 0.8; }
 .clear-tech:empty { display: none; }
+/* 결과 복사가 막혔을 때 보여 주는 글 상자 (game.js shareResult) */
+.share-box { margin: 6px 0 0; }
+.share-box[hidden] { display: none; }
+.share-box .small { margin: 0 0 4px; }
+.share-box textarea {
+  width: 100%;
+  font: inherit;
+  font-size: var(--fs-s);
+  line-height: 1.45;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--gold-deep);
+  border-radius: 10px;
+  padding: 6px 8px;
+  resize: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
 .new-record { background: var(--gold); color: #2a211c; font-weight: 700; }
 .new-record[hidden] { display: none; }
+.clear-ach { margin: 0 0 4px; }
+.clear-ach[hidden] { display: none; }
+
+/* 업적과 정원 도감 (game.js renderAch). 이룬 것은 ★·'달성' 글로, 못 이룬 것은 ☆·진행 숫자로 (색만으로 가르지 않음) */
+#achPanel .small { margin: 0 0 4px; }
+.zone-cells { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 0 !important; }
+.zone-cells li { margin: 0; padding: 6px 8px; border-radius: 10px; border: 1px dashed var(--line); color: var(--muted); font-size: var(--fs-s); }
+.zone-cells li.on { border-style: solid; border-color: var(--gold-deep); color: var(--text); background: rgba(244, 201, 93, 0.12); }
+.ach-list { list-style: none; padding: 0 !important; }
+.ach { display: flex; align-items: center; gap: 10px; margin: 0 0 6px !important; padding: 6px 8px; border-radius: 10px; background: rgba(0, 0, 0, 0.18); opacity: 0.75; }
+.ach.on { opacity: 1; background: rgba(244, 201, 93, 0.12); }
+.ach-mark { flex: none; width: 22px; text-align: center; font-size: var(--fs-l); color: var(--muted); }
+.ach.on .ach-mark { color: var(--gold); }
+.ach-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.ach-body .small { margin: 0; }
+.ach-state { flex: none; font-size: var(--fs-s); font-variant-numeric: tabular-nums; }
+.ach.on .ach-state { color: var(--gold); font-weight: 700; }
+
+/* 통계 (game.js renderStats) */
+#statsPanel .small { margin: 0 0 4px; }
+.stat-grid { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 0 !important; }
+.stat-grid li { display: flex; flex-direction: column; margin: 0; padding: 6px 8px; border-radius: 10px; background: rgba(0, 0, 0, 0.18); text-align: left; min-width: 0; }
+.stat-grid li .small { margin: 0; }
+.stat-grid li b { color: var(--gold); font-size: var(--fs-l); font-variant-numeric: tabular-nums; }
+.stat-grid .stat-sub { font-size: 12px; overflow-wrap: anywhere; }
+.stat-table { width: 100%; border-collapse: collapse; font-size: var(--fs-s); font-variant-numeric: tabular-nums; margin: 0 0 8px; }
+.stat-table th, .stat-table td { padding: 4px 2px; border-bottom: 1px solid var(--line); text-align: center; }
+.stat-table thead th { color: var(--muted); font-weight: 400; }
+.stat-table tbody th { color: var(--gold); }
 
 /* 세 번째 별 피날레의 화면 전체 금빛 번쩍임 (clear_fx.js 가 0.25초 opacity 를 내린다) */
 .slam-flash {
@@ -1151,19 +1257,19 @@ body.paused #board { visibility: hidden; }
 .art-start_scene .start-art { display: none; }
 
 /* 15 cb_0~10 — 크기 25% 25% 반복은 그대로 */
-.art-cb_0 .cb .p0::before { background-image: var(--art-cb_0); }
-.art-cb_1 .cb .p1::before { background-image: var(--art-cb_1); }
-.art-cb_2 .cb .p2::before { background-image: var(--art-cb_2); }
-.art-cb_3 .cb .p3::before { background-image: var(--art-cb_3); }
-.art-cb_4 .cb .p4::before { background-image: var(--art-cb_4); }
-.art-cb_5 .cb .p5::before { background-image: var(--art-cb_5); }
-.art-cb_6 .cb .p6::before { background-image: var(--art-cb_6); }
-.art-cb_7 .cb .p7::before { background-image: var(--art-cb_7); }
-.art-cb_8 .cb .p8::before { background-image: var(--art-cb_8); }
-.art-cb_9 .cb .p9::before { background-image: var(--art-cb_9); }
-.art-cb_10 .cb .p10::before { background-image: var(--art-cb_10); }
+.art-cb_0 #board .p0::before { background-image: var(--art-cb_0); }
+.art-cb_1 #board .p1::before { background-image: var(--art-cb_1); }
+.art-cb_2 #board .p2::before { background-image: var(--art-cb_2); }
+.art-cb_3 #board .p3::before { background-image: var(--art-cb_3); }
+.art-cb_4 #board .p4::before { background-image: var(--art-cb_4); }
+.art-cb_5 #board .p5::before { background-image: var(--art-cb_5); }
+.art-cb_6 #board .p6::before { background-image: var(--art-cb_6); }
+.art-cb_7 #board .p7::before { background-image: var(--art-cb_7); }
+.art-cb_8 #board .p8::before { background-image: var(--art-cb_8); }
+.art-cb_9 #board .p9::before { background-image: var(--art-cb_9); }
+.art-cb_10 #board .p10::before { background-image: var(--art-cb_10); }
 
-/* 색약 모드에서는 꽃밭 칸 무늬(6)를 빼고 구역 무늬만 보인다 (위 규칙들보다 뒤에 둔다) */
+/* 색약 모드에서는 꽃밭 칸 무늬(6)를 빼고 구역 무늬(위 #board .pN::before, 진하게)만 보인다 (위 규칙들보다 뒤에 둔다) */
 #board.cb .cell { background-image: none !important; }
 
 .still *, .still *::before, .still *::after { animation: none !important; transition: none !important; }

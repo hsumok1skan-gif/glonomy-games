@@ -466,6 +466,12 @@ var UI = (function () {
     if (!html.length) html = [{ g: '', html: miniEmpty('🎒', '챙길 물건이 없어요',{ act: 'note-new', label: '+ 알림장' }) }];
     $('bs-pages').innerHTML = pagerHTML('bag', html, cur);
     V.pg.bag = cur;
+    // 처음 한 번: 아직 챙기지 않은 첫 칸에 맥박 테두리 (보고 있는 쪽 먼저, 없으면 맨 앞 칸)
+    if (!S.settings.coachSeen && !V.kidMode) {
+      var pgs = $('bs-pages').querySelectorAll('.pg');
+      var cc = (pgs[cur] && pgs[cur].querySelector('.check:not(.done)')) || $('bs-pages').querySelector('.check:not(.done)');
+      if (cc) cc.classList.add('coach');
+    }
     var ca = sheet.querySelector('[data-act="check-all"]');
     if (ca) ca.disabled = !bag.items.length || pr.done >= pr.total;
     var bd = sheet.querySelector('[data-act="bag-done"]');
@@ -591,8 +597,38 @@ var UI = (function () {
   function renderDone(S, kid, k) {
     $('done-art').innerHTML = bagArt({ done: 1, total: 1, pct: 100 });
     var s = DATA.STICKERS[Logic.stickerFor(k)];
-    $('done-sticker').innerHTML = stickerHTML(k, true) + '<span class="muted">' + Logic.dayLabel(k) + '<br><b>' + esc(s.name) + '</b> 스티커</span>';
+    // 그 아이가 이 스티커를 처음 받았으면(오늘 기록을 빼면 0장) 모음판에 새로 붙는다고 알린다
+    var si = Logic.stickerFor(k);
+    var first = !Logic.stickerBook(S.history.filter(function (h) { return h.date !== k; }), kid.id)[si];
+    $('done-sticker').classList.toggle('first', first);
+    $('done-sticker').innerHTML = stickerHTML(k, true) + '<span class="muted">' + Logic.dayLabel(k) + '<br><b>' + esc(s.name) + '</b> 스티커' +
+      (first ? '<br><span class="new-stk">새 스티커!</span>' : '') + '</span>';
     $('done-line').textContent = Logic.shareText(S, kid, Logic.buildBag(S, kid, k));
+  }
+
+  // 다 챙김 창 위로 색종이 24장이 떨어지며 돌고 1.1초 뒤 지운다 (움직임 줄이기면 만들지 않는다)
+  var CONFETTI_C = ['var(--accent)', 'var(--sub)', 'var(--gold)', 'var(--violet)'];
+  function confetti(el) {
+    if (document.body.classList.contains('reduce')) return 0;
+    if (typeof el === 'string') el = $(el);
+    if (!el) el = $('ov-done');
+    if (!el) return 0;
+    Array.prototype.forEach.call(el.querySelectorAll('.confetti'), function (c) { c.parentNode.removeChild(c); });
+    var n = 24, made = [];
+    for (var i = 0; i < n; i++) {
+      var c = document.createElement('i');
+      c.className = 'confetti' + (i % 3 === 0 ? ' round' : '');
+      c.setAttribute('aria-hidden', 'true');
+      c.style.left = (4 + (i * 92 / (n - 1)) + (Math.random() * 6 - 3)).toFixed(1) + '%';
+      c.style.background = CONFETTI_C[i % CONFETTI_C.length];
+      c.style.setProperty('--dx', Math.round(Math.random() * 80 - 40) + 'px');
+      c.style.setProperty('--rot', Math.round(360 + Math.random() * 360) * (i % 2 ? 1 : -1) + 'deg');
+      c.style.animationDelay = Math.round(Math.random() * 180) + 'ms';
+      el.appendChild(c);
+      made.push(c);
+    }
+    setTimeout(function () { made.forEach(function (c) { if (c.parentNode) c.parentNode.removeChild(c); }); }, 1100);
+    return n;
   }
 
   // ---- 가방 달력: 다 챙긴 날마다 칭찬 스티커, 덜 챙긴 날은 비워 둔다 ----
@@ -603,6 +639,7 @@ var UI = (function () {
     if (!kid) {
       $('cal-grid').innerHTML = miniEmpty('🧒', '아이를 알려 주세요',{ act: 'cal-kid', label: '시작하기' });
       $('cal-sum').innerHTML = '';
+      $('sticker-book').innerHTML = '';
       return;
     }
     var first = new Date(y, m - 1, 1, 12).getDay(), days = new Date(y, m, 0, 12).getDate();
@@ -619,6 +656,15 @@ var UI = (function () {
     var n = Logic.monthStickers(S.history, kid.id, ym);
     $('cal-sum').innerHTML = n ? '<p>이 달 칭찬 스티커 ' + n + '장이 모였어요</p>' :
       miniEmpty('🎒', '이 달 스티커가 없어요',{ act: 'bag-open', label: '가방 챙기기' });
+    // 스티커 모음판: 12칸, 받은 칸에는 장 수, 아직 못 받은 칸은 잠가 둔다
+    var book = Logic.stickerBook(S.history, kid.id), got = 0, b = '';
+    DATA.STICKERS.forEach(function (s, i) {
+      var c = book[i];
+      if (c) got++;
+      b += '<span class="stk' + (c ? '' : ' locked') + '" style="--c:var(' + s.c + ')" role="img" aria-label="' + esc(s.name) + (c ? ' 스티커 ' + c + '장' : ' 스티커 아직 없음') + '">' +
+        '<span aria-hidden="true">' + s.e + '</span>' + (c ? '<span class="sn" aria-hidden="true">' + c + '</span>' : '') + '</span>';
+    });
+    $('sticker-book').innerHTML = '<div class="stk-book-h tiny">스티커 모음 ' + got + '/12</div><div class="stk-book-g">' + b + '</div>';
   }
 
   // ---- 며칠 뒤 준비물 시트 ----
@@ -1072,7 +1118,7 @@ var UI = (function () {
     $: $, esc: esc, packPic: packPic, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, cellByName: cellByName,
-    fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, renderCal: renderCal, renderUpcoming: renderUpcoming,
+    fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
     renderWeek: renderWeek, renderDay: renderDay, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,

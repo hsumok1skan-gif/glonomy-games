@@ -21,6 +21,8 @@
   function starHtml(on) {
     return '<span class="star ' + (on ? 'on' : 'off') + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR_PATH + '"/></svg></span>';
   }
+  // 지도의 잠긴 레벨 아래 자물쇠: 둥근 고리와 몸통, 바탕은 투명
+  var LOCK_SVG = '<span class="lock" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M3.6 5.4V3.9a2.4 2.4 0 0 1 4.8 0v1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="2.2" y="5.2" width="7.6" height="5.6" rx="1.4" fill="currentColor"/></svg></span>';
   function starsHtml(got) {
     var s = '';
     for (var k = 0; k < 3; k++) s += starHtml(k < got);
@@ -80,12 +82,21 @@
     return {
       stars: {},                 // 레벨 번호 → 별 1~3
       best: {},                  // 레벨 번호 → 가장 빠른 시간(초)
-      settings: { sound: true, autoX: false, cb: false, still: false },
-      daily: { last: '', streak: 0, best: 0, timeDate: '', time: 0 },   // time: timeDate 날 가장 빠른 시간(초)
+      settings: { sound: true, autoX: false, cb: false, still: false, tutor: true },   // tutor: 첫 판 안내(레벨 1~3), '다시 보지 않기' 로 끔
+      daily: { last: '', streak: 0, best: 0, timeDate: '', time: 0 },   // time: timeDate 날 처음 깬 시간(초, 하루 한 번)
       clears: 0,                 // 레벨을 깬 횟수 (전면 광고 셈)
+      ach: {},                   // 업적 id → 이룬 날 (YYYY-MM-DD)
+      swift: 0,                  // 힌트 없이 목표 시간의 절반 안에 깬 횟수 (업적 '바람처럼')
+      stats: blankStats(),       // 누적 통계 (통계 창)
       playLevel: null,           // 풀던 레벨 판
       playDaily: null            // 풀던 오늘의 정원 판
     };
+  }
+
+  // wins: 깬 판(레벨·오늘의 정원, 다시 한 판 포함), timed: 그 가운데 시간을 센 판(통계 전 기록은 판 수만 있다)
+  // time: timed 판의 걸린 시간 합(초), noHint: timed 판 가운데 힌트 없이 깬 판, days: 오늘의 정원을 밝힌 날 수
+  function blankStats() {
+    return { wins: 0, levelWins: 0, dailyWins: 0, timed: 0, time: 0, noHint: 0, days: 0 };
   }
 
   var save = blankSave();
@@ -131,6 +142,21 @@
       }
       save.daily = b.daily;
       save.clears = isFinite(+s.clears) && +s.clears >= 0 ? +s.clears : 0;
+      save.ach = {};
+      if (isObj(s.ach)) {
+        for (var ai = 0; ai < ACHS.length; ai++) {
+          var aid = ACHS[ai].id;
+          if (typeof s.ach[aid] === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.ach[aid])) save.ach[aid] = s.ach[aid];
+        }
+      }
+      save.swift = isFinite(+s.swift) && +s.swift >= 0 ? +s.swift : 0;
+      save.stats = b.stats;
+      if (isObj(s.stats)) {
+        for (var sk in b.stats) if (isFinite(+s.stats[sk]) && +s.stats[sk] >= 0) b.stats[sk] = +s.stats[sk];
+      } else {
+        // 통계가 생기기 전 기록: 레벨을 깬 횟수만 알 수 있다
+        b.stats.wins = b.stats.levelWins = save.clears;
+      }
       save.playLevel = slimOk(s.playLevel);
       save.playDaily = slimOk(s.playDaily);
     } catch (e) { save = blankSave(); }
@@ -155,6 +181,194 @@
     var t = 0;
     for (var k in save.stars) if (Object.prototype.hasOwnProperty.call(save.stars, k)) t += save.stars[k];
     return t;
+  }
+
+  // ---------- 업적·정원 도감 (판을 넘어 쌓이는 목표) ----------
+  // 업적은 저장된 기록에서 셈한다. 한 번 이루면 save.ach[id] 에 이룬 날을 적어 두고, 기록 지우기 전까지 남는다.
+  // 정원 도감은 구역 8곳(ZONES, 10레벨마다 바뀜) 칸이고, 그 구역의 레벨을 하나라도 깨면 칸이 켜진다.
+
+  function zoneOf(no) { return Math.floor((no - 1) / 10) % ZONES.length; }
+
+  function levelStats() {
+    var s = { cleared: 0, perfect: 0, stars: 0, big: 0, zones: [] };
+    for (var z = 0; z < ZONES.length; z++) s.zones.push(false);
+    for (var k in save.stars) {
+      if (!Object.prototype.hasOwnProperty.call(save.stars, k)) continue;
+      var no = +k, st = save.stars[k], lv = LEVELS[no - 1];
+      s.cleared++;
+      s.stars += st;
+      if (st === 3) s.perfect++;
+      if (lv && lv.n >= 11) s.big++;
+      s.zones[zoneOf(no)] = true;
+    }
+    s.zoneCount = s.zones.filter(Boolean).length;
+    return s;
+  }
+
+  var ACHS = [
+    { id: 'first', name: '첫 등불', desc: '레벨을 처음 깨요', goal: 1, of: function (s) { return s.cleared; } },
+    { id: 'lv10', name: '정원 문을 열고', desc: '레벨 10개를 깨요', goal: 10, of: function (s) { return s.cleared; } },
+    { id: 'lv50', name: '길을 아는 사람', desc: '레벨 50개를 깨요', goal: 50, of: function (s) { return s.cleared; } },
+    { id: 'lv100', name: '등불 백 개', desc: '레벨 100개를 깨요', goal: 100, of: function (s) { return s.cleared; } },
+    { id: 'lv250', name: '밤의 정원사', desc: '레벨 250개를 깨요', goal: 250, of: function (s) { return s.cleared; } },
+    { id: 'lv500', name: '반쯤 밝힌 정원', desc: '레벨 500개를 깨요', goal: 500, of: function (s) { return s.cleared; } },
+    { id: 'lv1000', name: '온 정원의 등불', desc: '레벨 1000개를 모두 깨요', goal: 1000, of: function (s) { return s.cleared; } },
+    { id: 'zones', name: '정원 한 바퀴', desc: '정원 도감 8칸을 모두 켜요', goal: ZONES.length, of: function (s) { return s.zoneCount; } },
+    { id: 'perfect1', name: '첫 별 셋', desc: '별 셋으로 레벨을 깨요', goal: 1, of: function (s) { return s.perfect; } },
+    { id: 'perfect50', name: '별 셋 쉰 번', desc: '별 셋 받은 레벨 50개', goal: 50, of: function (s) { return s.perfect; } },
+    { id: 'stars300', name: '별 주머니', desc: '별을 모두 300개 모아요', goal: 300, of: function (s) { return s.stars; } },
+    { id: 'big', name: '큰 정원', desc: '11×11 정원을 하나 깨요', goal: 1, of: function (s) { return s.big; } },
+    { id: 'swift', name: '바람처럼', desc: '힌트 없이 목표 시간의 절반 안에 깨요', goal: 1, of: function () { return save.swift; } },
+    { id: 'daily1', name: '오늘의 등불', desc: '오늘의 정원을 처음 밝혀요', goal: 1, of: function () { return save.daily.best; } },
+    { id: 'streak7', name: '한 주 내내', desc: '오늘의 정원 연속 7일', goal: 7, of: function () { return save.daily.best; } },
+    { id: 'streak30', name: '한 달 내내', desc: '오늘의 정원 연속 30일', goal: 30, of: function () { return save.daily.best; } }
+  ];
+
+  // 새로 이룬 업적을 save.ach 에 적고 그 목록을 돌려준다 (저장은 부른 쪽이 persist)
+  function checkAch() {
+    var s = levelStats(), got = [], d = today();
+    for (var i = 0; i < ACHS.length; i++) {
+      var a = ACHS[i];
+      if (save.ach[a.id]) continue;
+      if (a.of(s) >= a.goal) { save.ach[a.id] = d; got.push(a); }
+    }
+    return got;
+  }
+
+  function achCount() {
+    var c = 0;
+    for (var i = 0; i < ACHS.length; i++) if (save.ach[ACHS[i].id]) c++;
+    return c;
+  }
+
+  function renderAch() {
+    var s = levelStats();
+    $('achCount').textContent = '업적 ' + achCount() + ' / ' + ACHS.length + ' · 도감 ' + s.zoneCount + ' / ' + ZONES.length;
+    var zl = $('achZones');
+    zl.innerHTML = '';
+    ZONES.forEach(function (name, z) {
+      var li = document.createElement('li');
+      li.className = 'zone-cell zone-' + z + (s.zones[z] ? ' on' : '');
+      li.textContent = (s.zones[z] ? '✓ ' : '? ') + (s.zones[z] ? name : '아직 못 간 곳');
+      zl.appendChild(li);
+    });
+    var al = $('achList');
+    al.innerHTML = '';
+    ACHS.forEach(function (a) {
+      var done = save.ach[a.id], v = Math.min(a.goal, a.of(s));
+      var li = document.createElement('li');
+      li.className = 'ach' + (done ? ' on' : '');
+      var mark = document.createElement('span');
+      mark.className = 'ach-mark';
+      mark.setAttribute('aria-hidden', 'true');
+      mark.textContent = done ? '★' : '☆';
+      var body = document.createElement('span');
+      body.className = 'ach-body';
+      var b = document.createElement('b');
+      b.textContent = a.name;
+      var p = document.createElement('span');
+      p.className = 'small';
+      p.textContent = a.desc;
+      body.appendChild(b);
+      body.appendChild(p);
+      var st = document.createElement('span');
+      st.className = 'ach-state';
+      st.textContent = done ? '달성 · ' + done.slice(5).replace('-', '/') : v + ' / ' + a.goal;
+      li.appendChild(mark);
+      li.appendChild(body);
+      li.appendChild(st);
+      al.appendChild(li);
+    });
+  }
+
+  function openAch() {
+    renderAch();
+    openPanel('ach');
+  }
+
+  // ---------- 통계 (누적 기록) ----------
+  // 판 수·평균 시간·힌트 없이 깬 비율은 save.stats 에서, 레벨·별·가장 빠른 시간은 save.stars·save.best 에서 센다.
+
+  function sizeStats() {
+    var rows = [], at = {};
+    for (var i = 0; i < LEVELS.length; i++) {
+      var n = LEVELS[i].n;
+      if (!at[n]) { at[n] = { n: n, total: 0, cleared: 0, stars: 0, fast: 0, sum: 0, timed: 0 }; rows.push(at[n]); }
+      var r = at[n], no = i + 1;
+      r.total++;
+      if (!save.stars[no]) continue;
+      r.cleared++;
+      r.stars += save.stars[no];
+      var t = save.best[no];
+      if (t) {
+        r.timed++;
+        r.sum += t;
+        if (!r.fast || t < r.fast) r.fast = t;
+      }
+    }
+    return rows;
+  }
+
+  function farthestLevel() {
+    var far = 0;
+    for (var k in save.stars) if (Object.prototype.hasOwnProperty.call(save.stars, k) && +k > far) far = +k;
+    return far;
+  }
+
+  function renderStats() {
+    var st = save.stats, ls = levelStats();
+    var avgStar = ls.cleared ? (ls.stars / ls.cleared).toFixed(1) : '-';
+    var items = [
+      ['깬 판', st.wins + '판', '레벨 ' + st.levelWins + ' · 오늘의 정원 ' + st.dailyWins + ' (다시 한 판 포함)'],
+      ['깬 레벨', ls.cleared + ' / ' + LEVELS.length, farthestLevel() ? '가장 멀리 간 레벨 ' + farthestLevel() : '아직 없어요'],
+      ['별', ls.stars + ' / ' + (LEVELS.length * 3), '레벨마다 평균 별 ' + avgStar + ' · 별 셋 ' + ls.perfect + '개'],
+      ['평균 풀이 시간', st.timed ? fmtTime(st.time / st.timed) : '-', st.timed ? st.timed + '판 · 모두 ' + fmtTime(st.time) : '판을 깨면 세요'],
+      ['힌트 없이 깬 판', st.timed ? Math.round(st.noHint * 100 / st.timed) + '%' : '-', st.timed ? st.noHint + ' / ' + st.timed + '판' : ''],
+      ['오늘의 정원', st.days + '일', '지금 연속 ' + shownStreak() + '일 · 최고 연속 ' + save.daily.best + '일']
+    ];
+    var gl = $('statsGrid');
+    gl.innerHTML = '';
+    items.forEach(function (it) {
+      var li = document.createElement('li');
+      li.className = 'stat';
+      var name = document.createElement('span');
+      name.className = 'small';
+      name.textContent = it[0];
+      var val = document.createElement('b');
+      val.textContent = it[1];
+      li.appendChild(name);
+      li.appendChild(val);
+      if (it[2]) {
+        var sub = document.createElement('span');
+        sub.className = 'small stat-sub';
+        sub.textContent = it[2];
+        li.appendChild(sub);
+      }
+      gl.appendChild(li);
+    });
+    var tb = $('statsSizes');
+    tb.innerHTML = '';
+    sizeStats().forEach(function (r) {
+      var tr = document.createElement('tr');
+      [
+        r.n + '×' + r.n,
+        r.cleared + ' / ' + r.total,
+        r.cleared ? (r.stars / r.cleared).toFixed(1) : '-',
+        r.fast ? fmtTime(r.fast) : '-',
+        r.timed ? fmtTime(r.sum / r.timed) : '-'
+      ].forEach(function (text, ci) {
+        var td = document.createElement(ci ? 'td' : 'th');
+        if (!ci) td.setAttribute('scope', 'row');
+        td.textContent = text;
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+  }
+
+  function openStats() {
+    renderStats();
+    openPanel('stats');
   }
 
   // ---------- 날짜 ----------
@@ -237,10 +451,37 @@
 
   // ---------- 소리 ----------
 
+  // 소리는 사람이 처음 누른(터치·클릭·키) 뒤에만 켠다. 그 전에는 AudioContext 를 만들지 않아
+  // 효과음 함수(tone·sweep·noise)가 모두 조용히 끝난다. 시험 훅(__test)의 act 도 사람 입력이 아니라 소리가 없다
   var audioCtx = null;
+  var audioUnlocked = false;
+
+  function unlockAudio(e) {
+    if (audioUnlocked || (e && e.isTrusted === false)) return;
+    audioUnlocked = true;
+    window.removeEventListener('pointerdown', unlockAudio, true);
+    window.removeEventListener('keydown', unlockAudio, true);
+    window.removeEventListener('touchstart', unlockAudio, true);
+    ensureAudio();
+  }
+  // 캡처 단계라 버튼·판의 pointerdown 보다 먼저 풀린다 → 첫 누름의 효과음부터 난다
+  window.addEventListener('pointerdown', unlockAudio, true);
+  window.addEventListener('keydown', unlockAudio, true);
+  window.addEventListener('touchstart', unlockAudio, true);
+
+  // 소리를 끄거나 탭이 숨겨지면 멈추고, 다시 켜거나 돌아오면(첫 누름 뒤에만) 잇는다
+  function suspendAudio() {
+    if (!audioCtx) return;
+    try {
+      if (audioCtx.state === 'running') {
+        var p = audioCtx.suspend();
+        if (p && p.catch) p.catch(function () {});
+      }
+    } catch (e) { /* 멈추지 못해도 게임은 계속한다 */ }
+  }
 
   function ensureAudio() {
-    if (!save.settings.sound) return;
+    if (!audioUnlocked || !save.settings.sound) return;
     try {
       if (!audioCtx) {
         var Ctx = window.AudioContext || window.webkitAudioContext;
@@ -353,7 +594,7 @@
   var panels = {
     clear: $('clearPanel'), ad: $('adPanel'), reward: $('rewardPanel'),
     settings: $('settingsPanel'), how: $('howPanel'), reset: $('resetPanel'),
-    pause: $('pausePanel')
+    pause: $('pausePanel'), ach: $('achPanel'), stats: $('statsPanel')
   };
   var overlay = $('overlay');
   var curScreen = 'start';
@@ -361,12 +602,13 @@
   var panelStack = [];
 
   function showScreen(name) {
-    document.body.classList.toggle('still', !!save.settings.still);
+    document.body.classList.toggle('still', stillMode());
     for (var k in screens) if (Object.prototype.hasOwnProperty.call(screens, k)) screens[k].classList.toggle('on', k === name);
     curScreen = name;
     if (name === 'start') renderStart();
     if (name === 'map') renderMap();
     if (name === 'play') { resize(); render(); }
+    wake();
   }
 
   function openPanel(name) {
@@ -375,6 +617,7 @@
     overlay.classList.remove('hidden');
     curPanel = name;
     markPaused();
+    wake();
   }
 
   function closePanel() {
@@ -383,6 +626,7 @@
     curPanel = back;
     if (!back) overlay.classList.add('hidden');
     markPaused();
+    wake();   // 완료 창으로 돌아오면 연출을, 판으로 돌아오면 시간을 다시 움직인다
   }
 
   function closeAllPanels() {
@@ -392,6 +636,7 @@
     for (var k in panels) if (Object.prototype.hasOwnProperty.call(panels, k)) panels[k].classList.remove('show');
     overlay.classList.add('hidden');
     markPaused();
+    wake();
   }
 
   // 일시정지 창이 떠 있거나 그 위에 설정·방법 창을 겹쳐 연 동안은 판을 가린다
@@ -443,7 +688,8 @@
     var info = [];
     if (LEVELS.length) info.push('레벨 ' + LEVELS.length + '개 · 깬 레벨 ' + clearedCount() + ' · 별 ' + starTotal());
     else info.push('레벨을 준비하는 중이에요.');
-    if (save.daily.last === today()) info.push('오늘의 정원을 밝혔어요');
+    $('startAchBtn').textContent = '업적 ' + achCount() + '/' + ACHS.length;
+    if (save.daily.last === today()) info.push('오늘의 정원을 밝혔어요' + (save.daily.timeDate === today() && save.daily.time ? ' (' + fmtTime(save.daily.time) + ')' : ''));
     $('startInfo').textContent = info.join(' · ');
   }
 
@@ -511,17 +757,19 @@
           if (no <= next) {
             node = document.createElement('button');
             node.type = 'button';
-            node.setAttribute('aria-label', '레벨 ' + no);
+            node.setAttribute('aria-label', '레벨 ' + no + (save.stars[no] ? ' · 깬 레벨 · 별 ' + save.stars[no] + '개' : ' · 지금 할 레벨'));
             node.className = 'node ' + (save.stars[no] ? 'lit' : 'now');
           } else {
             node = document.createElement('div');
             node.className = 'node locked';
+            node.setAttribute('role', 'img');
+            node.setAttribute('aria-label', '레벨 ' + no + ' · 잠김');
           }
           node.setAttribute('data-no', String(no));
           node.style.left = Math.round(mapX(i)) + '%';
-          // 깬 레벨 등불 아래 별 세 칸: 받은 별 금빛, 못 받은 칸 회색
+          // 깬 레벨 등불 아래 별 세 칸(받은 별 금빛 채움, 못 받은 칸 빈 점선), 잠긴 레벨 아래 자물쇠 — 색만으로 가르지 않는다 (G-24)
           var s = save.stars[no] || 0;
-          node.innerHTML = '<span>' + no + '</span>' + (s ? '<span class="st" aria-label="별 ' + s + '개">' + starsHtml(s) + '</span>' : '');
+          node.innerHTML = '<span>' + no + '</span>' + (s ? '<span class="st" aria-hidden="true">' + starsHtml(s) + '</span>' : (no > next ? LOCK_SVG : ''));
           rowEl.appendChild(node);
           zone.appendChild(rowEl);
         }
@@ -543,7 +791,7 @@
     if (!el) return;
     var lr = list.getBoundingClientRect(), er = el.getBoundingClientRect();
     var top = list.scrollTop + (er.top + er.height / 2) - (lr.top + lr.height / 2);
-    if (smooth && list.scrollTo) list.scrollTo({ top: top, behavior: 'smooth' });
+    if (smooth && list.scrollTo && !stillMode()) list.scrollTo({ top: top, behavior: 'smooth' });
     else list.scrollTop = top;
   }
 
@@ -582,6 +830,14 @@
     if (save.settings.still) return true;
     try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; }
   }
+
+  // 기기 설정의 '동작 줄이기' 를 켜고 끄면 바로 body.still 을 맞춘다 (설정 '움직임 줄이기' 와 같은 규칙)
+  try {
+    var reduceMq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    var onReduce = function () { document.body.classList.toggle('still', stillMode()); };
+    if (reduceMq && reduceMq.addEventListener) reduceMq.addEventListener('change', onReduce);
+    else if (reduceMq && reduceMq.addListener) reduceMq.addListener(onReduce);
+  } catch (e) { /* matchMedia 가 없으면 설정 버튼만 쓴다 */ }
 
   // 누르기는 pointer 이벤트로 받는다: 같은 대상 위에서 눌렀다 떼면 바로 동작하고, 뒤따르는 click 은 거른다.
   // click 은 키보드(엔터·스페이스)로 누를 때만 남는다. pick(요소) 는 누른 대상(없으면 null)을 돌려준다
@@ -637,7 +893,7 @@
     var N = b.n * b.n, marks = [], auto = [];
     for (var i = 0; i < N; i++) { marks.push(EMPTY); auto.push(-1); }
     return { kind: kind, no: no, date: date, n: b.n, reg: b.reg, sol: b.sol, score: b.score, tut: b.tut || 0, par: b.par || parSeconds(b.n, b.score),
-      tech: b.made, marks: marks, auto: auto, hist: [], time: 0, hints: 0, xMode: false, done: false };
+      tech: b.made, marks: marks, auto: auto, hist: [], time: 0, hints: 0, xMode: false, done: false, coach: 0 };
   }
 
   function storePlay() {
@@ -673,7 +929,10 @@
     if (!b) { toast('오늘의 정원을 준비하는 중이에요'); return; }
     var p = newPlay('daily', 0, d, b);
     if (save.playDaily && save.playDaily.date === d) p = restore(p, save.playDaily);
+    // 날짜마다 같은 판을 모두 같이 푼다. 기록은 하루 한 번(그날 처음 깬 판)이고, 그 뒤로는 연습 판이다
+    p.practice = save.daily.last === d;
     beginPlay(p);
+    if (p.practice) toast('오늘 기록은 남겼어요 · 이번 판은 연습이에요');
   }
 
   function beginPlay(p) {
@@ -698,14 +957,14 @@
       $('ruleText').textContent = TUTORIAL[P.no] || RULE_ALL;
     } else {
       $('levelText').textContent = '오늘의 정원';
-      $('badgeText').textContent = P.date.slice(5).replace('-', '/');
+      $('badgeText').textContent = P.date.slice(5).replace('-', '/') + (P.practice ? ' · 연습' : '');
       $('badgeText').className = 'badge daily';
       $('dailyMark').hidden = false;
       $('ruleText').textContent = RULE_ALL;
     }
     if (P.kind === 'level') {
       var stg = stageOf(P.no), lvb = LEVELS[P.no - 1];
-      if (P.no === 3) {
+      if (P.no === 3 && !coachOn()) {
         setMsg('× 표시를 켜고 칸을 누르면 등불이 못 들어갈 칸에 ×를 찍을 수 있어요.', 'hint', 0);
       } else if (stg && stg.first && P.no > 1) {
         setMsg('새 단계 · ' + stg.n + '×' + stg.n + ' 정원(레벨 ' + stg.from + '~' + stg.to + ') — 판이 커졌어요. 처음 몇 판은 쉬워요.', 'hint', 0);
@@ -830,15 +1089,17 @@
   function render() {
     if (!P) return null;
     var info = conflicts();
-    document.body.classList.toggle('still', !!save.settings.still);
+    document.body.classList.toggle('still', stillMode());
     boardEl.classList.toggle('cb', !!save.settings.cb);
     var whyAt = -1;
     if (info.badCount) whyAt = info.bad[lastLamp] ? lastLamp : +Object.keys(info.bad)[0];
-    var focus = {}, target = {};
+    var focus = {}, target = {}, cfocus = {};
     if (hintMark) {
       hintMark.focus.forEach(function (k) { focus[k] = true; });
       hintMark.target.forEach(function (k) { target[k] = true; });
     }
+    var step = coachStep();
+    if (step) step.focus.forEach(function (k) { cfocus[k] = true; });
     for (var i = 0; i < cells.length; i++) {
       var m = P.marks[i];
       var sig = m + ':' + (P.auto[i] >= 0 ? 'a' : '') + ':' + (i === whyAt ? info.bad[i] : '');
@@ -852,6 +1113,7 @@
       if (info.bad[i]) cls += ' bad';
       if (focus[i]) cls += ' hfocus';
       if (target[i]) cls += ' htarget';
+      if (cfocus[i] && !focus[i]) cls += ' cfocus';
       if (showCursor && i === cursor) cls += ' cursor';
       if (P.done && m === LAMP) cls += ' lit';
       if (cellFx && cellFx.i === i && performance.now() < cellFx.until) cls += ' ' + cellFx.cls;
@@ -865,24 +1127,116 @@
     var free = Math.max(0, FREE_HINTS - P.hints), left = Math.max(0, HINT_MAX - P.hints);
     $('hintLabel').textContent = free ? '힌트 (무료 ' + free + ')' : (left ? '힌트 (광고 ' + left + ')' : '힌트 (다 씀)');
     $('hintBtn').classList.toggle('spent', !left);
-    xb.classList.toggle('teach', P.kind === 'level' && P.no === 3 && !P.xMode && !P.done);
-    $('hintBtn').classList.remove('teach');
+    xb.classList.toggle('teach', !!step && step.btn === 'xBtn');
+    $('hintBtn').classList.toggle('teach', !!step && step.btn === 'hintBtn');
     $('timeText').textContent = fmtTime(P.time);
-    renderFinger();
+    renderFinger(step);
+    renderCoach(step);
     renderMsg(info);
     return info;
   }
 
-  function renderFinger() {
-    if (!fingerEl) return;
-    var show = P.kind === 'level' && P.no === 1 && !P.done;
-    var at = -1;
-    if (show) {
-      for (var r = 0; r < P.n; r++) {
-        var i = r * P.n + P.sol[r];
-        if (P.marks[i] !== LAMP) { at = i; break; }
+  // ---------- 첫 판 안내 (레벨 1~3) ----------
+  // 처음 하는 사람에게 한 번에 한 동작만 알려 준다: 안내 띠 #coach 에 지금 할 일 하나, 누를 칸은 손가락과 빛 테두리(.cfocus),
+  // 누를 버튼은 깜빡임(.teach). 그 동작을 하면 다음 단계로 넘어가고(P.coach 는 앞으로만 간다), 마지막 단계는 혼자 풀기다.
+  // '다시 보지 않기'(#coachOffBtn)는 save.settings.tutor 를 끄고 저장한다. 설정 #setTutor 로 다시 켠다.
+  function coachOn() {
+    return !!(P && P.kind === 'level' && P.tut >= 1 && P.tut <= 3 && !P.done && save.settings.tutor);
+  }
+
+  function rowCells(r) {
+    var out = [];
+    for (var c = 0; c < P.n; c++) out.push(r * P.n + c);
+    return out;
+  }
+
+  function regionCells(g) {
+    var out = [];
+    for (var i = 0; i < P.reg.length; i++) if (P.reg[i] === g) out.push(i);
+    return out;
+  }
+
+  function solCell(r) { return r * P.n + P.sol[r]; }
+
+  function hasOwnCross() {
+    for (var i = 0; i < P.marks.length; i++) if (P.marks[i] === CROSS && P.auto[i] < 0) return true;
+    return false;
+  }
+
+  function lampAt(i) { return function () { return P.marks[i] === LAMP; }; }
+  function never() { return false; }
+
+  // 레벨마다 단계 목록. 단계 하나 = { text, cell(손가락 칸, 없으면 -1), focus(빛 테두리 칸), btn(깜빡일 버튼 id), done() }
+  function coachSteps() {
+    var n = P.n, steps = [];
+    if (P.tut === 1) {
+      for (var r = 0; r < n; r++) {
+        var c1 = solCell(r);
+        steps.push({
+          text: r === 0 ? '손가락이 짚은 칸을 눌러 등불을 놓아 보세요.'
+            : '가로줄마다 등불 하나예요. 빛나는 ' + (r + 1) + '번째 줄의 짚은 칸을 눌러요.',
+          cell: c1, focus: rowCells(r), btn: '', done: lampAt(c1)
+        });
       }
+    } else if (P.tut === 2) {
+      var a = solCell(0), b = solCell(1);
+      steps.push({ text: '색 꽃밭마다 등불 하나예요. 빛나는 꽃밭의 짚은 칸을 눌러요.', cell: a, focus: regionCells(P.reg[a]), btn: '', done: lampAt(a) });
+      steps.push({ text: '같은 줄·같은 꽃밭은 피해요. 이번엔 이 꽃밭의 짚은 칸이에요.', cell: b, focus: regionCells(P.reg[b]), btn: '', done: lampAt(b) });
+      steps.push({ text: '남은 꽃밭에도 하나씩, 이제 혼자 놓아 봐요. 틀리면 그 칸에 까닭이 떠요.', cell: -1, focus: [], btn: '', done: never });
+    } else if (P.tut === 3) {
+      var s = solCell(0), sr = 0, sc = P.sol[0], diag = [];
+      [[sr + 1, sc - 1], [sr + 1, sc + 1]].forEach(function (rc) {
+        if (rc[0] < n && rc[1] >= 0 && rc[1] < n) diag.push(rc[0] * n + rc[1]);
+      });
+      var xAt = function () {
+        for (var k = 0; k < diag.length; k++) if (P.marks[diag[k]] === EMPTY) return diag[k];
+        return -1;
+      };
+      steps.push({ text: '짚은 칸을 눌러 등불을 놓아요.', cell: s, focus: [], btn: '', done: lampAt(s) });
+      steps.push({ text: '아래 깜빡이는 × 표시 버튼을 눌러 켜요.', cell: -1, focus: [], btn: 'xBtn', done: function () { return P.xMode || hasOwnCross(); } });
+      steps.push({ text: '등불과 대각선으로 닿는 칸에도 등불이 못 와요. 짚은 칸을 눌러 ×를 찍어요.', cell: xAt, focus: diag, btn: '',
+        done: function () { return hasOwnCross() || xAt() < 0; } });
+      steps.push({ text: '× 표시 버튼을 다시 눌러 꺼요. 꺼야 등불을 놓을 수 있어요.', cell: -1, focus: [], btn: 'xBtn', done: function () { return !P.xMode; } });
+      steps.push({ text: '이제 혼자 풀어 봐요. 막히면 힌트(무료 1번)를 눌러요.', cell: -1, focus: [], btn: '', done: never });
     }
+    return steps;
+  }
+
+  // 지금 단계(이미 한 동작은 건너뛴다). 안내가 꺼졌거나 단계가 끝났으면 null
+  function coachStep() {
+    if (!coachOn()) return null;
+    var steps = coachSteps();
+    var before = P.coach = P.coach || 0;
+    while (P.coach < steps.length && steps[P.coach].done()) P.coach++;
+    if (P.coach >= steps.length) return null;
+    var st = steps[P.coach];
+    st.no = P.coach + 1;
+    st.total = steps.length;
+    st.moved = P.coach !== before;
+    if (typeof st.cell === 'function') st.cell = st.cell();
+    return st;
+  }
+
+  function renderCoach(step) {
+    var box = $('coach');
+    if (!step) { box.hidden = true; return; }
+    box.hidden = false;
+    var label = '안내 ' + step.no + '/' + step.total;
+    if ($('coachStep').textContent !== label) $('coachStep').textContent = label;
+    if ($('coachText').textContent !== step.text) $('coachText').textContent = step.text;
+    if (step.moved) replay(box, 'fx-next');
+  }
+
+  function coachOff() {
+    save.settings.tutor = false;
+    persist();
+    toast('첫 판 안내를 껐어요. 설정에서 다시 켤 수 있어요');
+    if (P) render();
+  }
+
+  function renderFinger(step) {
+    if (!fingerEl) return;
+    var at = step && step.cell >= 0 && P.marks[step.cell] !== LAMP ? step.cell : -1;
     if (at < 0) { fingerEl.style.display = 'none'; return; }
     var cell = cells[at];
     fingerEl.style.display = 'block';
@@ -1291,10 +1645,12 @@
       save.playLevel = null;
     } else {
       var d = P.date;
-      if (save.daily.timeDate !== d) { save.daily.timeDate = d; save.daily.time = 0; rec.first = true; }
-      else if (sec < save.daily.time) rec.newTime = true;
-      if (!save.daily.time || sec < save.daily.time) save.daily.time = sec;
-      if (save.daily.last !== d) {
+      // 오늘의 정원 기록은 하루 한 번: 그날 처음 깬 판의 시간만 남고, 그 뒤 판(연습)은 기록·연속 일수를 바꾸지 않는다
+      if (!P.practice && save.daily.last !== d) {
+        save.daily.timeDate = d;
+        save.daily.time = sec;
+        rec.first = true;
+        save.stats.days++;
         var gap = save.daily.last ? dayNumber(d) - dayNumber(save.daily.last) : 99;
         save.daily.streak = gap === 1 ? save.daily.streak + 1 : 1;
         save.daily.last = d;
@@ -1303,6 +1659,14 @@
       streak = save.daily.streak;
       save.playDaily = null;
     }
+    if (P.kind === 'level' && !P.hints && P.time <= parTime() / 2) save.swift++;
+    var sts = save.stats;
+    sts.wins++;
+    if (P.kind === 'level') sts.levelWins++; else sts.dailyWins++;
+    sts.timed++;
+    sts.time += sec;
+    if (!P.hints) sts.noHint++;
+    rec.ach = checkAch();
     persist();
     mapBuiltFor = '';
     render();
@@ -1319,7 +1683,7 @@
     // 판이 끝나면 반드시 완료 창(결과 화면)으로 간다. 연출 중에 뒤로 가기를 눌러도 완료 창을 먼저 띄운다(playBackBtn)
     cancelClear();
     clearPending = { stars: stars, streak: streak, rec: rec };
-    clearTimer = window.setTimeout(flushClear, save.settings.still ? 300 : 1500);
+    clearTimer = window.setTimeout(flushClear, stillMode() ? 300 : 1500);
   }
 
   var clearPending = null, clearTimer = 0;
@@ -1349,7 +1713,7 @@
   function showClearGlow() {
     placeHole();
     glowEl.classList.add('on');
-    if (!save.settings.still) spawnFireflies();
+    if (!stillMode()) spawnFireflies();
   }
 
   function hideClearGlow() {
@@ -1403,16 +1767,22 @@
       $('nextBtn').hidden = false;
       $('clearMapBtn').hidden = false;
     } else {
-      $('clearTitle').textContent = '오늘의 정원을 밝혔어요';
+      $('clearTitle').textContent = P.practice ? '연습 판을 밝혔어요' : '오늘의 정원을 밝혔어요';
       $('clearText').textContent = '별 ' + stars + '개 · ' + hintText + ' · 연속 ' + streak + '일';
-      bestText = '오늘 ' + fmtTime(save.daily.time || P.time) + ' · 최고 연속 ' + save.daily.best + '일' + (rec.first ? ' (첫 기록)' : '');
+      bestText = '오늘 기록 ' + fmtTime(save.daily.time || P.time) + ' · 최고 연속 ' + save.daily.best + '일' +
+        (P.practice ? ' · 연습 판은 기록에 남지 않아요' : ' (오늘의 기록)');
       // 오늘의 정원은 다음 판이 없다: 다시 하기·처음으로만 둔다
       $('nextBtn').hidden = true;
       $('clearMapBtn').hidden = true;
     }
     $('clearBestText').textContent = bestText;
     $('clearNew').hidden = !isNew;
+    var newAch = rec.ach || [];
+    $('clearAch').hidden = !newAch.length;
+    $('clearAchText').textContent = newAch.map(function (a) { return a.name; }).join(' · ');
     $('clearTech').textContent = techText(P);
+    shareStars = stars;
+    $('shareBox').hidden = true;
     openPanel('clear');
     // 별을 왼쪽부터 하나씩 박고(clear_fx.js), 마지막 별 뒤에 걸린 시간을 0부터 올린다
     var total = P.time;
@@ -1425,10 +1795,56 @@
         onFinale: function () { SFX.fanfare(); },
         onCount: function (v, done) { $('clearScore').textContent = fmtTime(done ? total : v); }
       });
+      wake();
     } else {
       host.innerHTML = '<span class="stars">' + starsHtml(stars) + '</span>';
       $('clearScore').textContent = fmtTime(total);
     }
+  }
+
+  // ---------- 결과 복사 (G-27) ----------
+
+  var shareStars = 0;
+
+  // 결과 화면의 결과 문구: 이름·판·별·걸린 시간·힌트(오늘의 정원은 연속 일수)
+  function shareMessage() {
+    if (!P) return '';
+    var starLine = '';
+    for (var k = 0; k < 3; k++) starLine += k < shareStars ? '★' : '☆';
+    var head = P.kind === 'level'
+      ? '레벨 ' + P.no + ' (' + P.n + '×' + P.n + ')'
+      : (P.practice ? '오늘의 정원 연습 ' : '오늘의 정원 ') + P.date;
+    var tail = P.hints ? '힌트 ' + P.hints + '번' : '힌트 없이';
+    if (P.kind !== 'level' && !P.practice) tail += ' · 연속 ' + save.daily.streak + '일';
+    return 'Lantern Garden 등불 정원 — ' + head + '\n' + starLine + ' ' + fmtTime(P.time) + ' · ' + tail;
+  }
+
+  // 클립보드에 쓰고, 막히면(권한·보안 연결 아님·옛 브라우저) 글 상자를 보여 주고 골라 둔다
+  function shareResult() {
+    if (curPanel !== 'clear') return;
+    var text = shareMessage();
+    var box = $('shareText');
+    box.value = text;
+    var fallback = function () {
+      $('shareBox').hidden = false;
+      try { box.focus(); box.select(); box.setSelectionRange(0, text.length); } catch (e) {}
+      var ok = false;
+      try { ok = document.execCommand && document.execCommand('copy'); } catch (e) { ok = false; }
+      $('shareNote').textContent = ok
+        ? '복사했어요. 같은 글을 아래에도 둘게요.'
+        : '복사가 막혀 있어요. 아래 글을 길게 눌러(또는 Ctrl+C) 복사해 주세요.';
+      if (ok) toast('결과를 복사했어요');
+    };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext !== false) {
+        navigator.clipboard.writeText(text).then(function () {
+          $('shareBox').hidden = true;
+          toast('결과를 복사했어요');
+        }, fallback);
+        return;
+      }
+    } catch (e) {}
+    fallback();
   }
 
   // 결과 화면 `다시 하기`: 같은 판을 빈 판·0:00·힌트 0 으로 처음부터 (별·최고 기록은 더 좋을 때만 바뀐다)
@@ -1443,7 +1859,9 @@
       var b = dailyFor(p.date);
       if (!b) { showScreen('start'); return; }
       save.playDaily = null;
-      beginPlay(newPlay('daily', 0, p.date, b));
+      var np = newPlay('daily', 0, p.date, b);
+      np.practice = save.daily.last === p.date;
+      beginPlay(np);
     }
   }
 
@@ -1468,6 +1886,7 @@
     setToggle('setAutoX', st.autoX);
     setToggle('setCb', st.cb);
     setToggle('setStill', st.still);
+    setToggle('setTutor', st.tutor);
     $('setClearBoard').disabled = !(P && curScreen === 'play' && !P.done);
   }
 
@@ -1481,8 +1900,8 @@
   function flip(key) {
     save.settings[key] = !save.settings[key];
     persist();
-    if (key === 'sound' && save.settings.sound) ensureAudio();
-    document.body.classList.toggle('still', !!save.settings.still);
+    if (key === 'sound') { if (save.settings.sound) ensureAudio(); else suspendAudio(); }
+    document.body.classList.toggle('still', stillMode());
     renderSettings();
     if (P) render();
   }
@@ -1529,6 +1948,10 @@
   });
   on('dailyBtn', startDaily);
   on('startHowBtn', function () { openPanel('how'); });
+  on('startAchBtn', openAch);
+  on('achCloseBtn', closePanel);
+  on('startStatsBtn', openStats);
+  on('statsCloseBtn', closePanel);
   on('startSetBtn', openSettings);
   on('mapBackBtn', function () { showScreen('start'); });
   on('mapSetBtn', openSettings);
@@ -1553,6 +1976,7 @@
     showScreen(P && P.kind === 'daily' ? 'start' : 'map');
   });
   on('retryBtn', retryClear);
+  on('shareBtn', shareResult);
   on('clearHomeBtn', function () {
     closeAllPanels();
     showScreen('start');
@@ -1564,6 +1988,8 @@
   on('setAutoX', function () { flip('autoX'); });
   on('setCb', function () { flip('cb'); });
   on('setStill', function () { flip('still'); });
+  on('setTutor', function () { flip('tutor'); });
+  on('coachOffBtn', coachOff);
   on('setClearBoard', function () { closeAllPanels(); clearBoard(); });
   on('setHow', function () { openPanel('how'); });
   on('setNoAds', function () { toast('광고 제거는 준비 중이에요'); });
@@ -1591,8 +2017,9 @@
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     // 누르고 있어 되풀이되는 키는 방향키만 받는다(엔터를 누른 채 완료 창을 건너뛰지 않게)
     if (e.repeat && String(e.key || '').indexOf('Arrow') !== 0) { if (!onButton()) e.preventDefault(); return; }
-    if (curPanel === 'how' || curPanel === 'settings' || curPanel === 'reset') {
-      if (e.key === 'Escape') { closePanel(); e.preventDefault(); }
+    if (curPanel === 'how' || curPanel === 'settings' || curPanel === 'reset' || curPanel === 'ach' || curPanel === 'stats') {
+      if (e.key === 'Escape' || (curPanel === 'ach' && (e.key === 'a' || e.key === 'A')) || (curPanel === 'stats' && (e.key === 't' || e.key === 'T'))) { closePanel(); e.preventDefault(); }
+      else if ((curPanel === 'ach' || curPanel === 'stats') && isKey(e, OK_KEYS) && !onButton()) { closePanel(); e.preventDefault(); }
       else if (e.key === '?' && curPanel === 'settings') { openPanel('how'); e.preventDefault(); }
       else if (curPanel === 'how' && isKey(e, OK_KEYS) && !onButton()) { closePanel(); e.preventDefault(); }
       return;
@@ -1604,9 +2031,12 @@
       return;
     }
     if (curPanel === 'clear') {
-      // 엔터·스페이스 다음 레벨(오늘의 정원은 처음으로), R 다시 하기, M 지도, Esc 처음으로
+      // 엔터·스페이스 다음 레벨(오늘의 정원은 처음으로), R 다시 하기, M 지도, C 결과 복사, Esc 처음으로
+      // 결과 글 상자 안에서는 Esc 말고는 상자가 받는다(골라서 복사할 수 있게)
+      if (document.activeElement && document.activeElement.id === 'shareText' && e.key !== 'Escape') return;
       var handledClear = true;
-      if (isKey(e, OK_KEYS)) {
+      if (e.key === 'c' || e.key === 'C') shareResult();
+      else if (isKey(e, OK_KEYS)) {
         if (onButton()) return;
         if (P && P.kind === 'level') afterClear();
         else { closeAllPanels(); showScreen('start'); }
@@ -1641,6 +2071,8 @@
         else showScreen('map');
         e.preventDefault();
       } else if (e.key === 'd' || e.key === 'D') { ensureAudio(); startDaily(); e.preventDefault(); }
+      else if (e.key === 'a' || e.key === 'A') { openAch(); e.preventDefault(); }
+      else if (e.key === 't' || e.key === 'T') { openStats(); e.preventDefault(); }
       return;
     }
     if (curScreen === 'map') {
@@ -1690,12 +2122,24 @@
   // ---------- 시간 ----------
 
   var lastTick = 0;
-  // 고리 하나가 예외로 끊기면 시간·연출이 멈추므로, 무슨 일이 있어도 다음 프레임을 건다(finally).
+  // 움직이는 화면은 이 requestAnimationFrame 고리 하나로 그린다(G-29). 풀이 시간이 흐르거나 완료 창 연출이
+  // 움직일 때만 다음 프레임을 걸고, 멈추면(창·일시정지·시작·지도 화면·숨은 탭·연출 끝) 고리를 쉰다.
+  // 다시 움직일 수 있는 때(화면·창이 바뀔 때, 이어하기, 탭이 돌아올 때, 연출 시작)에 wake() 가 고리를 다시 건다.
+  // 고리 하나가 예외로 끊기면 시간·연출이 멈추므로, 예외가 나면 다음 프레임을 건다(finally).
   // 연출(ClearFx)이 잇달아 예외를 내면 FX_FAIL_MAX 번 뒤로는 연출을 건너뛰고 완료 창은 그대로 쓴다
   var FX_FAIL_MAX = 3, fxFails = 0;
+  var rafId = 0;
+  function frameNow() { return window.performance && performance.now ? performance.now() : 0; }
+  function wake() {
+    if (rafId) return;
+    lastTick = frameNow();
+    rafId = window.requestAnimationFrame(tick);
+  }
   function tick(now) {
+    rafId = 0;
+    var again = true;
     try {
-      var running = curScreen === 'play' && P && !P.done && !curPanel && !document.hidden;
+      var running = !!(curScreen === 'play' && P && !P.done && !curPanel && !document.hidden);
       if (running) {
         var dt = (now - lastTick) / 1000;
         if (dt > 0 && dt < 1) P.time += dt;
@@ -1704,18 +2148,21 @@
         if (te.textContent !== t) te.textContent = t;
         if (msgState.until && now > msgState.until) { msgState.text = ''; msgState.until = 0; render(); }
       }
+      var fxBusy = false;
       if (window.ClearFx && fxFails < FX_FAIL_MAX) {   // 완료 창 별 박기 연출도 이 한 고리에서 그린다
-        try { window.ClearFx.step(now); } catch (e) { fxFails++; }
+        try { window.ClearFx.step(now); fxBusy = window.ClearFx.busy(); } catch (e) { fxFails++; fxBusy = fxFails < FX_FAIL_MAX; }
       }
+      again = running || fxBusy;
     } finally {
       lastTick = now;
-      window.requestAnimationFrame(tick);
+      if (again && !rafId) rafId = window.requestAnimationFrame(tick);
     }
   }
 
   document.addEventListener('visibilitychange', function () {
     // 탭이 숨겨지면 풀던 판을 저장하고 일시정지 창을 띄운다. 돌아와도 이어하기를 눌러야 시간이 다시 흐른다
-    if (document.hidden) { if (!pauseGame()) storePlay(); }
+    if (document.hidden) { if (!pauseGame()) storePlay(); suspendAudio(); }
+    else { ensureAudio(); wake(); }
   });
   window.addEventListener('pagehide', storePlay);
   window.addEventListener('resize', function () { if (curScreen === 'play') { resize(); render(); } });
@@ -1729,6 +2176,6 @@
   // ---------- 처음 ----------
 
   loadSave();
+  if (checkAch().length) persist();     // 업적이 생기기 전에 쌓은 기록도 업적으로 센다
   showScreen('start');
-  window.requestAnimationFrame(tick);
 })();
