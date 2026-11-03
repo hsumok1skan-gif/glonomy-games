@@ -601,11 +601,32 @@
   var curPanel = null;
   var panelStack = [];
 
+  // 시작 화면 풍경(400×440): 위 자리(.start-sky)가 그림보다 납작하면(데스크톱 1280×720 등) 아래 끝 기준(xMidYMax)으로
+  // 잘려 하늘이 사라진다. 그럴 때는 가운데 기준(xMidYMid slice)으로 자르고, 달·별을 보이는 하늘 맨 위 바로 아래로 내려
+  // 초승달 .moon 이 늘 화면 안에 보이게 한다 (V-03). 마스크(#ssMoonCut)는 .moon 의 좌표를 따라 함께 움직인다
+  var startSky = document.querySelector('.start-sky');
+  var startArt = document.querySelector('.start-art');
+  function fitStartArt() {
+    if (!startSky || !startArt) return;
+    var w = startSky.clientWidth, h = startSky.clientHeight;
+    if (!w || !h) return;
+    var seen = 400 * h / w;                       // 보이는 그림 높이 (viewBox 단위)
+    var low = seen < 440;
+    startArt.setAttribute('preserveAspectRatio', low ? 'xMidYMid slice' : 'xMidYMax slice');
+    var top = low ? 220 - seen / 2 : 0;           // 보이는 맨 위 y
+    // 달 원판 위 끝(y 48)을 맨 위에서 12 아래로. 언덕(y 200) 아래로는 내리지 않는다
+    var dy = Math.max(0, Math.min(108, top + 12 - 48));
+    startArt.querySelectorAll('.moon, .stars').forEach(function (g) {
+      if (dy) g.setAttribute('transform', 'translate(0 ' + dy.toFixed(1) + ')');
+      else g.removeAttribute('transform');
+    });
+  }
+
   function showScreen(name) {
     document.body.classList.toggle('still', stillMode());
     for (var k in screens) if (Object.prototype.hasOwnProperty.call(screens, k)) screens[k].classList.toggle('on', k === name);
     curScreen = name;
-    if (name === 'start') renderStart();
+    if (name === 'start') { renderStart(); fitStartArt(); }
     if (name === 'map') renderMap();
     if (name === 'play') { resize(); render(); }
     wake();
@@ -684,6 +705,7 @@
     $('playBtn').textContent = resume ? '이어하기 · 레벨 ' + save.playLevel.no : '시작';
     var st = shownStreak();
     $('streakText').textContent = st ? '연속 ' + st + '일' : '';
+    $('streakText').hidden = !st;   // 0일이면 빈 배지를 숨긴다 (V-04)
     $('dailyBtn').disabled = !DD;
     var info = [];
     if (LEVELS.length) info.push('레벨 ' + LEVELS.length + '개 · 깬 레벨 ' + clearedCount() + ' · 별 ' + starTotal());
@@ -2165,12 +2187,14 @@
     else { ensureAudio(); wake(); }
   });
   window.addEventListener('pagehide', storePlay);
-  window.addEventListener('resize', function () { if (curScreen === 'play') { resize(); render(); } });
-  window.addEventListener('orientationchange', function () { if (curScreen === 'play') { resize(); render(); } });
+  window.addEventListener('resize', function () { if (curScreen === 'play') { resize(); render(); } if (curScreen === 'start') fitStartArt(); });
+  window.addEventListener('orientationchange', function () { if (curScreen === 'play') { resize(); render(); } if (curScreen === 'start') fitStartArt(); });
   // 창 크기는 그대로인데 판 자리만 바뀔 때(안내 글이 두세 줄로 늘어 판 자리가 줄 때 등)도 판을 다시 맞춘다.
   // 판 자리(.board-area)는 flex: 1 이라 판 크기가 자리 크기를 바꾸지 않는다(되먹임 없음)
   if (window.ResizeObserver) {
     new ResizeObserver(function () { if (curScreen === 'play') resize(); }).observe($('boardArea'));
+    // 시작 화면 글(오늘 기록 등)이 늘어 풍경 자리가 줄어도 달 자리를 다시 맞춘다
+    if (startSky) new ResizeObserver(function () { if (curScreen === 'start') fitStartArt(); }).observe(startSky);
   }
 
   // ---------- 처음 ----------

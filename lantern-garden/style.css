@@ -28,6 +28,8 @@ html, body {
   color: var(--text);
   font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
   font-size: var(--fs-m);
+  word-break: keep-all;
+  overflow-wrap: break-word;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -103,19 +105,26 @@ body.paused #board { visibility: hidden; }
   color: var(--gold);
   font-size: var(--fs-s);
 }
+/* 연속 일수가 0이라 글이 비면 빈 막대를 남기지 않는다 */
+.pill:empty, .pill[hidden] { display: none; }
 
 /* ---------- 시작 ---------- */
 
 /* 시작 화면 그림.
    위쪽 .start-sky 가 남은 높이를 모두 채우고, 그 안의 svg.start-art 가 밤 정원 풍경(별·초승달 .moon·울타리·꽃밭·굽은 길·
    길을 따라 켜진 등불 .path-lamp 6개)을 아래 끝 기준으로 꽉 채워 그린다. 풍경 아래 끝은 --bg 로 사라지고, 그 아래 .start-body
-   (제목·버튼)는 --bg 어두운 바탕이다. */
+   (제목·버튼)는 --bg 어두운 바탕이다. 자리가 그림보다 납작하면 game.js fitStartArt() 가 xMidYMid slice 로 바꾸고
+   달·별을 보이는 하늘로 내린다(V-03). */
 .start-sky {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
   background: #0f1330;
+}
+/* 데스크톱(넓고 충분히 높은 창)에서는 풍경 자리를 화면 높이의 38% 아래로 줄이지 않는다. 폰은 버튼이 먼저라 그대로 둔다 */
+@media (min-width: 720px) and (min-height: 680px) {
+  .start-sky { min-height: 38vh; }
 }
 
 .start-art {
@@ -157,7 +166,7 @@ body.paused #board { visibility: hidden; }
 
 .title { margin: 0; font-size: var(--fs-xxl); color: var(--gold); letter-spacing: 1px; }
 .subtitle { margin: -6px 0 0; color: var(--muted); }
-.start-rule { margin: 4px 0 8px; line-height: 1.6; }
+.start-rule { margin: 4px 0 8px; line-height: 1.6; word-break: keep-all; }
 
 .big { width: 100%; max-width: 320px; min-height: 56px; font-size: var(--fs-l); }
 
