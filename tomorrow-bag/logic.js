@@ -193,6 +193,21 @@ var Logic = (function () {
 
   function checkKey(kidId, k) { return kidId + '|' + k; }
 
+  // 앞 학교 가는 날 가방과 달라진 것: { add: 오늘에만 있는 이름, out: 어제에만 있는 이름 } (norm·소문자로 비교, 매일 물건은 양쪽에 있어 빠진다)
+  function bagDiff(state, kid, k) {
+    var cur = buildBag(state, kid, k).items;
+    var prev = buildBag(state, kid, prevSchoolDay(k, state.settings.holidays)).items;
+    function keys(list) {
+      var o = {};
+      list.forEach(function (it) { o[norm(it.name).toLowerCase()] = true; });
+      return o;
+    }
+    function only(list, other) {
+      return list.filter(function (it) { return !other[norm(it.name).toLowerCase()]; }).map(function (it) { return it.name; });
+    }
+    return { add: only(cur, keys(prev)), out: only(prev, keys(cur)) };
+  }
+
   function progress(state, kid, bag) {
     var done = state.checks[checkKey(kid.id, bag.date)] || [];
     var n = 0;
@@ -583,6 +598,11 @@ var Logic = (function () {
     st.skips = { 'k|2026-10-26': ['필통'] };
     eq('내일은 빼기 뒤 물건 수', buildBag(st, kid, '2026-10-26').items.length, 6);
     delete st.skips;
+    // 4-3) 어제와 달라진 것: 월 체육(체육복·물병·Pen) → 화 국어(국어 교과서·' pen '). 매일 필통과 대소문자만 다른 pen 은 빠진다
+    var ds = { packs: [{ id: 'A', name: '체육', items: ['체육복', '물병', 'Pen'] }, { id: 'B', name: '국어', items: ['국어 교과서', ' pen '] }],
+      daily: ['필통'], rules: [], notes: [], checks: {}, settings: { holidays: [] } };
+    var dd = bagDiff(ds, { id: 'k', week: { 1: { p: ['A'], after: [] }, 2: { p: ['B'], after: [] } } }, '2026-10-27');
+    eq('어제와 달라진 것', dd.add.join(',') + '|' + dd.out.join(','), '국어 교과서|체육복,물병');
     // 5) 가방 달력: 10/21 다 챙김, 10/22 덜 챙김, 10/23 다 챙김, 11/2 다 챙김 → 10월 스티커 2장
     var hs = [
       { kid: 'k', date: '2026-10-21', total: 10, done: 10, missed: [] },
@@ -605,6 +625,9 @@ var Logic = (function () {
     var picIds = {};
     DATA.ICONS.forEach(function (ic) { picIds[ic.id] = true; });
     eq('꾸러미 그림 모두 있음', DATA.SUBJECTS.concat(DATA.ACADEMIES).filter(function (p) { return !picIds[p.pic]; }).length, 0);
+    // 5-1c) 행사 12개의 pic 은 모두 있는 선 그림 id, 스티커 12개는 모두 직접 그린 그림(d)이 있다
+    eq('행사 그림 모두 있음', DATA.EVENTS.filter(function (e) { return !picIds[e.pic]; }).length, 0);
+    eq('스티커 그림 모두 있음', DATA.STICKERS.filter(function (s) { return !s.d; }).length, 0);
     // 5-2) 자주 덜 챙긴 것: 30일 앞(9/25)·다른 아이·그날(10/26) 기록은 빼고, ' 리코더'·'리코더' 는 같은 것 → 리코더 2, 물병 1
     var mc = missCounts([
       { kid: 'k', date: '2026-09-20', missed: ['리코더'] },
@@ -708,7 +731,7 @@ var Logic = (function () {
     toKey: toKey, fromKey: fromKey, addDays: addDays, dow: dow, validKey: validKey,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, progress: progress, isMorning: isMorning, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, bagDiff: bagDiff, progress: progress, isMorning: isMorning, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME

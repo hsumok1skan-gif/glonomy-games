@@ -66,20 +66,20 @@ var DATA = (function () {
       '가족 사진', '아기 때 사진', '좋아하는 책', '빌린 책', '악보', '리코더', '멜로디언', '실험 재료', '관찰 일지', '조사 숙제'] }
   ];
 
-  // 행사 꾸러미 12 — 날짜에 붙이면 그날 가방에 알림장 준비물로 들어간다
+  // 행사 꾸러미 12 — 날짜에 붙이면 그날 가방에 알림장 준비물로 들어간다 (pic: 고르기 칸에 그리는 ICONS 의 선 그림 id)
   var EVENTS = [
-    { id: 'e-trip', name: '현장체험학습', icon: '🚌', items: ['도시락', '돗자리', '물', '간식', '모자', '손수건', '비닐봉지'] },
-    { id: 'e-sports', name: '운동회', icon: '🏅', items: ['체육복', '운동화', '물병', '모자', '반 티셔츠'] },
-    { id: 'e-health', name: '건강검진', icon: '🩺', items: ['검진표', '소변 검사 통'] },
-    { id: 'e-swim', name: '생존수영 수업', icon: '🛟', items: ['수영복', '수모', '물안경', '수건', '슬리퍼', '비닐봉지'] },
-    { id: 'e-show', name: '학예회', icon: '🎭', items: ['공연 옷', '공연 소품', '여벌 옷'] },
-    { id: 'e-open', name: '공개수업', icon: '👀', items: ['발표 자료', '이름표'] },
-    { id: 'e-unit', name: '단원평가', icon: '📝', items: ['연필 두 자루', '지우개', '복습 공책'] },
-    { id: 'e-end', name: '방학식', icon: '🎒', items: ['큰 쇼핑백 (사물함 짐)', '실내화 주머니', '방학 생활 계획표'] },
-    { id: 'e-start', name: '개학식', icon: '🔔', items: ['방학 숙제', '실내화', '새 공책'] },
-    { id: 'e-market', name: '알뜰 시장', icon: '🛍️', items: ['팔 물건', '장바구니', '잔돈'] },
-    { id: 'e-cook', name: '요리 체험', icon: '🍳', items: ['앞치마', '두건', '위생 장갑', '반찬통'] },
-    { id: 'e-scday', name: '과학의 날', icon: '🚀', items: ['만들기 재료', '가위', '풀', '셀로판테이프'] }
+    { id: 'e-trip', name: '현장체험학습', pic: 'bus', items: ['도시락', '돗자리', '물', '간식', '모자', '손수건', '비닐봉지'] },
+    { id: 'e-sports', name: '운동회', pic: 'medal', items: ['체육복', '운동화', '물병', '모자', '반 티셔츠'] },
+    { id: 'e-health', name: '건강검진', pic: 'stethoscope', items: ['검진표', '소변 검사 통'] },
+    { id: 'e-swim', name: '생존수영 수업', pic: 'lifering', items: ['수영복', '수모', '물안경', '수건', '슬리퍼', '비닐봉지'] },
+    { id: 'e-show', name: '학예회', pic: 'stage', items: ['공연 옷', '공연 소품', '여벌 옷'] },
+    { id: 'e-open', name: '공개수업', pic: 'eye', items: ['발표 자료', '이름표'] },
+    { id: 'e-unit', name: '단원평가', pic: 'homework', items: ['연필 두 자루', '지우개', '복습 공책'] },
+    { id: 'e-end', name: '방학식', pic: 'bag', items: ['큰 쇼핑백 (사물함 짐)', '실내화 주머니', '방학 생활 계획표'] },
+    { id: 'e-start', name: '개학식', pic: 'bell', items: ['방학 숙제', '실내화', '새 공책'] },
+    { id: 'e-market', name: '알뜰 시장', pic: 'stall', items: ['팔 물건', '장바구니', '잔돈'] },
+    { id: 'e-cook', name: '요리 체험', pic: 'pan', items: ['앞치마', '두건', '위생 장갑', '반찬통'] },
+    { id: 'e-scday', name: '과학의 날', pic: 'rocket', items: ['만들기 재료', '가위', '풀', '셀로판테이프'] }
   ];
 
   // 도움말 한 줄 20
@@ -108,7 +108,7 @@ var DATA = (function () {
 
   var DOW = ['일', '월', '화', '수', '목', '금', '토'];
 
-  // 물건 그림 80 — 사람이 그린 그림이 오기 전까지 쓰는 24×24 선 SVG (stroke 는 currentColor)
+  // 물건 그림 90 — 사람이 그린 그림이 오기 전까지 쓰는 24×24 선 SVG (stroke 는 currentColor)
   // [id, 이름, 찾는 말(| 로 나눔, 한 글자 말은 낱말 하나일 때만 맞음), 그림]
   // 이름이 여러 말에 맞으면 가장 긴 말이 이긴다. 같으면 앞에 있는 것. 그래서 넓은 뜻(교과서·공책·봉투·가방)은 맨 뒤에 둔다
   var ICON_ROWS = [
@@ -185,7 +185,18 @@ var DATA = (function () {
     ['puzzle', '퍼즐', '퍼즐', '<path d="M4 8h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4H4z"/>'],
     ['school', '학교', '학교', '<path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M10 21v-5h4v5M12 5V2h3"/>'],
     ['mic', '마이크', '마이크', '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/>'],
-    ['notice', '알림장', '알림장', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
+    // 행사 그림 10 — 행사 꾸러미의 pic 으로 쓴다. 찾는 말은 위와 같이 물건 이름에 나오지 않는 말만 둔다
+    ['bus', '버스', '버스', '<rect x="4" y="4" width="16" height="14" rx="3"/><path d="M4 11h16M12 4v7M7 18v2M17 18v2"/><circle cx="8" cy="14.5" r=".8"/><circle cx="16" cy="14.5" r=".8"/>'],
+    ['medal', '메달', '메달', '<path d="M8 3l4 7 4-7"/><circle cx="12" cy="15" r="6"/><path d="M12 12.5v5M10.5 13.5l1.5-1"/>'],
+    ['stethoscope', '청진기', '청진기', '<path d="M6 3H5v6a5 5 0 0 0 10 0V3h-1"/><path d="M10 14v2a5 5 0 0 0 10 0v-3"/><circle cx="20" cy="11" r="2"/>'],
+    ['lifering', '구명 튜브', '구명', '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M5.6 5.6l3.6 3.6M18.4 5.6l-3.6 3.6M5.6 18.4l3.6-3.6M18.4 18.4l-3.6-3.6"/>'],
+    ['stage', '무대', '무대', '<path d="M3 4h18M4 4v16M20 4v16M3 20h18"/><path d="M4 4c0 6 3 9 6 10M20 4c0 6-3 9-6 10"/>'],
+    ['eye', '눈', '참관', '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>'],
+    ['bell', '종', '종소리', '<path d="M6 17v-6a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21a2 2 0 0 0 4 0M12 3v2"/>'],
+    ['stall', '가게', '가판대', '<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0A2.7 2.7 0 0 0 20 9"/><path d="M5.5 12v8h13v-8M10 20v-4h4v4"/>'],
+    ['pan', '프라이팬', '프라이팬', '<circle cx="10" cy="13" r="7"/><path d="M17 13h5"/><circle cx="10" cy="13" r="2.5"/>'],
+    ['rocket', '로켓', '로켓', '<path d="M12 2c3 2 4.5 6 4.5 10v4h-9v-4C7.5 8 9 4 12 2z"/><circle cx="12" cy="9.5" r="1.8"/><path d="M7.5 11L4 15v3l3.5-2M16.5 11L20 15v3l-3.5-2M10 19l2 3 2-3"/>'],
+    ['notice', '알림장', '알림장','<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
     ['homework', '숙제', '숙제|학습지|문제집|활동지', '<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4M8 13l2 2 4-4"/>'],
     ['paper', '서류', '가정통신문|통신문|동의서|검진표|신청서|회신|보고서|서명|계획표|자료|일지', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7M9 18h4"/>'],
     ['book', '읽을 책', '읽을 책|읽은 책|빌린 책|좋아하는 책|도서관|독서', '<path d="M12 6C9 4 5 4 3 5v14c2-1 6-1 9 1 3-2 7-2 9-1V5c-2-1-6-1-9 1z"/><path d="M12 6v14"/>'],
@@ -197,11 +208,20 @@ var DATA = (function () {
   var ICONS = ICON_ROWS.map(function (r) { return { id: r[0], name: r[1], w: r[2].split('|'), d: r[3] }; });
 
   // 칭찬 스티커 12 — 가방을 다 챙긴 날 달력에 붙는다 (c 는 style.css 의 색 변수)
+  // d: 24×24 면 그림. 색은 쓰지 않고 class 만 둔다 — 없음: 면, k: 구멍(스티커 바탕색), l: 선, kl: 구멍색 선 (style.css .stk-pic)
   var STICKERS = [
-    { e: '⭐', name: '반짝 별', c: '--gold' }, { e: '🌈', name: '무지개', c: '--sub' }, { e: '🐻', name: '곰돌이', c: '--accent' },
-    { e: '🍀', name: '네잎클로버', c: '--ok' }, { e: '🌻', name: '해바라기', c: '--gold' }, { e: '🚀', name: '로켓', c: '--violet' },
-    { e: '🐳', name: '고래', c: '--sub' }, { e: '🍓', name: '딸기', c: '--accent' }, { e: '🎈', name: '풍선', c: '--violet' },
-    { e: '🦊', name: '여우', c: '--accent' }, { e: '🐰', name: '토끼', c: '--ok' }, { e: '🦄', name: '유니콘', c: '--violet' }
+    { name: '반짝 별', c: '--gold', d: '<path d="M12 2.5l2.9 6.2 6.8.8-5 4.6 1.3 6.7-6-3.3-6 3.3 1.3-6.7-5-4.6 6.8-.8z"/>' },
+    { name: '무지개', c: '--sub', d: '<path class="l" d="M3 18a9 9 0 0 1 18 0"/><path class="l" d="M6.5 18a5.5 5.5 0 0 1 11 0"/><path class="l" d="M10 18a2 2 0 0 1 4 0"/>' },
+    { name: '곰돌이', c: '--accent', d: '<circle cx="6" cy="7" r="3.2"/><circle cx="18" cy="7" r="3.2"/><circle cx="12" cy="13" r="8.5"/><circle class="k" cx="8.8" cy="11.5" r="1.2"/><circle class="k" cx="15.2" cy="11.5" r="1.2"/><ellipse class="k" cx="12" cy="15.5" rx="2" ry="1.4"/>' },
+    { name: '네잎클로버', c: '--ok', d: '<circle cx="8.2" cy="8" r="3.9"/><circle cx="15.8" cy="8" r="3.9"/><circle cx="8.2" cy="15" r="3.9"/><circle cx="15.8" cy="15" r="3.9"/><path class="kl" d="M12 11.5L8.2 8M12 11.5L15.8 8M12 11.5L8.2 15M12 11.5L15.8 15"/><path class="l" d="M12 12c0 4 1.5 7 4 9.5"/>' },
+    { name: '해바라기', c: '--gold', d: '<circle cx="12" cy="4.5" r="2.8"/><circle cx="17.3" cy="6.7" r="2.8"/><circle cx="19.5" cy="12" r="2.8"/><circle cx="17.3" cy="17.3" r="2.8"/><circle cx="12" cy="19.5" r="2.8"/><circle cx="6.7" cy="17.3" r="2.8"/><circle cx="4.5" cy="12" r="2.8"/><circle cx="6.7" cy="6.7" r="2.8"/><circle cx="12" cy="12" r="5.5"/><circle class="k" cx="12" cy="12" r="3.6"/>' },
+    { name: '로켓', c: '--violet', d: '<path d="M12 2c3.5 2.5 5 6.5 5 10.5V16H7v-3.5C7 8.5 8.5 4.5 12 2z"/><path d="M7 11l-3.5 4v3.5L7 16zM17 11l3.5 4v3.5L17 16z"/><path d="M9.5 17.5h5L12 22z"/><circle class="k" cx="12" cy="9.5" r="2.2"/>' },
+    { name: '고래', c: '--sub', d: '<path d="M2 13.5C2 10 5 8.5 9 8.5c4 0 6 1.5 8 1.5 1 0 1.5-1 1.2-2.5L16 6h6.5l-1.8 1.6C21 12 19 19 10 19c-5 0-8-2-8-5.5z"/><circle class="k" cx="6.5" cy="13" r="1.1"/><path class="kl" d="M3.5 15.5c3 1 6 1 8.5 0"/><path class="l" d="M9 6V3.5M9 5.5C8 4 6.5 4 6 4M9 5.5C10 4 11.5 4 12 4"/>' },
+    { name: '딸기', c: '--accent', d: '<path d="M12 7c5-2 8.5 0 8.5 4 0 5-5 10.5-8.5 10.5S3.5 16 3.5 11c0-4 3.5-6 8.5-4z"/><circle class="k" cx="8.5" cy="11" r=".9"/><circle class="k" cx="12" cy="10.5" r=".9"/><circle class="k" cx="15.5" cy="11" r=".9"/><circle class="k" cx="10" cy="14.5" r=".9"/><circle class="k" cx="14" cy="14.5" r=".9"/><circle class="k" cx="12" cy="18" r=".9"/><path class="l" d="M12 7V3M12 6L8 3.5M12 6l4-2.5"/>' },
+    { name: '풍선', c: '--violet', d: '<path d="M12 2.5c4 0 7 3 7 7 0 4.5-4 8-7 8s-7-3.5-7-8c0-4 3-7 7-7z"/><path d="M10.3 17h3.4L12 19.4z"/><path class="kl" d="M8.5 9c0-1.5 1-3 2.5-3.3"/><path class="l" d="M12 19c-1 1-1 2 0 3"/>' },
+    { name: '여우', c: '--accent', d: '<path d="M3 3l5 4.5c2.5-1 5.5-1 8 0L21 3l.5 9c0 4.5-5 9-9.5 9s-9.5-4.5-9.5-9z"/><circle class="k" cx="8.5" cy="11.5" r="1.2"/><circle class="k" cx="15.5" cy="11.5" r="1.2"/><path class="kl" d="M4 13c3 .5 6 2.5 8 6 2-3.5 5-5.5 8-6"/><circle class="k" cx="12" cy="18.5" r="1.2"/>' },
+    { name: '토끼', c: '--ok', d: '<ellipse cx="8.5" cy="7" rx="2.4" ry="5.5"/><ellipse cx="15.5" cy="7" rx="2.4" ry="5.5"/><circle cx="12" cy="15.5" r="7"/><path class="kl" d="M8.5 4v5M15.5 4v5"/><circle class="k" cx="9.3" cy="14.5" r="1.1"/><circle class="k" cx="14.7" cy="14.5" r="1.1"/><path class="k" d="M10.8 17h2.4L12 18.4z"/>' },
+    { name: '유니콘', c: '--violet', d: '<path d="M8 8L6 2l5.5 4.5C16 7 19.5 11 19.5 16v5.5H10V17l-3 1.3c-1.7.7-3.6-.4-4-2.2-.2-.9.1-1.8.8-2.4z"/><circle class="k" cx="9.5" cy="11.5" r="1.1"/><circle class="k" cx="5.8" cy="15.8" r=".7"/><path class="kl" d="M13.5 7.5c2.5 2 3.5 5 3.5 9"/>' }
   ];
 
   // 학년 기본 시간표 3묶음 — 새 아이를 넣을 때 칸을 미리 채운다 (월~금 × 6교시, 모두 SUBJECTS 의 id)

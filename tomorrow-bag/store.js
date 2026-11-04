@@ -36,6 +36,7 @@ var Store = (function () {
       notes: [],
       checks: {},
       skips: {},
+      outs: {},                                              // 어제 가방에서 꺼냈다고 표시한 물건 (챙김 수·기록에는 넣지 않는다)
       history: [],
       settings: {
         switchHour: 14,
@@ -99,6 +100,8 @@ var Store = (function () {
     if (typeof d.checks !== 'object' || !d.checks || Array.isArray(d.checks)) d.checks = {};
     if (typeof d.skips !== 'object' || !d.skips || Array.isArray(d.skips)) d.skips = {};
     Object.keys(d.skips).forEach(function (k) { if (!Array.isArray(d.skips[k])) delete d.skips[k]; });
+    if (typeof d.outs !== 'object' || !d.outs || Array.isArray(d.outs)) d.outs = {};
+    Object.keys(d.outs).forEach(function (k) { if (!Array.isArray(d.outs[k])) delete d.outs[k]; });
     d.kids.forEach(function (k) {
       if (!k.week) k.week = emptyWeek(k.periods || 6);
       for (var i = 1; i <= 5; i++) {

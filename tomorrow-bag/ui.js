@@ -400,18 +400,20 @@ var UI = (function () {
   }
 
   // ---- 가방 시트: 쪽 이름 띠(알림장 · 수업 · 방과후 · 매일 · 아침), 한 쪽에 12칸(아이가 챙겨요는 9칸) ----
-  var PAGE_G = ['note', 'class', 'after', 'daily', 'morning'];
-  var PAGE_NAME = { note: '알림장', class: '수업', after: '방과후', daily: '매일', morning: '아침' };
+  var PAGE_G = ['note', 'class', 'after', 'daily', 'morning', 'out'];
+  var PAGE_NAME = { note: '알림장', class: '수업', after: '방과후', daily: '매일', morning: '아침', out: '꺼낼 것' };
   // 요일마다 챙길 것은 매일 쪽 맨 앞에, 아침에 넣을 물건(S.morning)은 맨 끝 아침 쪽에
   function pageGroup(it) { return it.morning ? 'morning' : (it.group === 'rule' ? 'daily' : it.group); }
 
   // 자주 덜 챙긴 물건(최근 30일 2번 이상)은 말없이 그 쪽 맨 앞 칸에 놓기만 한다
-  function bagPages(bag, miss, per) {
+  // 어제 가방에만 있던 물건(out)은 맨 끝 '꺼낼 것' 쪽에
+  function bagPages(bag, miss, per, out) {
     var by = {};
     bag.items.forEach(function (it, i) {
       var g = pageGroup(it);
       (by[g] || (by[g] = [])).push({ it: it, i: i, first: (miss[Logic.norm(it.name).toLowerCase()] || 0) >= 2 ? 1 : 0 });
     });
+    if (out.length) by.out = out.map(function (name, i) { return { it: { name: name }, i: i, first: 0 }; });
     var pages = [];
     PAGE_G.forEach(function (g) {
       var list = by[g];
@@ -421,9 +423,16 @@ var UI = (function () {
     });
     return pages;
   }
-  function cellHTML(it, on) {
-    return '<button class="check' + (on ? ' done' : '') + '" type="button" data-act="check" data-name="' + esc(it.name) + '" aria-pressed="' + on + '" aria-label="' + esc(it.name) + '">' +
+  // isNew: 어제 가방에 없던 물건이면 칸 왼쪽 위에 '새로'
+  function cellHTML(it, on, isNew) {
+    return '<button class="check' + (on ? ' done' : '') + '" type="button" data-act="check" data-name="' + esc(it.name) + '" aria-pressed="' + on + '" aria-label="' + esc(it.name) + (isNew ? ', 어제 없던 물건' : '') + '">' +
+      (isNew ? '<span class="new-tag" aria-hidden="true">새로</span>' : '') +
       '<span class="it-ic">' + pic(it.name) + '</span><span class="nm">' + esc(it.name) + '</span><span class="box" aria-hidden="true">✓</span></button>';
+  }
+  // '꺼낼 것' 칸: 눌러 꺼냈다고 표시만 한다 (챙김 수에 넣지 않는다)
+  function outCellHTML(name, on) {
+    return '<button class="check out-cell' + (on ? ' done' : '') + '" type="button" data-act="out-check" data-name="' + esc(name) + '" aria-pressed="' + on + '" aria-label="' + esc(name) + ' 꺼내기">' +
+      '<span class="it-ic">' + pic(name) + '</span><span class="nm">' + esc(name) + '</span><span class="box" aria-hidden="true">✓</span></button>';
   }
   function groupCounts(bag, done) {
     var cnt = {};
@@ -446,10 +455,13 @@ var UI = (function () {
     kb.setAttribute('aria-pressed', String(!!V.kidMode));
     kb.textContent = V.kidMode ? '아이가 챙겨요 ✓' : '아이가 챙겨요';
     var miss = Logic.missCounts(S.history, kid.id, Logic.addDays(bag.date, -30), bag.date);
-    var pages = bagPages(bag, miss, V.kidMode ? 9 : 12);
+    var diff = Logic.bagDiff(S, kid, bag.date);
+    var outDone = S.outs[Logic.checkKey(kid.id, bag.date)] || [];
+    var pages = bagPages(bag, miss, V.kidMode ? 9 : 12, diff.out);
     var cur = Math.max(0, Math.min(V.pg.bag || 0, pages.length - 1));
     var curG = pages[cur] ? pages[cur].g : '';
     var cnt = groupCounts(bag, done);
+    if (diff.out.length) cnt.out = { d: diff.out.filter(function (x) { return outDone.indexOf(x) >= 0; }).length, t: diff.out.length };
     var band = '';
     PAGE_G.forEach(function (g) {
       var c = cnt[g];
@@ -457,11 +469,14 @@ var UI = (function () {
       var first = 0;
       for (var i = 0; i < pages.length; i++) if (pages[i].g === g) { first = i; break; }
       band += '<button class="group-title g-' + g + (c.d === c.t ? ' all-done' : '') + (g === curG ? ' on' : '') + '" type="button" data-act="pg" data-pg="bag" data-n="' + first + '" data-g="' + g + '">' +
-        PAGE_NAME[g] + ' <span class="g-count" aria-label="' + c.t + '개 가운데 ' + c.d + '개 챙김">' + c.d + '/' + c.t + '</span></button>';
+        PAGE_NAME[g] + ' <span class="g-count" aria-label="' + c.t + '개 가운데 ' + c.d + '개 ' + (g === 'out' ? '꺼냄' : '챙김') + '">' + c.d + '/' + c.t + '</span></button>';
     });
     $('bs-band').innerHTML = band;
     var html = pages.map(function (p) {
-      return { g: p.g, html: '<div class="grid' + (V.kidMode ? ' c3' : '') + '">' + p.rows.map(function (r) { return cellHTML(r.it, done.indexOf(r.it.name) >= 0); }).join('') + '</div>' };
+      return { g: p.g, html: '<div class="grid' + (V.kidMode ? ' c3' : '') + '">' + p.rows.map(function (r) {
+        var name = r.it.name;
+        return p.g === 'out' ? outCellHTML(name, outDone.indexOf(name) >= 0) : cellHTML(r.it, done.indexOf(name) >= 0, diff.add.indexOf(name) >= 0);
+      }).join('') + '</div>' };
     });
     if (!html.length) html = [{ g: '', html: miniEmpty('🎒', '챙길 물건이 없어요',{ act: 'note-new', label: '+ 알림장' }) }];
     $('bs-pages').innerHTML = pagerHTML('bag', html, cur);
@@ -469,7 +484,7 @@ var UI = (function () {
     // 처음 한 번: 아직 챙기지 않은 첫 칸에 맥박 테두리 (보고 있는 쪽 먼저, 없으면 맨 앞 칸)
     if (!S.settings.coachSeen && !V.kidMode) {
       var pgs = $('bs-pages').querySelectorAll('.pg');
-      var cc = (pgs[cur] && pgs[cur].querySelector('.check:not(.done)')) || $('bs-pages').querySelector('.check:not(.done)');
+      var cc = (pgs[cur] && pgs[cur].querySelector('.check:not(.done):not(.out-cell)')) || $('bs-pages').querySelector('.check:not(.done):not(.out-cell)');
       if (cc) cc.classList.add('coach');
     }
     var ca = sheet.querySelector('[data-act="check-all"]');
@@ -531,6 +546,19 @@ var UI = (function () {
     return true;
   }
 
+  // '꺼낼 것' 칸 하나와 쪽 이름 띠의 꺼낸 수만 고친다
+  function updateOut(btn, on) {
+    btn.classList.toggle('done', on);
+    btn.setAttribute('aria-pressed', String(on));
+    var t = document.querySelectorAll('#bs-pages .out-cell').length;
+    var d = document.querySelectorAll('#bs-pages .out-cell.done').length;
+    var head = document.querySelector('#bs-band .group-title[data-g="out"]');
+    if (!head) return;
+    head.classList.toggle('all-done', d === t);
+    var gc = head.querySelector('.g-count');
+    if (gc) { gc.textContent = d + '/' + t; gc.setAttribute('aria-label', t + '개 가운데 ' + d + '개 꺼냄'); }
+  }
+
   // 칸을 누르면 물건이 통 튀어 가방 입구로 쏙 (0.3초, 아이가 챙겨요는 조금 더 크게 돌며)
   function fly(btn, kidMode) {
     if (!btn || document.body.classList.contains('reduce')) return;
@@ -589,10 +617,14 @@ var UI = (function () {
   function bubbleOpen() { var b = $('bubble'); return !!b && !b.hidden; }
 
   // ---- 칭찬 스티커 ----
+  // 직접 그린 그림 (data.js STICKERS 의 d). 색은 style.css .stk-pic 의 var(--on-accent)·var(--c) 로만 칠한다
+  function stickerPic(s) {
+    return '<svg class="stk-pic" viewBox="0 0 24 24" aria-hidden="true">' + s.d + '</svg>';
+  }
   function stickerHTML(k, big) {
     var s = DATA.STICKERS[Logic.stickerFor(k)];
     return '<span class="stk' + (big ? ' big' : '') + '" style="--c:var(' + s.c + ')" role="img" aria-label="' + esc(s.name) + ' 스티커">' +
-      '<span aria-hidden="true">' + s.e + '</span>' + (big ? '<span class="sd" aria-hidden="true">' + Logic.shortDay(k) + '</span>' : '') + '</span>';
+      stickerPic(s) + (big ? '<span class="sd" aria-hidden="true">' + Logic.shortDay(k) + '</span>' : '') + '</span>';
   }
   function renderDone(S, kid, k) {
     $('done-art').innerHTML = bagArt({ done: 1, total: 1, pct: 100 });
@@ -662,7 +694,7 @@ var UI = (function () {
       var c = book[i];
       if (c) got++;
       b += '<span class="stk' + (c ? '' : ' locked') + '" style="--c:var(' + s.c + ')" role="img" aria-label="' + esc(s.name) + (c ? ' 스티커 ' + c + '장' : ' 스티커 아직 없음') + '">' +
-        '<span aria-hidden="true">' + s.e + '</span>' + (c ? '<span class="sn" aria-hidden="true">' + c + '</span>' : '') + '</span>';
+        stickerPic(s) + (c ? '<span class="sn" aria-hidden="true">' + c + '</span>' : '') + '</span>';
     });
     $('sticker-book').innerHTML = '<div class="stk-book-h tiny">스티커 모음 ' + got + '/12</div><div class="stk-book-g">' + b + '</div>';
   }
@@ -761,9 +793,9 @@ var UI = (function () {
     $('cell-copy-row').innerHTML = h;
   }
 
-  // 아이 넣기 시트의 방과후 고르기: 꾸러미는 하나만, 요일(월~금)은 여러 개
+  // 아이 넣기 시트의 방과후 고르기: 꾸러미는 하나만, 요일(월~금)은 여러 개, 데리러 갈 사람은 하나만
   function renderKidAfter(S, sel) {
-    sel = sel || { pack: null, days: [] };
+    sel = sel || { pack: null, days: [], who: '' };
     var acad = S.packs.filter(function (p) { return p.kind === 'acad'; });
     $('kid-after-packs').innerHTML = acad.map(function (p) {
       var on = p.id === sel.pack;
@@ -775,6 +807,11 @@ var UI = (function () {
       h += '<button class="chip' + (dn ? ' on' : '') + '" type="button" data-act="kid-after-day" data-d="' + d + '" aria-pressed="' + dn + '"' + (sel.pack ? '' : ' disabled') + '>' + DATA.DOW[d] + '</button>';
     }
     $('kid-after-days').innerHTML = h;
+    var off = sel.pack ? '' : ' disabled';
+    $('kid-after-who').innerHTML = S.settings.guardians.concat(['']).map(function (g) {
+      var on = (sel.who || '') === g;
+      return '<button class="chip' + (on ? ' on' : '') + '" type="button" data-act="kid-after-who" data-who="' + esc(g) + '" aria-pressed="' + on + '"' + off + '>' + (g ? esc(g) : '정하지 않음') + '</button>';
+    }).join('');
     $('kid-after-time').disabled = !sel.pack;
     $('kid-after').style.display = acad.length ? '' : 'none';
   }
@@ -856,7 +893,7 @@ var UI = (function () {
   function renderEvents(sel) {
     var h = '';
     DATA.EVENTS.forEach(function (e) {
-      h += '<button class="pick' + (e.id === sel ? ' on' : '') + '" type="button" data-act="event-pick" data-id="' + e.id + '"><span class="em" aria-hidden="true">' + esc(e.icon) + '</span>' + esc(e.name) + '</button>';
+      h += '<button class="pick' + (e.id === sel ? ' on' : '') + '" type="button" data-act="event-pick" data-id="' + e.id + '"><span class="em" aria-hidden="true">' + packPic(e) + '</span>' + esc(e.name) + '</button>';
     });
     $('event-list').innerHTML = h;
     var ev = DATA.EVENTS.filter(function (e) { return e.id === sel; })[0];
@@ -1117,7 +1154,7 @@ var UI = (function () {
   return {
     $: $, esc: esc, packPic: packPic, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
-    setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, cellByName: cellByName,
+    setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName,
     fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
     renderWeek: renderWeek, renderDay: renderDay, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
