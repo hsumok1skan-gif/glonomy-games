@@ -161,6 +161,10 @@ var Logic = (function () {
     var day = (w >= 1 && w <= 5 && kid && kid.week) ? kid.week[w] : null;
     var periods = [];
     var pickups = [];
+    var changedP = [];   // 이날만 바꾼 교시 자리 (0 부터)
+    // 이날만 바꾼 것을 시간표보다 먼저 본다: p 는 교시번호(1 부터) → 꾸러미 id 또는 null(빈 칸), after 는 방과후 id → {who, off}
+    var edit = (state.dayEdits && kid && state.dayEdits[checkKey(kid.id, k)]) || {};
+    var editP = edit.p || {}, editAfter = edit.after || {};
 
     (state.notes || []).forEach(function (n) {
       if (n.kid === kid.id && n.date === k) n.items.forEach(function (x) { add(x, n.title ? '알림장 · ' + n.title : '알림장', 'note', '📝'); });
@@ -170,15 +174,26 @@ var Logic = (function () {
     });
     if (day) {
       day.p.forEach(function (pid, i) {
-        var pk = pid ? findPack(state.packs, pid) : null;
+        var over = Object.prototype.hasOwnProperty.call(editP, i + 1);
+        var id = over ? editP[i + 1] : pid;
+        if (over && (id || null) !== (pid || null)) changedP.push(i);
+        var pk = id ? findPack(state.packs, id) : null;
         periods.push(pk ? pk.name : '');
         if (pk) pk.items.forEach(function (x) { add(x, (i + 1) + '교시 ' + pk.name, 'class', pk.icon); });
       });
       day.after.slice().sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); }).forEach(function (a) {
         var pk = findPack(state.packs, a.packId);
         if (!pk) return;
-        pk.items.forEach(function (x) { add(x, '방과후 ' + pk.name, 'after', pk.icon); });
-        pickups.push({ id: pk.id, time: a.time || '', name: pk.name, icon: pk.icon, pic: pk.pic, who: a.who || '' });
+        var ae = editAfter[a.id] || {};
+        var base = a.who || '';
+        var who = typeof ae.who === 'string' ? ae.who : base;
+        var off = !!ae.off;
+        // 이날 쉬는 방과후는 물건을 넣지 않고, 쉰다고 보여 주려고 pickups 에만 남긴다
+        if (!off) pk.items.forEach(function (x) { add(x, '방과후 ' + pk.name, 'after', pk.icon); });
+        var pu = { id: pk.id, aid: a.id, time: a.time || '', name: pk.name, icon: pk.icon, pic: pk.pic, who: who };
+        if (off) pu.off = true;
+        if (off || who !== base) pu.changed = true;
+        pickups.push(pu);
       });
     }
     (state.daily || []).forEach(function (x) { add(x, '매일', 'daily', '🎒'); });
@@ -188,7 +203,7 @@ var Logic = (function () {
     if (skip.length) order = order.filter(function (it) { return skip.indexOf(it.name) < 0; });
     order.sort(function (a, b) { return GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group); });
     order.forEach(function (it) { it.morning = isMorning(state, it.name); });   // 가방 시트에서 '아침' 쪽으로 모은다
-    return { date: k, items: order, periods: periods, pickups: pickups, school: isSchoolDay(k, state.settings.holidays) };
+    return { date: k, items: order, periods: periods, changedP: changedP, pickups: pickups, school: isSchoolDay(k, state.settings.holidays) };
   }
 
   function checkKey(kidId, k) { return kidId + '|' + k; }
@@ -454,7 +469,7 @@ var Logic = (function () {
     var pr = progress(state, kid, bag);
     var full = (pr.total > 0 && pr.done === pr.total) || nightDone(state, kid, bag);
     var first = nameI(kid.name) + ' ' + dayLabel(bag.date) + (full ? ' 가방 다 챙겼어요 🎒' : ' 가방을 챙기고 있어요 🎒');
-    var who = bag.pickups.filter(function (p) { return p.who; }).map(function (p) {
+    var who = bag.pickups.filter(function (p) { return p.who && !p.off; }).map(function (p) {
       return (p.time ? p.time + ' ' : '') + p.name + ' → ' + p.who;
     });
     return who.length ? first + '\n' + who.join(' · ') : first;
@@ -691,6 +706,18 @@ var Logic = (function () {
     // 9-3) 데리러 갈 사람 줄: '14:30 태권도 → 아빠' 한 줄만 더한다
     var sb = { date: '2026-11-02', items: [], pickups: [{ time: '14:30', name: '태권도', who: '아빠' }, { time: '16:00', name: '수영', who: '' }] };
     eq('가족 글 둘째 줄', shareText({ checks: {} }, { id: 'k', name: '서아' }, sb), '서아 11월 2일(월) 가방을 챙기고 있어요 🎒\n14:30 태권도 → 아빠');
+    // 9-3a) 이날만 바꾸기: 월요일 1교시 체육→국어, 3교시 체육→빈 칸, 수영 → 할머니, 저녁 체육 쉼. 다음 월요일은 그대로
+    var es = { packs: st.packs, daily: [], rules: [], notes: [], checks: {}, settings: { holidays: [] },
+      dayEdits: { 'k|2026-10-26': { p: { 1: 'B', 3: null }, after: { a1: { who: '할머니', off: false }, a2: { who: '엄마', off: true } } } } };
+    var ek = { id: 'k', name: '서아', week: { 1: { p: ['A', 'B', 'A'], after: [{ id: 'a1', packId: 'C', time: '15:00', who: '아빠' }, { id: 'a2', packId: 'A', time: '17:00', who: '엄마' }] } } };
+    var eb = buildBag(es, ek, '2026-10-26');
+    eq('이날만 수업', eb.periods.join(',') + '|' + eb.changedP.join(','), '국어,국어,|0,2');
+    eq('이날만 물건 (국어 교과서·수영복·물병)', eb.items.length, 3);
+    eq('이날만 데리러 갈 사람', eb.pickups[0].who + '|' + !!eb.pickups[0].changed, '할머니|true');
+    eq('이날만 쉬는 방과후', !!eb.pickups[1].off + '|' + !!eb.pickups[1].changed, 'true|true');
+    eq('이날만 가족 글', shareText(es, ek, eb), '서아 10월 26일(월) 가방을 챙기고 있어요 🎒\n15:00 수영 → 할머니');
+    var eb2 = buildBag(es, ek, '2026-11-02');
+    eq('다른 날은 그대로', eb2.periods.join(',') + '|' + eb2.pickups[0].who + '|' + !!eb2.pickups[0].changed, '체육,국어,체육|아빠|false');
     // 9-3b) 아침에 넣을 물건: 4번 가방(7개)에서 물병을 아침에 넣으면, 밤에 나머지 6개만 챙겨도 다 챙김. 기록은 6개 가운데 6개
     var ms = { packs: st.packs, daily: st.daily, rules: st.rules, notes: st.notes, settings: st.settings, morning: [' 물병 '],
       checks: { 'k|2026-10-26': ['색종이', '필통', '실내화 주머니', '체육복', '국어 교과서'] } };

@@ -37,6 +37,7 @@ var Store = (function () {
       checks: {},
       skips: {},
       outs: {},                                              // 어제 가방에서 꺼냈다고 표시한 물건 (챙김 수·기록에는 넣지 않는다)
+      dayEdits: {},                                          // 이날만 바꾼 것 { '아이|날짜': { p: {교시번호(1부터): 꾸러미 id 또는 null}, after: {방과후 id: {who, off}} } }
       history: [],
       settings: {
         switchHour: 14,
@@ -102,6 +103,13 @@ var Store = (function () {
     Object.keys(d.skips).forEach(function (k) { if (!Array.isArray(d.skips[k])) delete d.skips[k]; });
     if (typeof d.outs !== 'object' || !d.outs || Array.isArray(d.outs)) d.outs = {};
     Object.keys(d.outs).forEach(function (k) { if (!Array.isArray(d.outs[k])) delete d.outs[k]; });
+    if (typeof d.dayEdits !== 'object' || !d.dayEdits || Array.isArray(d.dayEdits)) d.dayEdits = {};
+    Object.keys(d.dayEdits).forEach(function (k) {
+      var e = d.dayEdits[k];
+      if (!e || typeof e !== 'object' || Array.isArray(e)) { delete d.dayEdits[k]; return; }
+      if (!e.p || typeof e.p !== 'object' || Array.isArray(e.p)) e.p = {};
+      if (!e.after || typeof e.after !== 'object' || Array.isArray(e.after)) e.after = {};
+    });
     d.kids.forEach(function (k) {
       if (!k.week) k.week = emptyWeek(k.periods || 6);
       for (var i = 1; i <= 5; i++) {

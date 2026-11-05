@@ -176,7 +176,8 @@ p { margin: 4px 0; }
 .sample-bar .sb-tag { flex: none; font-size: var(--t-1); font-weight: 800; color: var(--accent-deep); }
 .sample-bar .sb-txt { flex: 1; min-width: 0; font-size: var(--t-1); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sample-bar .btn { flex: none; }
-.date-card { flex: none; display: flex; align-items: center; gap: 8px; touch-action: pan-y; user-select: none; }
+.date-card { flex: none; display: flex; align-items: center; gap: 8px; touch-action: pan-y; user-select: none; transition: transform var(--dur) ease-out; }
+.date-card.dragging { transition: none; }
 .date-card .mid { flex: 1; text-align: center; min-width: 0; }
 .date-card .rel { display: inline-block; font-size: var(--t-1); font-weight: 700; color: var(--accent); background: var(--soft); padding: 1px 10px; border-radius: 999px; }
 .date-card .big { font-size: var(--t-4); font-weight: 800; }
@@ -189,6 +190,13 @@ p { margin: 4px 0; }
 .strip .ls { flex: none; font-size: var(--t-2); padding: 4px 10px; border-radius: 10px; background: var(--subsoft); }
 .strip .pk { flex: none; font-size: var(--t-2); padding: 4px 10px; border-radius: 10px; background: var(--soft); }
 .strip .pk b { color: var(--accent-deep); }
+/* 수업·방과후 두 줄 옆의 이날만 바꾸기 (줄을 더 쓰지 않아 가방 그림이 작아지지 않는다) */
+.day-lines { flex: none; display: flex; align-items: stretch; gap: 8px; }
+.dl-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.btn.day-edit-btn { flex: none; padding: 4px 10px; font-size: var(--t-1); line-height: 1.25; font-weight: 800; }
+.day-edit-btn.as-btn { flex-direction: column; }
+.strip .changed { box-shadow: inset 0 0 0 1px var(--accent); background: var(--soft); }
+.day-tag { flex: none; margin-left: 2px; padding: 0 5px; border-radius: 999px; font-size: var(--t-1); font-weight: 800; color: var(--on-accent); background: var(--accent); }
 .morning-left .lab { color: var(--accent-deep); }
 .ml-chip { flex: none; display: inline-flex; align-items: center; gap: 6px; border-color: var(--accent); background: var(--soft); font-weight: 700; }
 .ml-chip .it-ic { flex: none; width: 1.3em; height: 1.3em; color: var(--ink); }
@@ -213,8 +221,9 @@ p { margin: 4px 0; }
 body.reduce .bag-art * { transition: none !important; animation: none !important; }
 
 /* ---- 쪽 넘기기 (옆으로 밀거나 점을 누른다) ---- */
-.pager { flex: 1; min-height: 0; overflow: hidden; position: relative; touch-action: pan-y; }
+.pager { flex: 1; min-height: 0; overflow: hidden; position: relative; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .track { display: flex; height: 100%; transition: transform var(--dur) ease-out; }
+.track.dragging { transition: none; }
 .pg { flex: 0 0 100%; min-width: 0; height: 100%; padding: 2px; }
 .dots { flex: none; display: flex; justify-content: center; align-items: center; gap: 0; }
 .dot { min-width: 44px; min-height: 44px; border: 0; background: transparent; display: grid; place-items: center; cursor: pointer; padding: 0; }
@@ -506,7 +515,8 @@ body.reduce .stk.big { animation: none; }
   opacity: 0; pointer-events: none; visibility: hidden;
   transition: opacity var(--dur), visibility var(--dur);
 }
-.dim.on { opacity: 1; pointer-events: auto; visibility: visible; }
+/* 열 때는 바로 보이게 한다 (visibility 가 전환 중이면 시트 안 입력란에 focus 가 걸리지 않는다) */
+.dim.on { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity var(--dur), visibility 0s; }
 .dim.center { align-items: center; padding: 16px; }
 .sheet {
   width: 100%; max-width: 560px; max-height: 92vh; max-height: 92dvh; overflow: hidden;
@@ -550,7 +560,27 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--sub); borde
 .tpl-row input { width: 24px; height: 24px; flex: none; margin: 0; accent-color: var(--accent); }
 .tpl-row .tiny { display: block; font-weight: 400; }
 /* 아이 넣기 시트의 방과후 고르기: 칩 세 줄이 옆으로만 밀려 시트 높이가 한 화면 안에 머문다 */
+/* 이날만 바꾸기 시트: 교시 두 줄 격자, 방과후는 한 줄에 이름 · 사람 · 쉼. 넘치면 목록 안에서만 민다 */
+.edit-list { flex: 1; min-height: 0; overflow-y: auto; }
+.ed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
+.ed-cell { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ed-lab { flex: none; font-size: var(--t-1); font-weight: 800; }
+.ed-cell select { flex: 1; min-width: 0; padding: 6px 8px; font-size: var(--t-2); }
+.ed-cell.changed select { border-color: var(--accent); background: var(--soft); }
+.ed-row { padding: 4px 0; }
+.ed-name { flex: 1 1 40%; min-width: 0; font-size: var(--t-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ed-row select { flex: 1 1 35%; }
+.ed-row select:disabled { opacity: 0.45; }
+.ed-row .chip { flex: none; }
 .kid-after { margin-top: 4px; }
+#kid-title:focus { outline: none; }
+#kid-next { flex: 1; }
+/* 아이 넣기 진행 점: 쪽 넘기기 점(.dot)과 같은 모양, 눌리지 않는다 */
+.kid-steps { flex: none; display: flex; justify-content: center; gap: 6px; margin: 2px 0 4px; }
+.kid-steps span { width: 8px; height: 8px; border-radius: 4px; background: var(--line); transition: width var(--dur), background var(--dur); }
+.kid-steps span.on { width: 22px; background: var(--accent); }
+#kid-after-list .chip { flex: 0 1 auto; max-width: 100%; white-space: normal; text-align: left; }
+#kid-after-add { margin-top: 8px; }
 /* 키가 작은 휴대폰에서만 시트 안을 밀어 저장 버튼이 잘리지 않게 한다 */
 @media (max-height: 700px) { #form-kid { overflow-y: auto; } }
 .kid-after .f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }

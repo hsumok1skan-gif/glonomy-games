@@ -94,7 +94,7 @@ var UI = (function () {
   function pagerHTML(id, pages, cur) {
     var n = Math.max(1, pages.length);
     cur = Math.max(0, Math.min(cur || 0, n - 1));
-    var h = '<div class="pager" data-pg="' + id + '" data-n="' + n + '"><div class="track" style="transform:translateX(' + (-cur * 100) + '%)">';
+    var h = '<div class="pager" data-pg="' + id + '" data-n="' + n + '" data-cur="' + cur + '"><div class="track" style="transform:translateX(' + (-cur * 100) + '%)">';
     pages.forEach(function (p) { h += '<div class="pg"' + (p.g ? ' data-g="' + p.g + '"' : '') + '>' + p.html + '</div>'; });
     return h + '</div></div>' + dotsHTML(id, n, cur);
   }
@@ -116,6 +116,7 @@ var UI = (function () {
     if (!pager) return 0;
     var max = (+pager.getAttribute('data-n') || 1) - 1;
     n = Math.max(0, Math.min(n, max));
+    pager.setAttribute('data-cur', n);
     pager.firstChild.style.transform = 'translateX(' + (-n * 100) + '%)';
     var dots = document.querySelector('.dots[data-dots="' + id + '"]');
     if (dots) {
@@ -317,6 +318,8 @@ var UI = (function () {
       '<button class="btn small main" type="button" data-act="first-bag-ok">알겠어요</button></div></div>';
   }
 
+  var DAY_TAG = ' <span class="day-tag">이날</span>';   // 시간표와 다른 칸의 표 (색만으로 알리지 않게 글자로)
+
   function renderBag(S, V, kid, k, todayKey) {
     var root = $('bag-root');
     if (!kid) {
@@ -363,10 +366,17 @@ var UI = (function () {
     h += '<div class="bag-stage" id="bag-ring">' + bagArt(pr, checkedPics(S, kid, bag)) + '</div>';
     h += '<p class="bag-count" id="bag-count" aria-live="polite">' + countText(pr, ml.length) + '</p>';
 
-    // 그날 수업 한 줄 (넘치면 옆으로 밀기)
+    // 그날 수업 한 줄 · 방과후 한 줄 + 오른쪽에 이날만 바꾸기
+    h += '<div class="day-lines"><div class="dl-col">';
+    // 그날 수업 한 줄 (넘치면 옆으로 밀기). 이날만 바꾼 칸에는 '이날' 표
     h += '<div class="strip" aria-label="수업"><span class="lab">수업</span>';
     var any = false;
-    bag.periods.forEach(function (p, i) { if (p) { any = true; h += '<span class="ls">' + (i + 1) + '교시 ' + esc(p) + '</span>'; } });
+    bag.periods.forEach(function (p, i) {
+      var ch = bag.changedP.indexOf(i) >= 0;
+      if (!p && !ch) return;
+      any = true;
+      h += '<span class="ls' + (ch ? ' changed' : '') + '">' + (i + 1) + '교시 ' + (p ? esc(p) : '없음') + (ch ? DAY_TAG : '') + '</span>';
+    });
     if (!any) h += '<button class="chip" type="button" data-act="go" data-to="week">시간표 넣기 ›</button>';
     h += '</div>';
 
@@ -374,9 +384,11 @@ var UI = (function () {
     h += '<div class="strip" aria-label="방과후와 데리러 갈 사람"><span class="lab">방과후</span>';
     if (!bag.pickups.length) h += '<span class="tiny">없어요</span>';
     bag.pickups.forEach(function (p) {
-      h += '<span class="pk"><span class="em" aria-hidden="true">' + packPic(p) + '</span>' + esc(p.time || '') + ' ' + esc(p.name) + (p.who ? ' → <b>' + esc(p.who) + '</b>' : '') + '</span>';
+      h += '<span class="pk' + (p.changed ? ' changed' : '') + '"><span class="em" aria-hidden="true">' + packPic(p) + '</span>' + esc(p.time || '') + ' ' + esc(p.name) +
+        (p.off ? ' 쉼' : (p.who ? ' → <b>' + esc(p.who) + '</b>' : '')) + (p.changed ? DAY_TAG : '') + '</span>';
     });
-    h += '</div>';
+    h += '</div></div>';
+    h += '<button class="btn small day-edit-btn no-print" type="button" data-act="edit-open">이날만<br>바꾸기</button></div>';
 
     // 밤 물건을 다 챙겼으면 버튼 위에 아침에 넣을 물건 줄
     h += morningRowHTML(ml);
@@ -770,6 +782,52 @@ var UI = (function () {
     $('day-list').innerHTML = h;
   }
 
+  // 이날만 바꾸기 시트: 교시마다 과목 고르기(두 줄 격자), 방과후마다 데리러 갈 사람 + 쉼. 저장해야 들어간다
+  function renderEdit(S, kid, k) {
+    var day = kid.week[Logic.dow(k)];
+    var e = S.dayEdits[Logic.checkKey(kid.id, k)] || {};
+    var ep = e.p || {}, ea = e.after || {};
+    var subj = S.packs.filter(function (p) { return p.kind === 'subj'; });
+    $('edit-title').textContent = Logic.dayLabel(k) + '만 바꾸기';
+    var h = '<div class="ed-grid">';
+    day.p.forEach(function (pid, i) {
+      var no = i + 1, base = pid || '';
+      var cur = Object.prototype.hasOwnProperty.call(ep, no) ? (ep[no] || '') : base;
+      h += '<label class="ed-cell' + (cur !== base ? ' changed' : '') + '"><span class="ed-lab">' + no + '교시</span><select data-no="' + no + '" data-base="' + esc(base) + '" aria-label="' + no + '교시 과목">' +
+        '<option value="">빈 칸</option>' + subj.map(function (p) {
+          return '<option value="' + esc(p.id) + '"' + (p.id === cur ? ' selected' : '') + '>' + esc(p.name) + '</option>';
+        }).join('') + '</select></label>';
+    });
+    h += '</div>';
+    var af = sortAfter(day.after);
+    if (af.length) h += '<h3>방과후</h3>';
+    af.forEach(function (a) {
+      var p = Logic.findPack(S.packs, a.packId);
+      if (!p) return;
+      var o = ea[a.id] || {}, base = a.who || '';
+      var who = typeof o.who === 'string' ? o.who : base;
+      // 지금 사람 목록에 없는 이름(사람을 뺐어도 시간표에 남은 이름)도 고를 수 있게 넣는다
+      var names = S.settings.guardians.slice();
+      [base, who].forEach(function (n) { if (n && names.indexOf(n) < 0) names.push(n); });
+      h += '<div class="ed-cell ed-row' + (who !== base || o.off ? ' changed' : '') + '"><span class="ed-name"><b>' + esc(a.time || '') + '</b> ' + esc(p.name) + '</span>' +
+        '<select data-aid="' + esc(a.id) + '" data-base="' + esc(base) + '" aria-label="' + esc(p.name) + ' 데리러 갈 사람"' + (o.off ? ' disabled' : '') + '>' +
+        '<option value="">정하지 않음</option>' + names.map(function (n) {
+          return '<option value="' + esc(n) + '"' + (n === who ? ' selected' : '') + '>' + esc(n) + '</option>';
+        }).join('') + '</select>' +
+        '<button class="chip' + (o.off ? ' on' : '') + '" type="button" data-act="edit-off" data-id="' + esc(a.id) + '" aria-pressed="' + !!o.off + '" aria-label="' + esc(p.name) + ' 이날 쉬기">쉼</button></div>';
+    });
+    $('edit-list').innerHTML = h;
+    $('edit-reset').style.display = S.dayEdits[Logic.checkKey(kid.id, k)] ? '' : 'none';
+  }
+  // 쉼 칩: 켜면 그 줄의 사람 고르기를 잠근다
+  function setEditOff(btn, on) {
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', String(on));
+    var row = btn.parentNode, sel = row.querySelector('select');
+    if (sel) sel.disabled = on;
+    row.classList.toggle('changed', on || (!!sel && sel.value !== sel.getAttribute('data-base')));
+  }
+
   // 과목 고르기 시트: 과목 그림 격자 (한 쪽 16칸)
   function renderCellSheet(S, V, kid) {
     var c = V.cell;
@@ -793,10 +851,16 @@ var UI = (function () {
     $('cell-copy-row').innerHTML = h;
   }
 
-  // 아이 넣기 시트의 방과후 고르기: 꾸러미는 하나만, 요일(월~금)은 여러 개, 데리러 갈 사람은 하나만
+  // 아이 넣기 시트의 방과후 고르기: 한 곳씩 꾸러미는 하나만, 요일(월~금)은 여러 개, 데리러 갈 사람은 하나만. 넣어 둔 곳은 위에 칩으로 (누르면 빠짐)
   function renderKidAfter(S, sel) {
-    sel = sel || { pack: null, days: [], who: '' };
+    sel = sel || { pack: null, days: [], who: '', list: [] };
     var acad = S.packs.filter(function (p) { return p.kind === 'acad'; });
+    $('kid-after-list').innerHTML = sel.list.map(function (a, i) {
+      var p = Logic.findPack(S.packs, a.pack);
+      if (!p) return '';
+      var when = a.days.map(function (d) { return DATA.DOW[d]; }).join('·') + ' ' + a.time;
+      return '<button class="chip on" type="button" data-act="kid-after-remove" data-i="' + i + '" aria-label="' + esc(p.name) + ' ' + when + ' 빼기">' + packPic(p) + esc(p.name) + ' ' + when + ' ✕</button>';
+    }).join('');
     $('kid-after-packs').innerHTML = acad.map(function (p) {
       var on = p.id === sel.pack;
       return '<button class="chip' + (on ? ' on' : '') + '" type="button" data-act="kid-after-pack" data-id="' + p.id + '" aria-pressed="' + on + '">' + packPic(p) + esc(p.name) + '</button>';
@@ -813,6 +877,8 @@ var UI = (function () {
       return '<button class="chip' + (on ? ' on' : '') + '" type="button" data-act="kid-after-who" data-who="' + esc(g) + '" aria-pressed="' + on + '"' + off + '>' + (g ? esc(g) : '정하지 않음') + '</button>';
     }).join('');
     $('kid-after-time').disabled = !sel.pack;
+    $('kid-after-add').disabled = !sel.pack;
+    $('kid-skip').disabled = !!sel.pack || sel.list.length > 0;   // 고른 것이 있으면 저장으로 (건너뛰기로 잃지 않게)
     $('kid-after').style.display = acad.length ? '' : 'none';
   }
 
@@ -1022,7 +1088,7 @@ var UI = (function () {
       ['.date-card', '‹ › 로 다른 날 가방'],
       ['.up-pill', '며칠 뒤 준비물 모아 보기'],
       ['.bag-stage', '챙긴 만큼 가방이 차올라요'],
-      ['.strip', '그날 수업과 방과후'],
+      ['.day-edit-btn', '그날 수업 · 방과후를 이날만 바꾸기'],
       ['.bag-btns', '가방 챙기기 · 알림장 넣기']] },
     { title: '가방 시트', notes: [
       ['.kid-btn', '아이가 챙기면 칸이 커져요'],
@@ -1156,7 +1222,7 @@ var UI = (function () {
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName,
     fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
-    renderWeek: renderWeek, renderDay: renderDay, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
+    renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
     renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest

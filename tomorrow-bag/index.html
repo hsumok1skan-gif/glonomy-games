@@ -103,33 +103,43 @@
   </div>
 </div>
 
-<!-- 아이 넣기·고치기: 이름과 학년만 (교시 수는 시간표에서) -->
+<!-- 아이 넣기: 1단계 이름·학년·기본 시간표, 2단계 방과후 (건너뛸 수 있음). 고치기는 1단계 칸과 저장만 (교시 수는 시간표에서) -->
 <div id="sheet-kid" class="dim" data-sheet="1" aria-hidden="true">
   <form class="sheet" id="form-kid" role="dialog" aria-label="아이">
     <div class="grab"></div>
-    <div class="sheet-head"><h2 id="kid-title">아이 이름을 알려 주세요</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
-    <label class="f" for="kid-name">이름</label>
-    <input id="kid-name" type="text" maxlength="40" autocomplete="off">
-    <div class="err" id="kid-err"></div>
-    <label class="f" for="kid-grade">학년</label>
-    <select id="kid-grade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option><option value="4">4학년</option><option value="5">5학년</option><option value="6">6학년</option></select>
-    <label class="tpl-row" id="kid-template-row" for="kid-template"><input id="kid-template" type="checkbox" checked><span>학년 기본 시간표로 채우기</span></label>
-    <!-- 새 아이일 때만: 방과후 하나와 요일·데리러 갈 사람을 골라 두면 저장할 때 그 요일 방과후로 넣는다 -->
-    <div id="kid-after" class="kid-after">
-      <div class="f">방과후 <span class="tiny">(있으면 골라 주세요)</span></div>
-      <div id="kid-after-packs" class="chips one-line" role="group" aria-label="방과후 고르기"></div>
-      <div class="row ka-row">
-        <div id="kid-after-days" class="chips one-line" role="group" aria-label="요일 고르기"></div>
-        <input id="kid-after-time" type="time" value="15:00" aria-label="방과후 시작 시각">
+    <div class="sheet-head"><h2 id="kid-title" tabindex="-1">아이 이름을 알려 주세요</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <div class="kid-steps" id="kid-steps" role="img" aria-label="2단계 중 1단계"><span class="on"></span><span></span></div>
+    <div id="kid-step-1">
+      <label class="f" for="kid-name">이름</label>
+      <input id="kid-name" type="text" maxlength="40" autocomplete="off">
+      <div class="err" id="kid-err"></div>
+      <label class="f" for="kid-grade">학년</label>
+      <select id="kid-grade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option><option value="4">4학년</option><option value="5">5학년</option><option value="6">6학년</option></select>
+      <label class="tpl-row" id="kid-template-row" for="kid-template"><input id="kid-template" type="checkbox" checked><span>학년 기본 시간표로 채우기</span></label>
+    </div>
+    <div id="kid-step-2">
+      <!-- 새 아이일 때만: 방과후와 요일·데리러 갈 사람을 골라 두면 저장할 때 그 요일 방과후로 넣는다 (여러 곳이면 하나씩 더한다) -->
+      <div id="kid-after" class="kid-after">
+        <div id="kid-after-list" class="chips" role="group" aria-label="넣어 둔 방과후"></div>
+        <div class="f">방과후 <span class="tiny">(있으면 골라 주세요)</span></div>
+        <div id="kid-after-packs" class="chips one-line" role="group" aria-label="방과후 고르기"></div>
+        <div class="row ka-row">
+          <div id="kid-after-days" class="chips one-line" role="group" aria-label="요일 고르기"></div>
+          <input id="kid-after-time" type="time" value="15:00" aria-label="방과후 시작 시각">
+        </div>
+        <div class="f">데리러 갈 사람</div>
+        <div id="kid-after-who" class="chips one-line" role="group" aria-label="데리러 갈 사람 고르기"></div>
+        <div class="err" id="kid-after-err"></div>
+        <button class="btn small" type="button" id="kid-after-add" data-act="kid-after-add" disabled>+ 방과후 하나 더</button>
       </div>
-      <div class="f">데리러 갈 사람</div>
-      <div id="kid-after-who" class="chips one-line" role="group" aria-label="데리러 갈 사람 고르기"></div>
-      <div class="err" id="kid-after-err"></div>
     </div>
     <div class="row" style="margin-top:16px">
       <button class="btn danger" type="button" id="kid-del" data-act="kid-del">지우기</button>
+      <button class="btn" type="button" id="kid-back" data-act="kid-back">이전</button>
       <span class="spacer"></span>
-      <button class="btn main" type="submit">저장</button>
+      <button class="btn" type="button" id="kid-skip" data-act="kid-skip">건너뛰기</button>
+      <button class="btn main" type="button" id="kid-next" data-act="kid-next">다음</button>
+      <button class="btn main" type="submit" id="kid-save">저장</button>
     </div>
   </form>
 </div>
@@ -172,6 +182,20 @@
     <select id="after-who"></select>
     <div class="row" style="margin-top:16px">
       <button class="btn danger" type="button" id="after-del" data-act="after-del">지우기</button>
+      <span class="spacer"></span>
+      <button class="btn main" type="submit">저장</button>
+    </div>
+  </form>
+</div>
+
+<!-- 이날만 바꾸기: 시간표는 그대로 두고 그 날짜의 수업·데리러 갈 사람·쉼만 -->
+<div id="sheet-edit" class="dim" data-sheet="1" aria-hidden="true">
+  <form class="sheet" id="form-edit" role="dialog" aria-label="이날만 바꾸기">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2 id="edit-title">이날만 바꾸기</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <div id="edit-list" class="edit-list"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" type="button" id="edit-reset" data-act="edit-reset">시간표대로</button>
       <span class="spacer"></span>
       <button class="btn main" type="submit">저장</button>
     </div>

@@ -6,7 +6,9 @@
     screen: 'bag', offset: 0, pg: {}, kidMode: false, cal: null,
     noteQ: '', noteCat: 'all', noteSort: 'base',          // 알림장 준비물 찾기·거르기·순서
     cell: null, after: null, day: null, note: null, pack: null, eventPick: null, kidEdit: null, teach: null,
-    kidAfter: null,                                        // 아이 넣기 시트의 방과후 고르기 { pack, days, who }
+    edit: null,                                            // 이날만 바꾸기 시트 { k: 날짜, off: {방과후 id: true} }
+    kidStep: 1,                                            // 아이 넣기 시트의 걸음 (1 이름·학년·기본 시간표, 2 방과후)
+    kidAfter: null,                                        // 아이 넣기 시트의 방과후 고르기 { pack, days, who, list: 넣어 둔 것 }
     times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
     firstBag: false                                        // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
   };
@@ -153,35 +155,90 @@
     V.kidEdit = id || null;
     var k = null;
     S.kids.forEach(function (x) { if (x.id === id) k = x; });
-    $('kid-title').textContent = k ? '아이 고치기' : '아이 이름을 알려 주세요';
     $('kid-name').value = k ? k.name : '';
     $('kid-grade').value = k ? String(k.grade) : '1';
     $('kid-del').style.display = k ? '' : 'none';
     $('kid-template').checked = !k;
     $('kid-template-row').style.display = k ? 'none' : '';   // 고치기 모드에서는 이미 채운 칸을 건드리지 않는다
     // 방과후 고르기도 새 아이일 때만 (고치기는 시간표 탭의 방과후 칸에서)
-    V.kidAfter = k ? null : { pack: null, days: [], who: '' };
+    V.kidAfter = k ? null : { pack: null, days: [], who: '', list: [] };
     $('kid-after-time').value = '15:00';
     UI.clearErr('kid-after-time', 'kid-after-err');
     if (k) $('kid-after').style.display = 'none';
     else UI.renderKidAfter(S, V.kidAfter);
     UI.clearErr('kid-name', 'kid-err');
+    showKidStep(1);
     openSheet('sheet-kid');
+    if (!k) $('kid-name').focus();
+  }
+  // 걸음에 따라 한쪽만 보인다. 고치기는 1단계 칸과 저장 버튼만 (진행 점 없음)
+  function showKidStep(n) {
+    V.kidStep = n;
+    var edit = !!V.kidEdit, two = n === 2;
+    $('kid-step-1').style.display = two ? 'none' : '';
+    $('kid-step-2').style.display = two ? '' : 'none';
+    $('kid-steps').style.display = edit ? 'none' : '';
+    $('kid-steps').setAttribute('aria-label', '2단계 중 ' + n + '단계');
+    $('kid-steps').children[0].classList.toggle('on', !two);
+    $('kid-steps').children[1].classList.toggle('on', two);
+    $('kid-title').textContent = edit ? '아이 고치기' : (two ? '방과후가 있나요?' : '아이 이름을 알려 주세요');
+    $('kid-next').style.display = edit || two ? 'none' : '';
+    $('kid-back').style.display = two ? '' : 'none';
+    $('kid-skip').style.display = two ? '' : 'none';
+    $('kid-save').style.display = edit || two ? '' : 'none';
+  }
+  // 이름 검사: 통과하면 다듬은 이름, 아니면 오류를 띄우고 null
+  function checkKidName() {
+    var name = Logic.norm($('kid-name').value);
+    if (!name) { UI.fieldErr('kid-name', 'kid-err', '이름을 넣어 주세요.'); return null; }
+    if (name.length > Store.MAX_NAME) { UI.fieldErr('kid-name', 'kid-err', '이름은 ' + Store.MAX_NAME + '자 안으로 넣어 주세요.'); return null; }
+    var dup = S.kids.some(function (x) { return x.name === name && x.id !== V.kidEdit; });
+    if (dup) { UI.fieldErr('kid-name', 'kid-err', '같은 이름의 아이가 있어요. 다른 이름으로 불러 주세요.'); return null; }
+    return name;
+  }
+  function kidNext() {
+    if (!checkKidName()) return;
+    UI.clearErr('kid-name', 'kid-err');
+    // 고를 방과후 꾸러미가 없으면 2단계가 비어 있으니 바로 저장한다
+    if (!S.packs.some(function (p) { return p.kind === 'acad'; })) return submitKid();
+    showKidStep(2);
+    $('kid-title').focus();   // 숨은 칸에 남은 포커스를 옮기고 휴대폰 글자판을 닫는다
+  }
+  // 1단계의 엔터(폼 제출)는 다음 걸음으로, 그 밖에는 저장으로
+  function kidSubmit() {
+    if (!V.kidEdit && V.kidStep === 1) kidNext();
+    else submitKid();
+  }
+  // 고르는 중인 방과후 검사: 요일 하나 이상, 시각은 8시~22시, 넣어 둔 것과 시각이 겹치지 않고 한 요일 6개까지 (submitAfter 와 같은 규칙)
+  function checkKidAfter() {
+    var ka = V.kidAfter, t = $('kid-after-time').value;
+    if (!ka.days.length) { $('kid-after-err').textContent = '방과후에 가는 요일을 골라 주세요.'; UI.flash($('kid-after-days')); return false; }
+    if (!/^\d{2}:\d{2}$/.test(t) || t < '08:00' || t > '22:00') { UI.fieldErr('kid-after-time', 'kid-after-err', '오전 8시에서 밤 10시 사이로 넣어 주세요.'); return false; }
+    var same = ka.list.filter(function (a) { return a.time === t; }).some(function (a) { return a.days.some(function (d) { return ka.days.indexOf(d) >= 0; }); });
+    if (same) { UI.fieldErr('kid-after-time', 'kid-after-err', '같은 시각에 이미 다른 방과후가 있어요.'); return false; }
+    var full = ka.days.some(function (d) { return ka.list.filter(function (a) { return a.days.indexOf(d) >= 0; }).length >= 6; });
+    if (full) { $('kid-after-err').textContent = '한 요일에 방과후는 6개까지 넣을 수 있어요.'; return false; }
+    return true;
+  }
+  // 고른 방과후를 넣어 둔 목록으로 옮기고 다음 곳을 고를 수 있게 비운다
+  function keepKidAfter() {
+    var ka = V.kidAfter;
+    ka.list.push({ pack: ka.pack, days: ka.days, time: $('kid-after-time').value, who: ka.who });
+    ka.pack = null; ka.days = []; ka.who = '';
+    $('kid-after-time').value = '15:00';
+    UI.clearErr('kid-after-time', 'kid-after-err');
   }
   function submitKid() {
-    var name = Logic.norm($('kid-name').value);
-    if (!name) return UI.fieldErr('kid-name', 'kid-err', '이름을 넣어 주세요.');
-    if (name.length > Store.MAX_NAME) return UI.fieldErr('kid-name', 'kid-err', '이름은 ' + Store.MAX_NAME + '자 안으로 넣어 주세요.');
-    var dup = S.kids.some(function (x) { return x.name === name && x.id !== V.kidEdit; });
-    if (dup) return UI.fieldErr('kid-name', 'kid-err', '같은 이름의 아이가 있어요. 다른 이름으로 불러 주세요.');
+    var name = checkKidName();
+    if (!name) return;
     var grade = +$('kid-grade').value;
-    // 새 아이의 방과후: 꾸러미를 골랐으면 요일 하나 이상, 시각은 8시~22시
-    var ka = !V.kidEdit && V.kidAfter && V.kidAfter.pack && Logic.findPack(S.packs, V.kidAfter.pack) ? V.kidAfter : null;
-    var kaTime = $('kid-after-time').value;
-    if (ka) {
-      if (!ka.days.length) { $('kid-after-err').textContent = '방과후에 가는 요일을 골라 주세요.'; UI.flash($('kid-after-days')); return; }
-      if (!/^\d{2}:\d{2}$/.test(kaTime) || kaTime < '08:00' || kaTime > '22:00') return UI.fieldErr('kid-after-time', 'kid-after-err', '오전 8시에서 밤 10시 사이로 넣어 주세요.');
+    // 새 아이의 방과후: 고르는 중인 것이 있으면 검사해서 넣어 둔 목록에 더한다
+    var ka = !V.kidEdit && V.kidAfter ? V.kidAfter : null;
+    if (ka && ka.pack) {
+      if (!checkKidAfter()) return;
+      keepKidAfter();
     }
+    var kaList = ka ? ka.list.filter(function (a) { return Logic.findPack(S.packs, a.pack); }) : [];
     rememberUndo();
     var k = null;
     S.kids.forEach(function (x) { if (x.id === V.kidEdit) k = x; });
@@ -192,7 +249,9 @@
       k = { id: Store.uid('k'), name: name, grade: grade, periods: np, week: Store.emptyWeek(np) };
       var tw = $('kid-template').checked ? Logic.gradeWeek(DATA.TIMETABLES, S.packs, grade, k.periods) : null;
       if (tw) for (var d = 1; d <= 5; d++) { k.week[d].p = tw[d]; if (tw[d].some(Boolean)) filled = true; }
-      if (ka) ka.days.forEach(function (w) { k.week[w].after.push({ id: Store.uid('a'), packId: ka.pack, time: kaTime, who: ka.who }); });
+      kaList.forEach(function (a) {
+        a.days.forEach(function (w) { k.week[w].after.push({ id: Store.uid('a'), packId: a.pack, time: a.time, who: a.who }); });
+      });
       S.kids.push(k);
     }
     S.cur = k.id;
@@ -201,7 +260,7 @@
     UI.closeSheet('sheet-kid');
     renderAll();
     if (!V.kidEdit && pendingTeach) return applyTeach();   // 선생님 링크로 받아 둔 준비물을 이 아이 가방에
-    var kaMsg = ka ? ' · 방과후 ' + ka.days.length + '일 넣었어요' : '';
+    var kaMsg = kaList.length > 1 ? ' · 방과후 ' + kaList.length + '곳 넣었어요' : (kaList.length ? ' · 방과후 ' + kaList[0].days.length + '일 넣었어요' : '');
     UI.toast(V.kidEdit ? '고쳤어요' : (filled ? grade + '학년 기본 시간표로 채웠어요' : Logic.nameI(name) + ' 시간표를 채워 볼까요?') + kaMsg, !!V.kidEdit);
     if (!V.kidEdit) {
       UI.closeSheet('sheet-kids');
@@ -237,6 +296,7 @@
     Object.keys(S.checks).forEach(function (ck) { if (ck.indexOf(id + '|') === 0) delete S.checks[ck]; });
     Object.keys(S.skips).forEach(function (ck) { if (ck.indexOf(id + '|') === 0) delete S.skips[ck]; });
     Object.keys(S.outs).forEach(function (ck) { if (ck.indexOf(id + '|') === 0) delete S.outs[ck]; });
+    Object.keys(S.dayEdits).forEach(function (ck) { if (ck.indexOf(id + '|') === 0) delete S.dayEdits[ck]; });
     if (S.cur === id) S.cur = S.kids[0] ? S.kids[0].id : null;
   }
 
@@ -798,6 +858,61 @@
     });
   }
 
+  // ---- 이날만 바꾸기: 시간표는 그대로 두고 그 날짜의 수업·방과후만 바꾼다 (S.dayEdits) ----
+  function openEdit() {
+    var kid = curKid();
+    if (!kid) return UI.toast('아이를 먼저 알려 주세요');
+    var k = bagKey(), w = Logic.dow(k);
+    if (w < 1 || w > 5) return;
+    var e = S.dayEdits[Logic.checkKey(kid.id, k)] || {};
+    V.edit = { k: k, off: {} };
+    Object.keys(e.after || {}).forEach(function (id) { if (e.after[id] && e.after[id].off) V.edit.off[id] = true; });
+    UI.renderEdit(S, kid, k);
+    openSheet('sheet-edit');
+  }
+  // 저장 뒤 공통: 기록을 맞추고, 빠진 물건 때문에 다 챙긴 날이 되면 칭찬 스티커까지
+  function afterEdit(kid, k, wasDone, msg) {
+    refreshHistory(kid, k);
+    save();
+    UI.closeSheet('sheet-edit');
+    renderAll();
+    UI.toast(msg, true);
+    if (!wasDone && bagIsDone(kid, k)) completeBag(kid, k);
+  }
+  function bagIsDone(kid, k) {
+    var bag = Logic.buildBag(S, kid, k), pr = Logic.progress(S, kid, bag);
+    return (pr.total > 0 && pr.done === pr.total) || Logic.nightDone(S, kid, bag);
+  }
+  function submitEdit() {
+    var kid = curKid(), k = V.edit.k;
+    var day = kid.week[Logic.dow(k)];
+    var p = {}, after = {};
+    Array.prototype.forEach.call($('edit-list').querySelectorAll('select[data-no]'), function (sel) {
+      var no = +sel.getAttribute('data-no');
+      if ((sel.value || null) !== (day.p[no - 1] || null)) p[no] = sel.value || null;
+    });
+    Array.prototype.forEach.call($('edit-list').querySelectorAll('select[data-aid]'), function (sel) {
+      var id = sel.getAttribute('data-aid');
+      var a = day.after.filter(function (x) { return x.id === id; })[0];
+      if (!a) return;
+      var off = !!V.edit.off[id];
+      if (off || sel.value !== (a.who || '')) after[id] = { who: sel.value, off: off };
+    });
+    var wasDone = bagIsDone(kid, k);
+    var same = !Object.keys(p).length && !Object.keys(after).length;
+    rememberUndo();
+    if (same) delete S.dayEdits[Logic.checkKey(kid.id, k)];
+    else S.dayEdits[Logic.checkKey(kid.id, k)] = { p: p, after: after };
+    afterEdit(kid, k, wasDone, same ? '시간표대로예요' : Logic.shortLabel(k) + '만 바꿨어요');
+  }
+  function resetEdit() {
+    var kid = curKid(), k = V.edit.k;
+    var wasDone = bagIsDone(kid, k);
+    rememberUndo();
+    delete S.dayEdits[Logic.checkKey(kid.id, k)];
+    afterEdit(kid, k, wasDone, Logic.shortLabel(k) + '을(를) 시간표대로 돌렸어요');
+  }
+
   // ---- 꾸러미 ----
   function openPack(id) {
     var p = id ? Logic.findPack(S.packs, id) : null;
@@ -855,6 +970,11 @@
         k.week[d].p = k.week[d].p.map(function (x) { return x === id ? null : x; });
         k.week[d].after = k.week[d].after.filter(function (a) { return a.packId !== id; });
       }
+    });
+    // 이날만 바꾼 칸도 빈 칸이 되지 않게, 그 꾸러미로 바꾼 것을 지운다
+    Object.keys(S.dayEdits).forEach(function (ck) {
+      var ep = S.dayEdits[ck].p || {};
+      Object.keys(ep).forEach(function (no) { if (ep[no] === id) delete ep[no]; });
     });
   }
   function deletePack() {
@@ -1181,7 +1301,19 @@
     'kid-new': function () { openKid(null); },
     'kid-edit': function (b) { openKid(b.getAttribute('data-id')); },
     'kid-del': deleteKid,
-    // 방과후 꾸러미는 하나만 (다시 누르면 빼기), 요일은 여러 개, 데리러 갈 사람은 하나만
+    'kid-next': kidNext,
+    'kid-back': function () { showKidStep(1); $('kid-name').focus(); },
+    'kid-skip': submitKid,   // 고른 것이 없을 때만 눌린다 (renderKidAfter)
+    'kid-after-add': function () {
+      if (!V.kidAfter.pack || !checkKidAfter()) return;
+      keepKidAfter();
+      UI.renderKidAfter(S, V.kidAfter);
+    },
+    'kid-after-remove': function (b) {
+      V.kidAfter.list.splice(+b.getAttribute('data-i'), 1);
+      UI.renderKidAfter(S, V.kidAfter);
+    },
+    // 한 곳씩 고른다: 방과후 꾸러미는 하나만 (다시 누르면 빼기), 요일은 여러 개, 데리러 갈 사람은 하나만
     'kid-after-pack': function (b) {
       var id = b.getAttribute('data-id');
       V.kidAfter.pack = V.kidAfter.pack === id ? null : id;
@@ -1249,6 +1381,13 @@
     'after-new': function (b) { openAfter(+b.getAttribute('data-d') || 1, null); },
     'after-edit': function (b) { openAfter(+b.getAttribute('data-d'), b.getAttribute('data-id')); },
     'after-del': deleteAfter,
+    'edit-open': openEdit,
+    'edit-reset': resetEdit,
+    'edit-off': function (b) {
+      var id = b.getAttribute('data-id'), on = !V.edit.off[id];
+      if (on) V.edit.off[id] = true; else delete V.edit.off[id];
+      UI.setEditOff(b, on);
+    },
     'pack-new': function () { openPack(null); },
     'pack-edit': function (b) { openPack(b.getAttribute('data-id')); },
     'pack-add': packAddItem,
@@ -1345,10 +1484,12 @@
     'cell-set': 'cell', 'cell-clear': 'cell', 'cell-copy': 'cell', 'cell-copy-to': 'cell',
     'note-add': 'note', 'note-item-del': 'note', 'note-supply': 'note', 'note-cat': 'note', 'note-q-clear': 'note', 'note-del': 'note', 'note-parse': 'note',
     'pack-add': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
+    'edit-off': 'edit', 'edit-reset': 'edit', 'form-edit': 'edit',
     'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid',
     'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid',
     'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach',
-    'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter'
+    'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
+    'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter'
   };
   function ready(name) {
     var need = NEED[name];
@@ -1375,32 +1516,60 @@
         press = null;
       }, cell ? 520 : 900);
     }
+    if (swipe && swipe.drag) return;   // 미는 중에 닿은 다른 손가락은 쪽을 건드리지 않는다
     var sw = e.target.closest('.pager, [data-swipe]');
-    swipe = sw ? { el: sw, x: e.clientX, y: e.clientY } : null;
+    swipe = sw ? { el: sw, x: e.clientX, y: e.clientY, pid: e.pointerId, day: sw.getAttribute('data-swipe') === 'day', cur: +sw.getAttribute('data-cur') || 0, drag: null } : null;
   }
+  var EDGE_PULL = 0.35, DAY_PULL = 0.5;   // 첫 쪽·끝 쪽 바깥으로 밀 때, 날짜 카드를 밀 때 손가락을 따라오는 비율
   function onMove(e) {
     if (press && (Math.abs(e.clientX - press.x) > 10 || Math.abs(e.clientY - press.y) > 10)) { clearTimeout(press.timer); press = null; }
+    var s = swipe;
+    if (!s || e.pointerId !== s.pid) return;
+    var dx = e.clientX - s.x, dy = e.clientY - s.y;
+    if (!s.drag) {
+      if (Math.abs(dx) < 6 || Math.abs(dx) <= Math.abs(dy)) return;
+      s.drag = s.day ? s.el : s.el.querySelector('.track');
+      s.drag.classList.add('dragging');
+      // 창 밖에서 놓아도 pointerup 을 받는다
+      try { s.el.setPointerCapture(e.pointerId); } catch (err) { /* 못 잡아도 창 안에서는 그대로 돈다 */ }
+      if (press) { clearTimeout(press.timer); press = null; }
+      UI.hideBubble();
+    }
+    if (s.day) { s.drag.style.transform = 'translateX(' + Math.round(dx * DAY_PULL) + 'px)'; return; }
+    var max = (+s.el.getAttribute('data-n') || 1) - 1;
+    var outside = (s.cur <= 0 && dx > 0) || (s.cur >= max && dx < 0);
+    s.drag.style.transform = 'translateX(calc(' + (-s.cur * 100) + '% + ' + Math.round(outside ? dx * EDGE_PULL : dx) + 'px))';
+  }
+  // 미는 것을 끝낸다: 쪽은 step 만큼 옮겨 붙이고(0 이면 제자리), 날짜 카드는 제자리로 돌아온 뒤 날을 바꾼다
+  function settle(s, step) {
+    if (s.drag) s.drag.classList.remove('dragging');
+    if (s.day) {
+      if (s.drag) s.drag.style.transform = '';
+      if (step) { V.offset += step; renderAll(); }
+      return;
+    }
+    var id = s.el.getAttribute('data-pg');
+    V.pg[id] = UI.setPage(id, s.cur + step);
+    if (V.pg[id] !== s.cur) SFX.page();
+    UI.hideBubble();
   }
   function onUp(e) {
     if (press) { clearTimeout(press.timer); press = null; }
     var s = swipe;
+    if (!s || e.pointerId !== s.pid) return;
     swipe = null;
-    if (!s) return;
     var dx = e.clientX - s.x, dy = e.clientY - s.y;
-    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
-    eatClick = true;
-    var step = dx < 0 ? 1 : -1;
-    if (s.el.getAttribute('data-swipe') === 'day') { V.offset += step; renderAll(); return; }
-    var id = s.el.getAttribute('data-pg');
-    if (!id) return;
-    var before = V.pg[id] || 0;
-    V.pg[id] = UI.setPage(id, before + step);
-    if (V.pg[id] !== before) SFX.page();
-    UI.hideBubble();
+    var far = Math.abs(dx) >= 48 && Math.abs(dx) >= Math.abs(dy) * 1.2;
+    if (!far && !s.drag) return;
+    eatClick = true;   // 쪽이 움직였으면 짧게 밀었어도 칸을 누른 것으로 치지 않는다
+    settle(s, far ? (dx < 0 ? 1 : -1) : 0);
   }
-  function onCancel() {
+  function onCancel(e) {
     if (press) { clearTimeout(press.timer); press = null; }
+    var s = swipe;
+    if (!s || e.pointerId !== s.pid) return;
     swipe = null;
+    if (s.drag) settle(s, 0);
   }
 
   function onClick(e) {
@@ -1432,10 +1601,10 @@
   }
 
   var FORMS = {
-    'form-kid': submitKid, 'form-after': submitAfter, 'form-note': submitNote, 'form-pack': submitPack,
+    'form-kid': kidSubmit, 'form-after': submitAfter, 'form-note': submitNote, 'form-pack': submitPack,
     'form-event': submitEvent, 'form-backup': restore,
     'form-daily': function () { addDaily($('daily-add').value); },
-    'form-guard': addGuardian, 'form-holiday': addHoliday, 'form-teacher': submitTeacher, 'form-times': submitTimes
+    'form-guard': addGuardian, 'form-holiday': addHoliday, 'form-teacher': submitTeacher, 'form-times': submitTimes, 'form-edit': submitEdit
   };
   function onSubmit(e) {
     var f = FORMS[e.target.id];
@@ -1471,6 +1640,7 @@
       save(); renderAll();
       UI.toast('바꿨어요');
     }
+    if (t.getAttribute && t.hasAttribute('data-base') && t.closest('.ed-cell')) t.closest('.ed-cell').classList.toggle('changed', t.value !== t.getAttribute('data-base'));
     if (t.classList && t.classList.contains('bad')) t.classList.remove('bad');
   }
 
