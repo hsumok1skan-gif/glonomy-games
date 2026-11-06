@@ -10,6 +10,7 @@
     kidStep: 1,                                            // 아이 넣기 시트의 걸음 (1 이름·학년·기본 시간표, 2 방과후)
     kidAfter: null,                                        // 아이 넣기 시트의 방과후 고르기 { pack, days, who, list: 넣어 둔 것 }
     times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
+    family: null,                                          // 가족 링크 시트 { name, link }
     firstBag: false                                        // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
   };
   var undoSnap = null;
@@ -657,17 +658,21 @@
     UI.renderCellSheet(S, V, curKid());
     openSheet('sheet-cell');
   }
+  // 다음 칸으로 넘어가 연달아 넣을 수 있게: 마지막 교시면 다음 요일 첫 칸, 금요일 마지막 교시에서만 닫는다
+  function nextCell(kid) {
+    var c = V.cell;
+    if (c.i + 1 < kid.periods) c.i++;
+    else if (c.d < 5) { c.d++; c.i = 0; }
+    else { UI.closeSheet('sheet-cell'); return; }
+    UI.renderCellSheet(S, V, kid);
+  }
   function setCell(packId) {
     var kid = curKid();
     rememberUndo();
     kid.week[V.cell.d].p[V.cell.i] = packId;
     save();
     var d = V.cell.d, i = V.cell.i;
-    // 다음 칸으로 넘어가 연달아 넣을 수 있게
-    if (packId && i + 1 < kid.periods) {
-      V.cell.i = i + 1;
-      UI.renderCellSheet(S, V, kid);
-    } else UI.closeSheet('sheet-cell');
+    nextCell(kid);
     renderAll();
     var el = $('cell-' + d + '-' + i);
     if (el) el.classList.add('flash');
@@ -1099,21 +1104,70 @@
   function teachShare() {
     var o = teachOut();
     if (!o) return UI.toast('먼저 링크 만들기를 눌러 주세요');
-    var data = { title: o.cls + ' 준비물', text: teachMsg(o), url: o.link };
+    shareLink(o.cls + ' 준비물', teachMsg(o), o.link);
+  }
+  // 공유 창으로 보내고, 안 되면 링크를 복사한다
+  function shareLink(title, msg, link) {
+    var data = { title: title, text: msg, url: link };
     var can = false;
     try { can = !!navigator.share && (!navigator.canShare || navigator.canShare(data)); } catch (e) { can = false; }
     if (!can) {
-      copyText(teachMsg(o) + '\n' + o.link, '이 브라우저는 바로 보내기가 안 돼서 링크를 복사했어요. 대화방에 붙여 넣어 주세요');
+      copyText(msg + '\n' + link, '이 브라우저는 바로 보내기가 안 돼서 링크를 복사했어요. 대화방에 붙여 넣어 주세요');
       return;
     }
     try {
       navigator.share(data).then(function () { UI.toast('보낼 곳으로 넘겼어요'); }, function (err) {
         if (err && err.name === 'AbortError') return;   // 사람이 고르기 창을 닫음
-        copyText(teachMsg(o) + '\n' + o.link, '바로 보내지 못해서 링크를 복사했어요. 대화방에 붙여 넣어 주세요');
+        copyText(msg + '\n' + link, '바로 보내지 못해서 링크를 복사했어요. 대화방에 붙여 넣어 주세요');
       });
     } catch (e) {
-      copyText(teachMsg(o) + '\n' + o.link, '바로 보내지 못해서 링크를 복사했어요. 대화방에 붙여 넣어 주세요');
+      copyText(msg + '\n' + link, '바로 보내지 못해서 링크를 복사했어요. 대화방에 붙여 넣어 주세요');
     }
+  }
+
+  // ---- 가족 링크: 아이 하나의 시간표를 링크 주소(#f=…) 안에 담아 다른 보호자 폰으로 넘긴다. 서버 없음 ----
+  function openFamily(id) {
+    var k = S.kids.filter(function (x) { return x.id === id; })[0];
+    if (!k) return;
+    var pack = Logic.familyPack(S, k);
+    var f = Logic.familyUnpack(pack);
+    if (!f) return UI.toast('가족 링크를 만들지 못했어요');
+    var link = teacherBase() + '#f=' + pack;
+    var qr = QR.svg(link, k.name + ' 가족 링크 QR코드');
+    var after = 0;
+    for (var d = 1; d <= 5; d++) after += f.week[d].after.length;
+    V.family = { name: k.name, link: link };
+    UI.renderFamily({ name: f.name, grade: f.grade, periods: f.periods, after: after, packs: f.packs.length, notes: f.notes.length, link: link, qr: qr });
+    openSheet('sheet-family');
+    // 화면에 글을 두지 않고 알림으로만 (선생님 링크와 같다)
+    if (!qr) UI.toast('내용이 길어 QR코드에 다 담기지 않아요. 링크로 보내 주세요');
+    else if (!/^https?:$/.test(location.protocol)) UI.toast('이 기기 파일로 열려 있어 다른 기기에서는 링크가 열리지 않아요');
+  }
+  function familyMsg(o) {
+    return Logic.nameI(o.name) + ' 시간표예요. 링크를 열면 내일 가방에 들어가요.';
+  }
+  // 받는 쪽: 링크를 열면 한 번 묻고 넣는다. 다른 아이와 기록은 그대로 둔다 (Logic.mergeFamily)
+  function readFamilyHash() {
+    var h = location.hash || '';
+    if (h.indexOf('#f=') !== 0) return;
+    var f = Logic.familyUnpack(h.slice(3));
+    clearHash();
+    if (!f) return UI.toast('가족 링크를 읽지 못했어요. 링크를 다시 받아 주세요');
+    var has = S.kids.some(function (x) { return !x.sample && x.name === f.name; });
+    var who = Logic.nameI(f.name);
+    askConfirm(has ? who + ' 시간표를 받은 것으로 바꿀까요?' : who + ' 시간표를 이 폰에 넣을까요?', has ? '바꾸기' : '넣기', function () { applyFamily(f); });
+  }
+  function applyFamily(f) {
+    S.settings.welcomed = true;
+    UI.closeSheet('ov-welcome');
+    rememberUndo();
+    var r = Logic.mergeFamily(S, f, Store.uid);
+    S.cur = r.kid.id;
+    V.offset = 0;
+    save();
+    renderAll();
+    go('bag');
+    UI.toast(Logic.nameI(f.name) + (r.isNew ? ' 시간표를 넣었어요' : ' 시간표를 바꿨어요'), true);
   }
 
   // ---- 부모 쪽: 선생님 링크(#t=…)를 열면 준비물을 지금 아이의 그날 알림장에 넣는다 ----
@@ -1285,6 +1339,7 @@
   // ---- 눌림 처리 ----
   var ACTIONS = {
     'go': function (b) { go(b.getAttribute('data-to')); },
+    'setup-skip': function () { S.settings.setupDone = true; save(); renderAll(); },
     'help': openHelp,
     'help-step': function (b) { helpStep(+b.getAttribute('data-d')); },
     'times-open': openTimes,
@@ -1376,6 +1431,7 @@
     'cell': function (b) { openCell(+b.getAttribute('data-d'), +b.getAttribute('data-i')); },
     'cell-set': function (b) { setCell(b.getAttribute('data-id')); },
     'cell-clear': function () { setCell(null); },
+    'cell-skip': function () { nextCell(curKid()); },
     'cell-copy': function () { UI.renderCopyRow(V.cell.d); },
     'cell-copy-to': function (b) { copyDay(+b.getAttribute('data-d')); },
     'after-new': function (b) { openAfter(+b.getAttribute('data-d') || 1, null); },
@@ -1451,6 +1507,9 @@
     'teach-copy': teachCopy,
     'teach-edit': function () { V.teach.out = null; UI.renderTeachOut(null); },
     'teach-item-del': function (b) { V.teach.items.splice(+b.getAttribute('data-i'), 1); UI.renderTeachItems(V.teach.items); },
+    'family-link': function (b) { openFamily(b.getAttribute('data-id')); },
+    'family-share': function () { shareLink(V.family.name + ' 시간표', familyMsg(V.family), V.family.link); },
+    'family-copy': function () { copyText(familyMsg(V.family) + '\n' + V.family.link, '링크를 복사했어요. 카톡·문자 대화방에 붙여 넣어 주세요'); },
     'export-open': openExport,
     'backup': openBackup,
     'copy-export': function () { copyText($('export-text').value, '내보내기 글을 복사했어요'); },
@@ -1481,13 +1540,13 @@
 
   // 시트 안 동작은 그 시트를 연 뒤에만 (열린 적 없는 시트의 버튼이 눌려도 아무 일 없게)
   var NEED = {
-    'cell-set': 'cell', 'cell-clear': 'cell', 'cell-copy': 'cell', 'cell-copy-to': 'cell',
+    'cell-set': 'cell', 'cell-clear': 'cell', 'cell-skip': 'cell', 'cell-copy': 'cell', 'cell-copy-to': 'cell',
     'note-add': 'note', 'note-item-del': 'note', 'note-supply': 'note', 'note-cat': 'note', 'note-q-clear': 'note', 'note-del': 'note', 'note-parse': 'note',
     'pack-add': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
     'edit-off': 'edit', 'edit-reset': 'edit', 'form-edit': 'edit',
     'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid',
     'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid',
-    'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach',
+    'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach', 'family-share': 'family', 'family-copy': 'family',
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
     'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter'
   };
@@ -1685,9 +1744,11 @@
     document.addEventListener('contextmenu', function (e) { if (e.target.closest && e.target.closest('#sheet-bag .check, #kid-mode')) e.preventDefault(); });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
     window.addEventListener('hashchange', readTeachHash);
+    window.addEventListener('hashchange', readFamilyHash);
     setInterval(tick, 60000);
     if (!S.settings.welcomed && !/^#t=/.test(location.hash || '')) UI.openSheet('ov-welcome');
     readTeachHash();
+    readFamilyHash();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

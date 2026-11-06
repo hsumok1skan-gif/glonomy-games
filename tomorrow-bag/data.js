@@ -203,7 +203,7 @@ var DATA = (function () {
     ['notebook', '공책', '공책|노트|일기장|독서록|단어장|기록장', '<rect x="6" y="3" width="13" height="18" rx="2"/><path d="M4 7h3M4 12h3M4 17h3M10 8h6"/>'],
     ['textbook', '교과서', '교과서|교재|책', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v18M12 8h4"/>'],
     ['pouch', '준비물 봉투', '봉투|주머니|쇼핑백|봉지|지퍼백|장바구니|재료', '<path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'],
-    ['bag', '가방', '가방|배낭', '<rect x="5" y="8" width="14" height="13" rx="3.5"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><rect x="9" y="13.5" width="6" height="3.5" rx="1.2"/>']
+    ['bag', '가방', '가방|배낭', '<rect x="6" y="8" width="12" height="13" rx="3.5"/><path d="M10 8V6a2 2 0 0 1 4 0v2"/><path d="M6 11.5C3.6 12.5 3.6 17 6 18.5M18 11.5c2.4 1 2.4 5.5 0 7"/><path d="M9 11.5h6"/><rect x="8.5" y="14" width="7" height="4.5" rx="1.2"/>']
   ];
   var ICONS = ICON_ROWS.map(function (r) { return { id: r[0], name: r[1], w: r[2].split('|'), d: r[3] }; });
 

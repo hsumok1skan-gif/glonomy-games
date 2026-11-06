@@ -16,7 +16,7 @@
 <div id="app">
   <header class="top">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="9" width="22" height="20" rx="6" fill="var(--accent)"/><path d="M11 9 V7 a5 5 0 0 1 10 0 V9" fill="none" stroke="var(--ink)" stroke-width="2.4"/><rect x="10" y="17" width="12" height="7" rx="2.5" fill="var(--soft)"/><path d="M13 20.5 l2 2 l4 -4" fill="none" stroke="var(--sub)" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><path class="strap" d="M6 13 C3 14 3 23 6 25" fill="none" stroke="var(--accent-deep)" stroke-width="2.4" stroke-linecap="round"/><path class="strap" d="M26 13 C29 14 29 23 26 25" fill="none" stroke="var(--accent-deep)" stroke-width="2.4" stroke-linecap="round"/><path d="M13 9 V7.5 a3 3 0 0 1 6 0 V9" fill="none" stroke="var(--ink)" stroke-width="2.2"/><rect x="6" y="9" width="20" height="20" rx="6" fill="var(--accent)"/><path class="zip" d="M10 13.5 H22" fill="none" stroke="var(--on-accent)" stroke-width="1.8" stroke-linecap="round"/><rect class="pocket" x="10" y="17" width="12" height="8" rx="2.5" fill="var(--soft)"/><path d="M13 21 l2 2 l4 -4" fill="none" stroke="var(--sub)" stroke-width="2.2" stroke-linecap="round"/></svg>
       <span>내일 가방</span>
     </div>
     <button class="icon-btn" type="button" data-act="share" aria-label="가족에게 보내기"><svg class="ic ic-share" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" stroke="var(--muted)"/></svg></button>
@@ -33,7 +33,7 @@
   </main>
 
   <nav class="tabs" aria-label="화면">
-    <button class="tab on" type="button" data-act="go" data-to="bag"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="13" rx="3.5"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><rect class="ic-dot" x="9" y="13.5" width="6" height="3.5" rx="1.2" fill="currentColor" stroke="none"/></svg></span>가방</button>
+    <button class="tab on" type="button" data-act="go" data-to="bag"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="12" height="13" rx="3.5"/><path d="M10 8V6a2 2 0 0 1 4 0v2"/><path d="M6 11.5C3.6 12.5 3.6 17 6 18.5M18 11.5c2.4 1 2.4 5.5 0 7"/><path d="M9 11.5h6"/><rect class="ic-dot" x="8.5" y="14" width="7" height="4.5" rx="1.2" fill="currentColor" stroke="none"/></svg></span>가방</button>
     <button class="tab" type="button" data-act="go" data-to="week"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="3"/><path d="M4 10.5h16M9 4v4M15 4v4"/><circle class="ic-dot" cx="15.5" cy="15" r="1.8" fill="currentColor" stroke="none"/></svg></span>시간표</button>
     <button class="tab" type="button" data-act="go" data-to="packs"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.6 8.6a2 2 0 0 1-2 1.4H7.6a2 2 0 0 1-2-1.4Z"/><path d="M8.5 10l3-5.5M15.5 10l-3-5.5M10 14v2.5M14 14v2.5"/><circle class="ic-dot" cx="12" cy="4.5" r="1.4" fill="currentColor" stroke="none"/></svg></span>꾸러미</button>
     <button class="tab" type="button" data-act="go" data-to="more"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5.5"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/><circle class="ic-dot" cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></span>설정</button>
@@ -150,6 +150,7 @@
     <div class="grab"></div>
     <div class="sheet-head"><h2 id="cell-title">월요일 1교시</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
     <div id="cell-picks" class="fill pick-area"></div>
+    <button class="btn wide" type="button" data-act="cell-skip" style="margin-top:8px">그대로 두고 다음</button>
     <div class="row" style="margin-top:8px">
       <button class="btn" type="button" data-act="cell-clear">빈 칸으로</button>
       <span class="spacer"></span>
@@ -387,6 +388,15 @@
   </form>
 </div>
 
+<!-- 가족 링크: 아이 하나의 시간표를 다른 보호자 폰으로 -->
+<div id="sheet-family" class="dim" data-sheet="1" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-label="가족 링크">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2>가족 링크</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <div id="family-out" class="teach-out" aria-live="polite"></div>
+  </div>
+</div>
+
 <!-- 계산 점검 -->
 <div id="sheet-selftest" class="dim" data-sheet="1" aria-hidden="true">
   <div class="sheet" role="dialog" aria-label="계산 점검">
@@ -456,9 +466,12 @@
   <div class="sheet" role="dialog" aria-label="처음 안내">
     <svg class="welcome-art" viewBox="0 0 140 140" aria-hidden="true">
       <circle cx="70" cy="74" r="62" fill="var(--soft)"/>
+      <path class="strap" d="M36 60 C22 64 22 98 36 106" fill="none" stroke="var(--accent-deep)" stroke-width="6" stroke-linecap="round"/>
+      <path class="strap" d="M104 60 C118 64 118 98 104 106" fill="none" stroke="var(--accent-deep)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M61 44 V38 a9 9 0 0 1 18 0 V44" fill="none" stroke="var(--ink)" stroke-width="6"/>
       <rect x="34" y="44" width="72" height="74" rx="20" fill="var(--accent)"/>
-      <path d="M52 44 V36 a18 18 0 0 1 36 0 V44" fill="none" stroke="var(--ink)" stroke-width="6"/>
-      <rect x="46" y="76" width="48" height="28" rx="9" fill="var(--surface)"/>
+      <path class="zip" d="M46 62 H94 M88 62 v6" fill="none" stroke="var(--on-accent)" stroke-width="3.5" stroke-linecap="round"/>
+      <rect class="pocket" x="46" y="76" width="48" height="28" rx="9" fill="var(--surface)"/>
       <path d="M58 90 l8 8 l16 -16" fill="none" stroke="var(--sub)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
       <rect x="30" y="20" width="22" height="16" rx="4" fill="var(--gold)" transform="rotate(-14 41 28)"/>
       <rect x="90" y="18" width="20" height="20" rx="4" fill="var(--sub)" transform="rotate(12 100 28)"/>

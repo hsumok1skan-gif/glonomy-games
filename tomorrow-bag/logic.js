@@ -577,6 +577,164 @@ var Logic = (function () {
     return { cls: cls, date: t.d, added: added, merged: merged, note: note };
   }
 
+  // ---- 가족 링크: 아이 하나의 시간표를 링크 주소(#f=…) 안에 담아 다른 보호자 폰으로 넘긴다 (서버 없음) ----
+  // 담는 꼴: JSON { v:1, n:이름, g:학년, c:교시 수, w:[요일마다 칸별 꾸러미 번호(1부터, 0은 빈 칸)], a:[[요일, 꾸러미 번호, 시각, 데리러 갈 사람]],
+  //   k:[꾸러미], u:[데리러 갈 사람], o:[[날짜, 이유, [준비물], 메모, 반]] } → UTF-8 → base64url
+  // QR코드에 담기게, 고치지 않은 기본 꾸러미는 id 만 담는다
+  function defaultPack(id) {
+    var out = null;
+    function look(list, kind) {
+      list.forEach(function (d) { if (d.id === id) out = { id: d.id, kind: kind, name: d.name, icon: d.icon, pic: d.pic, items: d.items.slice() }; });
+    }
+    look(DATA.SUBJECTS, 'subj');
+    look(DATA.ACADEMIES, 'acad');
+    return out;
+  }
+  function samePack(a, b) { return a.name === b.name && a.kind === b.kind && a.items.join('\n') === b.items.join('\n'); }
+  function familyPack(state, kid, todayKey) {
+    var today = todayKey || toKey(new Date());
+    var ids = [], used = [];
+    function packNo(id) {
+      if (!id) return 0;
+      var at = ids.indexOf(id);
+      if (at >= 0) return at + 1;
+      var p = findPack(state.packs, id);
+      if (!p) return 0;
+      ids.push(id);
+      used.push(p);
+      return ids.length;
+    }
+    var w = [], a = [];
+    for (var d = 1; d <= 5; d++) {
+      var day = (kid.week && kid.week[d]) || { p: [], after: [] };
+      var row = [];
+      for (var i = 0; i < kid.periods; i++) row.push(packNo(day.p[i]));
+      w.push(row);
+      day.after.forEach(function (x) {
+        var n = packNo(x.packId);
+        if (n) a.push([d, n, x.time || '', x.who || '']);
+      });
+    }
+    var k = used.map(function (p) {
+      var base = defaultPack(p.id);
+      if (base && samePack(p, base) && p.icon === base.icon && (!p.pic || p.pic === base.pic)) return p.id;
+      return [p.id, p.kind === 'acad' ? 'acad' : 'subj', p.name, p.icon || '', p.pic || '', p.items];
+    });
+    var o = (state.notes || []).filter(function (n) {
+      return n.kid === kid.id && n.date >= today && validKey(n.date);
+    }).map(function (n) { return [n.date, n.title || '', n.items, n.memo || '', n.from || '']; });
+    return b64url(utf8Bytes(JSON.stringify({ v: 1, n: kid.name, g: +kid.grade || 1, c: kid.periods, w: w, a: a, k: k, u: state.settings.guardians || [], o: o })));
+  }
+  // 링크에서 다시 읽기. 꼴이 틀리면 null. 받은 값은 믿지 않는다: id 는 글자를 가리고, 긴 글은 저장 검사(store.js validate)를 넘지 않게 자른다
+  function familyUnpack(s) {
+    var b = unb64url(String(s || ''));
+    if (!b) return null;
+    var o;
+    try { o = JSON.parse(bytesText(b)); } catch (e) { return null; }
+    function isInt(x, lo, hi) { return typeof x === 'number' && x % 1 === 0 && x >= lo && x <= hi; }
+    function str(x) { return typeof x === 'string'; }
+    function cut(x, n) { return norm(x).slice(0, n); }
+    function words(list) { return list.filter(str).map(function (x) { return cut(x, 60); }).filter(Boolean); }
+    if (!o || o.v !== 1 || !str(o.n) || !isInt(o.g, 1, 6) || !isInt(o.c, 4, 7)) return null;
+    if (!Array.isArray(o.w) || o.w.length !== 5 || !Array.isArray(o.a) || !Array.isArray(o.k) || !Array.isArray(o.u) || !Array.isArray(o.o)) return null;
+    var name = cut(o.n, 30);
+    if (!name) return null;
+
+    var packs = [], i;
+    for (i = 0; i < o.k.length; i++) {
+      var e = o.k[i], pk = null;
+      if (str(e)) pk = defaultPack(e);
+      else if (Array.isArray(e) && e.length === 6 && str(e[0]) && /^[A-Za-z0-9_-]{1,40}$/.test(e[0]) && (e[1] === 'subj' || e[1] === 'acad') &&
+        str(e[2]) && cut(e[2], 40) && str(e[3]) && str(e[4]) && Array.isArray(e[5])) {
+        pk = { id: e[0], kind: e[1], name: cut(e[2], 40), icon: e[3].slice(0, 8), pic: e[4].slice(0, 20), items: words(e[5]) };
+      }
+      if (!pk || findPack(packs, pk.id)) return null;
+      packs.push(pk);
+    }
+
+    var week = {}, d;
+    for (d = 1; d <= 5; d++) {
+      var row = o.w[d - 1];
+      if (!Array.isArray(row) || row.length !== o.c) return null;
+      var p = [];
+      for (i = 0; i < row.length; i++) {
+        if (!isInt(row[i], 0, packs.length)) return null;
+        p.push(row[i] ? packs[row[i] - 1].id : null);
+      }
+      week[d] = { p: p, after: [] };
+    }
+    for (i = 0; i < o.a.length; i++) {
+      var x = o.a[i];
+      if (!Array.isArray(x) || x.length !== 4 || !isInt(x[0], 1, 5) || !isInt(x[1], 1, packs.length) || !str(x[2]) || !str(x[3])) return null;
+      if (x[2] && !/^\d{2}:\d{2}$/.test(x[2])) return null;
+      // 같은 링크를 또 열어도 방과후 id 가 그대로라 이날만 바꾼 것이 이어진다
+      week[x[0]].after.push({ id: 'f' + x[0] + '-' + week[x[0]].after.length, packId: packs[x[1] - 1].id, time: x[2], who: cut(x[3], 12) });
+    }
+
+    var notes = [];
+    for (i = 0; i < o.o.length; i++) {
+      var n = o.o[i];
+      if (!Array.isArray(n) || n.length !== 5 || !str(n[0]) || !validKey(n[0]) || !str(n[1]) || !Array.isArray(n[2]) || !str(n[3]) || !str(n[4])) return null;
+      var its = words(n[2]);
+      if (its.length) notes.push({ date: n[0], title: cut(n[1], 40), items: its, memo: cut(n[3], 100), from: cut(n[4], 20) });
+    }
+    return { name: name, grade: o.g, periods: o.c, week: week, packs: packs, notes: notes,
+      guardians: o.u.filter(str).map(function (x) { return cut(x, 12); }).filter(Boolean).slice(0, 8) };
+  }
+  // 받는 쪽: 그 아이 것만 넣고 다른 아이·기록은 건드리지 않는다. 같은 이름의 아이가 있으면 시간표만 바꾸고 달력 기록은 둔다.
+  // 이 폰에서 고친 꾸러미는 덮어쓰지 않고 따로 더한다(다른 아이 가방이 바뀌지 않게). 같은 링크를 또 열어도 늘어나지 않는다.
+  function mergeFamily(state, f, newId) {
+    var target = f.packs.map(function (p) {
+      var cur = findPack(state.packs, p.id);
+      if (cur && samePack(cur, p)) return p.id;
+      var twin = cur ? state.packs.filter(function (x) { return samePack(x, p); })[0] : null;
+      if (twin) return twin.id;
+      var id = cur ? newId('p') : p.id;
+      state.packs.push({ id: id, kind: p.kind, name: p.name, icon: p.icon, pic: p.pic, items: p.items.slice() });
+      return id;
+    });
+    function mapped(id) {
+      for (var i = 0; i < f.packs.length; i++) if (f.packs[i].id === id) return target[i];
+      return null;
+    }
+    var week = {};
+    for (var d = 1; d <= 5; d++) {
+      week[d] = {
+        p: f.week[d].p.map(function (id) { return id ? mapped(id) : null; }),
+        after: f.week[d].after.map(function (a) { return { id: a.id, packId: mapped(a.packId), time: a.time, who: a.who }; })
+      };
+    }
+    var kid = state.kids.filter(function (x) { return !x.sample && x.name === f.name; })[0] || null;
+    var isNew = !kid;
+    if (isNew) {
+      kid = { id: newId('k'), name: f.name, grade: f.grade, periods: f.periods, week: week };
+      state.kids.push(kid);
+    } else {
+      kid.grade = f.grade;
+      kid.periods = f.periods;
+      kid.week = week;
+    }
+    // 시간표에 적힌 사람도 고를 수 있게 함께 더한다
+    var gs = state.settings.guardians;
+    var people = f.guardians.slice();
+    for (d = 1; d <= 5; d++) week[d].after.forEach(function (a) { if (a.who) people.push(a.who); });
+    people.forEach(function (g) { if (gs.indexOf(g) < 0 && gs.length < 8) gs.push(g); });
+    // 알림장: 같은 날·같은 이유면 한 장에 이어 붙인다
+    f.notes.forEach(function (n) {
+      var cur = state.notes.filter(function (x) { return x.kid === kid.id && x.date === n.date && (x.title || '') === n.title; })[0];
+      if (cur) {
+        cur.items = cur.items.concat(n.items.filter(function (x) { return cur.items.indexOf(x) < 0; })).slice(0, 30);
+        if (n.memo) cur.memo = n.memo;
+        return;
+      }
+      var note = { id: newId('n'), kid: kid.id, date: n.date, title: n.title, items: n.items.slice(0, 30) };
+      if (n.memo) note.memo = n.memo;
+      if (n.from) note.from = n.from;
+      state.notes.push(note);
+    });
+    return { kid: kid, isNew: isNew };
+  }
+
   // ---- 계산 점검: 기획서 `계산 예시` 와 같은 값을 내는지 ----
   function selfTest() {
     var res = [];
@@ -742,6 +900,48 @@ var Logic = (function () {
     var bt = dt.map(function (x) { return x.slice(); });
     bt[2][0] = '10:20';
     eq('겹친 교시 시간', (checkTimes(bt) || {}).i, 2);
+    // 9-6) 가족 링크: 쓰는 꾸러미(없어진 칸·안 쓰는 꾸러미 빼고), 방과후 시각·사람, 오늘부터의 그 아이 알림장만 담는다
+    var fas = { packs: [
+        { id: 's-kor', kind: 'subj', name: '국어', icon: '📖', pic: 'kor', items: ['국어 교과서', '국어 활동 책', '받아쓰기 공책'] },
+        { id: 'pX', kind: 'acad', name: '수영 🏊', icon: '🏊', pic: '', items: ['수영복'] },
+        { id: 'pU', kind: 'subj', name: '안 쓰는 과목', icon: '', pic: '', items: ['책'] }
+      ],
+      notes: [
+        { id: 'n4', kid: 'k', date: '2026-11-07', title: '오늘', items: ['풀'] },
+        { id: 'n1', kid: 'k', date: '2026-11-08', title: '체험', items: ['돗자리'] },
+        { id: 'n2', kid: 'k', date: '2026-11-01', title: '지난', items: ['가위'] },
+        { id: 'n3', kid: 'x', date: '2026-11-09', title: '다른 아이', items: ['자'] }
+      ],
+      settings: { guardians: ['엄마', '아빠'] } };
+    var fak = { id: 'k', name: '서아', grade: 2, periods: 4, week: {} };
+    for (var fad = 1; fad <= 5; fad++) fak.week[fad] = { p: [null, null, null, null], after: [] };
+    fak.week[1].p = ['s-kor', null, 's-kor', 'gone'];
+    fak.week[2].after = [{ id: 'a1', packId: 'pX', time: '15:00', who: '아빠' }];
+    var fp2 = familyUnpack(familyPack(fas, fak, '2026-11-07'));
+    eq('가족 링크 아이', fp2.name + '|' + fp2.grade + '|' + fp2.periods, '서아|2|4');
+    eq('가족 링크 시간표', fp2.week[1].p.join(','), 's-kor,,s-kor,');
+    eq('가족 링크 방과후', fp2.week[2].after[0].packId + '|' + fp2.week[2].after[0].time + '|' + fp2.week[2].after[0].who, 'pX|15:00|아빠');
+    eq('가족 링크 쓰는 꾸러미만', fp2.packs.map(function (p) { return p.id; }).join(','), 's-kor,pX');
+    eq('가족 링크 기본 꾸러미 되읽기', fp2.packs[0].items.join(','), '국어 교과서,국어 활동 책,받아쓰기 공책');
+    eq('가족 링크 이모지 되읽기', fp2.packs.length > 1 ? fp2.packs[1].name : '', '수영 🏊');
+    eq('가족 링크 오늘부터 알림장', fp2.notes.map(function (n) { return n.date; }).join(','), '2026-11-07,2026-11-08');
+    eq('가족 링크 데리러 갈 사람', fp2.guardians.join(','), '엄마,아빠');
+    eq('망가진 가족 링크', familyUnpack('@@'), null);
+    eq('선생님 링크는 가족 링크가 아님', familyUnpack(teacherPack({ c: '2반', d: '2026-11-07', i: ['풀'], m: '' })), null);
+    // 9-7) 가족 링크 받기: 같은 이름 아이는 시간표만 바꾸고, 이 폰에서 고친 꾸러미는 그대로 둔 채 따로 더하고, 또 열어도 늘어나지 않는다
+    var far = { kids: [{ id: 'z', name: '서아', grade: 1, periods: 6, week: {} }],
+      packs: [{ id: 's-kor', kind: 'subj', name: '국어', icon: '📖', pic: 'kor', items: ['내가 고친 책'] }],
+      notes: [{ id: 'o1', kid: 'z', date: '2026-11-08', title: '체험', items: ['모자'] }],
+      settings: { guardians: ['할머니'] } };
+    var fac = 0;
+    function faId(p) { fac++; return p + fac; }
+    var fam = mergeFamily(far, fp2, faId);
+    eq('가족 링크 받기 같은 아이', far.kids.length + '|' + fam.kid.id + '|' + fam.kid.periods + '|' + fam.isNew, '1|z|4|false');
+    eq('가족 링크 받기 꾸러미', findPack(far.packs, 's-kor').items[0] + '|' + fam.kid.week[1].p[0] + '|' + far.packs.length, '내가 고친 책|p1|3');
+    eq('가족 링크 받기 알림장', far.notes[0].items.join(',') + '|' + far.notes.length, '모자,돗자리|2');
+    eq('가족 링크 받기 사람', far.settings.guardians.join(','), '할머니,엄마,아빠');
+    mergeFamily(far, fp2, faId);
+    eq('같은 가족 링크 또 열기', far.packs.length + '|' + far.notes.length + '|' + far.notes[0].items.length, '3|2|2');
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -760,7 +960,7 @@ var Logic = (function () {
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, bagDiff: bagDiff, progress: progress, isMorning: isMorning, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
-    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, selfTest: selfTest, findPack: findPack, norm: norm,
+    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

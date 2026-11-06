@@ -449,6 +449,8 @@ body.reduce .stk.big { animation: none; }
 
 /* 처음 설정 3단계 카드 (날짜 카드 자리를 대신한다) */
 .setup-steps { flex: none; border-color: var(--accent); }
+.setup-steps .setup-head { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; word-break: keep-all; }
+.setup-steps .pill, .setup-steps .row .btn { flex: none; }
 .setup-steps .step { display: flex; align-items: center; gap: 8px; margin-top: 6px; word-break: keep-all; }
 .setup-steps .st-no { flex: none; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: var(--t-2); background: var(--soft); color: var(--accent); border: 2px solid var(--accent); }
 .setup-steps .step.done .st-no { background: var(--sub); border-color: var(--sub); color: var(--on-accent); }

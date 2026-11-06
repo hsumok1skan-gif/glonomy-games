@@ -198,10 +198,13 @@ var UI = (function () {
       '<circle class="bgc" cx="110" cy="110" r="' + RING_R + '" fill="none" stroke-width="10"/>' +
       '<circle class="fg" cx="110" cy="110" r="' + RING_R + '" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + RING_C.toFixed(1) +
       '" stroke-dashoffset="' + (RING_C * (1 - pr.pct / 100)).toFixed(1) + '" transform="rotate(-90 110 110)"/>' +
-      '<path d="M86 84 V70 a24 22 0 0 1 48 0 V84" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"/>' +
+      '<path class="strap" d="M56 104 C38 110 38 152 56 164" fill="none" stroke="var(--accent-deep)" stroke-width="8" stroke-linecap="round"/>' +
+      '<path class="strap" d="M164 104 C182 110 182 152 164 164" fill="none" stroke="var(--accent-deep)" stroke-width="8" stroke-linecap="round"/>' +
+      '<path d="M96 84 V74 a14 12 0 0 1 28 0 V84" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"/>' +
       '<g class="items">' + items + '</g>' +
       '<rect x="56" y="84" width="108" height="94" rx="24" fill="var(--accent)"/>' +
-      '<rect x="72" y="' + LV_Y + '" width="76" height="' + LV_H + '" rx="12" fill="var(--soft)"/>' +
+      '<path class="zip" d="M72 97 H148 M140 97 v7" fill="none" stroke="var(--on-accent)" stroke-width="4" stroke-linecap="round"/>' +
+      '<rect class="pocket" x="72" y="' + LV_Y + '" width="76" height="' + LV_H + '" rx="12" fill="var(--soft)"/>' +
       '<rect class="lvfill" x="72" y="' + (LV_Y + LV_H - hh).toFixed(1) + '" width="76" height="' + hh.toFixed(1) + '" rx="12" fill="var(--sub)"/>' +
       '<path class="flap" d="M56 108 Q56 84 80 84 H140 Q164 84 164 108 V118 H56Z" fill="var(--accent-deep)"/>' +
       '<path class="ok" d="M92 136 l12 12 l24 -24" fill="none" stroke="var(--on-accent)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>' +
@@ -244,7 +247,7 @@ var UI = (function () {
   }
 
   var ARTS = {
-    bag: '<svg class="art" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="62" r="54" fill="var(--soft)"/><rect x="30" y="38" width="60" height="62" rx="16" fill="var(--accent)"/><path d="M45 38 V31 a15 15 0 0 1 30 0 V38" fill="none" stroke="var(--ink)" stroke-width="5"/><rect x="40" y="64" width="40" height="22" rx="7" fill="var(--surface)"/><circle cx="52" cy="75" r="3" fill="var(--ink)"/><circle cx="68" cy="75" r="3" fill="var(--ink)"/></svg>',
+    bag: '<svg class="art" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="62" r="54" fill="var(--soft)"/><path class="strap" d="M32 54 C20 58 20 84 32 92" fill="none" stroke="var(--accent-deep)" stroke-width="5" stroke-linecap="round"/><path class="strap" d="M88 54 C100 58 100 84 88 92" fill="none" stroke="var(--accent-deep)" stroke-width="5" stroke-linecap="round"/><path d="M52.5 38 V34 a7.5 7.5 0 0 1 15 0 V38" fill="none" stroke="var(--ink)" stroke-width="5"/><rect x="30" y="38" width="60" height="62" rx="16" fill="var(--accent)"/><path class="zip" d="M40 52 H80 M75 52 v5" fill="none" stroke="var(--on-accent)" stroke-width="3" stroke-linecap="round"/><rect class="pocket" x="40" y="64" width="40" height="22" rx="7" fill="var(--surface)"/><path d="M50 75 l7 6 l13 -12" fill="none" stroke="var(--sub)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     week: '<svg class="art" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="62" r="54" fill="var(--subsoft)"/><rect x="24" y="30" width="72" height="66" rx="12" fill="var(--surface)" stroke="var(--sub)" stroke-width="4"/><rect x="24" y="30" width="72" height="16" rx="8" fill="var(--sub)"/><g fill="var(--line)"><rect x="32" y="54" width="14" height="10" rx="3"/><rect x="53" y="54" width="14" height="10" rx="3"/><rect x="74" y="54" width="14" height="10" rx="3"/><rect x="32" y="72" width="14" height="10" rx="3"/></g><rect x="53" y="72" width="14" height="10" rx="3" fill="var(--accent)"/></svg>',
     rest: '<svg class="art" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="62" r="54" fill="var(--soft)"/><circle cx="60" cy="56" r="20" fill="var(--gold)"/><path d="M30 92 q30 -18 60 0" fill="none" stroke="var(--sub)" stroke-width="6" stroke-linecap="round"/></svg>',
     pack: '<svg class="art" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="62" r="54" fill="var(--soft)"/><path d="M28 52 h64 l-8 44 h-48 z" fill="var(--gold)"/><rect x="40" y="34" width="12" height="26" rx="3" fill="var(--sub)"/><rect x="56" y="28" width="10" height="32" rx="3" fill="var(--accent)"/><rect x="70" y="38" width="12" height="22" rx="3" fill="var(--violet)"/></svg>'
@@ -285,7 +288,7 @@ var UI = (function () {
   // ---- 가방 화면: 한 화면에 이름 칩 · 날짜 카드 · 가방 그림 · 수업 한 줄 · 방과후 한 줄 · 버튼 ----
   function dDay(k, todayKey) { return Math.round((Logic.fromKey(k) - Logic.fromKey(todayKey)) / 86400000); }
 
-  // 처음 설정 3단계 카드: 날짜 카드 자리를 대신한다. 셋을 다 끝내면(app.js renderAll 이 setupDone 을 저장) 그리지 않는다
+  // 처음 설정 3단계 카드: 날짜 카드 자리를 대신해 머리에 그 날짜를 보인다. 셋을 다 끝내거나(app.js renderAll 이 setupDone 을 저장) 건너뛰면(setup-skip) 그리지 않는다
   function setupCard(S, kid, k) {
     if (S.settings.setupDone) return '';
     var st = Logic.setupSteps(S, kid);
@@ -296,7 +299,8 @@ var UI = (function () {
       { s: st.steps[1], title: '방과후 · 학원 1개 넣기', act: 'after-new', extra: ' data-d="' + (dw >= 1 && dw <= 5 ? dw : 1) + '"', label: '+ 방과후' },
       { s: st.steps[2], title: '알림장 넣거나 한 번 챙기기', act: 'note-new', extra: '', label: '+ 알림장' }
     ];
-    var h = '<div class="card setup-steps no-print" id="setup-steps"><div class="row"><b style="flex:1">처음 설정 3단계</b><span class="pill">' + st.n + ' / 3</span></div>';
+    var h = '<div class="card setup-steps no-print" id="setup-steps"><div class="row"><div class="setup-head"><b>처음 설정 3단계</b><span class="tiny">' + Logic.dayLabel(k) + '</span></div><span class="pill">' + st.n + ' / 3</span>' +
+      '<button class="btn small" type="button" data-act="setup-skip">건너뛰기</button></div>';
     rows.forEach(function (r, i) {
       h += '<div class="step' + (r.s.done ? ' done' : '') + '"><span class="st-no" aria-hidden="true">' + (r.s.done ? '✓' : (i + 1)) + '</span>' +
         '<b style="flex:1">' + esc(r.title) + '</b>' +
@@ -1026,7 +1030,7 @@ var UI = (function () {
   function renderKidsSheet(S) {
     var h = '';
     S.kids.forEach(function (k) {
-      h += '<div class="toggle"><span>' + esc(k.name) + (k.sample ? ' (예시)' : '') + ' · ' + k.grade + '학년</span><button class="btn small" type="button" data-act="kid-edit" data-id="' + k.id + '">고치기</button></div>';
+      h += '<div class="toggle"><span>' + esc(k.name) + (k.sample ? ' (예시)' : '') + ' · ' + k.grade + '학년</span><button class="btn small" type="button" data-act="family-link" data-id="' + k.id + '" aria-label="' + esc(k.name) + ' 가족 링크">가족 링크</button><button class="btn small" type="button" data-act="kid-edit" data-id="' + k.id + '">고치기</button></div>';
     });
     if (!S.kids.length) h = miniEmpty('🧒', '아이가 없어요',{ act: 'kid-new', label: '시작하기' });
     $('kids-list').innerHTML = h;
@@ -1078,6 +1082,18 @@ var UI = (function () {
       '<button class="btn" type="button" data-act="teach-edit">내용 고치기</button></div>';
     el.innerHTML = h + '</div>';
     flash(el.firstChild);
+  }
+  // 가족 링크 시트: 담긴 것 한 줄, QR코드(너무 길면 링크만), 링크, 공유·복사
+  function renderFamily(o) {
+    $('family-out').innerHTML = '<div class="teach-card">' +
+      '<h3>' + esc(Logic.nameI(o.name)) + ' · ' + o.grade + '학년 · ' + o.periods + '교시</h3>' +
+      '<p class="tiny">방과후 ' + o.after + '개 · 꾸러미 ' + o.packs + '개 · 알림장 ' + o.notes + '개</p>' +
+      (o.qr ? '<div class="qr-box">' + o.qr + '</div>' : '') +
+      '<label class="f" for="family-url">링크</label>' +
+      '<textarea id="family-url" class="teach-link" readonly>' + esc(o.link) + '</textarea>' +
+      '<div class="row wrap" style="margin-top:8px">' +
+      '<button class="btn main" type="button" data-act="family-share" style="flex:1 1 100%">' + SHARE_IC + '공유하기</button>' +
+      '<button class="btn" type="button" data-act="family-copy" style="flex:1 1 100%">링크 복사</button></div></div>';
   }
 
   // ---- 도움말: 예시 데이터로 그린 실제 화면을 찍어 두고, 그 위에 번호 점 + 옆에 한 줄 말풍선 ----
@@ -1225,6 +1241,6 @@ var UI = (function () {
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
-    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest
+    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderFamily: renderFamily, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest
   };
 })();
