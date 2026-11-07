@@ -32,6 +32,7 @@ var Store = (function () {
       packs: copyPacks(),
       daily: DATA.DAILY.slice(),
       morning: ['물병', '도시락', '간식'],                   // 아침에 넣을 물건 (밤에는 남아도 다 챙긴 것으로 친다)
+      stay: [],                                              // 늘 학교에 두는 물건 (알림장에 적히지 않으면 가방에 넣지 않는다)
       rules: DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; }),
       notes: [],
       checks: {},
@@ -52,6 +53,8 @@ var Store = (function () {
         gradeP: { 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6 },      // 학년별 교시 수 (새 아이에 쓴다)
         welcomed: false,
         setupDone: false,
+        remindAt: '',                                        // 달력 파일로 받은 밤 알림 시각 (받은 적 없으면 '')
+        remindAsked: false,                                  // 다 챙김 창에서 밤 알림을 한 번 권했다
         firstBagSeen: false,                                 // 아이를 넣자마자 보여 준 처음 가방 카드를 닫았다
         coachSeen: false                                     // 가방 시트에서 처음 한 칸을 눌러 봤다 (누르기 안내를 끈다)
       }
@@ -92,8 +95,11 @@ var Store = (function () {
     Object.keys(base.settings).forEach(function (k) { if (d.settings[k] === undefined) d.settings[k] = base.settings[k]; });
     if (!Array.isArray(d.morning)) d.morning = base.morning.slice();
     d.morning = d.morning.filter(function (x) { return typeof x === 'string' && x.trim(); });
+    if (!Array.isArray(d.stay)) d.stay = [];
+    d.stay = d.stay.filter(function (x) { return typeof x === 'string' && x.trim(); });
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
+    if (!/^\d{2}:\d{2}$/.test(d.settings.remindAt)) d.settings.remindAt = '';
     d.settings.ptimes = Logic.periodTimes(d.settings).map(function (x) { return x.slice(); });
     var gp = d.settings.gradeP;
     if (!gp || typeof gp !== 'object') gp = d.settings.gradeP = {};

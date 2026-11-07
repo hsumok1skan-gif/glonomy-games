@@ -201,8 +201,13 @@ var Logic = (function () {
     // 가방 시트에서 '내일은 빼기' 한 물건은 그날 가방에서만 뺀다
     var skip = (state.skips && kid && state.skips[checkKey(kid.id, k)]) || [];
     if (skip.length) order = order.filter(function (it) { return skip.indexOf(it.name) < 0; });
+    // 늘 학교에 두는 물건은 모든 날에 뺀다. 알림장·선생님 링크로 온 것은 그날 가져가야 하니 남긴다
+    order = order.filter(function (it) { return it.group === 'note' || !isStay(state, it.name); });
     order.sort(function (a, b) { return GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group); });
-    order.forEach(function (it) { it.morning = isMorning(state, it.name); });   // 가방 시트에서 '아침' 쪽으로 모은다
+    order.forEach(function (it) {
+      it.morning = isMorning(state, it.name);   // 가방 시트에서 '아침' 쪽으로 모은다
+      it.stay = isStay(state, it.name);         // 알림장으로 남은 물건이면 말풍선에서 되돌릴 수 있게
+    });
     return { date: k, items: order, periods: periods, changedP: changedP, pickups: pickups, school: isSchoolDay(k, state.settings.holidays) };
   }
 
@@ -234,6 +239,12 @@ var Logic = (function () {
   function isMorning(state, name) {
     var key = norm(name).toLowerCase();
     return (state.morning || []).some(function (m) { return norm(m).toLowerCase() === key; });
+  }
+
+  // 늘 학교에 두는 물건인지: 이름을 다듬어 소문자로 비교한다
+  function isStay(state, name) {
+    var key = norm(name).toLowerCase();
+    return (state.stay || []).some(function (m) { return norm(m).toLowerCase() === key; });
   }
 
   // 밤에 챙길 것(아침 물건을 뺀 나머지)이 하나 이상 있고 모두 챙겼으면 true — 아침 물건은 남아도 다 챙긴 것으로 친다
@@ -735,6 +746,33 @@ var Logic = (function () {
     return { kid: kid, isNew: isNew };
   }
 
+  // ---- 밤 알림: 다음 날 학교 가는 밤(일~목)마다 울리는 달력 파일 글 (서버 없음, 아이 이름은 넣지 않는다) ----
+  // 시작은 todayKey 부터 처음 오는 일~목. UID 를 고정해 시각을 바꿔 다시 넣으면 그 일정을 고치게 한다
+  function remindIcs(time, todayKey) {
+    var k = todayKey;
+    while (dow(k) === 5 || dow(k) === 6) k = addDays(k, 1);
+    var stamp = new Date().toISOString().replace(/[-:]|\.\d{3}/g, '');
+    return [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//내일 가방//밤 알림//KO',
+      'BEGIN:VEVENT',
+      'UID:night-reminder@tomorrow-bag',
+      'DTSTAMP:' + stamp,
+      'DTSTART:' + k.replace(/-/g, '') + 'T' + time.replace(':', '') + '00',
+      'DURATION:PT10M',
+      'RRULE:FREQ=WEEKLY;BYDAY=SU,MO,TU,WE,TH',
+      'SUMMARY:내일 가방 챙기기',
+      'BEGIN:VALARM',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:내일 가방을 챙길 시간이에요',
+      'TRIGGER:PT0S',
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n') + '\r\n';
+  }
+
   // ---- 계산 점검: 기획서 `계산 예시` 와 같은 값을 내는지 ----
   function selfTest() {
     var res = [];
@@ -771,6 +809,13 @@ var Logic = (function () {
     st.skips = { 'k|2026-10-26': ['필통'] };
     eq('내일은 빼기 뒤 물건 수', buildBag(st, kid, '2026-10-26').items.length, 6);
     delete st.skips;
+    // 4-2b) 늘 학교에 두는 물건: 수업 물건은 모든 날에 빠지고(6개 → 5개), 같은 이름이 알림장에 있으면 남는다
+    var ys = { packs: st.packs, daily: st.daily, rules: st.rules, notes: [], checks: {}, settings: st.settings, stay: [' 국어  교과서 '] };
+    eq('학교에 두는 물건 비교', isStay(ys, '국어 교과서'), true);
+    eq('학교에 두는 물건 뺀 수', buildBag(ys, kid, '2026-10-26').items.length, 5);
+    ys.notes = [{ kid: 'k', date: '2026-10-26', items: ['국어 교과서'] }];
+    var ybag = buildBag(ys, kid, '2026-10-26');
+    eq('알림장에 있으면 남음', ybag.items.length + '|' + ybag.items[0].name + '|' + ybag.items[0].group, '6|국어 교과서|note');
     // 4-3) 어제와 달라진 것: 월 체육(체육복·물병·Pen) → 화 국어(국어 교과서·' pen '). 매일 필통과 대소문자만 다른 pen 은 빠진다
     var ds = { packs: [{ id: 'A', name: '체육', items: ['체육복', '물병', 'Pen'] }, { id: 'B', name: '국어', items: ['국어 교과서', ' pen '] }],
       daily: ['필통'], rules: [], notes: [], checks: {}, settings: { holidays: [] } };
@@ -942,6 +987,12 @@ var Logic = (function () {
     eq('가족 링크 받기 사람', far.settings.guardians.join(','), '할머니,엄마,아빠');
     mergeFamily(far, fp2, faId);
     eq('같은 가족 링크 또 열기', far.packs.length + '|' + far.notes.length + '|' + far.notes[0].items.length, '3|2|2');
+    // 9-8) 밤 알림 달력 파일: 2026-11-08 은 일요일이라 그날부터, 금요일(11/13)이면 일요일(11/15)부터, 줄바꿈은 모두 CRLF
+    var ri = remindIcs('21:00', '2026-11-08');
+    eq('밤 알림 시작 (일요일은 그날)', ri.indexOf('DTSTART:20261108T210000') >= 0, true);
+    eq('밤 알림 요일', ri.indexOf('BYDAY=SU,MO,TU,WE,TH') >= 0, true);
+    eq('밤 알림 시작 (금요일은 일요일로)', remindIcs('20:30', '2026-11-13').indexOf('DTSTART:20261115T203000') >= 0, true);
+    eq('밤 알림 줄바꿈', ri.replace(/\r\n/g, '').indexOf('\n'), -1);
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -958,9 +1009,9 @@ var Logic = (function () {
     toKey: toKey, fromKey: fromKey, addDays: addDays, dow: dow, validKey: validKey,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, bagDiff: bagDiff, progress: progress, isMorning: isMorning, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, bagDiff: bagDiff, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
-    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, selfTest: selfTest, findPack: findPack, norm: norm,
+    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

@@ -130,7 +130,12 @@ var UI = (function () {
     var band = document.querySelector('[data-band="' + id + '"]');
     if (band && g) {
       var bs = band.querySelectorAll('.group-title');
-      for (var j = 0; j < bs.length; j++) bs[j].classList.toggle('on', bs[j].getAttribute('data-g') === g);
+      for (var j = 0; j < bs.length; j++) {
+        var isOn = bs[j].getAttribute('data-g') === g;
+        bs[j].classList.toggle('on', isOn);
+        // 띠가 넘칠 때 지금 쪽 이름이 화면 밖에 남지 않게 가운데로 민다
+        if (isOn) bs[j].scrollIntoView({ inline: 'center', block: 'nearest' });
+      }
     }
     return n;
   }
@@ -318,7 +323,8 @@ var UI = (function () {
       '<h3>' + esc(Logic.dayLabel(bag.date)) + ' 가방이 만들어졌어요</h3>' +
       '<p class="fb-count">' + esc(parts.join(' · ') || '챙길 물건 0') + '</p>' +
       '<p class="tiny">시간표의 수업마다 챙길 물건을 모았어요. 다른 날도 시간표만 맞으면 저절로 바뀌어요.</p>' +
-      '<div class="row wrap"><button class="btn small" type="button" data-act="first-bag-week">시간표 고치기</button>' +
+      '<div class="row wrap"><button class="btn small" type="button" data-act="stay-textbooks">교과서는 학교에 둬요</button>' +
+      '<button class="btn small" type="button" data-act="first-bag-week">시간표 고치기</button>' +
       '<button class="btn small main" type="button" data-act="first-bag-ok">알겠어요</button></div></div>';
   }
 
@@ -488,6 +494,8 @@ var UI = (function () {
         PAGE_NAME[g] + ' <span class="g-count" aria-label="' + c.t + '개 가운데 ' + c.d + '개 ' + (g === 'out' ? '꺼냄' : '챙김') + '">' + c.d + '/' + c.t + '</span></button>';
     });
     $('bs-band').innerHTML = band;
+    if (!cur) $('bs-band').scrollLeft = 0;   // 다시 열면 띠도 첫 쪽 이름부터
+    setBagProgress(pr, false);
     var html = pages.map(function (p) {
       return { g: p.g, html: '<div class="grid' + (V.kidMode ? ' c3' : '') + '">' + p.rows.map(function (r) {
         var name = r.it.name;
@@ -514,11 +522,51 @@ var UI = (function () {
     for (var i = 0; i < all.length; i++) if (all[i].getAttribute('data-name') === name) return all[i];
     return null;
   }
+  // 시트 덮개의 진행 막대와 n/m: 요소는 그대로 두고 값만 고친다 (막대가 0.3초에 걸쳐 차오르게)
+  function setBagProgress(pr, bump) {
+    var bar = $('bs-progress'), num = $('bs-count');
+    bar.setAttribute('aria-valuenow', pr.pct);
+    bar.setAttribute('aria-valuetext', pr.total + '개 중 ' + pr.done + '개 챙겼어요');
+    bar.firstElementChild.style.width = pr.pct + '%';
+    var txt = pr.done + '/' + pr.total;
+    if (num.textContent === txt) return;
+    num.textContent = txt;
+    if (!bump) return;
+    num.classList.remove('bump');
+    void num.offsetWidth; // 애니메이션 다시 걸기
+    num.classList.add('bump');
+  }
+  // 아직 챙기지 않은 칸 ('꺼낼 것' 칸은 챙김 수에 들지 않는다)
+  var OPEN_CELL = '.check:not(.done):not(.out-cell)';
+  // 지금 쪽을 다 챙겼으면 다음에 챙길 쪽 번호: 뒤쪽 먼저, 없으면 앞쪽으로 돌아간다. 아침 쪽은 밤에 챙길 쪽이 남아 있으면 뒤로 미룬다. 없으면 -1
+  function nextBagPage() {
+    var pager = document.querySelector('.pager[data-pg="bag"]');
+    if (!pager) return -1;
+    var pgs = pager.querySelectorAll('.pg'), n = pgs.length, cur = +pager.getAttribute('data-cur') || 0;
+    if (!pgs[cur] || pgs[cur].querySelector(OPEN_CELL)) return -1;
+    var later = -1;
+    for (var s = 1; s < n; s++) {
+      var j = (cur + s) % n;
+      if (!pgs[j].querySelector(OPEN_CELL)) continue;
+      if (pgs[j].getAttribute('data-g') !== 'morning') return j;
+      if (later < 0) later = j;
+    }
+    return later;
+  }
+  // 키보드로 챙기는 중이면 옆으로 밀려난 칸에 포커스가 남지 않게 새 쪽의 첫 칸으로 옮긴다
+  function focusBagPage(n) {
+    var root = $('bs-pages');
+    if (!root.contains(document.activeElement)) return;
+    var pg = root.querySelectorAll('.pg')[n];
+    var cell = pg && pg.querySelector(OPEN_CELL);
+    if (cell) cell.focus({ preventScroll: true });
+  }
 
   // 칸 하나만 바꾸기: 다시 그리지 않고 이미 있는 요소만 고친다
   // (가방 그림 SVG 가 그대로 남아 고리의 stroke-dashoffset·차오름 transition 이 돈다). 못 찾으면 false
   function updateBag(S, kid, bag, name) {
     var pr = Logic.progress(S, kid, bag);
+    setBagProgress(pr, true);
     var art = document.querySelector('#bag-ring .bag-art');
     if (!art) return false;
     setArt(art, pr);
@@ -611,12 +659,13 @@ var UI = (function () {
     btn.classList.add('pop');
   }
 
-  // 길게 누르면: 왜 필요한지 + '내일은 빼기' · '아침에 넣기'/'밤에 넣기' (아이가 챙겨요일 때는 이유만)
+  // 길게 누르면: 왜 필요한지 + '내일은 빼기' · '아침에 넣기'/'밤에 넣기' · '늘 학교에 둬요' (아이가 챙겨요일 때는 이유만)
   function showBubble(btn, it, word, kidMode) {
     var b = $('bubble'), sheet = b.parentNode;
     b.innerHTML = '<b>' + esc(it.name) + '</b>' +
       (kidMode ? '' : '<button class="btn small" type="button" data-act="skip-item" data-name="' + esc(it.name) + '">' + word + '은 빼기</button>' +
-        '<button class="btn small" type="button" data-act="morning-toggle" data-name="' + esc(it.name) + '">' + (it.morning ? '밤에 넣기' : '아침에 넣기') + '</button>') +
+        '<button class="btn small" type="button" data-act="morning-toggle" data-name="' + esc(it.name) + '">' + (it.morning ? '밤에 넣기' : '아침에 넣기') + '</button>' +
+        '<button class="btn small" type="button" data-act="stay-toggle" data-name="' + esc(it.name) + '">' + (it.stay ? '학교에 두지 않아요' : '늘 학교에 둬요') + '</button>') +
       '<span class="tiny">' + esc(it.sources.join(' · ')) + '</span>';
     b.hidden = false;
     var sr = sheet.getBoundingClientRect(), r = btn.getBoundingClientRect();
@@ -642,8 +691,11 @@ var UI = (function () {
     return '<span class="stk' + (big ? ' big' : '') + '" style="--c:var(' + s.c + ')" role="img" aria-label="' + esc(s.name) + ' 스티커">' +
       stickerPic(s) + (big ? '<span class="sd" aria-hidden="true">' + Logic.shortDay(k) + '</span>' : '') + '</span>';
   }
-  function renderDone(S, kid, k) {
+  function renderDone(S, kid, k, kidMode) {
     $('done-art').innerHTML = bagArt({ done: 1, total: 1, pct: 100 });
+    // 밤 알림은 한 번만 권한다. 아이가 챙기는 중이면 어른이 볼 때까지 미룬다
+    $('done-remind-slot').innerHTML = (S.settings.remindAsked || kidMode) ? '' :
+      '<button class="btn wide" type="button" id="done-remind" data-act="remind-open" style="margin-top:8px">밤 알림 받기</button>';
     var s = DATA.STICKERS[Logic.stickerFor(k)];
     // 그 아이가 이 스티커를 처음 받았으면(오늘 기록을 빼면 0장) 모음판에 새로 붙는다고 알린다
     var si = Logic.stickerFor(k);
@@ -932,6 +984,12 @@ var UI = (function () {
       r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button></div>';
     });
     $('rules-list').innerHTML = r;
+    var st = '';
+    S.stay.forEach(function (x, i) {
+      st += '<button class="chip" type="button" data-act="stay-del" data-i="' + i + '" aria-label="' + esc(x) + ' 다시 가방에 넣기">' + esc(x) + ' ✕</button>';
+    });
+    if (!S.stay.length) st = miniEmpty('🏫', '학교에 두는 물건이 없어요',{ act: 'stay-textbooks', label: '교과서는 학교에 둬요' });
+    $('stay-list').innerHTML = st;
   }
 
   // 알림장 시트
@@ -993,6 +1051,7 @@ var UI = (function () {
       setRow('export-open', '내보내기', '') +
       setRow('backup', '가져오기', '') +
       setRow('cal-open', '가방 달력', kid ? '스티커 ' + Logic.monthStickers(S.history, kid.id, ym) + '장' : '') +
+      setRow('remind-open', '밤 알림', st.remindAt || '꺼짐') +
       setRow('help', '도움말', '') +
       setRow('privacy-open', '개인정보 처리방침', '') +
       '</div>';
@@ -1133,7 +1192,7 @@ var UI = (function () {
       ['.set-row:nth-child(8)', '모든 내용을 글로 복사'],
       ['.set-row:nth-child(9)', '내보낸 글로 되살리기'],
       ['.set-row:nth-child(10)', '다 챙긴 날 칭찬 스티커'],
-      ['.set-row:nth-child(12)', '넣은 내용은 이 기기에만']] }
+      ['.set-row:nth-child(13)', '넣은 내용은 이 기기에만']] }
   ];
   var HELP_N = HELP_PAGES.length + 1;   // 마지막 쪽은 도움말 한 줄
 
@@ -1236,7 +1295,7 @@ var UI = (function () {
   return {
     $: $, esc: esc, packPic: packPic, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
-    setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName,
+    setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
     fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
