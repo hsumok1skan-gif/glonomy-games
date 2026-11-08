@@ -1256,7 +1256,7 @@
   }
   function applyFamily(f) {
     S.settings.welcomed = true;
-    UI.closeSheet('ov-welcome');
+    UI.closeSheet('ov-welcome'); UI.welcomeDemo(false);
     rememberUndo();
     var r = Logic.mergeFamily(S, f, Store.uid);
     S.cur = r.kid.id;
@@ -1299,7 +1299,7 @@
       // 아이를 넣으면 바로 들어간다 (submitKid)
       S.settings.welcomed = true;
       save();
-      UI.closeSheet('ov-welcome');
+      UI.closeSheet('ov-welcome'); UI.welcomeDemo(false);
       openKid(null);
       UI.toast(t.c + ' 준비물 링크를 받았어요. 아이를 알려 주면 바로 들어가요');
       return;
@@ -1619,7 +1619,7 @@
     'backup': openBackup,
     'copy-export': function () { copyText($('export-text').value, '내보내기 글을 복사했어요'); },
     'print': function () { go('bag'); try { window.print(); } catch (e) { UI.toast('인쇄할 수 없는 브라우저예요'); } },
-    'sample-add': function () { UI.closeSheet('ov-welcome'); addSample(); },
+    'sample-add': function () { UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); addSample(); },
     'sample-del': removeSample,
     'sample-start': sampleStart,
     'clear-all': function () {
@@ -1639,8 +1639,8 @@
     'confirm-yes': function () { var f = confirmFn; confirmFn = null; UI.closeSheet('ov-confirm'); if (f) f(); },
     'confirm-no': function () { confirmFn = null; UI.closeSheet('ov-confirm'); },
     'undo': doUndo,
-    'welcome-start': function () { S.settings.welcomed = true; save(); UI.closeSheet('ov-welcome'); openKid(null); },
-    'welcome-sample': function () { S.settings.welcomed = true; UI.closeSheet('ov-welcome'); addSample(); }
+    'welcome-start': function () { S.settings.welcomed = true; save(); UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); openKid(null); },
+    'welcome-sample': function () { S.settings.welcomed = true; UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); addSample(); }
   };
 
   // 시트 안 동작은 그 시트를 연 뒤에만 (열린 적 없는 시트의 버튼이 눌려도 아무 일 없게)
@@ -1851,7 +1851,7 @@
     window.addEventListener('hashchange', readTeachHash);
     window.addEventListener('hashchange', readFamilyHash);
     setInterval(tick, 60000);
-    if (!S.settings.welcomed && !/^#t=/.test(location.hash || '')) UI.openSheet('ov-welcome');
+    if (!S.settings.welcomed && !/^#t=/.test(location.hash || '')) { UI.openSheet('ov-welcome'); UI.welcomeDemo(true); }
     readTeachHash();
     readFamilyHash();
   }

@@ -228,6 +228,29 @@ var UI = (function () {
       lv.setAttribute('height', hh.toFixed(1));
     }
   }
+  // 처음 안내의 미리보기: 빈 가방에 물건 그림 4개가 하나씩 들어가 s0→s4(덮개 닫힘), 잠깐 멈췄다 처음부터. 움직임 줄이기면 다 찬 가방 한 장
+  var DEMO_PICS = ['notice', 'gym', 'bottle', 'pencilcase'], DEMO_MS = 600, demoTimer = null;
+  function welcomeDemo(on) {
+    clearTimeout(demoTimer);
+    demoTimer = null;
+    var box = $('welcome-demo');
+    if (!box) return;
+    if (!on) { box.innerHTML = ''; return; }
+    var n = DEMO_PICS.length;
+    function pr(k) { return { done: k, total: n, pct: Math.round(k * 100 / n) }; }
+    if (document.body.classList.contains('reduce')) { box.innerHTML = bagArt(pr(n), DEMO_PICS); return; }
+    box.innerHTML = bagArt(pr(0));
+    var art = box.firstChild, k = 0;
+    function tick() {
+      // 다 찬 뒤 두 박자 쉬고 비운다
+      k = k >= n + 2 ? 0 : k + 1;
+      var d = Math.min(k, n);
+      setArt(art, pr(d));
+      setBagItems(art, DEMO_PICS.slice(0, d));
+      demoTimer = setTimeout(tick, DEMO_MS);
+    }
+    demoTimer = setTimeout(tick, DEMO_MS);
+  }
   // morning: 밤 물건을 다 챙기고 남은 아침 물건 수 (morningLeft 의 길이)
   function countText(pr, morning) {
     if (!pr.total) return '아직 챙길 물건이 없어요';
@@ -445,9 +468,9 @@ var UI = (function () {
     });
     return pages;
   }
-  // isNew: 어제 가방에 없던 물건이면 칸 왼쪽 위에 '새로'
+  // isNew: 어제 가방에 없던 물건이면 칸 왼쪽 위에 '새로'. data-g: 쪽마다 그림 바탕 색(style.css)
   function cellHTML(it, on, isNew) {
-    return '<button class="check' + (on ? ' done' : '') + '" type="button" data-act="check" data-name="' + esc(it.name) + '" aria-pressed="' + on + '" aria-label="' + esc(it.name) + (isNew ? ', 어제 없던 물건' : '') + '">' +
+    return '<button class="check' + (on ? ' done' : '') + '" type="button" data-act="check" data-g="' + pageGroup(it) + '" data-name="' + esc(it.name) + '" aria-pressed="' + on + '" aria-label="' + esc(it.name) + (isNew ? ', 어제 없던 물건' : '') + '">' +
       (isNew ? '<span class="new-tag" aria-hidden="true">새로</span>' : '') +
       '<span class="it-ic">' + pic(it.name) + '</span><span class="nm">' + esc(it.name) + '</span><span class="box" aria-hidden="true">✓</span></button>';
   }
@@ -703,6 +726,9 @@ var UI = (function () {
     $('done-sticker').classList.toggle('first', first);
     $('done-sticker').innerHTML = stickerHTML(k, true) + '<span class="muted">' + Logic.dayLabel(k) + '<br><b>' + esc(s.name) + '</b> 스티커' +
       (first ? '<br><span class="new-stk">새 스티커!</span>' : '') + '</span>';
+    // 연속으로 다 챙긴 날이 2일 이상일 때만 보인다 (끊긴 날은 아무 말도 하지 않는다)
+    var sk = Logic.streak(S.history, kid.id, k, S.settings.holidays);
+    $('done-streak-slot').innerHTML = sk >= 2 ? '<p id="done-streak" class="done-streak">연속 ' + sk + '일 다 챙겼어요</p>' : '';
     $('done-line').textContent = Logic.shareText(S, kid, Logic.buildBag(S, kid, k));
   }
 
@@ -754,8 +780,10 @@ var UI = (function () {
     }
     $('cal-grid').innerHTML = h;
     var n = Logic.monthStickers(S.history, kid.id, ym);
-    $('cal-sum').innerHTML = n ? '<p>이 달 칭찬 스티커 ' + n + '장이 모였어요</p>' :
-      miniEmpty('🎒', '이 달 스티커가 없어요',{ act: 'bag-open', label: '가방 챙기기' });
+    var sk = Logic.streak(S.history, kid.id, Logic.bagDate(new Date(), S.settings), S.settings.holidays);
+    $('cal-sum').innerHTML = (n ? '<p>이 달 칭찬 스티커 ' + n + '장이 모였어요</p>' :
+      miniEmpty('🎒', '이 달 스티커가 없어요',{ act: 'bag-open', label: '가방 챙기기' })) +
+      (sk >= 2 ? '<p class="cal-streak">연속 ' + sk + '일 다 챙겼어요</p>' : '');
     // 스티커 모음판: 12칸, 받은 칸에는 장 수, 아직 못 받은 칸은 잠가 둔다
     var book = Logic.stickerBook(S.history, kid.id), got = 0, b = '';
     DATA.STICKERS.forEach(function (s, i) {
@@ -1295,7 +1323,7 @@ var UI = (function () {
   return {
     $: $, esc: esc, packPic: packPic, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
-    setPage: setPage, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
+    setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
     fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,

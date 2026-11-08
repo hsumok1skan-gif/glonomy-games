@@ -272,6 +272,13 @@ body.reduce .band { scroll-behavior: auto; }
 .check .nm { font-size: var(--t-1); font-weight: 700; line-height: 1.2; text-align: center; max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; word-break: keep-all; overflow-wrap: anywhere; }
 .check .box { position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; font-size: var(--t-2); color: var(--on-accent); background: var(--ok); border: 2px solid var(--surface); opacity: 0; transform: scale(0.4) rotate(-30deg); transition: opacity var(--dur), transform 0.2s; }
 .check.done { background: var(--subsoft); border-color: var(--sub); }
+/* 쪽마다 그림에 색 면: 알림장 · 수업 · 방과후 · 매일 · 아침 */
+.check[data-g] .it-ic { box-sizing: border-box; padding: 9%; }
+.check[data-g=note] .it-ic { border-radius: 50%; background: var(--soft); color: var(--accent-deep); }
+.check[data-g=class] .it-ic { border-radius: 50%; background: var(--subsoft); color: var(--sub); }
+.check[data-g=after] .it-ic { border-radius: 50%; background: var(--line); color: var(--violet); }
+.check[data-g=daily] .it-ic { border-radius: 50%; background: var(--bg); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.check[data-g=morning] .it-ic { border-radius: 50%; background: var(--soft); color: var(--gold); }
 .check.done .it-ic { opacity: 0.45; transform: scale(0.85); }
 .check.done .box { opacity: 1; transform: rotate(-12deg); }
 .check.pop .box { animation: stamp 0.3s ease-out; }
@@ -331,6 +338,9 @@ body.reduce .mouth, body.reduce .bag-lid { animation: none !important; }
 .done-title { margin: 4px 0; }
 .done-sticker { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 6px 0; }
 .done-line { white-space: pre-line; }
+/* 연속으로 다 챙긴 날 (2일 이상일 때만 그린다) */
+.done-streak { margin: 0 0 6px; text-align: center; font-size: var(--t-3); font-weight: 900; color: var(--accent-deep); }
+.cal-sum .cal-streak { margin-top: 4px; font-weight: 800; color: var(--accent-deep); }
 .stk { --c: var(--gold); width: 30px; height: 30px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--c); border: 3px solid var(--surface); box-shadow: 0 1px 0 var(--line); line-height: 1; font-size: var(--t-2); }
 .stk.big { width: 92px; height: 92px; font-size: var(--t-6); flex-direction: column; border-width: 5px; transform: rotate(-8deg); animation: pop 0.5s cubic-bezier(.3, 1.6, .5, 1); }
 .stk .sd { font-size: var(--t-1); font-weight: 900; color: var(--on-accent); margin-top: -4px; }
@@ -669,6 +679,8 @@ body.reduce .bad { animation: none; }
 .warn-bar.on { display: block; }
 
 .welcome-art { width: 110px; height: 110px; display: block; margin: 4px auto; flex: none; }
+#welcome-demo { width: 132px; height: 132px; }
+#welcome-demo .bag-art { width: 100%; height: 100%; display: block; }
 #ov-welcome h1 { font-size: var(--t-6); text-align: center; word-break: keep-all; overflow-wrap: break-word; text-wrap: balance; }
 #ov-welcome .muted { font-size: var(--t-3); color: var(--ink); }
 .done-burst { animation: burst 0.5s ease-out; }
@@ -711,7 +723,7 @@ body.reduce .confetti { display: none; }
 /* 키가 작은 화면(가로로 든 휴대폰 등)에서는 가방 그림을 줄인다 */
 @media (max-height: 640px) {
   .bag-stage { min-height: 80px; }
-  .welcome-art { width: 72px; height: 72px; }
+  .welcome-art, #welcome-demo { width: 84px; height: 84px; }
   .pick-area { height: 40dvh; }
   .help-sheet { --shot-s: 0.26; }
   .cal-d { max-height: 38px; }

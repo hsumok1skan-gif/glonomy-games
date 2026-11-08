@@ -80,6 +80,7 @@
     <div id="done-art" class="done-art"></div>
     <h1 class="done-title">가방 다 챙겼어요!</h1>
     <div id="done-sticker" class="done-sticker"></div>
+    <div id="done-streak-slot"></div>
     <p id="done-line" class="tiny done-line"></p>
     <button class="btn main wide" type="button" data-act="done-copy">가족에게 보내기</button>
     <div id="done-remind-slot"></div>
@@ -485,18 +486,8 @@
 <!-- 처음 안내 -->
 <div id="ov-welcome" class="dim center" aria-hidden="true">
   <div class="sheet" role="dialog" aria-label="처음 안내">
-    <svg class="welcome-art" viewBox="0 0 140 140" aria-hidden="true">
-      <circle cx="70" cy="74" r="62" fill="var(--soft)"/>
-      <path class="strap" d="M36 60 C22 64 22 98 36 106" fill="none" stroke="var(--accent-deep)" stroke-width="6" stroke-linecap="round"/>
-      <path class="strap" d="M104 60 C118 64 118 98 104 106" fill="none" stroke="var(--accent-deep)" stroke-width="6" stroke-linecap="round"/>
-      <path d="M61 44 V38 a9 9 0 0 1 18 0 V44" fill="none" stroke="var(--ink)" stroke-width="6"/>
-      <rect x="34" y="44" width="72" height="74" rx="20" fill="var(--accent)"/>
-      <path class="zip" d="M46 62 H94 M88 62 v6" fill="none" stroke="var(--on-accent)" stroke-width="3.5" stroke-linecap="round"/>
-      <rect class="pocket" x="46" y="76" width="48" height="28" rx="9" fill="var(--surface)"/>
-      <path d="M58 90 l8 8 l16 -16" fill="none" stroke="var(--sub)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <rect x="30" y="20" width="22" height="16" rx="4" fill="var(--gold)" transform="rotate(-14 41 28)"/>
-      <rect x="90" y="18" width="20" height="20" rx="4" fill="var(--sub)" transform="rotate(12 100 28)"/>
-    </svg>
+    <!-- 미리보기: 물건이 하나씩 들어가 가방이 차는 그림 (UI.welcomeDemo 가 그린다) -->
+    <div id="welcome-demo" class="welcome-art" aria-hidden="true"></div>
     <h1 class="welcome-title">내일 가방</h1>
     <p class="muted" style="text-align:center">시간표가 내일 가방을 챙겨 줘요.</p>
     <button class="btn main wide" type="button" data-act="welcome-start" style="margin-top:12px">시작하기</button>

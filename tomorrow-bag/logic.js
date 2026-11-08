@@ -126,6 +126,17 @@ var Logic = (function () {
     });
     return out;
   }
+  // 연속으로 다 챙긴 학교 가는 날 수: todayKey 를 아직 다 챙기지 않았으면 그 앞 학교 가는 날부터 거슬러 센다
+  // 주말·쉬는 날은 prevSchoolDay 가 건너뛰므로 끊지 않는다
+  function streak(history, kidId, todayKey, holidays) {
+    var full = {};
+    (history || []).forEach(function (h) {
+      if (h.kid === kidId && h.total > 0 && h.done === h.total) full[h.date] = true;
+    });
+    var k = full[todayKey] ? todayKey : prevSchoolDay(todayKey, holidays), n = 0;
+    while (full[k] && n < 1000) { n++; k = prevSchoolDay(k, holidays); }
+    return n;
+  }
 
   // ---- 가방 목록 ----
   var GROUPS = ['note', 'rule', 'class', 'after', 'daily'];
@@ -993,6 +1004,18 @@ var Logic = (function () {
     eq('밤 알림 요일', ri.indexOf('BYDAY=SU,MO,TU,WE,TH') >= 0, true);
     eq('밤 알림 시작 (금요일은 일요일로)', remindIcs('20:30', '2026-11-13').indexOf('DTSTART:20261115T203000') >= 0, true);
     eq('밤 알림 줄바꿈', ri.replace(/\r\n/g, '').indexOf('\n'), -1);
+    // 9-9) 연속으로 다 챙긴 날: 2026-11-06(금)·11-09(월)·11-10(화)는 주말을 넘어 이어지고, 11-05(목)은 덜 챙겨 끊긴다
+    var skh = [
+      { kid: 'k', date: '2026-11-05', total: 5, done: 4 },
+      { kid: 'k', date: '2026-11-06', total: 5, done: 5 },
+      { kid: 'k', date: '2026-11-09', total: 4, done: 4 },
+      { kid: 'k', date: '2026-11-10', total: 6, done: 6 },
+      { kid: 'x', date: '2026-11-04', total: 3, done: 3 }
+    ];
+    eq('연속 다 챙김 (주말 넘어 이어짐)', streak(skh, 'k', '2026-11-10', []), 3);
+    eq('연속 다 챙김 (오늘 아직이면 앞 학교 날부터)', streak(skh, 'k', '2026-11-11', []), 3);
+    eq('연속 다 챙김 (쉬는 날 건너뜀)', streak(skh.concat([{ kid: 'k', date: '2026-11-12', total: 2, done: 2 }]), 'k', '2026-11-12', ['2026-11-11']), 4);
+    eq('연속 다 챙김 (덜 챙긴 날에서 끊김)', streak(skh, 'k', '2026-11-06', []), 1);
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -1010,7 +1033,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, bagDiff: bagDiff, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
+    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
