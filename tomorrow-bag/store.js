@@ -19,7 +19,7 @@ var Store = (function () {
 
   function copyPacks() {
     var out = [];
-    DATA.SUBJECTS.forEach(function (s) { out.push({ id: s.id, kind: 'subj', name: s.name, icon: s.icon, pic: s.pic, items: s.items.slice() }); });
+    DATA.SUBJECTS.forEach(function (s) { out.push({ id: s.id, kind: 'subj', name: s.name, icon: s.icon, pic: s.pic, c: s.c, items: s.items.slice() }); });
     DATA.ACADEMIES.forEach(function (s) { out.push({ id: s.id, kind: 'acad', name: s.name, icon: s.icon, pic: s.pic, items: s.items.slice() }); });
     return out;
   }
@@ -50,7 +50,7 @@ var Store = (function () {
         holidays: [],
         guardians: ['엄마', '아빠'],
         ptimes: Logic.defaultTimes(),                        // 교시마다 [시작, 끝]
-        gradeP: { 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6 },      // 학년별 교시 수 (새 아이에 쓴다)
+        gradeP: { 1: 5, 2: 5, 3: 6, 4: 6, 5: 6, 6: 6 },      // 학년별 교시 수 (새 아이에 쓴다, 1~2학년은 5교시)
         welcomed: false,
         setupDone: false,
         remindAt: '',                                        // 달력 파일로 받은 밤 알림 시각 (받은 적 없으면 '')
@@ -97,6 +97,12 @@ var Store = (function () {
     d.morning = d.morning.filter(function (x) { return typeof x === 'string' && x.trim(); });
     if (!Array.isArray(d.stay)) d.stay = [];
     d.stay = d.stay.filter(function (x) { return typeof x === 'string' && x.trim(); });
+    // 예전 판에 저장한 기본 과목 꾸러미에도 시간표 칸 색을 채운다
+    d.packs.forEach(function (p) {
+      if (!p || p.c) return;
+      var s = DATA.SUBJECTS.filter(function (x) { return x.id === p.id; })[0];
+      if (s) p.c = s.c;
+    });
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
     if (!/^\d{2}:\d{2}$/.test(d.settings.remindAt)) d.settings.remindAt = '';

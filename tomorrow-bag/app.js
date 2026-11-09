@@ -1108,6 +1108,24 @@
     UI.toast(t + '을(를) 매일 챙길 것에 넣었어요', true);
   }
 
+  function addRule() {
+    var dow = +$('rule-dow').value;
+    var t = Logic.norm($('rule-add').value);
+    if (!(dow >= 1 && dow <= 5)) return UI.fieldErr('rule-dow', 'rule-err', '요일을 골라 주세요.');
+    if (!t) return UI.fieldErr('rule-add', 'rule-err', '물건 이름을 넣어 주세요.');
+    if (t.length > 40) return UI.fieldErr('rule-add', 'rule-err', '40자 안으로 넣어 주세요.');
+    var dup = S.rules.some(function (r) { return r.dow === dow && Logic.norm(r.item).toLowerCase() === t.toLowerCase(); });
+    if (dup) return UI.fieldErr('rule-add', 'rule-err', DATA.DOW[dow] + '요일에 이미 있어요.');
+    if (S.rules.length >= 20) return UI.fieldErr('rule-add', 'rule-err', '요일마다 챙길 것은 20개까지 넣을 수 있어요.');
+    UI.clearErr('rule-add', 'rule-err');
+    rememberUndo();
+    S.rules.push({ id: Store.uid('r'), dow: dow, item: t, on: true });
+    $('rule-add').value = '';
+    save();
+    renderAll();
+    UI.toast(DATA.DOW[dow] + '요일마다 ' + t + '을(를) 챙겨요', true);
+  }
+
   // ---- 설정 ----
   function addGuardian() {
     var t = Logic.norm($('guard-add').value);
@@ -1557,7 +1575,7 @@
       UI.renderPackItems(V.pack.items, Math.min(V.pg.pitems || 0, Math.max(0, Math.floor((V.pack.items.length - 1) / 12))));
     },
     'pack-del': deletePack,
-    'daily-open': function () { UI.renderDaily(S); UI.clearErr('daily-add', 'daily-err'); openSheet('sheet-daily'); },
+    'daily-open': function () { UI.renderDaily(S); UI.clearErr('daily-add', 'daily-err'); UI.clearErr('rule-add', 'rule-err'); openSheet('sheet-daily'); },
     'daily-del': function (b) {
       var i = +b.getAttribute('data-i');
       var name = S.daily[i];
@@ -1582,6 +1600,14 @@
       var id = b.getAttribute('data-id');
       S.rules.forEach(function (r) { if (r.id === id) r.on = !r.on; });
       save(); renderAll(); UI.toast('바꿨어요');
+    },
+    'rule-del': function (b) {
+      var id = b.getAttribute('data-id');
+      var r = S.rules.filter(function (x) { return x.id === id; })[0];
+      if (!r) return;
+      askConfirm(DATA.DOW[r.dow] + '요일 ' + r.item + '을(를) 뺄까요?', '빼기', function () {
+        rememberUndo(); S.rules = S.rules.filter(function (x) { return x.id !== id; }); save(); renderAll(); UI.toast('뺐어요', true);
+      });
     },
     'guard-open': function () { UI.renderGuards(S); UI.clearErr('guard-add', 'guard-err'); openSheet('sheet-guard'); },
     'guard-del': function (b) {
@@ -1768,6 +1794,7 @@
     'form-kid': kidSubmit, 'form-after': submitAfter, 'form-note': submitNote, 'form-pack': submitPack,
     'form-event': submitEvent, 'form-backup': restore,
     'form-daily': function () { addDaily($('daily-add').value); },
+    'form-rule': addRule,
     'form-guard': addGuardian, 'form-holiday': addHoliday, 'form-teacher': submitTeacher, 'form-times': submitTimes, 'form-edit': submitEdit, 'form-remind': submitRemind
   };
   function onSubmit(e) {

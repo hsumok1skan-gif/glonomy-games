@@ -810,6 +810,12 @@ var UI = (function () {
 
   // ---- 시간표: 한 표 — 위 머리 줄 월~금, 왼쪽 열 교시(이름 아래 시간), 맨 아래 방과후 줄 ----
   function sortAfter(list) { return list.slice().sort(function (a, b) { return (a.time || '').localeCompare(b.time || ''); }); }
+  // 시간표 칸 색: 꾸러미의 c 가 이 목록(style.css :root 색 변수)에 있을 때만 쓴다. 가져온 글의 c 는 style 에 그대로 넣지 않는다
+  var CELL_COLORS = ['--accent', '--accent-deep', '--sub', '--ok', '--gold', '--violet', '--danger', '--muted'];
+  function cellColor(pk) {
+    return CELL_COLORS.indexOf(pk && pk.c) >= 0 ? pk.c : '--sub';
+  }
+
   function renderWeek(S, V, kid, todayKey) {
     var root = $('week-root');
     if (!kid) {
@@ -826,7 +832,8 @@ var UI = (function () {
       h += '<div class="pn"><b>' + (i + 1) + '교시</b><span class="tm">' + t[0] + '<br>~' + t[1] + '</span></div>';
       for (var e = 1; e <= 5; e++) {
         var pk = kid.week[e].p[i] ? Logic.findPack(S.packs, kid.week[e].p[i]) : null;
-        h += '<button class="cell' + (pk ? ' full' : '') + '" type="button" data-act="cell" data-d="' + e + '" data-i="' + i + '" id="cell-' + e + '-' + i + '" aria-label="' +
+        h += '<button class="cell' + (pk ? ' full' : '') + '" type="button" data-act="cell" data-d="' + e + '" data-i="' + i + '" id="cell-' + e + '-' + i + '"' +
+          (pk ? ' style="--c:var(' + cellColor(pk) + ')"' : '') + ' aria-label="' +
           DATA.DOW[e] + '요일 ' + (i + 1) + '교시 ' + (pk ? esc(pk.name) : '빈 칸') + '">' +
           (pk ? '<span class="ic" aria-hidden="true">' + packPic(pk) + '</span>' + esc(pk.name) : '+') + '</button>';
       }
@@ -1009,7 +1016,7 @@ var UI = (function () {
     var r = '';
     if (!S.rules.length) r = miniEmpty('📅', '요일마다 챙길 것이 없어요',{ act: 'rules-default', label: '기본 규칙 넣기' });
     S.rules.forEach(function (x) {
-      r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button></div>';
+      r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button><button class="icon-btn" type="button" data-act="rule-del" data-id="' + x.id + '" aria-label="' + DATA.DOW[x.dow] + '요일 ' + esc(x.item) + ' 빼기">✕</button></div>';
     });
     $('rules-list').innerHTML = r;
     var st = '';

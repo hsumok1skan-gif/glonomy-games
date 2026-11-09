@@ -827,6 +827,11 @@ var Logic = (function () {
     ys.notes = [{ kid: 'k', date: '2026-10-26', items: ['국어 교과서'] }];
     var ybag = buildBag(ys, kid, '2026-10-26');
     eq('알림장에 있으면 남음', ybag.items.length + '|' + ybag.items[0].name + '|' + ybag.items[0].group, '6|국어 교과서|note');
+    // 4-2c) 사람이 넣은 목요일 규칙: 그 주 목요일(10/29) 가방에만 들어가고 수요일(10/28)에는 없다
+    var rs = { packs: [], daily: [], rules: [{ id: 'r1', dow: 4, item: '영어 단어장', on: true }], notes: [], checks: {}, settings: { holidays: [] } };
+    var rhas = function (k) { return buildBag(rs, kid, k).items.some(function (i) { return i.name === '영어 단어장' && i.group === 'rule'; }); };
+    eq('목요일 규칙 목요일에 들어감', rhas('2026-10-29'), true);
+    eq('목요일 규칙 수요일엔 없음', rhas('2026-10-28'), false);
     // 4-3) 어제와 달라진 것: 월 체육(체육복·물병·Pen) → 화 국어(국어 교과서·' pen '). 매일 필통과 대소문자만 다른 pen 은 빠진다
     var ds = { packs: [{ id: 'A', name: '체육', items: ['체육복', '물병', 'Pen'] }, { id: 'B', name: '국어', items: ['국어 교과서', ' pen '] }],
       daily: ['필통'], rules: [], notes: [], checks: {}, settings: { holidays: [] } };
@@ -854,6 +859,11 @@ var Logic = (function () {
     var picIds = {};
     DATA.ICONS.forEach(function (ic) { picIds[ic.id] = true; });
     eq('꾸러미 그림 모두 있음', DATA.SUBJECTS.concat(DATA.ACADEMIES).filter(function (p) { return !picIds[p.pic]; }).length, 0);
+    // 5-1b2) 과목 15개는 모두 시간표 칸 색(c, :root 색 변수 이름)이 있고, 5가지 이상 쓴다
+    var subjC = {};
+    DATA.SUBJECTS.forEach(function (p) { if (/^--[a-z-]+$/.test(p.c || '')) subjC[p.c] = true; });
+    eq('과목 칸 색 모두 있음', DATA.SUBJECTS.filter(function (p) { return !/^--[a-z-]+$/.test(p.c || ''); }).length, 0);
+    eq('과목 칸 색 5가지 이상', Object.keys(subjC).length >= 5, true);
     // 5-1c) 행사 12개의 pic 은 모두 있는 선 그림 id, 스티커 12개는 모두 직접 그린 그림(d)이 있다
     eq('행사 그림 모두 있음', DATA.EVENTS.filter(function (e) { return !picIds[e.pic]; }).length, 0);
     eq('스티커 그림 모두 있음', DATA.STICKERS.filter(function (s) { return !s.d; }).length, 0);
@@ -947,6 +957,10 @@ var Logic = (function () {
     var gw = gradeWeek(gt, [{ id: 'a' }, { id: 'b' }], 4, 4);
     eq('학년 기본 시간표 (4교시)', gw[1].join(',') + '|' + gw[2].length, 'a,b,,a|4');
     eq('학년 기본 시간표 (없는 학년)', gradeWeek(gt, [], 1, 6), null);
+    // 실제 기본 시간표: 1학년 5교시(수요일 4교시), 3학년 수요일 6교시는 빈 칸
+    var full = function (w) { return [1, 2, 3, 4, 5].map(function (d) { return w[d].filter(function (x) { return x; }).length; }).join(','); };
+    eq('1학년 기본 시간표 (5교시, 수 4교시)', full(gradeWeek(DATA.TIMETABLES, DATA.SUBJECTS, 1, 5)), '5,5,4,5,5');
+    eq('3학년 기본 시간표 (수 6교시 비움)', full(gradeWeek(DATA.TIMETABLES, DATA.SUBJECTS, 3, 6)), '6,6,5,6,6');
     // 9-5) 교시 시간: 기본값과 검사
     var dt = defaultTimes();
     eq('기본 1교시 시간', dt[0].join('~'), '09:00~09:40');

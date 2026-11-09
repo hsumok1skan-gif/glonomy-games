@@ -2,21 +2,22 @@
 var DATA = (function () {
   // 과목 꾸러미 15 — 그 과목이 시간표에 있는 날 가방에 들어갈 것 (pic: 카드·칸에 그리는 ICONS 의 선 그림 id)
   var SUBJECTS = [
-    { id: 's-kor', name: '국어', icon: '📖', pic: 'kor', items: ['국어 교과서', '국어 활동 책', '받아쓰기 공책'] },
-    { id: 's-math', name: '수학', icon: '➗', pic: 'math', items: ['수학 교과서', '수학 익힘 책', '30cm 자'] },
-    { id: 's-int', name: '통합교과', icon: '🌱', pic: 'sprout', items: ['통합 교과서', '색연필', '풀'] },
-    { id: 's-safe', name: '안전한 생활', icon: '🦺', pic: 'shield', items: ['안전한 생활 책'] },
-    { id: 's-soc', name: '사회', icon: '🗺️', pic: 'map', items: ['사회 교과서', '사회과 부도'] },
-    { id: 's-sci', name: '과학', icon: '🔬', pic: 'flask', items: ['과학 교과서', '실험 관찰 책'] },
-    { id: 's-eng', name: '영어', icon: '🔤', pic: 'abc', items: ['영어 교과서', '영어 공책'] },
-    { id: 's-mor', name: '도덕', icon: '🤝', pic: 'heart', items: ['도덕 교과서'] },
-    { id: 's-prac', name: '실과', icon: '🧵', pic: 'apron', items: ['실과 교과서', '앞치마'] },
-    { id: 's-pe', name: '체육', icon: '🏃', pic: 'gym', items: ['체육복', '운동화', '물병', '머리끈'] },
-    { id: 's-mus', name: '음악', icon: '🎵', pic: 'sheetmusic', items: ['음악 교과서', '리코더'] },
-    { id: 's-art', name: '미술', icon: '🎨', pic: 'paint', items: ['미술 교과서', '크레파스', '물감과 붓', '팔토시'] },
-    { id: 's-cre', name: '창의적 체험활동', icon: '🧩', pic: 'puzzle', items: ['활동지 파일'] },
-    { id: 's-read', name: '아침 독서', icon: '📚', pic: 'book', items: ['읽을 책 한 권', '독서록'] },
-    { id: 's-dict', name: '받아쓰기 시험', icon: '✏️', pic: 'pencil', items: ['받아쓰기 공책', '연필 두 자루'] }
+    // c: 시간표 칸 색 — style.css :root 의 색 변수 이름 (ui.js CELL_COLORS 에 있는 것만 쓴다)
+    { id: 's-kor', name: '국어', icon: '📖', pic: 'kor', c: '--accent', items: ['국어 교과서', '국어 활동 책', '받아쓰기 공책'] },
+    { id: 's-math', name: '수학', icon: '➗', pic: 'math', c: '--sub', items: ['수학 교과서', '수학 익힘 책', '30cm 자'] },
+    { id: 's-int', name: '통합교과', icon: '🌱', pic: 'sprout', c: '--ok', items: ['통합 교과서', '색연필', '풀'] },
+    { id: 's-safe', name: '안전한 생활', icon: '🦺', pic: 'shield', c: '--gold', items: ['안전한 생활 책'] },
+    { id: 's-soc', name: '사회', icon: '🗺️', pic: 'map', c: '--gold', items: ['사회 교과서', '사회과 부도'] },
+    { id: 's-sci', name: '과학', icon: '🔬', pic: 'flask', c: '--ok', items: ['과학 교과서', '실험 관찰 책'] },
+    { id: 's-eng', name: '영어', icon: '🔤', pic: 'abc', c: '--violet', items: ['영어 교과서', '영어 공책'] },
+    { id: 's-mor', name: '도덕', icon: '🤝', pic: 'heart', c: '--accent-deep', items: ['도덕 교과서'] },
+    { id: 's-prac', name: '실과', icon: '🧵', pic: 'apron', c: '--accent-deep', items: ['실과 교과서', '앞치마'] },
+    { id: 's-pe', name: '체육', icon: '🏃', pic: 'gym', c: '--danger', items: ['체육복', '운동화', '물병', '머리끈'] },
+    { id: 's-mus', name: '음악', icon: '🎵', pic: 'sheetmusic', c: '--violet', items: ['음악 교과서', '리코더'] },
+    { id: 's-art', name: '미술', icon: '🎨', pic: 'paint', c: '--accent', items: ['미술 교과서', '크레파스', '물감과 붓', '팔토시'] },
+    { id: 's-cre', name: '창의적 체험활동', icon: '🧩', pic: 'puzzle', c: '--muted', items: ['활동지 파일'] },
+    { id: 's-read', name: '아침 독서', icon: '📚', pic: 'book', c: '--sub', items: ['읽을 책 한 권', '독서록'] },
+    { id: 's-dict', name: '받아쓰기 시험', icon: '✏️', pic: 'pencil', c: '--accent-deep', items: ['받아쓰기 공책', '연필 두 자루'] }
   ];
 
   // 방과후·학원 꾸러미 15
@@ -225,18 +226,19 @@ var DATA = (function () {
     { name: '유니콘', c: '--violet', d: '<path d="M8 8L6 2l5.5 4.5C16 7 19.5 11 19.5 16v5.5H10V17l-3 1.3c-1.7.7-3.6-.4-4-2.2-.2-.9.1-1.8.8-2.4z"/><circle class="k" cx="9.5" cy="11.5" r="1.1"/><circle class="k" cx="5.8" cy="15.8" r=".7"/><path class="kl" d="M13.5 7.5c2.5 2 3.5 5 3.5 9"/>' }
   ];
 
-  // 학년 기본 시간표 3묶음 — 새 아이를 넣을 때 칸을 미리 채운다 (월~금 × 6교시, 모두 SUBJECTS 의 id)
+  // 학년 기본 시간표 3묶음 — 새 아이를 넣을 때 칸을 미리 채운다 (월~금, SUBJECTS 의 id. null 은 수업 없는 칸)
+  // 1~2학년은 5교시, 수요일은 4교시. 3~4학년은 6교시, 수요일은 5교시
   var TIMETABLES = [
     { grades: [1, 2], name: '1~2학년', week: {
-      1: ['s-kor', 's-kor', 's-math', 's-int', 's-int', 's-cre'],
-      2: ['s-read', 's-kor', 's-math', 's-int', 's-int', 's-safe'],
-      3: ['s-kor', 's-dict', 's-math', 's-int', 's-int', 's-cre'],
-      4: ['s-kor', 's-math', 's-int', 's-int', 's-kor', 's-safe'],
-      5: ['s-read', 's-kor', 's-math', 's-int', 's-int', 's-cre'] } },
+      1: ['s-kor', 's-kor', 's-math', 's-int', 's-int'],
+      2: ['s-read', 's-kor', 's-math', 's-int', 's-safe'],
+      3: ['s-kor', 's-dict', 's-math', 's-int', null],
+      4: ['s-kor', 's-math', 's-int', 's-int', 's-safe'],
+      5: ['s-read', 's-kor', 's-math', 's-int', 's-cre'] } },
     { grades: [3, 4], name: '3~4학년', week: {
       1: ['s-kor', 's-math', 's-soc', 's-sci', 's-pe', 's-mor'],
       2: ['s-kor', 's-eng', 's-math', 's-sci', 's-mus', 's-cre'],
-      3: ['s-kor', 's-math', 's-soc', 's-pe', 's-art', 's-art'],
+      3: ['s-kor', 's-math', 's-soc', 's-pe', 's-art', null],
       4: ['s-eng', 's-kor', 's-math', 's-sci', 's-mus', 's-pe'],
       5: ['s-kor', 's-soc', 's-math', 's-mor', 's-eng', 's-cre'] } },
     { grades: [5, 6], name: '5~6학년', week: {

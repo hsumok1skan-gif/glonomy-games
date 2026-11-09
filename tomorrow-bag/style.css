@@ -406,8 +406,17 @@ body.reduce .stk.big { animation: none; }
 .cell:active { transform: scale(0.94); }
 .cell.full { border-style: solid; background: var(--subsoft); }
 .cell .ic { display: block; font-size: var(--t-4); line-height: 1.1; }
+/* 채운 교시 칸: 과목 색(--c, ui.js renderWeek 가 :root 색 변수로 단다)을 왼쪽 띠와 옅은 바탕으로 */
+.week .cell.full {
+  --c: var(--sub);
+  border-left: 4px solid var(--c);
+  background: var(--subsoft);
+  background: color-mix(in srgb, var(--c) 15%, var(--surface));
+}
+.week .cell.after.full { border-left: 1px solid var(--accent); background: var(--soft); }
 .cell.flash { animation: flash 0.6s ease-out; }
-@keyframes flash { 0% { background: var(--soft); } 100% { background: var(--subsoft); } }
+/* 끝 칸은 비워 칸마다 제 바탕(과목 색)으로 돌아가게 한다 */
+@keyframes flash { 0% { background: var(--soft); } }
 .after-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .after-row:last-child { border-bottom: 0; }
 
@@ -633,6 +642,9 @@ body.reduce .bad { animation: none; }
 .toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; min-height: 48px; padding: 2px 0; border-bottom: 1px solid var(--line); }
 .toggle > span { flex: 1 1 140px; min-width: 0; }
 .toggle:last-child { border-bottom: 0; }
+/* 요일 규칙이 늘어도 시트가 화면을 넘지 않게 목록 안에서만 민다 */
+#rules-list { max-height: 40dvh; overflow-y: auto; }
+#rules-list .toggle > .icon-btn { flex: none; }
 .seg { display: flex; gap: 4px; }
 .seg .chip { padding: 6px 10px; min-width: 44px; }
 
