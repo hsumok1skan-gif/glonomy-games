@@ -46,6 +46,7 @@ var Store = (function () {
         reduce: false,
         dark: false,
         mute: false,
+        vibe: true,                                          // 칸을 누를 때 짧은 진동 (진동이 되는 기기만)
         teacher: false,
         holidays: [],
         guardians: ['엄마', '아빠'],
@@ -103,6 +104,7 @@ var Store = (function () {
       var s = DATA.SUBJECTS.filter(function (x) { return x.id === p.id; })[0];
       if (s) p.c = s.c;
     });
+    if (typeof d.settings.vibe !== 'boolean') d.settings.vibe = base.settings.vibe;
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
     if (!/^\d{2}:\d{2}$/.test(d.settings.remindAt)) d.settings.remindAt = '';

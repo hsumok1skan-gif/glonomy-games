@@ -138,6 +138,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .chip.pick { background: var(--subsoft); border-color: var(--sub); }
 .chip.add { min-width: 44px; padding: 0; font-size: var(--t-4); line-height: 1; }
+.kid-chip { display: inline-flex; align-items: center; gap: 6px; }
+.kid-prog { font-size: var(--t-1); font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--soft); color: var(--ink); font-variant-numeric: tabular-nums; }
+.chip.on .kid-prog { background: rgba(255, 255, 255, 0.22); color: inherit; }
+.kid-done .kid-prog { background: var(--ok); color: #fff; }
+.kid-done:not(.on) { border-color: var(--ok); }
 
 /* 화면: 탭 사이 영역을 꽉 채우고 넘치지 않는다 */
 main { flex: 1; min-height: 0; overflow: hidden; padding: 10px var(--gap); display: flex; flex-direction: column; }
@@ -613,6 +618,8 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--sub); borde
 .kid-steps span.on { width: 22px; background: var(--accent); }
 #kid-after-list .chip { flex: 0 1 auto; max-width: 100%; white-space: normal; text-align: left; }
 #kid-after-add { margin-top: 8px; }
+#kid-after-new-row { margin-top: 6px; }
+#kid-after-new { flex: 1; min-width: 0; }
 /* 키가 작은 휴대폰에서만 시트 안을 밀어 저장 버튼이 잘리지 않게 한다 */
 @media (max-height: 700px) { #form-kid { overflow-y: auto; } }
 .kid-after .f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }

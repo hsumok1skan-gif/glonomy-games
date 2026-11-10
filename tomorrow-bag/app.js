@@ -151,6 +151,12 @@
     done: function () { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, f * 1.01, i * 0.11, 0.24, 'triangle', 0.16); }); }
   };
 
+  // ---- 진동: 진동이 되는 기기에서만 짧게 (설정 → 화면 색 → 진동) ----
+  function haptic(ms) {
+    if (!S.settings.vibe || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch (e) { /* 진동이 안 돼도 앱은 돈다 */ }
+  }
+
   // ---- 아이 ----
   function openKid(id) {
     V.kidEdit = id || null;
@@ -164,6 +170,8 @@
     // 방과후 고르기도 새 아이일 때만 (고치기는 시간표 탭의 방과후 칸에서)
     V.kidAfter = k ? null : { pack: null, days: [], who: '', list: [] };
     $('kid-after-time').value = '15:00';
+    $('kid-after-new').value = '';
+    UI.clearErr('kid-after-new', '');
     UI.clearErr('kid-after-time', 'kid-after-err');
     if (k) $('kid-after').style.display = 'none';
     else UI.renderKidAfter(S, V.kidAfter);
@@ -228,6 +236,23 @@
     ka.pack = null; ka.days = []; ka.who = '';
     $('kid-after-time').value = '15:00';
     UI.clearErr('kid-after-time', 'kid-after-err');
+  }
+  // 목록에 없는 학원: 이름만으로 방과후 꾸러미를 만들고 바로 고른 것으로 둔다 (챙길 물건은 꾸러미 탭에서 넣는다)
+  function kidAfterNewAdd() {
+    var ka = V.kidAfter, name = Logic.norm($('kid-after-new').value);
+    if (!name) return UI.fieldErr('kid-after-new', 'kid-after-err', '학원 이름을 넣어 주세요.');
+    if (name.length > 40) return UI.fieldErr('kid-after-new', 'kid-after-err', '40자 안으로 넣어 주세요.');
+    var dup = S.packs.some(function (p) { return p.kind === 'acad' && p.name === name; });
+    if (dup) return UI.fieldErr('kid-after-new', 'kid-after-err', '같은 이름의 방과후가 있어요. 위 칩에서 골라 주세요.');
+    var p = { id: Store.uid('p'), kind: 'acad', name: name, icon: '🎒', pic: Logic.iconFor(name).id, items: [] };
+    S.packs.push(p);
+    save();
+    ka.pack = p.id; ka.days = []; ka.who = ''; ka.custom = false;
+    $('kid-after-new').value = '';
+    UI.clearErr('kid-after-new', '');
+    UI.clearErr('kid-after-time', 'kid-after-err');
+    UI.renderKidAfter(S, ka);
+    UI.toast('"' + name + '" 꾸러미를 만들었어요. 요일을 골라 주세요');
   }
   function submitKid() {
     var name = checkKidName();
@@ -366,10 +391,11 @@
       UI.stamp(cell);
       UI.fly(cell, V.kidMode);
       (V.kidMode ? SFX.inKid : SFX.in)();
+      haptic(V.kidMode ? [12, 40, 12] : 12);
       // 아침에 넣을 물건만 남아도 밤에는 다 챙긴 것으로 친다. 아침 물건을 하나씩 넣을 때는(가방 화면 아침 줄) 다 넣었을 때만 다시 띄운다
       if ((pr.total && pr.done === pr.total) || (!wasNight && Logic.nightDone(S, kid, bag))) completeBag(kid, k);
       else autoNextPage();
-    } else SFX.out();
+    } else { SFX.out(); haptic(6); }
   }
   // '꺼낼 것' 칸: 어제 가방에서 꺼냈다고 표시만 한다 (챙김 수·기록·다 챙김에는 넣지 않는다)
   function toggleOut(btn) {
@@ -400,6 +426,7 @@
       UI.closeSheet('sheet-bag');
       UI.renderDone(S, kid, k, V.kidMode);
       openSheet('ov-done');
+      haptic([20, 60, 20, 60, 40]);
       UI.confetti($('ov-done'));
       renderAll();
     }, wait);
@@ -1480,6 +1507,14 @@
       keepKidAfter();
       UI.renderKidAfter(S, V.kidAfter);
     },
+    'kid-after-custom': function () {
+      V.kidAfter.custom = !V.kidAfter.custom;
+      UI.clearErr('kid-after-new', '');
+      UI.clearErr('kid-after-time', 'kid-after-err');
+      UI.renderKidAfter(S, V.kidAfter);
+      if (V.kidAfter.custom) $('kid-after-new').focus();
+    },
+    'kid-after-new-add': kidAfterNewAdd,
     'kid-after-remove': function (b) {
       V.kidAfter.list.splice(+b.getAttribute('data-i'), 1);
       UI.renderKidAfter(S, V.kidAfter);
@@ -1679,7 +1714,8 @@
     'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'stay-toggle': 'kid',
     'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach', 'family-share': 'family', 'family-copy': 'family',
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
-    'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter'
+    'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter',
+    'kid-after-custom': 'kidAfter', 'kid-after-new-add': 'kidAfter'
   };
   function ready(name) {
     var need = NEED[name];
@@ -1810,6 +1846,9 @@
     } else if (e.key === 'Enter' && e.target && e.target.id === 'pack-add' && V.pack) {
       e.preventDefault();
       packAddItem();
+    } else if (e.key === 'Enter' && e.target && e.target.id === 'kid-after-new' && V.kidAfter) {
+      e.preventDefault();   // 아이 넣기 폼의 저장으로 가지 않고 꾸러미만 만든다
+      kidAfterNewAdd();
     } else if (e.key === 'Enter' && e.target && e.target.id === 'teach-add' && V.teach) {
       e.preventDefault();
       teachAddItem();

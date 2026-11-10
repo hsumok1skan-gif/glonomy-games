@@ -306,11 +306,43 @@ var UI = (function () {
     if (share) share.hidden = empty;
     if (empty) { $('kids').innerHTML = ''; return; }
     var h = '';
+    var bk = Logic.bagDate(new Date(), S.settings);
     S.kids.forEach(function (k) {
-      h += '<button class="chip' + (k.id === S.cur ? ' on' : '') + '" type="button" data-act="kid-pick" data-id="' + k.id + '">' + esc(k.name) + (k.sample ? ' (예시)' : '') + '</button>';
+      var c = kidChipState(S, k, bk);
+      h += '<button class="chip kid-chip' + (k.id === S.cur ? ' on' : '') + (c.all ? ' kid-done' : '') + '" type="button" data-act="kid-pick" data-id="' + k.id + '" aria-label="' + esc(c.label) + '">' +
+        esc(k.name) + (k.sample ? ' (예시)' : '') +
+        (c.pr.total ? '<span class="kid-prog" aria-hidden="true">' + (c.all ? '✓' : c.pr.done + '/' + c.pr.total) + '</span>' : '') + '</button>';
     });
     h += '<button class="chip add" type="button" data-act="kid-new" aria-label="아이 넣기">+</button>';
     $('kids').innerHTML = h;
+  }
+
+  // 아이 칩 하나의 오늘 밤 진행: 다 챙겼거나(아침 물건만 남았어도) 밤 챙기기가 끝났으면 all
+  function kidChipState(S, k, bk) {
+    var bag = Logic.buildBag(S, k, bk);
+    var pr = Logic.progress(S, k, bag);
+    var all = pr.total > 0 && (pr.done === pr.total || Logic.nightDone(S, k, bag));
+    var name = k.name + (k.sample ? ' (예시)' : '');
+    var label = !pr.total ? name : name + ', ' + (all ? pr.total + '개 가운데 ' + pr.done + '개 챙김, 오늘 밤 다 챙김' : pr.total + '개 가운데 ' + pr.done + '개 챙김');
+    return { pr: pr, all: all, label: label };
+  }
+
+  // 체크 하나를 바꾼 뒤 그 아이 칩만 고친다 (updateBag 은 다시 그리지 않으므로)
+  function updateKidChip(S, kid) {
+    var chip = document.querySelector('#kids [data-act="kid-pick"][data-id="' + kid.id + '"]');
+    if (!chip) return;
+    var c = kidChipState(S, kid, Logic.bagDate(new Date(), S.settings));
+    chip.classList.toggle('kid-done', c.all);
+    chip.setAttribute('aria-label', c.label);
+    var sp = chip.querySelector('.kid-prog');
+    if (!c.pr.total) { if (sp) chip.removeChild(sp); return; }
+    if (!sp) {
+      sp = document.createElement('span');
+      sp.className = 'kid-prog';
+      sp.setAttribute('aria-hidden', 'true');
+      chip.appendChild(sp);
+    }
+    sp.textContent = c.all ? '✓' : c.pr.done + '/' + c.pr.total;
   }
 
   // ---- 가방 화면: 한 화면에 이름 칩 · 날짜 카드 · 가방 그림 · 수업 한 줄 · 방과후 한 줄 · 버튼 ----
@@ -589,6 +621,7 @@ var UI = (function () {
   // (가방 그림 SVG 가 그대로 남아 고리의 stroke-dashoffset·차오름 transition 이 돈다). 못 찾으면 false
   function updateBag(S, kid, bag, name) {
     var pr = Logic.progress(S, kid, bag);
+    updateKidChip(S, kid);
     setBagProgress(pr, true);
     var art = document.querySelector('#bag-ring .bag-art');
     if (!art) return false;
@@ -955,7 +988,10 @@ var UI = (function () {
     $('kid-after-packs').innerHTML = acad.map(function (p) {
       var on = p.id === sel.pack;
       return '<button class="chip' + (on ? ' on' : '') + '" type="button" data-act="kid-after-pack" data-id="' + p.id + '" aria-pressed="' + on + '">' + packPic(p) + esc(p.name) + '</button>';
-    }).join('');
+    }).join('') +
+      // 목록에 없는 학원은 맨 끝 칩으로 그 자리에서 이름만 써서 만든다 (물건은 꾸러미 탭에서)
+      '<button class="chip' + (sel.custom ? ' on' : '') + '" type="button" data-act="kid-after-custom" aria-pressed="' + !!sel.custom + '" aria-controls="kid-after-new-row">+ 직접 쓰기</button>';
+    $('kid-after-new-row').style.display = sel.custom ? '' : 'none';
     var h = '';
     for (var d = 1; d <= 5; d++) {
       var dn = sel.days.indexOf(d) >= 0;
@@ -1092,13 +1128,14 @@ var UI = (function () {
       '</div>';
     $('more-root').innerHTML = h;
   }
-  // 화면 색 시트: 화면 색 · 움직임 줄이기 · 소리
+  // 화면 색 시트: 화면 색 · 움직임 줄이기 · 소리 · 진동
   function renderLook(S) {
     var st = S.settings;
     $('look-list').innerHTML =
       setRow('toggle-set', '화면 색', st.dark ? '어둡게' : '밝게', ' data-k="dark" aria-pressed="' + !!st.dark + '"', st.dark ? 'on' : '') +
       setRow('toggle-set', '움직임 줄이기', st.reduce ? '켜짐' : '꺼짐', ' data-k="reduce" aria-pressed="' + !!st.reduce + '"', st.reduce ? 'on' : '') +
-      setRow('toggle-set', '소리', st.mute ? '꺼짐' : '켜짐', ' data-k="mute" aria-pressed="' + !st.mute + '"', st.mute ? '' : 'on');
+      setRow('toggle-set', '소리', st.mute ? '꺼짐' : '켜짐', ' data-k="mute" aria-pressed="' + !st.mute + '"', st.mute ? '' : 'on') +
+      setRow('toggle-set', '진동', st.vibe ? '켜짐' : '꺼짐', ' data-k="vibe" aria-pressed="' + !!st.vibe + '"', st.vibe ? 'on' : '');
   }
   // 교시 시간 시트: 교시마다 시작·끝 시각, 점심 자리 표시, 학년별 교시 수
   function renderTimes(list, gp) {
