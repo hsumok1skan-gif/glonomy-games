@@ -724,10 +724,24 @@ var UI = (function () {
         '<button class="btn small" type="button" data-act="stay-toggle" data-name="' + esc(it.name) + '">' + (it.stay ? '학교에 두지 않아요' : '늘 학교에 둬요') + '</button>') +
       '<span class="tiny">' + esc(it.sources.join(' · ')) + '</span>';
     b.hidden = false;
+    placeBubble(b, sheet, btn);
+  }
+  // 말풍선을 칸 아래에 (자리가 없으면 위에)
+  function placeBubble(b, sheet, btn) {
     var sr = sheet.getBoundingClientRect(), r = btn.getBoundingClientRect();
     var top = r.bottom - sr.top + 6;
     if (top + b.offsetHeight > sheet.clientHeight - 8) top = r.top - sr.top - b.offsetHeight - 6;
     b.style.top = Math.max(8, top) + 'px';
+  }
+  // 처음 한 칸을 챙긴 뒤 한 번만: 길게 누르면 무엇을 할 수 있는지 알려 준다. 가방 시트의 칸이 아니면 띄우지 않는다(false)
+  function showHoldTip(cell) {
+    var b = $('bubble');
+    if (!b || !cell || !isOpen('sheet-bag') || !$('sheet-bag').contains(cell)) return false;
+    b.innerHTML = '<span>길게 누르면 왜 필요한지 보이고, 빼거나 학교에 둘 수 있어요</span>' +
+      '<button class="btn small" type="button" data-act="hold-tip-ok">알겠어요</button>';
+    b.hidden = false;
+    placeBubble(b, b.parentNode, cell);
+    return true;
   }
   function hideBubble() {
     var b = $('bubble');
@@ -831,14 +845,26 @@ var UI = (function () {
   // ---- 며칠 뒤 준비물 시트 ----
   function renderUpcoming(S, kid, k, todayKey) {
     var list = Logic.upcoming(S, kid, k, 7).slice(0, 6);
+    var buy = (S.buy || []).map(function (x) { return Logic.norm(x).toLowerCase(); });
     var h = '';
     list.forEach(function (n) {
+      // 준비물마다 칩: 누르면 살 것에 넣고 빼기 (집에 없는 것만 골라 둔다)
+      var chips = n.items.map(function (it) {
+        var on = buy.indexOf(Logic.norm(it).toLowerCase()) >= 0;
+        return '<button class="chip' + (on ? ' on' : '') + '" type="button" data-act="buy-toggle" data-name="' + esc(it) + '" aria-pressed="' + on + '" aria-label="' + esc(it) + ' 살 것">' + (on ? '🛒 ' : '') + esc(it) + '</button>';
+      }).join('');
       h += '<div class="up-row"><span class="pill soon">D-' + dDay(n.date, todayKey) + '</span>' +
-        '<span class="tx"><b>' + Logic.shortLabel(n.date) + '</b> ' + esc(n.title || '알림장') + '<span class="tiny">' + esc(n.items.join(', ')) + '</span></span>' +
-        '<button class="btn small" type="button" data-act="note-edit" data-id="' + n.id + '">고치기</button></div>';
+        '<span class="tx"><b>' + Logic.shortLabel(n.date) + '</b> ' + esc(n.title || '알림장') + '</span>' +
+        '<button class="btn small" type="button" data-act="note-edit" data-id="' + n.id + '">고치기</button>' +
+        (chips ? '<div class="chips up-buy">' + chips + '</div>' : '') + '</div>';
     });
     if (!list.length) h = miniEmpty('📅', '며칠 뒤 준비물이 없어요',{ act: 'note-new', label: '+ 알림장' });
+    else h += '<p class="tiny up-buy-tip">집에 없는 것을 눌러 살 것에 모아요</p>';
     $('up-list').innerHTML = h;
+    var n = (S.buy || []).length;
+    var bb = $('up-buy-copy');
+    bb.disabled = !n;
+    bb.textContent = '살 것 ' + n + '개 복사';
   }
 
   // ---- 시간표: 한 표 — 위 머리 줄 월~금, 왼쪽 열 교시(이름 아래 시간), 맨 아래 방과후 줄 ----
@@ -856,16 +882,21 @@ var UI = (function () {
       return;
     }
     var tw = Logic.dow(todayKey);
+    // 가방 챙길 날(밤이면 내일, 쉬는 날 건너뜀) 요일 열을 머리 칸·교시·방과후까지 테로 묶는다. 월~금일 때만
+    var bd = Logic.dow(Logic.bagDate(new Date(), S.settings));
+    if (bd < 1 || bd > 5) bd = 0;
+    var bc = function (d) { return d === bd ? ' bagday' : ''; };
     var pt = Logic.periodTimes(S.settings);
     var h = '<div class="row head-row"><h1>' + esc(Logic.nameI(kid.name)) + ' 시간표</h1></div>';
     h += '<div class="week" style="grid-template-rows:minmax(32px,auto) repeat(' + kid.periods + ', minmax(44px,1fr)) minmax(72px,auto)"><div class="corner"></div>';
-    for (var d = 1; d <= 5; d++) h += '<div class="hd' + (d === tw ? ' today' : '') + '">' + DATA.DOW[d] + '</div>';
+    for (var d = 1; d <= 5; d++) h += '<div class="hd' + (d === tw ? ' today' : '') + bc(d) + '"' + (d === bd ? ' aria-label="' + DATA.DOW[d] + '요일, 가방 챙길 날"' : '') + '>' +
+      DATA.DOW[d] + (d === bd ? '<span class="bd-tag" aria-hidden="true">가방</span>' : '') + '</div>';
     for (var i = 0; i < kid.periods; i++) {
       var t = pt[i] || ['', ''];
       h += '<div class="pn"><b>' + (i + 1) + '교시</b><span class="tm">' + t[0] + '<br>~' + t[1] + '</span></div>';
       for (var e = 1; e <= 5; e++) {
         var pk = kid.week[e].p[i] ? Logic.findPack(S.packs, kid.week[e].p[i]) : null;
-        h += '<button class="cell' + (pk ? ' full' : '') + '" type="button" data-act="cell" data-d="' + e + '" data-i="' + i + '" id="cell-' + e + '-' + i + '"' +
+        h += '<button class="cell' + (pk ? ' full' : '') + bc(e) + '" type="button" data-act="cell" data-d="' + e + '" data-i="' + i + '" id="cell-' + e + '-' + i + '"' +
           (pk ? ' style="--c:var(' + cellColor(pk) + ')"' : '') + ' aria-label="' +
           DATA.DOW[e] + '요일 ' + (i + 1) + '교시 ' + (pk ? esc(pk.name) : '빈 칸') + '">' +
           (pk ? '<span class="ic" aria-hidden="true">' + packPic(pk) + '</span>' + esc(pk.name) : '+') + '</button>';
@@ -883,7 +914,7 @@ var UI = (function () {
         label += nm + ' ' + (a.time || '') + (a.who ? ' ' + a.who : '') + ', ';
       });
       if (af.length > 3) lines += '<span class="af more">+' + (af.length - 3) + '</span>';
-      h += '<button class="cell after' + (af.length ? ' full' : '') + '" type="button" data-act="after-cell" data-d="' + w + '" aria-label="' + esc(af.length ? label.replace(/, $/, '') : label + '빈 칸') + '">' +
+      h += '<button class="cell after' + (af.length ? ' full' : '') + bc(w) + '" type="button" data-act="after-cell" data-d="' + w + '" aria-label="' + esc(af.length ? label.replace(/, $/, '') : label + '빈 칸') + '">' +
         (lines || '+') + '</button>';
     }
     h += '</div>';
@@ -1368,7 +1399,7 @@ var UI = (function () {
     $: $, esc: esc, packPic: packPic, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
-    fly: fly, stamp: stamp, showBubble: showBubble, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
+    fly: fly, stamp: stamp, showBubble: showBubble, showHoldTip: showHoldTip, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,

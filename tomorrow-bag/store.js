@@ -33,6 +33,7 @@ var Store = (function () {
       daily: DATA.DAILY.slice(),
       morning: ['물병', '도시락', '간식'],                   // 아침에 넣을 물건 (밤에는 남아도 다 챙긴 것으로 친다)
       stay: [],                                              // 늘 학교에 두는 물건 (알림장에 적히지 않으면 가방에 넣지 않는다)
+      buy: [],                                               // 며칠 뒤 준비물에서 고른 살 것 (복사해 장 보러 간다)
       rules: DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; }),
       notes: [],
       checks: {},
@@ -57,7 +58,8 @@ var Store = (function () {
         remindAt: '',                                        // 달력 파일로 받은 밤 알림 시각 (받은 적 없으면 '')
         remindAsked: false,                                  // 다 챙김 창에서 밤 알림을 한 번 권했다
         firstBagSeen: false,                                 // 아이를 넣자마자 보여 준 처음 가방 카드를 닫았다
-        coachSeen: false                                     // 가방 시트에서 처음 한 칸을 눌러 봤다 (누르기 안내를 끈다)
+        coachSeen: false,                                    // 가방 시트에서 처음 한 칸을 눌러 봤다 (누르기 안내를 끈다)
+        holdTipSeen: false                                   // 처음 챙긴 뒤 길게 누르기 말풍선을 봤거나 직접 길게 눌러 봤다
       }
     };
   }
@@ -98,6 +100,8 @@ var Store = (function () {
     d.morning = d.morning.filter(function (x) { return typeof x === 'string' && x.trim(); });
     if (!Array.isArray(d.stay)) d.stay = [];
     d.stay = d.stay.filter(function (x) { return typeof x === 'string' && x.trim(); });
+    if (!Array.isArray(d.buy)) d.buy = [];
+    d.buy = d.buy.filter(function (x) { return typeof x === 'string' && x.trim(); });
     // 예전 판에 저장한 기본 과목 꾸러미에도 시간표 칸 색을 채운다
     d.packs.forEach(function (p) {
       if (!p || p.c) return;
@@ -105,6 +109,7 @@ var Store = (function () {
       if (s) p.c = s.c;
     });
     if (typeof d.settings.vibe !== 'boolean') d.settings.vibe = base.settings.vibe;
+    if (typeof d.settings.holdTipSeen !== 'boolean') d.settings.holdTipSeen = base.settings.holdTipSeen;
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
     if (!/^\d{2}:\d{2}$/.test(d.settings.remindAt)) d.settings.remindAt = '';

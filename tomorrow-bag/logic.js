@@ -410,6 +410,17 @@ var Logic = (function () {
     }).sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
   }
 
+  // 살 것 글: '사 둘 것: 휴지 심 2개, 돗자리' (빈 이름·같은 이름(띄어쓰기·대소문자 무시)은 한 번만)
+  function buyText(list) {
+    var seen = [], out = [];
+    (list || []).forEach(function (x) {
+      var t = norm(x), low = t.toLowerCase();
+      if (!t || seen.indexOf(low) >= 0) return;
+      seen.push(low); out.push(t);
+    });
+    return out.length ? '사 둘 것: ' + out.join(', ') : '';
+  }
+
   // 처음 설정 3단계: ① 시간표 칸 5개 이상 ② 방과후 1개 이상 ③ 알림장 1개 이상 또는 체크 1회
   function setupSteps(state, kid) {
     if (!kid) return null;
@@ -899,6 +910,8 @@ var Logic = (function () {
     ] }, { id: 'k' }, '2026-10-26', 7);
     eq('며칠 뒤 준비물 수', up.length, 2);
     eq('며칠 뒤 준비물 첫 날', up.length ? up[0].date : '', '2026-10-28');
+    eq('살 것 글', buyText(['휴지 심 2개', ' 돗자리 ', '휴지  심 2개', '']), '사 둘 것: 휴지 심 2개, 돗자리');
+    eq('살 것 없으면 빈 글', buyText([]), '');
     // 7-2) 처음 설정 단계: 칸 4개·방과후 1개·체크 1회면 2/3, 칸을 5개로 채우면 셋 다
     var sw = { 1: { p: ['a', 'b', 'c', null], after: [{ id: 'a1' }] }, 2: { p: ['d', null, null, null], after: [] }, 3: { p: [null, null, null, null], after: [] }, 4: { p: [null, null, null, null], after: [] }, 5: { p: [null, null, null, null], after: [] } };
     var sst = { notes: [], checks: { 'k|2026-10-26': ['물병'] }, history: [] };
@@ -1048,7 +1061,7 @@ var Logic = (function () {
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, bagDiff: bagDiff, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
-    missCounts: missCounts, upcoming: upcoming, setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
+    missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

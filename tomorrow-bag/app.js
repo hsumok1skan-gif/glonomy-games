@@ -73,6 +73,7 @@
     UI.renderWeek(S, V, kid, t);
     UI.renderPacks(S, V);
     UI.renderMore(S, kid);
+    if (kid && UI.isOpen('sheet-upcoming')) UI.renderUpcoming(S, kid, bagKey(), t);
     // 열려 있는 시트도 새 데이터로
     if (UI.isOpen('sheet-bag')) {
       if (kid) UI.renderBagSheet(S, V, kid, Logic.buildBag(S, kid, bagKey()));
@@ -394,8 +395,16 @@
       haptic(V.kidMode ? [12, 40, 12] : 12);
       // 아침에 넣을 물건만 남아도 밤에는 다 챙긴 것으로 친다. 아침 물건을 하나씩 넣을 때는(가방 화면 아침 줄) 다 넣었을 때만 다시 띄운다
       if ((pr.total && pr.done === pr.total) || (!wasNight && Logic.nightDone(S, kid, bag))) completeBag(kid, k);
+      // 처음 챙긴 뒤 한 번만 길게 누르기를 알려 준다 ('알겠어요'를 누르면 다음 쪽으로)
+      else if (!V.kidMode && !S.settings.holdTipSeen && UI.showHoldTip(cell)) seeHoldTip();
       else autoNextPage();
     } else { SFX.out(); haptic(6); }
+  }
+  // 길게 누르기 말풍선을 봤다 (다시 띄우지 않는다)
+  function seeHoldTip() {
+    if (S.settings.holdTipSeen) return;
+    S.settings.holdTipSeen = true;
+    save();
   }
   // '꺼낼 것' 칸: 어제 가방에서 꺼냈다고 표시만 한다 (챙김 수·기록·다 챙김에는 넣지 않는다)
   function toggleOut(btn) {
@@ -552,7 +561,9 @@
     if (!kid || !btn) return;
     var k = bagKey(), name = btn.getAttribute('data-name');
     var it = Logic.buildBag(S, kid, k).items.filter(function (x) { return x.name === name; })[0];
-    if (it) UI.showBubble(btn, it, relWord(k), V.kidMode);
+    if (!it) return;
+    UI.showBubble(btn, it, relWord(k), V.kidMode);
+    if (!V.kidMode) seeHoldTip();   // 직접 길게 눌러 봤으면 알려 줄 필요가 없다
   }
   function toggleKidMode() {
     // 켜기는 한 번 누르기, 끄기는 어른이 길게 누르기 (아이 혼자서는 다른 설정을 바꿀 수 없게)
@@ -614,6 +625,32 @@
     if (!kid) return;
     UI.renderUpcoming(S, kid, bagKey(), todayKey());
     openSheet('sheet-upcoming');
+  }
+  // 살 것: 며칠 뒤 준비물 칩을 눌러 모으고, 한 번에 복사해 장 보러 간다
+  function buyToggle(name) {
+    var t = Logic.norm(name);
+    if (!t) return;
+    var low = t.toLowerCase();
+    var i = -1;
+    S.buy.forEach(function (x, j) { if (i < 0 && Logic.norm(x).toLowerCase() === low) i = j; });
+    if (i >= 0) S.buy.splice(i, 1);
+    else S.buy.push(t);
+    save();
+    var kid = curKid();
+    if (kid) UI.renderUpcoming(S, kid, bagKey(), todayKey());
+  }
+  function buyCopy() {
+    if (!S.buy.length) return UI.toast('살 것을 먼저 눌러 골라 주세요');
+    copyText(Logic.buyText(S.buy), '살 것 ' + S.buy.length + '개를 복사했어요');
+  }
+  function buyClear() {
+    if (!S.buy.length) return;
+    rememberUndo();
+    S.buy = [];
+    save();
+    var kid = curKid();
+    if (kid) UI.renderUpcoming(S, kid, bagKey(), todayKey());
+    UI.toast('살 것을 비웠어요', true);
   }
   function openCal() {
     V.cal = bagKey().slice(0, 7);
@@ -1545,6 +1582,7 @@
     'first-bag-ok': function () { seeFirstBag(); renderAll(); },
     'first-bag-week': function () { seeFirstBag(); renderAll(); go('week'); },
     'check': toggleCheck,
+    'hold-tip-ok': function () { seeHoldTip(); UI.hideBubble(); autoNextPage(); },
     'out-check': toggleOut,
     'check-all': checkAll,
     'bag-done': bagDone,
@@ -1570,6 +1608,9 @@
     'share': share,
     'done-copy': doneCopy,
     'upcoming': openUpcoming,
+    'buy-toggle': function (b) { buyToggle(b.getAttribute('data-name')); },
+    'buy-copy': buyCopy,
+    'buy-clear': buyClear,
     'cal-open': openCal,
     // 가방 달력 빈 상태 버튼: 달력을 닫고 그 일을 연다 (달력 시트가 다른 시트 위에 있어서)
     'cal-kid': function () { UI.closeSheet('sheet-cal'); openKid(null); },

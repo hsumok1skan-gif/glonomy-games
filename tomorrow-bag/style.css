@@ -419,6 +419,12 @@ body.reduce .stk.big { animation: none; }
   background: color-mix(in srgb, var(--c) 15%, var(--surface));
 }
 .week .cell.after.full { border-left: 1px solid var(--accent); background: var(--soft); }
+/* 가방 챙길 날 요일 열: 머리 칸·교시·방과후를 같은 테로 묶고 머리 칸에 '가방' 표 (ui.js renderWeek) */
+.week .bagday { box-shadow: inset 0 0 0 2px var(--accent); }
+.week .hd.bagday { flex-direction: column; gap: 1px; line-height: 1.1; padding: 2px 0; }
+.week .hd.today.bagday { box-shadow: inset 0 0 0 2px var(--accent-deep); }
+.week .bd-tag { padding: 0 5px; border-radius: 999px; font-size: var(--t-1); font-weight: 800; line-height: 1.4; color: var(--on-accent); background: var(--accent); }
+.week .hd.today .bd-tag { color: var(--accent-deep); background: var(--on-accent); }
 .cell.flash { animation: flash 0.6s ease-out; }
 /* 끝 칸은 비워 칸마다 제 바탕(과목 색)으로 돌아가게 한다 */
 @keyframes flash { 0% { background: var(--soft); } }
@@ -515,6 +521,12 @@ body.reduce .stk.big { animation: none; }
 .pill.soon { background: var(--soft); color: var(--accent-deep); }
 .up-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .up-row:last-child { border-bottom: 0; }
+.up-row { flex-wrap: wrap; }
+.up-row .up-buy { flex: 1 1 100%; min-width: 0; }
+.up-buy .chip { min-height: 44px; padding: 6px 12px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.up-buy-tip { margin: 8px 0 0; color: var(--muted); }
+.up-buy-row { display: flex; gap: 8px; margin-top: 12px; }
+.up-buy-row #up-buy-copy { flex: 1; }
 .up-row .tx { flex: 1; min-width: 0; }
 .up-row .tiny { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
