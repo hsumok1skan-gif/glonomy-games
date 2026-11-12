@@ -329,6 +329,9 @@ body.reduce .mouth, body.reduce .bag-lid { animation: none !important; }
 .kid-btn[aria-pressed="true"] { background: var(--gold); color: var(--on-accent); border-color: var(--gold); }
 .bag-sheet.kid .adult-only { display: none; }
 .bs-foot { flex: none; }
+.bs-carry { display: inline-flex; min-width: 0; }
+.bs-carry:empty { display: none; }
+.bs-carry .carry-btn { white-space: nowrap; }
 
 /* 길게 누르면 나오는 말풍선: 왜 필요한지 + 내일은 빼기 */
 .bubble { position: absolute; left: 12px; right: 12px; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 10px 12px; border-radius: 14px; background: var(--ink); color: var(--bg); box-shadow: 0 6px 20px var(--shadow-lift); animation: scrIn var(--dur) ease-out; }
@@ -578,8 +581,14 @@ body.reduce .stk.big { animation: none; }
 }
 .dim.center .sheet { border-radius: 22px; transform: scale(0.94); max-width: 420px; padding-bottom: 16px; }
 .dim.on .sheet { transform: none; }
-.sheet .grab { flex: none; width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 4px auto 8px; }
+.sheet .grab { flex: none; width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 4px auto 8px; position: relative; cursor: grab; }
+/* 손잡이는 5px 라 손가락이 잡기 쉽게 누르는 곳만 넓힌다 */
+.sheet .grab::before { content: ''; position: absolute; inset: -12px -48px; }
 .sheet-head { flex: none; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+/* 시트를 아래로 끌어 닫기: 잡는 곳은 브라우저 스크롤 대신 끌기로 받는다 */
+.sheet .grab, .sheet .sheet-head, .sheet .bag-top { touch-action: none; }
+.sheet.dragging { transition: none; }
+.sheet.dragging .grab { cursor: grabbing; }
 .sheet-head h2 { margin: 0; flex: 1; min-width: 0; }
 /* 시트의 저장 버튼: 지우기 옆 남은 폭을 다 채운 주 동작 버튼 (엄지가 닿기 쉽게) */
 .sheet .row .btn.main[type=submit] { flex: 1; }
@@ -608,6 +617,12 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--sub); borde
 .tpl-row { display: flex; align-items: center; gap: 10px; min-height: 48px; margin-top: 10px; font-size: var(--t-3); font-weight: 700; cursor: pointer; }
 .tpl-row input { width: 24px; height: 24px; flex: none; margin: 0; accent-color: var(--accent); }
 .tpl-row .tiny { display: block; font-weight: 400; }
+/* 아이 넣기 1단계: 학년 기본 시간표 미리 보기 (ui.js renderTplPreview). 7교시여도 160px 안 */
+.tpl-preview { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: 16px; gap: 2px; max-height: 160px; overflow: hidden; margin-top: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); font-size: var(--t-1); line-height: 1; }
+.tpl-preview .tp-hd, .tpl-preview .tp-c { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden; white-space: nowrap; border-radius: 4px; }
+.tpl-preview .tp-hd { font-weight: 800; color: var(--muted); }
+.tpl-preview .tp-c { color: var(--muted); background: var(--surface); }
+.tpl-preview .tp-c.full { --c: var(--sub); color: var(--ink); font-weight: 700; border-left: 3px solid var(--c); background: var(--subsoft); background: color-mix(in srgb, var(--c) 15%, var(--surface)); }
 /* 아이 넣기 시트의 방과후 고르기: 칩 세 줄이 옆으로만 밀려 시트 높이가 한 화면 안에 머문다 */
 /* 이날만 바꾸기 시트: 교시 두 줄 격자, 방과후는 한 줄에 이름 · 사람 · 쉼. 넘치면 목록 안에서만 민다 */
 .edit-list { flex: 1; min-height: 0; overflow-y: auto; }

@@ -66,6 +66,7 @@
       <div id="bs-pages" class="fill"></div>
       <div class="row bs-foot adult-only">
         <button class="btn small" type="button" data-act="check-all">모두 ✓</button>
+        <span id="bs-carry" class="bs-carry"></span>
         <span class="spacer"></span>
         <button class="btn small" type="button" data-act="bag-done">오늘은 여기까지</button>
       </div>
@@ -128,6 +129,7 @@
       <label class="f" for="kid-grade">학년</label>
       <select id="kid-grade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option><option value="4">4학년</option><option value="5">5학년</option><option value="6">6학년</option></select>
       <label class="tpl-row" id="kid-template-row" for="kid-template"><input id="kid-template" type="checkbox" checked><span>학년 기본 시간표로 채우기</span></label>
+      <div id="kid-tpl-preview" class="tpl-preview" role="img" aria-hidden="true" style="display:none"></div>
     </div>
     <div id="kid-step-2">
       <!-- 새 아이일 때만: 방과후와 요일·데리러 갈 사람을 골라 두면 저장할 때 그 요일 방과후로 넣는다 (여러 곳이면 하나씩 더한다) -->

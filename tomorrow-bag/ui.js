@@ -570,7 +570,19 @@ var UI = (function () {
     if (ca) ca.disabled = !bag.items.length || pr.done >= pr.total;
     var bd = sheet.querySelector('[data-act="bag-done"]');
     if (bd) bd.disabled = !bag.items.length;
+    renderCarry(S, kid, bag, done);
     hideBubble();
+  }
+  // '어제 넣은 것 그대로 n개': 앞 학교 가는 날 챙겼고 오늘도 있는 물건(아침 물건 빼고) 가운데 아직 안 챙긴 것. 0개면 버튼을 그리지 않는다
+  function carryLeft(S, kid, bag, done) {
+    done = done || S.checks[Logic.checkKey(kid.id, bag.date)] || [];
+    return Logic.carryOver(S, kid, bag.date).filter(function (x) { return done.indexOf(x) < 0; });
+  }
+  function renderCarry(S, kid, bag, done) {
+    var box = $('bs-carry');
+    if (!box) return;
+    var n = carryLeft(S, kid, bag, done).length;
+    box.innerHTML = n ? '<button class="btn small carry-btn" type="button" data-act="carry-check" aria-label="어제 가방에 넣은 물건 ' + n + '개를 그대로 챙김으로 표시">어제 넣은 것 그대로 ' + n + '개</button>' : '';
   }
   function cellByName(name) {
     var all = document.querySelectorAll('#sheet-bag .check');
@@ -663,6 +675,7 @@ var UI = (function () {
     sheet.classList.toggle('closed', pr.total > 0 && pr.done >= pr.total);
     var ca = sheet.querySelector('[data-act="check-all"]');
     if (ca) ca.disabled = pr.done >= pr.total;
+    renderCarry(S, kid, bag, done);
     return true;
   }
 
@@ -873,6 +886,29 @@ var UI = (function () {
   var CELL_COLORS = ['--accent', '--accent-deep', '--sub', '--ok', '--gold', '--violet', '--danger', '--muted'];
   function cellColor(pk) {
     return CELL_COLORS.indexOf(pk && pk.c) >= 0 ? pk.c : '--sub';
+  }
+
+  // 아이 넣기 1단계: '학년 기본 시간표로 채우기' 가 켜져 있으면 채워질 표를 작게 미리 보여 준다
+  // (월~금 머리 줄 + 교시 줄, 칸마다 과목 앞 2글자, 빈 칸은 '·'). 꺼졌거나 고치기 모드면 비우고 숨긴다
+  function renderTplPreview(S, grade, on) {
+    var box = $('kid-tpl-preview');
+    if (!box) return;
+    var np = S.settings.gradeP[grade] || 6;   // store.js fill 이 1~6학년 모두 4~7 로 채운다
+    var tw = on ? Logic.gradeWeek(DATA.TIMETABLES, S.packs, grade, S.settings.gradeP[grade]) : null;
+    if (!tw) { box.innerHTML = ''; box.style.display = 'none'; box.setAttribute('aria-hidden', 'true'); return; }
+    var h = '', label = grade + '학년 기본 시간표 미리 보기, ' + np + '교시';
+    for (var d = 1; d <= 5; d++) h += '<div class="tp-hd">' + DATA.DOW[d] + '</div>';
+    for (var i = 0; i < np; i++) {
+      for (var e = 1; e <= 5; e++) {
+        var pk = tw[e][i] ? Logic.findPack(S.packs, tw[e][i]) : null;
+        h += pk ? '<div class="tp-c full" style="--c:var(' + cellColor(pk) + ')">' + esc(Array.from(pk.name).slice(0, 2).join('')) + '</div>'
+          : '<div class="tp-c">·</div>';
+      }
+    }
+    box.innerHTML = h;
+    box.style.display = '';
+    box.setAttribute('aria-hidden', 'false');
+    box.setAttribute('aria-label', label);
   }
 
   function renderWeek(S, V, kid, todayKey) {
@@ -1400,7 +1436,7 @@ var UI = (function () {
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
     fly: fly, stamp: stamp, showBubble: showBubble, showHoldTip: showHoldTip, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
-    renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter,
+    renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter, renderTplPreview: renderTplPreview,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
     renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderFamily: renderFamily, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest

@@ -95,15 +95,23 @@
   }
 
   function openSheet(id) { UI.openSheet(id); }
+  // 닫아도 되는 창인지 (처음 안내, 아이가 챙겨요 중인 가방 시트는 닫히지 않는다)
+  function canClose(el) {
+    if (!el || el.id === 'ov-welcome') return false;
+    if (el.id === 'sheet-bag' && V.kidMode) return false;   // 아이가 챙겨요: 어른이 끄기 전에는 닫히지 않는다
+    return true;
+  }
+  function closeEl(el) {
+    UI.closeSheet(el.id);
+    if (el.id === 'ov-confirm') confirmFn = null;
+    if (el.id === 'sheet-bag') UI.hideBubble();
+  }
   function closeTop() {
     var on = UI.openSheets();
     if (!on.length) return false;
     var el = on[on.length - 1];
-    if (el.id === 'ov-welcome') return false;
-    if (el.id === 'sheet-bag' && V.kidMode) return false;   // 아이가 챙겨요: 어른이 끄기 전에는 닫히지 않는다
-    UI.closeSheet(el.id);
-    if (el.id === 'ov-confirm') confirmFn = null;
-    if (el.id === 'sheet-bag') UI.hideBubble();
+    if (!canClose(el)) return false;
+    closeEl(el);
     return true;
   }
 
@@ -168,6 +176,7 @@
     $('kid-del').style.display = k ? '' : 'none';
     $('kid-template').checked = !k;
     $('kid-template-row').style.display = k ? 'none' : '';   // 고치기 모드에서는 이미 채운 칸을 건드리지 않는다
+    UI.renderTplPreview(S, k ? k.grade : 1, !k);              // 새 아이면 채워질 표를 미리 보여 준다
     // 방과후 고르기도 새 아이일 때만 (고치기는 시간표 탭의 방과후 칸에서)
     V.kidAfter = k ? null : { pack: null, days: [], who: '', list: [] };
     $('kid-after-time').value = '15:00';
@@ -453,6 +462,30 @@
     renderAll();
     SFX.in();
     completeBag(kid, k);
+  }
+  // '어제 넣은 것 그대로': 앞 학교 가는 날 챙겼고 오늘 가방에도 있는 물건(아침 물건 빼고)을 한 번에 챙김으로
+  function carryCheck() {
+    var kid = curKid();
+    if (!kid || V.kidMode) return;
+    var k = bagKey();
+    var ck = Logic.checkKey(kid.id, k);
+    var done = S.checks[ck] || [];
+    var add = Logic.carryOver(S, kid, k).filter(function (x) { return done.indexOf(x) < 0; });
+    if (!add.length) return;
+    rememberUndo();
+    S.checks[ck] = done.concat(add);
+    if (!S.settings.coachSeen) S.settings.coachSeen = true;
+    refreshHistory(kid, k);
+    save();
+    var bag = Logic.buildBag(S, kid, k);
+    UI.renderBagSheet(S, V, kid, bag);
+    renderAll();
+    SFX.in();
+    haptic(12);
+    var pr = Logic.progress(S, kid, bag);
+    UI.toast('어제 넣은 것 ' + add.length + '개를 그대로 챙겼어요', true);
+    // 다 챙기게 되면 '모두 ✓' 와 같이 다 챙김으로 (되돌리기는 칭찬 창 뒤에도 알림에 남는다)
+    if ((pr.total && pr.done === pr.total) || Logic.nightDone(S, kid, bag)) completeBag(kid, k);
   }
   // 아직 남은 물건이 있을 때 저장: '오늘은 여기까지 챙겼어요'
   function bagDone() {
@@ -1585,6 +1618,7 @@
     'hold-tip-ok': function () { seeHoldTip(); UI.hideBubble(); autoNextPage(); },
     'out-check': toggleOut,
     'check-all': checkAll,
+    'carry-check': carryCheck,
     'bag-done': bagDone,
     'skip-item': function (b) { skipItem(b.getAttribute('data-name')); },
     'morning-toggle': function (b) { morningToggle(b.getAttribute('data-name')); },
@@ -1752,7 +1786,7 @@
     'pack-add': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
     'edit-off': 'edit', 'edit-reset': 'edit', 'form-edit': 'edit',
     'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid',
-    'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'stay-toggle': 'kid',
+    'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'carry-check': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'stay-toggle': 'kid',
     'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach', 'family-share': 'family', 'family-copy': 'family',
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
     'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter',
@@ -1768,9 +1802,60 @@
 
   // ---- 길게 누르기(칸의 이유·내일은 빼기, 아이가 챙겨요 끄기)와 옆으로 밀기(쪽·날짜) ----
   var press = null, swipe = null, eatClick = false;
+  // ---- 시트를 아래로 끌어 닫기: 손잡이(.grab)·머리(.sheet-head, 버튼 밖)·가방 입구(.bag-top)를 잡고 끈다 ----
+  var sdrag = null;
+  var SHEET_CLOSE = 80, SHEET_UP_PULL = 0.3;   // 80px 넘게 끌어내리면 닫힘, 위로 끌면 손가락의 0.3 만큼만 따라옴
+  function sheetDragStart(e) {
+    if (sdrag && sdrag.moved) return true;   // 끄는 중에 닿은 다른 손가락은 무시
+    sdrag = null;   // 움직이지 않고 창 밖에서 놓아 남은 상태는 버린다
+    var t = e.target;
+    if (!t.closest('.sheet .grab, .sheet .sheet-head, .sheet .bag-top')) return false;
+    if (t.closest('button, a, input, select, textarea, label, [data-act]')) return false;
+    var sheet = t.closest('.sheet'), dim = sheet && sheet.closest('.dim.on');
+    if (!dim || !canClose(dim) || dim.id === 'ov-confirm') return false;   // 확인 창은 끌어서 지나치지 않게 버튼으로만
+    var on = UI.openSheets();
+    if (on[on.length - 1] !== dim) return false;   // 맨 위 창만
+    sdrag = { sheet: sheet, dim: dim, x: e.clientX, y: e.clientY, pid: e.pointerId, moved: false };
+    return true;
+  }
+  function sheetDragMove(e) {
+    var d = sdrag;
+    if (!d || e.pointerId !== d.pid) return false;
+    var dx = e.clientX - d.x, dy = e.clientY - d.y;
+    if (!d.moved) {
+      if (Math.abs(dx) >= 6 && Math.abs(dx) >= Math.abs(dy)) { sdrag = null; return true; }   // 가로가 더 크면 세로 끌기를 시작하지 않는다
+      if (Math.abs(dy) < 6) return true;
+      d.moved = true;
+      d.sheet.classList.add('dragging');
+      try { d.sheet.setPointerCapture(e.pointerId); } catch (err) { /* 못 잡아도 창 안에서는 그대로 돈다 */ }
+      UI.hideBubble();
+    }
+    var y = dy > 0 ? dy : dy * SHEET_UP_PULL;
+    d.sheet.style.transform = 'translateY(' + Math.round(y) + 'px)';
+    return true;
+  }
+  function sheetDragEnd(e, cancel) {
+    var d = sdrag;
+    if (!d || e.pointerId !== d.pid) return false;
+    sdrag = null;
+    if (!d.moved) return true;
+    eatClick = true;   // 끈 뒤 따라오는 누름은 버린다
+    var dy = e.clientY - d.y;
+    d.sheet.classList.remove('dragging');
+    if (!cancel && dy >= SHEET_CLOSE && canClose(d.dim)) {
+      // 손가락이 놓은 자리에서 아래로 마저 내려가며 닫힌다
+      d.sheet.style.transform = 'translateY(100%)';
+      closeEl(d.dim);
+      setTimeout(function () { d.sheet.style.transform = ''; }, 320);   // 다 닫힌 뒤 손 위치를 지워 다음에 열 때 제자리에서 시작
+    } else {
+      d.sheet.style.transform = '';   // 제자리로 돌아온다 (CSS 전환)
+    }
+    return true;
+  }
   function onDown(e) {
     eatClick = false;
     if (!e.target.closest) return;
+    if (sheetDragStart(e)) { swipe = null; return; }
     var cell = e.target.closest('#sheet-bag .check:not(.out-cell)');   // '꺼낼 것' 칸은 길게 눌러도 그냥 누름
     var kidBtn = e.target.closest('#kid-mode');
     if (cell || (kidBtn && V.kidMode)) {
@@ -1789,7 +1874,8 @@
   }
   var EDGE_PULL = 0.35, DAY_PULL = 0.5;   // 첫 쪽·끝 쪽 바깥으로 밀 때, 날짜 카드를 밀 때 손가락을 따라오는 비율
   function onMove(e) {
-    if (press && (Math.abs(e.clientX - press.x) > 10 || Math.abs(e.clientY - press.y) > 10)) { clearTimeout(press.timer); press = null; }
+    if (sheetDragMove(e)) return;
+    if (press &&(Math.abs(e.clientX - press.x) > 10 || Math.abs(e.clientY - press.y) > 10)) { clearTimeout(press.timer); press = null; }
     var s = swipe;
     if (!s || e.pointerId !== s.pid) return;
     var dx = e.clientX - s.x, dy = e.clientY - s.y;
@@ -1821,6 +1907,7 @@
     UI.hideBubble();
   }
   function onUp(e) {
+    if (sheetDragEnd(e, false)) return;
     if (press) { clearTimeout(press.timer); press = null; }
     var s = swipe;
     if (!s || e.pointerId !== s.pid) return;
@@ -1832,6 +1919,7 @@
     settle(s, far ? (dx < 0 ? 1 : -1) : 0);
   }
   function onCancel(e) {
+    if (sheetDragEnd(e, true)) return;
     if (press) { clearTimeout(press.timer); press = null; }
     var s = swipe;
     if (!s || e.pointerId !== s.pid) return;
@@ -1904,6 +1992,7 @@
 
   function onChange(e) {
     var t = e.target;
+    if (t.id === 'kid-grade' || t.id === 'kid-template') UI.renderTplPreview(S, +$('kid-grade').value, !V.kidEdit && $('kid-template').checked);
     if (t.id === 'note-sort' && V.note) { V.noteSort = t.value; V.pg.sup = 0; UI.renderSupplies(S, V, V.note.items); }
     if (t.getAttribute && t.getAttribute('data-set') === 'switchHour') {
       S.settings.switchHour = +t.value;

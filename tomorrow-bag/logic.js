@@ -239,6 +239,18 @@ var Logic = (function () {
     return { add: only(cur, keys(prev)), out: only(prev, keys(cur)) };
   }
 
+  // 어제 넣은 물건 그대로: 앞 학교 가는 날 챙긴 물건(S.checks) 가운데 오늘 가방에도 있는 것 (norm·소문자 비교).
+  // 아침에 넣을 물건(물병·도시락)은 밤사이 꺼내므로 뺀다. 오늘 가방의 이름으로 돌려준다
+  function carryOver(state, kid, k) {
+    if (!kid) return [];
+    var prevK = prevSchoolDay(k, (state.settings && state.settings.holidays) || []);
+    var had = {};
+    ((state.checks || {})[checkKey(kid.id, prevK)] || []).forEach(function (x) { had[norm(x).toLowerCase()] = true; });
+    return buildBag(state, kid, k).items.filter(function (it) {
+      return had[norm(it.name).toLowerCase()] && !isMorning(state, it.name);
+    }).map(function (it) { return it.name; });
+  }
+
   function progress(state, kid, bag) {
     var done = state.checks[checkKey(kid.id, bag.date)] || [];
     var n = 0;
@@ -848,6 +860,15 @@ var Logic = (function () {
       daily: ['필통'], rules: [], notes: [], checks: {}, settings: { holidays: [] } };
     var dd = bagDiff(ds, { id: 'k', week: { 1: { p: ['A'], after: [] }, 2: { p: ['B'], after: [] } } }, '2026-10-27');
     eq('어제와 달라진 것', dd.add.join(',') + '|' + dd.out.join(','), '국어 교과서|체육복,물병');
+    // 4-4) 어제 넣은 것 그대로: 월요일에 Pen·필통·물병·체육복을 챙겼고 화요일 가방은 국어 교과서·pen·필통·물병.
+    //      대소문자만 다른 pen 과 필통은 이어받고, 체육복은 오늘 가방에 없어 빠지고, 물병은 아침 물건이라 빠진다
+    var cs = { packs: ds.packs, daily: ['필통', '물병'], rules: [], notes: [], settings: { holidays: [] },
+      checks: { 'k|2026-10-26': ['Pen', '필통', '물병', '체육복'] } };
+    var ck = { id: 'k', week: { 1: { p: ['A'], after: [] }, 2: { p: ['B'], after: [] } } };
+    eq('어제 넣은 것 그대로 수', carryOver(cs, ck, '2026-10-27').length, 3);
+    cs.morning = [' 물병 '];
+    eq('어제 넣은 것 (아침 물건 뺌)', carryOver(cs, ck, '2026-10-27').join(','), 'pen,필통');
+    eq('어제 챙긴 것 없으면 0개', carryOver({ packs: ds.packs, daily: ['필통'], rules: [], notes: [], checks: {}, settings: { holidays: [] } }, ck, '2026-10-27').length, 0);
     // 5) 가방 달력: 10/21 다 챙김, 10/22 덜 챙김, 10/23 다 챙김, 11/2 다 챙김 → 10월 스티커 2장
     var hs = [
       { kid: 'k', date: '2026-10-21', total: 10, done: 10, missed: [] },
@@ -1059,7 +1080,7 @@ var Logic = (function () {
     toKey: toKey, fromKey: fromKey, addDays: addDays, dow: dow, validKey: validKey,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, bagDiff: bagDiff, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, bagDiff: bagDiff, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
