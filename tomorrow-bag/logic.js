@@ -224,6 +224,37 @@ var Logic = (function () {
 
   function checkKey(kidId, k) { return kidId + '|' + k; }
 
+  // 이번 주 누가 데리러 가나: fromKey 부터(학교 가는 날이 아니면 다음 학교 가는 날부터) 학교 가는 날 5일 동안
+  // 모든 아이의 buildBag(...).pickups 가운데 쉬지 않는 것을 사람별로 모은다 → { 사람이름: [{date, time, kid, name}] }
+  // who 가 '' 이면 '정하지 않음' 키. buildBag 이 dayEdits 를 보므로 이날만 바꾼 사람도 그대로 반영된다
+  var NO_WHO = '정하지 않음';
+  function pickupWeek(state, fromKey) {
+    var hs = (state.settings && state.settings.holidays) || [];
+    var k = isSchoolDay(fromKey, hs) ? fromKey : nextSchoolDay(fromKey, hs);
+    var out = {};
+    for (var i = 0; i < 5; i++) {
+      (state.kids || []).forEach(function (kid) {
+        buildBag(state, kid, k).pickups.forEach(function (p) {
+          if (p.off) return;
+          var who = p.who || NO_WHO;
+          (out[who] = out[who] || []).push({ date: k, time: p.time, kid: kid.name, name: p.name });
+        });
+      });
+      k = nextSchoolDay(k, hs);
+    }
+    Object.keys(out).forEach(function (w) {
+      out[w].sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : (a.time || '').localeCompare(b.time || ''); });
+    });
+    return out;
+  }
+  // 칩 한 칸 글: '11/16(월) 14:30 하윤 태권도'
+  function pickupLine(p) { return shortLabel(p.date) + ' ' + (p.time ? p.time + ' ' : '') + p.kid + ' ' + p.name; }
+  // 복사할 글: '아빠 이번 주 데리러 갈 날: 11/16(월) 14:30 하윤 태권도, …' (없으면 '아빠 이번 주 데리러 갈 날: 없음')
+  function pickupWeekText(who, list) {
+    var head = (who === NO_WHO ? '데리러 갈 사람을 정하지 않은 날' : who + ' 이번 주 데리러 갈 날') + ': ';
+    return head + ((list && list.length) ? list.map(pickupLine).join(', ') : '없음');
+  }
+
   // 앞 학교 가는 날 가방과 달라진 것: { add: 오늘에만 있는 이름, out: 어제에만 있는 이름 } (norm·소문자로 비교, 매일 물건은 양쪽에 있어 빠진다)
   function bagDiff(state, kid, k) {
     var cur = buildBag(state, kid, k).items;
@@ -1064,6 +1095,23 @@ var Logic = (function () {
     eq('연속 다 챙김 (오늘 아직이면 앞 학교 날부터)', streak(skh, 'k', '2026-11-11', []), 3);
     eq('연속 다 챙김 (쉬는 날 건너뜀)', streak(skh.concat([{ kid: 'k', date: '2026-11-12', total: 2, done: 2 }]), 'k', '2026-11-12', ['2026-11-11']), 4);
     eq('연속 다 챙김 (덜 챙긴 날에서 끊김)', streak(skh, 'k', '2026-11-06', []), 1);
+    // 9-10) 이번 주 데리러 가기: 일요일(11/08)이면 월~금(11/09~13). 화요일은 이날만 엄마로 바꿈, 목요일은 사람 없음, 금요일은 쉼
+    //        둘째 아이(하윤)는 월·수 아빠
+    var pws = { kids: [{ id: 'k', name: '서아', week: {} }, { id: 'h', name: '하윤', week: {} }],
+      packs: [{ id: 'pX', kind: 'acad', name: '수영', icon: '🏊', items: ['수경'] }, { id: 'pT', kind: 'acad', name: '태권도', icon: '🥋', items: ['도복'] }],
+      settings: { holidays: [] }, dayEdits: { 'k|2026-11-10': { after: { a1: { who: '엄마' } } }, 'k|2026-11-13': { after: { a3: { off: true } } } } };
+    for (var pwd = 1; pwd <= 5; pwd++) { pws.kids[0].week[pwd] = { p: [], after: [] }; pws.kids[1].week[pwd] = { p: [], after: [] }; }
+    pws.kids[0].week[2].after = [{ id: 'a1', packId: 'pX', time: '15:00', who: '아빠' }];
+    pws.kids[0].week[4].after = [{ id: 'a2', packId: 'pX', time: '16:00', who: '' }];
+    pws.kids[0].week[5].after = [{ id: 'a3', packId: 'pX', time: '14:00', who: '아빠' }];
+    pws.kids[1].week[1].after = [{ id: 'b1', packId: 'pT', time: '14:30', who: '아빠' }];
+    pws.kids[1].week[3].after = [{ id: 'b2', packId: 'pT', time: '14:30', who: '아빠' }];
+    var pw = pickupWeek(pws, '2026-11-08');
+    eq('이번 주 데리러 가기 사람', Object.keys(pw).sort().join(','), '아빠,엄마,정하지 않음');
+    eq('이번 주 데리러 가기 사람별 수', pw['아빠'].length + '|' + pw['엄마'].length + '|' + pw['정하지 않음'].length, '2|1|1');
+    eq('이번 주 데리러 가기 바꾼 사람', pw['엄마'][0].date + '|' + pw['엄마'][0].time + '|' + pw['엄마'][0].kid + '|' + pw['엄마'][0].name, '2026-11-10|15:00|서아|수영');
+    eq('이번 주 데리러 가기 아빠 날짜순', pw['아빠'].map(function (p) { return p.date; }).join(','), '2026-11-09,2026-11-11');
+    eq('이번 주 데리러 가기 글', pickupWeekText('아빠', pw['아빠']), '아빠 이번 주 데리러 갈 날: 11/9(월) 14:30 하윤 태권도, 11/11(수) 14:30 하윤 태권도');
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -1080,7 +1128,7 @@ var Logic = (function () {
     toKey: toKey, fromKey: fromKey, addDays: addDays, dow: dow, validKey: validKey,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, bagDiff: bagDiff, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME

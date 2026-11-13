@@ -186,6 +186,8 @@
     if (k) $('kid-after').style.display = 'none';
     else UI.renderKidAfter(S, V.kidAfter);
     UI.clearErr('kid-name', 'kid-err');
+    // 새 아이는 이름을 넣기 전까지 '다음' 을 흐리게 막아 둔다 (빈 칸 오류를 먼저 띄우지 않는다)
+    $('kid-next').disabled = !k;
     showKidStep(1);
     openSheet('sheet-kid');
     if (!k) $('kid-name').focus();
@@ -225,7 +227,10 @@
   }
   // 1단계의 엔터(폼 제출)는 다음 걸음으로, 그 밖에는 저장으로
   function kidSubmit() {
-    if (!V.kidEdit && V.kidStep === 1) kidNext();
+    if (!V.kidEdit && V.kidStep === 1) {
+      if (!Logic.norm($('kid-name').value)) return;   // 빈 이름의 엔터는 오류 없이 넘긴다 ('다음' 이 막혀 있다)
+      kidNext();
+    }
     else submitKid();
   }
   // 고르는 중인 방과후 검사: 요일 하나 이상, 시각은 8시~22시, 넣어 둔 것과 시각이 겹치지 않고 한 요일 6개까지 (submitAfter 와 같은 규칙)
@@ -1726,6 +1731,11 @@
         rememberUndo(); S.settings.guardians.splice(i, 1); save(); renderAll(); UI.toast('뺐어요', true);
       });
     },
+    'guard-week-copy': function (b) {
+      var w = b.getAttribute('data-who') || '';
+      var wk = Logic.pickupWeek(S, Logic.bagDate(now(), S.settings));
+      copyText(Logic.pickupWeekText(w, wk[w] || []), w === Logic.NO_WHO ? '정하지 않은 날을 복사했어요' : w + ' 이번 주 데리러 갈 날을 복사했어요');
+    },
     'days-open': function () { UI.renderDays(S, todayKey()); UI.clearErr('holiday-add', 'holiday-err'); openSheet('sheet-days'); },
     'holiday-del': function (b) {
       var d = b.getAttribute('data-date');
@@ -2007,7 +2017,11 @@
   // 찾는 말: 칠 때마다 준비물 격자만 다시 그린다 (입력란 포커스가 그대로)
   function onInput(e) {
     var t = e.target;
-    if (t.id === 'note-q' && V.note) { V.noteQ = t.value; V.pg.sup = 0; UI.renderSupplies(S, V, V.note.items); }
+    if (t.id === 'kid-name') {   // 이름을 넣으면 '다음' 이 열리고, 남아 있던 오류는 치운다
+      $('kid-next').disabled = !Logic.norm(t.value);
+      UI.clearErr('kid-name', 'kid-err');
+    }
+    else if (t.id === 'note-q' && V.note) { V.noteQ = t.value; V.pg.sup = 0; UI.renderSupplies(S, V, V.note.items); }
     else if ((t.id === 'teach-class' || t.id === 'teach-memo' || t.id === 'teach-date') && V.teach) { V.teach.out = null; UI.renderTeachOut(null); } // 내용이 바뀌면 옛 링크를 치운다
   }
 

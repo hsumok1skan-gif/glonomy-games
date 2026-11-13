@@ -1134,7 +1134,7 @@ var UI = (function () {
   function renderNoteItems(items) {
     var h = '';
     items.forEach(function (x, i) {
-      h += '<button class="chip pick" type="button" data-act="note-item-del" data-i="' + i + '" aria-label="' + esc(x) + ' 빼기">' + esc(x) + ' ✕</button>';
+      h += '<button class="chip pick" type="button" data-act="note-item-del" data-i="' + i + '" aria-label="' + esc(x) + ' 빼기"><span class="sup-ic" aria-hidden="true">' + pic(x) + '</span><span class="sup-nm">' + esc(x) + '</span> ✕</button>';
     });
     $('note-items').innerHTML = h;
   }
@@ -1149,7 +1149,7 @@ var UI = (function () {
     for (var s = 0; s < list.length; s += 9) {
       pages.push({ html: '<div class="grid c3">' + list.slice(s, s + 9).map(function (x) {
         var on = picked.indexOf(x) >= 0;
-        return '<button class="chip' + (on ? ' pick' : '') + '" type="button" data-act="note-supply" data-name="' + esc(x) + '" aria-pressed="' + on + '">' + esc(x) + '</button>';
+        return '<button class="chip' + (on ? ' pick' : '') + '" type="button" data-act="note-supply" data-name="' + esc(x) + '" aria-pressed="' + on + '"><span class="sup-ic" aria-hidden="true">' + pic(x) + '</span><span class="sup-nm">' + esc(x) + '</span></button>';
       }).join('') + '</div>' });
     }
     $('note-supplies').innerHTML = pages.length ? pagerHTML('sup', pages, V.pg.sup || 0) :
@@ -1240,6 +1240,30 @@ var UI = (function () {
     });
     if (!S.settings.guardians.length) h = miniEmpty('🙋', '데리러 갈 사람이 없어요',{ act: 'focus', label: '사람 넣기', extra: ' data-target="guard-add"' });
     $('guard-chips').innerHTML = h;
+    renderGuardWeek(S);
+  }
+  // 이번 주(지금 챙길 가방 날부터 학교 가는 날 5일) 누가 데리러 가나: 사람마다 한 줄(이름 + 맡은 날 칩, 옆으로 밀기)과 복사 버튼.
+  // 줄 순서: 설정의 사람 → 가족 링크 등으로 온 다른 이름 → 정하지 않음. 맡은 날이 없으면 '이번 주 없음' 한 칸
+  function renderGuardWeek(S) {
+    var box = $('guard-week');
+    if (!box) return;
+    var wk = Logic.pickupWeek(S, Logic.bagDate(new Date(), S.settings));
+    var names = S.settings.guardians.slice();
+    Object.keys(wk).forEach(function (w) { if (w !== Logic.NO_WHO && names.indexOf(w) < 0) names.push(w); });
+    if (wk[Logic.NO_WHO]) names.push(Logic.NO_WHO);
+    if (!names.length) { box.innerHTML = ''; return; }
+    var h = '<h3>이번 주 데리러 가기</h3>';
+    names.forEach(function (w) {
+      var list = wk[w] || [], none = w === Logic.NO_WHO;
+      h += '<div class="gw-row' + (none ? ' none' : '') + '"><div class="gw-head"><span class="gw-name">' + esc(w) + '</span>' +
+        '<span class="tiny">' + (list.length ? list.length + '번' : '') + '</span>' +
+        '<button class="btn small" type="button" data-act="guard-week-copy" data-who="' + esc(w) + '" aria-label="' + esc(w) + ' 이번 주 데리러 갈 날 복사">복사</button></div>' +
+        '<div class="chips one-line gw-chips">';
+      if (!list.length) h += '<span class="chip gw-chip gw-empty">이번 주 없음</span>';
+      list.forEach(function (p) { h += '<span class="chip gw-chip">' + esc(Logic.pickupLine(p)) + '</span>'; });
+      h += '</div></div>';
+    });
+    box.innerHTML = h;
   }
   function renderDays(S, todayKey) {
     var st = S.settings, sel = $('set-hour'), o = '';

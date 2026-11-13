@@ -460,6 +460,13 @@ body.reduce .stk.big { animation: none; }
 .item-area .check .x { position: absolute; top: 2px; right: 6px; font-size: var(--t-1); color: var(--muted); }
 .sup-area { height: min(30dvh, 200px); flex: none; }
 .sup-area .chip { min-width: 0; width: 100%; padding: 6px 8px; border-radius: 12px; overflow: hidden; text-overflow: ellipsis; }
+/* 준비물 칩 물건 그림(R-46): 그림과 이름을 한 줄에, 이름은 넘치면 … */
+.sup-area .chip, #note-items .chip { display: inline-flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 5px; font-size: var(--t-2); font-weight: 600; }
+#note-items .chip { flex: none; width: auto; padding: 6px 12px; border-radius: 999px; }
+.sup-ic { flex: none; display: inline-flex; width: var(--t-3); height: var(--t-3); color: currentColor; line-height: 1; }
+.sup-ic .pic { width: 100%; height: 100%; color: currentColor; }
+.chip.pick .sup-ic { color: var(--sub); }
+.sup-nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ---- 설정: 한 줄에 하나씩 (왼쪽 이름 · 오른쪽 값 ›) ---- */
 .set-h { flex: none; font-size: var(--t-4); }
@@ -666,6 +673,18 @@ body.reduce .bad { animation: none; }
 .chips.one-line { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; min-height: 44px; }
 .chips.one-line::-webkit-scrollbar { display: none; }
 .chips:empty { display: none; }
+/* 이번 주 데리러 가기 (#sheet-guard). 시트가 390×844 에 들어가게 이 칸 안에서만 위아래로 민다 */
+.guard-week { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 2px; max-height: 300px; overflow-y: auto; overscroll-behavior: contain; }
+.guard-week:empty { display: none; }
+.gw-row { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.gw-row:last-child { border-bottom: 0; }
+.gw-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.gw-head .btn { margin-left: auto; }
+.gw-name { font-weight: 700; font-size: var(--t-2); }
+.gw-row.none .gw-name { color: var(--danger); }
+.gw-chips { min-height: 0; }
+.gw-chip { flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 32px; padding: 4px 10px; white-space: nowrap; font-size: var(--t-1); cursor: default; }
+.gw-chip.gw-empty { color: var(--muted); border-style: dashed; }
 .picker-row { margin-top: 8px; }
 .picker-row input { flex: 1 1 60%; }
 .picker-row select { flex: 0 0 auto; width: auto; }
