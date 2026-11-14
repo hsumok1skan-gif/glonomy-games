@@ -923,7 +923,8 @@ var UI = (function () {
     if (bd < 1 || bd > 5) bd = 0;
     var bc = function (d) { return d === bd ? ' bagday' : ''; };
     var pt = Logic.periodTimes(S.settings);
-    var h = '<div class="row head-row"><h1>' + esc(Logic.nameI(kid.name)) + ' 시간표</h1></div>';
+    var h = '<div class="row head-row"><h1>' + esc(Logic.nameI(kid.name)) + ' 시간표</h1>' +
+      '<button class="btn small" type="button" data-act="week-paste-open" aria-label="받은 시간표 글 붙여 넣어 한 번에 채우기">글로 채우기</button></div>';
     h += '<div class="week" style="grid-template-rows:minmax(32px,auto) repeat(' + kid.periods + ', minmax(44px,1fr)) minmax(72px,auto)"><div class="corner"></div>';
     for (var d = 1; d <= 5; d++) h += '<div class="hd' + (d === tw ? ' today' : '') + bc(d) + '"' + (d === bd ? ' aria-label="' + DATA.DOW[d] + '요일, 가방 챙길 날"' : '') + '>' +
       DATA.DOW[d] + (d === bd ? '<span class="bd-tag" aria-hidden="true">가방</span>' : '') + '</div>';
@@ -1109,16 +1110,41 @@ var UI = (function () {
   }
 
   // 매일 · 요일 시트
-  function renderDaily(S) {
+  // scope: null 이면 모든 아이 공용(S.daily·S.rules), 아이 id 면 그 아이 목록 (kid.daily·kid.rules 가 배열이 아니면 공용을 보여 준다)
+  function renderDaily(S, scope) {
+    var kid = null;
+    S.kids.forEach(function (k) { if (k.id === scope) kid = k; });
+    var sc = '';
+    if (S.kids.length) {
+      sc += '<button class="chip' + (!kid ? ' on' : '') + '" type="button" data-act="daily-scope" data-id="" aria-pressed="' + !kid + '">모든 아이</button>';
+      S.kids.forEach(function (k) {
+        var on = !!kid && kid.id === k.id;
+        var own = Array.isArray(k.daily) || Array.isArray(k.rules);
+        sc += '<button class="chip' + (on ? ' on' : '') + '" type="button" data-act="daily-scope" data-id="' + esc(k.id) + '" aria-pressed="' + on + '">' + esc(k.name) + (own ? ' ✎' : '') + '</button>';
+      });
+    }
+    $('daily-scope').innerHTML = sc;
+    var note = '';
+    if (kid) {
+      var ownD = Array.isArray(kid.daily), ownR = Array.isArray(kid.rules);
+      note = (ownD || ownR) ?
+        esc(kid.name) + ' 목록만 따로 써요. <button class="btn small" type="button" data-act="daily-scope-reset">모든 아이와 같게</button>' :
+        '지금은 모든 아이와 같아요. 고치면 ' + esc(kid.name) + ' 목록만 따로 바뀌어요.';
+    } else if (S.kids.length > 1) {
+      note = '따로 쓰는 아이(✎)는 이 목록을 쓰지 않아요.';
+    }
+    $('daily-scope-note').innerHTML = note;
+    var daily = (kid && Array.isArray(kid.daily)) ? kid.daily : S.daily;
+    var rules = (kid && Array.isArray(kid.rules)) ? kid.rules : S.rules;
     var h = '';
-    S.daily.forEach(function (x, i) {
+    daily.forEach(function (x, i) {
       h += '<button class="chip" type="button" data-act="daily-del" data-i="' + i + '" aria-label="' + esc(x) + ' 빼기">' + esc(x) + ' ✕</button>';
     });
-    if (!S.daily.length) h = miniEmpty('🧴', '매일 챙길 것이 없어요',{ act: 'daily-default', label: '기본 넣기' });
+    if (!daily.length) h = miniEmpty('🧴', '매일 챙길 것이 없어요',{ act: 'daily-default', label: '기본 넣기' });
     $('daily-chips').innerHTML = h;
     var r = '';
-    if (!S.rules.length) r = miniEmpty('📅', '요일마다 챙길 것이 없어요',{ act: 'rules-default', label: '기본 규칙 넣기' });
-    S.rules.forEach(function (x) {
+    if (!rules.length) r = miniEmpty('📅', '요일마다 챙길 것이 없어요',{ act: 'rules-default', label: '기본 규칙 넣기' });
+    rules.forEach(function (x) {
       r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button><button class="icon-btn" type="button" data-act="rule-del" data-id="' + x.id + '" aria-label="' + DATA.DOW[x.dow] + '요일 ' + esc(x.item) + ' 빼기">✕</button></div>';
     });
     $('rules-list').innerHTML = r;
@@ -1443,6 +1469,20 @@ var UI = (function () {
     }
     items.forEach(function (it) { it.el.style.top = it.top.toFixed(0) + 'px'; });
   }
+  // 날짜를 넘기면 새 날 카드·가방·수업 줄이 민 쪽에서 밀려 들어온다 (dir 1 = 다음 날 → 왼쪽으로, -1 = 앞 날 → 오른쪽으로)
+  function slideDay(dir) {
+    var root = $('bag-root');
+    if (!root) return;
+    var cls = dir > 0 ? 'slide-in-l' : 'slide-in-r';
+    var els = root.querySelectorAll('.date-card, .bag-stage, .day-lines, :scope > .empty');
+    Array.prototype.forEach.call(els, function (el) {
+      el.classList.remove('slide-in-l', 'slide-in-r');
+      void el.offsetWidth;   // 같은 칸에 다시 붙여도 처음부터 돈다
+      el.classList.add(cls);
+      el.addEventListener('animationend', function off() { el.classList.remove(cls); el.removeEventListener('animationend', off); });
+    });
+  }
+
   // 계산 점검 결과: 한 쪽에 10줄
   function renderSelfTest(res) {
     var ok = res.filter(function (r) { return r.ok; }).length;
@@ -1463,6 +1503,6 @@ var UI = (function () {
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter, renderTplPreview: renderTplPreview,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
-    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderFamily: renderFamily, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest
+    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderFamily: renderFamily, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest, slideDay: slideDay
   };
 })();

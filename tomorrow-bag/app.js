@@ -11,7 +11,8 @@
     kidAfter: null,                                        // 아이 넣기 시트의 방과후 고르기 { pack, days, who, list: 넣어 둔 것 }
     times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
     family: null,                                          // 가족 링크 시트 { name, link }
-    firstBag: false                                        // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
+    firstBag: false,                                       // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
+    dscope: null                                           // 매일 · 요일 시트에서 고르는 목록: null 모든 아이 공용, 아이 id 면 그 아이 목록
   };
   var undoSnap = null;
   var confirmFn = null;
@@ -82,7 +83,7 @@
     if (UI.isOpen('sheet-kids')) UI.renderKidsSheet(S);
     if (UI.isOpen('sheet-guard')) UI.renderGuards(S);
     if (UI.isOpen('sheet-days')) UI.renderDays(S, t);
-    if (UI.isOpen('sheet-daily')) UI.renderDaily(S);
+    if (UI.isOpen('sheet-daily')) UI.renderDaily(S, dScopeKid() ? V.dscope : null);
     if (UI.isOpen('sheet-day') && kid && V.day) UI.renderDay(S, kid, V.day);
     if (UI.isOpen('sheet-cal') && V.cal) UI.renderCal(S, kid, V.cal);
     if (UI.isOpen('sheet-look')) UI.renderLook(S);
@@ -856,6 +857,45 @@
       UI.toast(DATA.DOW[to] + '요일에 복사했어요', true);
     });
   }
+  // ---- 받은 시간표 글 붙여 넣기: 글에 있는 요일만 바꾸고 방과후는 그대로. 칸은 kid.periods 길이로 자르고 모자라면 빈 칸 ----
+  function openWeekPaste() {
+    if (!curKid()) return UI.toast('아이를 먼저 알려 주세요');
+    V.weekPaste = true;
+    $('week-paste').value = '';
+    UI.clearErr('week-paste', 'week-paste-err');
+    UI.closeSheet('sheet-cell');
+    openSheet('sheet-weekpaste');
+  }
+  function weekParse() {
+    var kid = curKid();
+    if (!kid) return;
+    var w = Logic.parseWeekText($('week-paste').value, S.packs);
+    if (!w) return UI.fieldErr('week-paste', 'week-paste-err', '요일 줄(예: 월: 국어, 수학)에서 과목을 찾지 못했어요.');
+    UI.clearErr('week-paste', 'week-paste-err');
+    var days = [];
+    for (var d = 1; d <= 5; d++) if (w[d].length) days.push(DATA.DOW[d]);
+    askConfirm(Logic.nameI(kid.name) + ' 시간표의 ' + days.join('·') + '요일을 이 글대로 바꿀까요? (방과후는 그대로예요)', '바꾸기', function () {
+      rememberUndo();
+      var filled = 0;
+      for (var e = 1; e <= 5; e++) {
+        if (!w[e].length) continue;
+        var p = [];
+        for (var i = 0; i < kid.periods; i++) {
+          var id = i < w[e].length ? w[e][i] : null;
+          if (id && !Logic.findPack(S.packs, id)) id = null;
+          if (id) filled++;
+          p.push(id || null);
+        }
+        kid.week[e].p = p;
+      }
+      save();
+      UI.closeSheet('sheet-weekpaste');
+      renderAll();
+      go('week');
+      UI.toast(days.join('·') + '요일 ' + filled + '칸을 채웠어요', true);
+    });
+  }
+
   // ---- 교시 시간: 교시마다 시작·끝 시각과 학년별 교시 수 (설정 → 교시 시간) ----
   function lostCells(kid, n) {
     var lost = 0;
@@ -1195,19 +1235,39 @@
     });
   }
 
+  // ---- 매일 · 요일 목록: 모든 아이 공용(S.daily·S.rules) 또는 아이마다 따로(kid.daily·kid.rules) ----
+  function dScopeKid() {
+    if (!V.dscope) return null;
+    for (var i = 0; i < S.kids.length; i++) if (S.kids[i].id === V.dscope) return S.kids[i];
+    V.dscope = null;
+    return null;
+  }
+  // which: 'daily' 또는 'rules'. make 이면 고르는 아이에게 따로 목록이 없을 때 공용을 베껴 그 아이 목록을 만든다
+  function dList(which, make) {
+    var k = dScopeKid();
+    if (!k) return S[which];
+    if (Array.isArray(k[which])) return k[which];
+    if (!make) return S[which];
+    k[which] = which === 'rules' ?
+      S.rules.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: r.on }; }) : S.daily.slice();
+    return k[which];
+  }
+  function dWho() { var k = dScopeKid(); return k ? Logic.nameI(k.name) + ' ' : ''; }
+
   function addDaily(name) {
     var t = Logic.norm(name);
+    var cur = dList('daily', false);
     if (!t) return UI.fieldErr('daily-add', 'daily-err', '물건 이름을 넣어 주세요.');
     if (t.length > 40) return UI.fieldErr('daily-add', 'daily-err', '40자 안으로 넣어 주세요.');
-    if (S.daily.indexOf(t) >= 0) return UI.fieldErr('daily-add', 'daily-err', '이미 있어요.');
-    if (S.daily.length >= 12) return UI.fieldErr('daily-add', 'daily-err', '매일 챙길 것은 12개까지 넣을 수 있어요.');
+    if (cur.indexOf(t) >= 0) return UI.fieldErr('daily-add', 'daily-err', '이미 있어요.');
+    if (cur.length >= 12) return UI.fieldErr('daily-add', 'daily-err', '매일 챙길 것은 12개까지 넣을 수 있어요.');
     UI.clearErr('daily-add', 'daily-err');
     rememberUndo();
-    S.daily.push(t);
+    dList('daily', true).push(t);
     $('daily-add').value = '';
     save();
     renderAll();
-    UI.toast(t + '을(를) 매일 챙길 것에 넣었어요', true);
+    UI.toast(dWho() + t + '을(를) 매일 챙길 것에 넣었어요', true);
   }
 
   function addRule() {
@@ -1216,16 +1276,17 @@
     if (!(dow >= 1 && dow <= 5)) return UI.fieldErr('rule-dow', 'rule-err', '요일을 골라 주세요.');
     if (!t) return UI.fieldErr('rule-add', 'rule-err', '물건 이름을 넣어 주세요.');
     if (t.length > 40) return UI.fieldErr('rule-add', 'rule-err', '40자 안으로 넣어 주세요.');
-    var dup = S.rules.some(function (r) { return r.dow === dow && Logic.norm(r.item).toLowerCase() === t.toLowerCase(); });
+    var cur = dList('rules', false);
+    var dup = cur.some(function (r) { return r.dow === dow && Logic.norm(r.item).toLowerCase() === t.toLowerCase(); });
     if (dup) return UI.fieldErr('rule-add', 'rule-err', DATA.DOW[dow] + '요일에 이미 있어요.');
-    if (S.rules.length >= 20) return UI.fieldErr('rule-add', 'rule-err', '요일마다 챙길 것은 20개까지 넣을 수 있어요.');
+    if (cur.length >= 20) return UI.fieldErr('rule-add', 'rule-err', '요일마다 챙길 것은 20개까지 넣을 수 있어요.');
     UI.clearErr('rule-add', 'rule-err');
     rememberUndo();
-    S.rules.push({ id: Store.uid('r'), dow: dow, item: t, on: true });
+    dList('rules', true).push({ id: Store.uid('r'), dow: dow, item: t, on: true });
     $('rule-add').value = '';
     save();
     renderAll();
-    UI.toast(DATA.DOW[dow] + '요일마다 ' + t + '을(를) 챙겨요', true);
+    UI.toast(dWho() + DATA.DOW[dow] + '요일마다 ' + t + '을(를) 챙겨요', true);
   }
 
   // ---- 설정 ----
@@ -1613,8 +1674,8 @@
       UI.renderKidAfter(S, V.kidAfter);
     },
     'kids-open': function () { UI.renderKidsSheet(S); openSheet('sheet-kids'); },
-    'day-prev': function () { V.offset--; renderAll(); },
-    'day-next': function () { V.offset++; renderAll(); },
+    'day-prev': function () { V.offset--; renderAll(); UI.slideDay(-1); },
+    'day-next': function () { V.offset++; renderAll(); UI.slideDay(1); },
     'day-now': function () { V.offset = 0; renderAll(); },
     'bag-open': function () { if (UI.isOpen('sheet-cal')) UI.closeSheet('sheet-cal'); if (V.firstBag) { seeFirstBag(); renderAll(); } openBag(); },
     'first-bag-ok': function () { seeFirstBag(); renderAll(); },
@@ -1672,6 +1733,8 @@
     'cell-skip': function () { nextCell(curKid()); },
     'cell-copy': function () { UI.renderCopyRow(V.cell.d); },
     'cell-copy-to': function (b) { copyDay(+b.getAttribute('data-d')); },
+    'week-paste-open': openWeekPaste,
+    'week-parse': weekParse,
     'after-new': function (b) { openAfter(+b.getAttribute('data-d') || 1, null); },
     'after-edit': function (b) { openAfter(+b.getAttribute('data-d'), b.getAttribute('data-id')); },
     'after-del': deleteAfter,
@@ -1690,20 +1753,41 @@
       UI.renderPackItems(V.pack.items, Math.min(V.pg.pitems || 0, Math.max(0, Math.floor((V.pack.items.length - 1) / 12))));
     },
     'pack-del': deletePack,
-    'daily-open': function () { UI.renderDaily(S); UI.clearErr('daily-add', 'daily-err'); UI.clearErr('rule-add', 'rule-err'); openSheet('sheet-daily'); },
+    'daily-open': function () { V.dscope = null; UI.renderDaily(S, null); UI.clearErr('daily-add', 'daily-err'); UI.clearErr('rule-add', 'rule-err'); openSheet('sheet-daily'); },
+    // 누구 목록을 볼지 고른다: '모든 아이'(공용) 또는 아이 하나
+    'daily-scope': function (b) {
+      V.dscope = b.getAttribute('data-id') || null;
+      dScopeKid();
+      UI.clearErr('daily-add', 'daily-err'); UI.clearErr('rule-add', 'rule-err');
+      UI.renderDaily(S, V.dscope);
+    },
+    // 그 아이 따로 목록을 지우고 다시 모든 아이 공용을 쓴다
+    'daily-scope-reset': function () {
+      var k = dScopeKid();
+      if (!k) return;
+      askConfirm(Logic.nameI(k.name) + ' 따로 목록을 지우고 모든 아이와 같게 할까요?', '같게 하기', function () {
+        rememberUndo(); delete k.daily; delete k.rules; save(); renderAll(); UI.toast('모든 아이와 같게 했어요', true);
+      });
+    },
     'daily-del': function (b) {
       var i = +b.getAttribute('data-i');
-      var name = S.daily[i];
-      askConfirm(name + '을(를) 매일 챙길 것에서 뺄까요?', '빼기', function () {
-        rememberUndo(); S.daily.splice(i, 1); save(); renderAll(); UI.toast('뺐어요', true);
+      var name = dList('daily', false)[i];
+      if (name === undefined) return;
+      askConfirm(dWho() + name + '을(를) 매일 챙길 것에서 뺄까요?', '빼기', function () {
+        rememberUndo(); dList('daily', true).splice(i, 1); save(); renderAll(); UI.toast('뺐어요', true);
       });
     },
     'daily-default': function () {
-      rememberUndo(); S.daily = DATA.DAILY.slice(); save(); renderAll(); UI.toast('기본 다섯 가지를 넣었어요', true);
+      rememberUndo();
+      var k = dScopeKid();
+      if (k) k.daily = DATA.DAILY.slice(); else S.daily = DATA.DAILY.slice();
+      save(); renderAll(); UI.toast('기본 다섯 가지를 넣었어요', true);
     },
     'rules-default': function () {
       rememberUndo();
-      S.rules = DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; });
+      var list = DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; });
+      var k = dScopeKid();
+      if (k) k.rules = list; else S.rules = list;
       save(); renderAll(); UI.toast('기본 규칙을 넣었어요', true);
     },
     // 빈 목록의 시작 버튼: 그 목록을 채우는 입력란으로
@@ -1713,15 +1797,19 @@
     },
     'rule-toggle': function (b) {
       var id = b.getAttribute('data-id');
-      S.rules.forEach(function (r) { if (r.id === id) r.on = !r.on; });
+      dList('rules', true).forEach(function (r) { if (r.id === id) r.on = !r.on; });
       save(); renderAll(); UI.toast('바꿨어요');
     },
     'rule-del': function (b) {
       var id = b.getAttribute('data-id');
-      var r = S.rules.filter(function (x) { return x.id === id; })[0];
+      var r = dList('rules', false).filter(function (x) { return x.id === id; })[0];
       if (!r) return;
-      askConfirm(DATA.DOW[r.dow] + '요일 ' + r.item + '을(를) 뺄까요?', '빼기', function () {
-        rememberUndo(); S.rules = S.rules.filter(function (x) { return x.id !== id; }); save(); renderAll(); UI.toast('뺐어요', true);
+      askConfirm(dWho() + DATA.DOW[r.dow] + '요일 ' + r.item + '을(를) 뺄까요?', '빼기', function () {
+        rememberUndo();
+        var k = dScopeKid();
+        var left = dList('rules', true).filter(function (x) { return x.id !== id; });
+        if (k) k.rules = left; else S.rules = left;
+        save(); renderAll(); UI.toast('뺐어요', true);
       });
     },
     'guard-open': function () { UI.renderGuards(S); UI.clearErr('guard-add', 'guard-err'); openSheet('sheet-guard'); },
@@ -1795,7 +1883,7 @@
     'note-add': 'note', 'note-item-del': 'note', 'note-supply': 'note', 'note-cat': 'note', 'note-q-clear': 'note', 'note-del': 'note', 'note-parse': 'note',
     'pack-add': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
     'edit-off': 'edit', 'edit-reset': 'edit', 'form-edit': 'edit',
-    'form-note': 'note', 'form-pack': 'pack', 'form-after': 'after', 'form-event': 'kid',
+    'form-note': 'note', 'form-pack': 'pack', 'week-parse': 'weekPaste', 'form-after': 'after', 'form-event': 'kid',
     'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'carry-check': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'stay-toggle': 'kid',
     'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach', 'family-share': 'family', 'family-copy': 'family',
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
@@ -1908,7 +1996,7 @@
     if (s.drag) s.drag.classList.remove('dragging');
     if (s.day) {
       if (s.drag) s.drag.style.transform = '';
-      if (step) { V.offset += step; renderAll(); }
+      if (step) { V.offset += step; renderAll(); UI.slideDay(step > 0 ? 1 : -1); }
       return;
     }
     var id = s.el.getAttribute('data-pg');

@@ -183,6 +183,12 @@ p { margin: 4px 0; }
 .sample-bar .btn { flex: none; }
 .date-card { flex: none; display: flex; align-items: center; gap: 8px; touch-action: pan-y; user-select: none; transition: transform var(--dur) ease-out; }
 .date-card.dragging { transition: none; }
+/* 날짜를 넘기면 새 날이 민 쪽에서 밀려 들어온다 (줄이기 설정이면 --dur 0s 로 바로 바뀐다) */
+.slide-in-l { animation: dayInL var(--dur) ease-out; }
+.slide-in-r { animation: dayInR var(--dur) ease-out; }
+@keyframes dayInL { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes dayInR { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+body.reduce .slide-in-l, body.reduce .slide-in-r { animation: none; }
 .date-card .mid { flex: 1; text-align: center; min-width: 0; }
 .date-card .rel { display: inline-block; font-size: var(--t-1); font-weight: 700; color: var(--accent); background: var(--soft); padding: 1px 10px; border-radius: 999px; }
 .date-card .big { font-size: var(--t-4); font-weight: 800; }

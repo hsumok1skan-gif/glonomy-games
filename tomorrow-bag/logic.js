@@ -180,8 +180,11 @@ var Logic = (function () {
     (state.notes || []).forEach(function (n) {
       if (n.kid === kid.id && n.date === k) n.items.forEach(function (x) { add(x, n.title ? '알림장 · ' + n.title : '알림장', 'note', '📝'); });
     });
-    (state.rules || []).forEach(function (r) {
-      if (r.on && r.dow === w) add(r.item, DATA.DOW[w] + '요일', 'rule', '📅');
+    // 아이마다 따로 둔 매일·요일 목록이 있으면 그것을, 없으면 모든 아이 공용(state.daily·state.rules)을 쓴다
+    var rules = (kid && Array.isArray(kid.rules)) ? kid.rules : (state.rules || []);
+    var daily = (kid && Array.isArray(kid.daily)) ? kid.daily : (state.daily || []);
+    rules.forEach(function (r) {
+      if (r && r.on && r.dow === w) add(r.item, DATA.DOW[w] + '요일', 'rule', '📅');
     });
     if (day) {
       day.p.forEach(function (pid, i) {
@@ -207,7 +210,7 @@ var Logic = (function () {
         pickups.push(pu);
       });
     }
-    (state.daily || []).forEach(function (x) { add(x, '매일', 'daily', '🎒'); });
+    daily.forEach(function (x) { add(x, '매일', 'daily', '🎒'); });
 
     // 가방 시트에서 '내일은 빼기' 한 물건은 그날 가방에서만 뺀다
     var skip = (state.skips && kid && state.skips[checkKey(kid.id, k)]) || [];
@@ -501,6 +504,50 @@ var Logic = (function () {
       w[d] = p;
     }
     return w;
+  }
+
+  // 받은 시간표 글 붙여 넣기: 알림장·문자로 온 '월: 국어, 수학 / 체육 …' 꼴 글을 요일별 칸으로 → {1:[id|null…], …, 5:[…]}
+  // 줄이 '월'~'금'(또는 '월요일')으로 시작하고 그 뒤가 한글이 아닐 때만 요일 줄로 본다 ('수학, 국어' 줄은 수요일이 아니다)
+  // 그 뒤를 쉼표·'/'로 나누고, 한 조각이 꾸러미 이름과 통째로 같으면('안전한 생활') 그대로, 아니면 공백으로 더 나눈다
+  // 말마다 subj 꾸러미 이름(norm·소문자)과 같은 것 → 이름이 그 말로 시작하는 것 → 앞 2글자가 같은 것 순으로 찾고, 못 찾으면 null(빈 칸)
+  // '1교시'·'1.'·'(1)' 같은 번호 말은 칸으로 세지 않는다. 한 요일 7칸(MAX_P)까지. 요일 줄이 없으면 그 요일은 [] (그대로 둔다)
+  // 맞는 칸이 하나도 없으면 null
+  function parseWeekText(text, packs) {
+    var subj = (packs || []).filter(function (p) { return p && p.kind === 'subj' && norm(p.name); })
+      .map(function (p) { return { id: p.id, n: norm(p.name).toLowerCase() }; });
+    function exact(w) { for (var i = 0; i < subj.length; i++) if (subj[i].n === w) return subj[i].id; return null; }
+    function match(w) {
+      var hit = exact(w), i;
+      if (hit) return hit;
+      for (i = 0; i < subj.length; i++) if (subj[i].n.indexOf(w) === 0 && w.length >= 2) return subj[i].id;
+      if (Array.from(w).length >= 2) {
+        var two = Array.from(w).slice(0, 2).join('');
+        for (i = 0; i < subj.length; i++) if (Array.from(subj[i].n).slice(0, 2).join('') === two) return subj[i].id;
+      }
+      return null;
+    }
+    var out = { 1: [], 2: [], 3: [], 4: [], 5: [] }, hits = 0;
+    String(text || '').split(/\r?\n/).forEach(function (line) {
+      var m = /^\s*[\[(<【]?\s*([월화수목금])(?:요일)?(?![가-힣])\s*[\])>】]?\s*[:：\-–.)]?\s*(.*)$/.exec(line);
+      if (!m) return;
+      var d = '월화수목금'.indexOf(m[1]) + 1, row = [];
+      m[2].split(/[,，、\/|·]/).forEach(function (seg) {
+        var s = norm(seg).toLowerCase();
+        if (!s) return;
+        var whole = exact(s);
+        var words = whole ? [s] : s.split(' ');
+        words.forEach(function (w) {
+          w = w.replace(/^[\[(<"'“‘]+|[\])>"'”’:.]+$/g, '');
+          if (!w || /^\(?\d+\)?(?:교시)?[.):]?$/.test(w)) return;
+          if (row.length >= MAX_P) return;
+          var id = match(w);
+          if (id) hits++;
+          row.push(id);
+        });
+      });
+      if (row.length) out[d] = row;
+    });
+    return hits ? out : null;
   }
 
   // ---- 교시 시간: 기본 1교시 09:00~09:40, 쉬는 시간 10분, 4교시 뒤 점심 50분 ----
@@ -886,6 +933,13 @@ var Logic = (function () {
     var rhas = function (k) { return buildBag(rs, kid, k).items.some(function (i) { return i.name === '영어 단어장' && i.group === 'rule'; }); };
     eq('목요일 규칙 목요일에 들어감', rhas('2026-10-29'), true);
     eq('목요일 규칙 수요일엔 없음', rhas('2026-10-28'), false);
+    // 4-2d) 아이마다 따로: 형(kid.daily·kid.rules 있음)은 독서록·목요일 도서관 책, 동생(없음)은 공용 목록
+    var ps = { packs: [], daily: ['필통'], rules: [{ id: 'r1', dow: 4, item: '영어 단어장', on: true }], notes: [], checks: {}, settings: { holidays: [] } };
+    var big = { id: 'b', week: kid.week, daily: ['필통', '독서록'], rules: [{ id: 'r2', dow: 4, item: '도서관 책', on: true }] };
+    var small = { id: 's', week: kid.week };
+    var pnames = function (k, c) { return buildBag(ps, c, k).items.map(function (i) { return i.name; }).join(','); };
+    eq('아이마다 따로 — 형 목요일', pnames('2026-10-29', big), '도서관 책,필통,독서록');
+    eq('아이마다 따로 — 동생 목요일', pnames('2026-10-29', small), '영어 단어장,필통');
     // 4-3) 어제와 달라진 것: 월 체육(체육복·물병·Pen) → 화 국어(국어 교과서·' pen '). 매일 필통과 대소문자만 다른 pen 은 빠진다
     var ds = { packs: [{ id: 'A', name: '체육', items: ['체육복', '물병', 'Pen'] }, { id: 'B', name: '국어', items: ['국어 교과서', ' pen '] }],
       daily: ['필통'], rules: [], notes: [], checks: {}, settings: { holidays: [] } };
@@ -1026,6 +1080,16 @@ var Logic = (function () {
     var full = function (w) { return [1, 2, 3, 4, 5].map(function (d) { return w[d].filter(function (x) { return x; }).length; }).join(','); };
     eq('1학년 기본 시간표 (5교시, 수 4교시)', full(gradeWeek(DATA.TIMETABLES, DATA.SUBJECTS, 1, 5)), '5,5,4,5,5');
     eq('3학년 기본 시간표 (수 6교시 비움)', full(gradeWeek(DATA.TIMETABLES, DATA.SUBJECTS, 3, 6)), '6,6,5,6,6');
+    // 9-4b) 받은 시간표 글: 요일 줄만 읽고('수학' 줄은 수요일 아님), 통째 이름·앞 2글자로 맞추고, 못 맞춘 말은 빈 칸, 번호 말은 건너뛴다
+    var wpk = DATA.SUBJECTS.map(function (p) { return { id: p.id, kind: 'subj', name: p.name }; }).concat([{ id: 'a-x', kind: 'acad', name: '수영' }]);
+    var wt = parseWeekText('[2학년 3반 시간표]\n월: 국어, 수학 / 통합, 안전한 생활\n화요일 - 1교시 체육 2교시 음악 수영\n수학 숙제 있어요\n금) 미술,영어', wpk);
+    eq('시간표 글 월', wt ? wt[1].join(',') : '', 's-kor,s-math,s-int,s-safe');
+    eq('시간표 글 화 (번호 빼고, 학원은 빈 칸)', wt ? wt[2].map(function (x) { return x || '-'; }).join(',') : '', 's-pe,s-mus,-');
+    eq('시간표 글 요일 줄 아님·없는 요일', wt ? wt[3].length + '|' + wt[4].length + '|' + wt[5].join(',') : '', '0|0|s-art,s-eng');
+    eq('시간표 글 맞는 칸 없음', parseWeekText('월: 점심, 놀이\n오늘 수학 숙제', wpk), null);
+    var wt2 = parseWeekText('월 국어 수학 체육\n화: 영어, 음악', wpk);
+    eq('시간표 글 월 3칸·화 2칸', wt2 ? wt2[1].join(',') + '|' + wt2[2].join(',') : '', 's-kor,s-math,s-pe|s-eng,s-mus');
+    eq('시간표 글 요일 줄 없음', parseWeekText('국어 수학 체육\n영어, 음악', wpk), null);
     // 9-5) 교시 시간: 기본값과 검사
     var dt = defaultTimes();
     eq('기본 1교시 시간', dt[0].join('~'), '09:00~09:40');
@@ -1130,7 +1194,7 @@ var Logic = (function () {
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
-    missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
+    missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

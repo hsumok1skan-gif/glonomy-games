@@ -137,6 +137,11 @@ var Store = (function () {
         if (!Array.isArray(k.week[i].after)) k.week[i].after = [];
         while (k.week[i].p.length < k.periods) k.week[i].p.push(null);
       }
+      // 아이마다 따로 둔 매일·요일 목록: 배열이면 틀린 칸만 거르고, 배열이 아니면(없으면) 지우지 않고 그대로 둔다 → 공용을 쓴다
+      if (Array.isArray(k.daily)) k.daily = k.daily.filter(function (x) { return typeof x === 'string' && x.trim(); });
+      if (Array.isArray(k.rules)) k.rules = k.rules.filter(function (r) {
+        return r && typeof r.item === 'string' && r.item.trim() && r.dow >= 1 && r.dow <= 5;
+      });
     });
     return d;
   }
