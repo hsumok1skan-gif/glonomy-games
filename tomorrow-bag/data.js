@@ -198,6 +198,12 @@ var DATA = (function () {
     ['stall', '가게', '가판대', '<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0A2.7 2.7 0 0 0 20 9"/><path d="M5.5 12v8h13v-8M10 20v-4h4v4"/>'],
     ['pan', '프라이팬', '프라이팬', '<circle cx="10" cy="13" r="7"/><path d="M17 13h5"/><circle cx="10" cy="13" r="2.5"/>'],
     ['rocket', '로켓', '로켓', '<path d="M12 2c3 2 4.5 6 4.5 10v4h-9v-4C7.5 8 9 4 12 2z"/><circle cx="12" cy="9.5" r="1.8"/><path d="M7.5 11L4 15v3l3.5-2M16.5 11L20 15v3l-3.5-2M10 19l2 3 2-3"/>'],
+    // 빈 목록 그림 5 — ui.js miniEmpty 에만 쓴다. 찾는 말은 물건 이름에 나오지 않는 영문 표지라 가방 칸 그림이 바뀌지 않는다
+    ['kid', '아이', 'ui-kid', '<circle cx="12" cy="7" r="4"/><path d="M9.5 6.5h.01M14.5 6.5h.01M10.5 8.5c.8.6 2.2.6 3 0"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/>'],
+    ['calendar', '달력', 'ui-calendar', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2"/>'],
+    ['search', '찾기', 'ui-search', '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/>'],
+    ['person', '사람', 'ui-person', '<circle cx="9" cy="8" r="3.5"/><path d="M3 21v-1.5A6 6 0 0 1 15 19.5V21"/><path d="M18 3v8M18 3c-1.5 1-1.5 2 0 3"/>'],
+    ['sun', '쉬는 날', 'ui-sun', '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
     ['notice', '알림장', '알림장','<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
     ['homework', '숙제', '숙제|학습지|문제집|활동지', '<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4M8 13l2 2 4-4"/>'],
     ['paper', '서류', '가정통신문|통신문|동의서|검진표|신청서|회신|보고서|서명|계획표|자료|일지', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7M9 18h4"/>'],

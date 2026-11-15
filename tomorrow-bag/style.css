@@ -531,6 +531,7 @@ body.reduce .stk.big { animation: none; }
 .empty .row .btn.main { min-height: 56px; font-size: var(--t-4); }
 .mini-empty { width: 100%; text-align: center; padding: 12px 8px; border: 2px dashed var(--line); border-radius: 14px; }
 .mini-empty .em { display: block; font-size: var(--t-6); line-height: 1.2; }
+.mini-empty .em .pic { width: var(--t-6); height: var(--t-6); margin: 0 auto; color: var(--muted); }
 .mini-empty p { color: var(--muted); font-size: var(--t-2); margin: 4px 0 8px; }
 
 .pill { font-size: var(--t-1); font-weight: 800; padding: 2px 8px; border-radius: 999px; background: var(--subsoft); color: var(--sub); white-space: nowrap; }
@@ -607,7 +608,10 @@ body.reduce .stk.big { animation: none; }
 .sheet .row .btn.main[type=submit] { flex: 1; }
 .sheet .row:has(> .btn.main[type=submit]) > .spacer { display: none; }
 
-label.f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }
+label.f, span.f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }
+#pack-pics .chip.pack-pic { flex: none; min-width: 44px; padding: 0 10px; justify-content: center; }
+#pack-pics .chip.pack-pic .sup-ic { width: var(--t-4); height: var(--t-4); color: var(--ink); }
+#pack-pics .chip.pack-pic.on .sup-ic { color: var(--bg); }
 input[type=text], input[type=search], input[type=time], input[type=date], input[type=number], select, textarea {
   width: 100%; min-height: 44px; min-width: 0;
   padding: 8px 12px;
@@ -615,6 +619,12 @@ input[type=text], input[type=search], input[type=time], input[type=date], input[
   background: var(--surface);
   font-size: var(--t-3);
 }
+/* 쉬는 날: 시작 ~ 끝(비우면 하루만). 좁은 화면에선 넣기 버튼이 아래 줄로 */
+#form-holiday { flex-wrap: wrap; }
+#form-holiday input[type=date] { flex: 1 1 120px; }
+#form-holiday .range-dash { flex: none; color: var(--sub); }
+#form-holiday .btn { flex: 1 1 100%; }
+.holiday-hint { font-size: var(--t-1); margin-top: 4px; }
 textarea { min-height: 120px; height: 30dvh; max-height: 260px; resize: none; font-size: var(--t-2); }
 
 /* 선생님 모드 링크·QR코드: 만들면 입력 칸 대신 결과가 같은 자리에 */
@@ -694,6 +704,10 @@ body.reduce .bad { animation: none; }
 .picker-row { margin-top: 8px; }
 .picker-row input { flex: 1 1 60%; }
 .picker-row select { flex: 0 0 auto; width: auto; }
+/* 알림장: 처음엔 자주 쓰는 9개만, '더 찾기'로 찾기·순서·갈래를 펼친다 */
+.note-more-row { margin-top: 8px; align-items: center; }
+#note-more::after { content: ' ▾'; }
+#note-more[aria-expanded="true"]::after { content: ' ▴'; }
 /* 알림장 글 붙여 넣기: 두 줄 칸 + 뽑기 (시트 높이를 늘리지 않게 작게) */
 .paste-row { margin-top: 8px; align-items: stretch; }
 .paste-row textarea { flex: 1 1 auto; min-height: 52px; height: 52px; max-height: 52px; padding: 6px 12px; }

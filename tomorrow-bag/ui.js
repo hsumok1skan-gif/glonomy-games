@@ -81,13 +81,32 @@ var UI = (function () {
     return '<svg class="pic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ic.d + '</svg>';
   }
   // 과목·학원 꾸러미 그림: p.pic → (예전에 저장한 기본 꾸러미면 data.js 의 pic) → 이름으로 찾은 그림
-  function packPic(p) {
+  function packPicId(p) {
     p = p || {};
     var id = p.pic;
     if (!id && p.id) DATA.SUBJECTS.concat(DATA.ACADEMIES).forEach(function (d) { if (d.id === p.id) id = d.pic; });
-    if (!id) id = Logic.iconFor(p.name).id;
-    for (var i = 0; i < DATA.ICONS.length; i++) if (DATA.ICONS[i].id === id) return svgPic(DATA.ICONS[i]);
-    return svgPic(Logic.iconFor(p.name));
+    if (!id || !iconById(id)) id = Logic.iconFor(p.name).id;
+    return id;
+  }
+  function packPic(p) {
+    return svgPic(iconById(packPicId(p)) || Logic.iconFor((p || {}).name));
+  }
+  // 꾸러미 고치기 시트의 그림 고르기: 과목·학원 그림과 자주 쓰는 물건 그림 (DATA.ICONS id)
+  var PACK_PICS = ['kor', 'math', 'abc', 'flask', 'map', 'sprout', 'shield', 'heart', 'apron', 'gym', 'sheetmusic', 'paint',
+    'puzzle', 'book', 'pencil', 'notebook', 'dobok', 'goggles', 'keys', 'brush', 'ball', 'jumprope', 'tights', 'laptop',
+    'baduk', 'school', 'mic', 'recorder', 'textbook', 'bag'];
+  function renderPackPics(cur) {
+    var box = $('pack-pics');
+    if (!box) return;
+    var ids = PACK_PICS.slice();
+    if (cur && ids.indexOf(cur) < 0 && iconById(cur)) ids.unshift(cur);
+    box.innerHTML = ids.map(function (id) {
+      var ic = iconById(id);
+      if (!ic) return '';
+      var on = id === cur;
+      return '<button class="chip pack-pic' + (on ? ' on' : '') + '" type="button" data-act="pack-pic" data-pic="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(ic.name) + ' 그림">' +
+        '<span class="sup-ic" aria-hidden="true">' + svgPic(ic) + '</span></button>';
+    }).join('');
   }
 
   // ---- 쪽 넘기기: 옆으로 밀거나 아래 점을 누른다. id 마다 하나 ----
@@ -290,9 +309,12 @@ var UI = (function () {
     return h + '</div></div>';
   }
 
-  // 카드·시트 안의 작은 빈 목록: 그림(이모지) + 한 줄 + 바로 시작 버튼
-  function miniEmpty(icon, text, btn) {
-    return '<div class="mini-empty"><span class="em" aria-hidden="true">' + icon + '</span><p>' + esc(text) + '</p>' +
+  // 카드·시트 안의 작은 빈 목록: 선 그림(DATA.ICONS id) + 한 줄 + 바로 시작 버튼
+  // MINI_PICS: 이 파일에서 miniEmpty 에 넘기는 그림 id 모두 (logic.js selfTest 가 ICONS 에 있는지 본다)
+  var MINI_PICS = ['bag', 'kid', 'calendar', 'school', 'book', 'pencil', 'bottle', 'search', 'person', 'sun'];
+  function miniEmpty(id, text, btn) {
+    var ic = iconById(id) || iconById('bag');
+    return '<div class="mini-empty"><span class="em" aria-hidden="true">' + svgPic(ic) + '</span><p>' + esc(text) + '</p>' +
       '<button class="btn small main" type="button" data-act="' + btn.act + '"' + (btn.extra || '') + '>' + esc(btn.label) + '</button></div>';
   }
 
@@ -557,7 +579,7 @@ var UI = (function () {
         return p.g === 'out' ? outCellHTML(name, outDone.indexOf(name) >= 0) : cellHTML(r.it, done.indexOf(name) >= 0, diff.add.indexOf(name) >= 0);
       }).join('') + '</div>' };
     });
-    if (!html.length) html = [{ g: '', html: miniEmpty('🎒', '챙길 물건이 없어요',{ act: 'note-new', label: '+ 알림장' }) }];
+    if (!html.length) html = [{ g: '', html: miniEmpty('bag', '챙길 물건이 없어요',{ act: 'note-new', label: '+ 알림장' }) }];
     $('bs-pages').innerHTML = pagerHTML('bag', html, cur);
     V.pg.bag = cur;
     // 처음 한 번: 아직 챙기지 않은 첫 칸에 맥박 테두리 (보고 있는 쪽 먼저, 없으면 맨 앞 칸)
@@ -823,7 +845,7 @@ var UI = (function () {
     $('cal-month').textContent = y + '년 ' + m + '월';
     $('cal-title').textContent = kid ? Logic.nameI(kid.name) + ' 가방 달력' : '가방 달력';
     if (!kid) {
-      $('cal-grid').innerHTML = miniEmpty('🧒', '아이를 알려 주세요',{ act: 'cal-kid', label: '시작하기' });
+      $('cal-grid').innerHTML = miniEmpty('kid', '아이를 알려 주세요',{ act: 'cal-kid', label: '시작하기' });
       $('cal-sum').innerHTML = '';
       $('sticker-book').innerHTML = '';
       return;
@@ -842,7 +864,7 @@ var UI = (function () {
     var n = Logic.monthStickers(S.history, kid.id, ym);
     var sk = Logic.streak(S.history, kid.id, Logic.bagDate(new Date(), S.settings), S.settings.holidays);
     $('cal-sum').innerHTML = (n ? '<p>이 달 칭찬 스티커 ' + n + '장이 모였어요</p>' :
-      miniEmpty('🎒', '이 달 스티커가 없어요',{ act: 'bag-open', label: '가방 챙기기' })) +
+      miniEmpty('bag', '이 달 스티커가 없어요',{ act: 'bag-open', label: '가방 챙기기' })) +
       (sk >= 2 ? '<p class="cal-streak">연속 ' + sk + '일 다 챙겼어요</p>' : '');
     // 스티커 모음판: 12칸, 받은 칸에는 장 수, 아직 못 받은 칸은 잠가 둔다
     var book = Logic.stickerBook(S.history, kid.id), got = 0, b = '';
@@ -871,7 +893,7 @@ var UI = (function () {
         '<button class="btn small" type="button" data-act="note-edit" data-id="' + n.id + '">고치기</button>' +
         (chips ? '<div class="chips up-buy">' + chips + '</div>' : '') + '</div>';
     });
-    if (!list.length) h = miniEmpty('📅', '며칠 뒤 준비물이 없어요',{ act: 'note-new', label: '+ 알림장' });
+    if (!list.length) h = miniEmpty('calendar', '며칠 뒤 준비물이 없어요',{ act: 'note-new', label: '+ 알림장' });
     else h += '<p class="tiny up-buy-tip">집에 없는 것을 눌러 살 것에 모아요</p>';
     $('up-list').innerHTML = h;
     var n = (S.buy || []).length;
@@ -969,7 +991,7 @@ var UI = (function () {
         (a.who ? ' → <b>' + esc(a.who) + '</b>' : '') + '</span>' +
         '<button class="btn small" type="button" data-act="after-edit" data-d="' + d + '" data-id="' + a.id + '">고치기</button></div>';
     });
-    if (!af.length) h += miniEmpty('🏫', '방과후가 없어요', { act: 'after-new', label: '+ 방과후 넣기', extra: ' data-d="' + d + '"' });
+    if (!af.length) h += miniEmpty('school', '방과후가 없어요', { act: 'after-new', label: '+ 방과후 넣기', extra: ' data-d="' + d + '"' });
     else if (af.length < 6) h += '<button class="btn main wide" type="button" data-act="after-new" data-d="' + d + '" style="margin-top:12px">+ 방과후 넣기</button>';
     $('day-list').innerHTML = h;
   }
@@ -1033,7 +1055,7 @@ var UI = (function () {
       }).join('') + '</div>' });
     }
     $('cell-picks').innerHTML = pages.length ? pagerHTML('cellp', pages, 0) :
-      miniEmpty('📚', '과목 꾸러미가 없어요',{ act: 'pack-new', label: '+ 새 꾸러미' });
+      miniEmpty('book', '과목 꾸러미가 없어요',{ act: 'pack-new', label: '+ 새 꾸러미' });
     $('cell-copy-row').innerHTML = '';
   }
 
@@ -1106,7 +1128,7 @@ var UI = (function () {
       }).join('') + '</div>' });
     }
     $('pack-items').innerHTML = pages.length ? pagerHTML('pitems', pages, cur || 0) :
-      miniEmpty('✏️', '물건이 없어요',{ act: 'focus', label: '물건 넣기', extra: ' data-target="pack-add"' });
+      miniEmpty('pencil', '물건이 없어요',{ act: 'focus', label: '물건 넣기', extra: ' data-target="pack-add"' });
   }
 
   // 매일 · 요일 시트
@@ -1140,10 +1162,10 @@ var UI = (function () {
     daily.forEach(function (x, i) {
       h += '<button class="chip" type="button" data-act="daily-del" data-i="' + i + '" aria-label="' + esc(x) + ' 빼기">' + esc(x) + ' ✕</button>';
     });
-    if (!daily.length) h = miniEmpty('🧴', '매일 챙길 것이 없어요',{ act: 'daily-default', label: '기본 넣기' });
+    if (!daily.length) h = miniEmpty('bottle', '매일 챙길 것이 없어요',{ act: 'daily-default', label: '기본 넣기' });
     $('daily-chips').innerHTML = h;
     var r = '';
-    if (!rules.length) r = miniEmpty('📅', '요일마다 챙길 것이 없어요',{ act: 'rules-default', label: '기본 규칙 넣기' });
+    if (!rules.length) r = miniEmpty('calendar', '요일마다 챙길 것이 없어요',{ act: 'rules-default', label: '기본 규칙 넣기' });
     rules.forEach(function (x) {
       r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button><button class="icon-btn" type="button" data-act="rule-del" data-id="' + x.id + '" aria-label="' + DATA.DOW[x.dow] + '요일 ' + esc(x.item) + ' 빼기">✕</button></div>';
     });
@@ -1152,7 +1174,7 @@ var UI = (function () {
     S.stay.forEach(function (x, i) {
       st += '<button class="chip" type="button" data-act="stay-del" data-i="' + i + '" aria-label="' + esc(x) + ' 다시 가방에 넣기">' + esc(x) + ' ✕</button>';
     });
-    if (!S.stay.length) st = miniEmpty('🏫', '학교에 두는 물건이 없어요',{ act: 'stay-textbooks', label: '교과서는 학교에 둬요' });
+    if (!S.stay.length) st = miniEmpty('school', '학교에 두는 물건이 없어요',{ act: 'stay-textbooks', label: '교과서는 학교에 둬요' });
     $('stay-list').innerHTML = st;
   }
 
@@ -1170,7 +1192,11 @@ var UI = (function () {
     $('note-cats').innerHTML = cats.map(function (c) {
       return '<button class="chip' + (V.noteCat === c[0] ? ' on' : '') + '" type="button" data-act="note-cat" data-v="' + esc(c[0]) + '" aria-pressed="' + (V.noteCat === c[0]) + '">' + esc(c[1]) + '</button>';
     }).join('');
-    var list = Logic.findSupplies(V.noteQ, V.noteCat, V.noteSort, Logic.supplyUsage(S));
+    // 접혀 있으면(V.noteMore 가 아니면) 갈래·찾기를 무시하고 자주 쓰는 순 앞 9개만 한 쪽으로
+    var list = V.noteMore ? Logic.findSupplies(V.noteQ, V.noteCat, V.noteSort, Logic.supplyUsage(S)) :
+      Logic.findSupplies('', 'all', 'often', Logic.supplyUsage(S)).slice(0, 9);
+    var hint = $('note-more-hint');
+    if (hint) hint.textContent = V.noteMore ? '찾기·갈래로 고르기' : '자주 쓰는 준비물';
     var pages = [];
     for (var s = 0; s < list.length; s += 9) {
       pages.push({ html: '<div class="grid c3">' + list.slice(s, s + 9).map(function (x) {
@@ -1179,7 +1205,7 @@ var UI = (function () {
       }).join('') + '</div>' });
     }
     $('note-supplies').innerHTML = pages.length ? pagerHTML('sup', pages, V.pg.sup || 0) :
-      miniEmpty('🔍', '‘' + V.noteQ + '’ 준비물이 없어요',{ act: 'note-q-clear', label: '찾기 지우기' });
+      miniEmpty('search','‘' + V.noteQ + '’ 준비물이 없어요',{ act: 'note-q-clear', label: '찾기 지우기' });
   }
 
   function renderEvents(sel) {
@@ -1256,7 +1282,7 @@ var UI = (function () {
     S.kids.forEach(function (k) {
       h += '<div class="toggle"><span>' + esc(k.name) + (k.sample ? ' (예시)' : '') + ' · ' + k.grade + '학년</span><button class="btn small" type="button" data-act="family-link" data-id="' + k.id + '" aria-label="' + esc(k.name) + ' 가족 링크">가족 링크</button><button class="btn small" type="button" data-act="kid-edit" data-id="' + k.id + '">고치기</button></div>';
     });
-    if (!S.kids.length) h = miniEmpty('🧒', '아이가 없어요',{ act: 'kid-new', label: '시작하기' });
+    if (!S.kids.length) h = miniEmpty('kid', '아이가 없어요',{ act: 'kid-new', label: '시작하기' });
     $('kids-list').innerHTML = h;
   }
   function renderGuards(S) {
@@ -1264,7 +1290,7 @@ var UI = (function () {
     S.settings.guardians.forEach(function (g, i) {
       h += '<button class="chip" type="button" data-act="guard-del" data-i="' + i + '" aria-label="' + esc(g) + ' 빼기">' + esc(g) + ' ✕</button>';
     });
-    if (!S.settings.guardians.length) h = miniEmpty('🙋', '데리러 갈 사람이 없어요',{ act: 'focus', label: '사람 넣기', extra: ' data-target="guard-add"' });
+    if (!S.settings.guardians.length) h = miniEmpty('person','데리러 갈 사람이 없어요',{ act: 'focus', label: '사람 넣기', extra: ' data-target="guard-add"' });
     $('guard-chips').innerHTML = h;
     renderGuardWeek(S);
   }
@@ -1298,11 +1324,20 @@ var UI = (function () {
     var list = st.holidays.slice().sort().filter(function (d) { return d >= todayKey; });
     var past = st.holidays.length - list.length;
     var h = '';
-    list.slice(0, 12).forEach(function (d) {
-      h += '<button class="chip" type="button" data-act="holiday-del" data-date="' + d + '" aria-label="' + Logic.shortLabel(d) + ' 빼기">' + Logic.shortLabel(d) + ' ✕</button>';
+    // 이어진 날(사이에 주말만 있는 날)은 칩 하나 '7/21(월)~8/22(금) · 25일' 로 묶는다
+    var groups = Logic.holidayGroups(list), more = 0;
+    groups.forEach(function (g, i) {
+      if (i >= 12) { more += g.length; return; }
+      var d = g[0];
+      if (g.length === 1) {
+        h += '<button class="chip" type="button" data-act="holiday-del" data-date="' + d + '" aria-label="' + Logic.shortLabel(d) + ' 빼기">' + Logic.shortLabel(d) + ' ✕</button>';
+      } else {
+        var e = g[g.length - 1], txt = Logic.shortLabel(d) + '~' + Logic.shortLabel(e) + ' · ' + g.length + '일';
+        h += '<button class="chip" type="button" data-act="holiday-range-del" data-from="' + d + '" data-to="' + e + '" aria-label="' + txt + ' 모두 빼기">' + txt + ' ✕</button>';
+      }
     });
-    if (list.length > 12) h += '<span class="tiny">그 뒤 ' + (list.length - 12) + '일 더 있어요</span>';
-    if (!list.length) h = miniEmpty('🏖️', '쉬는 날이 없어요',{ act: 'focus', label: '쉬는 날 고르기', extra: ' data-target="holiday-add"' });
+    if (more) h += '<span class="tiny">그 뒤 ' + more + '일 더 있어요</span>';
+    if (!list.length) h = miniEmpty('sun','쉬는 날이 없어요',{ act: 'focus', label: '쉬는 날 고르기', extra: ' data-target="holiday-add"' });
     $('holiday-chips').innerHTML = h;
   }
 
@@ -1496,7 +1531,7 @@ var UI = (function () {
   }
 
   return {
-    $: $, esc: esc, packPic: packPic, transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
+    $: $, esc: esc, packPic: packPic, packPicId: packPicId, renderPackPics: renderPackPics, MINI_PICS: MINI_PICS,transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
     fly: fly, stamp: stamp, showBubble: showBubble, showHoldTip: showHoldTip, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,

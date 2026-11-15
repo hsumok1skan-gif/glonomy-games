@@ -24,10 +24,40 @@ var Logic = (function () {
     return (holidays || []).indexOf(k) < 0;
   }
 
-  // k 다음의 학교 가는 날 (k 는 빼고), 쉬는 날이 길어도 60일 안에서 찾는다
+  // 쉬는 날을 한 번에 넣을 수 있는 가장 긴 기간(일, 시작·끝 포함)
+  var HOLIDAY_MAX_DAYS = 120;
+  // 시작~끝(둘 다 포함) 사이 날 수. 끝이 앞이면 0
+  function spanDays(from, to) {
+    if (to < from) return 0;
+    var n = 1, c = from;
+    while (c < to && n <= 400) { c = addDays(c, 1); n++; }
+    return n;
+  }
+  // 시작~끝(둘 다 포함) 사이 주말이 아닌 날 배열. 끝이 시작보다 앞이면 []. 끝을 비우면 시작 하루만
+  function holidayRange(from, to) {
+    if (!to) to = from;
+    if (!validKey(from) || !validKey(to) || to < from) return [];
+    var out = [];
+    for (var c = from, i = 0; c <= to && i < 400; c = addDays(c, 1), i++) {
+      var w = dow(c);
+      if (w !== 0 && w !== 6) out.push(c);
+    }
+    return out;
+  }
+  // 쉬는 날 칩 묶기: 이어진 날(사이에 주말만 있는 날)을 한 묶음으로. 정렬된 배열 → [[날,…],…]
+  function holidayGroups(list) {
+    var ks = (list || []).slice().sort(), out = [], cur = null;
+    ks.forEach(function (k) {
+      if (cur && nextSchoolDay(cur[cur.length - 1], []) === k) cur.push(k);
+      else { cur = [k]; out.push(cur); }
+    });
+    return out;
+  }
+
+  // k 다음의 학교 가는 날 (k 는 빼고), 방학처럼 쉬는 날이 길어도(최대 120일) 200일 안에서 찾는다
   function nextSchoolDay(k, holidays) {
     var c = k;
-    for (var i = 0; i < 60; i++) {
+    for (var i = 0; i < 200; i++) {
       c = addDays(c, 1);
       if (isSchoolDay(c, holidays)) return c;
     }
@@ -35,7 +65,7 @@ var Logic = (function () {
   }
   function prevSchoolDay(k, holidays) {
     var c = k;
-    for (var i = 0; i < 60; i++) {
+    for (var i = 0; i < 200; i++) {
       c = addDays(c, -1);
       if (isSchoolDay(c, holidays)) return c;
     }
@@ -895,6 +925,19 @@ var Logic = (function () {
     eq('2028-02-28(월) 다음 학교 가는 날', nextSchoolDay('2028-02-28', []), '2028-02-29');
     // 3) 연말 + 쉬는 날: 2026-12-31(목) 다음, 2027-01-01(금) 쉬면 2027-01-04(월)
     eq('2026-12-31 다음 (1/1 쉬는 날)', nextSchoolDay('2026-12-31', ['2027-01-01']), '2027-01-04');
+    // 3-1) 긴 쉬는 날: 2027-07-19(월)~2027-08-20(금) 평일 25일, 이미 넣은 7/19 는 빼고 24일
+    eq('holidayRange 7/20~7/31 평일 10일', holidayRange('2026-07-20', '2026-07-31').length, 10);
+    eq('holidayRange 끝이 앞이면 []', holidayRange('2026-07-31', '2026-07-20').length, 0);
+    eq('holidayRange 끝을 비우면 하루만', holidayRange('2026-11-17', '').length, 1);
+    eq('여름방학 7/19~8/20 평일 25일', holidayRange('2027-07-19', '2027-08-20').length, 25);
+    eq('기간 120일 (1/1~4/30)', spanDays('2027-01-01', '2027-04-30'), 120);
+    eq('기간 121일 (1/1~5/1)', spanDays('2027-01-01', '2027-05-01'), 121);
+    // 이어진 날(사이에 주말만)은 한 묶음: 7/20~7/31 + 따로 떨어진 8/5 → 2묶음, 첫 묶음 10일
+    var hg = holidayGroups(['2026-08-05'].concat(holidayRange('2026-07-20', '2026-07-31')));
+    eq('쉬는 날 묶음 수', hg.length, 2);
+    eq('첫 묶음 날 수', hg[0].length, 10);
+    // 6/1~8/31 쉬면 5/31(월) 다음 학교 가는 날은 9/1(수) — 60일보다 긴 쉬는 날도 건너뛴다
+    eq('긴 방학 뒤 학교 가는 날', nextSchoolDay('2027-05-31', holidayRange('2027-06-01', '2027-08-31')), '2027-09-01');
     // 4) 합치기: 같은 물병이 1·3교시 체육, 방과후 수영, 매일에서 나오면 한 줄, 출처 4개
     var st = {
       packs: [
@@ -984,6 +1027,11 @@ var Logic = (function () {
     // 5-1c) 행사 12개의 pic 은 모두 있는 선 그림 id, 스티커 12개는 모두 직접 그린 그림(d)이 있다
     eq('행사 그림 모두 있음', DATA.EVENTS.filter(function (e) { return !picIds[e.pic]; }).length, 0);
     eq('스티커 그림 모두 있음', DATA.STICKERS.filter(function (s) { return !s.d; }).length, 0);
+    // 5-1d) 빈 목록(ui.js miniEmpty)에 넘기는 그림 id 10개는 모두 있는 선 그림 id, 새 빈 목록 그림 말은 물건 이름 그림을 바꾸지 않는다
+    var miniPics = (typeof UI !== 'undefined' && UI.MINI_PICS) || ['bag', 'kid', 'calendar', 'school', 'book', 'pencil', 'bottle', 'search', 'person', 'sun'];
+    eq('miniEmpty 그림 id 모두 ICONS에 있음', miniPics.filter(function (id) { return !picIds[id]; }).length, 0);
+    eq('miniEmpty 그림 10가지', miniPics.length, 10);
+    eq('그림 찾기 아이 이름표', iconFor('아이 이름표').id, 'nametag');
     // 5-2) 자주 덜 챙긴 것: 30일 앞(9/25)·다른 아이·그날(10/26) 기록은 빼고, ' 리코더'·'리코더' 는 같은 것 → 리코더 2, 물병 1
     var mc = missCounts([
       { kid: 'k', date: '2026-09-20', missed: ['리코더'] },
@@ -1190,6 +1238,7 @@ var Logic = (function () {
 
   return {
     toKey: toKey, fromKey: fromKey, addDays: addDays, dow: dow, validKey: validKey,
+    holidayRange: holidayRange, holidayGroups: holidayGroups, spanDays: spanDays, HOLIDAY_MAX_DAYS: HOLIDAY_MAX_DAYS,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,

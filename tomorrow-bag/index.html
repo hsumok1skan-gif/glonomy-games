@@ -258,11 +258,18 @@
     </div>
     <div class="err" id="note-err"></div>
     <div id="note-items" class="chips one-line"></div>
-    <div class="row picker-row">
-      <input id="note-q" type="search" maxlength="20" placeholder="찾기" aria-label="준비물 찾기" autocomplete="off">
-      <select id="note-sort" aria-label="늘어놓는 순서"><option value="base">갈래 순서</option><option value="name">가나다순</option><option value="often">자주 쓰는 순</option></select>
+    <div class="row note-more-row">
+      <span class="tiny" id="note-more-hint">자주 쓰는 준비물</span>
+      <span class="spacer"></span>
+      <button id="note-more" class="btn small" type="button" data-act="note-more" aria-expanded="false" aria-controls="note-more-box">더 찾기</button>
     </div>
-    <div id="note-cats" class="band" role="group" aria-label="갈래"></div>
+    <div id="note-more-box" hidden>
+      <div class="row picker-row">
+        <input id="note-q" type="search" maxlength="20" placeholder="찾기" aria-label="준비물 찾기" autocomplete="off">
+        <select id="note-sort" aria-label="늘어놓는 순서"><option value="base">갈래 순서</option><option value="name">가나다순</option><option value="often">자주 쓰는 순</option></select>
+      </div>
+      <div id="note-cats" class="band" role="group" aria-label="갈래"></div>
+    </div>
     <div id="note-supplies" class="fill sup-area"></div>
     <div class="row" style="margin-top:8px">
       <button class="btn danger" type="button" id="note-del" data-act="note-del">지우기</button>
@@ -293,10 +300,11 @@
     <div class="grab"></div>
     <div class="sheet-head"><h2 id="pack-title">꾸러미</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
     <div class="row">
-      <div style="width:64px"><label class="f" for="pack-icon">그림</label><input id="pack-icon" type="text" maxlength="4"></div>
       <div style="flex:1;min-width:0"><label class="f" for="pack-name">이름</label><input id="pack-name" type="text" maxlength="40"></div>
       <div style="width:116px"><label class="f" for="pack-kind">종류</label><select id="pack-kind"><option value="subj">수업 과목</option><option value="acad">방과후·학원</option></select></div>
     </div>
+    <span class="f" id="pack-pics-lab">그림</span>
+    <div id="pack-pics" class="chips one-line" role="group" aria-labelledby="pack-pics-lab"></div>
     <div class="err" id="pack-err"></div>
     <label class="f" for="pack-add">늘 챙기는 물건</label>
     <div class="row">
@@ -352,7 +360,8 @@
     <label class="f" for="set-hour">가방 바뀌는 시각</label>
     <select id="set-hour" data-set="switchHour"></select>
     <label class="f" for="holiday-add">쉬는 날 넣기</label>
-    <form id="form-holiday" class="row"><input id="holiday-add" type="date"><button class="btn" type="submit">넣기</button></form>
+    <form id="form-holiday" class="row"><input id="holiday-add" type="date" aria-label="쉬는 날 시작"><span class="range-dash" aria-hidden="true">~</span><input id="holiday-end" type="date" aria-label="쉬는 날 끝 (비우면 하루만)"><button class="btn" type="submit">넣기</button></form>
+    <div class="muted holiday-hint" id="holiday-hint">방학처럼 긴 쉬는 날은 끝 날짜도 고르세요. 비우면 하루만 넣어요. 주말은 저절로 빠져요.</div>
     <div class="err" id="holiday-err"></div>
     <div id="holiday-chips" class="chips" style="margin-top:8px"></div>
   </div>
