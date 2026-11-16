@@ -1024,6 +1024,16 @@ var Logic = (function () {
     DATA.SUBJECTS.forEach(function (p) { if (/^--[a-z-]+$/.test(p.c || '')) subjC[p.c] = true; });
     eq('과목 칸 색 모두 있음', DATA.SUBJECTS.filter(function (p) { return !/^--[a-z-]+$/.test(p.c || ''); }).length, 0);
     eq('과목 칸 색 5가지 이상', Object.keys(subjC).length >= 5, true);
+    // 5-1b3) 과목 15개는 모두 짧은 이름(short, 1~3글자)이 있고 서로 겹치지 않는다 (시간표 칸·미리 보기 글자)
+    var subjS = {};
+    DATA.SUBJECTS.forEach(function (p) { if (typeof p.short === 'string') subjS[p.short] = true; });
+    eq('SUBJECTS short 모두 3글자 이하·겹침 없음', DATA.SUBJECTS.filter(function (p) {
+      var n = typeof p.short === 'string' ? Array.from(p.short).length : 0;
+      return n < 1 || n > 3;
+    }).length + '|' + Object.keys(subjS).length, '0|' + DATA.SUBJECTS.length);
+    eq('짧은 이름 예: 창체·받쓰·독서', ['s-cre', 's-dict', 's-read'].map(function (id) {
+      return (DATA.SUBJECTS.filter(function (p) { return p.id === id; })[0] || {}).short;
+    }).join(','), '창체,받쓰,독서');
     // 5-1c) 행사 12개의 pic 은 모두 있는 선 그림 id, 스티커 12개는 모두 직접 그린 그림(d)이 있다
     eq('행사 그림 모두 있음', DATA.EVENTS.filter(function (e) { return !picIds[e.pic]; }).length, 0);
     eq('스티커 그림 모두 있음', DATA.STICKERS.filter(function (s) { return !s.d; }).length, 0);

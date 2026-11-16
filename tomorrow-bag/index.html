@@ -64,6 +64,14 @@
       </div>
       <div id="bs-band" class="band" data-band="bag" role="group" aria-label="쪽"></div>
       <div id="bs-pages" class="fill"></div>
+      <div id="bag-add-row" class="bag-add-row adult-only" hidden>
+        <div class="row">
+          <input id="bag-add" type="text" maxlength="40" autocomplete="off" enterkeyhint="done" placeholder="예: 우산" aria-label="이날 가방에 더 넣을 물건">
+          <button class="btn" type="button" data-act="bag-add-go">넣기</button>
+          <button class="icon-btn" type="button" data-act="bag-add-close" aria-label="물건 넣기 닫기">✕</button>
+        </div>
+        <div class="err" id="bag-add-err"></div>
+      </div>
       <div class="row bs-foot adult-only">
         <button class="btn small" type="button" data-act="check-all">모두 ✓</button>
         <span id="bs-carry" class="bs-carry"></span>
@@ -136,16 +144,17 @@
       <div id="kid-after" class="kid-after">
         <div id="kid-after-list" class="chips" role="group" aria-label="넣어 둔 방과후"></div>
         <div class="f">방과후 <span class="tiny">(있으면 골라 주세요)</span></div>
-        <div id="kid-after-packs" class="chips one-line" role="group" aria-label="방과후 고르기"></div>
+        <div id="kid-after-packs" class="ka-grid" role="group" aria-label="방과후 고르기"></div>
         <div class="row" id="kid-after-new-row" style="display:none">
           <input id="kid-after-new" type="text" maxlength="40" autocomplete="off" placeholder="예: 한자 학원" aria-label="방과후 이름 직접 쓰기">
           <button class="btn" type="button" data-act="kid-after-new-add">넣기</button>
         </div>
-        <div class="row ka-row">
+        <!-- 요일·시각·데리러 갈 사람 줄은 방과후 칸을 고른 뒤에만 보인다 (ui.js renderKidAfter) -->
+        <div class="row ka-row" id="kid-after-when">
           <div id="kid-after-days" class="chips one-line" role="group" aria-label="요일 고르기"></div>
           <input id="kid-after-time" type="time" value="15:00" aria-label="방과후 시작 시각">
         </div>
-        <div class="f">데리러 갈 사람</div>
+        <div class="f" id="kid-after-who-lab">데리러 갈 사람</div>
         <div id="kid-after-who" class="chips one-line" role="group" aria-label="데리러 갈 사람 고르기"></div>
         <div class="err" id="kid-after-err"></div>
         <button class="btn small" type="button" id="kid-after-add" data-act="kid-after-add" disabled>+ 방과후 하나 더</button>

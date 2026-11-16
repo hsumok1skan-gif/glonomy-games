@@ -19,7 +19,7 @@ var Store = (function () {
 
   function copyPacks() {
     var out = [];
-    DATA.SUBJECTS.forEach(function (s) { out.push({ id: s.id, kind: 'subj', name: s.name, icon: s.icon, pic: s.pic, c: s.c, items: s.items.slice() }); });
+    DATA.SUBJECTS.forEach(function (s) { out.push({ id: s.id, kind: 'subj', name: s.name, short: s.short, icon: s.icon, pic: s.pic, c: s.c, items: s.items.slice() }); });
     DATA.ACADEMIES.forEach(function (s) { out.push({ id: s.id, kind: 'acad', name: s.name, icon: s.icon, pic: s.pic, items: s.items.slice() }); });
     return out;
   }
@@ -102,11 +102,14 @@ var Store = (function () {
     d.stay = d.stay.filter(function (x) { return typeof x === 'string' && x.trim(); });
     if (!Array.isArray(d.buy)) d.buy = [];
     d.buy = d.buy.filter(function (x) { return typeof x === 'string' && x.trim(); });
-    // 예전 판에 저장한 기본 과목 꾸러미에도 시간표 칸 색을 채운다
+    // 예전 판에 저장한 기본 과목 꾸러미에도 시간표 칸 색과 짧은 이름을 채운다
+    // (짧은 이름은 이름을 바꾸지 않은 기본 꾸러미에만. 1~3글자 문자열이 아니면 지워 ui.js shortName 이 앞 3글자를 쓴다)
     d.packs.forEach(function (p) {
-      if (!p || p.c) return;
+      if (!p) return;
       var s = DATA.SUBJECTS.filter(function (x) { return x.id === p.id; })[0];
-      if (s) p.c = s.c;
+      if (s && !p.c) p.c = s.c;
+      if (p.short !== undefined && !(typeof p.short === 'string' && p.short.trim() && Array.from(p.short).length <= 3)) delete p.short;
+      if (s && p.short === undefined && p.name === s.name) p.short = s.short;
     });
     if (typeof d.settings.vibe !== 'boolean') d.settings.vibe = base.settings.vibe;
     if (typeof d.settings.holdTipSeen !== 'boolean') d.settings.holdTipSeen = base.settings.holdTipSeen;

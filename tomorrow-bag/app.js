@@ -350,8 +350,41 @@
     var bag = Logic.buildBag(S, kid, bagKey());
     if (!bag.items.length) return UI.toast('이날 챙길 물건이 아직 없어요');
     V.pg.bag = 0;
+    UI.showBagAdd(false);
     UI.renderBagSheet(S, V, kid, bag);
+    // 알림장 쪽이 없어 맨 앞이 '+ 물건' 칸만 있는 쪽이면, 열 때는 물건이 있는 다음 쪽부터 보여 준다
+    var pg0 = document.querySelector('#bs-pages .pg');
+    if (pg0 && !pg0.querySelector('.check:not(.add-cell)')) { V.pg.bag = 1; UI.renderBagSheet(S, V, kid, bag); }
     openSheet('sheet-bag');
+  }
+  // 가방 시트 '+ 물건': 그날 가방에 물건을 바로 하나 더 넣는다. 그 아이·그날의 '가방에서 넣음' 알림장에 이어 붙인다 (없으면 새로)
+  var BAG_ADD_TITLE = '가방에서 넣음';
+  function bagAdd() {
+    var kid = curKid();
+    if (!kid) return;
+    var t = Logic.norm($('bag-add').value);
+    if (!t) return UI.fieldErr('bag-add', 'bag-add-err', '물건 이름을 넣어 주세요.');
+    if (t.length > 40) return UI.fieldErr('bag-add', 'bag-add-err', '40자 안으로 넣어 주세요.');
+    var k = bagKey();
+    var key = t.toLowerCase();
+    var have = Logic.buildBag(S, kid, k).items.some(function (it) { return Logic.norm(it.name).toLowerCase() === key; });
+    if (have) return UI.fieldErr('bag-add', 'bag-add-err', '이날 가방에 이미 있어요.');
+    var n = S.notes.filter(function (x) { return x.kid === kid.id && x.date === k && x.title === BAG_ADD_TITLE; })[0];
+    if (n && n.items.length >= 30) return UI.fieldErr('bag-add', 'bag-add-err', '한 번에 30개까지 넣을 수 있어요.');
+    rememberUndo();
+    if (n) n.items.push(t);
+    else S.notes.push({ id: Store.uid('n'), kid: kid.id, date: k, title: BAG_ADD_TITLE, items: [t] });
+    refreshHistory(kid, k);
+    save();
+    $('bag-add').value = '';
+    UI.clearErr('bag-add', 'bag-add-err');
+    UI.renderBagSheet(S, V, kid, Logic.buildBag(S, kid, k));
+    var pg = UI.pageOfCell(t);
+    if (pg >= 0) V.pg.bag = pg;
+    renderAll();
+    UI.flash(UI.cellByName(t));
+    SFX.page();
+    UI.toast(t + ' 넣었어요', true);
   }
   // 그날 가방 기록이 이미 있으면 지금 챙긴 것으로 다시 쓴다 (가방 달력 스티커가 맞게)
   function refreshHistory(kid, k) {
@@ -1209,6 +1242,7 @@
     var p = V.pack.id ? Logic.findPack(S.packs, V.pack.id) : null;
     if (p) {
       if (p.kind !== kind) detachPack(p.id);
+      if (p.name !== name) delete p.short;   // 이름을 바꾸면 기본 짧은 이름은 버리고 새 이름 앞 3글자를 쓴다 (UI.shortName)
       p.name = name; p.pic = pic; p.kind = kind; p.items = V.pack.items.slice();
     } else S.packs.push({ id: Store.uid('p'), kind: kind, name: name, icon: '🎒', pic: pic, items: V.pack.items.slice() });
     save();
@@ -1713,6 +1747,9 @@
     'hold-tip-ok': function () { seeHoldTip(); UI.hideBubble(); autoNextPage(); },
     'out-check': toggleOut,
     'check-all': checkAll,
+    'bag-add': function () { UI.showBagAdd(true); },
+    'bag-add-go': bagAdd,
+    'bag-add-close': function () { UI.showBagAdd(false); },
     'carry-check': carryCheck,
     'bag-done': bagDone,
     'skip-item': function (b) { skipItem(b.getAttribute('data-name')); },
@@ -1931,7 +1968,7 @@
     'pack-add': 'pack', 'pack-pic': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
     'edit-off': 'edit', 'edit-reset': 'edit', 'form-edit': 'edit',
     'form-note': 'note', 'form-pack': 'pack', 'week-parse': 'weekPaste', 'form-after': 'after', 'form-event': 'kid',
-    'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'carry-check': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'stay-toggle': 'kid',
+    'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'bag-add': 'kid', 'bag-add-go': 'kid', 'carry-check': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'stay-toggle': 'kid',
     'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach', 'family-share': 'family', 'family-copy': 'family',
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
     'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter',
@@ -2001,7 +2038,7 @@
     eatClick = false;
     if (!e.target.closest) return;
     if (sheetDragStart(e)) { swipe = null; return; }
-    var cell = e.target.closest('#sheet-bag .check:not(.out-cell)');   // '꺼낼 것' 칸은 길게 눌러도 그냥 누름
+    var cell = e.target.closest('#sheet-bag .check:not(.out-cell):not(.add-cell)');   // '꺼낼 것'·'+ 물건' 칸은 길게 눌러도 그냥 누름
     var kidBtn = e.target.closest('#kid-mode');
     if (cell || (kidBtn && V.kidMode)) {
       var el = cell || kidBtn;
@@ -2117,6 +2154,9 @@
     if (e.key === 'Enter' && e.target && e.target.id === 'note-add' && V.note) {
       e.preventDefault();
       if (noteAddItem(e.target.value) === true) e.target.value = '';
+    } else if (e.key === 'Enter' && e.target && e.target.id === 'bag-add') {
+      e.preventDefault();   // 가방 시트 물건 넣기: 엔터로도 넣는다
+      if (ready('bag-add-go')) bagAdd();
     } else if (e.key === 'Enter' && e.target && e.target.id === 'pack-add' && V.pack) {
       e.preventDefault();
       packAddItem();

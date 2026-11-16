@@ -3,21 +3,22 @@ var DATA = (function () {
   // 과목 꾸러미 15 — 그 과목이 시간표에 있는 날 가방에 들어갈 것 (pic: 카드·칸에 그리는 ICONS 의 선 그림 id)
   var SUBJECTS = [
     // c: 시간표 칸 색 — style.css :root 의 색 변수 이름 (ui.js CELL_COLORS 에 있는 것만 쓴다)
-    { id: 's-kor', name: '국어', icon: '📖', pic: 'kor', c: '--accent', items: ['국어 교과서', '국어 활동 책', '받아쓰기 공책'] },
-    { id: 's-math', name: '수학', icon: '➗', pic: 'math', c: '--sub', items: ['수학 교과서', '수학 익힘 책', '30cm 자'] },
-    { id: 's-int', name: '통합교과', icon: '🌱', pic: 'sprout', c: '--ok', items: ['통합 교과서', '색연필', '풀'] },
-    { id: 's-safe', name: '안전한 생활', icon: '🦺', pic: 'shield', c: '--gold', items: ['안전한 생활 책'] },
-    { id: 's-soc', name: '사회', icon: '🗺️', pic: 'map', c: '--gold', items: ['사회 교과서', '사회과 부도'] },
-    { id: 's-sci', name: '과학', icon: '🔬', pic: 'flask', c: '--ok', items: ['과학 교과서', '실험 관찰 책'] },
-    { id: 's-eng', name: '영어', icon: '🔤', pic: 'abc', c: '--violet', items: ['영어 교과서', '영어 공책'] },
-    { id: 's-mor', name: '도덕', icon: '🤝', pic: 'heart', c: '--accent-deep', items: ['도덕 교과서'] },
-    { id: 's-prac', name: '실과', icon: '🧵', pic: 'apron', c: '--accent-deep', items: ['실과 교과서', '앞치마'] },
-    { id: 's-pe', name: '체육', icon: '🏃', pic: 'gym', c: '--danger', items: ['체육복', '운동화', '물병', '머리끈'] },
-    { id: 's-mus', name: '음악', icon: '🎵', pic: 'sheetmusic', c: '--violet', items: ['음악 교과서', '리코더'] },
-    { id: 's-art', name: '미술', icon: '🎨', pic: 'paint', c: '--accent', items: ['미술 교과서', '크레파스', '물감과 붓', '팔토시'] },
-    { id: 's-cre', name: '창의적 체험활동', icon: '🧩', pic: 'puzzle', c: '--muted', items: ['활동지 파일'] },
-    { id: 's-read', name: '아침 독서', icon: '📚', pic: 'book', c: '--sub', items: ['읽을 책 한 권', '독서록'] },
-    { id: 's-dict', name: '받아쓰기 시험', icon: '✏️', pic: 'pencil', c: '--accent-deep', items: ['받아쓰기 공책', '연필 두 자루'] }
+    // short: 좁은 시간표 칸에 쓰는 짧은 이름 (1~3글자, 15개가 서로 다르다. 칸의 aria-label 에는 name 을 그대로 쓴다)
+    { id: 's-kor', name: '국어', short: '국어', icon: '📖', pic: 'kor', c: '--accent', items: ['국어 교과서', '국어 활동 책', '받아쓰기 공책'] },
+    { id: 's-math', name: '수학', short: '수학', icon: '➗', pic: 'math', c: '--sub', items: ['수학 교과서', '수학 익힘 책', '30cm 자'] },
+    { id: 's-int', name: '통합교과', short: '통합', icon: '🌱', pic: 'sprout', c: '--ok', items: ['통합 교과서', '색연필', '풀'] },
+    { id: 's-safe', name: '안전한 생활', short: '안전', icon: '🦺', pic: 'shield', c: '--gold', items: ['안전한 생활 책'] },
+    { id: 's-soc', name: '사회', short: '사회', icon: '🗺️', pic: 'map', c: '--gold', items: ['사회 교과서', '사회과 부도'] },
+    { id: 's-sci', name: '과학', short: '과학', icon: '🔬', pic: 'flask', c: '--ok', items: ['과학 교과서', '실험 관찰 책'] },
+    { id: 's-eng', name: '영어', short: '영어', icon: '🔤', pic: 'abc', c: '--violet', items: ['영어 교과서', '영어 공책'] },
+    { id: 's-mor', name: '도덕', short: '도덕', icon: '🤝', pic: 'heart', c: '--accent-deep', items: ['도덕 교과서'] },
+    { id: 's-prac', name: '실과', short: '실과', icon: '🧵', pic: 'apron', c: '--accent-deep', items: ['실과 교과서', '앞치마'] },
+    { id: 's-pe', name: '체육', short: '체육', icon: '🏃', pic: 'gym', c: '--danger', items: ['체육복', '운동화', '물병', '머리끈'] },
+    { id: 's-mus', name: '음악', short: '음악', icon: '🎵', pic: 'sheetmusic', c: '--violet', items: ['음악 교과서', '리코더'] },
+    { id: 's-art', name: '미술', short: '미술', icon: '🎨', pic: 'paint', c: '--accent', items: ['미술 교과서', '크레파스', '물감과 붓', '팔토시'] },
+    { id: 's-cre', name: '창의적 체험활동', short: '창체', icon: '🧩', pic: 'puzzle', c: '--muted', items: ['활동지 파일'] },
+    { id: 's-read', name: '아침 독서', short: '독서', icon: '📚', pic: 'book', c: '--sub', items: ['읽을 책 한 권', '독서록'] },
+    { id: 's-dict', name: '받아쓰기 시험', short: '받쓰', icon: '✏️', pic: 'pencil', c: '--accent-deep', items: ['받아쓰기 공책', '연필 두 자루'] }
   ];
 
   // 방과후·학원 꾸러미 15
