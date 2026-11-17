@@ -373,6 +373,21 @@ body.reduce .mouth, body.reduce .bag-lid { animation: none !important; }
 .stk.big .stk-pic { width: 58px; height: 58px; }
 @keyframes pop { 0% { transform: scale(0.3) rotate(-30deg); } 100% { transform: scale(1) rotate(-8deg); } }
 body.reduce .stk.big { animation: none; }
+/* 아이 얼굴 (kid.avatar → STICKERS 그림): 아이 칩·가방 시트 제목·다 챙겼어요 창. 색은 :root 변수만 */
+.kid-ava { --c: var(--gold); flex: none; width: 24px; height: 24px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--c); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--line); }
+.kid-ava .stk-pic { width: 16px; height: 16px; }
+.kid-ava.big { width: 48px; height: 48px; border-width: 3px; align-self: flex-end; margin-left: -28px; }
+.kid-ava.big .stk-pic { width: 32px; height: 32px; }
+#bs-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+#bs-title > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bag-sheet.kid #bs-title .kid-ava { width: 34px; height: 34px; }
+.bag-sheet.kid #bs-title .kid-ava .stk-pic { width: 22px; height: 22px; }
+/* 얼굴 고르기: 6열 × 2줄, 칸은 44px 이상 */
+.ava-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 4px; }
+.ava-chip { --c: var(--gold); min-width: 0; min-height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line); padding: 4px; cursor: pointer; }
+.ava-chip .stk-pic { width: 30px; height: 30px; padding: 3px; box-sizing: content-box; border-radius: 50%; background: var(--c); }
+.ava-chip.on { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink); }
+.ava-chip:active { transform: scale(0.95); }
 
 /* 가방 달력 */
 .cal-nav b { text-align: center; font-size: var(--t-3); }
@@ -547,6 +562,15 @@ body.reduce .stk.big { animation: none; }
 .pill.soon { background: var(--soft); color: var(--accent-deep); }
 .up-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .up-row:last-child { border-bottom: 0; }
+/* 이번 주 가방: 날마다 한 줄 (누르면 그날 가방) */
+.wb-row { display: flex; flex-direction: column; gap: 4px; width: 100%; min-height: 44px; padding: 8px 6px; border: 0; border-bottom: 1px solid var(--line); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
+.wb-row:last-of-type { border-bottom: 0; }
+.wb-row.on { background: var(--soft); }
+.wb-row:active { transform: scale(0.98); }
+.wb-head { display: flex; align-items: center; gap: 8px; }
+.wb-n { font-weight: 800; font-size: var(--t-2); }
+.wb-chips { min-height: 0; }
+.wb-add { pointer-events: none; }
 .up-row { flex-wrap: wrap; }
 .up-row .up-buy { flex: 1 1 100%; min-width: 0; }
 .up-buy .chip { min-height: 44px; padding: 6px 12px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }

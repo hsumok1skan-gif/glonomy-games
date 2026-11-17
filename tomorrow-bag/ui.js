@@ -332,7 +332,7 @@ var UI = (function () {
     S.kids.forEach(function (k) {
       var c = kidChipState(S, k, bk);
       h += '<button class="chip kid-chip' + (k.id === S.cur ? ' on' : '') + (c.all ? ' kid-done' : '') + '" type="button" data-act="kid-pick" data-id="' + k.id + '" aria-label="' + esc(c.label) + '">' +
-        esc(k.name) + (k.sample ? ' (예시)' : '') +
+        kidAvaHTML(k) + esc(k.name) + (k.sample ? ' (예시)' : '') +
         (c.pr.total ? '<span class="kid-prog" aria-hidden="true">' + (c.all ? '✓' : c.pr.done + '/' + c.pr.total) + '</span>' : '') + '</button>';
     });
     h += '<button class="chip add" type="button" data-act="kid-new" aria-label="아이 넣기">+</button>';
@@ -440,8 +440,11 @@ var UI = (function () {
       top += '<button class="up-pill" type="button" id="bag-upcoming" data-act="upcoming">D-' + dDay(up[0].date, todayKey) + ' ' + esc(up[0].title || '알림장') + ' 준비물' +
         (up.length > 1 ? ' 외 ' + (up.length - 1) : '') + '</button>';
     }
-    if (V.offset !== 0) top += '<span class="spacer"></span><button class="chip" type="button" data-act="day-now">↺ 지금 가방</button>';
-    if (top) h += '<div class="top-row no-print">' + top + '</div>';
+    top += '<span class="spacer"></span>';
+    if (V.offset !== 0) top += '<button class="chip" type="button" data-act="day-now">↺ 지금 가방</button>';
+    // 이번 주 가방 한눈에 (학교 가는 날 5일)
+    top += '<button class="chip" type="button" id="bag-weekbag" data-act="weekbag-open">이번 주</button>';
+    h += '<div class="top-row no-print">' + top + '</div>';
 
     if (!bag.school) {
       root.innerHTML = h + emptyBox('rest', '이날은 쉬는 날이에요', '', [{ act: 'day-next', label: '다음 학교 가는 날' }]);
@@ -572,7 +575,7 @@ var UI = (function () {
     var pr = Logic.progress(S, kid, bag);
     sheet.classList.toggle('kid', !!V.kidMode);
     sheet.classList.toggle('closed', pr.total > 0 && pr.done >= pr.total);
-    $('bs-title').textContent = Logic.nameI(kid.name) + ' ' + Logic.dayLabel(bag.date) + ' 가방';
+    $('bs-title').innerHTML = kidAvaHTML(kid) + '<span>' + esc(Logic.nameI(kid.name) + ' ' + Logic.dayLabel(bag.date) + ' 가방') + '</span>';
     var kb = $('kid-mode');
     kb.setAttribute('aria-pressed', String(!!V.kidMode));
     kb.textContent = V.kidMode ? '아이가 챙겨요 ✓' : '아이가 챙겨요';
@@ -824,13 +827,32 @@ var UI = (function () {
   function stickerPic(s) {
     return '<svg class="stk-pic" viewBox="0 0 24 24" aria-hidden="true">' + s.d + '</svg>';
   }
+  // ---- 아이 얼굴 (kid.avatar = DATA.STICKERS 번호 0~11) ----
+  function avaIndex(kid) {
+    var a = kid ? kid.avatar : 0;
+    return typeof a === 'number' && a % 1 === 0 && a >= 0 && a < DATA.STICKERS.length ? a : 0;
+  }
+  // 아이 칩·가방 시트 제목·다 챙겼어요 창에 붙는 동그란 얼굴. 그림은 꾸밈이라 aria-hidden (이름은 옆 글자·aria-label 이 말한다)
+  function kidAvaHTML(kid, big) {
+    var s = DATA.STICKERS[avaIndex(kid)];
+    return '<span class="kid-ava' + (big ? ' big' : '') + '" style="--c:var(' + s.c + ')" aria-hidden="true">' + stickerPic(s) + '</span>';
+  }
+  // 아이 넣기·고치기 1단계: 얼굴 12개 중 하나 고르기
+  function renderKidAvatars(sel) {
+    var h = '';
+    DATA.STICKERS.forEach(function (s, i) {
+      var on = i === sel;
+      h += '<button class="ava-chip' + (on ? ' on' : '') + '" type="button" data-act="kid-avatar" data-i="' + i + '" aria-pressed="' + on + '" aria-label="' + esc(s.name) + ' 얼굴" style="--c:var(' + s.c + ')">' + stickerPic(s) + '</button>';
+    });
+    $('kid-avatars').innerHTML = h;
+  }
   function stickerHTML(k, big) {
     var s = DATA.STICKERS[Logic.stickerFor(k)];
     return '<span class="stk' + (big ? ' big' : '') + '" style="--c:var(' + s.c + ')" role="img" aria-label="' + esc(s.name) + ' 스티커">' +
       stickerPic(s) + (big ? '<span class="sd" aria-hidden="true">' + Logic.shortDay(k) + '</span>' : '') + '</span>';
   }
   function renderDone(S, kid, k, kidMode) {
-    $('done-art').innerHTML = bagArt({ done: 1, total: 1, pct: 100 });
+    $('done-art').innerHTML = bagArt({ done: 1, total: 1, pct: 100 }) + kidAvaHTML(kid, true);
     // 밤 알림은 한 번만 권한다. 아이가 챙기는 중이면 어른이 볼 때까지 미룬다
     $('done-remind-slot').innerHTML = (S.settings.remindAsked || kidMode) ? '' :
       '<button class="btn wide" type="button" id="done-remind" data-act="remind-open" style="margin-top:8px">밤 알림 받기</button>';
@@ -933,6 +955,27 @@ var UI = (function () {
     var bb = $('up-buy-copy');
     bb.disabled = !n;
     bb.textContent = '살 것 ' + n + '개 복사';
+  }
+
+  // ---- 이번 주 가방 시트: 학교 가는 날 5일을 날마다 한 줄 (날짜 · 물건 n개 · 알림장 · 앞날보다 더 챙길 물건 칩). 누르면 그날 가방으로 ----
+  function renderWeekBag(S, kid, k, todayKey) {
+    var box = $('weekbag-list');
+    if (!box) return;
+    var list = Logic.weekBags(S, kid, k);
+    var h = '';
+    list.forEach(function (d) {
+      var chips = d.add.slice(0, 8).map(function (x) { return '<span class="chip wb-add">+ ' + esc(x) + '</span>'; }).join('') +
+        (d.add.length > 8 ? '<span class="chip wb-add">외 ' + (d.add.length - 8) + '개</span>' : '');
+      h += '<button class="wb-row' + (d.date === k ? ' on' : '') + '" type="button" data-act="weekbag-day" data-date="' + d.date + '" aria-label="' +
+        Logic.shortLabel(d.date) + ' 가방 물건 ' + d.total + '개' + (d.add.length ? ', 더 챙길 것 ' + esc(d.add.join(', ')) : '') + (d.notes ? ', 알림장 ' + d.notes + '개' : '') + '">' +
+        '<span class="wb-head"><b>' + Logic.shortLabel(d.date) + '</b><span class="tiny">' + Logic.relLabel(d.date, todayKey) + '</span>' +
+        '<span class="spacer"></span><span class="wb-n">물건 ' + d.total + '개</span>' +
+        (d.notes ? '<span class="pill soon">📝 ' + d.notes + '</span>' : '') + '</span>' +
+        '<span class="chips one-line wb-chips">' + (chips || '<span class="tiny">앞날과 같아요</span>') + '</span></button>';
+    });
+    if (!list.length) h = miniEmpty('calendar', '이번 주 가방이 없어요', { act: 'go', label: '시간표 넣기', extra: ' data-to="week"' });
+    else h += '<p class="tiny">+ 는 앞 학교 가는 날보다 더 챙길 물건이에요. 줄을 누르면 그날 가방으로 가요</p>';
+    box.innerHTML = h;
   }
 
   // ---- 시간표: 한 표 — 위 머리 줄 월~금, 왼쪽 열 교시(이름 아래 시간), 맨 아래 방과후 줄 ----
@@ -1294,14 +1337,15 @@ var UI = (function () {
       '</div>';
     $('more-root').innerHTML = h;
   }
-  // 화면 색 시트: 화면 색 · 움직임 줄이기 · 소리 · 진동
+  // 화면 색 시트: 화면 색 · 움직임 줄이기 · 소리 · 진동 · 읽어 주기
   function renderLook(S) {
     var st = S.settings;
     $('look-list').innerHTML =
       setRow('toggle-set', '화면 색', st.dark ? '어둡게' : '밝게', ' data-k="dark" aria-pressed="' + !!st.dark + '"', st.dark ? 'on' : '') +
       setRow('toggle-set', '움직임 줄이기', st.reduce ? '켜짐' : '꺼짐', ' data-k="reduce" aria-pressed="' + !!st.reduce + '"', st.reduce ? 'on' : '') +
       setRow('toggle-set', '소리', st.mute ? '꺼짐' : '켜짐', ' data-k="mute" aria-pressed="' + !st.mute + '"', st.mute ? '' : 'on') +
-      setRow('toggle-set', '진동', st.vibe ? '켜짐' : '꺼짐', ' data-k="vibe" aria-pressed="' + !!st.vibe + '"', st.vibe ? 'on' : '');
+      setRow('toggle-set', '진동', st.vibe ? '켜짐' : '꺼짐', ' data-k="vibe" aria-pressed="' + !!st.vibe + '"', st.vibe ? 'on' : '') +
+      setRow('toggle-set', '읽어 주기', st.speak ? '켜짐' : '꺼짐', ' data-k="speak" aria-pressed="' + !!st.speak + '"', st.speak ? 'on' : '');
   }
   // 교시 시간 시트: 교시마다 시작·끝 시각, 점심 자리 표시, 학년별 교시 수
   function renderTimes(list, gp) {
@@ -1580,8 +1624,8 @@ var UI = (function () {
   return {
     $: $, esc: esc, packPic: packPic, packPicId: packPicId, renderPackPics: renderPackPics, MINI_PICS: MINI_PICS,transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
-    setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderBag: renderBag, renderBagSheet: renderBagSheet, showBagAdd: showBagAdd, pageOfCell: pageOfCell, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
-    fly: fly, stamp: stamp, showBubble: showBubble, showHoldTip: showHoldTip, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming,
+    setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderKidAvatars: renderKidAvatars, kidAvaHTML: kidAvaHTML, renderBag: renderBag, renderBagSheet: renderBagSheet, showBagAdd: showBagAdd, pageOfCell: pageOfCell, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
+    fly: fly, stamp: stamp, showBubble: showBubble, showHoldTip: showHoldTip, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming, renderWeekBag: renderWeekBag,
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter, renderTplPreview: renderTplPreview, shortName: shortName,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,

@@ -76,6 +76,7 @@
     UI.renderPacks(S, V);
     UI.renderMore(S, kid);
     if (kid && UI.isOpen('sheet-upcoming')) UI.renderUpcoming(S, kid, bagKey(), t);
+    if (kid && UI.isOpen('sheet-weekbag')) UI.renderWeekBag(S, kid, Logic.bagDate(now(), S.settings), t);
     // 열려 있는 시트도 새 데이터로
     if (UI.isOpen('sheet-bag')) {
       if (kid) UI.renderBagSheet(S, V, kid, Logic.buildBag(S, kid, bagKey()));
@@ -162,6 +163,20 @@
     done: function () { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, f * 1.01, i * 0.11, 0.24, 'triangle', 0.16); }); }
   };
 
+  // ---- 읽어 주기: 아이가 챙겨요에서 넣은 물건 이름을 기기 음성으로 (설정 → 화면 색 → 읽어 주기) ----
+  // 기기 안의 음성만 쓴다. 소리를 껐거나 읽어 주기를 껐거나 음성이 없는 브라우저면 말하지 않는다
+  function speak(text) {
+    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+    if (S.settings.mute !== false || S.settings.speak !== true) return;
+    try {
+      window.speechSynthesis.cancel();   // 앞 말이 남아 있으면 끊고 새로 말한다 (빨리 여러 칸을 눌러도 밀리지 않게)
+      var u = new window.SpeechSynthesisUtterance(String(text || ''));
+      u.lang = 'ko-KR';
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* 읽어 주지 못해도 앱은 돈다 */ }
+  }
+
   // ---- 진동: 진동이 되는 기기에서만 짧게 (설정 → 화면 색 → 진동) ----
   function haptic(ms) {
     if (!S.settings.vibe || !navigator.vibrate) return;
@@ -175,6 +190,14 @@
     S.kids.forEach(function (x) { if (x.id === id) k = x; });
     $('kid-name').value = k ? k.name : '';
     $('kid-grade').value = k ? String(k.grade) : '1';
+    // 얼굴: 고치기는 그 아이 것, 새 아이는 다른 아이가 아직 안 쓴 첫 얼굴
+    if (k) V.kidAva = k.avatar >= 0 && k.avatar <= 11 ? k.avatar : 0;
+    else {
+      var used = S.kids.map(function (x) { return x.avatar; });
+      V.kidAva = 0;
+      for (var ai = 0; ai < DATA.STICKERS.length; ai++) if (used.indexOf(ai) < 0) { V.kidAva = ai; break; }
+    }
+    UI.renderKidAvatars(V.kidAva);
     $('kid-del').style.display = k ? '' : 'none';
     $('kid-template').checked = !k;
     $('kid-template-row').style.display = k ? 'none' : '';   // 고치기 모드에서는 이미 채운 칸을 건드리지 않는다
@@ -286,10 +309,11 @@
     var k = null;
     S.kids.forEach(function (x) { if (x.id === V.kidEdit) k = x; });
     var filled = false;
-    if (k) { k.name = name; k.grade = grade; }
+    var ava = V.kidAva >= 0 && V.kidAva <= 11 && V.kidAva % 1 === 0 ? V.kidAva : 0;
+    if (k) { k.name = name; k.grade = grade; k.avatar = ava; }
     else {
       var np = S.settings.gradeP[grade] || 6;   // 학년별 교시 수 (설정 → 교시 시간)
-      k = { id: Store.uid('k'), name: name, grade: grade, periods: np, week: Store.emptyWeek(np) };
+      k = { id: Store.uid('k'), name: name, grade: grade, periods: np, week: Store.emptyWeek(np), avatar: ava };
       var tw = $('kid-template').checked ? Logic.gradeWeek(DATA.TIMETABLES, S.packs, grade, k.periods) : null;
       if (tw) for (var d = 1; d <= 5; d++) { k.week[d].p = tw[d]; if (tw[d].some(Boolean)) filled = true; }
       kaList.forEach(function (a) {
@@ -441,6 +465,7 @@
       UI.stamp(cell);
       UI.fly(cell, V.kidMode);
       (V.kidMode ? SFX.inKid : SFX.in)();
+      if (V.kidMode) speak(name + ' 쏙');   // 글자를 아직 잘 못 읽는 아이도 무엇을 넣었는지 듣는다
       haptic(V.kidMode ? [12, 40, 12] : 12);
       // 아침에 넣을 물건만 남아도 밤에는 다 챙긴 것으로 친다. 아침 물건을 하나씩 넣을 때는(가방 화면 아침 줄) 다 넣었을 때만 다시 띄운다
       if ((pr.total && pr.done === pr.total) || (!wasNight && Logic.nightDone(S, kid, bag))) completeBag(kid, k);
@@ -476,7 +501,7 @@
     var sh = document.querySelector('#sheet-bag .bag-sheet');
     if (sh) sh.classList.add('closed');
     SFX.done();
-    var wait = document.body.classList.contains('reduce') ? 0 : 650;
+    var wait =document.body.classList.contains('reduce') ? 0 : 650;
     setTimeout(function () {
       var bag = Logic.buildBag(S, kid, k), pr = Logic.progress(S, kid, bag);
       if ((!pr.total || pr.done !== pr.total) && !Logic.nightDone(S, kid, bag)) return;   // 그 사이 다시 뺐으면 그대로
@@ -484,6 +509,7 @@
       UI.closeSheet('sheet-bag');
       UI.renderDone(S, kid, k, V.kidMode);
       openSheet('ov-done');
+      if (V.kidMode) speak('가방 다 챙겼어요');
       haptic([20, 60, 20, 60, 40]);
       UI.confetti($('ov-done'));
       renderAll();
@@ -698,6 +724,22 @@
     if (!kid) return;
     UI.renderUpcoming(S, kid, bagKey(), todayKey());
     openSheet('sheet-upcoming');
+  }
+  // 이번 주 가방: 지금 챙길 가방 날부터 학교 가는 날 5일
+  function openWeekBag() {
+    var kid = curKid();
+    if (!kid) return;
+    UI.renderWeekBag(S, kid, Logic.bagDate(now(), S.settings), todayKey());
+    openSheet('sheet-weekbag');
+  }
+  // 줄을 누르면 그날 가방으로
+  function weekBagDay(b) {
+    var d = b.getAttribute('data-date');
+    if (!Logic.validKey(d || '')) return;
+    V.offset = offsetTo(d);
+    UI.closeSheet('sheet-weekbag');
+    renderAll();
+    go('bag');
   }
   // 살 것: 며칠 뒤 준비물 칩을 눌러 모으고, 한 번에 복사해 장 보러 간다
   function buyToggle(name) {
@@ -1622,7 +1664,7 @@
     af(1, 'a-tkd', '14:30', g[1] || ''); af(3, 'a-tkd', '14:30', g[1] || '');
     af(2, 'a-swim', '16:00', g[0] || ''); af(4, 'a-piano', '15:00', g[0] || ''); af(5, 'a-care', '13:30', '');
     var name = S.kids.some(function (k) { return k.name === '하윤'; }) ? '예시 하윤' : '하윤';
-    S.kids.push({ id: id, name: name, grade: 2, periods: 6, week: w, sample: true });
+    S.kids.push({ id: id, name: name, grade: 2, periods: 6, week: w, sample: true, avatar: 10 });
     S.cur = id;
     var hs = S.settings.holidays;
     var next = Logic.bagDate(now(), S.settings);
@@ -1697,6 +1739,15 @@
     'kid-pick': function (b) { S.cur = b.getAttribute('data-id'); V.offset = 0; save(); renderAll(); },
     'kid-new': function () { openKid(null); },
     'kid-edit': function (b) { openKid(b.getAttribute('data-id')); },
+    // 아이 얼굴 고르기 (저장은 submitKid 가 k.avatar 로)
+    'kid-avatar': function (b) {
+      var i = +b.getAttribute('data-i');
+      if (!(i >= 0 && i <= 11)) return;
+      V.kidAva = i;
+      UI.renderKidAvatars(i);
+      var nb = document.querySelector('#kid-avatars [data-i="' + i + '"]');
+      if (nb) nb.focus();
+    },
     'kid-del': deleteKid,
     'kid-next': kidNext,
     'kid-back': function () { showKidStep(1); $('kid-name').focus(); },
@@ -1774,6 +1825,8 @@
     'share': share,
     'done-copy': doneCopy,
     'upcoming': openUpcoming,
+    'weekbag-open': openWeekBag,
+    'weekbag-day': weekBagDay,
     'buy-toggle': function (b) { buyToggle(b.getAttribute('data-name')); },
     'buy-copy': buyCopy,
     'buy-clear': buyClear,

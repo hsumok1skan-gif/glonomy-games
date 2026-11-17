@@ -303,6 +303,26 @@ var Logic = (function () {
     return { add: only(cur, keys(prev)), out: only(prev, keys(cur)) };
   }
 
+  // 이번 주 가방 한눈에: fromKey 부터(학교 가는 날이 아니면 다음 학교 가는 날부터) 학교 가는 날 5일 동안
+  // 날마다 { date, total: 그날 가방 물건 수, add: 앞 학교 가는 날보다 더 챙길 물건(bagDiff add), notes: 그날 알림장 수 }
+  function weekBags(state, kid, fromKey) {
+    if (!kid) return [];
+    var hs = (state.settings && state.settings.holidays) || [];
+    var k = isSchoolDay(fromKey, hs) ? fromKey : nextSchoolDay(fromKey, hs);
+    var out = [];
+    for (var i = 0; i < 5; i++) {
+      var day = k;
+      out.push({
+        date: day,
+        total: buildBag(state, kid, day).items.length,
+        add: bagDiff(state, kid, day).add,
+        notes: (state.notes || []).filter(function (n) { return n.kid === kid.id && n.date === day; }).length
+      });
+      k = nextSchoolDay(k, hs);
+    }
+    return out;
+  }
+
   // 어제 넣은 물건 그대로: 앞 학교 가는 날 챙긴 물건(S.checks) 가운데 오늘 가방에도 있는 것 (norm·소문자 비교).
   // 아침에 넣을 물건(물병·도시락)은 밤사이 꺼내므로 뺀다. 오늘 가방의 이름으로 돌려준다
   function carryOver(state, kid, k) {
@@ -860,7 +880,7 @@ var Logic = (function () {
     var kid = state.kids.filter(function (x) { return !x.sample && x.name === f.name; })[0] || null;
     var isNew = !kid;
     if (isNew) {
-      kid = { id: newId('k'), name: f.name, grade: f.grade, periods: f.periods, week: week };
+      kid = { id: newId('k'), name: f.name, grade: f.grade, periods: f.periods, week: week, avatar: 0 };
       state.kids.push(kid);
     } else {
       kid.grade = f.grade;
@@ -1234,6 +1254,17 @@ var Logic = (function () {
     eq('이번 주 데리러 가기 바꾼 사람', pw['엄마'][0].date + '|' + pw['엄마'][0].time + '|' + pw['엄마'][0].kid + '|' + pw['엄마'][0].name, '2026-11-10|15:00|서아|수영');
     eq('이번 주 데리러 가기 아빠 날짜순', pw['아빠'].map(function (p) { return p.date; }).join(','), '2026-11-09,2026-11-11');
     eq('이번 주 데리러 가기 글', pickupWeekText('아빠', pw['아빠']), '아빠 이번 주 데리러 갈 날: 11/9(월) 14:30 하윤 태권도, 11/11(수) 14:30 하윤 태권도');
+    // 9-11) 이번 주 가방: 일요일(11/08)이면 월~금. 서아는 화·목 수영(수경), 금요일은 쉼, 수요일 알림장 색종이
+    var wbs = { kids: pws.kids, packs: pws.packs, settings: pws.settings, dayEdits: pws.dayEdits,
+      notes: [{ id: 'n1', kid: 'k', date: '2026-11-11', title: '', items: ['색종이'] }] };
+    var wb = weekBags(wbs, pws.kids[0], '2026-11-08');
+    eq('이번 주 가방 길이 5', wb.length, 5);
+    // 금요일(11/13)부터, 다음 주 월요일(11/16)이 쉬는 날이면 둘째 날은 다음 주 화요일(11/17)
+    var wbf = weekBags({ kids: wbs.kids, packs: wbs.packs, notes: [], settings: { holidays: ['2026-11-16'] } }, pws.kids[0], '2026-11-13');
+    eq('이번 주 가방 금요일부터 둘째 날', wbf[0].date + '|' + wbf[1].date + '|' + wbf.length, '2026-11-13|2026-11-17|5');
+    eq('이번 주 가방 날짜',wb.map(function (d) { return d.date.slice(5); }).join(','), '11-09,11-10,11-11,11-12,11-13');
+    eq('이번 주 가방 물건 수', wb.map(function (d) { return d.total; }).join(','), '0,1,1,1,0');
+    eq('이번 주 가방 더 챙길 것·알림장', wb[1].add.join(',') + '|' + wb[2].add.join(',') + '|' + wb[2].notes + '|' + wb[3].notes, '수경|색종이|1|0');
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -1251,7 +1282,7 @@ var Logic = (function () {
     holidayRange: holidayRange, holidayGroups: holidayGroups, spanDays: spanDays, HOLIDAY_MAX_DAYS: HOLIDAY_MAX_DAYS,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME

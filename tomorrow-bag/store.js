@@ -48,6 +48,7 @@ var Store = (function () {
         dark: false,
         mute: false,
         vibe: true,                                          // 칸을 누를 때 짧은 진동 (진동이 되는 기기만)
+        speak: true,                                         // 아이가 챙겨요에서 넣은 물건 이름을 읽어 준다 (기기 음성, 소리가 켜졌을 때만)
         teacher: false,
         holidays: [],
         guardians: ['엄마', '아빠'],
@@ -112,6 +113,7 @@ var Store = (function () {
       if (s && p.short === undefined && p.name === s.name) p.short = s.short;
     });
     if (typeof d.settings.vibe !== 'boolean') d.settings.vibe = base.settings.vibe;
+    if (typeof d.settings.speak !== 'boolean') d.settings.speak = base.settings.speak;
     if (typeof d.settings.holdTipSeen !== 'boolean') d.settings.holdTipSeen = base.settings.holdTipSeen;
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
@@ -133,6 +135,8 @@ var Store = (function () {
       if (!e.after || typeof e.after !== 'object' || Array.isArray(e.after)) e.after = {};
     });
     d.kids.forEach(function (k) {
+      // 아이 얼굴(DATA.STICKERS 번호 0~11): 정수가 아니거나 범위 밖이면 0(반짝 별)
+      if (!(typeof k.avatar === 'number' && k.avatar % 1 === 0 && k.avatar >= 0 && k.avatar <= 11)) k.avatar = 0;
       if (!k.week) k.week = emptyWeek(k.periods || 6);
       for (var i = 1; i <= 5; i++) {
         if (!k.week[i]) k.week[i] = { p: [], after: [] };
