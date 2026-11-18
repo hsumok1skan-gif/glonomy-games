@@ -477,7 +477,17 @@ var UI = (function () {
       h += '<span class="pk' + (p.changed ? ' changed' : '') + '"><span class="em" aria-hidden="true">' + packPic(p) + '</span>' + esc(p.time || '') + ' ' + esc(p.name) +
         (p.off ? ' 쉼' : (p.who ? ' → <b>' + esc(p.who) + '</b>' : '')) + (p.changed ? DAY_TAG : '') + '</span>';
     });
-    h += '</div></div>';
+    h += '</div>';
+    // 빨래해 둘 것: 앞 학교 가는 날 쓴 체육복·수영복 같은 것이 사흘 안에 또 필요하면 한 줄 (없으면 그리지 않는다)
+    var wash = Logic.washPlan(S, kid, k);
+    if (wash.length) {
+      h += '<div class="strip wash-line" id="wash-line" aria-label="빨래해 둘 것"><span class="lab">빨래</span>' +
+        wash.map(function (w) {
+          return '<span class="ls wash"><span class="it-ic" aria-hidden="true">' + pic(w.name) + '</span>' +
+            Logic.shortLabel(w.date) + ' ' + esc(w.name) + '</span>';
+        }).join('') + '</div>';
+    }
+    h += '</div>';
     h += '<button class="btn small day-edit-btn no-print" type="button" data-act="edit-open">이날만<br>바꾸기</button></div>';
 
     // 밤 물건을 다 챙겼으면 버튼 위에 아침에 넣을 물건 줄
@@ -1189,6 +1199,17 @@ var UI = (function () {
     $('kid-after').style.display = acad.length ? '' : 'none';
   }
 
+  // 아이 넣기 3단계 오늘 알림장: 자주 쓰는 순 준비물 앞 9개를 칩 격자(3열×3줄)로. sel = 고른 이름 배열 (V.kidNote)
+  function renderKidNote(sel, S) {
+    sel = sel || [];
+    var list = Logic.findSupplies('', 'all', 'often', Logic.supplyUsage(S || { notes: [] })).slice(0, 9);
+    $('kid-note-chips').innerHTML = list.map(function (x) {
+      var on = sel.indexOf(x) >= 0;
+      return '<button class="chip' + (on ? ' pick' : '') + '" type="button" data-act="kid-note-supply" data-name="' + esc(x) + '" aria-pressed="' + on + '">' +
+        '<span class="sup-ic" aria-hidden="true">' + pic(x) + '</span><span class="sup-nm">' + esc(x) + '</span></button>';
+    }).join('');
+  }
+
   // ---- 꾸러미: 그림 카드 격자 (한 쪽 9개), 옆으로 넘긴다 ----
   function renderPacks(S, V) {
     var h = '<div class="row head-row"><h1>꾸러미</h1><button class="btn small main" type="button" data-act="pack-new">+ 새 꾸러미</button></div>' +
@@ -1621,12 +1642,36 @@ var UI = (function () {
     $('selftest-out').innerHTML = '<b>' + ok + ' / ' + res.length + ' 맞아요</b>' + pagerHTML('st', pages, 0);
   }
 
+  // 가방 탭 배지: 남은 물건 수 n (0 이하면 숨긴다, 100 이상은 99+). 읽기 프로그램은 탭 이름으로 듣는다
+  function setTabBadge(n) {
+    var b = $('tab-badge');
+    if (!b) return;
+    n = Math.max(0, Math.floor(+n || 0));
+    var tab = b.closest ? b.closest('.tab') : null;
+    var txt = n > 99 ? '99+' : String(n);
+    if (!n) {
+      b.hidden = true;
+      b.textContent = '';
+      if (tab) tab.removeAttribute('aria-label');
+      return;
+    }
+    if (b.hidden || b.textContent !== txt) {
+      b.textContent = txt;
+      b.hidden = false;
+      if (!document.body.classList.contains('reduce')) {
+        b.classList.add('pop');
+        setTimeout(function () { b.classList.remove('pop'); }, 220);
+      }
+    }
+    if (tab) tab.setAttribute('aria-label', '가방, 남은 물건 ' + n + '개');
+  }
+
   return {
-    $: $, esc: esc, packPic: packPic, packPicId: packPicId, renderPackPics: renderPackPics, MINI_PICS: MINI_PICS,transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
+    $: $, esc: esc, setTabBadge: setTabBadge, packPic: packPic, packPicId: packPicId, renderPackPics: renderPackPics, MINI_PICS: MINI_PICS,transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderKidAvatars: renderKidAvatars, kidAvaHTML: kidAvaHTML, renderBag: renderBag, renderBagSheet: renderBagSheet, showBagAdd: showBagAdd, pageOfCell: pageOfCell, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,
     fly: fly, stamp: stamp, showBubble: showBubble, showHoldTip: showHoldTip, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming, renderWeekBag: renderWeekBag,
-    renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter, renderTplPreview: renderTplPreview, shortName: shortName,
+    renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter, renderKidNote: renderKidNote, renderTplPreview: renderTplPreview, shortName: shortName,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
     renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderFamily: renderFamily, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest, slideDay: slideDay

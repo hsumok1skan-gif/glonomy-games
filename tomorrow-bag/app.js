@@ -8,8 +8,9 @@
     noteMore: false,                                       // 알림장 '더 찾기' 펼침 (열 때마다 접힘)
     cell: null, after: null, day: null, note: null, pack: null, eventPick: null, kidEdit: null, teach: null,
     edit: null,                                            // 이날만 바꾸기 시트 { k: 날짜, off: {방과후 id: true} }
-    kidStep: 1,                                            // 아이 넣기 시트의 걸음 (1 이름·학년·기본 시간표, 2 방과후)
+    kidStep: 1,                                            // 아이 넣기 시트의 걸음 (1 이름·학년·기본 시간표, 2 방과후, 3 오늘 알림장)
     kidAfter: null,                                        // 아이 넣기 시트의 방과후 고르기 { pack, days, who, list: 넣어 둔 것 }
+    kidNote: null,                                         // 아이 넣기 3단계 오늘 알림장에서 칩으로 고른 준비물 [이름] (새 아이일 때만, 글은 저장할 때 읽는다)
     times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
     family: null,                                          // 가족 링크 시트 { name, link }
     firstBag: false,                                       // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
@@ -75,6 +76,14 @@
     UI.renderWeek(S, V, kid, t);
     UI.renderPacks(S, V);
     UI.renderMore(S, kid);
+    // 가방 탭 배지: 지금 아이의 오늘 밤 가방에 남은 물건 수 (밤 물건을 다 챙겼으면 0)
+    var left = 0;
+    if (kid) {
+      var tbag = Logic.buildBag(S, kid, Logic.bagDate(new Date(), S.settings));
+      var tpr = Logic.progress(S, kid, tbag);
+      left = Logic.nightDone(S, kid, tbag) ? 0 : tpr.total - tpr.done;
+    }
+    UI.setTabBadge(left);
     if (kid && UI.isOpen('sheet-upcoming')) UI.renderUpcoming(S, kid, bagKey(), t);
     if (kid && UI.isOpen('sheet-weekbag')) UI.renderWeekBag(S, kid, Logic.bagDate(now(), S.settings), t);
     // 열려 있는 시트도 새 데이터로
@@ -210,6 +219,12 @@
     UI.clearErr('kid-after-time', 'kid-after-err');
     if (k) $('kid-after').style.display = 'none';
     else UI.renderKidAfter(S, V.kidAfter);
+    // 오늘 알림장도 새 아이일 때만 (고치기는 가방 화면의 '+ 알림장')
+    V.kidNote = k ? null : [];
+    $('kid-note-paste').value = '';
+    $('kid-note-found').textContent = '';
+    UI.clearErr('kid-note-paste', 'kid-note-err');
+    if (!k) UI.renderKidNote(V.kidNote, S);
     UI.clearErr('kid-name', 'kid-err');
     // 새 아이는 이름을 넣기 전까지 '다음' 을 흐리게 막아 둔다 (빈 칸 오류를 먼저 띄우지 않는다)
     $('kid-next').disabled = !k;
@@ -217,21 +232,85 @@
     openSheet('sheet-kid');
     if (!k) $('kid-name').focus();
   }
-  // 걸음에 따라 한쪽만 보인다. 고치기는 1단계 칸과 저장 버튼만 (진행 점 없음)
+  // 걸음에 따라 한 단계만 보인다. 고치기는 1단계 칸과 저장 버튼만 (진행 점 없음, 2·3단계 없음)
   function showKidStep(n) {
+    var edit = !!V.kidEdit;
+    if (edit || n < 1 || n > 3) n = 1;
     V.kidStep = n;
-    var edit = !!V.kidEdit, two = n === 2;
-    $('kid-step-1').style.display = two ? 'none' : '';
-    $('kid-step-2').style.display = two ? '' : 'none';
-    $('kid-steps').style.display = edit ? 'none' : '';
-    $('kid-steps').setAttribute('aria-label', '2단계 중 ' + n + '단계');
-    $('kid-steps').children[0].classList.toggle('on', !two);
-    $('kid-steps').children[1].classList.toggle('on', two);
-    $('kid-title').textContent = edit ? '아이 고치기' : (two ? '방과후가 있나요?' : '아이 이름을 알려 주세요');
-    $('kid-next').style.display = edit || two ? 'none' : '';
-    $('kid-back').style.display = two ? '' : 'none';
-    $('kid-skip').style.display = two ? '' : 'none';
-    $('kid-save').style.display = edit || two ? '' : 'none';
+    var dots = $('kid-steps');
+    for (var i = 1; i <= 3; i++) {
+      $('kid-step-' + i).style.display = i === n ? '' : 'none';
+      if (dots.children[i - 1]) dots.children[i - 1].classList.toggle('on', i === n);
+    }
+    dots.style.display = edit ? 'none' : '';
+    dots.setAttribute('aria-label', '3단계 중 ' + n + '단계');
+    $('kid-title').textContent = edit ? '아이 고치기' : (n === 3 ? '오늘 알림장에 준비물이 있나요?' : n === 2 ? '방과후가 있나요?' : '아이 이름을 알려 주세요');
+    $('kid-next').style.display = !edit && n === 1 ? '' : 'none';
+    $('kid-back').style.display = n > 1 ? '' : 'none';
+    $('kid-skip').style.display = n > 1 ? '' : 'none';
+    $('kid-save').style.display = edit || n > 1 ? '' : 'none';
+    $('kid-save').textContent = n === 2 ? '다음' : '저장';   // 2단계의 저장은 3단계로 넘어간다
+    if (n === 2 && V.kidAfter) UI.renderKidAfter(S, V.kidAfter);   // 건너뛰기 막힘(고른 것이 있을 때)을 다시 맞춘다
+    if (n === 3) { $('kid-skip').disabled = false; if (V.kidNote) UI.renderKidNote(V.kidNote, S); }
+  }
+  function hasAcad() { return S.packs.some(function (p) { return p.kind === 'acad'; }); }
+  // 2단계 저장: 고르는 중인 방과후를 검사해 넣어 두고 3단계로
+  function kidAfterDone() {
+    if (!checkKidName()) return showKidStep(1);
+    var ka = V.kidAfter;
+    if (ka && ka.pack) {
+      if (!checkKidAfter()) return;
+      keepKidAfter();
+      UI.renderKidAfter(S, ka);
+    }
+    showKidStep(3);
+    $('kid-title').focus();
+  }
+  // 2단계 건너뛰기는 3단계로, 3단계 건너뛰기는 알림장 없이 저장
+  function kidSkip() {
+    if (V.kidEdit) return;
+    if (V.kidStep === 2) { showKidStep(3); $('kid-title').focus(); return; }
+    if (V.kidStep === 3) {
+      V.kidNote = [];
+      $('kid-note-paste').value = '';
+      $('kid-note-found').textContent = '';
+      UI.clearErr('kid-note-paste', 'kid-note-err');
+      submitKid();
+    }
+  }
+  function kidBack() {
+    if (V.kidStep === 3 && hasAcad()) { showKidStep(2); $('kid-title').focus(); return; }
+    showKidStep(1);
+    $('kid-name').focus();
+  }
+  // 3단계 칩: 누르면 V.kidNote 에 넣고, 다시 누르면 뺀다
+  function kidNoteSupply(name) {
+    if (!V.kidNote || !name) return;
+    var i = V.kidNote.indexOf(name);
+    if (i >= 0) V.kidNote.splice(i, 1);
+    else V.kidNote.push(name);
+    UI.renderKidNote(V.kidNote, S);
+  }
+  // 3단계 오늘 알림장: 칩으로 고른 것 + 글(#kid-note-paste)에서 찾은 것, 중복 없이 30개까지. 날짜는 글에서 찾았으면 그 날, 아니면 다음 가방 날
+  function kidNoteResult() {
+    var r = Logic.parseNoteText(String($('kid-note-paste').value || '').slice(0, 1000), todayKey());
+    var items = [], seen = {};
+    (V.kidNote || []).concat(r.items).forEach(function (x) {
+      var t = Logic.norm(x), key = t.toLowerCase();
+      if (!t || t.length > 40 || seen[key]) return;
+      seen[key] = true;
+      items.push(t);
+    });
+    var d = r.date && Logic.validKey(r.date) ? r.date : Logic.bagDate(new Date(), S.settings);
+    return { date: d, items: items.slice(0, 30) };
+  }
+  // 글을 칠 때마다 찾은 준비물 수만 알려 준다 (넣는 것은 저장할 때)
+  function kidNotePaste() {
+    if (!V.kidNote) return;
+    var txt = String($('kid-note-paste').value || '');
+    var r = Logic.parseNoteText(txt.slice(0, 1000), todayKey());
+    $('kid-note-found').textContent = !Logic.norm(txt) ? '' :
+      (r.items.length ? (r.date ? Logic.shortLabel(r.date) + ' · ' : '') + '글에서 준비물 ' + r.items.length + '개를 찾았어요. 저장하면 함께 넣어요.' : '글에서 준비물을 아직 찾지 못했어요. 칩을 눌러 골라도 돼요.');
   }
   // 이름 검사: 통과하면 다듬은 이름, 아니면 오류를 띄우고 null
   function checkKidName() {
@@ -245,17 +324,17 @@
   function kidNext() {
     if (!checkKidName()) return;
     UI.clearErr('kid-name', 'kid-err');
-    // 고를 방과후 꾸러미가 없으면 2단계가 비어 있으니 바로 저장한다
-    if (!S.packs.some(function (p) { return p.kind === 'acad'; })) return submitKid();
-    showKidStep(2);
+    // 고를 방과후 꾸러미가 없으면 2단계가 비어 있으니 바로 3단계(오늘 알림장)로
+    showKidStep(hasAcad() ? 2 : 3);
     $('kid-title').focus();   // 숨은 칸에 남은 포커스를 옮기고 휴대폰 글자판을 닫는다
   }
-  // 1단계의 엔터(폼 제출)는 다음 걸음으로, 그 밖에는 저장으로
+  // 1단계의 엔터(폼 제출)는 다음 걸음으로, 2단계 저장은 3단계로, 3단계·고치기는 저장으로
   function kidSubmit() {
     if (!V.kidEdit && V.kidStep === 1) {
       if (!Logic.norm($('kid-name').value)) return;   // 빈 이름의 엔터는 오류 없이 넘긴다 ('다음' 이 막혀 있다)
       kidNext();
     }
+    else if (!V.kidEdit && V.kidStep === 2) kidAfterDone();
     else submitKid();
   }
   // 고르는 중인 방과후 검사: 요일 하나 이상, 시각은 8시~22시, 넣어 둔 것과 시각이 겹치지 않고 한 요일 6개까지 (submitAfter 와 같은 규칙)
@@ -320,6 +399,10 @@
         a.days.forEach(function (w) { k.week[w].after.push({ id: Store.uid('a'), packId: a.pack, time: a.time, who: a.who }); });
       });
       S.kids.push(k);
+      // 3단계 오늘 알림장: 고른 준비물을 글에서 찾은 날(없으면 다음 가방 날) 알림장으로 넣는다
+      var kn = V.kidNote ? kidNoteResult() : null;
+      var nItems = kn ? kn.items : [];
+      if (nItems.length) S.notes.push({ id: Store.uid('n'), kid: k.id, date: kn.date, title: '알림장', items: nItems });
     }
     S.cur = k.id;
     V.offset = 0;
@@ -328,6 +411,7 @@
     renderAll();
     if (!V.kidEdit && pendingTeach) return applyTeach();   // 선생님 링크로 받아 둔 준비물을 이 아이 가방에
     var kaMsg = kaList.length > 1 ? ' · 방과후 ' + kaList.length + '곳 넣었어요' : (kaList.length ? ' · 방과후 ' + kaList[0].days.length + '일 넣었어요' : '');
+    if (!V.kidEdit && nItems && nItems.length) kaMsg += ' · 알림장 ' + nItems.length + '개';
     UI.toast(V.kidEdit ? '고쳤어요' : (filled ? grade + '학년 기본 시간표로 채웠어요' : Logic.nameI(name) + ' 시간표를 채워 볼까요?') + kaMsg, !!V.kidEdit);
     if (!V.kidEdit) {
       UI.closeSheet('sheet-kids');
@@ -460,6 +544,8 @@
     var pr = Logic.progress(S, kid, bag);
     // 하나만 바꾸면 그 자리만 고친다 (가방 그림과 고리가 차오르게). 처음 설정 카드가 떠 있으면 다시 그린다
     if ($('setup-steps') || !UI.updateBag(S, kid, bag, name)) renderAll();
+    // 다시 그리지 않은 경우에도 가방 탭 배지를 맞춘다 (오늘 밤 가방일 때만)
+    else if (k === Logic.bagDate(now(), S.settings)) UI.setTabBadge(Logic.nightDone(S, kid, bag) ? 0 : pr.total - pr.done);
     var cell = UI.cellByName(name);
     if (i < 0) {
       UI.stamp(cell);
@@ -1750,8 +1836,9 @@
     },
     'kid-del': deleteKid,
     'kid-next': kidNext,
-    'kid-back': function () { showKidStep(1); $('kid-name').focus(); },
-    'kid-skip': submitKid,   // 고른 것이 없을 때만 눌린다 (renderKidAfter)
+    'kid-back': kidBack,
+    'kid-skip': kidSkip,   // 2단계는 고른 것이 없을 때만 눌린다 (renderKidAfter) → 3단계로, 3단계는 알림장 없이 저장
+    'kid-note-supply': function (b) { kidNoteSupply(b.getAttribute('data-name')); },
     'kid-after-add': function () {
       if (!V.kidAfter.pack || !checkKidAfter()) return;
       keepKidAfter();
@@ -2025,7 +2112,7 @@
     'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach', 'family-share': 'family', 'family-copy': 'family',
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
     'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter',
-    'kid-after-custom': 'kidAfter', 'kid-after-new-add': 'kidAfter'
+    'kid-after-custom': 'kidAfter', 'kid-after-new-add': 'kidAfter', 'kid-note-supply': 'kidAfter'
   };
   function ready(name) {
     var need = NEED[name];
@@ -2249,6 +2336,7 @@
       $('kid-next').disabled = !Logic.norm(t.value);
       UI.clearErr('kid-name', 'kid-err');
     }
+    else if (t.id === 'kid-note-paste' && V.kidNote) kidNotePaste();
     else if (t.id === 'note-q' && V.note) { V.noteQ = t.value; V.pg.sup = 0; UI.renderSupplies(S, V, V.note.items); }
     else if ((t.id === 'teach-class' || t.id === 'teach-memo' || t.id === 'teach-date') && V.teach) { V.teach.out = null; UI.renderTeachOut(null); } // 내용이 바뀌면 옛 링크를 치운다
   }

@@ -486,6 +486,9 @@ body.reduce .stk.big { animation: none; }
 .after-row .em { flex: none; width: 24px; height: 24px; color: var(--ink); }
 .strip .pk { display: inline-flex; align-items: center; gap: 4px; }
 .strip .pk .em { flex: none; width: 1.2em; height: 1.2em; }
+/* 빨래해 둘 것 줄 (ui.js renderBag #wash-line) */
+.strip .ls.wash { display: inline-flex; align-items: center; gap: 4px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
+.strip .ls.wash .it-ic { flex: none; width: 1.2em; height: 1.2em; color: var(--accent-deep); }
 .item-area { height: min(40dvh, 300px); flex: none; margin-top: 8px; }
 .item-area .check .x { position: absolute; top: 2px; right: 6px; font-size: var(--t-1); color: var(--muted); }
 .sup-area { height: min(30dvh, 200px); flex: none; }
@@ -604,6 +607,18 @@ body.reduce .stk.big { animation: none; }
 .icon-btn .ic { display: inline-block; width: 22px; height: 22px; vertical-align: middle; }
 .btn .ic { display: inline-block; width: 20px; height: 20px; vertical-align: -4px; margin-right: 6px; }
 .tab:active { transform: scale(0.92); }
+/* 가방 탭 배지: 지금 아이의 오늘 밤 가방에 남은 물건 수 (0 이면 숨김) */
+.tab .ti { position: relative; }
+.tab-badge {
+  position: absolute; top: -5px; left: 15px;
+  min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box;
+  border-radius: 9px; background: var(--accent); color: #fff;
+  border: 2px solid var(--surface);
+  font-size: 11px; font-weight: 800; line-height: 14px; text-align: center;
+  pointer-events: none; transition: transform var(--dur);
+}
+.tab-badge[hidden] { display: none; }
+.tab-badge.pop { transform: scale(1.18); }
 
 /* 시트·겹침 창: 시트 안도 위아래 스크롤 없이 */
 .dim {
@@ -707,6 +722,14 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--sub); borde
 @media (max-height: 700px) { #form-kid { overflow-y: auto; } }
 .kid-after .f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }
 .kid-after .f .tiny { font-weight: 400; }
+/* 아이 넣기 3단계 오늘 알림장 (R-63): 준비물 칩은 알림장 시트 칩과 같은 모양, 글 칸은 두 줄 높이로 작게 */
+#kid-step-3 .f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }
+#kid-step-3 .f .tiny { font-weight: 400; }
+.kid-note-chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.kid-note-chips .chip { display: flex; align-items: center; justify-content: flex-start; gap: 5px; min-width: 0; min-height: 44px; padding: 6px 8px; font-size: var(--t-2); font-weight: 600; text-align: left; white-space: normal; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.15; }
+textarea.kid-note-paste { min-height: 52px; height: 52px; max-height: 52px; padding: 6px 12px; }
+#kid-note-found:empty { display: none; }
+#kid-note-found { margin-top: 4px; }
 .kid-after .chip { display: inline-flex; align-items: center; gap: 6px; flex: none; }
 .kid-after .chip .pic { width: var(--t-4); height: var(--t-4); color: currentColor; }
 /* 방과후 고르기 그림 격자 (R-57): 한 줄 4칸, 옆으로 밀지 않는다. 칸은 그림을 이름 위에 세로로 쌓는다. 색은 :root 변수만 */

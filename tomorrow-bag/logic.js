@@ -323,6 +323,33 @@ var Logic = (function () {
     return out;
   }
 
+  // 빨래해 둘 것: 앞 학교 가는 날(prevSchoolDay(k)) 가방에서 이름(norm·소문자)에 DATA.WASH 말이 든 물건이
+  // k 부터(학교 가는 날이 아니면 다음 학교 가는 날부터) 학교 가는 날 3일 안의 가방에 다시 나오면 [{ name, date }].
+  // 이름마다 가장 가까운 날 하나, 날짜순. 매일 물건(손수건 등)은 여러 벌 돌려 쓰므로 뺀다
+  function washPlan(state, kid, k) {
+    if (!kid || !validKey(k)) return [];
+    var hs = (state.settings && state.settings.holidays) || [];
+    var words = ((typeof DATA !== 'undefined' && DATA.WASH) || []).map(function (w) { return norm(w).toLowerCase(); });
+    var want = {};   // 소문자 이름 → 앞날 가방의 이름
+    buildBag(state, kid, prevSchoolDay(k, hs)).items.forEach(function (it) {
+      if (it.group === 'daily') return;
+      var n = norm(it.name).toLowerCase();
+      if (words.some(function (w) { return w && n.indexOf(w) >= 0; })) want[n] = it.name;
+    });
+    if (!Object.keys(want).length) return [];
+    var out = [];
+    var day = isSchoolDay(k, hs) ? k : nextSchoolDay(k, hs);
+    for (var i = 0; i < 3; i++) {
+      buildBag(state, kid, day).items.forEach(function (it) {
+        var n = norm(it.name).toLowerCase();
+        if (want[n]) { out.push({ name: want[n], date: day }); delete want[n]; }
+      });
+      day = nextSchoolDay(day, hs);
+    }
+    out.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    return out;
+  }
+
   // 어제 넣은 물건 그대로: 앞 학교 가는 날 챙긴 물건(S.checks) 가운데 오늘 가방에도 있는 것 (norm·소문자 비교).
   // 아침에 넣을 물건(물병·도시락)은 밤사이 꺼내므로 뺀다. 오늘 가방의 이름으로 돌려준다
   function carryOver(state, kid, k) {
@@ -1265,6 +1292,18 @@ var Logic = (function () {
     eq('이번 주 가방 날짜',wb.map(function (d) { return d.date.slice(5); }).join(','), '11-09,11-10,11-11,11-12,11-13');
     eq('이번 주 가방 물건 수', wb.map(function (d) { return d.total; }).join(','), '0,1,1,1,0');
     eq('이번 주 가방 더 챙길 것·알림장', wb[1].add.join(',') + '|' + wb[2].add.join(',') + '|' + wb[2].notes + '|' + wb[3].notes, '수경|색종이|1|0');
+    // 9-12) 빨래해 둘 것: 월 체육(체육복)·화 국어·수 체육이면 화요일(10/27) 가방에서 '체육복은 수요일에 또'.
+    //       매일 손수건(수건 말이 들어도 매일 물건)은 빼고, 수요일 체육이 없으면 0개
+    var wsK = { id: 'k', week: { 1: { p: ['A'], after: [] }, 2: { p: ['B'], after: [] }, 3: { p: ['A'], after: [] } } };
+    var wsS = { packs: ds.packs, daily: ['필통', '손수건'], rules: [], notes: [], checks: {}, settings: { holidays: [] } };
+    var wp = washPlan(wsS, wsK, '2026-10-27');
+    eq('빨래해 둘 것', wp.map(function (w) { return w.name + '|' + w.date; }).join(','), '체육복|2026-10-28');
+    eq('빨래해 둘 것 다시 안 나오면 0', washPlan(wsS, { id: 'k', week: { 1: { p: ['A'], after: [] }, 2: { p: ['B'], after: [] } } }, '2026-10-27').length, 0);
+    // 금요일 체육: 학교 가는 날 사흘(화·수·목) 밖이라 0개, 수요일이 쉬는 날이면 사흘이 화·목·금이 되어 금요일
+    var wsF = { id: 'k', week: { 1: { p: ['A'], after: [] }, 2: { p: ['B'], after: [] }, 5: { p: ['A'], after: [] } } };
+    var wsH = function (hs) { return { packs: ds.packs, daily: [], rules: [], notes: [], checks: {}, settings: { holidays: hs } }; };
+    eq('빨래해 둘 것 사흘·쉬는 날', washPlan(wsH([]), wsF, '2026-10-27').length + '|' +
+      washPlan(wsH(['2026-10-28']), wsF, '2026-10-27').map(function (w) { return w.date; }).join(','), '0|2026-10-30');
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -1282,7 +1321,7 @@ var Logic = (function () {
     holidayRange: holidayRange, holidayGroups: holidayGroups, spanDays: spanDays, HOLIDAY_MAX_DAYS: HOLIDAY_MAX_DAYS,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME

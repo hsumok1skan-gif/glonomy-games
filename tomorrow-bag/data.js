@@ -43,6 +43,9 @@ var DATA = (function () {
   // 매일 챙길 것 (처음 값, 사람이 고친다)
   var DAILY = ['알림장', '필통', '물병', '손수건', '숙제'];
 
+  // 빨아서 다시 가져가는 물건 말 — 이름에 이 말이 들면 Logic.washPlan 이 '빨래' 줄에 올린다 (소문자로 비교)
+  var WASH = ['체육복', '수영복', '수모', '수건', '도복', '발레복', '타이츠', '축구복', '앞치마', '두건', '여벌 옷', '운동복', '레오타드', '유니폼', '반 티셔츠'];
+
   // 요일 규칙 5 — dow: 1 월 … 5 금
   var RULES = [
     { id: 'r-mon-shoe', dow: 1, item: '실내화 주머니' },
@@ -256,5 +259,5 @@ var DATA = (function () {
       5: ['s-math', 's-kor', 's-soc', 's-eng', 's-mus', 's-cre'] } }
   ];
 
-  return { SUBJECTS: SUBJECTS, ACADEMIES: ACADEMIES, DAILY: DAILY, RULES: RULES, SUPPLIES: SUPPLIES, EVENTS: EVENTS, TIPS: TIPS, DOW: DOW, ICONS: ICONS, STICKERS: STICKERS, TIMETABLES: TIMETABLES };
+  return { SUBJECTS: SUBJECTS, ACADEMIES: ACADEMIES, DAILY: DAILY, WASH: WASH, RULES: RULES, SUPPLIES: SUPPLIES, EVENTS: EVENTS, TIPS: TIPS, DOW: DOW, ICONS: ICONS, STICKERS: STICKERS, TIMETABLES: TIMETABLES };
 })();

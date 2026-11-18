@@ -33,7 +33,7 @@
   </main>
 
   <nav class="tabs" aria-label="화면">
-    <button class="tab on" type="button" data-act="go" data-to="bag"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="12" height="13" rx="3.5"/><path d="M10 8V6a2 2 0 0 1 4 0v2"/><path d="M6 11.5C3.6 12.5 3.6 17 6 18.5M18 11.5c2.4 1 2.4 5.5 0 7"/><path d="M9 11.5h6"/><rect class="ic-dot" x="8.5" y="14" width="7" height="4.5" rx="1.2" fill="currentColor" stroke="none"/></svg></span>가방</button>
+    <button class="tab on" type="button" data-act="go" data-to="bag"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="12" height="13" rx="3.5"/><path d="M10 8V6a2 2 0 0 1 4 0v2"/><path d="M6 11.5C3.6 12.5 3.6 17 6 18.5M18 11.5c2.4 1 2.4 5.5 0 7"/><path d="M9 11.5h6"/><rect class="ic-dot" x="8.5" y="14" width="7" height="4.5" rx="1.2" fill="currentColor" stroke="none"/></svg><span class="tab-badge" id="tab-badge" aria-hidden="true" hidden></span></span>가방</button>
     <button class="tab" type="button" data-act="go" data-to="week"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="3"/><path d="M4 10.5h16M9 4v4M15 4v4"/><circle class="ic-dot" cx="15.5" cy="15" r="1.8" fill="currentColor" stroke="none"/></svg></span>시간표</button>
     <button class="tab" type="button" data-act="go" data-to="packs"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.6 8.6a2 2 0 0 1-2 1.4H7.6a2 2 0 0 1-2-1.4Z"/><path d="M8.5 10l3-5.5M15.5 10l-3-5.5M10 14v2.5M14 14v2.5"/><circle class="ic-dot" cx="12" cy="4.5" r="1.4" fill="currentColor" stroke="none"/></svg></span>꾸러미</button>
     <button class="tab" type="button" data-act="go" data-to="more"><span class="ti"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5.5"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/><circle class="ic-dot" cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></span>설정</button>
@@ -133,12 +133,12 @@
   </div>
 </div>
 
-<!-- 아이 넣기: 1단계 이름·학년·기본 시간표, 2단계 방과후 (건너뛸 수 있음). 고치기는 1단계 칸과 저장만 (교시 수는 시간표에서) -->
+<!-- 아이 넣기: 1단계 이름·학년·기본 시간표, 2단계 방과후, 3단계 오늘 알림장 (2·3단계는 건너뛸 수 있음). 고치기는 1단계 칸과 저장만 (교시 수는 시간표에서) -->
 <div id="sheet-kid" class="dim" data-sheet="1" aria-hidden="true">
   <form class="sheet" id="form-kid" role="dialog" aria-label="아이">
     <div class="grab"></div>
     <div class="sheet-head"><h2 id="kid-title" tabindex="-1">아이 이름을 알려 주세요</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
-    <div class="kid-steps" id="kid-steps" role="img" aria-label="2단계 중 1단계"><span class="on"></span><span></span></div>
+    <div class="kid-steps" id="kid-steps" role="img" aria-label="3단계 중 1단계"><span class="on"></span><span></span><span></span></div>
     <div id="kid-step-1">
       <label class="f" for="kid-name">이름</label>
       <input id="kid-name" type="text" maxlength="40" autocomplete="off">
@@ -170,6 +170,15 @@
         <div class="err" id="kid-after-err"></div>
         <button class="btn small" type="button" id="kid-after-add" data-act="kid-after-add" disabled>+ 방과후 하나 더</button>
       </div>
+    </div>
+    <div id="kid-step-3" style="display:none">
+      <!-- 새 아이일 때만: 오늘 받은 알림장 준비물을 골라 두거나 글을 붙여 넣으면 저장할 때 다음 가방 날(글에 날짜가 있으면 그날) 알림장으로 넣는다 (ui.js renderKidNote, app.js kidNoteResult) -->
+      <div class="f" id="kid-note-lab">준비물 <span class="tiny">(눌러서 고르기)</span></div>
+      <div id="kid-note-chips" class="kid-note-chips" role="group" aria-labelledby="kid-note-lab"></div>
+      <label class="f" for="kid-note-paste">알림장 글 <span class="tiny">(붙여 넣으면 준비물을 찾아요)</span></label>
+      <textarea id="kid-note-paste" class="kid-note-paste" rows="2" maxlength="1000" placeholder="예: 내일 준비물: 색종이, 휴지 심 2개"></textarea>
+      <div class="tiny" id="kid-note-found" aria-live="polite"></div>
+      <div class="err" id="kid-note-err"></div>
     </div>
     <div class="row" style="margin-top:16px">
       <button class="btn danger" type="button" id="kid-del" data-act="kid-del">지우기</button>
