@@ -45,7 +45,7 @@ var Store = (function () {
         switchHour: 14,
         font: 1,
         reduce: false,
-        dark: false,
+        dark: 'auto',                                        // 화면 색: 'auto'(기기 따라) · true(어둡게) · false(밝게)
         mute: false,
         vibe: true,                                          // 칸을 누를 때 짧은 진동 (진동이 되는 기기만)
         speak: true,                                         // 아이가 챙겨요에서 넣은 물건 이름을 읽어 준다 (기기 음성, 소리가 켜졌을 때만)
@@ -60,7 +60,8 @@ var Store = (function () {
         remindAsked: false,                                  // 다 챙김 창에서 밤 알림을 한 번 권했다
         firstBagSeen: false,                                 // 아이를 넣자마자 보여 준 처음 가방 카드를 닫았다
         coachSeen: false,                                    // 가방 시트에서 처음 한 칸을 눌러 봤다 (누르기 안내를 끈다)
-        holdTipSeen: false                                   // 처음 챙긴 뒤 길게 누르기 말풍선을 봤거나 직접 길게 눌러 봤다
+        holdTipSeen: false,                                  // 처음 챙긴 뒤 길게 누르기 말풍선을 봤거나 직접 길게 눌러 봤다
+        tourSeen: false                                      // '예시로 둘러보기' 뒤 가방 화면 3걸음 안내를 끝냈거나 건너뛰었다
       }
     };
   }
@@ -112,9 +113,11 @@ var Store = (function () {
       if (p.short !== undefined && !(typeof p.short === 'string' && p.short.trim() && Array.from(p.short).length <= 3)) delete p.short;
       if (s && p.short === undefined && p.name === s.name) p.short = s.short;
     });
+    if (d.settings.dark !== true && d.settings.dark !== false && d.settings.dark !== 'auto') d.settings.dark = 'auto';
     if (typeof d.settings.vibe !== 'boolean') d.settings.vibe = base.settings.vibe;
     if (typeof d.settings.speak !== 'boolean') d.settings.speak = base.settings.speak;
     if (typeof d.settings.holdTipSeen !== 'boolean') d.settings.holdTipSeen = base.settings.holdTipSeen;
+    if (typeof d.settings.tourSeen !== 'boolean') d.settings.tourSeen = base.settings.tourSeen;
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
     if (!/^\d{2}:\d{2}$/.test(d.settings.remindAt)) d.settings.remindAt = '';

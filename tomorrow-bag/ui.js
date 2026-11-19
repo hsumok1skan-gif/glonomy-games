@@ -1200,9 +1200,10 @@ var UI = (function () {
   }
 
   // 아이 넣기 3단계 오늘 알림장: 자주 쓰는 순 준비물 앞 9개를 칩 격자(3열×3줄)로. sel = 고른 이름 배열 (V.kidNote)
+  // 2번 이상 직접 쓴 준비물(목록에 없는 것)도 들어간다
   function renderKidNote(sel, S) {
     sel = sel || [];
-    var list = Logic.findSupplies('', 'all', 'often', Logic.supplyUsage(S || { notes: [] })).slice(0, 9);
+    var list = Logic.findSupplies('', 'all', 'often', Logic.supplyUsage(S || { notes: [] }), 2).slice(0, 9);
     $('kid-note-chips').innerHTML = list.map(function (x) {
       var on = sel.indexOf(x) >= 0;
       return '<button class="chip' + (on ? ' pick' : '') + '" type="button" data-act="kid-note-supply" data-name="' + esc(x) + '" aria-pressed="' + on + '">' +
@@ -1299,13 +1300,16 @@ var UI = (function () {
   }
   // 준비물 고르기: 찾기 · 갈래 거르기 · 순서, 한 쪽 9개
   function renderSupplies(S, V, picked) {
-    var cats = [['all', '모두']].concat(DATA.SUPPLIES.map(function (g) { return [g.cat, g.cat]; }));
+    // 갈래: 모두 · data.js 갈래들 · 내가 쓴 것(알림장에 직접 쳐 넣은, 목록에 없는 준비물)
+    var cats = [['all', '모두']].concat(DATA.SUPPLIES.map(function (g) { return [g.cat, g.cat]; }), [[Logic.MINE_CAT, Logic.MINE_CAT]]);
     $('note-cats').innerHTML = cats.map(function (c) {
       return '<button class="chip' + (V.noteCat === c[0] ? ' on' : '') + '" type="button" data-act="note-cat" data-v="' + esc(c[0]) + '" aria-pressed="' + (V.noteCat === c[0]) + '">' + esc(c[1]) + '</button>';
     }).join('');
     // 접혀 있으면(V.noteMore 가 아니면) 갈래·찾기를 무시하고 자주 쓰는 순 앞 9개만 한 쪽으로
-    var list = V.noteMore ? Logic.findSupplies(V.noteQ, V.noteCat, V.noteSort, Logic.supplyUsage(S)) :
-      Logic.findSupplies('', 'all', 'often', Logic.supplyUsage(S)).slice(0, 9);
+    // 직접 쓴 준비물: 펼치면 한 번 쓴 것부터, 접힌 9개에는 2번 이상 쓴 것만
+    var usage = Logic.supplyUsage(S);
+    var list = V.noteMore ? Logic.findSupplies(V.noteQ, V.noteCat, V.noteSort, usage) :
+      Logic.findSupplies('', 'all', 'often', usage, 2).slice(0, 9);
     var hint = $('note-more-hint');
     if (hint) hint.textContent = V.noteMore ? '찾기·갈래로 고르기' : '자주 쓰는 준비물';
     var pages = [];
@@ -1316,7 +1320,8 @@ var UI = (function () {
       }).join('') + '</div>' });
     }
     $('note-supplies').innerHTML = pages.length ? pagerHTML('sup', pages, V.pg.sup || 0) :
-      miniEmpty('search','‘' + V.noteQ + '’ 준비물이 없어요',{ act: 'note-q-clear', label: '찾기 지우기' });
+      (V.noteCat === Logic.MINE_CAT && !V.noteQ ? miniEmpty('pencil', '직접 쓴 준비물이 아직 없어요', { act: 'note-q-clear', label: '모두 보기' }) :
+        miniEmpty('search','‘' + V.noteQ + '’ 준비물이 없어요',{ act: 'note-q-clear', label: '찾기 지우기' }));
   }
 
   function renderEvents(sel) {
@@ -1335,6 +1340,8 @@ var UI = (function () {
       (val ? '<span class="val">' + esc(val) + '</span>' : '') + '<span class="chev" aria-hidden="true">›</span></button>';
   }
   var FONT_NAME = { 1: '보통', 1.15: '크게', 1.3: '아주 크게' };
+  // 화면 색 이름: 'auto' → 기기 따라, true → 어둡게, false → 밝게
+  function darkName(d) { return d === 'auto' ? '기기 따라' : (d === true ? '어둡게' : '밝게'); }
   function renderMore(S, kid) {
     var st = S.settings;
     var ym = Logic.toKey(new Date()).slice(0, 7);
@@ -1345,7 +1352,7 @@ var UI = (function () {
       setRow('times-open', '교시 시간', '1교시 ' + pt[0][0]) +
       setRow('days-open', '쉬는 날', st.holidays.length + '일') +
       setRow('font', '글자 크기', FONT_NAME[st.font] || '보통') +
-      setRow('look-open', '화면 색', st.dark ? '어둡게' : '밝게') +
+      setRow('look-open', '화면 색', darkName(st.dark)) +
       // 선생님 모드는 부모가 쓰는 화면에 섞이지 않게 여기서 켤 때만 링크 줄이 보인다
       setRow('toggle-set', '선생님 모드', st.teacher ? '켜짐' : '꺼짐', ' data-k="teacher" aria-pressed="' + !!st.teacher + '"', st.teacher ? 'on' : '') +
       (st.teacher ? setRow('teacher-open', '반 준비물 링크', '', '', 'sub') : '') +
@@ -1362,7 +1369,7 @@ var UI = (function () {
   function renderLook(S) {
     var st = S.settings;
     $('look-list').innerHTML =
-      setRow('toggle-set', '화면 색', st.dark ? '어둡게' : '밝게', ' data-k="dark" aria-pressed="' + !!st.dark + '"', st.dark ? 'on' : '') +
+      setRow('look-dark', '화면 색', darkName(st.dark), ' aria-label="화면 색, ' + darkName(st.dark) + ', 누르면 바뀜"', st.dark === true ? 'on' : '') +
       setRow('toggle-set', '움직임 줄이기', st.reduce ? '켜짐' : '꺼짐', ' data-k="reduce" aria-pressed="' + !!st.reduce + '"', st.reduce ? 'on' : '') +
       setRow('toggle-set', '소리', st.mute ? '꺼짐' : '켜짐', ' data-k="mute" aria-pressed="' + !st.mute + '"', st.mute ? '' : 'on') +
       setRow('toggle-set', '진동', st.vibe ? '켜짐' : '꺼짐', ' data-k="vibe" aria-pressed="' + !!st.vibe + '"', st.vibe ? 'on' : '') +
@@ -1666,7 +1673,45 @@ var UI = (function () {
     if (tab) tab.setAttribute('aria-label', '가방, 남은 물건 ' + n + '개');
   }
 
+  // ---- 예시 둘러보기: 가방 화면의 세 곳(.bag-stage → .day-lines → .bag-btns)을 차례로 밝힌다 ----
+  var TOUR = [
+    ['.bag-stage', '챙긴 물건만큼 가방이 차올라요. 꽉 차면 내일 준비 끝!'],
+    ['.day-lines', '그날 수업과 방과후, 데리러 갈 사람이 한 줄씩 보여요.'],
+    ['.bag-btns', '여기서 가방을 챙기고, 알림장 준비물을 넣어요.']
+  ];
+  // n 걸음을 보인다. 밝힐 곳이 화면에 없으면 false (부른 쪽이 둘러보기를 끝낸다)
+  function showTour(n) {
+    var ov = $('tour'), hole = $('tour-hole'), box = $('tour-box');
+    if (!ov || n < 0 || n >= TOUR.length) return false;
+    var el = document.querySelector('#bag-root ' + TOUR[n][0]);
+    if (!el) return false;
+    var r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return false;
+    var pad = 6, H = window.innerHeight || document.documentElement.clientHeight;
+    ov.hidden = false;
+    hole.style.left = Math.round(r.left - pad) + 'px';
+    hole.style.top = Math.round(r.top - pad) + 'px';
+    hole.style.width = Math.round(r.width + pad * 2) + 'px';
+    hole.style.height = Math.round(r.height + pad * 2) + 'px';
+    $('tour-step').textContent = (n + 1) + ' / ' + TOUR.length;
+    $('tour-msg').textContent = TOUR[n][1];
+    var last = n === TOUR.length - 1;
+    $('tour-next').textContent = last ? '가방 챙기기' : '다음';
+    // 말풍선: 밝힌 곳 아래에 자리가 있으면 아래, 없으면 위
+    var bh = box.offsetHeight || 120, gap = 12;
+    var top = r.bottom + pad + gap;
+    if (top + bh > H - 8) top = r.top - pad - gap - bh;
+    top = Math.max(8, Math.min(top, H - bh - 8));
+    box.style.top = Math.round(top) + 'px';
+    try { $('tour-next').focus(); } catch (e) { /* 포커스 못 해도 된다 */ }
+    return true;
+  }
+  function hideTour() { var ov = $('tour'); if (ov) ov.hidden = true; }
+  function tourOpen() { var ov = $('tour'); return !!ov && !ov.hidden; }
+  var TOUR_N = TOUR.length;
+
   return {
+    showTour: showTour, hideTour: hideTour, tourOpen: tourOpen, TOUR_N: TOUR_N,
     $: $, esc: esc, setTabBadge: setTabBadge, packPic: packPic, packPicId: packPicId, renderPackPics: renderPackPics, MINI_PICS: MINI_PICS,transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
     setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderKidAvatars: renderKidAvatars, kidAvaHTML: kidAvaHTML, renderBag: renderBag, renderBagSheet: renderBagSheet, showBagAdd: showBagAdd, pageOfCell: pageOfCell, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage,

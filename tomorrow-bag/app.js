@@ -14,6 +14,7 @@
     times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
     family: null,                                          // 가족 링크 시트 { name, link }
     firstBag: false,                                       // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
+    tour: null,                                            // 예시 둘러보기 걸음 (0~2, 안 하는 중이면 null)
     dscope: null                                           // 매일 · 요일 시트에서 고르는 목록: null 모든 아이 공용, 아이 id 면 그 아이 목록
   };
   var undoSnap = null;
@@ -30,6 +31,7 @@
     if (!undoSnap) return;
     S = JSON.parse(undoSnap);
     undoSnap = null;
+    if (V.tour !== null) { V.tour = null; UI.hideTour(); S.settings.tourSeen = true; }   // 예시를 되돌리면 둘러보기도 끝낸다
     save();
     UI.hideToast();
     renderAll();
@@ -56,8 +58,16 @@
   }
 
   // ---- 그리기 ----
+  // 기기 어두운 화면 설정 (matchMedia 가 없는 브라우저는 null → 밝게)
+  var darkMQ = null;
+  try { darkMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null; } catch (e) { darkMQ = null; }
+  function isDark() {
+    var d = S.settings.dark;
+    if (d === 'auto') return !!(darkMQ && darkMQ.matches);
+    return d === true;
+  }
   function applySettings() {
-    document.body.classList.toggle('dark', !!S.settings.dark);
+    document.body.classList.toggle('dark', isDark());
     document.body.classList.toggle('reduce', !!S.settings.reduce);
     document.documentElement.style.setProperty('--k', String(S.settings.font || 1));
   }
@@ -119,6 +129,7 @@
     if (el.id === 'sheet-bag') UI.hideBubble();
   }
   function closeTop() {
+    if (V.tour !== null) { endTour(); return true; }   // 예시 둘러보기가 맨 위 (Esc 로도 끝내고 다시 띄우지 않는다)
     var on = UI.openSheets();
     if (!on.length) return false;
     var el = on[on.length - 1];
@@ -1733,6 +1744,22 @@
     UI.closeSheet('sheet-backup');
     UI.toast('예시를 넣었어요', true);
   }
+  // ---- 예시 둘러보기 (처음 안내의 '예시로 둘러보기' 뒤 한 번, 3걸음) ----
+  // 건너뛰기·마지막 걸음·Esc 모두 tourSeen 을 저장해 다시 띄우지 않는다
+  function endTour() {
+    V.tour = null;
+    UI.hideTour();
+    if (S.settings.tourSeen !== true) { S.settings.tourSeen = true; save(); }
+  }
+  function tourNext() {
+    if (V.tour === null) return;
+    if (V.tour >= UI.TOUR_N - 1) { endTour(); openBag(); return; }   // 마지막 '가방 챙기기'
+    V.tour++;
+    if (!UI.showTour(V.tour)) endTour();
+  }
+  // 화면 전환이 끝났거나 창 크기가 바뀌면 밝힐 자리를 다시 잡는다
+  function placeTour() { if (V.tour !== null && !UI.showTour(V.tour)) endTour(); }
+
   // 받은 상태(S)에 예시 아이를 넣는다 (도움말 화면 찍기도 이것을 쓴다)
   function fillSample(S) {
     var id = Store.uid('k');
@@ -2063,6 +2090,12 @@
       S.settings.font = f >= 1.3 ? 1 : (f >= 1.15 ? 1.3 : 1.15);
       save(); renderAll();
     },
+    // 화면 색: 기기 따라 → 밝게 → 어둡게 → 기기 따라
+    'look-dark': function () {
+      var d = S.settings.dark;
+      S.settings.dark = d === 'auto' ? false : (d === false ? true : 'auto');
+      save(); renderAll();
+    },
     'toggle-set': function (b) { var k = b.getAttribute('data-k'); S.settings[k] = !S.settings[k]; save(); renderAll(); },
     'teacher-open': openTeacher,
     'teach-add': teachAddItem,
@@ -2098,7 +2131,13 @@
     'confirm-no': function () { confirmFn = null; UI.closeSheet('ov-confirm'); },
     'undo': doUndo,
     'welcome-start': function () { S.settings.welcomed = true; save(); UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); openKid(null); },
-    'welcome-sample': function () { S.settings.welcomed = true; UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); addSample(); }
+    'welcome-sample': function () {
+      S.settings.welcomed = true; UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); addSample();
+      // 처음 한 번: 하윤이 가방 화면의 세 곳을 차례로 짚어 준다
+      if (S.settings.tourSeen === false) { V.tour = 0; if (!UI.showTour(0)) endTour(); else setTimeout(placeTour, 300); }
+    },
+    'tour-next': tourNext,
+    'tour-skip': function () { endTour(); }
   };
 
   // 시트 안 동작은 그 시트를 연 뒤에만 (열린 적 없는 시트의 버튼이 눌려도 아무 일 없게)
@@ -2374,6 +2413,12 @@
     document.addEventListener('pointercancel', onCancel);
     document.addEventListener('contextmenu', function (e) { if (e.target.closest && e.target.closest('#sheet-bag .check, #kid-mode')) e.preventDefault(); });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+    // 기기에서 어두운 화면을 켜고 끄면 '기기 따라' 일 때 바로 따라간다
+    if (darkMQ) {
+      if (darkMQ.addEventListener) darkMQ.addEventListener('change', applySettings);
+      else if (darkMQ.addListener) darkMQ.addListener(applySettings);
+    }
+    window.addEventListener('resize', placeTour);
     window.addEventListener('hashchange', readTeachHash);
     window.addEventListener('hashchange', readFamilyHash);
     setInterval(tick, 60000);

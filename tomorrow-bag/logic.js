@@ -435,11 +435,17 @@ var Logic = (function () {
   }
 
   // 알림장 준비물 고르기: 찾는 말(이름에 든 것)·갈래 거르기(all 또는 갈래 이름)·순서(base 갈래 순서 / name 가나다순 / often 자주 쓰는 순)
-  // usage: 지금까지 알림장에 넣은 횟수 { 이름(소문자): n }
-  function findSupplies(q, cat, sort, usage) {
+  // usage: supplyUsage(state) — 지금까지 알림장에 넣은 횟수 { 이름(소문자): { n, name } } (예전 꼴 { 이름(소문자): n } 도 받는다)
+  //   usage 에 있고 DATA.SUPPLIES 에 없는 이름(직접 쓴 준비물)은 cat 이 'all' 또는 MINE_CAT('내가 쓴 것')일 때 원래 글자(name)로 결과에 넣는다
+  //   minMine: 직접 쓴 준비물을 넣는 가장 적은 횟수 (기본 1. 접힌 자주 쓰는 9개·아이 넣기 칩은 2)
+  var MINE_CAT = '내가 쓴 것';
+  function useN(v) { return typeof v === 'number' ? v : ((v && v.n) || 0); }
+  function findSupplies(q, cat, sort, usage, minMine) {
     var t = norm(q).toLowerCase();
-    var out = [], seen = {};
+    var out = [], seen = {}, known = {};
+    usage = usage || {};
     DATA.SUPPLIES.forEach(function (g) {
+      g.items.forEach(function (x) { known[x.toLowerCase()] = true; });
       if (cat && cat !== 'all' && g.cat !== cat) return;
       g.items.forEach(function (x) {
         if (seen[x]) return;
@@ -448,16 +454,31 @@ var Logic = (function () {
         out.push({ name: x, o: out.length });
       });
     });
-    usage = usage || {};
+    if (!cat || cat === 'all' || cat === MINE_CAT) {
+      var least = minMine || 1;
+      Object.keys(usage).forEach(function (key) {
+        var v = usage[key];
+        var nm = (v && typeof v === 'object' && v.name) ? v.name : '';
+        if (!nm || known[key] || seen['~' + key] || useN(v) < least) return;
+        if (t && key.indexOf(t) < 0) return;
+        seen['~' + key] = true;
+        out.push({ name: nm, o: out.length });
+      });
+    }
     if (sort === 'name') out.sort(function (a, b) { return a.name.localeCompare(b.name, 'ko'); });
-    else if (sort === 'often') out.sort(function (a, b) { return (usage[b.name.toLowerCase()] || 0) - (usage[a.name.toLowerCase()] || 0) || a.o - b.o; });
+    else if (sort === 'often') out.sort(function (a, b) { return useN(usage[b.name.toLowerCase()]) - useN(usage[a.name.toLowerCase()]) || a.o - b.o; });
     return out.map(function (x) { return x.name; });
   }
-  // 알림장에 넣은 준비물 횟수 (자주 쓰는 순)
+  // 알림장에 넣은 준비물 횟수 (자주 쓰는 순) { 이름(norm·소문자): { n: 횟수, name: 처음 쓴 원래 글자(norm) } }
   function supplyUsage(state) {
     var u = {};
-    (state.notes || []).forEach(function (n) {
-      (n.items || []).forEach(function (x) { var key = norm(x).toLowerCase(); u[key] = (u[key] || 0) + 1; });
+    ((state && state.notes) || []).forEach(function (n) {
+      (n.items || []).forEach(function (x) {
+        var nm = norm(x), key = nm.toLowerCase();
+        if (!key) return;
+        if (!u[key]) u[key] = { n: 0, name: nm };
+        u[key].n++;
+      });
     });
     return u;
   }
@@ -1101,6 +1122,18 @@ var Logic = (function () {
     // 5-3) 준비물 찾기: '풀' → 풀·딱풀, 자주 쓰는 순이면 많이 넣은 딱풀이 먼저
     eq('준비물 찾기 풀', findSupplies('풀', 'all', 'base').join(','), '풀,딱풀');
     eq('준비물 자주 쓰는 순', findSupplies('풀', 'all', 'often', { '딱풀': 3 })[0], '딱풀');
+    (function () {
+      // 5-3b) 직접 쓴 준비물: 3번 넣은 '영어 단어 시험지'(한 번은 띄어쓰기가 두 칸이어도 같은 것)가 자주 쓰는 순 맨 앞, '내가 쓴 것' 갈래에 하나
+      var st = { notes: [{ items: ['영어 단어 시험지', '딱풀'] }, { items: ['영어 단어  시험지'] }, { items: ['영어 단어 시험지', '줄넘기 급수표'] }] };
+      var us = supplyUsage(st);
+      eq('직접 쓴 준비물 원래 글자·횟수', us['영어 단어 시험지'].name + '|' + us['영어 단어 시험지'].n, '영어 단어 시험지|3');
+      eq('직접 쓴 준비물 자주 쓰는 순 맨 앞', findSupplies('', 'all', 'often', us)[0], '영어 단어 시험지');
+      eq('내가 쓴 것 갈래 찾기', findSupplies('시험지', '내가 쓴 것', 'base', us).length, 1);
+      eq('내가 쓴 것 갈래에 목록 물건 없음', findSupplies('', MINE_CAT, 'base', us).join(','), '영어 단어 시험지,줄넘기 급수표');
+      eq('직접 쓴 준비물 찾는 말 거르기', findSupplies('풀', 'all', 'base', us).join(','), '풀,딱풀');
+      eq('다른 갈래에는 직접 쓴 것 없음', findSupplies('시험지', DATA.SUPPLIES[0].cat, 'base', us).length, 0);
+      eq('2번 이상만 (접힌 9개)', findSupplies('', MINE_CAT, 'base', us, 2).join(','), '영어 단어 시험지');
+    })();
     // 5-4) 알림장 글 뽑기: 날짜 'n월 n일', 긴 말 먼저(딱풀 안의 풀은 안 잡음), '준비물:' 뒤 쉼표·'/'·줄바꿈 말, 중복 없음
     var pn = parseNoteText('[알림장] 11월 3일 준비물: 색종이, 딱풀 / 휴지 심 2개\n체육복', '2026-11-01');
     eq('알림장 글 날짜', pn.date, '2026-11-03');
@@ -1322,7 +1355,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, parseNoteText: parseNoteText,
+    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, MINE_CAT: MINE_CAT, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };

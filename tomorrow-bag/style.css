@@ -620,6 +620,28 @@ body.reduce .stk.big { animation: none; }
 .tab-badge[hidden] { display: none; }
 .tab-badge.pop { transform: scale(1.18); }
 
+/* 예시 둘러보기: 밝힐 곳만 구멍으로 남기고 나머지는 어둡게 (색은 :root 변수만) */
+.tour-ov { position: fixed; inset: 0; z-index: 35; overflow: hidden; }
+.tour-ov[hidden] { display: none; }
+.tour-hole {
+  position: absolute; left: 0; top: 0; width: 0; height: 0;
+  border: 3px solid var(--accent); border-radius: var(--r-card);
+  box-shadow: 0 0 0 9999px var(--scrim);
+  pointer-events: none;
+  transition: left var(--dur) ease-out, top var(--dur) ease-out, width var(--dur) ease-out, height var(--dur) ease-out;
+}
+.tour-box {
+  position: absolute; left: 12px; right: 12px; top: 0; max-width: 420px; margin: 0 auto;
+  padding: 12px 14px; border-radius: 14px; background: var(--ink); color: var(--bg);
+  box-shadow: 0 6px 20px var(--shadow-lift); word-break: keep-all;
+  transition: top var(--dur) ease-out;
+}
+.tour-step { margin: 0; font-size: var(--t-1); font-weight: 800; opacity: 0.8; }
+.tour-msg { margin: 2px 0 10px; font-size: var(--t-3); font-weight: 700; line-height: 1.4; }
+.tour-row { display: flex; align-items: center; gap: 8px; }
+.tour-box .btn:not(.main) { color: var(--ink); }
+body.reduce .tour-hole, body.reduce .tour-box { transition: none; }
+
 /* 시트·겹침 창: 시트 안도 위아래 스크롤 없이 */
 .dim {
   position: fixed; inset: 0; z-index: 20;
