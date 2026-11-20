@@ -156,6 +156,21 @@ var Logic = (function () {
     });
     return out;
   }
+  // 스티커 모아 받는 약속 상: goal = { n: 약속 수(0이면 약속 없음), prize: 상 이름, since: 약속을 정한 날 YYYY-MM-DD(없으면 처음부터) }
+  // since 날부터 그 아이가 다 챙긴 날(같은 날은 한 번)을 센다 → { n, got(n을 넘지 않음), all, left, pct(0~100 정수), done }
+  function goalProgress(history, kidId, goal) {
+    var n = goal && goal.n > 0 ? Math.floor(goal.n) : 0;
+    var since = goal && /^\d{4}-\d{2}-\d{2}$/.test(goal.since) ? goal.since : '';
+    var seen = {}, all = 0;
+    (history || []).forEach(function (h) {
+      if (h.kid !== kidId || !(h.total > 0 && h.done === h.total) || seen[h.date]) return;
+      if (since && String(h.date) < since) return;
+      seen[h.date] = true;
+      all++;
+    });
+    var got = n ? Math.min(all, n) : 0;
+    return { n: n, got: got, all: all, left: n ? n - got : 0, pct: n ? Math.round(got * 100 / n) : 0, done: n > 0 && all >= n };
+  }
   // 연속으로 다 챙긴 학교 가는 날 수: todayKey 를 아직 다 챙기지 않았으면 그 앞 학교 가는 날부터 거슬러 센다
   // 주말·쉬는 날은 prevSchoolDay 가 건너뛰므로 끊지 않는다
   function streak(history, kidId, todayKey, holidays) {
@@ -1077,6 +1092,12 @@ var Logic = (function () {
     // 5-0) 스티커 모음판: 다 챙긴 3일(10/21 5번·10/23 3번·11/2 1번)만, 다른 아이·같은 날 두 줄은 빼고 → 칸 12개 합 3
     var sb0 = stickerBook(hs.concat([{ kid: 'x', date: '2026-10-24', total: 3, done: 3 }, { kid: 'k', date: '2026-10-21', total: 2, done: 2 }]), 'k');
     eq('스티커 모음판', sb0.length + '|' + sb0.reduce(function (a, b) { return a + b; }, 0) + '|' + sb0[5] + sb0[3] + sb0[1], '12|3|111');
+    // 5-0b) 약속 상: 5장 약속, 10/22 부터 → 10/23·11/2 두 장(다른 아이·덜 챙긴 날 뺌), 3장 남음, 40%
+    var gp0 = goalProgress(hs.concat([{ kid: 'x', date: '2026-10-24', total: 3, done: 3 }]), 'k', { n: 5, prize: '공원', since: '2026-10-22' });
+    eq('약속 상 진행', gp0.got + '|' + gp0.left + '|' + gp0.pct + '|' + gp0.done, '2|3|40|false');
+    var gp1 = goalProgress(hs, 'k', { n: 2, prize: '' });
+    eq('약속 상 채움 (넘쳐도 n까지)', gp1.got + '|' + gp1.all + '|' + gp1.pct + '|' + gp1.done, '2|3|100|true');
+    eq('약속 없음', goalProgress(hs, 'k', { n: 0, prize: '' }).pct, 0);
     // 5-1) 물건 그림 찾기: 이름에 든 말로, 한 글자 말은 낱말일 때만, 없으면 가방
     eq('그림 찾기 가위', iconFor('가위').id, 'scissors');
     eq('그림 찾기 실내화 주머니', iconFor('실내화 주머니').id, 'indoor');
@@ -1355,7 +1376,7 @@ var Logic = (function () {
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
-    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, MINE_CAT: MINE_CAT, parseNoteText: parseNoteText,
+    iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, goalProgress: goalProgress, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, MINE_CAT: MINE_CAT, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };

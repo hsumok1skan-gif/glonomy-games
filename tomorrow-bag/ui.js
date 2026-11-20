@@ -697,6 +697,22 @@ var UI = (function () {
     if (cell) cell.focus({ preventScroll: true });
   }
 
+  // 쪽 이름 띠가 미완료 → 다 챙김으로 막 바뀐 순간에만 한 번 축하(R-67).
+  // 'just-done' 을 붙였다 bandDone 이 끝나면(animationend) 뗀다. 움직임 줄이기면 애니메이션이 없어
+  // animationend 가 오지 않으므로 잠시 뒤 타이머로도 뗀다
+  function bandCheer(head) {
+    head.classList.remove('just-done');
+    void head.offsetWidth;
+    head.classList.add('just-done');
+    var off = function (e) {
+      if (e && e.animationName && e.animationName !== 'bandDone') return;
+      head.classList.remove('just-done');
+      head.removeEventListener('animationend', off);
+    };
+    head.addEventListener('animationend', off);
+    setTimeout(off, 700);
+  }
+
   // 칸 하나만 바꾸기: 다시 그리지 않고 이미 있는 요소만 고친다
   // (가방 그림 SVG 가 그대로 남아 고리의 stroke-dashoffset·차오름 transition 이 돈다). 못 찾으면 false
   function updateBag(S, kid, bag, name) {
@@ -735,7 +751,9 @@ var UI = (function () {
     var head = document.querySelector('#bs-band .group-title[data-g="' + g + '"]');
     if (head) {
       var c = groupCounts(bag, done)[g] || { d: 0, t: 0 };
+      var wasDone = head.classList.contains('all-done');
       head.classList.toggle('all-done', c.d === c.t);
+      if (!wasDone && c.t > 0 && c.d === c.t) bandCheer(head);
       var gc = head.querySelector('.g-count');
       if (gc) { gc.textContent = c.d + '/' + c.t; gc.setAttribute('aria-label', c.t + '개 가운데 ' + c.d + '개 챙김'); }
     }
@@ -755,7 +773,9 @@ var UI = (function () {
     var d = document.querySelectorAll('#bs-pages .out-cell.done').length;
     var head = document.querySelector('#bs-band .group-title[data-g="out"]');
     if (!head) return;
+    var wasDone = head.classList.contains('all-done');
     head.classList.toggle('all-done', d === t);
+    if (!wasDone && t > 0 && d === t) bandCheer(head);
     var gc = head.querySelector('.g-count');
     if (gc) { gc.textContent = d + '/' + t; gc.setAttribute('aria-label', t + '개 가운데 ' + d + '개 꺼냄'); }
   }
@@ -875,7 +895,11 @@ var UI = (function () {
       (first ? '<br><span class="new-stk">새 스티커!</span>' : '') + '</span>';
     // 연속으로 다 챙긴 날이 2일 이상일 때만 보인다 (끊긴 날은 아무 말도 하지 않는다)
     var sk = Logic.streak(S.history, kid.id, k, S.settings.holidays);
-    $('done-streak-slot').innerHTML = sk >= 2 ? '<p id="done-streak" class="done-streak">연속 ' + sk + '일 다 챙겼어요</p>' : '';
+    // 약속 상을 정했으면 다 모으기까지 남은 장 수(다 모았으면 상 이름)를 한 줄로
+    var gp = Logic.goalProgress(S.history, kid.id, S.settings.goal);
+    var gz = esc((S.settings.goal && S.settings.goal.prize) || '약속한 상');
+    $('done-streak-slot').innerHTML = (sk >= 2 ? '<p id="done-streak" class="done-streak">연속 ' + sk + '일 다 챙겼어요</p>' : '') +
+      (gp.n ? '<p id="done-goal" class="done-streak">' + (gp.done ? '<b>' + gz + '</b> 받을 차례예요!' : '<b>' + gz + '</b>까지 ' + gp.left + '장 남았어요 (' + gp.got + '/' + gp.n + ')') + '</p>' : '');
     $('done-line').textContent = Logic.shareText(S, kid, Logic.buildBag(S, kid, k));
   }
 
@@ -913,8 +937,11 @@ var UI = (function () {
       $('cal-grid').innerHTML = miniEmpty('kid', '아이를 알려 주세요',{ act: 'cal-kid', label: '시작하기' });
       $('cal-sum').innerHTML = '';
       $('sticker-book').innerHTML = '';
+      $('goal-box').hidden = true;
       return;
     }
+    $('goal-box').hidden = false;
+    renderGoal(S, kid);
     var first = new Date(y, m - 1, 1, 12).getDay(), days = new Date(y, m, 0, 12).getDate();
     var full = {};
     S.history.forEach(function (h) { if (h.kid === kid.id && h.date.slice(0, 7) === ym && h.total > 0 && h.done === h.total) full[h.date] = true; });
@@ -940,6 +967,35 @@ var UI = (function () {
         stickerPic(s) + (c ? '<span class="sn" aria-hidden="true">' + c + '</span>' : '') + '</span>';
     });
     $('sticker-book').innerHTML = '<div class="stk-book-h tiny">스티커 모음 ' + got + '/12</div><div class="stk-book-g">' + b + '</div>';
+  }
+
+  // ---- 약속 상: 정한 날부터 다 챙긴 날 수를 막대로, 다 모으면 상 이름을 크게 ----
+  function renderGoal(S, kid) {
+    var g = S.settings.goal || { n: 0, prize: '' };
+    var gp = Logic.goalProgress(S.history, kid.id, g);
+    var prize = g.prize || '약속한 상';
+    var bar = $('goal-bar');
+    bar.setAttribute('aria-valuemax', String(gp.n));
+    bar.setAttribute('aria-valuenow', String(gp.got));
+    bar.setAttribute('aria-valuetext', gp.n ? gp.got + '/' + gp.n + '장' : '약속 없음');
+    bar.hidden = !gp.n;
+    bar.querySelector('.goal-fill').style.width = gp.pct + '%';
+    bar.classList.toggle('full', gp.done);
+    $('goal-box').classList.toggle('done', gp.done);
+    $('goal-head').innerHTML = !gp.n ? '<b>약속 상</b> <span class="muted tiny">스티커를 몇 장 모으면 무엇을 받을지 정해 보세요</span>' :
+      gp.done ? '<b>' + esc(prize) + '</b> 받을 차례예요! <span class="tiny">(' + gp.n + '장 다 모음)</span>' :
+      '<b>' + esc(prize) + '</b>까지 <b>' + gp.left + '장</b> 남았어요 <span class="tiny">(' + gp.got + '/' + gp.n + ')</span>';
+    // 입력 칸은 쓰는 중이 아닐 때만 저장값으로 맞춘다
+    if (document.activeElement !== $('goal-prize')) $('goal-prize').value = g.prize || '';
+    // 가져온 데이터의 약속 수가 5·10·15·20 이 아니면(0~60) 그 수 칸을 하나 더 둔다
+    var sel = $('goal-n'), gv = String(g.n || 0);
+    if (!sel.querySelector('option[value="' + gv + '"]')) {
+      var o = document.createElement('option');
+      o.value = gv; o.textContent = gv + '장';
+      sel.appendChild(o);
+    }
+    if (document.activeElement !== sel) sel.value = gv;
+    $('goal-err').textContent = '';
   }
 
   // ---- 며칠 뒤 준비물 시트 ----
@@ -1560,6 +1616,32 @@ var UI = (function () {
     return f;
   }
 
+  // 처음 안내의 실제 화면 미리보기: 찍어 둔 가방·가방 시트·시간표 3장을 휴대폰 틀(줄여서, 누를 수 없음)에 넣어 옆으로 넘긴다
+  var WELCOME_S = 0.44, WELCOME_MIN_S = 0.2;
+  function renderWelcomeShots(shots) {
+    var root = $('welcome-shots');
+    if (!root) return 0;
+    shots = (shots || []).filter(Boolean).slice(0, 3);
+    if (!shots.length) { root.innerHTML = ''; root.hidden = true; return 0; }
+    root.hidden = false;
+    var pages = shots.map(function () { return { html: '<div class="shot-box" aria-hidden="true"><div class="shot"></div></div>' }; });
+    root.innerHTML = pagerHTML('welcome', pages, 0);
+    var boxes = root.querySelectorAll('.shot');
+    for (var i = 0; i < boxes.length; i++) boxes[i].appendChild(shots[i]);
+    fitWelcomeShots();
+    return shots.length;
+  }
+  // 390×844 같은 화면에서 처음 안내가 스크롤 없이 들어가게, 넘치는 만큼 미리보기를 줄인다
+  function fitWelcomeShots() {
+    var root = $('welcome-shots');
+    if (!root || root.hidden) return;
+    var sheet = root.closest('.sheet');
+    root.style.setProperty('--shot-s', WELCOME_S);
+    if (!sheet) return;
+    var over = sheet.scrollHeight - sheet.clientHeight;
+    if (over > 0) root.style.setProperty('--shot-s', Math.max(WELCOME_MIN_S, (844 * WELCOME_S - over - 2) / 844).toFixed(3));
+  }
+
   // 그림 안에 보이는 첫 요소 (크기가 0 이거나 옆 쪽에 숨은 것은 건너뛴다)
   function firstShown(root, sel, br) {
     var list = root.querySelectorAll(sel);
@@ -1719,6 +1801,6 @@ var UI = (function () {
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter, renderKidNote: renderKidNote, renderTplPreview: renderTplPreview, shortName: shortName,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,
     renderEvents: renderEvents, renderMore: renderMore, renderLook: renderLook, renderTimes: renderTimes, renderKidsSheet: renderKidsSheet, renderGuards: renderGuards, renderDays: renderDays,
-    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderFamily: renderFamily, makeShot: makeShot, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest, slideDay: slideDay
+    renderTeachItems: renderTeachItems, renderTeachOut: renderTeachOut, renderFamily: renderFamily, makeShot: makeShot, renderWelcomeShots: renderWelcomeShots, fitWelcomeShots: fitWelcomeShots, renderHelpPage: renderHelpPage, HELP_N: HELP_N, renderSelfTest: renderSelfTest, slideDay: slideDay
   };
 })();

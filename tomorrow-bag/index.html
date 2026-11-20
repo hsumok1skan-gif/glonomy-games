@@ -409,6 +409,23 @@
     </div>
     <div id="cal-grid" class="cal"></div>
     <div id="cal-sum" class="muted cal-sum"></div>
+    <!-- 스티커 모아 받는 약속 상: n장 모으면 정한 상, 막대로 다가가는 것을 보여 준다 -->
+    <div id="goal-box" class="goal-box">
+      <div id="goal-head" class="goal-head"></div>
+      <div id="goal-bar" class="goal-bar" role="progressbar" aria-label="약속 상까지 모은 스티커" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><span class="goal-fill"></span></div>
+      <div id="goal-row" class="row goal-row">
+        <select id="goal-n" aria-label="약속 스티커 수">
+          <option value="0">약속 없음</option>
+          <option value="5">5장</option>
+          <option value="10">10장</option>
+          <option value="15">15장</option>
+          <option value="20">20장</option>
+        </select>
+        <input id="goal-prize" type="text" maxlength="20" placeholder="모으면 받을 상 (예: 공원 가기)" aria-label="모으면 받을 상">
+        <button class="btn" type="button" data-act="goal-save">저장</button>
+      </div>
+      <div class="err" id="goal-err"></div>
+    </div>
     <!-- 스티커 모음판: 12가지, 아직 못 받은 칸은 잠가 둔다 -->
     <div id="sticker-book" class="stk-book" role="group" aria-label="스티커 모음판"></div>
   </div>
@@ -561,6 +578,8 @@
     <div id="welcome-demo" class="welcome-art" aria-hidden="true"></div>
     <h1 class="welcome-title">내일 가방</h1>
     <p class="muted" style="text-align:center">시간표가 내일 가방을 챙겨 줘요.</p>
+    <!-- 실제 화면 미리보기: 예시로 찍은 가방 · 가방 시트 · 시간표 3장 (UI.renderWelcomeShots 가 그린다, 옆으로 밀거나 점을 누른다) -->
+    <div id="welcome-shots" class="welcome-shots" role="group" aria-label="화면 미리보기" hidden></div>
     <button class="btn main wide" type="button" data-act="welcome-start" style="margin-top:12px">시작하기</button>
     <button class="btn wide" type="button" data-act="welcome-sample" style="margin-top:8px">예시로 둘러보기</button>
   </div>

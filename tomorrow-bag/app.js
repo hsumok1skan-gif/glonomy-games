@@ -871,6 +871,20 @@
     UI.renderCal(S, curKid(), V.cal);
     openSheet('sheet-cal');
   }
+  // 약속 상 저장: 수·상이 바뀌면 오늘(가방 날짜)부터 새로 센다. 약속 없음이면 상도 비운다
+  function goalSave() {
+    var n = +$('goal-n').value || 0;
+    var prize = Array.from(($('goal-prize').value || '').replace(/\s+/g, ' ').trim()).slice(0, 20).join('');
+    if (n && !prize) { $('goal-err').textContent = '모으면 받을 상을 적어 주세요'; $('goal-prize').focus(); return; }
+    var old = S.settings.goal || { n: 0, prize: '' };
+    if (old.n === n && (old.prize || '') === (n ? prize : '')) return UI.toast('이미 이 약속이에요');
+    rememberUndo();
+    S.settings.goal = n ? { n: Math.max(0, Math.min(60, n)), prize: prize, since: todayKey() } : { n: 0, prize: '' };
+    save();
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    UI.renderCal(S, curKid(), V.cal || bagKey().slice(0, 7));
+    UI.toast(n ? '스티커 ' + n + '장 모으면 "' + prize + '" — 약속했어요' : '약속을 지웠어요', true);
+  }
   function calStep(n) {
     if (!V.cal) return;
     var p = V.cal.split('-'), y = +p[0], m = +p[1] + n;
@@ -1207,6 +1221,29 @@
     if (kd) UI.renderBagSheet(S, V, kd, Logic.buildBag(S, kd, bagKey()));
     return shots;
   }
+  // ---- 처음 안내: 예시로 찍은 가방·가방 시트·시간표 3장을 보여 주고, 움직임 줄이기가 아니면 3초마다 넘긴다 ----
+  var WELCOME_MS = 3000, welcomeTimer = null;
+  function openWelcome() {
+    var shots = captureShots();
+    // captureShots 차례: 가방 · 가방 시트 · 시간표 · 꾸러미 ·더보기 → 앞 3장
+    var n = UI.renderWelcomeShots(shots.slice(0, 3));
+    V.pg.welcome = 0;
+    UI.openSheet('ov-welcome'); UI.welcomeDemo(true);
+    clearTimeout(welcomeTimer);
+    welcomeTimer = null;
+    if (n > 1 && !document.body.classList.contains('reduce')) welcomeTimer = setTimeout(welcomeTick, WELCOME_MS);
+  }
+  function welcomeTick() {
+    welcomeTimer = null;
+    if (!UI.isOpen('ov-welcome')) return;
+    var pager = document.querySelector('.pager[data-pg="welcome"]');
+    if (!pager) return;
+    var n = +pager.getAttribute('data-n') || 1, cur = +pager.getAttribute('data-cur') || 0;
+    // 손가락으로 미는 중에는 그 쪽을 건드리지 않는다
+    if (!(swipe && swipe.drag && swipe.el === pager)) V.pg.welcome = UI.setPage('welcome', (cur + 1) % n);
+    welcomeTimer = setTimeout(welcomeTick, WELCOME_MS);
+  }
+  function stopWelcome() { clearTimeout(welcomeTimer); welcomeTimer = null; }
   function openHelp() {
     V.help = { i: 0, shots: captureShots() };
     UI.renderHelpPage(0, V.help.shots, V);
@@ -1639,7 +1676,7 @@
   }
   function applyFamily(f) {
     S.settings.welcomed = true;
-    UI.closeSheet('ov-welcome'); UI.welcomeDemo(false);
+    UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome();
     rememberUndo();
     var r = Logic.mergeFamily(S, f, Store.uid);
     S.cur = r.kid.id;
@@ -1682,7 +1719,7 @@
       // 아이를 넣으면 바로 들어간다 (submitKid)
       S.settings.welcomed = true;
       save();
-      UI.closeSheet('ov-welcome'); UI.welcomeDemo(false);
+      UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome();
       openKid(null);
       UI.toast(t.c + ' 준비물 링크를 받았어요. 아이를 알려 주면 바로 들어가요');
       return;
@@ -1949,6 +1986,7 @@
     'cal-kid': function () { UI.closeSheet('sheet-cal'); openKid(null); },
     'cal-prev': function () { calStep(-1); },
     'cal-next': function () { calStep(1); },
+    'goal-save': goalSave,
     'note-new': function () { openNote(null); },
     'note-edit': function (b) { openNote(b.getAttribute('data-id')); },
     'note-add': function () { if (noteAddItem($('note-add').value) === true) $('note-add').value = ''; },
@@ -2110,7 +2148,7 @@
     'backup': openBackup,
     'copy-export': function () { copyText($('export-text').value, '내보내기 글을 복사했어요'); },
     'print': function () { go('bag'); try { window.print(); } catch (e) { UI.toast('인쇄할 수 없는 브라우저예요'); } },
-    'sample-add': function () { UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); addSample(); },
+    'sample-add': function () { UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome(); addSample(); },
     'sample-del': removeSample,
     'sample-start': sampleStart,
     'clear-all': function () {
@@ -2130,9 +2168,9 @@
     'confirm-yes': function () { var f = confirmFn; confirmFn = null; UI.closeSheet('ov-confirm'); if (f) f(); },
     'confirm-no': function () { confirmFn = null; UI.closeSheet('ov-confirm'); },
     'undo': doUndo,
-    'welcome-start': function () { S.settings.welcomed = true; save(); UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); openKid(null); },
+    'welcome-start': function () { S.settings.welcomed = true; save(); UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome(); openKid(null); },
     'welcome-sample': function () {
-      S.settings.welcomed = true; UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); addSample();
+      S.settings.welcomed = true; UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome(); addSample();
       // 처음 한 번: 하윤이 가방 화면의 세 곳을 차례로 짚어 준다
       if (S.settings.tourSeen === false) { V.tour = 0; if (!UI.showTour(0)) endTour(); else setTimeout(placeTour, 300); }
     },
@@ -2333,6 +2371,9 @@
     if (e.key === 'Enter' && e.target && e.target.id === 'note-add' && V.note) {
       e.preventDefault();
       if (noteAddItem(e.target.value) === true) e.target.value = '';
+    } else if (e.key === 'Enter' && e.target && e.target.id === 'goal-prize') {
+      e.preventDefault();   // 약속 상: 엔터로도 저장
+      goalSave();
     } else if (e.key === 'Enter' && e.target && e.target.id === 'bag-add') {
       e.preventDefault();   // 가방 시트 물건 넣기: 엔터로도 넣는다
       if (ready('bag-add-go')) bagAdd();
@@ -2419,10 +2460,11 @@
       else if (darkMQ.addListener) darkMQ.addListener(applySettings);
     }
     window.addEventListener('resize', placeTour);
+    window.addEventListener('resize', function () { if (UI.isOpen('ov-welcome')) UI.fitWelcomeShots(); });
     window.addEventListener('hashchange', readTeachHash);
     window.addEventListener('hashchange', readFamilyHash);
     setInterval(tick, 60000);
-    if (!S.settings.welcomed && !/^#t=/.test(location.hash || '')) { UI.openSheet('ov-welcome'); UI.welcomeDemo(true); }
+    if (!S.settings.welcomed && !/^#t=/.test(location.hash || '')) openWelcome();
     readTeachHash();
     readFamilyHash();
   }

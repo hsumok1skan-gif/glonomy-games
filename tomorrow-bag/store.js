@@ -51,6 +51,7 @@ var Store = (function () {
         speak: true,                                         // 아이가 챙겨요에서 넣은 물건 이름을 읽어 준다 (기기 음성, 소리가 켜졌을 때만)
         teacher: false,
         holidays: [],
+        goal: { n: 0, prize: '' },                           // 스티커 모아 받는 약속 상 (n장 모으면 prize, 0이면 약속 없음. 저장할 때 since 날짜를 붙인다)
         guardians: ['엄마', '아빠'],
         ptimes: Logic.defaultTimes(),                        // 교시마다 [시작, 끝]
         gradeP: { 1: 5, 2: 5, 3: 6, 4: 6, 5: 6, 6: 6 },      // 학년별 교시 수 (새 아이에 쓴다, 1~2학년은 5교시)
@@ -119,6 +120,13 @@ var Store = (function () {
     if (typeof d.settings.holdTipSeen !== 'boolean') d.settings.holdTipSeen = base.settings.holdTipSeen;
     if (typeof d.settings.tourSeen !== 'boolean') d.settings.tourSeen = base.settings.tourSeen;
     if (!Array.isArray(d.settings.holidays)) d.settings.holidays = [];
+    // 약속 상: n 은 0~60 정수, prize 는 앞뒤 빈칸을 뺀 20자 이하 글, since 는 YYYY-MM-DD 일 때만 남긴다
+    var go = d.settings.goal;
+    if (!go || typeof go !== 'object' || Array.isArray(go)) go = {};
+    var gn = Math.round(+go.n);
+    var gz = typeof go.prize === 'string' ? Array.from(go.prize.replace(/\s+/g, ' ').trim()).slice(0, 20).join('') : '';
+    d.settings.goal = { n: isFinite(gn) ? Math.max(0, Math.min(60, gn)) : 0, prize: gz };
+    if (typeof go.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(go.since)) d.settings.goal.since = go.since;
     if (!Array.isArray(d.settings.guardians)) d.settings.guardians = base.settings.guardians.slice();
     if (!/^\d{2}:\d{2}$/.test(d.settings.remindAt)) d.settings.remindAt = '';
     d.settings.ptimes = Logic.periodTimes(d.settings).map(function (x) { return x.slice(); });

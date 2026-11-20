@@ -262,6 +262,13 @@ body.reduce .band { scroll-behavior: auto; }
 .group-title.g-morning::before { content: '☀'; }
 .group-title.g-out { border-style: dashed; }
 .group-title.g-out::before { content: '↑'; }
+/* 한 쪽을 막 다 채운 순간: 띠가 통 커졌다 돌아오고 안쪽에 빛이 한 번 번진다 (R-67) */
+.group-title.just-done { position: relative; animation: bandDone 0.42s ease-out; }
+.group-title.just-done::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(circle, var(--gold) 0%, transparent 70%); box-shadow: inset 0 0 0 2px var(--sub); opacity: 0; animation: bandShine 0.42s ease-out; }
+@keyframes bandDone { 0% { transform: scale(1); } 45% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes bandShine { 0% { opacity: 0; } 35% { opacity: 0.75; } 100% { opacity: 0; } }
+body.reduce .group-title.just-done { animation: none; }
+body.reduce .group-title.just-done::after { animation: none; display: none; }
 
 /* 물건 칸: 그림 + 한글 이름, 챙기면 초록 ✓ 도장 */
 .check {
@@ -403,6 +410,17 @@ body.reduce .stk.big { animation: none; }
 .cal-sum p { margin: 0; }
 .cal .mini-empty { grid-column: 1 / -1; }
 /* 스티커 모음판: 12칸, 못 받은 칸은 흑백·흐리게 */
+/* 약속 상: 스티커를 모아 받는 상까지의 막대 */
+.goal-box { margin-top: 10px; padding: 10px 12px; border-radius: 14px; background: var(--card, rgba(127,127,127,0.08)); }
+.goal-head { text-align: center; margin-bottom: 6px; }
+.goal-bar { height: 12px; border-radius: 999px; overflow: hidden; background: var(--line, rgba(127,127,127,0.25)); }
+.goal-fill { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--accent); transition: width 0.4s ease-out; }
+.goal-bar.full .goal-fill { background: var(--accent-deep); }
+.goal-box.done .goal-head { color: var(--accent-deep); font-size: var(--t-1, 1.05em); }
+.goal-row { margin-top: 8px; gap: 6px; }
+.goal-row select { flex: none; width: auto; }
+.goal-row input { flex: 1; min-width: 0; }
+body.reduce .goal-fill { transition: none; }
 .stk-book { margin-top: 8px; }
 .stk-book-h { text-align: center; font-weight: 800; margin-bottom: 4px; }
 .stk-book-g { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; justify-items: center; }
@@ -853,6 +871,17 @@ body.reduce .bad { animation: none; }
 #welcome-demo .bag-art { width: 100%; height: 100%; display: block; }
 #ov-welcome h1 { font-size: var(--t-6); text-align: center; word-break: keep-all; overflow-wrap: break-word; text-wrap: balance; }
 #ov-welcome .muted { font-size: var(--t-3); color: var(--ink); }
+/* 처음 안내 뒤 바탕: 빈 회색 카드가 비치지 않게 바탕색으로 덮는다 */
+#ov-welcome { background: var(--bg); }
+#ov-welcome .sheet { box-shadow: 0 10px 40px var(--shadow-lift); }
+/* 처음 안내의 실제 화면 미리보기 (휴대폰 틀 3장, --shot-s 는 UI.fitWelcomeShots 가 화면에 맞게 줄인다) */
+.welcome-shots { --shot-s: 0.44; flex: none; display: flex; flex-direction: column; margin-top: 8px; }
+.welcome-shots[hidden] { display: none; }
+.welcome-shots .pager { flex: none; height: calc(844px * var(--shot-s) + 8px); }
+.welcome-shots .pg { display: flex; justify-content: center; align-items: flex-start; }
+.welcome-shots .shot-box { pointer-events: none; box-shadow: 0 4px 14px var(--shadow-lift); }
+/* 미리보기가 있으면 위 가방 그림은 줄여 미리보기 자리를 넓힌다 */
+#ov-welcome .sheet:has(.welcome-shots:not([hidden])) #welcome-demo { width: 96px; height: 96px; }
 .done-burst { animation: burst 0.5s ease-out; }
 @keyframes burst { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 body.reduce .done-burst { animation: none; }
@@ -893,7 +922,7 @@ body.reduce .confetti { display: none; }
 /* 키가 작은 화면(가로로 든 휴대폰 등)에서는 가방 그림을 줄인다 */
 @media (max-height: 640px) {
   .bag-stage { min-height: 80px; }
-  .welcome-art, #welcome-demo { width: 84px; height: 84px; }
+  .welcome-art, #welcome-demo, #ov-welcome .sheet:has(.welcome-shots:not([hidden])) #welcome-demo { width: 84px; height: 84px; }
   .pick-area { height: 40dvh; }
   .help-sheet { --shot-s: 0.26; }
   .cal-d { max-height: 38px; }
