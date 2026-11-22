@@ -935,3 +935,20 @@ body.on-fridge main { padding: 0; max-width: none; }
 #fridge-photo-in > #ocr-out:not([hidden]) { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .ocr-end { position: sticky; top: -12px; z-index: 2; display: flex; gap: 8px; margin: -12px -12px 10px; padding: 10px 12px; background: var(--card); border-bottom: 1px solid var(--line); }
 .ocr-end button { flex: 1; min-height: 48px; font-weight: 800; }
+/* QA 1회차: 좁은 폰(360px)에서 문 선반 이름이 화면 밖으로 밀려나던 것 — 버튼 폭 안에서 줄을 바꾼다 */
+.shelf.door-shelf { min-width: 0; overflow: visible; }
+.shelf.door-shelf .shelf-name { max-width: 100%; box-sizing: border-box; padding: 4px 2px; }
+.shelf.door-shelf .shelf-name img.ic { width: 100%; max-width: 34px; height: auto; aspect-ratio: 1; }
+.shelf.door-shelf .shelf-label { white-space: normal; word-break: keep-all; text-align: center; line-height: 1.15; }
+
+/* QA 5회차: 긴 이름은 칸 폭 안에서 '…'으로 줄이고, '외 N'은 칸 이름 옆에 둬서 칸이 낮아도 가려지지 않게 */
+.shelf-sub { min-width: 0; max-width: 100%; }
+.shelf-item { max-width: 100%; min-width: 0; box-sizing: border-box; }
+.shelf-item .si-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shelf-item .item-ic { flex: none; }
+.shelf-sub .shelf-more { flex-basis: 100%; max-width: max-content; font-size: 13px; padding: 1px 8px; }
+/* QA 5회차: 긴 음식 이름이 목록 밖으로 나가거나 '꺼내기' 버튼을 덮던 것 — 이름은 폭 안에서 줄을 바꾼다 */
+#fridge-exp .ex-name, .item-3 .it-name { display: block; max-width: 100%; min-width: 0; overflow-wrap: anywhere; word-break: normal; }
+#fridge-exp .ex-name .item-ic, .item-3 .it-name .item-ic { display: inline-flex; vertical-align: middle; margin-right: 6px; }
+.item-row.item-3 .row-main { flex: 1 1 0; min-width: 0; }
+.item-row.item-3 .row-btn { flex: none; }

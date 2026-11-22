@@ -752,7 +752,7 @@ function ocrDateText(date) {
 // 묻는 카드(날짜 확인·이름 후보·읽힌 글자)는 사진 탭(at='photo')에만 있다. 음식 넣기 창은 날짜만 바로 채운다 (H-36)
 function ocrEl(at, key) { return $('ocr-' + key); }
 // 이름으로 쓰지 않는 표시 낱말 (날짜·용량·영양 표시 글)
-var OCR_SKIP = /^(유통기한|소비기한|유통|소비|기한|까지|제조|제조일|제조일자|제조년월일|생산|생산일|원재료|원재료명|내용량|중량|용량|보관|보관방법|냉장|냉장보관|냉동|냉동보관|영양|영양정보|영양성분|열량|칼로리|나트륨|탄수화물|당류|지방|포화지방|트랜스지방|콜레스테롤|단백질|포장|포장재질|재질|업소명|제조원|판매원|소재지|품목|품목보고번호|반품|교환|가격|판매가|할인|바코드|exp|best|before|kcal|mg|ml|kg|g|l)$/i;
+var OCR_SKIP = /^(제품명|식품유형|식품의\s*유형|유통기한|소비기한|유통|소비|기한|까지|제조|제조일|제조일자|제조년월일|생산|생산일|원재료|원재료명|내용량|중량|용량|보관|보관방법|냉장|냉장보관|냉동|냉동보관|영양|영양정보|영양성분|열량|칼로리|나트륨|탄수화물|당류|지방|포화지방|트랜스지방|콜레스테롤|단백질|포장|포장재질|재질|업소명|제조원|판매원|소재지|품목|품목보고번호|반품|교환|가격|판매가|할인|바코드|exp|best|before|kcal|mg|ml|kg|g|l)$/i;
 // 글자 인식은 한글을 한 글자씩 띄워 읽을 때가 많다. 이어진 한 글자들을 한 낱말로 붙인다
 function ocrWords(line) {
   var words = [], run = '';
@@ -796,6 +796,7 @@ function fillShelfSelect() {
 function showOcrPick(at, r) {
   App.ocrPick[at] = { names: r.names || null, text: r.text || '', date: Calc.isDay(r.date) ? r.date : null, dateOk: false, manual: false, name: '', own: false, savedId: null };
   fillShelfSelect();
+  $('ocr-shelf').value = shelfById(App.shelfId) ? App.shelfId : 'r2';   // 첫 칸(냉동실 위 칸)에 말없이 넣던 것
   renderOcrPick(at);
   var box = $('ocr-out');
   box.hidden = false;
@@ -816,7 +817,9 @@ function renderOcrPick(at) {
   ocrEl(at, 'q').innerHTML = q;
   ocrEl(at, 'q').parentNode.classList.toggle('saved', !!(o.dateOk && saved));
   ocrEl(at, 'btns').hidden = !(o.date && !o.dateOk && !o.manual);
+  var ln = labelName(o.text);
   var names = o.names && o.names.length ? ocrLines(o.names).concat(ocrNames(o.text)).filter(function (n, i, a) { return a.indexOf(n) === i; }).slice(0, 12) : ocrNames(o.text);
+  if (ln) names = [ln].concat(names.filter(function (n) { return n !== ln; })).slice(0, 12);
   var typed = o.name && names.indexOf(o.name) < 0 ? o.name : '';
   ocrEl(at, 'names').innerHTML = (typed ? [typed] : []).concat(names).map(function (n) {
     var on = n === o.name;
@@ -968,7 +971,22 @@ function ocrLines(names) {
   (names || []).forEach(function (n) { var c = ocrNames(n)[0]; if (c && out.indexOf(c) < 0) out.push(c); });
   return out;
 }
+// 뒷면 표시 '제품명 : 갈릭치즈마요소스' — 있으면 이게 이름이다
+function labelName(text) {
+  var m = String(text || '').match(/제\s*품\s*명\s*[:：]?\s*([^\n]{2,30})/);
+  if (!m) return '';
+  var v = m[1].replace(/\s*(식품\s*유형|내\s*용\s*량|원\s*재\s*료).*$/, '').replace(/[|,.;]+$/, '').trim();
+  return v.length >= 2 ? v.slice(0, 30) : '';
+}
 function pickFoodName(text, names) {
+  var ln = labelName(text);
+  if (ln) {
+    var more = pickFoodNameBase(text, names).list.filter(function (n) { return n !== ln; });
+    return { best: ln, list: [ln].concat(more).slice(0, 6) };
+  }
+  return pickFoodNameBase(text, names);
+}
+function pickFoodNameBase(text, names) {
   // 앱(ML Kit)은 글자 크기를 알려 준다: 가장 큰 글씨(제품명)를 먼저 고른다
   if (names && names.length) {
     var big = ocrLines(names);

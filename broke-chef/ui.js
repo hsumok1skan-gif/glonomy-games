@@ -431,9 +431,10 @@ function renderFridge() {
           ' style="left:' + at[0] + '%;top:' + at[1] + '%;width:' + at[2] + '%;height:' + at[3] + '%">' +
           '<span class="shelf-name">' + ic('shelf_' + s.id, s.icon) + ' <span class="shelf-label">' + esc(s.short || s.name) + '</span></span>' +
           (items.length ? '<span class="shelf-n" aria-hidden="true">' + items.length + '</span>' : '') +
-          '<span class="shelf-sub">' + (items.length ? items.slice(0, 3).map(function (x) {
-            return '<span class="shelf-item">' + itemIcHtml(x) + esc(x.name) + '</span>';
-          }).join('') + (items.length > 3 ? '<span class="shelf-more">외 ' + (items.length - 3) + '</span>' : '') : '비어 있어요') + '</span>' +
+          // 칸이 낮아도 '외 N'이 가려지지 않게: 4개 넘으면 2개 + '외 N' 으로 세 줄 안에 끝낸다 (QA 5회차)
+          '<span class="shelf-sub">' + (items.length ? items.slice(0, items.length > 3 ? 2 : 3).map(function (x) {
+            return '<span class="shelf-item">' + itemIcHtml(x) + '<span class="si-n">' + esc(x.name) + '</span></span>';
+          }).join('') + (items.length > 3 ? '<span class="shelf-more">외 ' + (items.length - 2) + '개</span>' : '') : '비어 있어요') + '</span>' +
           (worst ? '<span class="shelf-tag">' + worst + '</span>' : '') +
         '</button>';
       }).join('') + '</div>';

@@ -218,9 +218,9 @@ var Cook = (function () {
     $('h-recipe').textContent = r.name;
     var chips = m.rows.filter(function (x) { return x.state !== 'pantry'; }).map(function (x) {
       var cls = x.state === 'have' ? 'have' : x.state === 'need' ? 'need' : 'pantry';
-      var tip = x.state === 'have' ? x.items.map(function (i) { var e = expInfo(i.exp); return i.name + (e ? ' ' + e.text : ''); }).join(', ') : '';
+      var tip = x.state === 'have' ? x.items.map(function (i) { var e = expInfo(i.exp); return (i.name === x.name ? '' : i.name + ' ') + (e ? e.text : ''); }).map(function (t) { return t.trim(); }).filter(Boolean).join(', ') : '';
       return '<li class="rc-ing ' + cls + '"><span class="rc-mark" aria-hidden="true">' + (cls === 'have' ? ic('check', '✓') : cls === 'need' ? ic('spend_장보기', '🛒') : ic('salt', '🧂')) + '</span>' +
-        '<b>' + esc(x.name) + '</b>' + (tip ? '<small>' + esc(tip) + '</small>' : cls === 'need' ? '<small>살 것</small>' : '<small>양념</small>') + '</li>';
+        '<b>' + esc(x.name) + '</b>' + (tip ? '<small>' + esc(tip) + '</small>' : cls === 'need' ? '<small>살 것</small>' : cls === 'have' ? '' : '<small>양념</small>') + '</li>';
     }).join('');
     var meta = [r.kind, r.way, r.time ? '⏱ ' + r.time : '', r.level, r.qnt, r.kcal ? (r.src === 'mafra' ? '' : '1인분 ') + r.kcal + 'kcal' : '', r.na ? '나트륨 ' + r.na + 'mg' : ''].filter(Boolean).join(' · ');
     chips += (r.sauce || []).map(function (n) {

@@ -141,6 +141,12 @@ var Ocr = (function () {
 
   function findDate(text, todayStr) {
     var t = fixDigits(text);
+    // 수입 식품의 일.월.연도(20.12.2026 · 20/12/2026)를 연.월.일로 바꿔 둔다. 앞 숫자가 12 이하이고 뒤가 12보다 크면 월/일 순서로 본다
+    t = t.replace(/(^|\D)(\d{1,2})([.\-\/])(\d{1,2})\3(20\d{2})(?!\d)/g, function (m, a, x, sep, z, yr) {
+      var d = +x, mo = +z;
+      if (d <= 12 && mo > 12) { var k = d; d = mo; mo = k; }
+      return a + yr + '.' + pad(mo) + '.' + pad(d);
+    });
     var now = todayStr || (window.Calc ? Calc.today() : new Date().toISOString().slice(0, 10));
     var thisYear = +now.slice(0, 4);
     var spans = [], best = null;
@@ -184,6 +190,8 @@ var Ocr = (function () {
     ['2O26.11.O3 까지', '2026-11-03'],
     ['2026년 11월 3일까지', '2026-11-03'],
     ['제조일 2026.10.20 유통기한 2026.11.03', '2026-11-03'],
+    ['BB 20.12.2026', '2026-12-20'],
+    ['12/20/2026', '2026-12-20'],
     ['우유 1.5L 3,500원', null],
     ['2026.13.40', null]
   ];
