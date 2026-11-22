@@ -59,7 +59,7 @@ var Ocr = (function () {
       });
     }).then(function (worker) {
       // 쪽 나누기 모드 11(흩어진 글): 상품 띠처럼 한 줄·흩어진 날짜를 덜 조각낸다
-      return worker.setParameters({ tessedit_pageseg_mode: '11' }).then(function () {
+      return worker.setParameters({ tessedit_pageseg_mode: '11' }).then(function () { curPsm = '11';
         emit('글자 읽기 준비 끝', 100, true);
         return worker;
       });
@@ -68,10 +68,13 @@ var Ocr = (function () {
     return workerP;
   }
 
-  // 사진(dataURL·canvas·img)에서 글자를 읽어 돌려준다
-  function read(src) {
+  // 사진(dataURL·canvas·img)에서 글자를 읽어 돌려준다. psm: 쪽 나누기 모드('11' 흩어진 글 · '3' 보통 글)
+  var curPsm = '11';
+  function read(src, psm) {
     return load().then(function (worker) {
-      return worker.recognize(src);
+      psm = psm || '11';
+      if (psm === curPsm) return worker.recognize(src);
+      return worker.setParameters({ tessedit_pageseg_mode: psm }).then(function () { curPsm = psm; return worker.recognize(src); });
     }).then(function (r) {
       emit('글자 읽기 끝', 100, true);
       return (r && r.data && r.data.text) || '';
@@ -190,6 +193,20 @@ var Ocr = (function () {
     });
   }
 
+  // 찍기 자석(2026-11-22): 음식 이름은 큰 제품명 글씨라 '보통 글'(3) 모드가 잘 읽는다.
+  // 그 글에서 날짜를 못 찾으면 날짜 띠에 강한 '흩어진 글'(11) 모드로 한 번 더 읽어 날짜만 가져온다
+  function scanFood(src) {
+    return prep(src).then(function (big) {
+      return read(big, '3').then(function (text) {
+        var date = findDate(text);
+        if (date) return { text: text, date: date };
+        return read(big, '11').then(function (t2) {
+          return { text: text + '\n' + t2, date: findDate(t2) };
+        }, function () { return { text: text, date: null }; });
+      });
+    });
+  }
+
   // 사진 → { text, date } (앱의 사진 흐름과 시험 훅 window.__ocrTest 가 같이 쓴다)
   function scan(src) {
     return prep(src).then(function (big) {
@@ -213,7 +230,7 @@ var Ocr = (function () {
   }
 
   return {
-    available: available, loaded: loaded, load: load, read: read, scan: scan, stop: stop, onProgress: onProgress,
+    available: available, loaded: loaded, load: load, read: read, scan: scan, scanFood: scanFood, stop: stop, onProgress: onProgress,
     findDate: findDate, selfTest: selfTest
   };
 })();

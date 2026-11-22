@@ -1,19 +1,48 @@
 {
+  "id": "./",
   "name": "한끼 계산기 — 자취생 냉장고·식비 챌린지",
   "short_name": "한끼 계산기",
-  "description": "냉장고 칸 메모·유통기한과 기간 식비 챌린지를 한곳에서 쓰는 자취생 앱. 기록은 이 기기 브라우저에만 저장돼요.",
+  "description": "냉장고 음식·유통기한과 기간 식비 챌린지를 한곳에서 쓰는 자취생 앱. 기록은 이 기기에만 저장돼요.",
   "lang": "ko",
   "dir": "ltr",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#e6f2fc",
   "theme_color": "#1660b0",
-  "categories": ["finance", "lifestyle", "food"],
+  "categories": [
+    "finance",
+    "lifestyle",
+    "food"
+  ],
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%231f78c8'/%3E%3Cpath d='M96 250h320c0 96-72 166-160 166S96 346 96 250z' fill='%23f3f8fc'/%3E%3Cpath d='M150 250c10-60 56-96 106-96s96 36 106 96z' fill='%23ffffff'/%3E%3Crect x='200' y='416' width='112' height='28' rx='12' fill='%23ff8c42'/%3E%3C/svg%3E",
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

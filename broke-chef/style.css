@@ -209,7 +209,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 .screen { flex: 1 1 auto; min-height: 0; overflow: hidden; }
 .warn-bar { flex: none; background: var(--warn-soft); color: var(--warn-ink); padding: 10px var(--side); font-size: var(--fs-2); }
 
-/* ---------- 1. 첫 화면 냉장고 (사람 그림 assets/한끼_계산기_6.png, 941×1672 한 장) ---------- */
+/* ---------- 1. 첫 화면 냉장고 (사람 그림 assets/한끼_계산기_6.webp, 941×1672 한 장) ---------- */
 /* 390×844 에서 스크롤 없이 한 번에: 그림 비율을 지키며 높이에 맞춘다 (H-16) */
 #screen-fridge { display: flex; align-items: center; justify-content: center; }
 .fridge {
@@ -225,7 +225,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
   /* H-60: 어둡게에서도 문 자체는 늘 불투명 — opacity 1 고정(전환에서 opacity 를 뺌), 뒤 층과 섞이지 않게 isolation */
   opacity: 1; isolation: isolate;
   background-color: #f3f8fc;
-  background-image: linear-gradient(var(--door-shade), var(--door-shade)), url("assets/한끼_계산기_6.png"), linear-gradient(100deg, #ffffff, #d6e9f8);
+  background-image: linear-gradient(var(--door-shade), var(--door-shade)), url("assets/한끼_계산기_6.webp"), linear-gradient(100deg, #ffffff, #d6e9f8);
   background-repeat: no-repeat;
 }
 /* 그림의 문 틈이 왼쪽에서 41.7% 라 왼쪽 문은 0~41.7%, 오른쪽 문은 41.7~100% 를 잘라 쓴다 */
@@ -256,7 +256,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
   background: #fff8e8; color: #12243a; box-shadow: 0 3px 8px rgba(22, 60, 100, .2); transform: rotate(-2deg);
 }
 .door.right .note { transform: rotate(1.5deg); background: #f2f8ff; }
-.note small { color: #4a5d72; font-size: var(--fs-1); }
+.note small { color: #4a5d72; font-size: min(var(--fs-1), 2.85vw); white-space: nowrap; letter-spacing: -.04em; overflow: hidden; text-overflow: clip; }
 .note-title { font-size: var(--fs-2); padding-right: 24px; }
 .note .note-big { font-size: var(--fs-5); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .note-big small { font-size: .5em; font-weight: 700; margin-left: 1px; }
@@ -266,7 +266,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 .note-ring .ring-bg { stroke: #d6e2ee; }
 .note-ring .ring-val { stroke: #1660b0; stroke-linecap: round; transition: stroke-dasharray var(--t) ease; }
 .note-ring.lv-mid .ring-val, .note-ring.lv-bad .ring-val { stroke: #e86a12; }
-/* 자석: 지름 72px 둥근 그림 + 아래 짧은 이름표, 조금씩 기울여 붙인다 (사람 그림 assets/한끼_계산기_5.png 5개 한 줄) */
+/* 자석: 지름 72px 둥근 그림 + 아래 짧은 이름표, 조금씩 기울여 붙인다 (사람 그림 assets/한끼_계산기_5.webp 5개 한 줄) */
 .magnets { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 10px; }
 .magnet { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0; background: transparent; border: 0; border-radius: 40px; min-width: var(--mag-size); }
 .magnet:active:not(:disabled) { box-shadow: none; }
@@ -275,7 +275,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 .magnet.tilt-a:active, .magnet.tilt-b:active { transform: scale(.94); }
 .mag-img {
   display: block; width: var(--mag-size); height: var(--mag-size); border-radius: 50%;
-  background: url("assets/한끼_계산기_5.png") no-repeat; background-size: 560% auto; background-position-y: 50%;
+  background: url("assets/한끼_계산기_5.webp") no-repeat; background-size: 560% auto; background-position-y: 50%;
   filter: drop-shadow(0 4px 6px rgba(22, 60, 100, .3));
 }
 .mag-img.m1 { background-position-x: 3.1%; }
@@ -284,18 +284,28 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 .mag-img.m4 { background-position-x: 73.1%; }
 .mag-img.m5 { background-position-x: 96.9%; }
 .mag-name { font-size: var(--fs-1); font-weight: 800; background: #fff; color: #12243a; border-radius: var(--pill); padding: 1px 8px; box-shadow: 0 1px 3px rgba(22, 60, 100, .2); white-space: nowrap; }
+/* 2026-11-22: 자석 넷은 냉장실 문에 2×2 */
+.magnets.mag-grid { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; gap: 10px 14px; }
+/* 냉동실 문: 메모지 바로 아래에 '이번 주 집밥' 판을 길게 (위에서부터 차례로) */
+.door.left { justify-content: flex-start; gap: 14px; }
 /* 냉동실 문 아래: 이번 주 7칸 */
 /* H-60: 문 위 판(이번 주·다음 할 일)도 반투명 흰색 대신 불투명 흰색 — 어둡게에서 막 낀 문이 비쳐 보이지 않게 */
-.door-week { background: #ffffff; color: #12243a; border-radius: 12px; padding: 6px 8px; box-shadow: 0 2px 6px rgba(22, 60, 100, .15); }
-.dw-head { display: block; font-size: var(--fs-1); font-weight: 700; color: #4a5d72; }
-.dw-days { list-style: none; margin: 4px 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-.dw-days .day { position: relative; aspect-ratio: 1; border-radius: 4px; background: #d6e2ee; }
-.dw-days .day.good { background: #1660b0; }
-.dw-days .day.bad { background: #e86a12; }
-.dw-days .day.today { outline: 2px solid #12243a; outline-offset: 1px; }
-.rice-dot { position: absolute; right: -2px; bottom: -2px; width: 6px; height: 6px; border-radius: 50%; background: #fff; border: 1px solid #12243a; }
-/* V-19: 좁은 문(390px 화면 냉동실 문 41.7%)에서도 카드 밖으로 잘리지 않게 줄을 바꾼다 (UI참고 — 카드 안 글은 한 덩어리로) */
-.dw-streak { display: block; font-size: var(--fs-1); line-height: 1.25; white-space: normal; overflow-wrap: anywhere; word-break: keep-all; }
+.door-week { background: #ffffff; color: #12243a; border-radius: 12px; padding: 8px 8px 6px; box-shadow: 0 2px 6px rgba(22, 60, 100, .15); }
+.dw-top { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; margin: 0 0 4px; }
+.dw-head { font-size: var(--fs-1); font-weight: 700; color: #4a5d72; white-space: nowrap; }
+.dw-total { font-size: var(--fs-4); font-weight: 800; color: #1660b0; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.dw-total small { font-size: .55em; margin-left: 1px; }
+.dw-days { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.dw-days li { display: flex; align-items: center; gap: 6px; min-height: 26px; padding: 1px 6px; border-radius: 8px; }
+.dw-days .dw-d { width: 1.3em; font-size: var(--fs-2); font-weight: 700; color: #4a5d72; text-align: center; }
+.dw-days .dw-b { flex: 1; display: flex; align-items: center; gap: 1px; font-size: 18px; line-height: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+.dw-days .dw-b em { font-style: normal; font-size: var(--fs-1); font-weight: 800; color: #1660b0; margin-left: 2px; }
+.dw-days .dw-none { width: 16px; height: 4px; border-radius: 2px; background: #e1e9f2; }
+.dw-days li.ate { background: #eaf3fc; }
+.dw-days li.today { box-shadow: inset 0 0 0 2px #1660b0; }
+.dw-days li.today .dw-d { color: #1660b0; }
+.dw-days li.future .dw-d { color: #a9b8c8; }
+.dw-days li.future .dw-none { background: transparent; border: 1px dashed #d1dce7; height: 2px; }
 /* 냉장실 문 아래: 다음 할 일 (n / 3 은 한 줄) */
 .door-next { background: #ffffff; color: #12243a; border-radius: 12px; padding: 8px 10px; box-shadow: 0 2px 6px rgba(22, 60, 100, .15); display: flex; flex-direction: column; gap: 4px; }
 .dn-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
@@ -313,7 +323,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 .fridge.open .door > * { visibility: hidden; opacity: 0; }
 .fridge-in {
   position: absolute; inset: 0; padding: 12px; overflow: hidden; z-index: 1; transform: scale(.97);
-  background: linear-gradient(var(--veil-in), var(--veil-in)), url("assets/한끼_계산기_4.png") center / cover no-repeat, linear-gradient(180deg, var(--card), var(--soft));
+  background: linear-gradient(var(--veil-in), var(--veil-in)), url("assets/한끼_계산기_4.webp") center / cover no-repeat, linear-gradient(180deg, var(--card), var(--soft));
   display: flex; flex-direction: column; gap: 10px;
 }
 .fridge-in.in { transform: none; }
@@ -370,10 +380,10 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 #fridge-exp .foot-add .foot-ic { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: var(--fs-2); line-height: 1; }
 #fridge-exp .foot-close { margin-left: auto; }
 .fridge-in[data-mode="exp"] > .in-menu { display: none; }
-/* H-28: 칸 버튼은 냉장고 그림(assets/한끼_계산기_4.png) 속 실제 선반·서랍 자리에 놓는다.
+/* H-28: 칸 버튼은 냉장고 그림(assets/한끼_계산기_4.webp) 속 실제 선반·서랍 자리에 놓는다.
    칸별 판은 흰 판 없이 그림 전체를 덮는 투명한 층이고, 버튼 자리·크기는 ui.js 가 FRIDGE_SHELVES at(%)로 준다.
    버튼 바탕은 --shelf-bg(흰 25%), 그림 위 막도 칸별에서는 옅게(--veil-shelf) 해 선반이 비친다 */
-.fridge-in { --veil-now: var(--veil-in); background-image: linear-gradient(var(--veil-now), var(--veil-now)), url("assets/한끼_계산기_4.png"), linear-gradient(180deg, var(--card), var(--soft)); }
+.fridge-in { --veil-now: var(--veil-in); background-image: linear-gradient(var(--veil-now), var(--veil-now)), url("assets/한끼_계산기_4.webp"), linear-gradient(180deg, var(--card), var(--soft)); }
 .fridge-in[data-mode="shelf"] { --veil-now: var(--veil-shelf); }
 .fridge-in > .seg, .fridge-in > .in-menu { position: relative; z-index: 1; }
 #fridge-shelves.fridge-cols { position: absolute; inset: 0; padding: 0; background: transparent; box-shadow: none; border-radius: 0; }
@@ -448,13 +458,13 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 .empty p { color: var(--ink2); font-size: var(--fs-2); max-width: 30em; }
 .empty-btns { justify-content: center; }
 .emoji-art { font-size: 2.4em; letter-spacing: .1em; }
-/* 사람 그림 빈 화면: assets/한끼_계산기_2.png 3칸×2줄, _3.png 왼쪽 빈 냉장고·오른쪽 사진 없음 */
+/* 사람 그림 빈 화면: assets/한끼_계산기_2.webp 3칸×2줄, _3.webp 왼쪽 빈 냉장고·오른쪽 사진 없음 */
 .art-img { display: inline-block; width: 120px; height: 120px; background-repeat: no-repeat; animation: sway 3.2s ease-in-out infinite; transform-origin: 50% 25%; }
-.art-img.six { background-image: url("assets/한끼_계산기_2.png"); background-size: 300% 200%; }
+.art-img.six { background-image: url("assets/한끼_계산기_2.webp"); background-size: 300% 200%; }
 .six.c2 { background-position: 50% 0; }
 .six.c3 { background-position: 100% 0; }
 .six.c5 { background-position: 50% 100%; }
-.art-img.two { width: 140px; height: 140px; background-image: url("assets/한끼_계산기_3.png"); background-size: 200% auto; }
+.art-img.two { width: 140px; height: 140px; background-image: url("assets/한끼_계산기_3.webp"); background-size: 200% auto; }
 .two.left { background-position: left center; }
 .two.right { background-position: right center; }
 
@@ -661,7 +671,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
    날짜가 정해지면 세 칸 모두 파랑 테두리 + 옅은 하늘 바탕으로 '골라진 것'을 보인다
    (UI참고 — 첫째 그림: 고른 줄만 강조색 테두리의 둥근 알약으로 띄움. 세로 돌림판은 쓰지 않고 칸 세 개로) */
 .date-pick { display: grid; grid-template-columns: 4fr 3fr 3fr; gap: 6px; }
-#item-form .date-pick select { min-width: 0; padding: 8px 10px; border-radius: var(--pill); text-align: center; text-align-last: center; font-weight: 700; color: var(--ink2); }
+#item-form .date-pick select { min-width: 0; padding: 8px 2px; font-size: var(--fs-2); letter-spacing: -.02em; border-radius: var(--pill); text-align: center; text-align-last: center; font-weight: 700; color: var(--ink2); }
 #item-form .date-pick.set select { border-color: var(--accent); background: var(--soft); color: var(--ink); }
 /* H-36: 날짜 고르기 오른쪽에 카메라 그림 버튼 '자동 인식' (48px 둥근 네모, 옅은 하늘 + 파랑 그림, 그림 아래 짧은 이름).
    읽은 날짜는 바로 칸에 채우고, 채워진 칸은 잠깐 빛나 '사진에서 읽었다' 를 보인다 (UI참고 — 둘째 그림: 둥근 네모 안 그림 하나 + 작은 이름표) */
@@ -818,3 +828,67 @@ body.reduce-motion *, body.reduce-motion *::before { transition-duration: .001s 
   .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
   .chal-hero { background: #fff; color: #000; }
 }
+
+/* ---------- 요리하기 (2026-11-22) ---------- */
+#screen-cook { display: flex; flex-direction: column; }
+#cook-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+#cook-body > .card { margin: 0; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.ck-card { padding: 4px 0; }
+.ck-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 12px 8px; }
+.ck-empty { justify-content: center; }
+.ck-sec { position: sticky; top: 0; z-index: 1; background: var(--card); margin: 0; padding: 10px 2px 6px; font-size: var(--fs-3); }
+.ck-sec small { color: var(--ink2); font-weight: 600; }
+.ck-row { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; padding: 8px 2px; background: transparent; border: 0; border-bottom: var(--row-line); border-radius: 0; min-height: 72px; color: inherit; }
+.ck-row:last-child { border-bottom: 0; }
+.ck-thumb { flex: none; width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: var(--soft); }
+.no-img { display: grid; place-items: center; font-size: 28px; }
+.ck-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ck-name { font-size: var(--fs-3); line-height: 1.25; }
+.ck-kind { color: var(--ink2); font-size: var(--fs-1); }
+.ck-sub { display: flex; flex-wrap: wrap; gap: 4px; font-size: var(--fs-1); }
+.ck-sub > span { border-radius: var(--pill); padding: 1px 8px; font-weight: 700; }
+.ck-have { background: #e4f0fc; color: #1660b0; }
+.ck-need { background: #f3f5f8; color: #4a5d72; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ck-soon { background: #fff0e2; color: #a8470a; }
+/* 레시피 창: 내용은 위아래로 넘기고, 맨 아래 버튼 줄은 늘 보인다 */
+.recipe-sheet { display: flex; flex-direction: column; }
+.recipe-sheet .recipe-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.recipe-foot { flex: none; padding: 10px var(--side, 16px) calc(12px + env(safe-area-inset-bottom, 0px)); border-top: var(--row-line); background: var(--card); }
+.rc-hero { margin: 0 0 8px; }
+.rc-img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; background: var(--soft); font-size: 64px; }
+.rc-meta { color: var(--ink2); font-size: var(--fs-2); margin: 0 0 6px; }
+.rc-h { margin: 14px 0 6px; font-size: var(--fs-3); }
+.rc-h small { color: var(--ink2); font-weight: 600; margin-left: 4px; }
+.rc-ings { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.rc-ing { display: inline-flex; align-items: baseline; gap: 4px; border-radius: 12px; padding: 4px 10px; font-size: var(--fs-2); }
+.rc-ing small { font-size: var(--fs-1); color: var(--ink2); }
+.rc-ing.have { background: #e4f0fc; color: #12243a; }
+.rc-ing.have .rc-mark { color: #1660b0; font-weight: 800; }
+.rc-ing.need { background: #fff0e2; color: #7a3a0a; }
+.rc-ing.pantry { background: #f3f5f8; color: #4a5d72; }
+.rc-parts { margin: 8px 0 0; padding: 8px 10px; border-radius: 10px; background: var(--soft); font-size: var(--fs-2); color: var(--ink2); line-height: 1.5; }
+.rc-warn { list-style: none; margin: 8px 0 0; padding: 0; font-size: var(--fs-1); color: #a8470a; }
+.rc-steps { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 12px; }
+.rc-step p { margin: 0; line-height: 1.55; }
+.rc-step-img { display: block; width: 100%; max-width: 320px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; margin: 0 0 6px; background: var(--soft); font-size: 40px; }
+.rc-tip { margin: 12px 0 0; padding: 8px 10px; border-radius: 10px; background: #eaf7ef; font-size: var(--fs-2); }
+.rc-src { margin: 14px 0 4px; color: var(--ink2); font-size: var(--fs-1); }
+/* 쓴 재료 빼기 */
+.used-list { list-style: none; margin: 0 0 12px; padding: 0; max-height: 50dvh; overflow-y: auto; }
+.used-list li { border-bottom: var(--row-line); }
+.used-list label { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 4px 2px; }
+.used-list input { width: 22px; height: 22px; flex: none; }
+.used-list small { color: var(--ink2); }
+/* 찍기: 사진에서 읽은 이름 후보 */
+.snap-names { margin: -2px 0 6px; }
+.recipe-sheet { height: calc(100dvh - 16px); }
+.rc-img.no-img, .rc-step-img.no-img, .ck-thumb.no-img { display: grid; place-items: center; }
+
+/* 2026-11-22: 사람이 그린 아이콘 (assets/ic) — 글자 높이에 맞춘다 */
+img.ic { display: inline-block; width: 1.35em; height: 1.35em; object-fit: contain; vertical-align: -.3em; }
+.dw-days img.dw-ic { width: 20px; height: 20px; vertical-align: middle; }
+.kind img.ic { width: 24px; height: 24px; }
+.recent-chip img.ic { width: 20px; height: 20px; }
+.shelf-name img.ic, .item-ic img.ic { width: 1.5em; height: 1.5em; }
+.rc-mark img.ic { width: 1.1em; height: 1.1em; }
+img.no-img { object-fit: contain; padding: 12%; background: var(--soft); }

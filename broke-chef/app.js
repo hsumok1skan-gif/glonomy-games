@@ -33,12 +33,13 @@ var App = {
   toastTimer: 0
 };
 
-var SCREENS = ['fridge', 'chal', 'more'];
+var SCREENS = ['fridge', 'chal', 'cook', 'more'];
 
 function save() {
   if (App.shotMode) return true; // H-55: 스크린샷 화면은 이 탭 안에서만 보이고 저장하지 않는다
   var ok = Store.save(App.state);
   $('store-warn').hidden = ok;
+  Notify.sync(App.state);   // 알림(안드로이드 앱): 기록이 바뀔 때마다 앞으로 30일 치를 다시 잡는다
   return ok;
 }
 function newId(prefix) { return prefix + (App.state.nextId++); }
@@ -74,6 +75,7 @@ function setScreen(name) {
   $('screen-' + name).hidden = false;
   renderScreen(name);
   toggleView($('screen-' + name), true);
+  syncBack();
 }
 function openLayer(id) {
   var n = $(id);
@@ -83,6 +85,7 @@ function openLayer(id) {
   layerOrder();
   toggleView(n, true);
   try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); }
+  syncBack();
 }
 // H-19: 냉장고 화면에서 여는 칸 창(메모·음식 목록·음식 넣기)은 화면 아래 끝이 아니라 냉장고 틀 안에 든다.
 // 냉장고 자리를 재어 CSS 변수로 넘기면 style.css `.sheet.in-fridge` 가 좌우 --win-pad-x · 위아래 --win-pad-y 를 띄운다
@@ -106,6 +109,7 @@ function closeLayer(id) {
   toggleView($(id), false);
   layerOrder();
   afterLayerClosed(id);
+  syncBack();
 }
 function closeAllLayers() {
   App.stack.slice().reverse().forEach(function (id) { closeLayer(id); });
@@ -130,6 +134,9 @@ function afterLayerClosed(id) {
   if (id === 'sheet-spend') App.editSpendId = null;
   if (id === 'sheet-item') { App.editItemId = null; hideOcrAsk(); }
   if (id === 'sheet-shelf') App.flash = App.shelfId;
+  // 뒷배경·Esc·뒤로로 닫으면 '그대로 두기'와 같다
+  if (id === 'ov-used' && !App.usedAnswer && isOpen('sheet-recipe')) { closeLayer('sheet-recipe'); toast(App.cookMsg || '맛있게 드세요!', true); }
+  if (id === 'ov-used') App.usedAnswer = false;
   refreshOpen();
 }
 function refreshOpen() {
@@ -137,6 +144,26 @@ function refreshOpen() {
   renderScreen(App.screen);
   if (isOpen('sheet-spend')) renderSpendPreview();
   if (isOpen('ov-result') && chalById(App.resultId)) renderResult(chalById(App.resultId));
+}
+
+// ---------- 휴대폰 '뒤로' 버튼 (앱·홈 화면 설치) ----------
+// 뒤로를 누르면 열린 창 → 냉장고 밖 화면 → 열린 냉장고 문 순서로 한 단계씩 닫고, 다 닫힌 뒤에만 앱을 나간다.
+// 되돌아갈 곳이 있을 때만 방문 기록 한 칸(guard)을 쌓아 둔다. 안드로이드 앱(Capacitor)도 같은 방문 기록을 쓴다
+var Back = { armed: false, skip: false };
+function backNeeded() { return App.stack.length > 0 || App.screen !== 'fridge' || App.fridgeOpen; }
+function syncBack() {
+  if (App.shotMode || !window.history || !history.pushState) return;
+  var need = backNeeded();
+  if (need && !Back.armed) { history.pushState({ hk: 1 }, '', location.href); Back.armed = true; }
+  else if (!need && Back.armed) { Back.armed = false; Back.skip = true; history.back(); }
+}
+function onBack() {
+  if (Back.skip) { Back.skip = false; return; }
+  Back.armed = false;
+  if (App.stack.length) closeLayer();
+  else if (App.screen !== 'fridge') setScreen('fridge');
+  else if (App.fridgeOpen) toggleFridge(false);
+  syncBack();
 }
 
 // ---------- 알림 ----------
@@ -285,17 +312,62 @@ function deleteSpend() {
 }
 
 // ---------- 🍚 잘 먹겠습니다 (H-16): 집밥 횟수만 하나 늘고 돈은 바뀌지 않는다 ----------
-function eatMeal() {
-  rememberUndo(); // 잘못 눌렀으면 알림의 되돌리기로 뺀다
+function addMeal() {
   var x = { id: newId('e'), date: Calc.today(), sample: false };
   App.state.meals.push(x);
   if (App.state.meals.length > 3000) App.state.meals.splice(0, App.state.meals.length - 3000);
+  var ch = activeChal();
+  return '맛있게 드세요! ' + (ch ? '이번 챌린지 ' : '') + (ch ? mealsIn(ch).length : App.state.meals.length) + '번째 집밥';
+}
+function eatMeal() {
+  rememberUndo(); // 잘못 눌렀으면 알림의 되돌리기로 뺀다
+  var msg = addMeal();
   save();
   refreshOpen();
-  var ch = activeChal(), n = ch ? mealsIn(ch).length : App.state.meals.length;
   var hm = $('hero-meal');
   if (hm) flashEl(hm);
-  toast('맛있게 드세요! ' + (ch ? '이번 챌린지 ' : '') + n + '번째 집밥', true);
+  toast(msg, true);
+}
+
+// ---------- 요리하기 (2026-11-22) ----------
+// 요리 고르기 → 레시피 → '다 만들었어요' → 그 자리에 '잘 먹겠습니다' → 집밥 +1, 쓴 재료를 냉장고에서 뺄지 묻는다
+function openRecipe(id) {
+  App.recipeId = id;
+  App.recipeDone = false;
+  if (!Cook.renderRecipe(id, false)) return;
+  openLayer('sheet-recipe');
+  $('recipe-body').scrollTop = 0;
+}
+function recipeDone() {
+  App.recipeDone = true;
+  Cook.renderRecipe(App.recipeId, true);
+  var b = document.querySelector('#recipe-foot button');
+  if (b) { flashEl(b); focusEl(b); }
+}
+function recipeEat() {
+  var r = Cook.byId(App.recipeId);
+  if (!r) return;
+  rememberUndo();   // 집밥 +1 과 재료 빼기를 한 번에 되돌린다
+  App.cookMsg = addMeal();
+  save();
+  var used = Cook.matchOne(r, App.state.fridge.items).used;
+  if (!used.length) { closeLayer('sheet-recipe'); refreshOpen(); toast(App.cookMsg, true); return; }
+  $('used-list').innerHTML = used.map(function (x) {
+    var e = expInfo(x.exp), s = shelfById(x.shelf);
+    return '<li><label><input type="checkbox" value="' + esc(x.id) + '" checked> ' + itemIcHtml(x) + '<b>' + esc(x.name) + '</b>' +
+      (x.qty ? ' <small>' + esc(x.qty) + '</small>' : '') + (e ? ' ' + expBadge(x.exp) : '') + (s ? ' <small class="used-shelf">' + esc(s.name) + '</small>' : '') + '</label></li>';
+  }).join('');
+  openLayer('ov-used');
+}
+function usedDone(remove) {
+  var ids = remove ? Array.prototype.map.call(document.querySelectorAll('#used-list input:checked'), function (i) { return i.value; }) : [];
+  if (ids.length) App.state.fridge.items = App.state.fridge.items.filter(function (x) { return ids.indexOf(x.id) < 0; });
+  save();
+  App.usedAnswer = true;
+  closeLayer('ov-used');
+  closeLayer('sheet-recipe');
+  refreshOpen();
+  toast((App.cookMsg || '맛있게 드세요!') + (ids.length ? ' · 재료 ' + ids.length + '개 뺐어요' : ''), true);
 }
 // 날짜 판 아래 집밥 기록의 '빼기': 그날 집밥 하나를 묻고 뺀다. 돈은 바뀌지 않는다 (A-06)
 function deleteMeal(d) {
@@ -409,6 +481,7 @@ function toggleFridge(open) {
   }
   if (App.screen !== 'fridge') { closeAllLayers(); setScreen('fridge'); }
   renderFridge();
+  syncBack();
 }
 // 문 안쪽(#fridge-in)도 전환 함수를 거친다. 이미 그 상태면 다시 걸지 않는다
 function showFridgeIn(open) {
@@ -457,6 +530,8 @@ function resetItemForm() {
   App.editItemId = null;
   clearErrs($('item-form'));
   $('item-name').value = '';
+  App.snapNames = [];
+  if ($('snap-names')) { $('snap-names').hidden = true; $('snap-names').innerHTML = ''; }
   $('item-qty').value = '';
   $('item-exp').value = '';
   $('item-memo').value = '';
@@ -654,8 +729,8 @@ function readPhotoText(data) {
     function () { toast('글자 읽기를 불러오지 못했어요. 사진은 그대로 남았어요'); });
 }
 // 앱의 사진 흐름과 시험 훅이 같은 길(Ocr.scan → findDate)을 쓴다
-function ocrScan(data) {
-  return Ocr.scan(data).then(function (r) {
+function ocrScan(data, food) {
+  return (food ? Ocr.scanFood(data) : Ocr.scan(data)).then(function (r) {
     return { text: String(r.text || '').replace(/[ \t]+/g, ' ').replace(/\n{2,}/g, '\n').trim(), date: r.date || null };
   });
 }
@@ -838,6 +913,7 @@ function copyOcrText(at) {
 // 묻는 카드·이름 후보·읽힌 글자 전체·복사는 두지 않는다. 날짜가 틀리면 사람이 연·월·일 칸에서 고친다
 function takeShelfPhoto() {
   App.snapFromExp = false;
+  App.snapMode = null;
   if (!Ocr.available()) { $('shelf-ocr-file').hidden = false; pickExpDate(); return; }
   openShelfCamera();
 }
@@ -859,7 +935,68 @@ function snapExpDate() {
     return;
   }
   App.snapFromExp = true;
+  App.snapMode = 'exp';
   openShelfCamera();
+}
+// ---------- 첫 화면 '찍기' 자석 (2026-11-22) ----------
+// 카메라 → 사진에서 음식 이름·유통기한 글자를 읽어 채운 음식 넣기 창 → [넣기] 한 번. 사진은 어디에도 저장하지 않는다(글자만 쓴다)
+function snapFood() {
+  App.shelfId = 'r2';
+  if (!Ocr.available()) {
+    App.snapMode = null;
+    if (App.screen !== 'fridge') { closeAllLayers(); setScreen('fridge'); }
+    openItemWin();
+    $('shelf-ocr-file').hidden = false;
+    return;
+  }
+  App.snapMode = 'food';
+  openShelfCamera();
+}
+// 읽은 글에서 음식 이름 고르기: 자주 넣는 음식(FOODS)과 맞는 후보가 먼저, 없으면 첫 한글 후보
+function pickFoodName(text) {
+  var c = ocrNames(text);
+  var known = c.filter(function (n) { return !!foodByName(n); });
+  return { best: known[0] || c[0] || '', list: known.concat(c.filter(function (n) { return known.indexOf(n) < 0; })).slice(0, 6) };
+}
+// 음식 이름 → 그 음식을 자주 넣는 칸 (SHELF_QUICK). 없으면 null
+function shelfForFood(name) {
+  if (!name) return null;
+  var k = foodKey(name), hit = null;
+  Object.keys(SHELF_QUICK).some(function (sid) {
+    return SHELF_QUICK[sid].some(function (q) { if (foodKey(q[0]) === k) { hit = sid; return true; } return false; });
+  });
+  return hit;
+}
+function setSnapName(name) {
+  $('item-name').value = name;
+  var f = foodByName(name), sid = shelfForFood(f ? f.name : name);   // '서울우유' → 우유 → 냉장실 문 아래 선반
+  if (sid && !App.editItemId) $('item-shelf').value = sid;
+  renderSnapNames();
+  renderItemHint();
+}
+function renderSnapNames() {
+  var box = $('snap-names'), list = App.snapNames || [], cur = $('item-name').value.trim();
+  box.hidden = !list.length;
+  box.innerHTML = list.map(function (n) {
+    var on = n === cur;
+    return '<button type="button" class="chip' + (on ? ' on' : '') + '" data-act="snap-name" data-name="' + esc(n) + '" aria-pressed="' + on + '">' + (on ? '✓ ' : '') + esc(n) + '</button>';
+  }).join('');
+}
+function fillFoodFromPhoto(r) {
+  var pick = pickFoodName(r.text);
+  App.snapNames = pick.list;
+  if (pick.best && !$('item-name').value.trim()) setSnapName(pick.best); else renderSnapNames();
+  var gotDate = Calc.isDay(r.date);
+  if (gotDate) {
+    clearErrs($('item-exp-wrap'));
+    $('item-exp').value = r.date;
+    renderItemHint();
+    var p = $('item-exp-pick');
+    p.classList.remove('read'); void p.offsetWidth; p.classList.add('read');
+  }
+  toast('📷 ' + (pick.best ? '이름' : '') + (pick.best && gotDate ? '·' : '') + (gotDate ? '유통기한 ' + ocrDateText(r.date) : '') +
+    (pick.best || gotDate ? ' 채웠어요' : '글자를 찾지 못했어요'));
+  focusEl($(pick.best ? 'item-save' : 'item-name'));
 }
 // 날짜를 읽는 동안 유통기한 목록 위 찍기 버튼에 진행 표시(aria-busy, style.css 숨쉬기). 다시 그려도 남게 App 에 둔다
 function setSnapBusy(on) {
@@ -870,8 +1007,15 @@ function setSnapBusy(on) {
 function onShelfPhotoChosen() {
   var f = $('shelf-photo-input').files && $('shelf-photo-input').files[0];
   readImageFile(f, 1600, 0.9, function (data) {
-    var fromExp = App.snapFromExp;
-    if (fromExp) {
+    var fromExp = App.snapFromExp, forFood = App.snapMode === 'food';
+    App.snapMode = null;
+    if (forFood) {
+      // 찍기 자석: 냉장고 첫 화면에서 음식 넣기 창을 열고, 다 읽으면 이름·유통기한을 채운다 (사진 data 는 이 함수 안에서만 쓰고 버린다)
+      App.snapFromExp = false;
+      if (App.screen !== 'fridge') { closeAllLayers(); setScreen('fridge'); }
+      App.shelfId = 'r2';
+      openItemWin();
+    } else if (fromExp) {
       App.snapFromExp = false;
       if (!shelfById(App.shelfId)) App.shelfId = 'r2';
       openItemWin();   // 새 음식 넣기 창 — 읽는 동안 진행 표시가 이 창 안에 뜨고, 다 읽으면 날짜가 채워진다
@@ -881,11 +1025,11 @@ function onShelfPhotoChosen() {
     hideOcrAsk();
     App.ocrFor = 'shelf';
     cam.setAttribute('aria-busy', 'true');
-    ocrScan(data).then(function (r) {
+    ocrScan(data, forFood).then(function (r) {
       cam.removeAttribute('aria-busy');
       if (fromExp) setSnapBusy(false);
       if (!isOpen('sheet-item') || App.shelfId !== shelf) return;
-      fillExpFromPhoto(r.date);
+      if (forFood) fillFoodFromPhoto(r); else fillExpFromPhoto(r.date);
     }, function () { cam.removeAttribute('aria-busy'); if (fromExp) setSnapBusy(false); toast('글자 읽기를 불러오지 못했어요'); });
   });
 }
@@ -1113,6 +1257,13 @@ function onSettingPick(d) {
   if (d.key === 'font' && /^[sml]$/.test(d.v)) s.font = d.v;
   else if (d.key === 'theme' && /^(light|auto|dark)$/.test(d.v)) s.theme = d.v;
   else if (d.key === 'motion') s.motion = d.v === 'on';
+  else if (d.key === 'notify') {
+    s.notify = d.v === 'on';
+    if (s.notify) Notify.ensurePermission().then(function (p) {
+      if (p === 'denied') toast('휴대폰 설정 → 애플리케이션 → 한끼 계산기 → 알림을 허용해 주세요');
+      Notify.sync(App.state);
+    });
+  }
   else return;
   applySettings();
   renderMore();
@@ -1152,6 +1303,15 @@ var ACTIONS = {
   'ocr-own-use': function (d) { ocrOwnUse(d.at); },
   'ocr-copy': function (d) { copyOcrText(d.at); },
   'meal-eat': eatMeal,
+  'cook-open': function () { closeAllLayers(); setScreen('cook'); },
+  'cook-add': function () { App.shelfId = 'r2'; closeAllLayers(); setScreen('fridge'); openItemWin(); },
+  'recipe-open': function (d) { openRecipe(d.id); },
+  'recipe-done': recipeDone,
+  'recipe-eat': recipeEat,
+  'used-remove': function () { usedDone(true); },
+  'used-keep': function () { usedDone(false); },
+  'snap-food': snapFood,
+  'snap-name': function (d) { setSnapName(d.name); },
   'meal-del': deleteMeal,
   'spend-new': function () { openSpend(null); },
   'spend-edit': function (d) { openSpend(d.id); },
@@ -1240,7 +1400,7 @@ function bind() {
   $('chal-form').addEventListener('input', renderChalCalc);
   $('chal-form').addEventListener('change', renderChalCalc);
   $('item-form').addEventListener('submit', function (e) { e.preventDefault(); submitItem(); });
-  $('item-name').addEventListener('input', renderItemHint);
+  $('item-name').addEventListener('input', function () { renderItemHint(); if ((App.snapNames || []).length) renderSnapNames(); });
   $('item-exp-pick').addEventListener('change', onExpPick);
   $('photo-input').addEventListener('change', onPhotoChosen);
   $('shelf-photo-input').addEventListener('change', onShelfPhotoChosen);
@@ -1254,6 +1414,16 @@ function bind() {
     FRIDGE_WINS.forEach(function (id) { if (isOpen(id)) fitFridgeWin(id); });
   });
   window.addEventListener('hashchange', shotFromHash); // H-55
+  window.addEventListener('popstate', onBack);
+  // 안드로이드 앱(Capacitor): 뒤로 버튼은 한 단계씩 닫고, 첫 화면(문 닫힌 냉장고)에서만 앱을 닫는다
+  var cap = window.Capacitor, isNative = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
+  var capApp = isNative && cap.registerPlugin ? cap.registerPlugin('App') : null;
+  if (capApp && capApp.addListener) {
+    capApp.addListener('backButton', function () {
+      if (backNeeded()) { if (Back.armed) history.back(); else onBack(); }
+      else if (capApp.exitApp) capApp.exitApp();
+    });
+  }
   setInterval(checkDay, 60000);
 }
 function init() {
@@ -1270,6 +1440,21 @@ function init() {
   if (App.coach) setTimeout(function () { App.coach = false; if (App.screen === 'fridge') renderFridge(); }, 3000);
   settleChallenges();
   shotFromHash();
+  // 앱으로 설치·오프라인 (https 사이트에서만. 파일로 열거나 안드로이드 앱 안에서는 필요 없음)
+  // 안드로이드 앱: 알림 권한을 처음 한 번 묻고, 알림을 누르면 그 화면으로
+  if (Notify.available()) {
+    $('set-notify-row').hidden = false;
+    Notify.onAction(function (go) {
+      closeAllLayers();
+      if (go === 'exp') { setScreen('fridge'); setFridgeMode('exp'); }
+      else if (go === 'spend') { setScreen('fridge'); openSpend(null); }
+    });
+    if (App.state.settings.notify) Notify.ensurePermission().then(function () { Notify.sync(App.state); });
+  }
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost') && !Notify.available()) {
+    var reg = function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); };
+    if (document.readyState === 'complete') reg(); else window.addEventListener('load', reg);
+  }
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

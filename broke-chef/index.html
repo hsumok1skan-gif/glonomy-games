@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#1660b0">
 <title>한끼 계산기 — 자취생 냉장고·식비 챌린지</title>
 <link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="한끼 계산기">
+<meta name="description" content="냉장고 음식·유통기한과 기간 식비 챌린지를 한곳에서 쓰는 자취생 앱">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body class="font-m">
@@ -77,19 +84,20 @@
       <div class="door left" id="door-l">
         <!-- 포스트잇 메모지는 그대로 둔다 (H-24) -->
         <div id="door-l-note" class="note"></div>
-        <div class="magnets">
-          <button type="button" class="magnet tilt-a" data-act="spend-new"><span class="mag-img m1" aria-hidden="true"></span><span class="mag-name">식비 쓰기</span></button>
-          <button type="button" class="magnet tilt-b" data-act="meal-eat"><span class="mag-img m4" aria-hidden="true"></span><span class="mag-name">🍚 잘 먹겠습니다</span></button>
-        </div>
-        <div id="door-week" class="door-week" role="group" aria-label="이번 주 지킨 날"></div>
+        <!-- 2026-11-22: 자석은 넓은 냉장실 문으로 옮겼다. 냉동실 문은 메모지 + '이번 주 집밥' 판 -->
+        <div id="door-week" class="door-week" role="group" aria-label="이번 주 집밥"></div>
         <button type="button" class="handle" data-act="fridge-door" aria-label="냉동실 문 열기"></button>
       </div>
       <!-- 냉장실 문: 위 메모지(유통기한) → 가운데 자석(챌린지) → 아래 '다음 할 일' (H-16). '사진 찍기' 자석은 뺐다 — 사진은 열린 냉장고 📷 사진 탭에서 (H-23). 문 위 '냉장실' 글자는 뺐다 (H-25) -->
       <div class="door right" id="door-r">
         <!-- '⏰ 곧 먹어야 해요' 포스트잇 메모지는 그대로 둔다 (H-24) -->
         <div id="door-r-note" class="note"></div>
-        <div class="magnets">
-          <button type="button" class="magnet tilt-b" data-act="go" data-to="chal"><span class="mag-img m2" aria-hidden="true"></span><span class="mag-name">챌린지</span></button>
+        <!-- 2026-11-22: 자석 넷 — 식비 쓰기 · 요리하기('잘 먹겠습니다' 자석 이름을 바꿈) · 찍기(사진에서 이름·유통기한 읽어 음식 넣기, 사진은 저장 안 함) · 챌린지 -->
+        <div class="magnets mag-grid">
+          <button type="button" class="magnet tilt-a" data-act="spend-new"><span class="mag-img m1" aria-hidden="true"></span><span class="mag-name">식비 쓰기</span></button>
+          <button type="button" class="magnet tilt-b" data-act="cook-open"><span class="mag-img m4" aria-hidden="true"></span><span class="mag-name">요리하기</span></button>
+          <button type="button" class="magnet tilt-b" data-act="snap-food"><span class="mag-img m3" aria-hidden="true"></span><span class="mag-name">찍기</span></button>
+          <button type="button" class="magnet tilt-a" data-act="go" data-to="chal"><span class="mag-img m2" aria-hidden="true"></span><span class="mag-name">챌린지</span></button>
         </div>
         <div id="door-next" class="door-next" role="group" aria-label="다음 할 일"></div>
         <button type="button" class="handle" data-act="fridge-door" aria-label="냉장실 문 열기"></button>
@@ -131,6 +139,12 @@
     <div id="chal-foot"></div>
   </section>
 
+  <!-- 요리하기 (2026-11-22): 냉장고 재료로 만들 수 있는 요리 — 임박 재료로 / 지금 바로 / 1~2개만 사면. 목록만 위아래로 넘긴다 -->
+  <section id="screen-cook" class="view screen" aria-labelledby="h-cook" hidden>
+    <h2 id="h-cook" class="sr">요리하기</h2>
+    <div id="cook-body"></div>
+  </section>
+
   <!-- 4. 설정 -->
   <section id="screen-more" class="view screen" aria-labelledby="h-more" hidden>
     <h2 id="h-more" class="sr">설정</h2>
@@ -151,6 +165,12 @@
               <button type="button" data-act="set-pick" data-key="theme" data-v="light" aria-pressed="false">밝게</button><button type="button" data-act="set-pick" data-key="theme" data-v="auto" aria-pressed="false">기기 따라</button><button type="button" data-act="set-pick" data-key="theme" data-v="dark" aria-pressed="false">어둡게</button>
             </div>
           </div>
+        </div>
+      </div>
+      <!-- 2026-11-22: 알림 — 안드로이드 앱에서만 보인다 (유통기한 하루 전·당일 아침 9시, 식비 안 넣은 날 밤 9시) -->
+      <div class="set-row" id="set-notify-row" role="group" aria-labelledby="lb-set-notify" hidden><span id="lb-set-notify">알림</span>
+        <div id="set-notify" class="set-pick">
+          <button type="button" data-act="set-pick" data-key="notify" data-v="on" aria-pressed="false">켜기</button><button type="button" data-act="set-pick" data-key="notify" data-v="off" aria-pressed="false">끄기</button>
         </div>
       </div>
       <div class="set-row" role="group" aria-labelledby="lb-set-motion"><span id="lb-set-motion">움직임 줄이기</span>
@@ -287,6 +307,8 @@
     <form id="item-form" class="card" novalidate>
       <label class="field"><span>이름</span><input id="item-name" type="text" maxlength="30" autocomplete="off" list="food-names"><em class="err"></em></label>
       <datalist id="food-names"></datalist>
+      <!-- 2026-11-22 찍기: 사진에서 읽은 이름 후보. 누르면 이름 칸이 바뀐다 (사진은 저장하지 않는다) -->
+      <div id="snap-names" class="chip-row snap-names" role="group" aria-label="사진에서 읽은 이름" hidden></div>
       <div id="shelf-quick" class="chip-row shelf-quick" role="group" aria-label="이 칸에 자주 넣는 음식 바로 넣기"></div>
       <div class="row2 item-pair">
         <label class="field"><span>수량</span><input id="item-qty" type="text" maxlength="20" autocomplete="off"><em class="err"></em></label>
@@ -377,6 +399,8 @@
     <dl class="howto-list">
       <div><dt>냉장고</dt><dd>손잡이를 누르면 열려요</dd></div>
       <div><dt>식비 쓰기</dt><dd>나간 돈만 넣어요</dd></div>
+      <div><dt>요리하기</dt><dd>냉장고 재료로 만들 요리를 골라요</dd></div>
+      <div><dt>찍기</dt><dd>포장을 찍으면 이름·유통기한이 채워져요</dd></div>
       <div><dt>🍚 잘 먹겠습니다</dt><dd>집밥 횟수만 늘어요</dd></div>
       <div><dt>챌린지</dt><dd>기간과 목표를 골라요</dd></div>
       <div><dt>📷 자동 인식</dt><dd>유통기한을 찍어 채워요</dd></div>
@@ -400,6 +424,25 @@
       <li>zlib.js — 2012 imaya — MIT License</li>
       <li>Apache License 2.0 에 따라 이 파일들은 바꾸지 않고 그대로 넣었어요.</li>
     </ul>
+  </div>
+</section>
+
+<!-- 레시피 (요리하기에서 고른 요리): 재료(있음·살 것) · 순서 · 맨 아래 '다 만들었어요' → '잘 먹겠습니다' -->
+<section id="sheet-recipe" class="view sheet recipe-sheet" role="dialog" aria-modal="true" aria-labelledby="h-recipe" tabindex="-1" hidden>
+  <div class="sheet-head"><h2 id="h-recipe">레시피</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
+  <div id="recipe-body" class="sheet-body recipe-body" tabindex="0"></div>
+  <div id="recipe-foot" class="recipe-foot"></div>
+</section>
+
+<!-- 잘 먹겠습니다 뒤: 쓴 재료를 냉장고에서 뺄까요? -->
+<section id="ov-used" class="view overlay" role="dialog" aria-modal="true" aria-labelledby="h-used" tabindex="-1" hidden>
+  <div class="ov-box">
+    <h2 id="h-used">쓴 재료를 냉장고에서 뺄까요?</h2>
+    <ul id="used-list" class="used-list"></ul>
+    <div class="sheet-actions">
+      <button type="button" data-act="used-keep">그대로 두기</button>
+      <button type="button" class="primary" data-act="used-remove">빼기</button>
+    </div>
   </div>
 </section>
 
@@ -428,12 +471,15 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite" hidden><span id="toast-text"></span><button type="button" id="toast-undo" data-act="undo" hidden>되돌리기</button></div>
 
+<script src="./vendor/capacitor/capacitor.js"></script>
 <script src="./data.js"></script>
 <script src="./ingredient_alias.js"></script>
 <script src="./recipe_match.js"></script>
 <script src="./calc.js"></script>
 <script src="./store.js"></script>
 <script src="./ocr.js"></script>
+<script src="./notify.js"></script>
+<script src="./cook.js"></script>
 <script src="./ui.js"></script>
 <script src="./app.js"></script>
 </body>

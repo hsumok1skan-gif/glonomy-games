@@ -14,6 +14,11 @@ function pct(n) {
   if (n == null || !isFinite(n)) return '—';
   return (Math.round(n * 10) / 10).toFixed(1) + '%';
 }
+// 아이콘 그림 (IC 표에 있으면 그림, 없으면 이모지)
+function ic(key, emoji, cls) {
+  var src = typeof IC !== 'undefined' && IC[key];
+  return src ? '<img class="ic' + (cls ? ' ' + cls : '') + '" src="' + src + '" alt="" aria-hidden="true">' : (emoji ? '<span aria-hidden="true">' + emoji + '</span>' : '');
+}
 function byName(a, b) { return a.name.localeCompare(b.name, 'ko'); }
 function flashCls(id) { return App.flash && App.flash === id ? ' flash' : ''; }
 function btn(o) {
@@ -27,7 +32,7 @@ function emptyBox(art, title, buttons) {
   return '<div class="empty"><div class="empty-art" aria-hidden="true">' + art + '</div><h3>' + title + '</h3>' +
     '<div class="empty-btns">' + buttons.map(btn).join('') + '</div></div>';
 }
-// 빈 화면 그림: 사람 그림 assets/한끼_계산기_2.png 한 장을 3칸×2줄로, _3.png 는 왼쪽 빈 냉장고·오른쪽 사진 없음으로 잘라 쓴다
+// 빈 화면 그림: 사람 그림 assets/한끼_계산기_2.webp 한 장을 3칸×2줄로, _3.webp 는 왼쪽 빈 냉장고·오른쪽 사진 없음으로 잘라 쓴다
 var ART = {
   chal: '<span class="art-img six c2"></span>',   // 달력·과녁
   spend: '<span class="art-img six c3"></span>',  // 장바구니·배달 상자·영수증
@@ -78,11 +83,12 @@ function mealStats(ch) {
     saving: Calc.mealSaving(shop, meals, outTotal, outs.length) };
 }
 function mealLine(ms) {
-  return ms.meals > 0 ? '🍚 집밥 ' + ms.meals + '끼 · 한 끼 평균 ' + won(ms.avg) : '🍚 아직 집밥 기록이 없어요';
+  if (!(ms.meals > 0)) return ic('rice', '🍚') + ' 아직 집밥 기록이 없어요';
+  return ic('rice', '🍚') + ' 집밥 ' + ms.meals + '끼' + (ms.avg != null ? ' · 한 끼 평균 ' + won(ms.avg) : '');
 }
 function kindIcon(k) {
-  for (var i = 0; i < SPEND_KINDS.length; i++) if (SPEND_KINDS[i].key === k) return SPEND_KINDS[i].icon;
-  return '🧾';
+  for (var i = 0; i < SPEND_KINDS.length; i++) if (SPEND_KINDS[i].key === k) return ic('spend_' + k, SPEND_KINDS[i].icon);
+  return ic('spend_기타', '🧾');
 }
 var PACE_TEXT = { good: '여유', mid: '조금 빠름', bad: '넘음' };
 var STATUS_TEXT = { active: '진행 중', won: '성공', lost: '실패', quit: '그만둠' };
@@ -133,7 +139,7 @@ var STREAK_MARKS = [3, 7, 14];
 var DAY_TEXT = { good: '지킴', bad: '넘음', future: '아직' };
 function riceDots(n) {
   if (!n) return '';
-  return '<span class="rice" aria-hidden="true">' + (n > 3 ? '🍚' + n : new Array(n + 1).join('🍚')) + '</span>';
+  return '<span class="rice" aria-hidden="true">' + (n > 3 ? ic('rice', '🍚') + n : new Array(n + 1).join(ic('rice', '🍚'))) + '</span>';
 }
 // ---------- 쪽 넘기기 (H-18: 화면을 넘기지 않는다. 칸 높이에 들어가는 줄만 그리고 '‹ 앞'·'다음 ›' 으로 쪽을 옮긴다) ----------
 // o: { head, foot, n(줄 수), row(i, first) → 줄 HTML, start(null 이면 처음), focus(처음 열 때 보여야 할 줄) }
@@ -326,12 +332,44 @@ function itemIcon(name, shelfId) {
   var s = shelfById(shelfId);
   return s ? s.icon : '🍽️';
 }
-function itemIcHtml(x) { return '<span class="item-ic" aria-hidden="true">' + itemIcon(x.name, x.shelf) + '</span>'; }
+function foodIc(name, shelfId) {
+  var f = foodByName(name);
+  if (f && IC['food_' + f.name]) return ic('food_' + f.name, f.icon);
+  if (f) return '<span aria-hidden="true">' + f.icon + '</span>';
+  var s = shelfById(shelfId);
+  return s ? ic('shelf_' + s.id, s.icon) : '<span aria-hidden="true">🍽️</span>';
+}
+function itemIcHtml(x) { return '<span class="item-ic" aria-hidden="true">' + foodIc(x.name, x.shelf) + '</span>'; }
 function photoAgo(p) {
   var d = Calc.daysBetween(p.date, Calc.today());
   return d <= 0 ? '오늘 찍었어요' : d + '일 전에 찍었어요';
 }
 function latestPhoto() { return App.photos.length ? App.photos[App.photos.length - 1] : null; }
+
+// 이번 주(월요일 시작) 날마다 집밥 횟수. 챌린지와 상관없이 '잘 먹겠습니다' 기록으로 센다
+function weekMeals() {
+  var today = Calc.today(), p = today.split('-');
+  var dow = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay();   // 0 일 ~ 6 토
+  var mon = Calc.addDays(today, -((dow + 6) % 7)), eats = {};
+  App.state.meals.forEach(function (x) { eats[x.date] = (eats[x.date] || 0) + 1; });
+  var out = [];
+  for (var i = 0; i < 7; i++) {
+    var d = Calc.addDays(mon, i);
+    out.push({ date: d, dow: DOW[(i + 1) % 7], meals: eats[d] || 0, today: d === today, future: d > today });
+  }
+  return out;
+}
+function weekMealsHtml() {
+  var days = weekMeals(), total = days.reduce(function (a, d) { return a + d.meals; }, 0);
+  return '<p class="dw-top"><span class="dw-head">이번 주 집밥</span><b class="dw-total">' + total + '<small>끼</small></b></p>' +
+    '<ol class="dw-days">' + days.map(function (d) {
+      var bowl = ic('rice', '🍚', 'dw-ic');
+      var bowls = d.meals ? (d.meals > 2 ? bowl + '<em>×' + d.meals + '</em>' : new Array(d.meals + 1).join(bowl)) : '<span class="dw-none"></span>';
+      return '<li class="' + (d.meals ? 'ate' : '') + (d.today ? ' today' : '') + (d.future ? ' future' : '') + '" aria-label="' +
+        d.dow + '요일' + (d.today ? ' 오늘' : '') + ' 집밥 ' + d.meals + '번"' + (d.today ? ' aria-current="date"' : '') + '>' +
+        '<span class="dw-d" aria-hidden="true">' + d.dow + '</span><span class="dw-b" aria-hidden="true">' + bowls + '</span></li>';
+    }).join('') + '</ol>';
+}
 
 function renderFridge() {
   var fr = App.state.fridge, open = App.fridgeOpen;
@@ -355,25 +393,12 @@ function renderFridge() {
   } else {
     $('door-l-note').innerHTML = '<b class="note-title">챌린지 없음</b>';
   }
-  // 냉동실 문 아래: '이번 주' 7칸 + 연속 지킨 날. 챌린지가 없어도 빈 칸 7개로 자리를 채운다
-  var cells = [], streak = 0;
-  if (ch) {
-    var wDays = chalDays(ch), wEnd = Math.max(0, Math.min(wDays.length - 1, Calc.daysBetween(ch.start, Calc.today())));
-    var wFrom = Math.max(0, Math.min(wEnd - 6, wDays.length - 7));
-    cells = wDays.slice(wFrom, wFrom + 7);
-    streak = streakOf(ch, wDays);
-  }
-  while (cells.length < 7) cells.push({ state: 'future', date: '', spent: 0, meals: 0 });
-  $('door-week').innerHTML = '<small class="dw-head">이번 주</small>' +
-    '<ol class="dw-days">' + cells.map(function (d) {
-      return '<li class="day ' + d.state + (d.today ? ' today' : '') + '"' + (d.date ? ' aria-label="' + Calc.shortDay(d.date) + (d.today ? ' 오늘' : '') + ' ' + DAY_TEXT[d.state] + (d.meals ? ' 집밥 ' + d.meals + '번' : '') + '"' : ' aria-hidden="true"') +
-        (d.today ? ' aria-current="date"' : '') + '>' + (d.meals ? '<i class="rice-dot"></i>' : '') + '</li>';
-    }).join('') + '</ol>' +
-    '<b class="dw-streak">' + (ch ? '🔥 ' + streak + '일 연속' : '') + '</b>';
+  // 냉동실 문: '이번 주 집밥' — 이번 주 월~일 한 줄씩, 집밥 먹은 날은 밥 그릇, 맨 위에 이번 주 끼니 수 (2026-11-22)
+  $('door-week').innerHTML = weekMealsHtml();
   // 냉장실 메모지: 임박이 있으면 '⏰ 곧 먹어야 해요 n개' + 이름 두 개, 없으면 '음식 n개'
   var soon = expSoon();
   $('door-r-note').innerHTML = soon.length
-    ? '<b class="note-title warn-text">⏰ 곧 먹어야 해요 ' + soon.length + '개</b><small>' + esc(soon.slice(0, 2).map(function (x) { return x.name; }).join(', ')) + '</small>'
+    ? '<b class="note-title warn-text">' + ic('alarm', '⏰') + ' 곧 먹어야 해요 ' + soon.length + '개</b><small>' + esc(soon.slice(0, 2).map(function (x) { return x.name; }).join(', ')) + '</small>'
     : '<b class="note-title">🧊 음식 ' + fr.items.length + '개</b><small>' + (fr.items.length ? '곧 먹어야 할 것은 없어요' : '비어 있어요') + '</small>';
   // 냉장실 문 아래: 다음 할 일 (세 단계). 다 끝났으면 오늘 집밥·사진 한 장 카드로 자리를 채운다
   var steps = startSteps(), next = steps.filter(function (s) { return !s.done; })[0];
@@ -390,8 +415,8 @@ function renderFridge() {
     dn.className = 'door-next door-today';
     dn.setAttribute('aria-label', '오늘');
     dn.innerHTML = '<p class="dn-head"><small>오늘</small></p>' +
-      '<b class="dn-title">🍚 집밥 ' + todayMeals + '번</b>' +
-      '<small class="dn-sub">' + (ph ? '📷 ' + photoAgo(ph) : '📷 아직 찍은 사진이 없어요') + '</small>';
+      '<b class="dn-title">' + ic('rice', '🍚') + ' 집밥 ' + todayMeals + '번</b>' +
+      '<small class="dn-sub">' + ic('camera', '📷') + ' ' + (ph ? photoAgo(ph) : '아직 찍은 사진이 없어요') + '</small>';
   }
   dn.hidden = open;
   // 문 안쪽: 칸 버튼은 냉장고 그림 속 실제 선반·서랍 자리(FRIDGE_SHELVES at, %)에 놓는다 (H-28)
@@ -404,7 +429,7 @@ function renderFridge() {
         var at = s.at || [0, 0, 0, 0];
         return '<button type="button" class="shelf' + (s.id.indexOf('d') >= 0 ? ' door-shelf' : '') + flashCls(s.id) + '" data-act="shelf-open" data-id="' + s.id + '"' +
           ' style="left:' + at[0] + '%;top:' + at[1] + '%;width:' + at[2] + '%;height:' + at[3] + '%">' +
-          '<span class="shelf-name"><span aria-hidden="true">' + s.icon + '</span> <span class="shelf-label">' + esc(s.name) + '</span></span>' +
+          '<span class="shelf-name">' + ic('shelf_' + s.id, s.icon) + ' <span class="shelf-label">' + esc(s.name) + '</span></span>' +
           (items.length ? '<span class="shelf-n" aria-hidden="true">' + items.length + '</span>' : '') +
           '<span class="shelf-sub">' + (items.length ? items.slice(0, 3).map(function (x) {
             return '<span class="shelf-item">' + itemIcHtml(x) + esc(x.name) + '</span>';
@@ -422,7 +447,7 @@ function renderFridge() {
   // H-42: 목록 위 '📷 유통기한 찍기' — 찍어서 읽은 날짜가 채워진 음식 넣기 창을 연다 (app.js snapExpDate)
   var exp = $('fridge-exp');
   var snap = '<button type="button" class="exp-snap" data-act="exp-snap"' + (App.snapBusy ? ' aria-busy="true"' : '') + ' aria-label="유통기한 찍기 — 사진에서 날짜를 읽어 음식 넣기">' +
-    '<span aria-hidden="true">📷</span> 유통기한 찍기</button>';
+    ic('camera', '📷') + ' 유통기한 찍기</button>';
   // H-43: 판 맨 아래 버튼 줄 — 왼쪽 '음식 넣기'(빈 음식 넣기 창), 오른쪽 '문 닫기'(냉장고 문을 닫는다). 목록 밖이라 넘기지 않는다
   var foot = '<div class="exp-foot">' +
     '<button type="button" class="foot-add" data-act="exp-add"><span class="foot-ic" aria-hidden="true">＋</span>음식 넣기</button>' +
@@ -450,7 +475,7 @@ function fridgeItemRow(x, withShelf) {
       '<span class="ex-name">' + itemIcHtml(x) + esc(x.name) + '</span>' +
       (x.qty ? '<span class="ex-qty">' + esc(x.qty) + '</span>' : '') +
       expBadge(x.exp) +
-      (s ? '<span class="ex-shelf">' + s.icon + ' ' + esc(s.name) + '</span>' : '') +
+      (s ? '<span class="ex-shelf">' + ic('shelf_' + s.id, s.icon) + ' ' + esc(s.name) + '</span>' : '') +
       (x.memo ? '<span class="ex-memo">' + esc(x.memo) + '</span>' : '') +
     '</div>' +
   '</div>';
@@ -476,7 +501,7 @@ function renderShelf() {
   var s = shelfById(App.shelfId);
   if (!s) return;
   var items = itemsIn(s.id);
-  $('h-shelf').textContent = s.icon + ' ' + s.name;
+  $('h-shelf').innerHTML = ic('shelf_' + s.id, s.icon) + ' ' + esc(s.name);
   $('shelf-count').textContent = '들어 있는 음식 ' + items.length + '개';
   $('shelf-items').innerHTML = items.length ? items.map(function (x) { return fridgeItemRow(x, false); }).join('')
     : emptyBox('<span class="emoji-art">🧊🥡</span>', '이 칸은 비어 있어요', [
@@ -488,8 +513,7 @@ function renderShelf() {
     return !items.some(function (x) { return sameFood(x.name, q[0]); });
   });
   $('shelf-quick').innerHTML = quick.map(function (q) {
-    var f = foodByName(q[0]);
-    return btn({ act: 'item-quick-add', label: (f ? f.icon : s.icon) + ' ' + esc(q[0]), cls: 'chip', data: { name: q[0], d: q[1] }, aria: q[0] + ' 넣기, 유통기한 ' + q[1] + '일 뒤' });
+    return btn({ act: 'item-quick-add', label: foodIc(q[0], s.id) + ' ' + esc(q[0]), cls: 'chip', data: { name: q[0], d: q[1] }, aria: q[0] + ' 넣기, 유통기한 ' + q[1] + '일 뒤' });
   }).join('');
   $('shelf-quick').hidden = !quick.length;
   renderItemHint();
@@ -556,7 +580,7 @@ function renderPhoto() {
 // '오늘 챙길 것': 유통기한 임박, 오늘 식비 미입력 두 가지만 (H-16)
 function todayChecks(ch) {
   var out = [], soon = expSoon();
-  if (soon.length) out.push(btn({ act: 'fridge-open-exp', label: '⏰ 곧 먹어야 해요 ' + soon.length + '개', cls: 'chip warn' }));
+  if (soon.length) out.push(btn({ act: 'fridge-open-exp', label: ic('alarm', '⏰') + ' 곧 먹어야 해요 ' + soon.length + '개', cls: 'chip warn' }));
   var today = Calc.today();
   if (ch && !App.state.spends.some(function (x) { return x.date === today; })) out.push(btn({ act: 'spend-new', label: '🧾 오늘 식비를 아직 안 넣었어요', cls: 'chip' }));
   return out.length ? '<div class="today-checks chip-row" role="group" aria-label="오늘 챙길 것">' + out.join('') + '</div>' : '';
@@ -596,7 +620,7 @@ function renderChal() {
     var maxK = byKind.length ? byKind[0].sum : 1;
     if (byKind.length) views.kinds = { head: '<h3>어디에 썼나</h3>', n: byKind.length, row: function (i) {
       var x = byKind[i];
-      return '<div class="kind-row"><span>' + x.k.icon + ' ' + esc(x.k.key) + '</span><b>' + won(x.sum) + '<small>' + pct(x.sum / Math.max(1, info.spent) * 100) + '</small></b>' +
+      return '<div class="kind-row"><span>' + ic('spend_' + x.k.key, x.k.icon) + ' ' + esc(x.k.key) + '</span><b>' + won(x.sum) + '<small>' + pct(x.sum / Math.max(1, info.spent) * 100) + '</small></b>' +
         '<span class="meter"><i style="width:' + (x.sum / maxK * 100) + '%"></i></span></div>';
     } };
     views.spends = spends.length ? spendGroupsHtml(spends, ch)
@@ -660,7 +684,7 @@ function renderResult(ch) {
       row(diff >= 0 ? 'good' : 'mid', diff >= 0 ? '💰' : '⚠️', diff >= 0 ? '남긴 돈' : '넘은 돈', won(Math.abs(diff)), diff >= 0 ? '목표 안에서 끝냈어요' : '목표보다 더 썼어요') +
       row(good * 2 >= days.length ? 'good' : 'mid', '📅', '지킨 날', good + ' / ' + days.length + '일', '하루 ' + won(dayBase(ch)) + ' 이하 · 가장 긴 연속 ' + best + '일') +
       row('none', '📈', '가장 많이 쓴 날', top ? Calc.shortDay(top.date) + ' ' + won(top.spent) : '없어요', '') +
-      row(ms.meals ? 'good' : 'none', '🍚', '집밥', ms.meals + '끼', ms.meals ? '한 끼 평균 ' + won(ms.avg) : '집밥 기록이 없어요') +
+      row(ms.meals ? 'good' : 'none', '🍚', '집밥', ms.meals + '끼', ms.meals ? (ms.avg != null ? '한 끼 평균 ' + won(ms.avg) : '장보기 기록이 없어요') : '집밥 기록이 없어요') +
     '</ul>' +
     (App.resultOthers > 0 ? '<p class="hint">다른 챌린지 ' + App.resultOthers + '개도 끝났어요.</p>' : '');
 }
@@ -670,7 +694,7 @@ function renderSpendKinds(chosen) {
   $('spend-kinds').innerHTML = SPEND_KINDS.map(function (k) {
     var on = k.key === chosen;
     return '<button type="button" role="radio" aria-checked="' + on + '" class="kind' + (on ? ' on' : '') + '" data-act="spend-kind" data-kind="' + esc(k.key) + '">' +
-      '<span aria-hidden="true">' + k.icon + '</span>' + esc(k.key) + '</button>';
+      ic('spend_' + k.key, k.icon) + esc(k.key) + '</button>';
   }).join('');
   var kind = SPEND_KINDS.filter(function (k) { return k.key === chosen; })[0];
   $('spend-quick').innerHTML = (kind ? kind.quick : []).map(function (v) { return btn({ act: 'spend-quick', label: won(v), cls: 'small', data: { v: v } }); }).join('');
@@ -776,17 +800,18 @@ function renderChalCalc() {
 // ---------- 설정 ----------
 function renderMore() {
   var s = App.state.settings;
-  var cur = { font: s.font, theme: s.theme, motion: document.body.classList.contains('reduce-motion') ? 'on' : 'off' };
+  var cur = { font: s.font, theme: s.theme, motion: document.body.classList.contains('reduce-motion') ? 'on' : 'off', notify: s.notify === false ? 'off' : 'on' };
   $('settings-form').querySelectorAll('[data-act="set-pick"]').forEach(function (b) {
     b.setAttribute('aria-pressed', cur[b.dataset.key] === b.dataset.v ? 'true' : 'false');
   });
 }
 
 // ---------- 화면별 그리기 ----------
-var SCREEN_TITLE = { chal: '식비 챌린지', more: '설정' };
+var SCREEN_TITLE = { chal: '식비 챌린지', cook: '요리하기', more: '설정' };
 function renderScreen(name) {
   if (name === 'fridge') renderFridge();
   else if (name === 'chal') renderChal();
+  else if (name === 'cook') Cook.render();
   else if (name === 'more') renderMore();
   $('top-title').textContent = SCREEN_TITLE[name] || '';
   App.flash = null;

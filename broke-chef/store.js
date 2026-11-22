@@ -8,7 +8,7 @@ var Store = (function () {
   var MAX_PHOTOS = 4;
 
   function defaultSettings() {
-    return { font: 'm', motion: null, theme: 'light', bright: true };
+    return { font: 'm', motion: null, theme: 'light', bright: true, notify: true };
   }
   // H-16: 재료·메뉴·값 기록은 없다. 집밥은 날짜만 남긴다(메뉴 이름을 받지 않는다)
   function defaults() {
@@ -85,7 +85,8 @@ var Store = (function () {
       font: ['s', 'm', 'l'].indexOf(s.font) >= 0 ? s.font : ds.font,
       motion: typeof s.motion === 'boolean' ? s.motion : null,
       theme: s.bright === true && ['auto', 'light', 'dark'].indexOf(s.theme) >= 0 ? s.theme : ds.theme,
-      bright: true
+      bright: true,
+      notify: s.notify !== false   // 알림(안드로이드 앱): 처음엔 켬
     };
     d.challenges = (o.challenges || []).map(function (c) {
       return { id: c.id, name: c.name.trim(), budget: Math.round(c.budget), months: clampNum(c.months, 1, 12, 1),

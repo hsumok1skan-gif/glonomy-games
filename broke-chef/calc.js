@@ -71,9 +71,10 @@ var Calc = (function () {
   function inPeriod(day, start, end) { return day >= start && day <= end; }
 
   // ---------- 집밥 한 끼 평균 (H-16 '잘 먹겠습니다') ----------
-  // 한 끼 평균 = 장보기 합계 ÷ 집밥 횟수 (원 아래 반올림). 집밥이 0번이면 null
+  // 한 끼 평균 = 장보기 합계 ÷ 집밥 횟수 (원 아래 반올림). 집밥이 0번이거나 장보기가 0원이면 null
+  // (장 본 돈 없이 집밥만 누르면 '한 끼 0원'·'배달비 전부 아낌'으로 잘못 보이던 것을 막는다)
   function mealAvg(shopTotal, meals) {
-    return meals > 0 ? Math.round(shopTotal / meals) : null;
+    return meals > 0 && shopTotal > 0 ? Math.round(shopTotal / meals) : null;
   }
   // 배달·외식 한 번 평균. 기록이 없으면 null
   function outAvg(outTotal, outCount) {
@@ -104,6 +105,8 @@ var Calc = (function () {
       run: function () { return mealSaving(42200, 9, 34000, 3).perMeal; } },
     { name: '같은 값 → 아낀 돈 (6,644 × 9)', want: 59796,
       run: function () { return mealSaving(42200, 9, 34000, 3).saved; } },
+    { name: '장보기 0원 · 집밥 3번 → 한 끼 평균 없음(0)', want: 0,
+      run: function () { return mealAvg(0, 3) === null && mealSaving(0, 3, 20000, 1) === null ? 0 : 1; } },
     { name: '2028년 2월의 날 수 (윤년)', want: 29,
       run: function () { return daysInMonth(2028, 2); } },
     { name: '2027-01-31 에서 2027-03-01 까지 날 수', want: 29,

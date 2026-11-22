@@ -30,7 +30,7 @@ var SPEND_KINDS = [
 var EAT_OUT_KINDS = ['배달', '외식'];
 
 // 양문형 냉장고의 칸 — 왼쪽 문은 냉동실, 오른쪽 문은 냉장실 (H-03)
-// at: 열린 냉장고 그림(assets/한끼_계산기_4.png, 941×1672) 속 실제 선반·서랍 자리 [왼쪽, 위, 폭, 높이] % (H-28)
+// at: 열린 냉장고 그림(assets/한끼_계산기_4.webp, 941×1672) 속 실제 선반·서랍 자리 [왼쪽, 위, 폭, 높이] % (H-28)
 var FRIDGE_SHELVES = [
   { id: 'z1', side: 'L', name: '냉동실 위 칸', icon: '🧊', at: [13, 13.5, 24.9, 13.8] },       // 첫 선반 위
   { id: 'z2', side: 'L', name: '냉동실 가운데 칸', icon: '🥟', at: [13, 28.1, 24.9, 26.9] },   // 둘째·셋째 선반 사이
@@ -117,3 +117,66 @@ var SAMPLE_ROOM = {
 
 // 사진 이름표 — 찍은 뒤에 고른다 (H-16)
 var PHOTO_LABELS = ['냉장고 전체', '냉장실', '냉동실', '문 선반', '채소 서랍'];
+
+// 2026-11-22: 사람이 그린 아이콘 (assets/ic/). 이모지 대신 화면에 그린다. 알림 글·고르기 목록 같은 글자 자리는 이모지 그대로
+// 키: rice·alarm·check·salt·warn·camera / spend_종류 / dish_요리 종류 / shelf_칸 id / food_음식 이름 (FOODS 이름)
+var IC = {
+ "rice": "assets/ic/ic00.webp",
+ "alarm": "assets/ic/ic01.webp",
+ "check": "assets/ic/ic02.webp",
+ "salt": "assets/ic/ic03.webp",
+ "warn": "assets/ic/ic04.webp",
+ "camera": "assets/ic/ic05.webp",
+ "spend_장보기": "assets/ic/ic06.webp",
+ "spend_배달": "assets/ic/ic07.webp",
+ "spend_외식": "assets/ic/ic08.webp",
+ "spend_편의점": "assets/ic/ic09.webp",
+ "spend_카페·간식": "assets/ic/ic10.webp",
+ "spend_기타": "assets/ic/ic11.webp",
+ "dish_밥": "assets/ic/ic12.webp",
+ "dish_반찬": "assets/ic/ic13.webp",
+ "dish_국&찌개": "assets/ic/ic14.webp",
+ "dish_일품": "assets/ic/ic15.webp",
+ "dish_후식": "assets/ic/ic16.webp",
+ "dish_기타": "assets/ic/ic17.webp",
+ "shelf_z1": "assets/ic/ic18.webp",
+ "shelf_z2": "assets/ic/ic19.webp",
+ "shelf_z3": "assets/ic/ic20.webp",
+ "shelf_zd": "assets/ic/ic21.webp",
+ "shelf_r1": "assets/ic/ic22.webp",
+ "shelf_r2": "assets/ic/ic23.webp",
+ "shelf_r3": "assets/ic/ic24.webp",
+ "shelf_r4": "assets/ic/ic25.webp",
+ "shelf_rd1": "assets/ic/ic26.webp",
+ "shelf_rd2": "assets/ic/ic27.webp",
+ "food_계란": "assets/ic/ic28.webp",
+ "food_두부": "assets/ic/ic29.webp",
+ "food_햄": "assets/ic/ic30.webp",
+ "food_어묵": "assets/ic/ic31.webp",
+ "food_치즈": "assets/ic/ic32.webp",
+ "food_우유": "assets/ic/ic33.webp",
+ "food_요거트": "assets/ic/ic34.webp",
+ "food_배추김치": "assets/ic/ic35.webp",
+ "food_반찬": "assets/ic/ic36.webp",
+ "food_남은 음식": "assets/ic/ic37.webp",
+ "food_양파": "assets/ic/ic38.webp",
+ "food_대파": "assets/ic/ic39.webp",
+ "food_당근": "assets/ic/ic40.webp",
+ "food_애호박": "assets/ic/ic41.webp",
+ "food_사과": "assets/ic/ic42.webp",
+ "food_돼지고기": "assets/ic/ic43.webp",
+ "food_닭가슴살": "assets/ic/ic44.webp",
+ "food_소고기": "assets/ic/ic45.webp",
+ "food_밥 남은 것": "assets/ic/ic46.webp",
+ "food_국 남은 것": "assets/ic/ic47.webp",
+ "food_냉동 만두": "assets/ic/ic48.webp",
+ "food_얼린 밥": "assets/ic/ic49.webp",
+ "food_냉동 피자": "assets/ic/ic50.webp",
+ "food_아이스크림": "assets/ic/ic51.webp",
+ "food_냉동 새우": "assets/ic/ic52.webp",
+ "food_고추장": "assets/ic/ic53.webp",
+ "food_마요네즈": "assets/ic/ic54.webp",
+ "food_케첩": "assets/ic/ic55.webp",
+ "food_주스": "assets/ic/ic56.webp",
+ "food_생수": "assets/ic/ic57.webp"
+};
