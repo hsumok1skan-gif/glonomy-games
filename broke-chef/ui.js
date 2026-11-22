@@ -422,14 +422,14 @@ function renderFridge() {
   // 문 안쪽: 칸 버튼은 냉장고 그림 속 실제 선반·서랍 자리(FRIDGE_SHELVES at, %)에 놓는다 (H-28)
   $('fridge-in').dataset.mode = App.fridgeMode;
   $('fridge-shelves').innerHTML = ['L', 'R'].map(function (side) {
-    return '<div class="fridge-col ' + (side === 'L' ? 'freezer' : 'chiller') + '" role="group" aria-label="' + (side === 'L' ? '냉동실' : '냉장실') + '"><p class="col-tag">' + (side === 'L' ? '냉동실' : '냉장실') + '</p>' +
+    return '<div class="fridge-col ' + (side === 'L' ? 'freezer' : 'chiller') + '" role="group" aria-label="' + (side === 'L' ? '냉동실' : '냉장실') + '"><p class="col-tag"><span>' + (side === 'L' ? '냉동실' : '냉장실') + '</span></p>' +
       FRIDGE_SHELVES.filter(function (s) { return s.side === side; }).map(function (s) {
         var items = itemsIn(s.id);
         var worst = items.length && items[0].exp ? expBadge(items[0].exp) : '';
         var at = s.at || [0, 0, 0, 0];
-        return '<button type="button" class="shelf' + (s.id.indexOf('d') >= 0 ? ' door-shelf' : '') + flashCls(s.id) + '" data-act="shelf-open" data-id="' + s.id + '"' +
+        return '<button type="button" class="shelf' + (s.id.indexOf('d') >= 0 ? ' door-shelf' : '') + flashCls(s.id) + '" data-act="shelf-open" data-id="' + s.id + '" aria-label="' + esc(s.name + ', 음식 ' + items.length + '개') + '"' +
           ' style="left:' + at[0] + '%;top:' + at[1] + '%;width:' + at[2] + '%;height:' + at[3] + '%">' +
-          '<span class="shelf-name">' + ic('shelf_' + s.id, s.icon) + ' <span class="shelf-label">' + esc(s.name) + '</span></span>' +
+          '<span class="shelf-name">' + ic('shelf_' + s.id, s.icon) + ' <span class="shelf-label">' + esc(s.short || s.name) + '</span></span>' +
           (items.length ? '<span class="shelf-n" aria-hidden="true">' + items.length + '</span>' : '') +
           '<span class="shelf-sub">' + (items.length ? items.slice(0, 3).map(function (x) {
             return '<span class="shelf-item">' + itemIcHtml(x) + esc(x.name) + '</span>';

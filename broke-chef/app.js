@@ -162,6 +162,7 @@ function onBack() {
   Back.armed = false;
   if (App.stack.length) closeLayer();
   else if (App.screen !== 'fridge') setScreen('fridge');
+  else if (App.fridgeOpen && !$('ocr-out').hidden) closeOcrCard();
   else if (App.fridgeOpen) toggleFridge(false);
   syncBack();
 }
@@ -707,11 +708,19 @@ function setPhotoLabel(id, label) {
   renderPhoto();
   toast(label + ' 사진이에요');
 }
+// 글자 읽기 카드 닫기 (2026-11-22): 카드가 사진·지우기 버튼을 가리고 닫을 길이 없던 것
+function closeOcrCard() {
+  $('ocr-out').hidden = true;
+  App.ocrPick.photo = null;
+  renderPhoto();
+}
 function deletePhoto(id) {
   var p = App.photos.filter(function (x) { return x.id === id; })[0];
   if (!p) return;
   askConfirm('사진을 지울까요?', Calc.shortDay(p.date) + ' ' + (p.label || '냉장고') + ' 사진을 지워요.', '지우기', function () {
     rememberUndo();
+    $('ocr-out').hidden = true;
+    App.ocrPick.photo = null;
     App.photos = App.photos.filter(function (x) { return x.id !== id; });
     Store.savePhotos(App.photos);
     App.photoId = null;
@@ -731,7 +740,7 @@ function readPhotoText(data) {
 // 앱의 사진 흐름과 시험 훅이 같은 길(Ocr.scan → findDate)을 쓴다
 function ocrScan(data, food) {
   return (food ? Ocr.scanFood(data) : Ocr.scan(data)).then(function (r) {
-    return { text: String(r.text || '').replace(/[ \t]+/g, ' ').replace(/\n{2,}/g, '\n').trim(), date: r.date || null };
+    return { text: String(r.text || '').replace(/[ \t]+/g, ' ').replace(/\n{2,}/g, '\n').trim(), date: r.date || null, names: r.names || null };
   });
 }
 window.__ocrTest = function (src) { return ocrScan(src); };
@@ -785,7 +794,7 @@ function fillShelfSelect() {
 }
 // 읽은 결과로 카드를 연다. 날짜는 넣기 전에 늘 묻는다
 function showOcrPick(at, r) {
-  App.ocrPick[at] = { text: r.text || '', date: Calc.isDay(r.date) ? r.date : null, dateOk: false, manual: false, name: '', own: false, savedId: null };
+  App.ocrPick[at] = { names: r.names || null, text: r.text || '', date: Calc.isDay(r.date) ? r.date : null, dateOk: false, manual: false, name: '', own: false, savedId: null };
   fillShelfSelect();
   renderOcrPick(at);
   var box = $('ocr-out');
@@ -807,7 +816,7 @@ function renderOcrPick(at) {
   ocrEl(at, 'q').innerHTML = q;
   ocrEl(at, 'q').parentNode.classList.toggle('saved', !!(o.dateOk && saved));
   ocrEl(at, 'btns').hidden = !(o.date && !o.dateOk && !o.manual);
-  var names = ocrNames(o.text);
+  var names = o.names && o.names.length ? ocrLines(o.names).concat(ocrNames(o.text)).filter(function (n, i, a) { return a.indexOf(n) === i; }).slice(0, 12) : ocrNames(o.text);
   var typed = o.name && names.indexOf(o.name) < 0 ? o.name : '';
   ocrEl(at, 'names').innerHTML = (typed ? [typed] : []).concat(names).map(function (n) {
     var on = n === o.name;
@@ -953,7 +962,19 @@ function snapFood() {
   openShelfCamera();
 }
 // 읽은 글에서 음식 이름 고르기: 자주 넣는 음식(FOODS)과 맞는 후보가 먼저, 없으면 첫 한글 후보
-function pickFoodName(text) {
+// 큰 글씨 줄을 통째로(쪼개지 않고) 이름 후보로: '갈릭 치즈 마요 소스'
+function ocrLines(names) {
+  var out = [];
+  (names || []).forEach(function (n) { var c = ocrNames(n)[0]; if (c && out.indexOf(c) < 0) out.push(c); });
+  return out;
+}
+function pickFoodName(text, names) {
+  // 앱(ML Kit)은 글자 크기를 알려 준다: 가장 큰 글씨(제품명)를 먼저 고른다
+  if (names && names.length) {
+    var big = ocrLines(names);
+    var rest = ocrNames(text).filter(function (n) { return big.indexOf(n) < 0; });
+    return { best: big[0] || rest[0] || '', list: big.concat(rest).slice(0, 6) };
+  }
   var c = ocrNames(text);
   var known = c.filter(function (n) { return !!foodByName(n); });
   return { best: known[0] || c[0] || '', list: known.concat(c.filter(function (n) { return known.indexOf(n) < 0; })).slice(0, 6) };
@@ -983,7 +1004,7 @@ function renderSnapNames() {
   }).join('');
 }
 function fillFoodFromPhoto(r) {
-  var pick = pickFoodName(r.text);
+  var pick = pickFoodName(r.text, r.names);
   App.snapNames = pick.list;
   if (pick.best && !$('item-name').value.trim()) setSnapName(pick.best); else renderSnapNames();
   var gotDate = Calc.isDay(r.date);
@@ -1302,6 +1323,8 @@ var ACTIONS = {
   'ocr-name-own': function (d) { ocrNameOwn(d.at); },
   'ocr-own-use': function (d) { ocrOwnUse(d.at); },
   'ocr-copy': function (d) { copyOcrText(d.at); },
+  'ocr-close': function () { closeOcrCard(); },
+  'ocr-photo-del': function () { if (App.photoId) deletePhoto(App.photoId); else closeOcrCard(); },
   'meal-eat': eatMeal,
   'cook-open': function () { closeAllLayers(); setScreen('cook'); },
   'cook-add': function () { App.shelfId = 'r2'; closeAllLayers(); setScreen('fridge'); openItemWin(); },
@@ -1426,7 +1449,20 @@ function bind() {
   }
   setInterval(checkDay, 60000);
 }
+// 화면 높이 고정 (2026-11-22): 키보드가 올라와 보이는 높이가 줄어도 냉장고·창 크기가 바뀌지 않게,
+// 처음 높이를 --app-h 로 잡아 둔다. 화면을 돌리거나(폭이 바뀜) 높이가 커질 때만 다시 잰다
+var AppH = { w: 0, h: 0 };
+function typing() { var a = document.activeElement; return !!a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.type !== 'button'; }
+function fixAppHeight(force) {
+  var w = window.innerWidth, h = window.innerHeight;
+  if (!force && w === AppH.w && (h < AppH.h || typing())) return;   // 키보드 때문에 줄어든 것은 무시
+  AppH.w = w; AppH.h = h;
+  document.documentElement.style.setProperty('--app-h', h + 'px');
+}
 function init() {
+  fixAppHeight(true);
+  window.addEventListener('resize', function () { fixAppHeight(false); });
+  window.addEventListener('orientationchange', function () { setTimeout(function () { fixAppHeight(true); }, 300); });
   App.state = Store.load();
   App.photos = Store.loadPhotos();
   App.lastDay = Calc.today();

@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=overlays-content">
 <meta name="theme-color" content="#1660b0">
 <title>한끼 계산기 — 자취생 냉장고·식비 챌린지</title>
 <link rel="manifest" href="./manifest.json">
@@ -54,6 +54,10 @@
             <div id="ocr-bar" class="ocr-bar" role="progressbar" aria-labelledby="ocr-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0%"><span id="ocr-fill"></span></div>
           </div>
           <div id="ocr-out" class="card ocr-out" role="group" aria-labelledby="ocr-q" aria-live="polite" hidden>
+            <div class="ocr-end">
+              <button type="button" class="danger" data-act="ocr-photo-del">🗑 사진 지우기</button>
+              <button type="button" class="primary" data-act="ocr-close">✓ 완료</button>
+            </div>
             <div class="ocr-ask">
               <p id="ocr-q" class="ocr-q"></p>
               <div id="ocr-btns" class="sheet-actions">

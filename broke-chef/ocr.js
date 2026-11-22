@@ -16,6 +16,7 @@ var Ocr = (function () {
 
   // file:// 로 열면 브라우저가 일꾼(Worker)과 파일 읽기를 막는다
   function available() { return location.protocol !== 'file:'; }
+  function isNative() { return !!native(); }
   function loaded() { return !!workerP; }
 
   function emit(label, pct, done) {
@@ -195,7 +196,7 @@ var Ocr = (function () {
 
   // 찍기 자석(2026-11-22): 음식 이름은 큰 제품명 글씨라 '보통 글'(3) 모드가 잘 읽는다.
   // 그 글에서 날짜를 못 찾으면 날짜 띠에 강한 '흩어진 글'(11) 모드로 한 번 더 읽어 날짜만 가져온다
-  function scanFood(src) {
+  function scanFoodOld(src) {
     return prep(src).then(function (big) {
       return read(big, '3').then(function (text) {
         var date = findDate(text);
@@ -207,8 +208,69 @@ var Ocr = (function () {
     });
   }
 
+  // ---------- 앱(안드로이드)에서는 폰 안의 구글 ML Kit 한글 글자 인식을 쓴다 (2026-11-22) ----------
+  // 사진은 앱 임시 폴더에 잠깐 두었다가 읽자마자 지운다. 인터넷으로 보내지 않는다.
+  var nat = null;
+  function native() {
+    if (nat !== null) return nat;
+    var C = window.Capacitor;
+    nat = false;
+    try {
+      if (C && C.isNativePlatform && C.isNativePlatform() && C.isPluginAvailable &&
+          C.isPluginAvailable('TextRecognition') && C.isPluginAvailable('Filesystem')) {
+        nat = { tr: C.registerPlugin('TextRecognition'), fs: C.registerPlugin('Filesystem') };
+      }
+    } catch (e) { nat = false; }
+    return nat;
+  }
+  // 글자 크기(줄 높이) 큰 순서의 줄 — 앞면의 큰 제품명이 맨 앞에 온다
+  function bigLines(blocks) {
+    var lines = [];
+    (blocks || []).forEach(function (b) {
+      (b.lines || []).forEach(function (l) {
+        var r = l.boundingBox || {}, h = (r.bottom || 0) - (r.top || 0);
+        if (l.text && h > 0) lines.push({ text: String(l.text).trim(), h: h, top: r.top || 0, left: r.left || 0 });
+      });
+    });
+    lines.sort(function (a, b) { return b.h - a.h; });
+    var out = [];
+    // 제품명이 두 줄로 나뉜 경우(갈릭 치즈 / 마요 소스): 비슷한 크기로 바로 위아래 붙은 두 줄을 한 이름으로도 넣는다
+    if (lines.length > 1) {
+      var a = lines[0];
+      lines.slice(1, 4).some(function (b) {
+        var near = Math.abs(a.h - b.h) < a.h * 0.25 && Math.abs(Math.abs(a.top - b.top) - a.h) < a.h * 0.8;
+        if (near) { out.push(a.top < b.top ? a.text + ' ' + b.text : b.text + ' ' + a.text); return true; }
+        return false;
+      });
+    }
+    lines.forEach(function (l) { out.push(l.text); });
+    return out;
+  }
+  function nativeScan(src) {
+    var n = native(), path = 'ocr-' + Date.now() + '.jpg', uri = null;
+    var data = String(src).replace(/^data:[^,]*,/, '');
+    emit('사진에서 글자 읽는 중', 30, false);
+    function cleanup() { return n.fs.deleteFile({ path: path, directory: 'CACHE' }).catch(function () { /* 이미 없음 */ }); }
+    return n.fs.writeFile({ path: path, data: data, directory: 'CACHE' }).then(function (w) {
+      uri = w.uri;
+      return n.tr.processImage({ path: uri, script: 'KOREAN' });
+    }).then(function (r) {
+      cleanup();
+      emit('글자 읽기 끝', 100, true);
+      var text = String((r && r.text) || '');
+      return { text: text, date: findDate(text), names: bigLines(r && r.blocks) };
+    }, function (e) { cleanup(); emit('', 0, true); throw e; });
+  }
+  // 앱에서 ML Kit 이 실패하면 예전 엔진(Tesseract)으로 한 번 더
+  function viaNative(src, fallback) {
+    if (!native() || typeof src !== 'string') return fallback(src);
+    return nativeScan(src).catch(function () { return fallback(src); });
+  }
+
   // 사진 → { text, date } (앱의 사진 흐름과 시험 훅 window.__ocrTest 가 같이 쓴다)
-  function scan(src) {
+  function scan(src) { return viaNative(src, scanOld); }
+  function scanFood(src) { return viaNative(src, scanFoodOld); }
+  function scanOld(src) {
     return prep(src).then(function (big) {
       return read(big).then(function (text) {
         var date = findDate(text);
@@ -231,6 +293,6 @@ var Ocr = (function () {
 
   return {
     available: available, loaded: loaded, load: load, read: read, scan: scan, scanFood: scanFood, stop: stop, onProgress: onProgress,
-    findDate: findDate, selfTest: selfTest
+    findDate: findDate, selfTest: selfTest, isNative: isNative
   };
 })();

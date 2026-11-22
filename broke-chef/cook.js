@@ -106,7 +106,9 @@ var Cook = (function () {
       else if (!m.need) now.push(o);
       else buy.push(o);
     });
-    var rank = function (a, b) { return a.m.need - b.m.need || b.m.have - a.m.have || a.r.name.localeCompare(b.r.name, 'ko'); };
+    // 살 것이 적은 순 → 같으면 집밥 레시피(농식품)를 먼저 → 냉장고 재료를 많이 쓰는 순
+    var srcRank = function (r) { return r.src === 'mafra' ? 0 : 1; };
+    var rank = function (a, b) { return a.m.need - b.m.need || srcRank(a.r) - srcRank(b.r) || b.m.have - a.m.have || a.r.name.localeCompare(b.r.name, 'ko'); };
     soon.sort(function (a, b) { return b.m.soon.length - a.m.soon.length || rank(a, b); });
     now.sort(rank); buy.sort(rank);
     return { soon: soon, now: now, buy: buy };
@@ -114,7 +116,14 @@ var Cook = (function () {
 
   // 사진: 주소로 불러온다(앱에 내려받지 않음). https 로 먼저, 안 되면 원래 주소, 그래도 안 되면 요리 종류 그림
   // 사진이 없거나 안 뜨면 요리 종류 그림(assets/ic, 사람 그림)
-  function dishIc(kind) { return IC['dish_' + kind] || IC['dish_기타']; }
+  // 농식품 레시피는 요리 종류가 더 잘게 나뉘어 있어 여섯 그림 가운데 가까운 것으로 묶는다 (농식품 레시피에는 사진이 없다)
+  var DISH_GROUP = [[/밥|죽/, '밥'], [/국|찌개|전골|스튜|탕/, '국&찌개'], [/면|만두|도시락|덮밥|그라탕|리조또|피자|샌드위치|햄버거|양식/, '일품'],
+    [/떡|한과|빵|과자|음료|후식|간식/, '후식'], [/나물|생채|샐러드|반찬|김치|볶음|구이|찜|부침|튀김|커틀릿|조림|양념장/, '반찬']];
+  function dishIc(kind) {
+    if (IC['dish_' + kind]) return IC['dish_' + kind];
+    for (var i = 0; i < DISH_GROUP.length; i++) if (DISH_GROUP[i][0].test(kind || '')) return IC['dish_' + DISH_GROUP[i][1]];
+    return IC['dish_기타'];
+  }
   function imgHtml(url, kind, cls) {
     var fb = dishIc(kind);
     if (!url) return '<img class="' + cls + ' no-img" src="' + fb + '" alt="" aria-hidden="true">';

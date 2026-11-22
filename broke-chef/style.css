@@ -114,7 +114,7 @@ body {
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
   line-height: 1.5; overflow: hidden; touch-action: manipulation; overscroll-behavior: none;
   word-break: keep-all; overflow-wrap: break-word;   /* 낱말 중간에서 끊지 않는다 (H-16) */
-  height: 100vh; height: 100dvh; display: flex; flex-direction: column;
+  height: 100vh; height: 100dvh; height: var(--app-h, 100dvh); display: flex; flex-direction: column;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 body.font-s { font-size: 14px; }
@@ -586,7 +586,7 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 /* 시트·겹침 창도 넘기지 않는다: 화면 높이 안에서 머리 띠 + 몸통, 몸통은 남은 높이를 나눠 쓴다 (H-18).
    칸 시트의 음식 목록(#shelf-items)만 그 안에서 위아래로 넘긴다 */
 .sheet {
-  position: fixed; left: 0; right: 0; bottom: 0; max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); overflow: hidden; z-index: 41;
+  position: fixed; left: 0; right: 0; bottom: 0; max-height: calc(100vh - 16px); max-height: calc(var(--app-h, 100dvh) - 16px); overflow: hidden; z-index: 41;
   display: flex; flex-direction: column;
   background: var(--bg); border-radius: 24px 24px 0 0; box-shadow: 0 -10px 30px rgba(10, 30, 50, .2);
   transform: translateY(24px);
@@ -597,11 +597,11 @@ body.on-fridge, body.on-fridge main, body.on-fridge #screen-fridge { background:
 .sheet-body > * { flex: none; }
 .sheet-body .card { margin-bottom: 8px; }
 .overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--side); z-index: 41; }
-.ov-box { background: var(--card); border-radius: var(--radius); padding: 20px; width: min(100%, 440px); max-height: calc(100dvh - 32px); overflow: hidden; box-shadow: var(--shadow); transform: scale(.96); transition: transform var(--t) ease; }
+.ov-box { background: var(--card); border-radius: var(--radius); padding: 20px; width: min(100%, 440px); max-height: calc(var(--app-h, 100dvh) - 32px); overflow: hidden; box-shadow: var(--shadow); transform: scale(.96); transition: transform var(--t) ease; }
 .overlay.in .ov-box { transform: none; }
 .ov-box h2 { margin-bottom: 10px; }
 @media (min-width: 760px) {
-  .sheet { left: 0; right: 0; margin: 0 auto; width: 560px; bottom: 24px; border-radius: 24px; max-height: calc(100dvh - 48px); }
+  .sheet { left: 0; right: 0; margin: 0 auto; width: 560px; bottom: 24px; border-radius: 24px; max-height: calc(var(--app-h, 100dvh) - 48px); }
 }
 /* H-19: 냉장고 화면에서 연 칸 창(음식 목록·음식 넣기)은 냉장고 틀 안에 든다.
    app.js fitFridgeWin 이 냉장고 자리(--fr-top·--fr-left·--fr-w·--fr-h)를 넘기고, 여기서 좌우 16px·위아래 24px 띄운다.
@@ -881,7 +881,7 @@ body.reduce-motion *, body.reduce-motion *::before { transition-duration: .001s 
 .used-list small { color: var(--ink2); }
 /* 찍기: 사진에서 읽은 이름 후보 */
 .snap-names { margin: -2px 0 6px; }
-.recipe-sheet { height: calc(100dvh - 16px); }
+.recipe-sheet { height: calc(var(--app-h, 100dvh) - 16px); }
 .rc-img.no-img, .rc-step-img.no-img, .ck-thumb.no-img { display: grid; place-items: center; }
 
 /* 2026-11-22: 사람이 그린 아이콘 (assets/ic) — 글자 높이에 맞춘다 */
@@ -891,4 +891,47 @@ img.ic { display: inline-block; width: 1.35em; height: 1.35em; object-fit: conta
 .recent-chip img.ic { width: 20px; height: 20px; }
 .shelf-name img.ic, .item-ic img.ic { width: 1.5em; height: 1.5em; }
 .rc-mark img.ic { width: 1.1em; height: 1.1em; }
-img.no-img { object-fit: contain; padding: 12%; background: var(--soft); }
+img.no-img { object-fit: contain; padding: 8px; background: var(--soft); }
+img.no-img { box-sizing: border-box; }
+.rc-img.no-img { padding: 24px; }
+
+/* ---------- 2026-11-22: 휴대폰이 곧 냉장고 — 첫 화면 냉장고는 화면을 꽉 채운다(바깥 여백 없음) ---------- */
+body.on-fridge main { padding: 0; max-width: none; }
+#screen-fridge { align-items: stretch; justify-content: stretch; }
+.fridge { width: 100%; height: 100%; aspect-ratio: auto; margin: 0; border-radius: 0; box-shadow: none; }
+/* 열린 냉장고 그림은 화면 비율과 상관없이 틀에 꼭 맞춰 늘인다 → 칸 버튼(그림 속 % 자리)이 늘 선반 위에 놓인다 */
+.fridge-in { background-size: 100% 100%, 100% 100%, 100% 100%; background-position: 0 0, 0 0, 0 0; background-repeat: no-repeat; }
+
+/* ---------- 2026-11-22: 열린 냉장고 칸 다시 잡기 ---------- */
+/* 열린 문(가장자리 문 그림)이 문 칸 버튼을 덮지 않게 뒤로 */
+.fridge.open .door { z-index: 0; }
+/* 칸 버튼: 선반 자리를 옅게 감싸고, 이름·음식은 흰 불투명 알약에 또렷하게 */
+.shelf { padding: 6px; gap: 4px; border-radius: 14px; background: rgba(255, 255, 255, .16); border: 1.5px solid rgba(255, 255, 255, .75); box-shadow: inset 0 0 0 1px rgba(22, 96, 176, .18); }
+.shelf .shelf-name { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 2px 10px 2px 4px; border-radius: 999px; background: #fff; color: #12243a;
+  font-size: 15px; font-weight: 800; line-height: 1.25; text-shadow: none; box-shadow: 0 1px 4px rgba(22, 60, 100, .25); white-space: nowrap; }
+.shelf .shelf-name img.ic { width: 22px; height: 22px; }
+.shelf-sub { display: flex; flex-wrap: wrap; gap: 4px; color: #12243a; }
+.shelf-item { display: inline-flex; align-items: center; gap: 3px; background: #fff; color: #12243a; border-radius: 999px; padding: 1px 8px 1px 3px;
+  font-size: 13px; font-weight: 700; line-height: 1.3; box-shadow: 0 1px 3px rgba(22, 60, 100, .2); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shelf-item .item-ic img.ic { width: 18px; height: 18px; }
+.shelf-more { font-size: 12px; font-weight: 800; color: #12243a; background: rgba(255,255,255,.85); border-radius: 999px; padding: 0 6px; }
+.shelf-sub:not(:has(.shelf-item)) { display: inline-block; font-size: 12px; font-weight: 700; color: #4a5d72; background: rgba(255,255,255,.85); border-radius: 999px; padding: 0 8px; }
+.shelf .shelf-tag { position: absolute; right: 6px; bottom: 6px; }
+.shelf .shelf-tag .badge { font-size: 12px; font-weight: 800; }
+/* 문 칸: 좁은 바구니라 이름 대신 큰 그림 + 음식 수 */
+.shelf.door-shelf { align-items: center; justify-content: center; gap: 6px; padding: 4px 2px; border-style: solid; }
+.shelf.door-shelf .shelf-name { flex-direction: column; padding: 4px; border-radius: 14px; gap: 2px; }
+.shelf.door-shelf .shelf-name img.ic { width: 34px; height: 34px; }
+.shelf.door-shelf .shelf-label { position: static; width: auto; height: auto; clip: auto; overflow: visible; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.shelf.door-shelf .shelf-n { min-width: 26px; font-size: 14px; line-height: 22px; padding: 0 6px; }
+/* 냉동실·냉장실 이름: 그림 아래 받침 위 흰 알약 */
+.col-tag { top: auto; bottom: 13.5%; display: flex; justify-content: center; text-shadow: none; color: #12243a; font-size: 13px; }
+.col-tag { background: none; }
+.fridge-col.freezer .col-tag { left: 11.5%; width: 27.5%; }
+.fridge-col.chiller .col-tag { left: 44.5%; width: 43.5%; }
+.col-tag span { background: #fff; color: #12243a; border-radius: 999px; padding: 2px 12px; font-weight: 800; box-shadow: 0 1px 4px rgba(22, 60, 100, .25); }
+
+/* 2026-11-22: 글자 읽기 카드 맨 위 [사진 지우기] [완료] — 늘 보이게, 카드 안은 스크롤 */
+#fridge-photo-in > #ocr-out:not([hidden]) { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.ocr-end { position: sticky; top: -12px; z-index: 2; display: flex; gap: 8px; margin: -12px -12px 10px; padding: 10px 12px; background: var(--card); border-bottom: 1px solid var(--line); }
+.ocr-end button { flex: 1; min-height: 48px; font-weight: 800; }
