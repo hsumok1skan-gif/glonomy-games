@@ -162,6 +162,7 @@ function onBack() {
   Back.armed = false;
   if (App.stack.length) closeLayer();
   else if (App.screen !== 'fridge') setScreen('fridge');
+  else if (App.fridgeOpen && App.drawer) closeDrawer();
   else if (App.fridgeOpen && !$('ocr-out').hidden) closeOcrCard();
   else if (App.fridgeOpen) toggleFridge(false);
   syncBack();
@@ -474,8 +475,32 @@ function showResult(ch, others) {
 }
 
 // ---------- 냉장고: 문 열기·음식과 유통기한 ----------
+// ---------- 서랍 (2026-11-25) ----------
+function openDrawer(id) {
+  var sh = shelfById(id);
+  if (!sh || !sh.drawer) return;
+  if (App.drawer === id) { openShelf(id); return; }
+  hideFoodTip();
+  App.drawer = id;
+  App.drawerShown = false;
+  renderFridge();
+  App.drawerShown = true;   // 다시 그릴 때(넣기·꺼내기 뒤)는 빠지는 움직임을 되풀이하지 않는다
+  syncBack();
+}
+function closeDrawer() {
+  if (!App.drawer) return;
+  hideFoodTip();
+  var el = document.querySelector('.drawer-pull'), dim = document.querySelector('.drawer-dim');
+  App.drawer = null;
+  if (el && !reduced()) {
+    el.classList.add('closing'); if (dim) dim.classList.add('closing');
+    setTimeout(function () { if (!App.drawer) renderFridge(); }, 200);
+  } else renderFridge();
+  syncBack();
+}
 function toggleFridge(open) {
   App.fridgeOpen = open == null ? !App.fridgeOpen : !!open;
+  if (!App.fridgeOpen) App.drawer = null;
   if (App.fridgeOpen) {
     App.coach = false;
     if (!App.state.fridgeOpened) { App.state.fridgeOpened = true; save(); }
@@ -502,6 +527,7 @@ function setFridgeMode(mode) {
   if (mode === App.fridgeMode) return;
   var prev = App.fridgeMode;
   App.fridgeMode = mode;
+  App.drawer = null;
   toggleView($(FRIDGE_MODES[prev]), false, true);
   renderFridge();
   toggleView($(FRIDGE_MODES[mode]), true);
@@ -1449,6 +1475,8 @@ var ACTIONS = {
   'used-keep': function () { usedDone(false); },
   'snap-food': snapFood,
   'add-manual': function () { openAddItem(); },
+  'drawer-open': function (d) { openDrawer(d.id); },
+  'drawer-close': function () { closeDrawer(); },
   'add-quick': function (d) { openAddItem(d.name, d.d); },
   'food-tip': function (d, el) { if (!App.tipPress) showFoodTip(el, 2000); },   // 키보드(Enter)로 누르면 2초 보여 준다
   'fridge-open-add': function () { closeAllLayers(); if (App.screen !== 'fridge') setScreen('fridge'); setFridgeMode('add'); },

@@ -395,11 +395,11 @@
 <section id="sheet-privacy" class="view sheet" role="dialog" aria-modal="true" aria-labelledby="h-privacy" tabindex="-1" hidden>
   <div class="sheet-head"><h2 id="h-privacy">개인정보처리방침</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
   <div class="sheet-body privacy-body">
-    <p class="hint">법률 검토 전 초안이에요. 시행일: [시행일]</p>
+    <p class="hint">시행일: [시행일]</p>
     <h3>모으는 정보</h3>
-    <p>운영자는 어떤 개인정보도 모으지 않아요. 앱에 넣은 챌린지·식비 기록·집밥 횟수·냉장고 음식·유통기한·음식 메모·냉장고 사진은 이 기기 브라우저 저장소(localStorage)에만 남아요.</p>
+    <p>운영자는 어떤 개인정보도 모으지 않아요. 앱에 넣은 챌린지·식비 기록·집밥 횟수·냉장고 음식(이름·종류·수량·유통기한·메모)은 이 기기 안 저장소에만 남아요.</p>
     <h3>밖으로 보내지 않아요</h3>
-    <p>앱은 서버로 아무것도 보내지 않아요. 사진 글자 읽기도 이 기기 안에서만 돌아요. 광고·분석 도구가 없어요.</p>
+    <p>앱은 내가 넣은 기록을 어디로도 보내지 않아요. 포장 사진의 글자 읽기는 이 기기 안에서만 돌고, 읽은 뒤 사진은 바로 지워요. 레시피 사진을 볼 때만 식품의약품안전처 서버에서 그 사진을 받아와요(내 기록은 함께 보내지 않아요). 광고·분석 도구가 없어요.</p>
     <h3>지우는 방법</h3>
     <p>설정 → 냉장고 비우기, 또는 브라우저의 사이트 데이터 지우기로 언제든 지울 수 있어요.</p>
     <h3>제3자 제공·아동</h3>
@@ -418,13 +418,15 @@
   <div class="sheet-head"><h2 id="h-howto">사용법</h2><button type="button" class="icon ghost" data-act="close" aria-label="닫기">✕</button></div>
   <div class="sheet-body">
     <dl class="howto-list">
-      <div><dt>냉장고</dt><dd>손잡이를 누르면 열려요</dd></div>
-      <div><dt>식비 쓰기</dt><dd>나간 돈만 넣어요</dd></div>
+      <div><dt>냉장고</dt><dd>손잡이를 누르면 열려요. 안에 든 음식이 그림으로 보여요</dd></div>
+      <div><dt>음식 그림</dt><dd>누르고 있으면 이름·유통기한이 떠요</dd></div>
+      <div><dt>서랍</dt><dd>누르면 앞으로 빠져요</dd></div>
+      <div><dt>칸 이름표</dt><dd>누르면 그 칸 음식을 넣고·고치고·꺼내요</dd></div>
+      <div><dt>빨간 점 · 주황 점</dt><dd>유통기한 지남 · 3일 안에 끝남</dd></div>
+      <div><dt>➕ 음식 넣기</dt><dd>포장을 찍으면 이름·종류·유통기한이 채워져요. 틀리면 고쳐요</dd></div>
       <div><dt>요리하기</dt><dd>냉장고 재료로 만들 요리를 골라요</dd></div>
-      <div><dt>찍기</dt><dd>포장을 찍으면 이름·유통기한이 채워져요</dd></div>
-      <div><dt>🍚 잘 먹겠습니다</dt><dd>집밥 횟수만 늘어요</dd></div>
-      <div><dt>챌린지</dt><dd>기간과 목표를 골라요</dd></div>
-      <div><dt>📷 자동 인식</dt><dd>유통기한을 찍어 채워요</dd></div>
+      <div><dt>🍚 잘 먹겠습니다</dt><dd>집밥 횟수가 늘어요</dd></div>
+      <div><dt>식비 쓰기 · 챌린지</dt><dd>나간 돈을 넣고, 기간과 목표를 골라요</dd></div>
     </dl>
   </div>
 </section>
@@ -444,6 +446,9 @@
       <li>ieee754 — Feross Aboukhadijeh — BSD-3-Clause License</li>
       <li>zlib.js — 2012 imaya — MIT License</li>
       <li>Apache License 2.0 에 따라 이 파일들은 바꾸지 않고 그대로 넣었어요.</li>
+      <li>Capacitor 8 (@capacitor/core·app·local-notifications·filesystem) — MIT License</li>
+      <li>@capacitor-mlkit/text-recognition — Apache License 2.0. 글자 인식은 Google ML Kit(구글 서비스 약관)을 기기 안에서 써요</li>
+      <li>레시피: 식품의약품안전처 조리식품의 레시피 DB(식품안전나라), 농림수산식품교육문화정보원 레시피 정보(농림축산식품 공공데이터포털) — 공공데이터포털 이용허락 범위 안에서 써요</li>
     </ul>
   </div>
 </section>

@@ -372,7 +372,8 @@ function foodIc(name, shelfId, kind) {
   if (f && f.kind !== kd && !exactFood(name)) f = null;   // '갈릭 치즈 마요 소스' 에 치즈 그림을 쓰지 않는다 — 종류가 다르면 종류 그림
   if (f && IC['food_' + f.name]) return ic('food_' + f.name, f.icon);
   if (f) return '<span aria-hidden="true">' + f.icon + '</span>';
-  var k = kindById(kd);   // 모르는 음식은 종류 그림
+  var k = kindById(kd);   // 모르는 음식은 종류 그림 (assets/ic kind_종류)
+  if (k && IC['kind_' + k.id]) return ic('kind_' + k.id, k.icon);
   if (k && k.id !== '기타') return '<span aria-hidden="true">' + k.icon + '</span>';
   var s = shelfById(shelfId);
   return s ? ic('shelf_' + s.id, s.icon) : '<span aria-hidden="true">🍽️</span>';
@@ -417,7 +418,7 @@ function fridgeBox() {
   return { w: w || window.innerWidth || 360, h: h || window.innerHeight || 780 };
 }
 function zoneFit(s, box) {
-  var at = s.at, gap = 4, pad = 4, label = s.drawer ? 24 : s.first ? 0 : 20;   // 칸 이름표는 선반 앞 테두리에 붙인다(서랍만 위). 위 칸 이름표 자리는 비운다
+  var at = s.at, gap = 4, pad = 4, label = s.drawer ? 30 : 20;   // 칸 이름표는 선반 앞 테두리에 붙인다(서랍만 위). 위 칸 이름표 자리는 비운다
   var w = box.w * at[2] / 100 - pad * 2, h = box.h * at[3] / 100 - pad - label;
   var size = Math.max(30, Math.min(48, Math.round(box.w * 0.11), Math.floor((w - gap * 2) / 3)));
   var cols = Math.max(1, Math.floor((w + gap) / (size + gap))), rows = Math.max(1, Math.floor((h + gap) / (size + gap)));
@@ -433,16 +434,40 @@ function fridgeZonesHtml() {
     var items = itemsIn(s.id), fit = zoneFit(s, box), at = s.at;
     var show = items.length > fit.cap ? items.slice(0, fit.cap - 1) : items;
     var more = items.length - show.length;
-    return '<div class="zone' + (s.side === 'L' ? ' zl' : ' zr') + (s.drawer ? ' drawer' : '') + (s.first ? ' first' : '') + flashCls(s.id) + '" data-act="shelf-open" data-id="' + s.id + '"' +
+    var zact = s.drawer ? 'drawer-open' : 'shelf-open';   // 서랍은 누르면 앞으로 빠진다 (2026-11-25)
+    return '<div class="zone' + (s.side === 'L' ? ' zl' : ' zr') + (s.drawer ? ' drawer' : '') + (s.first ? ' first' : '') + flashCls(s.id) + '" data-act="' + zact + '" data-id="' + s.id + '"' +
       ' style="left:' + at[0] + '%;top:' + at[1] + '%;width:' + at[2] + '%;height:' + at[3] + '%;--food:' + fit.size + 'px">' +
-      '<button type="button" class="zone-name" data-act="shelf-open" data-id="' + s.id + '" aria-label="' + esc(s.name + ', 음식 ' + items.length + '개. 열면 넣기·고치기·꺼내기') + '">' + esc(s.short || s.name) + (items.length ? ' <b>' + items.length + '</b>' : '') + '</button>' +
+      '<button type="button" class="zone-name" data-act="' + zact + '" data-id="' + s.id + '" aria-label="' + esc(s.name + ', 음식 ' + items.length + '개. ' + (s.drawer ? '누르면 서랍이 열려요' : '열면 넣기·고치기·꺼내기')) + '">' + esc(s.short || s.name) + (items.length ? ' <b>' + items.length + '</b>' : '') + '</button>' +
       '<div class="zone-foods">' + show.map(function (x) {
         var e = expInfo(x.exp);
         return '<button type="button" class="food' + (e && e.lv === 'expired' ? ' over' : e && e.d <= 3 ? ' soon' : '') + flashCls(x.id) + '" data-act="food-tip" data-id="' + x.id + '" aria-label="' + esc(foodTipLabel(x)) + '">' +
           foodIc(x.name, x.shelf, x.kind) + '</button>';
-      }).join('') + (more ? '<button type="button" class="food food-more" data-act="shelf-open" data-id="' + s.id + '" aria-label="' + esc(s.name + ' 음식 ' + more + '개 더 보기') + '">+' + more + '</button>' : '') +
-      '</div></div>';
-  }).join('');
+      }).join('') + (more ? '<button type="button" class="food food-more" data-act="' + zact + '" data-id="' + s.id + '" aria-label="' + esc(s.name + ' 음식 ' + more + '개 더 보기') + '">+' + more + '</button>' : '') +
+      '</div>' + (s.drawer ? '<span class="drawer-front" aria-hidden="true"><i></i></span>' : '') + '</div>';
+  }).join('') + drawerPullHtml(box) + (App.state.fridge.items.length ? '' :
+    '<div class="fridge-empty"><b>냉장고가 비어 있어요</b><small>사진을 찍으면 이름·유통기한이 채워져요</small>' +
+    '<button type="button" class="primary" data-act="fridge-mode" data-mode="add">➕ 음식 넣기</button></div>');
+}
+// 빠진 서랍 (2026-11-25): 서랍을 누르면 앞으로 쭉 빠지며 안의 음식이 다 보인다. 바깥·✕·뒤로 가기로 닫는다
+function drawerPullHtml(box) {
+  var s = shelfById(App.drawer);
+  if (!s || !s.drawer) return '';
+  var items = itemsIn(s.id), at = s.at;
+  // 화면 가운데 넓게, 서랍 바닥에 맞춰 앞으로 빠진다. 높이는 음식 수만큼(최대 화면 60%)
+  var bottom = Math.max(4, 100 - (at[1] + at[3]) - 1);
+  var size = Math.max(40, Math.min(54, Math.round(box.w * 0.13)));
+  return '<div class="drawer-dim" data-act="drawer-close"></div>' +
+    '<div class="drawer-pull' + (App.drawerShown ? ' shown' : '') + '" role="dialog" aria-label="' + esc(s.name + ' 열림') + '" data-id="' + s.id + '"' +
+      ' style="bottom:' + bottom + '%;--food:' + size + 'px">' +
+      '<div class="dp-head"><b>' + esc(s.name) + ' <span class="dp-n">' + items.length + '개</span></b>' +
+        '<button type="button" class="dp-edit" data-act="shelf-open" data-id="' + s.id + '">넣기·꺼내기</button>' +
+        '<button type="button" class="dp-x" data-act="drawer-close" aria-label="서랍 닫기">✕</button></div>' +
+      '<div class="dp-foods">' + (items.length ? items.map(function (x) {
+        var e = expInfo(x.exp);
+        return '<button type="button" class="food' + (e && e.lv === 'expired' ? ' over' : e && e.d <= 3 ? ' soon' : '') + '" data-act="food-tip" data-id="' + x.id + '" aria-label="' + esc(foodTipLabel(x)) + '">' + foodIc(x.name, x.shelf, x.kind) + '</button>';
+      }).join('') : '<p class="dp-empty">비어 있어요</p>') + '</div>' +
+      '<span class="dp-front" aria-hidden="true"><i></i></span>' +
+    '</div>';
 }
 // 툴팁 (누르고 있는 동안). 짧게 톡 누르면 읽을 수 있게 1.5초 남긴다
 function foodTipHtml(x) {
@@ -512,7 +537,8 @@ function renderFridge() {
     return f ? '<button type="button" class="aq" data-act="add-quick" data-name="' + esc(f.name) + '" data-d="' + f.days + '">' + foodIc(f.name) + '<span>' + esc(f.name) + '</span></button>' : '';
   }).join('');
   $('fridge-shelves').innerHTML = fridgeZonesHtml() +
-    '<p class="col-tag freezer-tag"><span>냉동실</span></p><p class="col-tag chiller-tag"><span>냉장실</span></p>';
+    '<p class="col-tag freezer-tag"><span>냉동실</span></p><p class="col-tag chiller-tag"><span>냉장실</span></p>' +
+    '<p class="dot-legend" aria-hidden="true"><span><i class="dl-over"></i>지남</span><span><i class="dl-soon"></i>3일 안</span></p>';
   document.querySelectorAll('.fridge-mode button').forEach(function (b) {
     b.setAttribute('aria-pressed', b.dataset.mode === App.fridgeMode ? 'true' : 'false');
   });
