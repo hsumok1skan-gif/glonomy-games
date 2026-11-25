@@ -5,7 +5,7 @@ var App = {
   state: null,
   screen: 'fridge',
   fridgeOpen: false,  // 첫 화면 냉장고 문이 열렸나
-  fridgeMode: 'shelf', // 열린 냉장고 안: 칸별 / 유통기한 / 사진
+  fridgeMode: 'shelf', // 열린 냉장고 안: 냉장고(그림) / 유통기한 / 음식 넣기
   coach: false,       // 손잡이 말풍선 (처음 3초만)
   shelfId: null,      // 칸 시트에서 보는 칸
   editItemId: null,   // 칸 시트에서 고치는 음식
@@ -495,7 +495,7 @@ function showChalMode(own) {
   if (!out.hidden || out.classList.contains('in')) toggleView(out, false, true);
   if (inn.hidden || !inn.classList.contains('in')) toggleView(inn, true);
 }
-var FRIDGE_MODES = { shelf: 'fridge-shelves', exp: 'fridge-exp', photo: 'fridge-photo-in' };
+var FRIDGE_MODES = { shelf: 'fridge-shelves', exp: 'fridge-exp', add: 'fridge-add' };
 function setFridgeMode(mode) {
   if (!FRIDGE_MODES[mode]) mode = 'shelf';
   if (!App.fridgeOpen) toggleFridge(true);
@@ -521,8 +521,11 @@ function openItemWin() {
   if (!s) return;
   var sel = $('item-shelf');
   if (!sel.options.length) sel.innerHTML = FRIDGE_SHELVES.map(function (k) { return '<option value="' + k.id + '">' + k.icon + ' ' + esc(k.name) + '</option>'; }).join('');
+  var ks = $('item-kind');
+  if (!ks.options.length) ks.innerHTML = KINDS.map(function (k) { return '<option value="' + esc(k.id) + '">' + k.icon + ' ' + esc(k.id) + '</option>'; }).join('');
   clearErrs($('sheet-item'));
   resetItemForm();
+  App.itemAuto = false;
   hideOcrAsk();
   renderShelf();
   openLayer('sheet-item');
@@ -536,6 +539,10 @@ function resetItemForm() {
   $('item-qty').value = '';
   $('item-exp').value = '';
   $('item-memo').value = '';
+  $('item-kind').value = '기타';
+  App.kindTouched = false;     // 사람이 종류를 직접 고르면 이름을 바꿔도 종류는 그대로
+  App.shelfTouched = false;
+  App.ocrText = '';
   if (shelfById(App.shelfId)) $('item-shelf').value = App.shelfId;   // 넣을 칸은 지금 연 칸이 기본 (H-34)
   $('h-item-win').textContent = '음식 넣기';
   $('item-save').textContent = '넣기';
@@ -553,6 +560,8 @@ function editItem(id) {
   $('item-exp').value = x.exp;
   $('item-memo').value = x.memo || '';
   $('item-shelf').value = x.shelf;
+  $('item-kind').value = kindOf(x);
+  App.kindTouched = true;
   $('h-item-win').textContent = x.name + ' 고치기';
   $('item-save').textContent = '저장';
   $('item-cancel').hidden = false;
@@ -566,6 +575,7 @@ function submitItem() {
   var qty = $('item-qty').value.trim().replace(/\s+/g, ' ');
   var memo = $('item-memo').value.trim().replace(/\s+/g, ' ');
   var shelfIn = $('item-shelf'), shelf = shelfById(shelfIn.value);
+  var kind = kindById($('item-kind').value) ? $('item-kind').value : guessKind(name);
   var expIn = $('item-exp'), exp = expIn.value, today = Calc.today();
   var ok = true;
   if (!name) { fieldErr(nameIn, '음식 이름을 넣어 주세요.'); ok = false; }
@@ -582,10 +592,10 @@ function submitItem() {
   var list = App.state.fridge.items;
   var x = App.editItemId ? fridgeItemById(App.editItemId) : null;
   if (x) {
-    x.name = name; x.qty = qty; x.exp = exp; x.memo = memo; x.shelf = shelf.id;
+    x.name = name; x.qty = qty; x.exp = exp; x.memo = memo; x.shelf = shelf.id; x.kind = kind;
   } else {
     if (list.length >= 1000) { toast('냉장고 음식은 1000개까지예요'); return false; }
-    x = { id: newId('k'), shelf: shelf.id, name: name, qty: qty, exp: exp, memo: memo, added: today, sample: false };
+    x = { id: newId('k'), shelf: shelf.id, name: name, kind: kind, qty: qty, exp: exp, memo: memo, added: today, sample: false };
     list.push(x);
   }
   var other = shelf.id !== App.shelfId;   // 다른 칸에 넣었으면 알림에 칸 이름을 붙인다
@@ -618,6 +628,7 @@ function quickAddItem(name, days) {
   resetItemForm();
   hideOcrAsk();
   $('item-name').value = name;
+  $('item-kind').value = guessKind(name);
   $('item-exp').value = Calc.addDays(Calc.today(), Number(days) || 0);
   submitItem();
 }
@@ -769,6 +780,9 @@ function ocrNames(text) {
   var seen = {}, out = [];
   function add(s) {
     s = String(s).replace(/^[^0-9A-Za-z가-힣]+/, '').replace(/[^0-9A-Za-z가-힣)]+$/, '').replace(/\s+/g, ' ').trim();
+    // 뒷면 표시 줄: '제품명 : ○○' 은 ○○만, 식품유형·내용량·원재료 줄과 쉼표로 늘어놓은 원재료 목록은 이름 후보가 아니다
+    s = s.replace(/^제\s*품\s*명\s*[:：]?\s*/, '');
+    if (/^(식\s*품\s*(의\s*)?유\s*형|내\s*용\s*량|원\s*재\s*료)/.test(s) || /[,，]/.test(s)) return;
     if (s.length < 2 || s.length > 20) return;
     if (!/[가-힣]/.test(s) && !/[A-Za-z]{3,}/.test(s)) return;
     if (/\d{2,4}\s*[.\-\/년]\s*\d{1,2}/.test(s)) return;
@@ -780,7 +794,10 @@ function ocrNames(text) {
     out.push(s);
   }
   String(text || '').split(/\n/).forEach(function (line) {
-    var words = ocrWords(line.trim());
+    var raw = line.trim();
+    // 원재료·식품유형·내용량 줄과 쉼표로 늘어놓은 줄(원재료 목록)은 낱말도 후보로 쓰지 않는다
+    if (/^(식\s*품\s*(의\s*)?유\s*형|내\s*용\s*량|원\s*재\s*료)/.test(raw) || /[,，]/.test(raw)) return;
+    var words = ocrWords(raw);
     var l = words.join(' ');
     if (words.length > 1 && l.length <= 20) add(l);
     words.forEach(add);
@@ -958,6 +975,7 @@ function snapFood() {
     App.snapMode = null;
     if (App.screen !== 'fridge') { closeAllLayers(); setScreen('fridge'); }
     openItemWin();
+    App.itemAuto = true;
     $('shelf-ocr-file').hidden = false;
     return;
   }
@@ -1008,10 +1026,35 @@ function shelfForFood(name) {
 }
 function setSnapName(name) {
   $('item-name').value = name;
-  var f = foodByName(name), sid = shelfForFood(f ? f.name : name);   // '서울우유' → 우유 → 냉장실 문 아래 선반
-  if (sid && !App.editItemId) $('item-shelf').value = sid;
+  nameAuto(true);
   renderSnapNames();
   renderItemHint();
+}
+// 이름이 바뀌면 종류를 짐작해 채우고(사람이 종류를 고르지 않았을 때), 새로 넣는 음식이면 넣을 칸도 고른다.
+// 칸은 '음식 넣기' 탭·찍기로 열었을 때(App.itemAuto)와 사진 이름을 골랐을 때만 바꾼다 — 칸을 열고 넣을 때는 그 칸 그대로 (H-34)
+function nameAuto(fromPhoto) {
+  var name = $('item-name').value.trim();
+  if (!name) return;
+  var kind = $('item-kind').value;
+  if (!App.kindTouched) { kind = guessKind(name, App.ocrText); $('item-kind').value = kind; }
+  if (App.editItemId || App.shelfTouched || !(App.itemAuto || fromPhoto)) return;
+  // 자주 넣는 음식과 같은 이름이면 그 음식의 칸, 아니면 종류의 칸 ('갈릭 치즈 마요 소스' → 소스·양념 → 냉장실 서랍 위 칸)
+  var ef = exactFood(name), k = kindById(kind), f = foodByName(name);
+  var sid = (ef && shelfForFood(ef.name)) || (k && k.id !== '기타' ? k.shelf : null) || (f && shelfForFood(f.name)) || null;
+  if (sid) $('item-shelf').value = sid;
+}
+// '음식 넣기' 탭: 직접 쓰기·자주 넣는 음식 → 넣기 창 (칸은 이름·종류로 골라 둔다)
+function openAddItem(name, days) {
+  App.shelfId = 'r2';
+  openItemWin();
+  App.itemAuto = true;
+  if (name) {
+    $('item-name').value = name;
+    if (days != null) { $('item-exp').value = Calc.addDays(Calc.today(), Number(days) || 0); }
+    nameAuto(false);
+    renderItemHint();
+    focusEl($('item-save'));
+  } else focusEl($('item-name'));
 }
 function renderSnapNames() {
   var box = $('snap-names'), list = App.snapNames || [], cur = $('item-name').value.trim();
@@ -1022,6 +1065,7 @@ function renderSnapNames() {
   }).join('');
 }
 function fillFoodFromPhoto(r) {
+  App.ocrText = r.text || '';
   var pick = pickFoodName(r.text, r.names);
   App.snapNames = pick.list;
   if (pick.best && !$('item-name').value.trim()) setSnapName(pick.best); else renderSnapNames();
@@ -1054,6 +1098,7 @@ function onShelfPhotoChosen() {
       if (App.screen !== 'fridge') { closeAllLayers(); setScreen('fridge'); }
       App.shelfId = 'r2';
       openItemWin();
+      App.itemAuto = true;
     } else if (fromExp) {
       App.snapFromExp = false;
       if (!shelfById(App.shelfId)) App.shelfId = 'r2';
@@ -1313,6 +1358,57 @@ function onSettingPick(d) {
 }
 
 // ---------- 버튼 ----------
+// ---------- 음식 그림 툴팁 (2026-11-25) ----------
+// 누르고 있는 동안 보이고 손을 떼면 사라진다. 짧게 톡 누르면 읽을 틈을 주려고 1.5초 뒤에 사라진다
+var TipT = 0;
+function showFoodTip(el, ms) {
+  var x = el && fridgeItemById(el.dataset.id), tip = $('food-tip'), box = $('fridge');
+  if (!x || !tip || !box) return;
+  clearTimeout(TipT);
+  tip.innerHTML = foodTipHtml(x);
+  tip.hidden = false;
+  document.querySelectorAll('.food.pressed').forEach(function (n) { n.classList.remove('pressed'); });
+  el.classList.add('pressed');
+  var b = box.getBoundingClientRect(), r = el.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+  var left = Math.max(8, Math.min(b.width - tw - 8, r.left - b.left + r.width / 2 - tw / 2));
+  var top = r.top - b.top - th - 10;
+  var below = top < 8;
+  if (below) top = r.bottom - b.top + 10;
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+  tip.classList.toggle('below', below);
+  tip.style.setProperty('--arrow', Math.max(14, Math.min(tw - 14, r.left - b.left + r.width / 2 - left)) + 'px');
+  if (ms) TipT = setTimeout(hideFoodTip, ms);
+}
+function hideFoodTip() {
+  clearTimeout(TipT);
+  var tip = $('food-tip');
+  if (tip) tip.hidden = true;
+  document.querySelectorAll('.food.pressed').forEach(function (n) { n.classList.remove('pressed'); });
+}
+function bindFoodTip() {
+  var root = $('fridge');
+  function food(e) { var t = e.target.closest && e.target.closest('.food[data-act="food-tip"]'); return t && root.contains(t) ? t : null; }
+  root.addEventListener('pointerdown', function (e) {
+    var el = food(e);
+    if (!el) { hideFoodTip(); return; }
+    App.tipPress = Date.now();
+    showFoodTip(el);
+  });
+  function up() {
+    if (!App.tipPress) return;
+    var quick = Date.now() - App.tipPress < 350;
+    setTimeout(function () { App.tipPress = 0; }, 0);
+    if (quick) TipT = setTimeout(hideFoodTip, 1500); else hideFoodTip();
+  }
+  root.addEventListener('pointerup', up);
+  root.addEventListener('pointercancel', up);
+  root.addEventListener('pointerleave', function (e) { if (App.tipPress && e.pointerType === 'mouse') up(); });
+  root.addEventListener('contextmenu', function (e) { if (food(e)) e.preventDefault(); });
+  root.addEventListener('focusin', function (e) { var el = food(e); if (el && !App.tipPress) showFoodTip(el); });
+  root.addEventListener('focusout', function (e) { if (food(e) && !App.tipPress) hideFoodTip(); });
+}
+
 var ACTIONS = {
   go: function (d) { closeAllLayers(); setScreen(d.to); },
   close: function () { closeLayer(); },
@@ -1334,7 +1430,7 @@ var ACTIONS = {
   'shelf-ocr': takeShelfPhoto,
   'exp-snap': snapExpDate,
   // H-43: 유통기한 판 왼쪽 아래 '음식 넣기' — 넣을 칸은 지금 연 칸, 없으면 냉장실 가운데 칸(찍기와 같은 기본)
-  'exp-add': function () { if (!shelfById(App.shelfId)) App.shelfId = 'r2'; openItemWin(); },
+  'exp-add': function () { setFridgeMode('add'); },   // 2026-11-25: 음식 넣기 탭으로
   'ocr-date-use': function (d) { ocrDateOk(d.at); },
   'ocr-date-no': function (d) { ocrDateNo(d.at); },
   'ocr-name': function (d) { ocrName(d.at, d.name); },
@@ -1352,6 +1448,10 @@ var ACTIONS = {
   'used-remove': function () { usedDone(true); },
   'used-keep': function () { usedDone(false); },
   'snap-food': snapFood,
+  'add-manual': function () { openAddItem(); },
+  'add-quick': function (d) { openAddItem(d.name, d.d); },
+  'food-tip': function (d, el) { if (!App.tipPress) showFoodTip(el, 2000); },   // 키보드(Enter)로 누르면 2초 보여 준다
+  'fridge-open-add': function () { closeAllLayers(); if (App.screen !== 'fridge') setScreen('fridge'); setFridgeMode('add'); },
   'snap-name': function (d) { setSnapName(d.name); },
   'meal-del': deleteMeal,
   'spend-new': function () { openSpend(null); },
@@ -1441,7 +1541,16 @@ function bind() {
   $('chal-form').addEventListener('input', renderChalCalc);
   $('chal-form').addEventListener('change', renderChalCalc);
   $('item-form').addEventListener('submit', function (e) { e.preventDefault(); submitItem(); });
-  $('item-name').addEventListener('input', function () { renderItemHint(); if ((App.snapNames || []).length) renderSnapNames(); });
+  $('item-name').addEventListener('input', function () { nameAuto(false); renderItemHint(); if ((App.snapNames || []).length) renderSnapNames(); });
+  $('item-kind').addEventListener('change', function () {
+    App.kindTouched = true;
+    var k = kindById($('item-kind').value);
+    if (App.itemAuto && !App.shelfTouched && !App.editItemId && k && k.id !== '기타' && !exactFood($('item-name').value.trim())) $('item-shelf').value = k.shelf;
+  });
+  $('item-shelf').addEventListener('change', function () { App.shelfTouched = true; });
+  bindFoodTip();
+  var rz = 0;
+  window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { if (App.fridgeOpen && !typing()) renderFridge(); }, 200); });
   $('item-exp-pick').addEventListener('change', onExpPick);
   $('photo-input').addEventListener('change', onPhotoChosen);
   $('shelf-photo-input').addEventListener('change', onShelfPhotoChosen);

@@ -273,7 +273,7 @@ function startSteps() {
   return [
     { key: 'chal', title: '챌린지 고르기', done: st.challenges.length > 0, btn: { act: 'chal-open', label: '고르기' } },
     { key: 'spend', title: '첫 식비 쓰기', done: st.spends.length > 0, btn: { act: 'spend-new', label: '쓰기' } },
-    { key: 'item', title: '냉장고에 음식 하나 넣기', done: st.fridge.items.length > 0, btn: { act: 'shelf-open', label: '넣기', data: { id: 'r2' } } }
+    { key: 'item', title: '냉장고에 음식 하나 넣기', done: st.fridge.items.length > 0, btn: { act: 'fridge-open-add', label: '넣기' } }
   ];
 }
 
@@ -326,20 +326,58 @@ function foodByName(name) {
     FOODS.filter(function (f) { return f.name.length >= 2 && n.indexOf(f.name) >= 0; })
       .sort(function (a, b) { return b.name.length - a.name.length; })[0] || null;
 }
+// 음식 종류 짐작 (2026-11-25): 자주 넣는 음식 이름이 같으면 그 종류, 아니면 이름 속 낱말로. '식품유형 : 소스' 같은 표시 글이 있으면 그것도 본다
+var KIND_WORDS = [
+  ['냉동식품', /냉동|얼린|아이스크림|아이스바|교자|만두|너겟|감자튀김/],
+  ['소스·양념', /소스|마요|케첩|케찹|케챂|드레싱|간장|고추장|된장|쌈장|식초|참기름|들기름|올리브유|식용유|잼|시럽|머스터드|머스타드|굴소스|쯔유|맛술|조미|소금|설탕|후추|고춧가루|카레\s*가루|와사비|스리라차|칠리/],
+  ['음료', /주스|쥬스|음료|콜라|사이다|탄산|생수|삼다수|백산수|아이시스|탄산수|커피|라떼|에이드|이온|녹차|홍차|아이스티|식혜|수정과|맥주|소주|막걸리|와인/],
+  ['계란·유제품', /우유|치즈|요거트|요구르트|요플레|버터|생크림|휘핑|계란|달걀|메추리알|크림|유제품|가공유|발효유/],
+  ['두부·가공식품', /두부|어묵|오뎅|햄|소시지|소세지|베이컨|맛살|스팸|떡|묵|콩나물|숙주|유부|곤약|가공/],
+  ['고기·해산물', /고기|돼지|소고기|한우|닭|오리|삼겹|목살|갈비|안심|등심|생선|고등어|연어|참치|새우|오징어|조개|홍합|굴비|전복|꽃게|멸치|육류|수산/],
+  ['반찬·남은 음식', /김치|반찬|볶음|조림|무침|나물|찌개|국$|남은|장아찌|젓갈|도시락/],
+  ['과일', /사과|배$|바나나|귤|오렌지|딸기|포도|블루베리|키위|수박|참외|복숭아|레몬|망고|체리|자두|감$|과일/],
+  ['소스·양념', /양념/],
+  ['채소', /채소|야채|파$|대파|양파|마늘|감자|고구마|당근|호박|오이|양배추|배추|상추|깻잎|시금치|부추|브로콜리|파프리카|피망|고추|버섯|무$|토마토|양상추|생강|샐러드/]
+];
+function guessKind(name, text) {
+  var n = String(name || '').trim();
+  var exact = exactFood(n);
+  if (exact) return exact.kind;
+  var t = String(text || ''), m = t.match(/식\s*품\s*(?:의\s*)?유\s*형\s*[:：]?\s*([^\n]{1,20})/);
+  var hay = [n, m ? m[1] : ''];
+  for (var h = 0; h < hay.length; h++) {
+    if (!hay[h]) continue;
+    for (var i = 0; i < KIND_WORDS.length; i++) if (KIND_WORDS[i][1].test(hay[h])) return KIND_WORDS[i][0];
+  }
+  var f = foodByName(n);
+  return f ? f.kind : '기타';
+}
+// 자주 넣는 음식과 이름이 같은 것만 (띄어쓰기 무시). '갈릭 치즈 마요 소스' 는 '치즈' 가 아니다
+function exactFood(name) {
+  var k = String(name || '').replace(/\s+/g, '');
+  if (!k) return null;
+  return FOODS.filter(function (f) { return f.name.replace(/\s+/g, '') === k; })[0] || null;
+}
+function kindById(id) { return KINDS.filter(function (k) { return k.id === id; })[0] || null; }
+function kindOf(x) { return (x && x.kind && kindById(x.kind)) ? x.kind : guessKind(x && x.name); }
 function itemIcon(name, shelfId) {
   var f = foodByName(name);
   if (f) return f.icon;
   var s = shelfById(shelfId);
   return s ? s.icon : '🍽️';
 }
-function foodIc(name, shelfId) {
-  var f = foodByName(name);
+function foodIc(name, shelfId, kind) {
+  var kd = kind || guessKind(name);
+  var f = exactFood(name) || foodByName(name);
+  if (f && f.kind !== kd && !exactFood(name)) f = null;   // '갈릭 치즈 마요 소스' 에 치즈 그림을 쓰지 않는다 — 종류가 다르면 종류 그림
   if (f && IC['food_' + f.name]) return ic('food_' + f.name, f.icon);
   if (f) return '<span aria-hidden="true">' + f.icon + '</span>';
+  var k = kindById(kd);   // 모르는 음식은 종류 그림
+  if (k && k.id !== '기타') return '<span aria-hidden="true">' + k.icon + '</span>';
   var s = shelfById(shelfId);
   return s ? ic('shelf_' + s.id, s.icon) : '<span aria-hidden="true">🍽️</span>';
 }
-function itemIcHtml(x) { return '<span class="item-ic" aria-hidden="true">' + foodIc(x.name, x.shelf) + '</span>'; }
+function itemIcHtml(x) { return '<span class="item-ic" aria-hidden="true">' + foodIc(x.name, x.shelf, x.kind) + '</span>'; }
 function photoAgo(p) {
   var d = Calc.daysBetween(p.date, Calc.today());
   return d <= 0 ? '오늘 찍었어요' : d + '일 전에 찍었어요';
@@ -371,6 +409,50 @@ function weekMealsHtml() {
     }).join('') + '</ol>';
 }
 
+// '음식 넣기' 탭의 자주 넣는 음식 (그림이 있는 것 위주)
+var ADD_QUICK = ['계란', '우유', '두부', '대파', '양파', '배추김치', '돼지고기', '닭가슴살', '햄', '치즈', '요거트', '사과', '당근', '애호박', '얼린 밥', '냉동 만두'];
+// 열린 냉장고 칸 그림 (2026-11-25)
+function fridgeBox() {
+  var f = $('fridge'), w = f && f.clientWidth, h = f && f.clientHeight;
+  return { w: w || window.innerWidth || 360, h: h || window.innerHeight || 780 };
+}
+function zoneFit(s, box) {
+  var at = s.at, gap = 4, pad = 4, label = s.drawer ? 24 : s.first ? 0 : 20;   // 칸 이름표는 선반 앞 테두리에 붙인다(서랍만 위). 위 칸 이름표 자리는 비운다
+  var w = box.w * at[2] / 100 - pad * 2, h = box.h * at[3] / 100 - pad - label;
+  var size = Math.max(30, Math.min(48, Math.round(box.w * 0.11), Math.floor((w - gap * 2) / 3)));
+  var cols = Math.max(1, Math.floor((w + gap) / (size + gap))), rows = Math.max(1, Math.floor((h + gap) / (size + gap)));
+  return { size: size, cap: cols * rows };
+}
+function foodTipLabel(x) {
+  var e = expInfo(x.exp), s = shelfById(x.shelf);
+  return x.name + ', ' + kindOf(x) + (x.qty ? ', ' + x.qty : '') + (e ? ', ' + e.text + ' ' + Calc.shortDay(x.exp) + '까지' : ', 유통기한 없음') + (s ? ', ' + s.name : '');
+}
+function fridgeZonesHtml() {
+  var box = fridgeBox();
+  return FRIDGE_SHELVES.map(function (s) {
+    var items = itemsIn(s.id), fit = zoneFit(s, box), at = s.at;
+    var show = items.length > fit.cap ? items.slice(0, fit.cap - 1) : items;
+    var more = items.length - show.length;
+    return '<div class="zone' + (s.side === 'L' ? ' zl' : ' zr') + (s.drawer ? ' drawer' : '') + (s.first ? ' first' : '') + flashCls(s.id) + '" data-act="shelf-open" data-id="' + s.id + '"' +
+      ' style="left:' + at[0] + '%;top:' + at[1] + '%;width:' + at[2] + '%;height:' + at[3] + '%;--food:' + fit.size + 'px">' +
+      '<button type="button" class="zone-name" data-act="shelf-open" data-id="' + s.id + '" aria-label="' + esc(s.name + ', 음식 ' + items.length + '개. 열면 넣기·고치기·꺼내기') + '">' + esc(s.short || s.name) + (items.length ? ' <b>' + items.length + '</b>' : '') + '</button>' +
+      '<div class="zone-foods">' + show.map(function (x) {
+        var e = expInfo(x.exp);
+        return '<button type="button" class="food' + (e && e.lv === 'expired' ? ' over' : e && e.d <= 3 ? ' soon' : '') + flashCls(x.id) + '" data-act="food-tip" data-id="' + x.id + '" aria-label="' + esc(foodTipLabel(x)) + '">' +
+          foodIc(x.name, x.shelf, x.kind) + '</button>';
+      }).join('') + (more ? '<button type="button" class="food food-more" data-act="shelf-open" data-id="' + s.id + '" aria-label="' + esc(s.name + ' 음식 ' + more + '개 더 보기') + '">+' + more + '</button>' : '') +
+      '</div></div>';
+  }).join('');
+}
+// 툴팁 (누르고 있는 동안). 짧게 톡 누르면 읽을 수 있게 1.5초 남긴다
+function foodTipHtml(x) {
+  var e = expInfo(x.exp), s = shelfById(x.shelf);
+  return '<b class="ft-name">' + esc(x.name) + '</b>' +
+    '<span class="ft-row"><span class="ft-kind">' + esc(kindOf(x)) + '</span>' + (x.qty ? '<span class="ft-qty">' + esc(x.qty) + '</span>' : '') + '</span>' +
+    '<span class="ft-row">' + (e ? expBadge(x.exp) + '<span class="ft-date">' + Calc.shortDay(x.exp) + '까지</span>' : '<span class="ft-date">유통기한 없음</span>') + '</span>' +
+    (x.memo ? '<span class="ft-memo">' + esc(x.memo) + '</span>' : '') +
+    (s ? '<span class="ft-shelf">' + esc(s.name) + '</span>' : '');
+}
 function renderFridge() {
   var fr = App.state.fridge, open = App.fridgeOpen;
   var box = $('fridge');
@@ -411,34 +493,26 @@ function renderFridge() {
       '<b class="dn-title">' + (idx + 1) + '. ' + next.title + '</b>' +
       btn(Object.assign({}, next.btn, { cls: 'small primary', aria: next.title + ' ' + next.btn.label }));
   } else {
-    var todayMeals = App.state.meals.filter(function (m) { return m.date === Calc.today(); }).length, ph = latestPhoto();
+    var todayMeals = App.state.meals.filter(function (m) { return m.date === Calc.today(); }).length;
     dn.className = 'door-next door-today';
     dn.setAttribute('aria-label', '오늘');
     dn.innerHTML = '<p class="dn-head"><small>오늘</small></p>' +
       '<b class="dn-title">' + ic('rice', '🍚') + ' 집밥 ' + todayMeals + '번</b>' +
-      '<small class="dn-sub">' + ic('camera', '📷') + ' ' + (ph ? photoAgo(ph) : '아직 찍은 사진이 없어요') + '</small>';
+      '<small class="dn-sub">🧊 냉장고 음식 ' + fr.items.length + '개</small>';
   }
   dn.hidden = open;
   // 문 안쪽: 칸 버튼은 냉장고 그림 속 실제 선반·서랍 자리(FRIDGE_SHELVES at, %)에 놓는다 (H-28)
   $('fridge-in').dataset.mode = App.fridgeMode;
-  $('fridge-shelves').innerHTML = ['L', 'R'].map(function (side) {
-    return '<div class="fridge-col ' + (side === 'L' ? 'freezer' : 'chiller') + '" role="group" aria-label="' + (side === 'L' ? '냉동실' : '냉장실') + '"><p class="col-tag"><span>' + (side === 'L' ? '냉동실' : '냉장실') + '</span></p>' +
-      FRIDGE_SHELVES.filter(function (s) { return s.side === side; }).map(function (s) {
-        var items = itemsIn(s.id);
-        var worst = items.length && items[0].exp ? expBadge(items[0].exp) : '';
-        var at = s.at || [0, 0, 0, 0];
-        return '<button type="button" class="shelf' + (s.id.indexOf('d') >= 0 ? ' door-shelf' : '') + flashCls(s.id) + '" data-act="shelf-open" data-id="' + s.id + '" aria-label="' + esc(s.name + ', 음식 ' + items.length + '개') + '"' +
-          ' style="left:' + at[0] + '%;top:' + at[1] + '%;width:' + at[2] + '%;height:' + at[3] + '%">' +
-          '<span class="shelf-name">' + ic('shelf_' + s.id, s.icon) + ' <span class="shelf-label">' + esc(s.short || s.name) + '</span></span>' +
-          (items.length ? '<span class="shelf-n" aria-hidden="true">' + items.length + '</span>' : '') +
-          // 칸이 낮아도 '외 N'이 가려지지 않게: 4개 넘으면 2개 + '외 N' 으로 세 줄 안에 끝낸다 (QA 5회차)
-          '<span class="shelf-sub">' + (items.length ? items.slice(0, items.length > 3 ? 2 : 3).map(function (x) {
-            return '<span class="shelf-item">' + itemIcHtml(x) + '<span class="si-n">' + esc(x.name) + '</span></span>';
-          }).join('') + (items.length > 3 ? '<span class="shelf-more">외 ' + (items.length - 2) + '개</span>' : '') : '비어 있어요') + '</span>' +
-          (worst ? '<span class="shelf-tag">' + worst + '</span>' : '') +
-        '</button>';
-      }).join('') + '</div>';
+  // 2026-11-25: 문 없이 안쪽 그림만. 칸마다 음식 그림을 선반 위(칸 바닥)에 유통기한 가까운 순으로 놓는다.
+  // 그림을 누르고 있으면 이름·종류·유통기한 툴팁, 손을 떼면 사라진다. 칸 빈 곳·칸 이름을 누르면 그 칸 창(넣기·고치기·꺼내기)
+  if (App.fridgeMode !== 'shelf') hideFoodTip();
+  var aq = $('add-quick');
+  if (aq && !aq.childElementCount) aq.innerHTML = ADD_QUICK.map(function (n) {
+    var f = FOODS.filter(function (x) { return x.name === n; })[0];
+    return f ? '<button type="button" class="aq" data-act="add-quick" data-name="' + esc(f.name) + '" data-d="' + f.days + '">' + foodIc(f.name) + '<span>' + esc(f.name) + '</span></button>' : '';
   }).join('');
+  $('fridge-shelves').innerHTML = fridgeZonesHtml() +
+    '<p class="col-tag freezer-tag"><span>냉동실</span></p><p class="col-tag chiller-tag"><span>냉장실</span></p>';
   document.querySelectorAll('.fridge-mode button').forEach(function (b) {
     b.setAttribute('aria-pressed', b.dataset.mode === App.fridgeMode ? 'true' : 'false');
   });

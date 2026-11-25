@@ -952,3 +952,76 @@ body.on-fridge main { padding: 0; max-width: none; }
 #fridge-exp .ex-name .item-ic, .item-3 .it-name .item-ic { display: inline-flex; vertical-align: middle; margin-right: 6px; }
 .item-row.item-3 .row-main { flex: 1 1 0; min-width: 0; }
 .item-row.item-3 .row-btn { flex: none; }
+
+/* ===================== 2026-11-25 열린 냉장고 개편: 문 없이 안쪽만, 칸 위에 음식 그림, 누르면 툴팁 ===================== */
+.fridge.open .door { display: none; }
+.fridge-in, .fridge-in[data-mode] {
+  background-image: linear-gradient(var(--veil-now, transparent), var(--veil-now, transparent)), url("assets/fridge_inside.webp");
+  background-size: 100% 100%, 100% 100%; background-position: 0 0, 0 0; background-repeat: no-repeat;
+}
+.fridge-in[data-mode="shelf"] { --veil-now: transparent; }
+#fridge-shelves.fridge-cols { position: absolute; inset: 0; padding: 0; background: transparent; box-shadow: none; border-radius: 0; }
+/* 칸: 그림 속 선반·서랍 사이 빈 자리. 음식은 바닥(선반 위)부터 쌓인다 */
+.zone { position: absolute; box-sizing: border-box; padding: 4px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.zone:active:not(:has(.food:active)) { background: rgba(255, 255, 255, .25); }
+.zone-name { flex: none; min-height: 22px; padding: 1px 9px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .78); color: #12243a; font-size: 12px; font-weight: 800; line-height: 20px; box-shadow: 0 1px 3px rgba(22, 60, 100, .18); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.zone-name b { color: var(--accent); margin-left: 2px; }
+.zone-foods { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-wrap: wrap-reverse; align-content: flex-start; justify-content: flex-start; gap: 4px; overflow: hidden; }
+.food { flex: none; width: var(--food, 40px); height: var(--food, 40px); padding: 0; margin: 0; border: 0; background: none; display: grid; place-items: center; position: relative;
+  touch-action: manipulation; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 2px 2px rgba(20, 50, 90, .28)); transition: transform .12s ease; }
+.food img.ic { width: 100%; height: 100%; object-fit: contain; pointer-events: none; -webkit-user-drag: none; }
+.food > span { font-size: calc(var(--food, 40px) * .78); line-height: 1; pointer-events: none; }
+.food.soon::after, .food.over::after { content: ''; position: absolute; top: 0; right: 0; width: 9px; height: 9px; border-radius: 50%; background: #f08a24; border: 2px solid #fff; }
+.food.over::after { background: #d93a3a; }
+.food.pressed, .food:active { transform: scale(1.15) translateY(-3px); }
+.food.flash { animation: food-in .6s ease; }
+@keyframes food-in { from { transform: translateY(-14px) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+.food.food-more { background: rgba(255, 255, 255, .92); border-radius: 50%; color: #12243a; font-size: 13px; font-weight: 800; filter: none; box-shadow: 0 1px 4px rgba(22, 60, 100, .3); }
+/* 냉동실·냉장실 글씨: 서랍 아래 */
+.col-tag { position: absolute; top: auto; bottom: 1.2%; margin: 0; display: flex; justify-content: center; pointer-events: none; }
+.col-tag.freezer-tag { left: 2.5%; width: 32.5%; }
+.col-tag.chiller-tag { left: 45.5%; width: 52%; }
+.col-tag span { background: #fff; color: #12243a; border-radius: 999px; padding: 1px 12px; font-size: 12px; font-weight: 800; box-shadow: 0 1px 4px rgba(22, 60, 100, .25); }
+/* 툴팁 */
+.food-tip { position: absolute; z-index: 30; width: max-content; max-width: min(240px, 80%); box-sizing: border-box; padding: 10px 12px; border-radius: 14px;
+  background: #12243a; color: #fff; box-shadow: 0 6px 18px rgba(10, 30, 60, .35); display: flex; flex-direction: column; gap: 4px; pointer-events: none; font-size: 14px; line-height: 1.35; }
+.food-tip[hidden] { display: none; }
+.food-tip::after { content: ''; position: absolute; left: var(--arrow, 50%); bottom: -6px; width: 12px; height: 12px; margin-left: -6px; background: #12243a; transform: rotate(45deg); }
+.food-tip.below::after { bottom: auto; top: -6px; }
+.ft-name { font-size: 16px; font-weight: 800; overflow-wrap: anywhere; }
+.ft-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.ft-kind { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: rgba(255, 255, 255, .16); }
+.ft-qty, .ft-date { font-size: 13px; }
+.ft-memo, .ft-shelf { font-size: 12px; opacity: .78; overflow-wrap: anywhere; }
+.food-tip .badge { font-size: 12px; }
+/* 문 닫기 버튼: 냉장고 그림 위에 작게 (칸·글씨를 가리지 않게 가운데 아래) */
+.fridge-in[data-mode="shelf"] > .in-menu { position: absolute; left: 50%; bottom: 5.2%; transform: translateX(-50%); margin: 0; z-index: 2; }
+.fridge-in[data-mode="shelf"] > .in-menu button { min-height: 40px; padding: 4px 14px; font-size: 13px; font-weight: 800; border-radius: 999px; }
+.fridge-in[data-mode="shelf"] > .in-menu { left: 40%; bottom: 1%; }
+/* ➕ 음식 넣기 탭 */
+#fridge-add { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; position: relative; z-index: 1;
+  background: var(--exp-bg, var(--card)); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
+.add-way { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; border-radius: 18px; text-align: left; border: 1.5px solid var(--accent); background: var(--soft); color: var(--ink); }
+.add-way.add-snap { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.add-way:active { transform: scale(.98); }
+.aw-ic { font-size: 30px; line-height: 1; flex: none; }
+.aw-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.aw-txt b { font-size: 18px; font-weight: 800; }
+.aw-txt small { font-size: 13px; opacity: .85; line-height: 1.35; }
+.add-sub { margin: 6px 0 0; font-size: 14px; font-weight: 800; color: var(--ink2); }
+.add-quick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.aq { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 2px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); font-size: 12.5px; font-weight: 700; color: var(--ink); min-width: 0; }
+.aq img.ic { width: 36px; height: 36px; object-fit: contain; }
+.aq > span[aria-hidden] { font-size: 28px; line-height: 36px; }
+.aq > span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fridge-in[data-mode="add"] > .in-menu { display: flex; }
+
+/* 칸 이름표: 선반 앞 테두리에 붙는 가격표처럼 (서랍은 서랍 손잡이 쪽 위) */
+.zone:not(.drawer) .zone-name { position: absolute; left: 6px; top: calc(100% + 2px); z-index: 2; min-height: 18px; line-height: 16px; font-size: 11px; padding: 1px 8px; }
+.zone:not(.drawer) .zone-foods { height: 100%; }
+.add-way, .add-way * { white-space: normal; }
+#item-form .item-pair { grid-template-columns: 3fr 2fr; }
+.food { min-width: 0; min-height: 0; box-sizing: border-box; }
+.zone-name { min-width: 0; }
+.zone:not(.drawer):not(.first) .zone-foods { padding-top: 20px; box-sizing: border-box; }

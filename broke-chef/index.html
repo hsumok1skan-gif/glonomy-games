@@ -33,16 +33,32 @@
     <div id="fridge" class="fridge">
       <div class="view fridge-in" id="fridge-in" hidden>
         <div class="seg fridge-mode" role="group" aria-label="열린 냉장고 보기">
-          <button type="button" data-act="fridge-mode" data-mode="shelf" id="fm-shelf" aria-pressed="true">📝 칸별</button>
+          <button type="button" data-act="fridge-mode" data-mode="shelf" id="fm-shelf" aria-pressed="true">🧊 냉장고</button>
           <button type="button" data-act="fridge-mode" data-mode="exp" id="fm-exp" aria-pressed="false">⏰ 유통기한</button>
-          <button type="button" data-act="fridge-mode" data-mode="photo" id="fm-photo" aria-pressed="false">📷 사진</button>
+          <button type="button" data-act="fridge-mode" data-mode="add" id="fm-add" aria-pressed="false">➕ 음식 넣기</button>
+        </div>
+        <!-- 2026-11-25: 음식 그림을 누르고 있는 동안 뜨는 툴팁 (ui.js foodTipHtml) -->
+        <div id="food-tip" class="food-tip" role="tooltip" hidden></div>
+        <!-- ➕ 음식 넣기 탭 (2026-11-25): 사진 찍어서 넣기 · 직접 쓰기 · 자주 넣는 음식. 어느 길이든 이름·종류·유통기한·칸을 고칠 수 있는 넣기 창이 뜬다 -->
+        <div id="fridge-add" class="view step fridge-add" hidden>
+          <button type="button" class="add-way add-snap" data-act="snap-food">
+            <span class="aw-ic" aria-hidden="true">📷</span>
+            <span class="aw-txt"><b>사진 찍어서 넣기</b><small>포장의 이름·종류·유통기한을 읽어서 채워요. 사진은 남기지 않아요</small></span>
+          </button>
+          <button type="button" class="add-way add-hand" data-act="add-manual">
+            <span class="aw-ic" aria-hidden="true">✏️</span>
+            <span class="aw-txt"><b>직접 쓰기</b><small>이름을 쓰면 종류와 넣을 칸을 골라 둬요</small></span>
+          </button>
+          <p class="add-sub">자주 넣는 음식</p>
+          <div id="add-quick" class="add-quick" role="group" aria-label="자주 넣는 음식 — 누르면 넣기 창이 채워져요"></div>
         </div>
         <div id="fridge-shelves" class="view step in fridge-cols"></div>
         <!-- ⏰ 유통기한 탭 (H-38): 불투명 흰 판(--exp-bg), 위 '📷 유통기한 찍기' · 가까운 순 목록(넘김) · 아래 '음식 넣기'·'문 닫기'. 거는 것은 H-39~H-43 -->
         <div id="fridge-exp" class="view step fridge-exp" hidden></div>
         <!-- 📷 사진 탭 (H-44): 불투명 흰 판(--photo-bg), 냉장고 안을 찍어 두는 지금 기능은 그대로. 가운데 큰 사진 칸(누르면 바로 카메라) ·
              이름표·날짜 한 줄 + '지우기' · 작은 사진 4칸. 이름표는 찍은 뒤에 묻는다 (H-16). 사진 칸 버튼은 ui.js renderPhoto (H-45) -->
-        <div id="fridge-photo-in" class="view step fridge-photo-in" hidden>
+        <!-- 냉장고 사진 보관은 2026-11-25에 화면에서 뺐다(남긴 사진 기록은 지우지 않는다). 글자 읽기 진행 표시 자리 때문에 틀만 숨겨 둔다 -->
+        <div id="fridge-photo-in" class="view step fridge-photo-in retired" hidden>
           <div id="photo-view"></div>
           <div id="photo-label-ask" class="card label-ask" role="group" aria-labelledby="h-label-ask" hidden>
             <p id="h-label-ask" class="ask-q">어디를 찍었나요?</p>
@@ -315,9 +331,10 @@
       <div id="snap-names" class="chip-row snap-names" role="group" aria-label="사진에서 읽은 이름" hidden></div>
       <div id="shelf-quick" class="chip-row shelf-quick" role="group" aria-label="이 칸에 자주 넣는 음식 바로 넣기"></div>
       <div class="row2 item-pair">
+        <label class="field"><span>종류</span><select id="item-kind"></select><em class="err"></em></label>
         <label class="field"><span>수량</span><input id="item-qty" type="text" maxlength="20" autocomplete="off"><em class="err"></em></label>
-        <label class="field"><span>넣을 칸</span><select id="item-shelf"></select><em class="err"></em></label>
       </div>
+      <label class="field"><span>넣을 칸</span><select id="item-shelf"></select><em class="err"></em></label>
       <!-- H-35: 유통기한은 연·월·일을 바로 고르는 날짜 고르기. +n일 빠른 버튼은 없다
            H-36: 그 오른쪽에 카메라 그림 버튼('자동 인식'). 찍으면 읽은 날짜를 이 칸에 바로 채운다(묻지 않음, 틀리면 사람이 칸에서 고친다).
            이름 후보 버튼·읽힌 글자 전체·복사 버튼은 없다 -->

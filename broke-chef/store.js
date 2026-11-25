@@ -15,7 +15,9 @@ var Store = (function () {
     return { app: 'nae-sikbi', v: 4, challenges: [], spends: [], meals: [],
       fridge: { items: [] }, settings: defaultSettings(), fridgeOpened: false, nextId: 1 };
   }
-  function shelfOk(id) { return FRIDGE_SHELVES.some(function (s) { return s.id === id; }); }
+  // 문 선반(zd·rd1·rd2)은 2026-11-25에 뺐다 — 예전 기록은 버리지 않고 SHELF_MOVED 칸으로 옮긴다
+  function shelfFix(id) { return typeof SHELF_MOVED !== 'undefined' && SHELF_MOVED[id] ? SHELF_MOVED[id] : id; }
+  function shelfOk(id) { id = shelfFix(id); return FRIDGE_SHELVES.some(function (s) { return s.id === id; }); }
   function fail(msg) { return { ok: false, msg: msg }; }
   function isText(s, max) { return typeof s === 'string' && s.trim().length > 0 && s.length <= max; }
   function isNum(n) { return typeof n === 'number' && isFinite(n); }
@@ -105,7 +107,7 @@ var Store = (function () {
     // 칸 메모(fridge.memos)는 없앴다. 예전 기록에 있어도 버린다 (H-31)
     var fr = o.fridge || {};
     d.fridge.items = (Array.isArray(fr.items) ? fr.items : []).filter(function (x) { return x && typeof x.id === 'string' && shelfOk(x.shelf) && isText(x.name, 30); })
-      .map(function (x) { return { id: x.id, shelf: x.shelf, name: x.name.trim(), qty: typeof x.qty === 'string' ? x.qty.slice(0, 20) : '',
+      .map(function (x) { return { id: x.id, shelf: shelfFix(x.shelf), name: x.name.trim(), kind: typeof x.kind === 'string' ? x.kind.slice(0, 20) : '', qty: typeof x.qty === 'string' ? x.qty.slice(0, 20) : '',
         exp: Calc.isDay(x.exp) ? x.exp : '', memo: typeof x.memo === 'string' ? x.memo.slice(0, 40) : '', added: Calc.isDay(x.added) ? x.added : Calc.today(), sample: x.sample === true }; }).slice(0, 1000);
     d.fridgeOpened = o.fridgeOpened === true; // 손잡이로 문을 한 번이라도 열었나
     // 다음 번호는 이미 쓴 번호보다 크게
