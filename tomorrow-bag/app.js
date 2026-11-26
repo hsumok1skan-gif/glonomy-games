@@ -229,7 +229,9 @@
     V.kidAfter = k ? null : { pack: null, days: [], who: '', list: [] };
     $('kid-after-time').value = '15:00';
     $('kid-after-new').value = '';
+    $('kid-after-who-new').value = '';
     UI.clearErr('kid-after-new', '');
+    UI.clearErr('kid-after-who-new', '');
     UI.clearErr('kid-after-time', 'kid-after-err');
     if (k) $('kid-after').style.display = 'none';
     else UI.renderKidAfter(S, V.kidAfter);
@@ -386,6 +388,23 @@
     UI.clearErr('kid-after-time', 'kid-after-err');
     UI.renderKidAfter(S, ka);
     UI.toast('"' + name + '" 꾸러미를 만들었어요. 요일을 골라 주세요');
+  }
+  // 목록에 없는 데리러 갈 사람: 첫 시트에서 바로 넣고 그 사람을 고른 것으로 둔다 (설정 → 데리러 갈 사람과 같은 목록, 같은 규칙)
+  function kidAfterWhoAdd() {
+    var ka = V.kidAfter;
+    if (!ka || !ka.pack) return;
+    var t = Logic.norm($('kid-after-who-new').value), gs = S.settings.guardians;
+    if (!t) return UI.fieldErr('kid-after-who-new', 'kid-after-err', '이름을 넣어 주세요.');
+    if (t.length > 12) return UI.fieldErr('kid-after-who-new', 'kid-after-err', '12자 안으로 넣어 주세요.');
+    if (gs.indexOf(t) >= 0) return UI.fieldErr('kid-after-who-new', 'kid-after-err', '이미 있어요. 위 칩에서 골라 주세요.');
+    if (gs.length >= 8) return UI.fieldErr('kid-after-who-new', 'kid-after-err', '8명까지 넣을 수 있어요.');
+    gs.push(t);
+    save();
+    ka.who = t; ka.whoCustom = false;
+    $('kid-after-who-new').value = '';
+    UI.clearErr('kid-after-who-new', 'kid-after-err');
+    UI.renderKidAfter(S, ka);
+    UI.toast('"' + t + '"을(를) 데리러 갈 사람에 넣었어요');
   }
   // 아이 넣기 1단계 미리 보기와 그 아래 고르기 줄을 지금 학년·체크·고친 칸으로 다시 그린다
   function tplOn() { return !V.kidEdit && $('kid-template').checked; }
@@ -2001,7 +2020,7 @@
     'kid-after-pack': function (b) {
       var id = b.getAttribute('data-id');
       V.kidAfter.pack = V.kidAfter.pack === id ? null : id;
-      if (!V.kidAfter.pack) { V.kidAfter.days = []; V.kidAfter.who = ''; }
+      if (!V.kidAfter.pack) { V.kidAfter.days = []; V.kidAfter.who = ''; V.kidAfter.whoCustom = false; }
       UI.clearErr('kid-after-time', 'kid-after-err');
       UI.renderKidAfter(S, V.kidAfter);
     },
@@ -2013,8 +2032,17 @@
     },
     'kid-after-who': function (b) {
       V.kidAfter.who = b.getAttribute('data-who') || '';
+      V.kidAfter.whoCustom = false;
       UI.renderKidAfter(S, V.kidAfter);
     },
+    'kid-after-who-custom': function () {
+      if (!V.kidAfter.pack) return;
+      V.kidAfter.whoCustom = !V.kidAfter.whoCustom;
+      UI.clearErr('kid-after-who-new', 'kid-after-err');
+      UI.renderKidAfter(S, V.kidAfter);
+      if (V.kidAfter.whoCustom) $('kid-after-who-new').focus();
+    },
+    'kid-after-who-add': kidAfterWhoAdd,
     'kids-open': function () { UI.renderKidsSheet(S); openSheet('sheet-kids'); },
     'day-prev': function () { V.offset--; renderAll(); UI.slideDay(-1); },
     'day-next': function () { V.offset++; renderAll(); UI.slideDay(1); },
@@ -2272,6 +2300,7 @@
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
     'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter',
     'kid-after-custom': 'kidAfter', 'kid-after-new-add': 'kidAfter', 'kid-note-supply': 'kidAfter',
+    'kid-after-who-custom': 'kidAfter', 'kid-after-who-add': 'kidAfter',
     'tpl-cell': 'kidAfter', 'tpl-set': 'kidAfter'
   };
   function ready(name) {
@@ -2466,6 +2495,9 @@
     } else if (e.key === 'Enter' && e.target && e.target.id === 'kid-after-new' && V.kidAfter) {
       e.preventDefault();   // 아이 넣기 폼의 저장으로 가지 않고 꾸러미만 만든다
       kidAfterNewAdd();
+    } else if (e.key === 'Enter' && e.target && e.target.id === 'kid-after-who-new' && V.kidAfter) {
+      e.preventDefault();   // 아이 넣기 폼의 저장으로 가지 않고 사람만 넣는다
+      kidAfterWhoAdd();
     } else if (e.key === 'Enter' && e.target && e.target.id === 'teach-add' && V.teach) {
       e.preventDefault();
       teachAddItem();

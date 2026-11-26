@@ -296,6 +296,32 @@ var Logic = (function () {
     });
     return out;
   }
+  // 데리러 갈 사람 겹침: 날짜 k 에 모든 아이의 buildBag(...).pickups 가운데 쉬지 않고 사람이 정해진 것을
+  // 사람별로 시각순으로 놓고, 바로 앞 것과 40분 안(차이 ≤ 40분)이면 한 묶음으로 잇는다. 둘 이상 묶인 것만 돌려준다
+  // → [{ who, items: [{kid, time, name}] }]  (시각이 없는 방과후는 비교하지 않는다)
+  var CLASH_MIN = 40;
+  function pickupConflicts(state, k) {
+    var by = {};
+    (state.kids || []).forEach(function (kid) {
+      buildBag(state, kid, k).pickups.forEach(function (p) {
+        if (p.off || !p.who || toMin(p.time) < 0) return;
+        (by[p.who] = by[p.who] || []).push({ kid: kid.name, time: p.time, name: p.name });
+      });
+    });
+    var out = [];
+    Object.keys(by).forEach(function (who) {
+      var list = by[who].sort(function (a, b) { return toMin(a.time) - toMin(b.time); });
+      var grp = [list[0]];
+      for (var i = 1; i <= list.length; i++) {
+        if (i < list.length && toMin(list[i].time) - toMin(list[i - 1].time) <= CLASH_MIN) { grp.push(list[i]); continue; }
+        if (grp.length >= 2) out.push({ who: who, items: grp });
+        if (i < list.length) grp = [list[i]];
+      }
+    });
+    out.sort(function (a, b) { return toMin(a.items[0].time) - toMin(b.items[0].time); });
+    return out;
+  }
+
   // 칩 한 칸 글: '11/16(월) 14:30 하윤 태권도'
   function pickupLine(p) { return shortLabel(p.date) + ' ' + (p.time ? p.time + ' ' : '') + p.kid + ' ' + p.name; }
   // 복사할 글: '아빠 이번 주 데리러 갈 날: 11/16(월) 14:30 하윤 태권도, …' (없으면 '아빠 이번 주 데리러 갈 날: 없음')
@@ -1342,6 +1368,22 @@ var Logic = (function () {
     eq('이번 주 데리러 가기 바꾼 사람', pw['엄마'][0].date + '|' + pw['엄마'][0].time + '|' + pw['엄마'][0].kid + '|' + pw['엄마'][0].name, '2026-11-10|15:00|서아|수영');
     eq('이번 주 데리러 가기 아빠 날짜순', pw['아빠'].map(function (p) { return p.date; }).join(','), '2026-11-09,2026-11-11');
     eq('이번 주 데리러 가기 글', pickupWeekText('아빠', pw['아빠']), '아빠 이번 주 데리러 갈 날: 11/9(월) 14:30 하윤 태권도, 11/11(수) 14:30 하윤 태권도');
+    // 9-10b) 데리러 갈 사람 겹침: 월(11/09) 하윤 태권도 14:30 아빠 + 서아 수영 15:00 아빠(30분 차이) → 한 묶음.
+    //         화(11/10)는 서아가 이날만 엄마라 겹침 없음. 금(11/13) 서아 수영은 쉼이라 빠진다
+    var pcs = JSON.parse(JSON.stringify(pws));
+    pcs.kids[0].week[1].after = [{ id: 'c1', packId: 'pX', time: '15:00', who: '아빠' }];
+    pcs.kids[1].week[2].after = [{ id: 'c2', packId: 'pT', time: '15:20', who: '아빠' }];
+    pcs.kids[1].week[5].after = [{ id: 'c3', packId: 'pT', time: '14:10', who: '아빠' }];
+    var pc1 = pickupConflicts(pcs, '2026-11-09');
+    eq('데리러 갈 사람 겹침', pc1.length + '|' + (pc1[0] ? pc1[0].who + '|' + pc1[0].items.map(function (x) { return x.time + x.kid + x.name; }).join(',') : ''), '1|아빠|14:30하윤태권도,15:00서아수영');
+    eq('데리러 갈 사람 겹침 없음 (이날만 엄마·쉼)', pickupConflicts(pcs, '2026-11-10').length + '|' + pickupConflicts(pcs, '2026-11-13').length, '0|0');
+    pcs.kids[0].week[1].after[0].time = '15:11';
+    eq('데리러 갈 사람 41분 차이는 겹침 아님', pickupConflicts(pcs, '2026-11-09').length, 0);
+    // 두 아이 14:30·14:50 아빠면 겹침 1개, 15:30 이면 0개
+    pcs.kids[0].week[1].after[0].time = '14:50';
+    eq('데리러 갈 사람 14:30·14:50 겹침 1개', pickupConflicts(pcs, '2026-11-09').length, 1);
+    pcs.kids[0].week[1].after[0].time = '15:30';
+    eq('데리러 갈 사람 14:30·15:30 겹침 0개', pickupConflicts(pcs, '2026-11-09').length, 0);
     // 9-11) 이번 주 가방: 일요일(11/08)이면 월~금. 서아는 화·목 수영(수경), 금요일은 쉼, 수요일 알림장 색종이
     var wbs = { kids: pws.kids, packs: pws.packs, settings: pws.settings, dayEdits: pws.dayEdits,
       notes: [{ id: 'n1', kid: 'k', date: '2026-11-11', title: '', items: ['색종이'] }] };
@@ -1392,7 +1434,7 @@ var Logic = (function () {
     holidayRange: holidayRange, holidayGroups: holidayGroups, spanDays: spanDays, HOLIDAY_MAX_DAYS: HOLIDAY_MAX_DAYS,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, carryOver: carryOver, progress: progress, isMorning: isMorning, isWear: isWear, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, pickupWeek: pickupWeek, pickupConflicts: pickupConflicts, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, carryOver: carryOver, progress: progress, isMorning: isMorning, isWear: isWear, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, goalProgress: goalProgress, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, MINE_CAT: MINE_CAT, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME

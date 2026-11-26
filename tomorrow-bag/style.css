@@ -201,14 +201,20 @@ body.reduce .slide-in-l, body.reduce .slide-in-r { animation: none; }
 .strip .ls { flex: none; font-size: var(--t-2); padding: 4px 10px; border-radius: 10px; background: var(--subsoft); }
 .strip .pk { flex: none; font-size: var(--t-2); padding: 4px 10px; border-radius: 10px; background: var(--soft); }
 .strip .pk b { color: var(--accent-deep); }
-/* 수업·방과후 두 줄 옆의 이날만 바꾸기 (줄을 더 쓰지 않아 가방 그림이 작아지지 않는다) */
+/* 수업·방과후 두 줄만 (이날만 바꾸기는 날짜 카드 안 연필 아이콘) */
 .day-lines { flex: none; display: flex; align-items: stretch; gap: 8px; }
-.dl-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-.btn.day-edit-btn { flex: none; padding: 4px 10px; font-size: var(--t-1); line-height: 1.25; font-weight: 800; }
-.day-edit-btn.as-btn { flex-direction: column; }
+.dl-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.date-card .day-edit-btn { color: var(--accent-deep); }
+.top-row .day-edit-btn { min-width: 40px; min-height: 40px; }
+/* 입고 · 빨래 · 아침을 합친 한 줄 (ui.js renderBag #extra-line). 묶음마다 머리 글자 칩 */
+.extra-line { gap: 10px; }
+.extra-line .xg { flex: none; display: inline-flex; align-items: center; gap: 6px; }
+.extra-line .xg + .xg { padding-left: 10px; border-left: 1px solid var(--line); }
+.xhead { flex: none; font-size: var(--t-1); font-weight: 800; color: var(--on-accent); background: var(--sub); padding: 2px 8px; border-radius: 999px; }
+.xg.wash-line .xhead { background: var(--muted); }
+.xg.morning-left .xhead { background: var(--accent-deep); }
 .strip .changed { box-shadow: inset 0 0 0 1px var(--accent); background: var(--soft); }
 .day-tag { flex: none; margin-left: 2px; padding: 0 5px; border-radius: 999px; font-size: var(--t-1); font-weight: 800; color: var(--on-accent); background: var(--accent); }
-.morning-left .lab { color: var(--accent-deep); }
 .ml-chip { flex: none; display: inline-flex; align-items: center; gap: 6px; border-color: var(--accent); background: var(--soft); font-weight: 700; }
 .ml-chip .it-ic { flex: none; width: 1.3em; height: 1.3em; color: var(--ink); }
 .bag-btns { flex: none; display: flex; gap: 8px; }
@@ -507,7 +513,9 @@ body.reduce .goal-fill { transition: none; }
 .after-row .em { flex: none; width: 24px; height: 24px; color: var(--ink); }
 .strip .pk { display: inline-flex; align-items: center; gap: 4px; }
 .strip .pk .em { flex: none; width: 1.2em; height: 1.2em; }
-/* 빨래해 둘 것 줄 (ui.js renderBag #wash-line) */
+/* 데리러 갈 사람 겹침 칩 (R-74): 색과 ⚠ 글자로 함께 알린다 */
+.strip .pk-clash { flex: none; color: var(--danger); border-color: var(--danger); font-weight: 700; white-space: nowrap; }
+/* 빨래해 둘 것 묶음 (ui.js renderBag #extra-line 안 #wash-line) */
 .strip .ls.wash { display: inline-flex; align-items: center; gap: 4px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
 .strip .ls.wear { display: inline-flex; align-items: center; gap: 4px; background: var(--subsoft); box-shadow: inset 0 0 0 1px var(--sub); }
 .strip .ls.wear .it-ic { flex: none; width: 1.2em; height: 1.2em; color: var(--accent-deep); }
@@ -770,6 +778,8 @@ body.reduce .tpl-preview .tp-c { transition: none; }
 #kid-after-add { margin-top: 8px; }
 #kid-after-new-row { margin-top: 6px; }
 #kid-after-new { flex: 1; min-width: 0; }
+#kid-after-who-row { margin-top: 6px; }
+#kid-after-who-new { flex: 1; min-width: 0; }
 /* 키가 작은 휴대폰에서만 시트 안을 밀어 저장 버튼이 잘리지 않게 한다 */
 @media (max-height: 700px) { #form-kid { overflow-y: auto; } }
 .kid-after .f { display: block; font-size: var(--t-2); font-weight: 700; margin: 8px 0 4px; }
@@ -816,6 +826,7 @@ body.reduce .bad { animation: none; }
 .gw-chips { min-height: 0; }
 .gw-chip { flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 32px; padding: 4px 10px; white-space: nowrap; font-size: var(--t-1); cursor: default; }
 .gw-chip.gw-empty { color: var(--muted); border-style: dashed; }
+.gw-chip.clash { color: var(--danger); border-color: var(--danger); font-weight: 700; }
 .picker-row { margin-top: 8px; }
 .picker-row input { flex: 1 1 60%; }
 .picker-row select { flex: 0 0 auto; width: auto; }
