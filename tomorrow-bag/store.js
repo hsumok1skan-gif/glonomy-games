@@ -32,6 +32,7 @@ var Store = (function () {
       packs: copyPacks(),
       daily: DATA.DAILY.slice(),
       morning: ['물병', '도시락', '간식'],                   // 아침에 넣을 물건 (밤에는 남아도 다 챙긴 것으로 친다)
+      wear: ['체육복'],                                      // 입고 갈 것 (가방에 넣지 않고 전날 밤 꺼내 둔다. 가방 시트 '입고 가요' 쪽)
       stay: [],                                              // 늘 학교에 두는 물건 (알림장에 적히지 않으면 가방에 넣지 않는다)
       buy: [],                                               // 며칠 뒤 준비물에서 고른 살 것 (복사해 장 보러 간다)
       rules: DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; }),
@@ -101,6 +102,8 @@ var Store = (function () {
     Object.keys(base.settings).forEach(function (k) { if (d.settings[k] === undefined) d.settings[k] = base.settings[k]; });
     if (!Array.isArray(d.morning)) d.morning = base.morning.slice();
     d.morning = d.morning.filter(function (x) { return typeof x === 'string' && x.trim(); });
+    if (!Array.isArray(d.wear)) d.wear = base.wear.slice();
+    d.wear = d.wear.filter(function (x) { return typeof x === 'string' && x.trim(); });
     if (!Array.isArray(d.stay)) d.stay = [];
     d.stay = d.stay.filter(function (x) { return typeof x === 'string' && x.trim(); });
     if (!Array.isArray(d.buy)) d.buy = [];

@@ -10,6 +10,7 @@
     edit: null,                                            // 이날만 바꾸기 시트 { k: 날짜, off: {방과후 id: true} }
     kidStep: 1,                                            // 아이 넣기 시트의 걸음 (1 이름·학년·기본 시간표, 2 방과후, 3 오늘 알림장)
     kidAfter: null,                                        // 아이 넣기 시트의 방과후 고르기 { pack, days, who, list: 넣어 둔 것 }
+    tplCell: null, tplEdits: {},                           // 아이 넣기 1단계 미리 보기: 고르는 중인 칸 {d, i}, 고친 칸 {'d-i': 꾸러미 id | null}
     kidNote: null,                                         // 아이 넣기 3단계 오늘 알림장에서 칩으로 고른 준비물 [이름] (새 아이일 때만, 글은 저장할 때 읽는다)
     times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
     family: null,                                          // 가족 링크 시트 { name, link }
@@ -221,7 +222,9 @@
     $('kid-del').style.display = k ? '' : 'none';
     $('kid-template').checked = !k;
     $('kid-template-row').style.display = k ? 'none' : '';   // 고치기 모드에서는 이미 채운 칸을 건드리지 않는다
-    UI.renderTplPreview(S, k ? k.grade : 1, !k);              // 새 아이면 채워질 표를 미리 보여 준다
+    V.tplEdits = {};                                          // 미리 보기에서 고친 칸은 열 때마다 비운다
+    V.tplCell = null;
+    renderTpl();                                              // 새 아이면 채워질 표를 미리 보여 준다
     // 방과후 고르기도 새 아이일 때만 (고치기는 시간표 탭의 방과후 칸에서)
     V.kidAfter = k ? null : { pack: null, days: [], who: '', list: [] };
     $('kid-after-time').value = '15:00';
@@ -384,6 +387,39 @@
     UI.renderKidAfter(S, ka);
     UI.toast('"' + name + '" 꾸러미를 만들었어요. 요일을 골라 주세요');
   }
+  // 아이 넣기 1단계 미리 보기와 그 아래 고르기 줄을 지금 학년·체크·고친 칸으로 다시 그린다
+  function tplOn() { return !V.kidEdit && $('kid-template').checked; }
+  function renderTpl() {
+    var grade = +$('kid-grade').value;
+    if (!tplOn()) V.tplCell = null;
+    UI.renderTplPreview(S, grade, tplOn(), V.tplEdits, V.tplCell);
+    UI.renderTplPick(S, grade, V.tplEdits, V.tplCell);
+  }
+  function tplFocus(c) {
+    var b = c && document.querySelector('#kid-tpl-preview [data-d="' + c.d + '"][data-i="' + c.i + '"]');
+    if (b) b.focus();
+  }
+  function tplCell(b) {
+    if (!tplOn()) return;
+    var d = +b.getAttribute('data-d'), i = +b.getAttribute('data-i');
+    if (!(d >= 1 && d <= 5 && i >= 0)) return;
+    var same = V.tplCell && V.tplCell.d === d && V.tplCell.i === i;
+    V.tplCell = same ? null : { d: d, i: i };   // 같은 칸을 다시 누르면 고르기 줄을 닫는다
+    renderTpl();
+    tplFocus({ d: d, i: i });
+  }
+  function tplSet(b) {
+    var c = V.tplCell;
+    if (!c || !tplOn()) return;
+    var id = b.getAttribute('data-id') || null;
+    if (id && !Logic.findPack(S.packs, id)) return;
+    V.tplEdits[c.d + '-' + c.i] = id;
+    V.tplCell = null;
+    renderTpl();
+    tplFocus(c);
+    var pk = id ? Logic.findPack(S.packs, id) : null;
+    UI.toast(DATA.DOW[c.d] + ' ' + (c.i + 1) + '교시 → ' + (pk ? pk.name : '빈 칸'));
+  }
   function submitKid() {
     var name = checkKidName();
     if (!name) return;
@@ -405,6 +441,13 @@
       var np = S.settings.gradeP[grade] || 6;   // 학년별 교시 수 (설정 → 교시 시간)
       k = { id: Store.uid('k'), name: name, grade: grade, periods: np, week: Store.emptyWeek(np), avatar: ava };
       var tw = $('kid-template').checked ? Logic.gradeWeek(DATA.TIMETABLES, S.packs, grade, k.periods) : null;
+      // 미리 보기에서 눌러 고친 칸을 기본 시간표 위에 덮는다 (교시 수 밖·지운 꾸러미는 버림)
+      if (tw) Object.keys(V.tplEdits || {}).forEach(function (key) {
+        var m = /^([1-5])-(\d+)$/.exec(key);
+        if (!m || +m[2] >= k.periods) return;
+        var id = V.tplEdits[key];
+        tw[+m[1]][+m[2]] = id && Logic.findPack(S.packs, id) ? id : null;
+      });
       if (tw) for (var d = 1; d <= 5; d++) { k.week[d].p = tw[d]; if (tw[d].some(Boolean)) filled = true; }
       kaList.forEach(function (a) {
         a.days.forEach(function (w) { k.week[w].after.push({ id: Store.uid('a'), packId: a.pack, time: a.time, who: a.who }); });
@@ -533,10 +576,23 @@
       SFX.page();
     }, PAGE_NEXT_MS);
   }
+  // 챙긴 칸은 도장이 찍힌 뒤 같은 쪽 뒤로 가라앉는다(R-70). 그 사이 다시 누르거나 쪽을 옮기거나 시트를 닫으면 취소
+  var SINK_DELAY_MS = 500, sinkTimer = null;
+  function sinkLater(name) {
+    clearTimeout(sinkTimer);
+    var from = V.pg.bag || 0;
+    sinkTimer = setTimeout(function () {
+      sinkTimer = null;
+      if (!UI.isOpen('sheet-bag') || swipe || (V.pg.bag || 0) !== from) return;
+      var c = UI.cellByName(name);
+      if (c) UI.sinkCell(c);
+    }, SINK_DELAY_MS);
+  }
   function toggleCheck(btn) {
     var kid = curKid();
     if (!kid) return;
     clearTimeout(pageTimer);
+    clearTimeout(sinkTimer);
     var k = bagKey(), name = btn.getAttribute('data-name');
     var ck = Logic.checkKey(kid.id, k);
     var list = S.checks[ck] || (S.checks[ck] = []);
@@ -567,9 +623,12 @@
       // 아침에 넣을 물건만 남아도 밤에는 다 챙긴 것으로 친다. 아침 물건을 하나씩 넣을 때는(가방 화면 아침 줄) 다 넣었을 때만 다시 띄운다
       if ((pr.total && pr.done === pr.total) || (!wasNight && Logic.nightDone(S, kid, bag))) completeBag(kid, k);
       // 처음 챙긴 뒤 한 번만 길게 누르기를 알려 준다 ('알겠어요'를 누르면 다음 쪽으로)
-      else if (!V.kidMode && !S.settings.holdTipSeen && UI.showHoldTip(cell)) seeHoldTip();
-      else autoNextPage();
-    } else { SFX.out(); haptic(6); }
+      else if (!V.kidMode && !S.settings.holdTipSeen && UI.showHoldTip(cell)) seeHoldTip();   // 말풍선이 그 칸을 가리키는 동안은 옮기지 않는다
+      else { autoNextPage(); if (cell) sinkLater(name); }
+    } else {
+      SFX.out(); haptic(6);
+      if (cell) sinkLater(name);   // 다시 뺀 칸은 안 챙긴 칸 맨 뒤로 돌아온다
+    }
   }
   // 길게 누르기 말풍선을 봤다 (다시 띄우지 않는다)
   function seeHoldTip() {
@@ -704,6 +763,24 @@
     UI.toast(on ? name + '은(는) 아침에 넣어요' : name + '은(는) 밤에 넣어요');
     var pr = Logic.progress(S, kid, bag);
     if (on && ((pr.total && pr.done === pr.total) || Logic.nightDone(S, kid, bag))) completeBag(kid, k);
+  }
+  // 길게 누른 칸의 '입고 가요'/'가방에 넣어요': 그 물건을 입고 갈 것 목록(S.wear)에 넣거나 뺀다 (모든 날에).
+  // 입고 갈 것은 가방 시트 '입고 가요' 쪽으로 따로 모이고, 챙김 수(progress)에는 그대로 든다
+  function wearToggle(name) {
+    var kid = curKid();
+    if (!kid || V.kidMode) return;
+    if (!Array.isArray(S.wear)) S.wear = [];
+    var key = Logic.norm(name).toLowerCase();
+    var before = S.wear.length;
+    S.wear = S.wear.filter(function (m) { return Logic.norm(m).toLowerCase() !== key; });
+    var on = S.wear.length === before;
+    if (on) S.wear.push(Logic.norm(name));
+    save();
+    UI.hideBubble();
+    var bag = Logic.buildBag(S, kid, bagKey());
+    UI.renderBagSheet(S, V, kid, bag);
+    renderAll();
+    UI.toast(on ? name + '은(는) 입고 가요. 밤에 꺼내 두세요' : name + '은(는) 가방에 넣어요');
   }
   // 늘 학교에 두는 물건(S.stay)을 바꾼 뒤: 빠진 물건의 챙김 표시를 지우고, 빠져서 다 챙긴 것이 되면 skipItem 처럼 닫는다
   function changeStay(change, msg) {
@@ -1956,6 +2033,9 @@
     'bag-done': bagDone,
     'skip-item': function (b) { skipItem(b.getAttribute('data-name')); },
     'morning-toggle': function (b) { morningToggle(b.getAttribute('data-name')); },
+    'wear-toggle': function (b) { wearToggle(b.getAttribute('data-name')); },
+    'tpl-cell': tplCell,
+    'tpl-set': tplSet,
     'stay-toggle': function (b) { stayToggle(b.getAttribute('data-name')); },
     'stay-textbooks': stayTextbooks,
     'stay-del': function (b) {
@@ -1966,12 +2046,14 @@
     'kid-mode': toggleKidMode,
     'pg': function (b) {
       var id = b.getAttribute('data-pg');
+      if (id === 'bag') clearTimeout(sinkTimer);
       V.pg[id] = UI.setPage(id, +b.getAttribute('data-n'));
       UI.hideBubble();
     },
     'pg-step': function (b) {
       var id = b.getAttribute('data-pg');
-      V.pg[id] = UI.setPage(id, (V.pg[id] || 0) + (+b.getAttribute('data-d')));
+      if (id === 'bag') clearTimeout(sinkTimer);
+      V.pg[id]= UI.setPage(id, (V.pg[id] || 0) + (+b.getAttribute('data-d')));
     },
     'share': share,
     'done-copy': doneCopy,
@@ -2185,11 +2267,12 @@
     'pack-add': 'pack', 'pack-pic': 'pack', 'pack-item-del': 'pack', 'pack-del': 'pack', 'after-del': 'after',
     'edit-off': 'edit', 'edit-reset': 'edit', 'form-edit': 'edit',
     'form-note': 'note', 'form-pack': 'pack', 'week-parse': 'weekPaste', 'form-after': 'after', 'form-event': 'kid',
-    'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'bag-add': 'kid', 'bag-add-go': 'kid', 'carry-check': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'stay-toggle': 'kid',
+    'check': 'kid', 'out-check': 'kid', 'check-all': 'kid', 'bag-add': 'kid', 'bag-add-go': 'kid', 'carry-check': 'kid', 'bag-done': 'kid', 'skip-item': 'kid', 'morning-toggle': 'kid', 'wear-toggle': 'kid', 'stay-toggle': 'kid',
     'teach-add': 'teach', 'teach-item-del': 'teach', 'form-teacher': 'teach', 'teach-share': 'teach', 'teach-copy': 'teach', 'teach-edit': 'teach', 'family-share': 'family', 'family-copy': 'family',
     'times-default': 'times', 'form-times': 'times', 'help-step': 'help', 'kid-after-pack': 'kidAfter', 'kid-after-day': 'kidAfter', 'kid-after-who': 'kidAfter',
     'kid-next': 'kidAfter', 'kid-back': 'kidAfter', 'kid-skip': 'kidAfter', 'kid-after-add': 'kidAfter', 'kid-after-remove': 'kidAfter',
-    'kid-after-custom': 'kidAfter', 'kid-after-new-add': 'kidAfter', 'kid-note-supply': 'kidAfter'
+    'kid-after-custom': 'kidAfter', 'kid-after-new-add': 'kidAfter', 'kid-note-supply': 'kidAfter',
+    'tpl-cell': 'kidAfter', 'tpl-set': 'kidAfter'
   };
   function ready(name) {
     var need = NEED[name];
@@ -2391,13 +2474,15 @@
     } else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && UI.isOpen('sheet-bag') && !(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))) {
       // 키보드로 가방 시트 쪽 넘기기
       e.preventDefault();
+      clearTimeout(sinkTimer);
       V.pg.bag = UI.setPage('bag', (V.pg.bag || 0) + (e.key === 'ArrowRight' ? 1 : -1));
     }
   }
 
   function onChange(e) {
     var t = e.target;
-    if (t.id === 'kid-grade' || t.id === 'kid-template') UI.renderTplPreview(S, +$('kid-grade').value, !V.kidEdit && $('kid-template').checked);
+    if (t.id === 'kid-grade') { V.tplEdits = {}; V.tplCell = null; }   // 학년을 바꾸면 고친 칸은 새 학년 표와 맞지 않아 비운다
+    if (t.id === 'kid-grade' || t.id === 'kid-template') renderTpl();
     if (t.id === 'note-sort' && V.note) { V.noteSort = t.value; V.pg.sup = 0; UI.renderSupplies(S, V, V.note.items); }
     if (t.getAttribute && t.getAttribute('data-set') === 'switchHour') {
       S.settings.switchHour = +t.value;

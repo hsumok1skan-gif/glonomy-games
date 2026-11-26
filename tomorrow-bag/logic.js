@@ -265,6 +265,7 @@ var Logic = (function () {
     order.sort(function (a, b) { return GROUPS.indexOf(a.group) - GROUPS.indexOf(b.group); });
     order.forEach(function (it) {
       it.morning = isMorning(state, it.name);   // 가방 시트에서 '아침' 쪽으로 모은다
+      it.wear = isWear(state, it.name);         // 입고 갈 것: 가방 시트에서 '입고 가요' 쪽으로 모은다
       it.stay = isStay(state, it.name);         // 알림장으로 남은 물건이면 말풍선에서 되돌릴 수 있게
     });
     return { date: k, items: order, periods: periods, changedP: changedP, pickups: pickups, school: isSchoolDay(k, state.settings.holidays) };
@@ -388,6 +389,12 @@ var Logic = (function () {
   function isMorning(state, name) {
     var key = norm(name).toLowerCase();
     return (state.morning || []).some(function (m) { return norm(m).toLowerCase() === key; });
+  }
+
+  // 입고 갈 것(체육복처럼 가방에 넣지 않고 입고 가는 것)인지: 이름을 다듬어 소문자로 비교한다
+  function isWear(state, name) {
+    var key = norm(name).toLowerCase();
+    return (state.wear || []).some(function (m) { return norm(m).toLowerCase() === key; });
   }
 
   // 늘 학교에 두는 물건인지: 이름을 다듬어 소문자로 비교한다
@@ -1358,6 +1365,16 @@ var Logic = (function () {
     var wsH = function (hs) { return { packs: ds.packs, daily: [], rules: [], notes: [], checks: {}, settings: { holidays: hs } }; };
     eq('빨래해 둘 것 사흘·쉬는 날', washPlan(wsH([]), wsF, '2026-10-27').length + '|' +
       washPlan(wsH(['2026-10-28']), wsF, '2026-10-27').map(function (w) { return w.date; }).join(','), '0|2026-10-30');
+    // 9-13) 입고 갈 것: 월요일 체육이면 체육복의 wear 가 true(띄어쓰기·대소문자 달라도), 다른 물건은 false, wear 에서 빼면 false
+    var wrS = { packs: ds.packs, daily: ['필통'], rules: [], notes: [], checks: {}, settings: { holidays: [] }, wear: [' 체육복 '] };
+    var wrK = { id: 'k', week: { 1: { p: ['A'], after: [] } } };
+    var wrOf = function (st) {
+      return buildBag(st, wrK, '2026-10-26').items.filter(function (it) { return it.wear; }).map(function (it) { return it.name; }).join(',');
+    };
+    eq('입고 갈 것 체육 날 체육복', wrOf(wrS), '체육복');
+    eq('입고 갈 것 isWear', isWear(wrS, '체육복') + '|' + isWear(wrS, '물병'), 'true|false');
+    wrS.wear = [];
+    eq('입고 갈 것 빼면 false', wrOf(wrS) + '|' + isWear(wrS, '체육복'), '|false');
     if (typeof QR !== 'undefined') {
       // 10) QR 오류 정정: 1-M 'HELLO WORLD' 데이터 16글자의 오류 정정 10글자
       var hw = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17];
@@ -1375,7 +1392,7 @@ var Logic = (function () {
     holidayRange: holidayRange, holidayGroups: holidayGroups, spanDays: spanDays, HOLIDAY_MAX_DAYS: HOLIDAY_MAX_DAYS,
     isSchoolDay: isSchoolDay, nextSchoolDay: nextSchoolDay, prevSchoolDay: prevSchoolDay, bagDate: bagDate,
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
-    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, carryOver: carryOver, progress: progress, isMorning: isMorning, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
+    buildBag: buildBag, pickupWeek: pickupWeek, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, carryOver: carryOver, progress: progress, isMorning: isMorning, isWear: isWear, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, goalProgress: goalProgress, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, MINE_CAT: MINE_CAT, parseNoteText: parseNoteText,
     missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
