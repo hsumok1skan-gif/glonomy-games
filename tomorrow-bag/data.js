@@ -47,12 +47,13 @@ var DATA = (function () {
   var WASH = ['체육복', '수영복', '수모', '수건', '도복', '발레복', '타이츠', '축구복', '앞치마', '두건', '여벌 옷', '운동복', '레오타드', '유니폼', '반 티셔츠'];
 
   // 요일 규칙 5 — dow: 1 월 … 5 금
+  // kind: 'home' 은 아침 가방에 넣을 것이 아니라 하교 때 집에 가져올 것 (Logic.buildBag 은 넣지 않고 Logic.homeItems 가 모은다)
   var RULES = [
     { id: 'r-mon-shoe', dow: 1, item: '실내화 주머니' },
     { id: 'r-mon-brush', dow: 1, item: '칫솔·치약 (새로 바꾼 것)' },
     { id: 'r-wed-lib', dow: 3, item: '도서관 책 반납' },
-    { id: 'r-fri-shoe', dow: 5, item: '실내화 집에 가져오기' },
-    { id: 'r-fri-home', dow: 5, item: '주말 숙제 챙겨 오기' }
+    { id: 'r-fri-shoe', dow: 5, item: '실내화 집에 가져오기', kind: 'home' },
+    { id: 'r-fri-home', dow: 5, item: '주말 숙제 챙겨 오기', kind: 'home' }
   ];
 
   // 알림장에 자주 나오는 준비물 100 — 알림장 넣기에서 눌러 고른다

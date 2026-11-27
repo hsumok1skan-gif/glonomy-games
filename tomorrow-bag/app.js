@@ -15,7 +15,7 @@
     times: null, help: null,                               // 교시 시간 시트, 도움말 (쪽 번호와 찍어 둔 화면)
     family: null,                                          // 가족 링크 시트 { name, link }
     firstBag: false,                                       // 기본 시간표로 아이를 막 넣었다 → 가방 화면에 처음 가방 카드
-    tour: null,                                            // 예시 둘러보기 걸음 (0~2, 안 하는 중이면 null)
+    tour: null,                                            // 첫 둘러보기 걸음 (0~3, 안 하는 중이면 null)
     dscope: null                                           // 매일 · 요일 시트에서 고르는 목록: null 모든 아이 공용, 아이 id 면 그 아이 목록
   };
   var undoSnap = null;
@@ -489,7 +489,11 @@
     if (!V.kidEdit) {
       UI.closeSheet('sheet-kids');
       // 기본 시간표로 칸을 채웠으면 그 시간표가 만든 내일 가방을 바로 보여 준다
-      if (filled) { V.offset = 0; V.firstBag = true; renderAll(); go('bag'); }
+      if (filled) {
+        V.offset = 0; V.firstBag = true; renderAll(); go('bag');
+        // 처음 한 번: '시작하기'로 넣은 내 아이 가방에서도 네 곳을 차례로 짚어 준다 (R-78)
+        if (S.settings.tourSeen === false) { V.tour = 0; if (!tourSync(UI.showTour(0))) endTour(); else setTimeout(placeTour, 300); }
+      }
       else go('week');
     }
   }
@@ -636,6 +640,7 @@
     if (i < 0) {
       UI.stamp(cell);
       UI.fly(cell, V.kidMode);
+      UI.avaCheer('hop');   // 시트 제목의 아이 얼굴이 폴짝 뛴다
       (V.kidMode ? SFX.inKid : SFX.in)();
       if (V.kidMode) speak(name + ' 쏙');   // 글자를 아직 잘 못 읽는 아이도 무엇을 넣었는지 듣는다
       haptic(V.kidMode ? [12, 40, 12] : 12);
@@ -684,6 +689,7 @@
       UI.closeSheet('sheet-bag');
       UI.renderDone(S, kid, k, V.kidMode);
       openSheet('ov-done');
+      UI.avaCheer('party');   // 다 챙겼어요 창의 아이 얼굴이 빙글 춤춘다
       if (V.kidMode) speak('가방 다 챙겼어요');
       haptic([20, 60, 20, 60, 40]);
       UI.confetti($('ov-done'));
@@ -1564,7 +1570,7 @@
     if (Array.isArray(k[which])) return k[which];
     if (!make) return S[which];
     k[which] = which === 'rules' ?
-      S.rules.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: r.on }; }) : S.daily.slice();
+      S.rules.map(function (r) { var o = { id: r.id, dow: r.dow, item: r.item, on: r.on }; if (r.kind) o.kind = r.kind; return o; }) : S.daily.slice();
     return k[which];
   }
   function dWho() { var k = dScopeKid(); return k ? Logic.nameI(k.name) + ' ' : ''; }
@@ -1877,7 +1883,7 @@
     UI.closeSheet('sheet-backup');
     UI.toast('예시를 넣었어요', true);
   }
-  // ---- 예시 둘러보기 (처음 안내의 '예시로 둘러보기' 뒤 한 번, 3걸음) ----
+  // ---- 첫 둘러보기 (처음 안내의 '예시로 둘러보기' 뒤, 또는 '시작하기'로 넣은 아이의 첫 가방에서 한 번, 4걸음) ----
   // 건너뛰기·마지막 걸음·Esc 모두 tourSeen 을 저장해 다시 띄우지 않는다
   function endTour() {
     V.tour = null;
@@ -1888,10 +1894,12 @@
     if (V.tour === null) return;
     if (V.tour >= UI.TOUR_N - 1) { endTour(); openBag(); return; }   // 마지막 '가방 챙기기'
     V.tour++;
-    if (!UI.showTour(V.tour)) endTour();
+    if (!tourSync(UI.showTour(V.tour))) endTour();
   }
+  // showTour 는 없는 걸음을 건너뛰고 실제로 보인 걸음 번호 + 1 을 돌려준다 → V.tour 를 그 걸음에 맞춘다
+  function tourSync(r) { if (r && V.tour !== null) V.tour = r - 1; return r; }
   // 화면 전환이 끝났거나 창 크기가 바뀌면 밝힐 자리를 다시 잡는다
-  function placeTour() { if (V.tour !== null && !UI.showTour(V.tour)) endTour(); }
+  function placeTour() { if (V.tour !== null && !tourSync(UI.showTour(V.tour))) endTour(); }
 
   // 받은 상태(S)에 예시 아이를 넣는다 (도움말 화면 찍기도 이것을 쓴다)
   function fillSample(S) {
@@ -2172,7 +2180,7 @@
     },
     'rules-default': function () {
       rememberUndo();
-      var list = DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; });
+      var list = DATA.RULES.map(function (r) { var o = { id: r.id, dow: r.dow, item: r.item, on: true }; if (r.kind) o.kind = r.kind; return o; });
       var k = dScopeKid();
       if (k) k.rules = list; else S.rules = list;
       save(); renderAll(); UI.toast('기본 규칙을 넣었어요', true);
@@ -2281,8 +2289,8 @@
     'welcome-start': function () { S.settings.welcomed = true; save(); UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome(); openKid(null); },
     'welcome-sample': function () {
       S.settings.welcomed = true; UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome(); addSample();
-      // 처음 한 번: 하윤이 가방 화면의 세 곳을 차례로 짚어 준다
-      if (S.settings.tourSeen === false) { V.tour = 0; if (!UI.showTour(0)) endTour(); else setTimeout(placeTour, 300); }
+      // 처음 한 번: 하윤이 가방 화면의 네 곳을 차례로 짚어 준다
+      if (S.settings.tourSeen === false) { V.tour = 0; if (!tourSync(UI.showTour(0))) endTour(); else setTimeout(placeTour, 300); }
     },
     'tour-next': tourNext,
     'tour-skip': function () { endTour(); }

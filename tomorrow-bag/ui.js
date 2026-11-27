@@ -513,9 +513,17 @@ var UI = (function () {
             Logic.shortLabel(w.date) + ' ' + esc(w.name) + '</span>';
         }).join('') + '</span>';
     }
+    // 하교 때 집에 가져올 것: 그날 '집에' 규칙(실내화·주말 숙제)과 쓰고 난 체육복·빈 도시락통
+    var home = Logic.homeItems(S, kid, k);
+    if (home.length) {
+      ex += '<span class="xg home-line" id="home-line" role="group" aria-label="하교 때 집에 가져올 것"><span class="xhead">하교</span>' +
+        home.map(function (x) {
+          return '<span class="ls home" title="' + esc(x.why) + '"><span class="it-ic" aria-hidden="true">' + pic(x.name) + '</span>' + esc(x.name) + '</span>';
+        }).join('') + '</span>';
+    }
     // 밤 물건을 다 챙겼으면 아침에 넣을 물건
     ex += morningRowHTML(ml);
-    if (ex) h += '<div class="strip extra-line" id="extra-line" aria-label="입고 · 빨래 · 아침">' + ex + '</div>';
+    if (ex) h += '<div class="strip extra-line" id="extra-line" aria-label="입고 · 빨래 · 하교 · 아침">' + ex + '</div>';
 
     h += '<div class="bag-btns no-print">' +
       '<button class="btn main big" type="button" data-act="bag-open"' + (bag.items.length ? '' : ' disabled') + '>가방 챙기기</button>' +
@@ -928,6 +936,27 @@ var UI = (function () {
   function kidAvaHTML(kid, big) {
     var s = DATA.STICKERS[avaIndex(kid)];
     return '<span class="kid-ava' + (big ? ' big' : '') + '" style="--c:var(' + s.c + ')" aria-hidden="true">' + stickerPic(s) + '</span>';
+  }
+  // 챙길 때마다 아이 얼굴이 반응한다: 'hop' 은 가방 시트 제목 얼굴이 폴짝, 'party' 는 다 챙겼어요 창 얼굴이 빙글 춤춘다.
+  // 같은 class 를 뗐다 다시 붙여(void offsetWidth) 연달아 눌러도 매번 처음부터 움직이고, 끝나면(animationend) 뗀다.
+  // 움직임 줄이기(body.reduce)에서는 CSS 가 animation 을 끄므로 animationend 가 오지 않아 시간으로도 뗀다.
+  function avaCheer(kind) {
+    var sel = kind === 'party' ? '#done-art .kid-ava' : kind === 'hop' ? '#bs-title .kid-ava' : null;
+    if (!sel) return false;
+    var el = document.querySelector(sel);
+    if (!el) return false;
+    var cls = kind === 'party' ? 'ava-party' : 'ava-hop';
+    el.classList.remove('ava-hop', 'ava-party');
+    void el.offsetWidth;
+    el.classList.add(cls);
+    var off = function () {
+      el.classList.remove(cls);
+      el.removeEventListener('animationend', off);
+      clearTimeout(t);
+    };
+    var t = setTimeout(off, kind === 'party' ? 1600 : 800);
+    el.addEventListener('animationend', off);
+    return true;
   }
   // 아이 넣기·고치기 1단계: 얼굴 12개 중 하나 고르기
   function renderKidAvatars(sel) {
@@ -1435,7 +1464,7 @@ var UI = (function () {
     var r = '';
     if (!rules.length) r = miniEmpty('calendar', '요일마다 챙길 것이 없어요',{ act: 'rules-default', label: '기본 규칙 넣기' });
     rules.forEach(function (x) {
-      r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button><button class="icon-btn" type="button" data-act="rule-del" data-id="' + x.id + '" aria-label="' + DATA.DOW[x.dow] + '요일 ' + esc(x.item) + ' 빼기">✕</button></div>';
+      r += '<div class="toggle"><span>' + DATA.DOW[x.dow] + '요일 · ' + (x.kind === 'home' ? '하교 때 ' : '') + esc(x.item) + '</span><button class="btn small' + (x.on ? ' main' : '') + '" type="button" data-act="rule-toggle" data-id="' + x.id + '" aria-pressed="' + x.on + '">' + (x.on ? '켜짐' : '꺼짐') + '</button><button class="icon-btn" type="button" data-act="rule-del" data-id="' + x.id + '" aria-label="' + DATA.DOW[x.dow] + '요일 ' + esc(x.item) + ' 빼기">✕</button></div>';
     });
     $('rules-list').innerHTML = r;
     var st = '';
@@ -1869,20 +1898,28 @@ var UI = (function () {
     if (tab) tab.setAttribute('aria-label', '가방, 남은 물건 ' + n + '개');
   }
 
-  // ---- 예시 둘러보기: 가방 화면의 세 곳(.bag-stage → .day-lines → .bag-btns)을 차례로 밝힌다 ----
+  // ---- 첫 둘러보기: 가방 화면의 네 곳(맨 위 카드 → .bag-stage → .day-lines → .bag-btns)을 차례로 밝힌다 ----
+  // '예시로 둘러보기' 와 '시작하기'로 넣은 내 아이(기본 시간표로 채운 경우) 모두 처음 한 번 나온다 (app.js)
+  // 첫 걸음: 막 넣은 아이면 처음 가방 카드(#first-bag), 아니면 날짜 카드(.date-card)
   var TOUR = [
+    ['#first-bag, .date-card', '맨 위 카드에 어느 날 가방인지 보여요. 시간표만 맞으면 날마다 저절로 바뀌어요.'],
     ['.bag-stage', '챙긴 물건만큼 가방이 차올라요. 꽉 차면 내일 준비 끝!'],
     ['.day-lines', '그날 수업과 방과후, 데리러 갈 사람이 한 줄씩 보여요.'],
     ['.bag-btns', '여기서 가방을 챙기고, 알림장 준비물을 넣어요.']
   ];
-  // n 걸음을 보인다. 밝힐 곳이 화면에 없으면 false (부른 쪽이 둘러보기를 끝낸다)
+  // n 걸음을 보인다. 그 걸음 요소가 화면에 없으면(예: 처음 설정 카드가 날짜 카드 자리를 대신함) 다음 걸음을 찾는다.
+  // 보인 걸음 번호 + 1 을 돌려준다(부른 쪽이 V.tour 를 맞춘다). 밝힐 곳이 하나도 없으면 false (부른 쪽이 둘러보기를 끝낸다)
   function showTour(n) {
     var ov = $('tour'), hole = $('tour-hole'), box = $('tour-box');
     if (!ov || n < 0 || n >= TOUR.length) return false;
-    var el = document.querySelector('#bag-root ' + TOUR[n][0]);
-    if (!el) return false;
-    var r = el.getBoundingClientRect();
-    if (!r.width || !r.height) return false;
+    var root = $('bag-root');
+    var el = null, r = null;
+    for (; n < TOUR.length; n++) {
+      el = root ? root.querySelector(TOUR[n][0]) : null;   // 쉼표로 이은 선택자도 가방 화면 안에서만 찾는다
+      r = el ? el.getBoundingClientRect() : null;
+      if (r && r.width && r.height) break;
+    }
+    if (n >= TOUR.length) return false;
     var pad = 6, H = window.innerHeight || document.documentElement.clientHeight;
     ov.hidden = false;
     hole.style.left = Math.round(r.left - pad) + 'px';
@@ -1900,7 +1937,7 @@ var UI = (function () {
     top = Math.max(8, Math.min(top, H - bh - 8));
     box.style.top = Math.round(top) + 'px';
     try { $('tour-next').focus(); } catch (e) { /* 포커스 못 해도 된다 */ }
-    return true;
+    return n + 1;
   }
   function hideTour() { var ov = $('tour'); if (ov) ov.hidden = true; }
   function tourOpen() { var ov = $('tour'); return !!ov && !ov.hidden; }
@@ -1910,7 +1947,7 @@ var UI = (function () {
     showTour: showTour, hideTour: hideTour, tourOpen: tourOpen, TOUR_N: TOUR_N,
     $: $, esc: esc, setTabBadge: setTabBadge, packPic: packPic, packPicId: packPicId, renderPackPics: renderPackPics, MINI_PICS: MINI_PICS,transit: transit, show: show, openSheet: openSheet, closeSheet: closeSheet, openSheets: openSheets, isOpen: isOpen,
     toast: toast, hideToast: hideToast, fieldErr: fieldErr, clearErr: clearErr, flash: flash,
-    setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderKidAvatars: renderKidAvatars, kidAvaHTML: kidAvaHTML, renderBag: renderBag, renderBagSheet: renderBagSheet, showBagAdd: showBagAdd, pageOfCell: pageOfCell, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage, sinkCell: sinkCell,
+    setPage: setPage, welcomeDemo: welcomeDemo, renderKids: renderKids, renderKidAvatars: renderKidAvatars, kidAvaHTML: kidAvaHTML, avaCheer: avaCheer, renderBag: renderBag, renderBagSheet: renderBagSheet, showBagAdd: showBagAdd, pageOfCell: pageOfCell, updateBag: updateBag, updateOut: updateOut, cellByName: cellByName, nextBagPage: nextBagPage, focusBagPage: focusBagPage, sinkCell: sinkCell,
     fly: fly, stamp: stamp, showBubble: showBubble, showHoldTip: showHoldTip, hideBubble: hideBubble, bubbleOpen: bubbleOpen, renderDone: renderDone, confetti: confetti, renderCal: renderCal, renderUpcoming: renderUpcoming, renderWeekBag: renderWeekBag,
     renderWeek: renderWeek, renderDay: renderDay, renderEdit: renderEdit, setEditOff: setEditOff, renderCellSheet: renderCellSheet, renderCopyRow: renderCopyRow, renderKidAfter: renderKidAfter, renderKidNote: renderKidNote, renderTplPreview: renderTplPreview, renderTplPick: renderTplPick, tplPreviewWeek: tplPreviewWeek, shortName: shortName,
     renderPacks: renderPacks, renderPackItems: renderPackItems, renderDaily: renderDaily, renderNoteItems: renderNoteItems, renderSupplies: renderSupplies,

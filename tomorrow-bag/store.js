@@ -35,7 +35,7 @@ var Store = (function () {
       wear: ['체육복'],                                      // 입고 갈 것 (가방에 넣지 않고 전날 밤 꺼내 둔다. 가방 시트 '입고 가요' 쪽)
       stay: [],                                              // 늘 학교에 두는 물건 (알림장에 적히지 않으면 가방에 넣지 않는다)
       buy: [],                                               // 며칠 뒤 준비물에서 고른 살 것 (복사해 장 보러 간다)
-      rules: DATA.RULES.map(function (r) { return { id: r.id, dow: r.dow, item: r.item, on: true }; }),
+      rules: DATA.RULES.map(function (r) { var o = { id: r.id, dow: r.dow, item: r.item, on: true }; if (r.kind) o.kind = r.kind; return o; }),
       notes: [],
       checks: {},
       skips: {},
@@ -63,7 +63,7 @@ var Store = (function () {
         firstBagSeen: false,                                 // 아이를 넣자마자 보여 준 처음 가방 카드를 닫았다
         coachSeen: false,                                    // 가방 시트에서 처음 한 칸을 눌러 봤다 (누르기 안내를 끈다)
         holdTipSeen: false,                                  // 처음 챙긴 뒤 길게 누르기 말풍선을 봤거나 직접 길게 눌러 봤다
-        tourSeen: false                                      // '예시로 둘러보기' 뒤 가방 화면 3걸음 안내를 끝냈거나 건너뛰었다
+        tourSeen: false                                      // 첫 가방 화면 4걸음 안내('예시로 둘러보기' 또는 '시작하기' 뒤)를 끝냈거나 건너뛰었다
       }
     };
   }
@@ -164,6 +164,19 @@ var Store = (function () {
         return r && typeof r.item === 'string' && r.item.trim() && r.dow >= 1 && r.dow <= 5;
       });
     });
+    // 요일 규칙의 kind('home' = 하교 때 집에 가져올 것)는 그대로 둔다.
+    // kind 가 없는 예전 판의 기본 규칙(같은 id·같은 이름)에만 DATA.RULES 의 kind 를 붙인다
+    var homeDef = {};
+    DATA.RULES.forEach(function (r) { if (r.kind) homeDef[r.id] = r; });
+    function markKind(list) {
+      if (!Array.isArray(list)) return;
+      list.forEach(function (r) {
+        var b = r && homeDef[r.id];
+        if (b && r.kind === undefined && r.item === b.item) r.kind = b.kind;
+      });
+    }
+    markKind(d.rules);
+    d.kids.forEach(function (k) { markKind(k.rules); });
     return d;
   }
 

@@ -398,6 +398,14 @@ body.reduce .stk.big { animation: none; }
 #bs-title > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bag-sheet.kid #bs-title .kid-ava { width: 34px; height: 34px; }
 .bag-sheet.kid #bs-title .kid-ava .stk-pic { width: 22px; height: 22px; }
+/* R-76 챙길 때마다 아이 얼굴 반응: 넣으면 폴짝(ava-hop), 다 챙기면 빙글 춤(ava-party) */
+.kid-ava.ava-hop { animation: avaHop 0.36s ease-out; }
+.bag-sheet.kid .kid-ava.ava-hop { animation: avaHopKid 0.4s ease-out; }
+.kid-ava.ava-party { animation: avaParty 0.6s ease-in-out 2; }
+@keyframes avaHop { 0% { transform: none; } 40% { transform: translateY(-7px) scale(1.12); } 75% { transform: translateY(1px) scale(0.96); } 100% { transform: none; } }
+@keyframes avaHopKid { 0% { transform: none; } 40% { transform: translateY(-14px) scale(1.25); } 75% { transform: translateY(2px) scale(0.92); } 100% { transform: none; } }
+@keyframes avaParty { 0% { transform: rotate(0) scale(1); } 25% { transform: rotate(-14deg) scale(1.18); } 50% { transform: rotate(0) scale(1); } 75% { transform: rotate(14deg) scale(1.18); } 100% { transform: rotate(0) scale(1); } }
+body.reduce .kid-ava.ava-hop, body.reduce .kid-ava.ava-party { animation: none; }
 /* 얼굴 고르기: 6열 × 2줄, 칸은 44px 이상 */
 .ava-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 4px; }
 .ava-chip { --c: var(--gold); min-width: 0; min-height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line); padding: 4px; cursor: pointer; }
@@ -520,6 +528,10 @@ body.reduce .goal-fill { transition: none; }
 .strip .ls.wear { display: inline-flex; align-items: center; gap: 4px; background: var(--subsoft); box-shadow: inset 0 0 0 1px var(--sub); }
 .strip .ls.wear .it-ic { flex: none; width: 1.2em; height: 1.2em; color: var(--accent-deep); }
 .strip .ls.wash .it-ic { flex: none; width: 1.2em; height: 1.2em; color: var(--accent-deep); }
+/* 하교 때 집에 가져올 것 묶음 (R-77, ui.js renderBag #extra-line 안 #home-line) */
+.xg.home-line .xhead { background: var(--accent-deep); }
+.strip .ls.home { display: inline-flex; align-items: center; gap: 4px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--accent-deep); }
+.strip .ls.home .it-ic { flex: none; width: 1.2em; height: 1.2em; color: var(--accent-deep); }
 .item-area { height: min(40dvh, 300px); flex: none; margin-top: 8px; }
 .item-area .check .x { position: absolute; top: 2px; right: 6px; font-size: var(--t-1); color: var(--muted); }
 .sup-area { height: min(30dvh, 200px); flex: none; }
