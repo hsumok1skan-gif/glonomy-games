@@ -319,6 +319,7 @@ body.reduce .check.coach { animation: none; box-shadow: 0 0 0 3px var(--accent);
 .check.add-cell { border-style: dashed; border-color: var(--accent); background: var(--bg); color: var(--accent-deep); }
 .check.add-cell .add-plus { font-size: var(--t-5); font-weight: 900; line-height: 1; }
 .check.add-cell .nm { color: var(--accent-deep); }
+.check .nm .qty { font-weight: 800; color: var(--accent-deep); white-space: nowrap; }
 .bag-add-row { flex: none; }
 .bag-add-row[hidden] { display: none; }
 .bag-add-row .row input { flex: 1; min-width: 0; }
@@ -352,6 +353,13 @@ body.reduce #bs-count.bump { animation: none; }
 .bag-sheet.closed .mouth { transform: scaleY(0.2); }
 .bag-sheet.closed .bag-lid { animation: shine 0.6s ease-out; }
 @keyframes shine { 0% { filter: brightness(1); } 50% { filter: brightness(1.35); } 100% { filter: brightness(1); } }
+/* 가방 시트를 여는 순간: 입구 지퍼가 열리고(zipOpen) 칸이 차례로 튀어나온다(cellIn). app.js openBag 이 'opening' 을 붙였다 700ms 뒤 뗀다 */
+.bag-sheet.opening .mouth { animation: zipOpen 0.32s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes zipOpen { 0% { transform: scaleY(0.2); } 100% { transform: scaleY(1); } }
+.bag-sheet.opening.closed .mouth { animation: none; }   /* 다 챙긴 날 다시 열면 입구는 닫힌 채로 둔다 */
+.bag-sheet.opening .check { animation: cellIn 0.28s ease-out both; animation-delay: calc(var(--i, 0) * 30ms); }
+@keyframes cellIn { 0% { opacity: 0; transform: translateY(12px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+body.reduce .bag-sheet.opening .mouth, body.reduce .bag-sheet.opening .check { animation: none; }
 body.reduce .mouth, body.reduce .bag-lid { animation: none !important; }
 .bag-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; background: var(--bg); padding: 10px var(--gap) calc(12px + env(safe-area-inset-bottom)); border-left: 6px solid var(--accent); border-right: 6px solid var(--accent); }
 .bag-body .sheet-head h2 { font-size: var(--t-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -908,7 +916,7 @@ body.reduce .bad { animation: none; }
 #ov-welcome .muted { font-size: var(--t-3); color: var(--ink); }
 /* 처음 안내 뒤 바탕: 빈 회색 카드가 비치지 않게 바탕색으로 덮는다 */
 #ov-welcome { background: var(--bg); }
-#ov-welcome .sheet { box-shadow: 0 10px 40px var(--shadow-lift); }
+#ov-welcome .sheet { box-shadow: 0 10px 40px var(--shadow-lift); overflow-y: auto; }   /* 버튼 3개: 아주 낮은 화면에서도 마지막 버튼까지 닿게 (미리보기는 fitWelcomeShots 가 먼저 줄인다) */
 /* 처음 안내의 실제 화면 미리보기 (휴대폰 틀 3장, --shot-s 는 UI.fitWelcomeShots 가 화면에 맞게 줄인다) */
 .welcome-shots { --shot-s: 0.44; flex: none; display: flex; flex-direction: column; margin-top: 8px; }
 .welcome-shots[hidden] { display: none; }

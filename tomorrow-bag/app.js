@@ -541,6 +541,19 @@
     var pg0 = document.querySelector('#bs-pages .pg');
     if (pg0 && !pg0.querySelector('.check:not(.add-cell)')) { V.pg.bag = 1; UI.renderBagSheet(S, V, kid, bag); }
     openSheet('sheet-bag');
+    zipOpenBag();
+  }
+  // 여는 순간 지퍼 열림: 'opening' 을 붙이면 CSS 가 입구(zipOpen)와 칸(cellIn, 차례로)을 움직인다.
+  // 마지막 칸 애니메이션은 0.33s 지연 + 0.28s 라 약 700ms 뒤 뗀다(움직임 줄이기면 애니메이션이 없어 타이머로만).
+  var zipTimer = 0;
+  function zipOpenBag() {
+    var sh = document.querySelector('#sheet-bag .bag-sheet');
+    if (!sh) return;
+    clearTimeout(zipTimer);
+    sh.classList.remove('opening');
+    void sh.offsetWidth;
+    sh.classList.add('opening');
+    zipTimer = setTimeout(function () { sh.classList.remove('opening'); }, 700);
   }
   // 가방 시트 '+ 물건': 그날 가방에 물건을 바로 하나 더 넣는다. 그 아이·그날의 '가방에서 넣음' 알림장에 이어 붙인다 (없으면 새로)
   var BAG_ADD_TITLE = '가방에서 넣음';
@@ -1788,6 +1801,51 @@
     go('bag');
     UI.toast(Logic.nameI(f.name) + (r.isNew ? ' 시간표를 넣었어요' : ' 시간표를 바꿨어요'), true);
   }
+  // ---- 받은 링크로 시작 (처음 안내): 대화방에서 복사한 글을 붙여 넣으면 링크를 연 것과 같게 넣는다 ----
+  // 링크를 다른 브라우저(대화앱 안 창 등)에서 열어 이 폰의 앱에 안 들어가는 경우를 위한 길이다
+  function openJoin() {
+    $('join-text').value = '';
+    UI.clearErr('join-text', 'join-err');
+    openSheet('sheet-join');
+  }
+  // 글 안에서 표시(#f=, #t=) 뒤의 링크 조각만 꺼낸다 (b64url 글자: 영문·숫자·-·_·=)
+  function linkPart(text, mark) {
+    var at = text.indexOf(mark);
+    if (at < 0) return null;
+    var m = /^[A-Za-z0-9_\-=]+/.exec(text.slice(at + mark.length));
+    return m ? m[0] : '';
+  }
+  function joinGo() {
+    var text = String($('join-text').value || '');
+    UI.clearErr('join-text', 'join-err');
+    if (!text.trim()) return UI.fieldErr('join-text', 'join-err', '받은 링크를 붙여 넣어 주세요.');
+    // 1) 가족 링크
+    var fp = linkPart(text, '#f=');
+    if (fp !== null) {
+      var f = Logic.familyUnpack(fp);
+      if (!f) return UI.fieldErr('join-text', 'join-err', '가족 링크가 잘렸거나 바뀌었어요. 링크 전체를 다시 복사해 주세요.');
+      var has = S.kids.some(function (x) { return !x.sample && x.name === f.name; });
+      var who = Logic.nameI(f.name);
+      askConfirm(has ? who + ' 시간표를 받은 것으로 바꿀까요?' : who + ' 시간표를 이 폰에 넣을까요?', has ? '바꾸기' : '넣기', function () {
+        UI.closeSheet('sheet-join');
+        applyFamily(f);
+      });
+      return;
+    }
+    // 2) 선생님 준비물 링크
+    var tp = linkPart(text, '#t=');
+    if (tp !== null) {
+      var t = Logic.teacherUnpack(tp);
+      if (!t) return UI.fieldErr('join-text', 'join-err', '선생님 링크가 잘렸거나 바뀌었어요. 링크 전체를 다시 복사해 주세요.');
+      UI.closeSheet('sheet-join');
+      if (UI.isOpen('ov-welcome')) { S.settings.welcomed = true; save(); UI.closeSheet('ov-welcome'); UI.welcomeDemo(false); stopWelcome(); }
+      pendingTeach = t;
+      applyTeach();
+      return;
+    }
+    // 3) 링크가 아닌 글
+    UI.fieldErr('join-text', 'join-err', '받은 링크를 찾지 못했어요. 주소에 #f= 나 #t= 가 든 링크를 붙여 넣어 주세요.');
+  }
 
   // ---- 부모 쪽: 선생님 링크(#t=…)를 열면 준비물을 지금 아이의 그날 알림장에 넣는다 ----
   var pendingTeach = null;   // 아이가 아직 없을 때 받아 둔 링크
@@ -2292,6 +2350,8 @@
       // 처음 한 번: 하윤이 가방 화면의 네 곳을 차례로 짚어 준다
       if (S.settings.tourSeen === false) { V.tour = 0; if (!tourSync(UI.showTour(0))) endTour(); else setTimeout(placeTour, 300); }
     },
+    'welcome-join': openJoin,
+    'join-go': joinGo,
     'tour-next': tourNext,
     'tour-skip': function () { endTour(); }
   };

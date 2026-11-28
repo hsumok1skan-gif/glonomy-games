@@ -588,6 +588,20 @@
     <div id="welcome-shots" class="welcome-shots" role="group" aria-label="화면 미리보기" hidden></div>
     <button class="btn main wide" type="button" data-act="welcome-start" style="margin-top:12px">시작하기</button>
     <button class="btn wide" type="button" data-act="welcome-sample" style="margin-top:8px">예시로 둘러보기</button>
+    <button class="btn wide" type="button" data-act="welcome-join" style="margin-top:8px">가족에게 받은 링크로 시작</button>
+  </div>
+</div>
+
+<!-- 받은 링크로 시작: 대화방에서 받은 가족 링크(#f=)·선생님 링크(#t=)를 붙여 넣는다. 처음 안내 위에 열리도록 #ov-welcome 뒤, #ov-confirm 앞에 둔다 -->
+<div id="sheet-join" class="dim" data-sheet="1" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-label="받은 링크로 시작">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2>받은 링크로 시작</h2><button class="icon-btn" type="button" data-act="close" aria-label="닫기">✕</button></div>
+    <p class="muted">가족이나 선생님이 보낸 링크를 길게 눌러 복사한 뒤 여기에 붙여 넣어 주세요. 앞뒤 글이 같이 들어가도 괜찮아요.</p>
+    <label class="f" for="join-text">받은 링크</label>
+    <textarea id="join-text" maxlength="20000" aria-describedby="join-err" placeholder="https://…#f=…"></textarea>
+    <div class="err" id="join-err" aria-live="polite"></div>
+    <button class="btn main wide" type="button" data-act="join-go" style="margin-top:8px">이 링크로 시작</button>
   </div>
 </div>
 

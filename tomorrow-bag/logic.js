@@ -189,6 +189,18 @@ var Logic = (function () {
 
   function norm(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
 
+  // 수량 떼기 (R-80): 끝의 'n개·n장·n자루·n권·n켤레' 또는 '한·두·세·네 자루/개/장' → { base, qty }. 수량이 없으면 qty 1
+  // '휴지 심 2개' → { base: '휴지 심', qty: 2 }, '연필 두 자루' → { base: '연필', qty: 2 }
+  var QTY_WORD = { '한': 1, '두': 2, '세': 3, '네': 4 };
+  function splitQty(name) {
+    var n = norm(name);
+    var m = /^(.*\S)\s*(\d{1,3})\s*(개|장|자루|권|켤레)$/.exec(n);
+    if (m && +m[2] > 0) return { base: norm(m[1]), qty: +m[2] };
+    m = /^(.*\S)\s+(한|두|세|네)\s*(자루|개|장)$/.exec(n);
+    if (m) return { base: norm(m[1]), qty: QTY_WORD[m[2]] };
+    return { base: n, qty: 1 };
+  }
+
   function findPack(packs, id) {
     for (var i = 0; i < packs.length; i++) if (packs[i].id === id) return packs[i];
     return null;
@@ -200,16 +212,18 @@ var Logic = (function () {
     var order = [];
     // icon: 처음 나온 출처의 그림 (꾸러미면 pk.icon, 알림장 📝, 요일 규칙 📅, 매일 🎒)
     // pic: 물건 이름으로 찾은 물건 그림 id (가방 시트 칸에 그린다)
+    // 수량이 붙은 이름은 수량을 떼어 같은 물건과 한 칸으로 합치고, it.qty 에 가장 큰 수를 담는다 (R-80)
     function add(name, src, group, icon) {
-      var n = norm(name);
+      var sq = splitQty(name), n = sq.base;
       if (!n) return;
-      var key = n.toLowerCase();
+      var key = norm(n).toLowerCase();
       var it = map[key];
       if (!it) {
-        it = { name: n, sources: [], group: group, icon: icon || '🎒', pic: iconFor(n).id };
+        it = { name: n, qty: sq.qty, sources: [], group: group, icon: icon || '🎒', pic: iconFor(norm(name)).id };
         map[key] = it;
         order.push(it);
       }
+      if (sq.qty > it.qty) it.qty = sq.qty;
       if (it.sources.indexOf(src) < 0) it.sources.push(src);
       if (GROUPS.indexOf(group) < GROUPS.indexOf(it.group)) it.group = group;
     }
@@ -566,12 +580,19 @@ var Logic = (function () {
   var SUP_BY_LEN = null;
   function parseNoteText(text, baseKey) {
     var raw = String(text || '');
+    // seen: 수량 뗀 이름(splitQty base) → { at: items 자리, qty }. '휴지 심'·'휴지 심 2개' 는 한 칸, 수량이 큰 쪽 글을 남긴다 (R-80)
     var items = [], seen = {};
     function push(x) {
       var n = norm(x);
-      var key = n.toLowerCase();
-      if (!n || n.length > 40 || seen[key]) return;
-      seen[key] = true;
+      if (!n || n.length > 40) return;
+      var sq = splitQty(n), key = norm(sq.base).toLowerCase();
+      if (!key) return;
+      var s = seen[key];
+      if (s) {
+        if (sq.qty > s.qty) { items[s.at] = n; s.qty = sq.qty; }
+        return;
+      }
+      seen[key] = { at: items.length, qty: sq.qty };
       items.push(n);
     }
     if (!SUP_BY_LEN) {
@@ -1224,7 +1245,29 @@ var Logic = (function () {
     // 5-4) 알림장 글 뽑기: 날짜 'n월 n일', 긴 말 먼저(딱풀 안의 풀은 안 잡음), '준비물:' 뒤 쉼표·'/'·줄바꿈 말, 중복 없음
     var pn = parseNoteText('[알림장] 11월 3일 준비물: 색종이, 딱풀 / 휴지 심 2개\n체육복', '2026-11-01');
     eq('알림장 글 날짜', pn.date, '2026-11-03');
-    eq('알림장 글 준비물', pn.items.join(','), '휴지 심,색종이,체육복,딱풀,휴지 심 2개');
+    eq('알림장 글 준비물 (수량 붙은 같은 물건은 한 칸)', pn.items.join(','), '휴지 심 2개,색종이,체육복,딱풀');
+    // R-80) 수량 떼기와 가방 한 칸 합치기
+    eq('수량 떼기 n개', JSON.stringify(splitQty('휴지 심 2개')), '{"base":"휴지 심","qty":2}');
+    eq('수량 떼기 두 자루', (function (s) { return s.base + '|' + s.qty; })(splitQty('연필 두 자루')), '연필|2');
+    eq('수량 떼기 켤레', JSON.stringify(splitQty('실내화 1켤레')), '{"base":"실내화","qty":1}');
+    eq('수량 없음', JSON.stringify(splitQty('색종이')), '{"base":"색종이","qty":1}');
+    (function () {
+      var qk = { id: 'qk', name: 'q', week: {} };
+      var qs = { notes: [{ kid: 'qk', date: '2026-11-03', items: ['연필', '휴지 심'] }, { kid: 'qk', date: '2026-11-03', items: ['연필 두 자루', '휴지 심 3개'] }],
+        rules: [], daily: [], packs: [], skips: {}, checks: {}, settings: { holidays: [] } };
+      var qb = buildBag(qs, qk, '2026-11-03').items;
+      eq('수량 붙은 같은 물건 한 칸', qb.map(function (i) { return i.name + 'x' + i.qty; }).join(','), '연필x2,휴지 심x3');
+      // 알림장 '휴지 심'+'휴지 심 2개' → 물건 1개·qty 2
+      var ts = { notes: [{ kid: 'qk', date: '2026-11-03', items: ['휴지 심', '휴지 심 2개'] }], rules: [], daily: [], packs: [], skips: {}, checks: {}, settings: { holidays: [] } };
+      var tb = buildBag(ts, qk, '2026-11-03').items;
+      eq('알림장 휴지 심 합친 물건 수·qty', tb.length + '|' + (tb[0] && tb[0].qty), '1|2');
+      // 꾸러미 '연필'(2교시) + 알림장 '연필 두 자루' → 한 칸, 출처 둘
+      var pkid = { id: 'qp', name: 'p', week: { 2: { p: ['', 'qpk'], after: [] } } };
+      var pst = { notes: [{ kid: 'qp', date: '2026-11-03', items: ['연필 두 자루'] }], rules: [], daily: [], skips: {}, checks: {},
+        packs: [{ id: 'qpk', name: '국어', icon: '📘', items: ['연필'] }], settings: { holidays: [] } };
+      var pb = buildBag(pst, pkid, '2026-11-03').items.filter(function (i) { return i.name === '연필'; });
+      eq('꾸러미 연필 + 알림장 연필 두 자루 한 칸', pb.length + '|' + (pb[0] && pb[0].qty) + '|' + (pb[0] && pb[0].sources.length), '1|2|2');
+    })();
     eq('알림장 글 모레 (해 넘김)', parseNoteText('모레 현장체험 있어요', '2026-12-31').date, '2027-01-02');
     eq('알림장 글 n/n (다음 해)', parseNoteText('1/5 개학', '2026-12-28').date, '2027-01-05');
     eq('알림장 글 날짜 없음', parseNoteText('준비물 - 모자', '2026-11-01').date, null);
@@ -1482,7 +1525,7 @@ var Logic = (function () {
     label: label, shortLabel: shortLabel, relLabel: relLabel, dayLabel: dayLabel, shortDay: shortDay, nameI: nameI,
     buildBag: buildBag, pickupWeek: pickupWeek, pickupConflicts: pickupConflicts, pickupLine: pickupLine, pickupWeekText: pickupWeekText, NO_WHO: NO_WHO, bagDiff: bagDiff, weekBags: weekBags, washPlan: washPlan, homeItems: homeItems, carryOver: carryOver, progress: progress, isMorning: isMorning, isWear: isWear, isStay: isStay, nightDone: nightDone, snapshot: snapshot, closePast: closePast, checkKey: checkKey,
     iconFor: iconFor, stickerFor: stickerFor, monthStickers: monthStickers, stickerBook: stickerBook, goalProgress: goalProgress, streak: streak, findSupplies: findSupplies, supplyUsage: supplyUsage, MINE_CAT: MINE_CAT, parseNoteText: parseNoteText,
-    missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm,
+    missCounts: missCounts, upcoming: upcoming, buyText: buyText,setupSteps: setupSteps, gradeWeek: gradeWeek, parseWeekText: parseWeekText, defaultTimes: defaultTimes, periodTimes: periodTimes, checkTimes: checkTimes, lunchAfter: lunchAfter, MAX_P: MAX_P, shareText: shareText, doneText: doneText, teacherPack: teacherPack, teacherUnpack: teacherUnpack, mergeTeacher: mergeTeacher, familyPack: familyPack, familyUnpack: familyUnpack, mergeFamily: mergeFamily, remindIcs: remindIcs, selfTest: selfTest, findPack: findPack, norm: norm, splitQty: splitQty,
     GROUPS: GROUPS, GROUP_NAME: GROUP_NAME
   };
 })();

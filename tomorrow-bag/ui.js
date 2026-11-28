@@ -538,7 +538,7 @@ var UI = (function () {
     PAGE_G.forEach(function (g) {
       var list = bag.items.filter(function (it) { return pageGroup(it) === g; });
       if (!list.length) return;
-      h += '<h2>' + PAGE_NAME[g] + '</h2><ul>' + list.map(function (it) { return '<li>☐ ' + esc(it.name) + ' — ' + esc(it.sources.join(' · ')) + '</li>'; }).join('') + '</ul>';
+      h += '<h2>' + PAGE_NAME[g] + '</h2><ul>' + list.map(function (it) { return '<li>☐ ' + esc(it.name) + (it.qty > 1 ? ' ×' + it.qty : '') + ' — ' + esc(it.sources.join(' · ')) + '</li>'; }).join('') + '</ul>';
     });
     $('print-area').innerHTML = h;
   }
@@ -570,20 +570,24 @@ var UI = (function () {
     });
     return pages;
   }
+  // 칸 순번(그 쪽 안 0~11): 가방 시트를 열 때 cellIn 이 calc(var(--i) * 30ms) 만큼 늦게 시작해 차례로 튀어나온다
+  function idxAttr(i) { return typeof i === 'number' ? ' style="--i:' + Math.min(i, 11) + '"' : ''; }
   // isNew: 어제 가방에 없던 물건이면 칸 왼쪽 위에 '새로'. data-g: 쪽마다 그림 바탕 색(style.css)
-  function cellHTML(it, on, isNew) {
-    return '<button class="check' + (on ? ' done' : '') + '" type="button" data-act="check" data-g="' + pageGroup(it) + '" data-name="' + esc(it.name) + '" aria-pressed="' + on + '" aria-label="' + esc(it.name) + (it.wear ? ', 입고 갈 것 (꺼내 두기)' : '') + (isNew ? ', 어제 없던 물건' : '') + '">' +
+  // 수량이 2 이상이면 이름 옆에 '×n' (R-80: '휴지 심'·'휴지 심 2개' 를 한 칸으로 합치고 가장 큰 수를 보인다)
+  function cellHTML(it, on, isNew, i) {
+    var q = it.qty > 1 ? it.qty : 0;
+    return '<button class="check' + (on ? ' done' : '') + '"' + idxAttr(i) + ' type="button" data-act="check" data-g="' + pageGroup(it) + '" data-name="' + esc(it.name) + '" aria-pressed="' + on + '" aria-label="' + esc(it.name) + (q ? ' ' + q + '개' : '') + (it.wear ? ', 입고 갈 것 (꺼내 두기)' : '') + (isNew ? ', 어제 없던 물건' : '') + '">' +
       (isNew ? '<span class="new-tag" aria-hidden="true">새로</span>' : '') +
-      '<span class="it-ic">' + pic(it.name) + '</span><span class="nm">' + esc(it.name) + '</span><span class="box" aria-hidden="true">✓</span></button>';
+      '<span class="it-ic">' + pic(it.name) + '</span><span class="nm">' + esc(it.name) + (q ? ' <span class="qty" aria-hidden="true">×' + q + '</span>' : '') + '</span><span class="box" aria-hidden="true">✓</span></button>';
   }
   // '꺼낼 것' 칸: 눌러 꺼냈다고 표시만 한다 (챙김 수에 넣지 않는다)
-  function outCellHTML(name, on) {
-    return '<button class="check out-cell' + (on ? ' done' : '') + '" type="button" data-act="out-check" data-name="' + esc(name) + '" aria-pressed="' + on + '" aria-label="' + esc(name) + ' 꺼내기">' +
+  function outCellHTML(name, on, i) {
+    return '<button class="check out-cell' + (on ? ' done' : '') + '"' + idxAttr(i) + ' type="button" data-act="out-check" data-name="' + esc(name) + '" aria-pressed="' + on + '" aria-label="' + esc(name) + ' 꺼내기">' +
       '<span class="it-ic">' + pic(name) + '</span><span class="nm">' + esc(name) + '</span><span class="box" aria-hidden="true">✓</span></button>';
   }
   // '+ 물건' 칸: 가방 시트에서 바로 그날 알림장에 물건을 하나 더 넣는다 (어른만, 챙김 수에 들지 않는다)
-  function addCellHTML() {
-    return '<button class="check add-cell adult-only" data-act="bag-add" type="button" data-g="note" aria-label="이날 가방에 물건 더 넣기">' +
+  function addCellHTML(i) {
+    return '<button class="check add-cell adult-only"' + idxAttr(i) + ' data-act="bag-add" type="button" data-g="note" aria-label="이날 가방에 물건 더 넣기">' +
       '<span class="it-ic add-plus" aria-hidden="true">+</span><span class="nm">+ 물건</span></button>';
   }
   // 물건 넣기 줄(#bag-add-row)을 열거나 닫는다
@@ -655,10 +659,10 @@ var UI = (function () {
     if (!cur) $('bs-band').scrollLeft = 0;   // 다시 열면 띠도 첫 쪽 이름부터
     setBagProgress(pr, false);
     var html = pages.map(function (p) {
-      return { g: p.g, html: '<div class="grid' + (V.kidMode ? ' c3' : '') + '">' + p.rows.map(function (r) {
+      return { g: p.g, html: '<div class="grid' + (V.kidMode ? ' c3' : '') + '">' + p.rows.map(function (r, j) {
         var name = r.it.name;
-        return p.g === 'out' ? outCellHTML(name, outDone.indexOf(name) >= 0) : cellHTML(r.it, done.indexOf(name) >= 0, diff.add.indexOf(name) >= 0);
-      }).join('') + (p.add ? addCellHTML() : '') + '</div>' };
+        return p.g === 'out' ? outCellHTML(name, outDone.indexOf(name) >= 0, j) : cellHTML(r.it, done.indexOf(name) >= 0, diff.add.indexOf(name) >= 0, j);
+      }).join('') + (p.add ? addCellHTML(p.rows.length) : '') + '</div>' };
     });
     if (!html.length) html = [{ g: '', html: miniEmpty('bag', '챙길 물건이 없어요',{ act: 'note-new', label: '+ 알림장' }) }];
     $('bs-pages').innerHTML = pagerHTML('bag', html, cur);
